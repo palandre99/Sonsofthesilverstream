@@ -2056,227 +2056,102 @@ const BOOK_DATA = {
 
 
     // ========================================
-    // KOKORO TTS ENGINE â premium AI voice
-    // Runs in a Web Worker to avoid blocking UI
+    // KOKORO TTS ENGINE — premium AI voice
+    // v27: Runs on MAIN THREAD (Web Worker produced garbled/gibberish audio)
+    // Uses sentence splitting to keep each TTS call under 510-token limit
     // ========================================
-    var kokoroTTS = false;       // true when worker model is ready
-    var kokoroLoading = false;   // true while model is loading
-    var kokoroFailed = false;    // true if load failed (use browser fallback)
-    var kokoroAudioEl = null;    // current <audio> element playing Kokoro output
-    var kokoroNextBlob = null;   // pre-buffered audio for next paragraph
-    var kokoroNextIdx = -1;      // which paragraph index is pre-buffered
-    var kokoroWorker = null;     // Web Worker instance
-    var kokoroCallbacks = {};    // pending generate() callbacks
-    var kokoroCallId = 0;        // auto-incrementing call ID
+    var kokoroTTS = null;        // KokoroTTS model instance (null until loaded)
+    var kokoroLoading = false;
+    var kokoroFailed = false;
+    var kokoroAudioEl = null;
+    var kokoroNextBlob = null;
+    var kokoroNextIdx = -1;
 
-    // Web Worker source — runs model loading + inference off main thread
-    // v26: Upgraded to kokoro-js 1.2.1 + sentence splitting to avoid 510-token limit
-    var kokoroWorkerSrc = [
-      'import { KokoroTTS } from "https://cdn.jsdelivr.net/npm/kokoro-js@1.2.1/+esm";',
-      'let tts = null;',
-      '',
-      '// Split text into sentences to stay within Kokoro 510-token limit',
-      'function splitSentences(text) {',
-      '  if (text.length < 250) return [text];',
-      '  var parts = text.match(/[^.!?]*[.!?]+[\\s]*/g);',
-      '  if (!parts) return [text];',
-      '  var merged = [];',
-      '  for (var i = 0; i < parts.length; i++) {',
-      '    var s = parts[i].trim();',
-      '    if (!s) continue;',
-      '    if (s.length < 20 && merged.length > 0) {',
-      '      merged[merged.length - 1] += " " + s;',
-      '    } else {',
-      '      merged.push(s);',
-      '    }',
-      '  }',
-      '  var result = [];',
-      '  for (var j = 0; j < merged.length; j++) {',
-      '    if (merged[j].length > 400) {',
-      '      var sub = merged[j].match(/[^,;]+[,;]?[\\s]*/g);',
-      '      if (sub && sub.length > 1) { for (var k = 0; k < sub.length; k++) { var t = sub[k].trim(); if (t) result.push(t); } }',
-      '      else result.push(merged[j]);',
-      '    } else {',
-      '      result.push(merged[j]);',
-      '    }',
-      '  }',
-      '  return result.length > 0 ? result : [text];',
-      '}',
-      '',
-      'function extractPcm(ab) {',
-      '  var view = new DataView(ab);',
-      '  var dataOffset = 44;',
-      '  for (var i = 12; i < Math.min(ab.byteLength - 8, 500); i++) {',
-      '    if (view.getUint8(i)===0x64 && view.getUint8(i+1)===0x61 && view.getUint8(i+2)===0x74 && view.getUint8(i+3)===0x61) {',
-      '      dataOffset = i + 8; break;',
-      '    }',
-      '  }',
-      '  return { pcm: new Uint8Array(ab, dataOffset), sampleRate: view.getUint32(24, true), channels: view.getUint16(22, true), bitsPerSample: view.getUint16(34, true) };',
-      '}',
-      '',
-      'function buildWav(pcmParts, sampleRate, channels, bitsPerSample) {',
-      '  var totalPcm = 0;',
-      '  for (var i = 0; i < pcmParts.length; i++) totalPcm += pcmParts[i].length;',
-      '  var buf = new ArrayBuffer(44 + totalPcm);',
-      '  var dv = new DataView(buf);',
-      '  var u8 = new Uint8Array(buf);',
-      '  function ws(off, str) { for (var c = 0; c < str.length; c++) dv.setUint8(off+c, str.charCodeAt(c)); }',
-      '  ws(0,"RIFF"); dv.setUint32(4, 36+totalPcm, true); ws(8,"WAVE"); ws(12,"fmt ");',
-      '  dv.setUint32(16, 16, true); dv.setUint16(20, 1, true);',
-      '  dv.setUint16(22, channels, true); dv.setUint32(24, sampleRate, true);',
-      '  dv.setUint32(28, sampleRate*channels*(bitsPerSample/8), true);',
-      '  dv.setUint16(32, channels*(bitsPerSample/8), true); dv.setUint16(34, bitsPerSample, true);',
-      '  ws(36,"data"); dv.setUint32(40, totalPcm, true);',
-      '  var off = 44;',
-      '  for (var j = 0; j < pcmParts.length; j++) { u8.set(pcmParts[j], off); off += pcmParts[j].length; }',
-      '  return buf;',
-      '}',
-      '',
-      'self.onmessage = async function(e) {',
-      '  const msg = e.data;',
-      '  if (msg.cmd === "init") {',
-      '    try {',
-      '      self.postMessage({ type: "status", text: "Loading library..." });',
-      '      tts = await KokoroTTS.from_pretrained(msg.modelId, { dtype: msg.dtype, device: msg.device });',
-      '      self.postMessage({ type: "status", text: "Verifying..." });',
-      '      const test = await tts.generate("Hello, this is a test of the voice engine.", { voice: "bm_george", speed: 1.0 });',
-      '      const tw = test.toWav();',
-      '      const sz = (tw instanceof ArrayBuffer) ? tw.byteLength : (tw.byteLength || tw.length || 0);',
-      '      if (sz < 100) throw new Error("Verification produced empty audio");',
-      '      self.postMessage({ type: "ready" });',
-      '    } catch(err) {',
-      '      self.postMessage({ type: "error", error: String(err.message || err) });',
-      '    }',
-      '  }',
-      '  if (msg.cmd === "generate") {',
-      '    try {',
-      '      const sentences = splitSentences(msg.text);',
-      '      const pcmParts = [];',
-      '      let sr = 24000, ch = 1, bits = 16;',
-      '',
-      '      for (let i = 0; i < sentences.length; i++) {',
-      '        const audio = await tts.generate(sentences[i], { voice: msg.voice, speed: msg.speed });',
-      '        const wav = audio.toWav();',
-      '        const ab = (wav instanceof ArrayBuffer) ? wav : wav.buffer.slice(wav.byteOffset, wav.byteOffset + wav.byteLength);',
-      '        const info = extractPcm(ab);',
-      '        if (i === 0) { sr = info.sampleRate; ch = info.channels; bits = info.bitsPerSample; }',
-      '        pcmParts.push(info.pcm);',
-      '      }',
-      '',
-      '      const combined = buildWav(pcmParts, sr, ch, bits);',
-      '      if (combined.byteLength < 100) { self.postMessage({ type: "audioError", id: msg.id, error: "Empty audio" }); return; }',
-      '      self.postMessage({ type: "audio", id: msg.id, wav: combined }, [combined]);',
-      '    } catch(err) {',
-      '      self.postMessage({ type: "audioError", id: msg.id, error: String(err.message || err) });',
-      '    }',
-      '  }',
-      '};'
-    ].join("\n");
+    function splitKokoroSentences(text) {
+      if (text.length < 200) return [text];
+      var parts = text.match(/[^.!?]*[.!?]+[\s]*/g);
+      if (!parts) return [text];
+      var merged = [];
+      for (var i = 0; i < parts.length; i++) {
+        var s = parts[i].trim();
+        if (!s) continue;
+        if (s.length < 20 && merged.length > 0) { merged[merged.length - 1] += ' ' + s; }
+        else { merged.push(s); }
+      }
+      var result = [];
+      for (var j = 0; j < merged.length; j++) {
+        if (merged[j].length > 350) {
+          var sub = merged[j].match(/[^,;]+[,;]?[\s]*/g);
+          if (sub && sub.length > 1) { for (var k = 0; k < sub.length; k++) { var t = sub[k].trim(); if (t) result.push(t); } }
+          else result.push(merged[j]);
+        } else { result.push(merged[j]); }
+      }
+      return result.length > 0 ? result : [text];
+    }
+
+    function kokoroExtractPcm(ab) {
+      var view = new DataView(ab);
+      var dataOffset = 44;
+      for (var i = 12; i < Math.min(ab.byteLength - 8, 500); i++) {
+        if (view.getUint8(i)===0x64 && view.getUint8(i+1)===0x61 && view.getUint8(i+2)===0x74 && view.getUint8(i+3)===0x61) { dataOffset = i + 8; break; }
+      }
+      return { pcm: new Uint8Array(ab, dataOffset), sampleRate: view.getUint32(24, true), channels: view.getUint16(22, true), bitsPerSample: view.getUint16(34, true) };
+    }
+
+    function kokoroBuildWav(pcmParts, sampleRate, channels, bitsPerSample) {
+      var totalPcm = 0;
+      for (var i = 0; i < pcmParts.length; i++) totalPcm += pcmParts[i].length;
+      var buf = new ArrayBuffer(44 + totalPcm);
+      var dv = new DataView(buf); var u8 = new Uint8Array(buf);
+      function ws(off, str) { for (var c = 0; c < str.length; c++) dv.setUint8(off+c, str.charCodeAt(c)); }
+      ws(0,'RIFF'); dv.setUint32(4, 36+totalPcm, true); ws(8,'WAVE'); ws(12,'fmt ');
+      dv.setUint32(16, 16, true); dv.setUint16(20, 1, true);
+      dv.setUint16(22, channels, true); dv.setUint32(24, sampleRate, true);
+      dv.setUint32(28, sampleRate*channels*(bitsPerSample/8), true);
+      dv.setUint16(32, channels*(bitsPerSample/8), true); dv.setUint16(34, bitsPerSample, true);
+      ws(36,'data'); dv.setUint32(40, totalPcm, true);
+      var off = 44;
+      for (var j = 0; j < pcmParts.length; j++) { u8.set(pcmParts[j], off); off += pcmParts[j].length; }
+      return buf;
+    }
 
     async function loadKokoroModel() {
       if (kokoroTTS || kokoroLoading) return;
       kokoroLoading = true;
-
       var progressDiv = document.getElementById('abModelProgress');
       var progressFill = document.getElementById('abModelProgressFill');
       var statusText = document.getElementById('abModelStatusText');
       var voiceStatus = document.getElementById('abVoiceStatus');
-
       if (progressDiv) progressDiv.style.display = 'block';
       if (voiceStatus) { voiceStatus.textContent = 'Loading AI voice model...'; voiceStatus.className = 'ab-engine-status'; }
-      if (statusText) statusText.textContent = 'Starting AI voice engine...';
-      if (progressFill) progressFill.style.width = '10%';
-
+      if (statusText) statusText.textContent = 'Loading voice library...';
+      if (progressFill) progressFill.style.width = '20%';
       try {
-        // Create Web Worker from inline source
-        console.log('[Kokoro] Creating Web Worker...');
-        var workerBlob = new Blob([kokoroWorkerSrc], { type: 'text/javascript' });
-        var workerUrl = URL.createObjectURL(workerBlob);
-        kokoroWorker = new Worker(workerUrl, { type: 'module' });
-        URL.revokeObjectURL(workerUrl);
-
-        // Set up a promise that resolves when worker reports ready
-        var initDone = new Promise(function(resolve, reject) {
-          var fakeProgress = 15;
-          var progressTimer = setInterval(function() {
-            fakeProgress = Math.min(fakeProgress + 1, 95);
-            if (progressFill) progressFill.style.width = fakeProgress + '%';
-          }, 600);
-
-          // Timeout after 3 minutes (model download can be slow)
-          var timeout = setTimeout(function() {
-            clearInterval(progressTimer);
-            reject(new Error('Model loading timed out after 3 minutes'));
-          }, 180000);
-
-          kokoroWorker.onmessage = function(e) {
-            var msg = e.data;
-            if (msg.type === 'status') {
-              console.log('[Kokoro Worker]', msg.text);
-              if (statusText) statusText.textContent = msg.text;
-            }
-            if (msg.type === 'ready') {
-              clearInterval(progressTimer);
-              clearTimeout(timeout);
-              resolve();
-            }
-            if (msg.type === 'error') {
-              clearInterval(progressTimer);
-              clearTimeout(timeout);
-              reject(new Error(msg.error));
-            }
-            // Handle generate callbacks (set up permanent handler below)
-            if (msg.type === 'audio' && kokoroCallbacks[msg.id]) {
-              kokoroCallbacks[msg.id].resolve(new Blob([msg.wav], { type: 'audio/wav' }));
-              delete kokoroCallbacks[msg.id];
-            }
-            if (msg.type === 'audioError' && kokoroCallbacks[msg.id]) {
-              kokoroCallbacks[msg.id].reject(new Error(msg.error));
-              delete kokoroCallbacks[msg.id];
-            }
-          };
-
-          kokoroWorker.onerror = function(err) {
-            clearInterval(progressTimer);
-            clearTimeout(timeout);
-            reject(new Error('Worker error: ' + (err.message || 'Unknown error')));
-          };
-        });
-
-        // Send init command to worker
+        console.log('[Kokoro] Loading library via dynamic import...');
+        var module = await import('https://cdn.jsdelivr.net/npm/kokoro-js@1.2.1/+esm');
+        if (progressFill) progressFill.style.width = '40%';
         if (statusText) statusText.textContent = 'Downloading voice model (~86 MB, one-time)...';
-        if (progressFill) progressFill.style.width = '20%';
-
-        kokoroWorker.postMessage({
-          cmd: 'init',
-          modelId: 'onnx-community/Kokoro-82M-v1.0-ONNX',
-          dtype: 'q8',
-          device: 'wasm'
-        });
-
-        // Wait for worker to finish loading
-        await initDone;
-
-        kokoroTTS = true; // model is ready (lives in worker)
+        console.log('[Kokoro] Loading model on main thread...');
+        kokoroTTS = await module.KokoroTTS.from_pretrained('onnx-community/Kokoro-82M-v1.0-ONNX', { dtype: 'q8', device: 'wasm' });
+        if (progressFill) progressFill.style.width = '90%';
+        if (statusText) statusText.textContent = 'Verifying voice...';
+        var testAudio = await kokoroTTS.generate('Test.', { voice: 'bm_george', speed: 1.0 });
+        var testWav = testAudio.toWav();
+        var testSize = (testWav instanceof ArrayBuffer) ? testWav.byteLength : (testWav.byteLength || testWav.length || 0);
+        if (testSize < 100) throw new Error('Verification failed');
         kokoroLoading = false;
-
         if (progressFill) progressFill.style.width = '100%';
         if (statusText) statusText.textContent = 'AI voice ready!';
         if (voiceStatus) { voiceStatus.textContent = 'Premium AI voice loaded'; voiceStatus.className = 'ab-engine-status success'; }
-        console.log('[Kokoro] Model loaded and verified in worker!');
-
-        setTimeout(function() {
-          if (progressDiv) progressDiv.style.display = 'none';
-        }, 2000);
-
+        console.log('[Kokoro] Model loaded and verified! Test WAV: ' + testSize + ' bytes');
+        setTimeout(function() { if (progressDiv) progressDiv.style.display = 'none'; }, 2000);
       } catch (err) {
         kokoroLoading = false;
         kokoroFailed = true;
-        if (kokoroWorker) { try { kokoroWorker.terminate(); } catch(e){} kokoroWorker = null; }
+        kokoroTTS = null;
         if (progressDiv) progressDiv.style.display = 'none';
-        if (voiceStatus) { voiceStatus.textContent = 'AI voice unavailable â using browser voice'; voiceStatus.className = 'ab-engine-status error'; }
+        if (voiceStatus) { voiceStatus.textContent = 'AI voice unavailable \u2014 using browser voice'; voiceStatus.className = 'ab-engine-status error'; }
         console.error('[Kokoro] Failed to load:', err);
-
         populateBrowserVoicesFallback();
       }
     }
@@ -2304,53 +2179,33 @@ const BOOK_DATA = {
 
     function getKokoroVoiceName() {
       var select = document.getElementById('abVoiceSelect');
-      if (select && select.value && select.value.startsWith('kokoro:')) {
-        return select.value.split(':')[1];
-      }
+      if (select && select.value && select.value.startsWith('kokoro:')) { return select.value.split(':')[1]; }
       return 'bm_george';
     }
 
-    // Generate audio via Worker â returns Promise<Blob|null>
     async function generateKokoroAudio(text) {
-      if (!kokoroTTS || !kokoroWorker) {
-        console.warn('[Kokoro] generateKokoroAudio called but worker not ready');
-        return null;
-      }
+      if (!kokoroTTS) { console.warn('[Kokoro] Model not loaded'); return null; }
       var voiceName = getKokoroVoiceName();
       var truncated = text.length > 60 ? text.substring(0, 60) + '...' : text;
-      console.log('[Kokoro] Requesting audio for:', truncated);
+      console.log('[Kokoro] Generating audio for:', truncated);
       try {
-        var id = ++kokoroCallId;
-        var blob = await new Promise(function(resolve, reject) {
-          kokoroCallbacks[id] = { resolve: resolve, reject: reject };
-          // Timeout to prevent hanging forever
-          var timer = setTimeout(function() {
-            if (kokoroCallbacks[id]) {
-              delete kokoroCallbacks[id];
-              reject(new Error('Generation timed out after 90s'));
-            }
-          }, 90000);
-          // Override resolve/reject to also clear timeout
-          var origResolve = resolve;
-          var origReject = reject;
-          kokoroCallbacks[id] = {
-            resolve: function(v) { clearTimeout(timer); origResolve(v); },
-            reject: function(e) { clearTimeout(timer); origReject(e); }
-          };
-          kokoroWorker.postMessage({
-            cmd: 'generate',
-            id: id,
-            text: text,
-            voice: voiceName,
-            speed: state.abSpeed || 1.0
-          });
-        });
-        console.log('[Kokoro] Got audio blob:', blob.size, 'bytes');
+        var sentences = splitKokoroSentences(text);
+        console.log('[Kokoro] Split into', sentences.length, 'sentence(s)');
+        var pcmParts = [];
+        var sr = 24000, ch = 1, bits = 16;
+        for (var i = 0; i < sentences.length; i++) {
+          var audio = await kokoroTTS.generate(sentences[i], { voice: voiceName, speed: state.abSpeed || 1.0 });
+          var wav = audio.toWav();
+          var ab = (wav instanceof ArrayBuffer) ? wav : wav.buffer.slice(wav.byteOffset, wav.byteOffset + wav.byteLength);
+          var info = kokoroExtractPcm(ab);
+          if (i === 0) { sr = info.sampleRate; ch = info.channels; bits = info.bitsPerSample; }
+          pcmParts.push(info.pcm);
+        }
+        var combined = kokoroBuildWav(pcmParts, sr, ch, bits);
+        var blob = new Blob([combined], { type: 'audio/wav' });
+        console.log('[Kokoro] Generated blob:', blob.size, 'bytes from', sentences.length, 'sentence(s)');
         return blob;
-      } catch(e) {
-        console.error('[Kokoro] Generate error:', e);
-        return null;
-      }
+      } catch(e) { console.error('[Kokoro] Generate error:', e); return null; }
     }
 
     // Pre-buffer next paragraph while current one plays
@@ -2387,11 +2242,7 @@ const BOOK_DATA = {
       // Clear pre-buffer and pending callbacks
       kokoroNextBlob = null;
       kokoroNextIdx = -1;
-      // Reject all pending generate callbacks
-      Object.keys(kokoroCallbacks).forEach(function(id) {
-        try { kokoroCallbacks[id].reject(new Error('Stopped')); } catch(e) {}
-      });
-      kokoroCallbacks = {};
+      // (v27: No Worker callbacks to clean up)
     }
 
     // Chapter picker helpers
