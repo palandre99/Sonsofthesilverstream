@@ -2066,6 +2066,8 @@ const BOOK_DATA = {
     var kokoroAudioEl = null;
     var kokoroNextBlob = null;
     var kokoroNextIdx = -1;
+    var kokoroDevice = 'wasm';   // v29: 'webgpu' or 'wasm'
+    var kokoroModule = null;     // v29: cached kokoro-js module reference
 
     function splitKokoroSentences(text) {
       if (text.length < 200) return [text];
@@ -2115,6 +2117,7 @@ const BOOK_DATA = {
       return buf;
     }
 
+    // v29: WebGPU detection + no blocking verification
     async function loadKokoroModel() {
       if (kokoroTTS || kokoroLoading) return;
       kokoroLoading = true;
@@ -2124,28 +2127,54 @@ const BOOK_DATA = {
       var voiceStatus = document.getElementById('abVoiceStatus');
       if (progressDiv) progressDiv.style.display = 'block';
       if (voiceStatus) { voiceStatus.textContent = 'Loading AI voice model...'; voiceStatus.className = 'ab-engine-status'; }
-      if (statusText) statusText.textContent = 'Loading voice library...';
-      if (progressFill) progressFill.style.width = '20%';
+      if (progressFill) progressFill.style.width = '10%';
       try {
         console.log('[Kokoro] Loading library via dynamic import...');
-        var module = await import('https://cdn.jsdelivr.net/npm/kokoro-js@1.2.1/+esm');
-        if (progressFill) progressFill.style.width = '40%';
-        if (statusText) statusText.textContent = 'Downloading voice model (~86 MB, one-time)...';
-        console.log('[Kokoro] Loading model on main thread...');
-        kokoroTTS = await module.KokoroTTS.from_pretrained('onnx-community/Kokoro-82M-v1.0-ONNX', { dtype: 'q8', device: 'wasm' });
-        if (progressFill) progressFill.style.width = '90%';
-        if (statusText) statusText.textContent = 'Verifying voice...';
-        var testAudio = await kokoroTTS.generate('Test.', { voice: 'bm_george', speed: 1.0 });
-        var testWav = testAudio.toWav();
-        var testSize = (testWav instanceof ArrayBuffer) ? testWav.byteLength : (testWav.byteLength || testWav.length || 0);
-        if (testSize < 100) throw new Error('Verification failed');
+        if (statusText) statusText.textContent = 'Loading voice library...';
+        kokoroModule = await import('https://cdn.jsdelivr.net/npm/kokoro-js@1.2.1/+esm');
+        if (progressFill) progressFill.style.width = '25%';
+        var useWebGPU = false;
+        if (navigator.gpu) {
+          try {
+            var adapter = await navigator.gpu.requestAdapter();
+            if (adapter) { useWebGPU = true; console.log('[Kokoro] WebGPU available!'); }
+          } catch(gpuErr) { console.log('[Kokoro] WebGPU check failed:', gpuErr); }
+        }
+        kokoroDevice = useWebGPU ? 'webgpu' : 'wasm';
+        var dtype = useWebGPU ? 'fp32' : 'q8';
+        var modelSize = useWebGPU ? '~330 MB' : '~86 MB';
+        console.log('[Kokoro] Using device:', kokoroDevice, 'dtype:', dtype);
+        if (statusText) statusText.textContent = 'Downloading voice model (' + modelSize + ', one-time)...';
+        if (progressFill) progressFill.style.width = '35%';
+        kokoroTTS = await kokoroModule.KokoroTTS.from_pretrained(
+          'onnx-community/Kokoro-82M-v1.0-ONNX',
+          { dtype: dtype, device: kokoroDevice }
+        );
         kokoroLoading = false;
         if (progressFill) progressFill.style.width = '100%';
         if (statusText) statusText.textContent = 'AI voice ready!';
-        if (voiceStatus) { voiceStatus.textContent = 'Premium AI voice loaded'; voiceStatus.className = 'ab-engine-status success'; }
-        console.log('[Kokoro] Model loaded and verified! Test WAV: ' + testSize + ' bytes');
+        var modeLabel = useWebGPU ? 'Premium AI voice loaded (GPU)' : 'Premium AI voice loaded';
+        if (voiceStatus) { voiceStatus.textContent = modeLabel; voiceStatus.className = 'ab-engine-status success'; }
+        console.log('[Kokoro] Model loaded! Device:', kokoroDevice, 'Dtype:', dtype);
         setTimeout(function() { if (progressDiv) progressDiv.style.display = 'none'; }, 2000);
       } catch (err) {
+        if (kokoroDevice === 'webgpu' && kokoroModule) {
+          console.warn('[Kokoro] WebGPU failed, retrying with WASM...', err);
+          kokoroDevice = 'wasm';
+          if (statusText) statusText.textContent = 'Retrying with WASM backend...';
+          try {
+            kokoroTTS = await kokoroModule.KokoroTTS.from_pretrained(
+              'onnx-community/Kokoro-82M-v1.0-ONNX', { dtype: 'q8', device: 'wasm' }
+            );
+            kokoroLoading = false;
+            if (progressFill) progressFill.style.width = '100%';
+            if (statusText) statusText.textContent = 'AI voice ready!';
+            if (voiceStatus) { voiceStatus.textContent = 'Premium AI voice loaded'; voiceStatus.className = 'ab-engine-status success'; }
+            console.log('[Kokoro] WASM fallback loaded successfully!');
+            setTimeout(function() { if (progressDiv) progressDiv.style.display = 'none'; }, 2000);
+            return;
+          } catch(wasmErr) { console.error('[Kokoro] WASM fallback also failed:', wasmErr); err = wasmErr; }
+        }
         kokoroLoading = false;
         kokoroFailed = true;
         kokoroTTS = null;
@@ -2155,7 +2184,6 @@ const BOOK_DATA = {
         populateBrowserVoicesFallback();
       }
     }
-
     function populateBrowserVoicesFallback() {
       var select = document.getElementById('abVoiceSelect');
       if (!select) return;
@@ -2740,96 +2768,72 @@ const BOOK_DATA = {
       }
     }
 
-    // v28: Sentence-by-sentence streaming playback
-    // Generates one sentence at a time, plays it immediately, then generates next.
-    // This prevents page freezes (main thread only blocks for ~3-5s per sentence)
-    // and audio starts playing much sooner (after first sentence, not after entire paragraph).
+    // v29: Streaming playback with WebGPU support
     async function speakWithKokoro(text, myGen, idx) {
       try {
         var voiceName = getKokoroVoiceName();
-        var sentences = splitKokoroSentences(text);
-        console.log('[Kokoro] Paragraph', idx, ':', sentences.length, 'sentence(s)');
-
         var nowPlaying = document.getElementById('abNowPlaying');
-
-        for (var si = 0; si < sentences.length; si++) {
-          // Check if playback was stopped/paused
-          if (abGeneration !== myGen || !state.abActive) {
-            console.log('[Kokoro] Stopped mid-paragraph at sentence', si);
-            return;
+        if (nowPlaying) nowPlaying.textContent = 'Generating audio...';
+        var usedStream = false;
+        if (typeof kokoroTTS.stream === 'function') {
+          try {
+            console.log('[Kokoro] Using stream() for paragraph', idx, '(' + kokoroDevice + ')');
+            var chunkNum = 0;
+            var streamIter = kokoroTTS.stream(text, { voice: voiceName, speed: state.abSpeed || 1.0 });
+            for await (var chunk of streamIter) {
+              if (abGeneration !== myGen || !state.abActive) {
+                console.log('[Kokoro] Stopped mid-stream at chunk', chunkNum); return;
+              }
+              chunkNum++;
+              var wav = chunk.audio.toWav();
+              var ab = (wav instanceof ArrayBuffer) ? wav : wav.buffer.slice(wav.byteOffset, wav.byteOffset + wav.byteLength);
+              var blob = new Blob([ab], { type: 'audio/wav' });
+              console.log('[Kokoro] Stream chunk', chunkNum, ':', blob.size, 'bytes');
+              if (nowPlaying && chunkNum === 1) updateAbNowPlaying();
+              await kokoroPlaySentence(blob, myGen);
+              await new Promise(function(r) { setTimeout(r, 20); });
+            }
+            usedStream = true;
+          } catch(streamErr) {
+            console.warn('[Kokoro] stream() failed, falling back to manual split:', streamErr);
           }
-
-          // Show status while generating
-          if (nowPlaying && si === 0) nowPlaying.textContent = 'Generating audio...';
-
-          // Generate audio for this single sentence
-          console.log('[Kokoro] Generating sentence', si + 1, '/', sentences.length, ':', sentences[si].substring(0, 50));
-          var audio = await kokoroTTS.generate(sentences[si], { voice: voiceName, speed: state.abSpeed || 1.0 });
-          var wav = audio.toWav();
-          var ab = (wav instanceof ArrayBuffer) ? wav : wav.buffer.slice(wav.byteOffset, wav.byteOffset + wav.byteLength);
-          var sentenceBlob = new Blob([ab], { type: 'audio/wav' });
-          console.log('[Kokoro] Sentence', si + 1, 'audio:', sentenceBlob.size, 'bytes');
-
-          // Check again after generation (could have been stopped during the await)
-          if (abGeneration !== myGen || !state.abActive) {
-            console.log('[Kokoro] Stopped after generating sentence', si);
-            return;
-          }
-
-          // Restore "now playing" text after first generation
-          if (nowPlaying && si === 0) updateAbNowPlaying();
-
-          // Play this sentence and wait for it to finish
-          await kokoroPlaySentence(sentenceBlob, myGen);
-
-          // Brief yield to let the UI breathe between sentences
-          await new Promise(function(r) { setTimeout(r, 30); });
         }
-
-        // All sentences played — advance to next paragraph
+        if (!usedStream) {
+          var sentences = splitKokoroSentences(text);
+          console.log('[Kokoro] Manual split paragraph', idx, ':', sentences.length, 'sentence(s)');
+          for (var si = 0; si < sentences.length; si++) {
+            if (abGeneration !== myGen || !state.abActive) return;
+            if (nowPlaying && si === 0) nowPlaying.textContent = 'Generating audio...';
+            console.log('[Kokoro] Generating sentence', si + 1, '/', sentences.length);
+            var audio = await kokoroTTS.generate(sentences[si], { voice: voiceName, speed: state.abSpeed || 1.0 });
+            var wav2 = audio.toWav();
+            var ab2 = (wav2 instanceof ArrayBuffer) ? wav2 : wav2.buffer.slice(wav2.byteOffset, wav2.byteOffset + wav2.byteLength);
+            var blob2 = new Blob([ab2], { type: 'audio/wav' });
+            if (abGeneration !== myGen || !state.abActive) return;
+            if (nowPlaying && si === 0) updateAbNowPlaying();
+            await kokoroPlaySentence(blob2, myGen);
+            await new Promise(function(r) { setTimeout(r, 30); });
+          }
+        }
         console.log('[Kokoro] Paragraph', idx, 'complete');
-        if (state.abActive && abGeneration === myGen) {
-          speakAbParagraph(idx + 1);
-        }
-
+        if (state.abActive && abGeneration === myGen) { speakAbParagraph(idx + 1); }
       } catch(e) {
         console.error('[Kokoro] speakWithKokoro error:', e);
-        if (state.abActive && abGeneration === myGen) {
-          speakBrowserTTS(text, myGen, idx);
-        }
+        if (state.abActive && abGeneration === myGen) { speakBrowserTTS(text, myGen, idx); }
       }
     }
 
-    // Play a single sentence blob and return a Promise that resolves when done
     function kokoroPlaySentence(blob, myGen) {
       return new Promise(function(resolve) {
         if (abGeneration !== myGen || !state.abActive) { resolve(); return; }
-
         var url = URL.createObjectURL(blob);
         kokoroAudioEl = new Audio(url);
         kokoroAudioEl.volume = 1.0;
-
-        kokoroAudioEl.onended = function() {
-          URL.revokeObjectURL(url);
-          kokoroAudioEl = null;
-          resolve();
-        };
-        kokoroAudioEl.onerror = function(e) {
-          console.error('[Kokoro] Sentence audio error:', e);
-          URL.revokeObjectURL(url);
-          kokoroAudioEl = null;
-          resolve(); // resolve so we can try next sentence or fallback
-        };
-
-        kokoroAudioEl.play().catch(function(e) {
-          console.error('[Kokoro] Sentence play() failed:', e);
-          URL.revokeObjectURL(url);
-          kokoroAudioEl = null;
-          resolve();
-        });
+        kokoroAudioEl.onended = function() { URL.revokeObjectURL(url); kokoroAudioEl = null; resolve(); };
+        kokoroAudioEl.onerror = function(e) { console.error('[Kokoro] Audio error:', e); URL.revokeObjectURL(url); kokoroAudioEl = null; resolve(); };
+        kokoroAudioEl.play().catch(function(e) { console.error('[Kokoro] play() failed:', e); URL.revokeObjectURL(url); kokoroAudioEl = null; resolve(); });
       });
     }
-
     var browserTTSKeepalive = null;
     function speakBrowserTTS(text, myGen, idx) {
       window.speechSynthesis.cancel();
