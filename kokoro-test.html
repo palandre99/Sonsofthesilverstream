@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><title>Kokoro TTS Test</title>
+<style>
+body { font-family: sans-serif; max-width: 600px; margin: 40px auto; padding: 20px; }
+button { padding: 12px 24px; font-size: 16px; margin: 8px 4px; cursor: pointer; }
+#log { background: #111; color: #0f0; padding: 16px; font-family: monospace; font-size: 13px;
+  height: 300px; overflow-y: auto; white-space: pre-wrap; margin-top: 20px; border-radius: 8px; }
+.status { padding: 10px; margin: 10px 0; border-radius: 6px; font-weight: bold; }
+.loading { background: #fff3cd; color: #856404; }
+.ready { background: #d4edda; color: #155724; }
+.error { background: #f8d7da; color: #721c24; }
+</style></head>
+<body>
+<h1>Kokoro TTS Diagnostic</h1>
+<div id="statusBox" class="status loading">Click "Load Model" to start</div>
+<button id="btnLoad" onclick="loadModel()">1. Load Model (~86MB)</button>
+<button id="btnTest" onclick="testSpeak()" disabled>2. Test Voice</button>
+<button id="btnTest2" onclick="testSpeak2()" disabled>3. Test Longer Text</button>
+<div id="log"></div>
+<script type="module">
+window.loadModel = loadModel;
+window.testSpeak = testSpeak;
+window.testSpeak2 = testSpeak2;
+var logEl = document.getElementById('log');
+var statusBox = document.getElementById('statusBox');
+var tts = null;
+function log(msg) {
+  var ts = new Date().toLocaleTimeString();
+  logEl.textContent += '[' + ts + '] ' + msg + '\n';
+  logEl.scrollTop = logEl.scrollHeight;
+}
+async function loadModel() {
+  document.getElementById('btnLoad').disabled = true;
+  statusBox.className = 'status loading';
+  statusBox.textContent = 'Loading kokoro-js library from CDN...';
+  log('Importing kokoro-js from CDN...');
+  try {
+    var module = await import('https://cdn.jsdelivr.net/npm/kokoro-js@1.1.1/+esm');
+    log('Library loaded. KokoroTTS found: ' + !!module.KokoroTTS);
+    statusBox.textContent = 'Downloading model (~86MB, please wait)...';
+    log('Loading model device=wasm, dtype=q8...');
+    var startTime = Date.now();
+    tts = await module.KokoroTTS.from_pretrained('onnx-community/Kokoro-82M-v1.0-ONNX', { dtype: 'q8', device: 'wasm' });
+    log('Model loaded in ' + ((Date.now() - startTime) / 1000).toFixed(1) + 's');
+    if (typeof tts.list_voices === 'function') { log('Voices: ' + JSON.stringify(tts.list_voices())); }
+    statusBox.className = 'status ready';
+    statusBox.textContent = 'Model ready! Click Test Voice';
+    document.getElementById('btnTest').disabled = false;
+    document.getElementById('btnTest2').disabled = false;
+  } catch(err) {
+    log('ERROR: ' + err.message);
+    statusBox.className = 'status error';
+    statusBox.textContent = 'Failed: ' + err.message;
+    document.getElementById('btnLoad').disabled = false;
+  }
+}
+async function testSpeak() {
+  var text = 'The mill by the stream stood quiet as the dawn broke over the Riverlands.';
+  log('Generating: "' + text + '"');
+  statusBox.textContent = 'Generating audio... (page may freeze briefly)';
+  try {
+    var startTime = Date.now();
+    var audio = await tts.generate(text, { voice: 'bm_george', speed: 1.0 });
+    log('Generated in ' + ((Date.now() - startTime) / 1000).toFixed(2) + 's');
+    var wav = audio.toWav();
+    log('toWav() type=' + (wav.constructor ? wav.constructor.name : typeof wav) + ' size=' + (wav.byteLength || wav.length));
+    var blob = new Blob([wav], { type: 'audio/wav' });
+    log('Blob: ' + blob.size + ' bytes');
+    var url = URL.createObjectURL(blob);
+    var audioEl = new Audio(url);
+    audioEl.onended = function() { URL.revokeObjectURL(url); log('Done.'); };
+    await audioEl.play();
+    log('Playing...');
+    statusBox.className = 'status ready';
+    statusBox.textContent = 'Playing! Listen to quality.';
+  } catch(err) { log('ERROR: ' + err.message); }
+}
+async function testSpeak2() {
+  var text = 'Lord Edmyn looked out over the muddied waters of the Stony Mill and frowned. The rains had come early this year.';
+  log('Generating longer text (' + text.length + ' chars)');
+  statusBox.textContent = 'Generating... (page may freeze)';
+  try {
+    var startTime = Date.now();
+    var audio = await tts.generate(text, { voice: 'bm_george', speed: 1.0 });
+    log('Generated in ' + ((Date.now() - startTime) / 1000).toFixed(2) + 's');
+    var wav = audio.toWav();
+    log('WAV size=' + (wav.byteLength || wav.length));
+    var blob = new Blob([wav], { type: 'audio/wav' });
+    var url = URL.createObjectURL(blob);
+    var audioEl = new Audio(url);
+    audioEl.onended = function() { URL.revokeObjectURL(url); log('Done.'); };
+    await audioEl.play();
+    log('Playing...');
+    statusBox.className = 'status ready';
+    statusBox.textContent = 'Playing longer text...';
+  } catch(err) { log('ERROR: ' + err.message); }
+}
+</script>
+</body></html>
