@@ -2669,8 +2669,7 @@ const BOOK_DATA = {
           kokoroAudioEl.onended = function() { URL.revokeObjectURL(announceUrl); kokoroAudioEl = null; onDone(); };
           kokoroAudioEl.onerror = function(e) { console.error('[Kokoro] Announce error:', e); URL.revokeObjectURL(announceUrl); kokoroAudioEl = null; onFail(); };
           kokoroAudioEl.play().catch(function(e) { console.error('[Kokoro] Announce play error:', e); onFail(); });
-          // Pre-buffer first paragraph while title plays
-          prebufferNext(0);
+          // v28: No pre-buffering (sentence-by-sentence streaming handles it)
           return;
         } catch(e) { /* fall through to browser TTS */ }
       }
@@ -2741,35 +2740,70 @@ const BOOK_DATA = {
       }
     }
 
+    // v28: Sentence-by-sentence streaming playback
+    // Generates one sentence at a time, plays it immediately, then generates next.
+    // This prevents page freezes (main thread only blocks for ~3-5s per sentence)
+    // and audio starts playing much sooner (after first sentence, not after entire paragraph).
     async function speakWithKokoro(text, myGen, idx) {
       try {
-        var blob = null;
-        // Use pre-buffered audio if available
-        if (kokoroNextIdx === idx && kokoroNextBlob) {
-          console.log('[Kokoro] Using pre-buffered audio for paragraph', idx);
-          blob = kokoroNextBlob;
-          kokoroNextBlob = null;
-          kokoroNextIdx = -1;
-        } else {
-          // Show generating status
-          var nowPlaying = document.getElementById('abNowPlaying');
-          if (nowPlaying) {
-            var origText = nowPlaying.textContent;
-            nowPlaying.textContent = 'Generating audio...';
+        var voiceName = getKokoroVoiceName();
+        var sentences = splitKokoroSentences(text);
+        console.log('[Kokoro] Paragraph', idx, ':', sentences.length, 'sentence(s)');
+
+        var nowPlaying = document.getElementById('abNowPlaying');
+
+        for (var si = 0; si < sentences.length; si++) {
+          // Check if playback was stopped/paused
+          if (abGeneration !== myGen || !state.abActive) {
+            console.log('[Kokoro] Stopped mid-paragraph at sentence', si);
+            return;
           }
-          console.log('[Kokoro] Generating audio for paragraph', idx);
-          blob = await generateKokoroAudio(text);
-          if (nowPlaying && origText) nowPlaying.textContent = origText;
+
+          // Show status while generating
+          if (nowPlaying && si === 0) nowPlaying.textContent = 'Generating audio...';
+
+          // Generate audio for this single sentence
+          console.log('[Kokoro] Generating sentence', si + 1, '/', sentences.length, ':', sentences[si].substring(0, 50));
+          var audio = await kokoroTTS.generate(sentences[si], { voice: voiceName, speed: state.abSpeed || 1.0 });
+          var wav = audio.toWav();
+          var ab = (wav instanceof ArrayBuffer) ? wav : wav.buffer.slice(wav.byteOffset, wav.byteOffset + wav.byteLength);
+          var sentenceBlob = new Blob([ab], { type: 'audio/wav' });
+          console.log('[Kokoro] Sentence', si + 1, 'audio:', sentenceBlob.size, 'bytes');
+
+          // Check again after generation (could have been stopped during the await)
+          if (abGeneration !== myGen || !state.abActive) {
+            console.log('[Kokoro] Stopped after generating sentence', si);
+            return;
+          }
+
+          // Restore "now playing" text after first generation
+          if (nowPlaying && si === 0) updateAbNowPlaying();
+
+          // Play this sentence and wait for it to finish
+          await kokoroPlaySentence(sentenceBlob, myGen);
+
+          // Brief yield to let the UI breathe between sentences
+          await new Promise(function(r) { setTimeout(r, 30); });
         }
 
-        if (!blob) {
-          console.warn('[Kokoro] No blob generated, falling back to browser TTS');
-          speakBrowserTTS(text, myGen, idx); return;
+        // All sentences played — advance to next paragraph
+        console.log('[Kokoro] Paragraph', idx, 'complete');
+        if (state.abActive && abGeneration === myGen) {
+          speakAbParagraph(idx + 1);
         }
-        if (abGeneration !== myGen || !state.abActive) {
-          console.log('[Kokoro] Generation changed or stopped, aborting playback');
-          return;
+
+      } catch(e) {
+        console.error('[Kokoro] speakWithKokoro error:', e);
+        if (state.abActive && abGeneration === myGen) {
+          speakBrowserTTS(text, myGen, idx);
         }
+      }
+    }
+
+    // Play a single sentence blob and return a Promise that resolves when done
+    function kokoroPlaySentence(blob, myGen) {
+      return new Promise(function(resolve) {
+        if (abGeneration !== myGen || !state.abActive) { resolve(); return; }
 
         var url = URL.createObjectURL(blob);
         kokoroAudioEl = new Audio(url);
@@ -2778,31 +2812,22 @@ const BOOK_DATA = {
         kokoroAudioEl.onended = function() {
           URL.revokeObjectURL(url);
           kokoroAudioEl = null;
-          if (state.abActive && abGeneration === myGen) {
-            speakAbParagraph(idx + 1);
-          }
+          resolve();
         };
         kokoroAudioEl.onerror = function(e) {
-          console.error('[Kokoro] Audio element error:', e);
+          console.error('[Kokoro] Sentence audio error:', e);
           URL.revokeObjectURL(url);
           kokoroAudioEl = null;
-          if (state.abActive && abGeneration === myGen) {
-            speakBrowserTTS(text, myGen, idx);
-          }
+          resolve(); // resolve so we can try next sentence or fallback
         };
 
-        console.log('[Kokoro] Playing audio for paragraph', idx);
-        await kokoroAudioEl.play();
-
-        // Pre-buffer next paragraph in background
-        prebufferNext(idx + 1);
-
-      } catch(e) {
-        console.error('[Kokoro] speakWithKokoro error:', e);
-        if (state.abActive && abGeneration === myGen) {
-          speakBrowserTTS(text, myGen, idx);
-        }
-      }
+        kokoroAudioEl.play().catch(function(e) {
+          console.error('[Kokoro] Sentence play() failed:', e);
+          URL.revokeObjectURL(url);
+          kokoroAudioEl = null;
+          resolve();
+        });
+      });
     }
 
     var browserTTSKeepalive = null;
