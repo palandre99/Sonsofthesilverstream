@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Flappy Bird</title>
 <style>
-  :root { --sky:#4ec0ca; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body {
+    width: 100%;
     height: 100%;
-    background: #ded895;
+    background: #4ec0ca;
     font-family: 'Segoe UI', system-ui, sans-serif;
     overflow: hidden;
     -webkit-tap-highlight-color: transparent;
@@ -19,48 +19,36 @@
     align-items: center;
     justify-content: center;
   }
-  #wrap {
-    position: relative;
-    width: 100%;
-    max-width: 420px;
-    aspect-ratio: 9 / 16;
-    max-height: 100vh;
-    box-shadow: 0 10px 40px rgba(0,0,0,.35);
-  }
-  canvas {
+  #game {
     display: block;
-    width: 100%;
-    height: 100%;
-    image-rendering: pixelated;
-    image-rendering: crisp-edges;
+    background: #4ec0ca;
     touch-action: none;
     cursor: pointer;
-  }
-  #hint {
-    position: absolute;
-    bottom: 12px;
-    left: 0; right: 0;
-    text-align: center;
-    color: rgba(255,255,255,.85);
-    font-size: 13px;
-    text-shadow: 0 1px 2px rgba(0,0,0,.4);
-    pointer-events: none;
-    user-select: none;
+    box-shadow: 0 10px 40px rgba(0,0,0,.35);
   }
 </style>
 </head>
 <body>
-  <div id="wrap">
-    <canvas id="game" width="288" height="512"></canvas>
-    <div id="hint">Klikk, trykk eller mellomrom for å fly</div>
-  </div>
+  <canvas id="game" width="288" height="512"></canvas>
 
 <script>
 (() => {
   const cv = document.getElementById('game');
   const ctx = cv.getContext('2d');
   const W = cv.width, H = cv.height;
-  const hint = document.getElementById('hint');
+
+  // ---- Responsive scaling: fit the 288x512 canvas to the window ----
+  function fit() {
+    const margin = 0;
+    const vw = window.innerWidth - margin;
+    const vh = window.innerHeight - margin;
+    const scale = Math.min(vw / W, vh / H);
+    cv.style.width = Math.round(W * scale) + 'px';
+    cv.style.height = Math.round(H * scale) + 'px';
+  }
+  window.addEventListener('resize', fit);
+  window.addEventListener('orientationchange', fit);
+  fit();
 
   // ---- Game constants ----
   const GRAVITY = 0.4;
