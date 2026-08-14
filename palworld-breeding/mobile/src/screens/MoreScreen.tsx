@@ -7,8 +7,8 @@ import * as Haptics from 'expo-haptics';
 import { T } from '../theme';
 import { Badge, Btn, Card, s } from '../ui/kit';
 import {
-  createProfile, deleteProfile, getActiveProfile, getProfiles, switchProfile,
-  useAppVersion,
+  createProfile, deleteProfile, getActiveProfile, getProfiles, renameProfile,
+  switchProfile, useAppVersion,
 } from '../store';
 import { ReferenceScreen } from './ReferenceScreen';
 import { ComingSoonScreen } from './ComingSoonScreen';
@@ -59,6 +59,9 @@ export function MoreScreen() {
   const [open, setOpen] = useState<string | null>(null);
   const [naming, setNaming] = useState(false);
   const [newName, setNewName] = useState('');
+  const [managing, setManaging] = useState<{ id: string; name: string } | null>(null);
+  const [editName, setEditName] = useState('');
+  const [armDelete, setArmDelete] = useState(false);
   const active = getActiveProfile();
 
   if (open) {
@@ -94,33 +97,47 @@ export function MoreScreen() {
         {getProfiles().map((p) => {
           const on = p.id === active.id;
           return (
-            <Pressable
+            <View
               key={p.id}
-              onPress={() => {
-                void Haptics.selectionAsync();
-                void switchProfile(p.id);
-              }}
-              onLongPress={() => {
-                if (p.id !== 'default') void deleteProfile(p.id);
-              }}
               style={{
                 flexDirection: 'row', alignItems: 'center', gap: 8,
                 backgroundColor: on ? T.accentSoft : T.surface2,
                 borderWidth: 1, borderColor: on ? T.accent : T.line,
-                borderRadius: 10, paddingVertical: 9, paddingHorizontal: 12,
+                borderRadius: 10, paddingVertical: 6, paddingHorizontal: 12,
               }}
             >
-              <View style={{
-                width: 8, height: 8, borderRadius: 4,
-                backgroundColor: on ? T.ok : T.line2,
-              }} />
-              <Text style={{
-                color: on ? T.accentInk : T.muted, fontWeight: '700', fontSize: 13.5, flex: 1,
-              }}>{p.name}</Text>
-              {p.id !== 'default' && (
-                <Text style={{ color: T.faint, fontSize: 9 }}>hold to delete</Text>
-              )}
-            </Pressable>
+              <Pressable
+                onPress={() => {
+                  void Haptics.selectionAsync();
+                  void switchProfile(p.id);
+                }}
+                style={{ flexDirection: 'row', alignItems: 'center', gap: 8, flex: 1, paddingVertical: 3 }}
+              >
+                <View style={{
+                  width: 8, height: 8, borderRadius: 4,
+                  backgroundColor: on ? T.ok : T.line2,
+                }} />
+                <Text style={{
+                  color: on ? T.accentInk : T.muted, fontWeight: '700', fontSize: 13.5,
+                }}>{p.name}</Text>
+              </Pressable>
+              <Pressable
+                onPress={() => {
+                  void Haptics.selectionAsync();
+                  setEditName(p.name);
+                  setArmDelete(false);
+                  setManaging({ id: p.id, name: p.name });
+                }}
+                hitSlop={8}
+                accessibilityLabel={`Manage ${p.name}`}
+                style={({ pressed }) => [{
+                  paddingHorizontal: 8, paddingVertical: 4, borderRadius: 8,
+                  backgroundColor: pressed ? T.surface : 'transparent',
+                }]}
+              >
+                <Text style={{ color: T.muted, fontWeight: '800', fontSize: 15 }}>✎</Text>
+              </Pressable>
+            </View>
           );
         })}
         <Btn small label="+ New profile" onPress={() => setNaming(true)} />
@@ -166,6 +183,49 @@ export function MoreScreen() {
           device. Fan project, not affiliated with Pocketpair.
         </Text>
       </Card>
+
+      {managing && (
+        <Modal visible transparent animationType="fade"
+          onRequestClose={() => setManaging(null)}>
+          <View style={{
+            flex: 1, backgroundColor: 'rgba(0,0,0,0.55)',
+            alignItems: 'center', justifyContent: 'center', padding: 28,
+          }}>
+            <Card style={{ width: '100%' }}>
+              <Text style={s.h2}>Edit profile</Text>
+              <TextInput
+                value={editName}
+                onChangeText={setEditName}
+                placeholder="Profile name"
+                placeholderTextColor={T.faint}
+                autoFocus
+                style={[s.search, { marginTop: 12 }]}
+              />
+              <View style={[s.wrap, { marginTop: 12 }]}>
+                <Btn primary label="Save name"
+                  onPress={() => {
+                    void renameProfile(managing.id, editName);
+                    setManaging(null);
+                  }} />
+                <Btn label="Cancel" onPress={() => setManaging(null)} />
+              </View>
+              {getProfiles().length > 1 && (
+                <View style={{ marginTop: 14, borderTopWidth: 1, borderTopColor: T.line, paddingTop: 12 }}>
+                  <Btn danger
+                    label={armDelete
+                      ? `Really delete "${managing.name}" and its data?`
+                      : 'Delete this profile…'}
+                    onPress={() => {
+                      if (!armDelete) { setArmDelete(true); return; }
+                      void deleteProfile(managing.id);
+                      setManaging(null);
+                    }} />
+                </View>
+              )}
+            </Card>
+          </View>
+        </Modal>
+      )}
 
       <Modal visible={naming} transparent animationType="fade"
         onRequestClose={() => setNaming(false)}>

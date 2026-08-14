@@ -170,7 +170,7 @@ export async function renameProfile(id: string, name: string): Promise<void> {
 }
 
 export async function deleteProfile(id: string): Promise<void> {
-  if (id === 'default' || profiles.length <= 1) return; // the original save stays
+  if (profiles.length <= 1) return; // never delete the last profile
   const k = keysFor(id);
   try {
     await AsyncStorage.multiRemove([k.box, k.checks, k.plan]);
