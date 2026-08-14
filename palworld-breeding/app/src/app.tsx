@@ -80,11 +80,16 @@ export function App() {
         </a>
         <nav class="nav" aria-label="Main">
           {NAV.map((n) => (
-            <a href={`#/${n.hash}`} aria-current={page === n.match ? 'page' : undefined}>
+            <a key={n.hash} href={`#/${n.hash}`} aria-current={page === n.match ? 'page' : undefined}>
               {n.icon}
               <span>{n.label}</span>
             </a>
           ))}
+          <div class="navsoon" aria-hidden="true">
+            {['Map & Spawns', 'Items & Tech', 'Base & Builds', 'Bosses & Raids', 'Save Import'].map((t) => (
+              <span key={t} class="soonitem">{t}<i>SOON</i></span>
+            ))}
+          </div>
         </nav>
         <button class="themebtn" type="button"
           onClick={() => (theme.value = theme.value === 'dark' ? 'light' : 'dark')}>

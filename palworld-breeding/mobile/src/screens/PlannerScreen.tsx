@@ -233,7 +233,9 @@ export function PlannerScreen() {
       <Btn
         primary
         disabled={!targets.length || !ownedNames.length || busy}
-        label={busy ? 'Planning…' : `Plan ${targets.length || ''} targets`}
+        label={busy ? 'Planning…'
+          : targets.length ? `Plan ${targets.length} target${targets.length > 1 ? 's' : ''}`
+          : 'Plan targets'}
         onPress={run}
       />
       {busy && <ActivityIndicator color={T.accent} style={{ marginTop: 14 }} />}

@@ -36,6 +36,15 @@
   .main{padding:18px 16px 96px}
 }
 
+/* ---------- coming-soon nav ---------- */
+.navsoon{margin-top:10px;padding-top:10px;border-top:1px solid var(--line);
+  display:flex;flex-direction:column;gap:1px}
+.soonitem{display:flex;align-items:center;gap:8px;padding:7px 12px;color:var(--faint);
+  font-weight:600;font-size:13px}
+.soonitem i{font-style:normal;font-size:8.5px;font-weight:800;letter-spacing:.5px;
+  color:var(--gold-ink);background:var(--gold-soft);border-radius:5px;padding:1.5px 6px}
+@media (max-width:840px){.navsoon{display:none}}
+
 /* ---------- primitives ---------- */
 .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
   box-shadow:var(--shadow)}

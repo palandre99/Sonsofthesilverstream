@@ -323,8 +323,9 @@ export function PaldexScreen() {
           onPress={() => setSheet('clear')} />
       </View>
       <SearchInput value={q} onChange={setQ} placeholder="Search pals…" />
+      <View style={{ height: 40, marginTop: 8 }}>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}
-        style={{ marginTop: 8, flexGrow: 0 }} contentContainerStyle={{ gap: 6, alignItems: 'center' }}>
+        style={{ flexGrow: 0 }} contentContainerStyle={{ gap: 6, alignItems: 'center', paddingRight: 16 }}>
         {([['all', 'All'], ['owned', 'Owned'], ['missing', 'Missing'],
           ['pairready', '♂+♀'], ['onegender', 'One gender']] as const).map(([id, label]) => (
           <Text key={id} onPress={() => setOwn(id)} style={chip(own === id)}>{label}</Text>
@@ -334,8 +335,9 @@ export function PaldexScreen() {
           <Text key={e} onPress={() => setEl(el === e ? '' : e)} style={chip(el === e)}>{e}</Text>
         ))}
       </ScrollView>
+      </View>
       <FlatList
-        style={{ marginTop: 8 }}
+        style={{ marginTop: 4 }}
         keyboardShouldPersistTaps="handled"
         data={names}
         keyExtractor={(n) => n}
