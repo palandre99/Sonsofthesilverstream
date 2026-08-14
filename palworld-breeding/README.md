@@ -29,8 +29,10 @@ begge er rene tekstfiler.
 | `planner.py` | motoren: artsformel, nåbarhet, korteste delte tre, CLI |
 | `build_guide.py` | genererer guiden (`--embed` lager frittstående versjon med innbakte ikoner) |
 | `roster.txt` / `targets.txt` | dine pals og mål — redigerbare |
-| `guide/index.html` | **guiden** — åpne i nettleser; avkryssing lagres lokalt |
+| `guide/index.html` | **guiden** — faneinndelt app: Plan (klar-status per steg), Paldex (huk av alt du eier), Mål (fremdrift per pal), Drift, Kilder |
+| `guide/artifact.html` | samme guide som én frittstående fil (alt innbakt) — genereres med `--embed` |
 | `guide/icons/` | 298 ekte spillikoner (github.com/dbgoodm/PalDex, game-dump) |
+| `guide/fonts/` | Baloo 2 + Manrope, subsettet woff2 (OFL, via google/fonts) |
 | `data/breeding_1_0.json` | CombiRanks, 134 unike + 2 kjønnsavhengige kombos, pulje-eksklusjoner |
 | `data/pals_1_0.json` | stats, arbeidsnivåer, partner skills, spawn-info per art |
 | `data/oracle_pairs.json.gz` | fasit: alle 44 851 1.0-resultater (palcalc, generert fra spillfilene) |
@@ -46,6 +48,13 @@ tie-break til høyeste CombiRank) er **replikert mot alle 44 851
 forhåndsberegnede 1.0-resultater** fra palcalc — null avvik — og kryssjekket
 av 8 uavhengige research-agenter (se `data/verification.json`).
 Katress+Wixen er spillets eneste kjønnsavhengige par og håndteres eksplisitt.
+
+## Guiden som app
+
+Avkryssede steg og Paldex-eierskap lagres i nettleseren og henger sammen:
+et steg lyser **«klar nå»** når begge foreldrene finnes blant det du eier
+eller har bredd, målkortene viser fremdrift per art, og «Kopier roster»
+eksporterer eierskapslisten rett inn i `roster.txt`-format.
 
 ## Teknologivalg
 
