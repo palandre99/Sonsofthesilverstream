@@ -1,97 +1,259 @@
 {
- "checked": "2026-08-14 · 8 parallel research agents, ~240 searches/lookups against independent sources + code review of palcalc and the game's raw tables",
+ "checked": "2026-08-14",
  "claims": [
-  {"claim": "Species formula: the child is the species with CombiRank closest to ⌊(rankA+rankB+1)/2⌋",
+  {
+   "claim": "Species formula: the child is the species with CombiRank closest to ⌊(rankA+rankB+1)/2⌋",
    "verdict": "confirmed",
    "evidence": "Verified at code level in palcalc (open-source solver generated from the game files) and replayed here against all 44,851 precomputed 1.0 results with zero mismatches.",
-   "sources": ["github.com/tylercamp/palcalc", "paldb.gg/guides/breeding", "palworld.wiki.gg/wiki/Breeding"]},
-  {"claim": "Tie-break: on an exact tie the higher CombiRank wins (a 1.0 change)",
+   "sources": [
+    "github.com/tylercamp/palcalc",
+    "paldb.gg/guides/breeding",
+    "palworld.wiki.gg/wiki/Breeding"
+   ]
+  },
+  {
+   "claim": "Tie-break: on an exact tie the higher CombiRank wins (a 1.0 change)",
    "verdict": "confirmed",
    "evidence": "All 14,021 tie pairs in the 1.0 oracle resolve to the higher rank (0 exceptions); the game field CombiDuplicatePriority = CombiRank×100. Old wiki text ('lowest index') is stale Early Access wording. Also matches the player test Turtacle+Aegidron→Nitemary.",
-   "sources": ["github.com/tylercamp/palcalc", "palbreed.org/breeding-guide", "paldb.gg/guides/breeding"]},
-  {"claim": "Unique-recipe children are excluded from the generic pool (183 species remain)",
+   "sources": [
+    "github.com/tylercamp/palcalc",
+    "palbreed.org/breeding-guide",
+    "paldb.gg/guides/breeding"
+   ]
+  },
+  {
+   "claim": "Unique-recipe children are excluded from the generic pool (183 species remain)",
    "verdict": "confirmed",
    "evidence": "palcalc filters every DT_PalCombiUnique child out of the pool; with this model all 44,851 results match, without it 14,699 pairs mispredict. palworld.gg's ignoreCombi-39 model is wrong for 1.0.",
-   "sources": ["github.com/tylercamp/palcalc", "game8.co/games/Palworld/archives/441856"]},
-  {"claim": "Katress+Wixen is the game's only gender-dependent pair",
+   "sources": [
+    "github.com/tylercamp/palcalc",
+    "game8.co/games/Palworld/archives/441856"
+   ]
+  },
+  {
+   "claim": "Katress+Wixen is the game's only gender-dependent pair",
    "verdict": "confirmed",
    "evidence": "Exactly 2 gender-specific rows out of 44,851: female Katress + male Wixen → Katress Ignis; female Wixen + male Katress → Wixen Noct.",
-   "sources": ["github.com/tylercamp/palcalc", "game8.co/games/Palworld/archives/459275"]},
-  {"claim": "Same species + same species always yields that species",
+   "sources": [
+    "github.com/tylercamp/palcalc",
+    "game8.co/games/Palworld/archives/459275"
+   ]
+  },
+  {
+   "claim": "Same species + same species always yields that species",
    "verdict": "confirmed",
    "evidence": "Short-circuits in the game code before any other logic; 299/299 self-pairs in the oracle confirm it.",
-   "sources": ["github.com/tylercamp/palcalc", "palsphere.app/breeding"]},
-  {"claim": "\"164 unique combinations\" (the paldb view)",
+   "sources": [
+    "github.com/tylercamp/palcalc",
+    "palsphere.app/breeding"
+   ]
+  },
+  {
+   "claim": "\"164 unique combinations\" (the paldb view)",
    "verdict": "plausible",
    "evidence": "The game's raw table has 258 rows in total (many redundant X+X=X rows and event content). The 136 cross rows match paldb exactly — those are what the plan uses (134 regular + 2 gender-dependent). \"164\" is paldb's display choice, not wrong data.",
-   "sources": ["github.com/Awy64/palworld-atlas-data", "paldb.cc/en/Breeding_Farm"]},
-  {"claim": "The EA recipes for Lyleen, Grizzbolt, Faleris, Orserk and Shadowbeak were removed in 1.0",
+   "sources": [
+    "github.com/Awy64/palworld-atlas-data",
+    "paldb.cc/en/Breeding_Farm"
+   ]
+  },
+  {
+   "claim": "The EA recipes for Lyleen, Grizzbolt, Faleris, Orserk and Shadowbeak were removed in 1.0",
    "verdict": "confirmed",
    "evidence": "Verified against the game's raw table using internal IDs: none of the five old pairs exist; all five species only have a self-pair row. (Mossanda+Grizzbolt=Mossanda Lux was kept, though.)",
-   "sources": ["github.com/Awy64/palworld-atlas-data", "allthings.how"]},
-  {"claim": "Condenser 1.0: 48 copies to 4★, split 4/8/12/24",
+   "sources": [
+    "github.com/Awy64/palworld-atlas-data",
+    "allthings.how"
+   ]
+  },
+  {
+   "claim": "Condenser 1.0: 48 copies to 4★, split 4/8/12/24",
    "verdict": "confirmed",
    "evidence": "Patch-note recaps and several independent guides confirm 116→48; the per-star split matches the in-game player measurement. Note: Starfruit (Dog Coins) can substitute for copies.",
-   "sources": ["nodecraft.com", "palworld.wiki.gg", "player measurement 2026-07-20"]},
-  {"claim": "Stars: +1 work suitability per star, 4★ raises all, partner skill = stars+1",
+   "sources": [
+    "nodecraft.com",
+    "palworld.wiki.gg",
+    "player measurement 2026-07-20"
+   ]
+  },
+  {
+   "claim": "Stars: +1 work suitability per star, 4★ raises all, partner skill = stars+1",
    "verdict": "confirmed",
    "evidence": "Confirmed in patch notes and wiki — but the 'best job first' order at intermediate stars is NOT confirmed anywhere; the game only says 'one of its suitabilities'.",
-   "sources": ["minestrator.com", "palworld.wiki.gg", "game8.co"]},
-  {"claim": "Cake tiers: Cake 17 / Mushroom 30 / Vegetable 47 / Extravagant 60 / Special 74",
+   "sources": [
+    "minestrator.com",
+    "palworld.wiki.gg",
+    "game8.co"
+   ]
+  },
+  {
+   "claim": "Cake tiers: Cake 17 / Mushroom 30 / Vegetable 47 / Extravagant 60 / Special 74",
    "verdict": "confirmed",
    "evidence": "Tech levels, stations and effects confirmed by several sources (one outlier on the Special tier; the majority says 74).",
-   "sources": ["keengamer.com", "nodecraft.com", "game8.co", "fextralife"]},
-  {"claim": "Mutation chance: ~1% base, ~3% with Extravagant Vegetable Cake",
+   "sources": [
+    "keengamer.com",
+    "nodecraft.com",
+    "game8.co",
+    "fextralife"
+   ]
+  },
+  {
+   "claim": "Mutation chance: ~1% base, ~3% with Extravagant Vegetable Cake",
    "verdict": "confirmed",
    "evidence": "Confirmed — but the Vegetable Cake does NOT give 2% per egg: it gives 2 eggs at 1% each (≈2% per cycle). The earlier session's figure was imprecise on this point.",
-   "sources": ["palmods.gg", "palsphere.app", "game8.co"]},
-  {"claim": "Mutant eggs: hatch as Alpha with 2★, IVs ~91–100, at least 2 rainbow passives",
+   "sources": [
+    "palmods.gg",
+    "palsphere.app",
+    "game8.co"
+   ]
+  },
+  {
+   "claim": "Mutant eggs: hatch as Alpha with 2★, IVs ~91–100, at least 2 rainbow passives",
    "verdict": "confirmed",
    "evidence": "2★ and Alpha status confirmed; '4 passives, at least 2 rainbow' per the wiki (not all are mutation-exclusive); the 91–100 IV range is guide consensus, the wiki only says 'very high'.",
-   "sources": ["palworld.wiki.gg", "game8.co"]},
-  {"claim": "The 5 rainbow passives: Immortality, Idiosyncratic, Babysitter, Heavily Armored, Skymarcher",
+   "sources": [
+    "palworld.wiki.gg",
+    "game8.co"
+   ]
+  },
+  {
+   "claim": "The 5 rainbow passives: Immortality, Idiosyncratic, Babysitter, Heavily Armored, Skymarcher",
    "verdict": "confirmed",
    "evidence": "The exact same five on the wiki, game8 and paldb; 'Skirmisher' does not exist. They can be inherited onward through normal breeding once a parent has them.",
-   "sources": ["palworld.wiki.gg", "game8.co", "paldb.cc/en/Mutation"]},
-  {"claim": "Work suitability goes to 10 with exponential scaling (Lv5=400 … Lv10=5400)",
+   "sources": [
+    "palworld.wiki.gg",
+    "game8.co",
+    "paldb.cc/en/Mutation"
+   ]
+  },
+  {
+   "claim": "Work suitability goes to 10 with exponential scaling (Lv5=400 … Lv10=5400)",
    "verdict": "confirmed",
    "evidence": "The Handiwork value table (50/80/140/240/400/680/1100/1900/3200/5400) confirmed by several independent sources.",
-   "sources": ["nodecraft.com", "palworld.wiki.gg", "thepalprofessor.com"]},
-  {"claim": "Pal Surgery Table (tech 38): implant passives for gold, implants not consumed",
+   "sources": [
+    "nodecraft.com",
+    "palworld.wiki.gg",
+    "thepalprofessor.com"
+   ]
+  },
+  {
+   "claim": "Pal Surgery Table (tech 38): implant passives for gold, implants not consumed",
    "verdict": "confirmed",
    "evidence": "Tech 38 confirmed; 10–50k gold per operation depending on rarity; standard implants are reusable (1.0 also has disposable implants from World Tree relics).",
-   "sources": ["palworld.wiki.gg", "datmodz"]},
-  {"claim": "The Pal Reverser swaps gender",
+   "sources": [
+    "palworld.wiki.gg",
+    "datmodz"
+   ]
+  },
+  {
+   "claim": "The Pal Reverser swaps gender",
    "verdict": "confirmed",
    "evidence": "An item (not a station) used at the operating table; consumed on use; bought with Bounty Tokens / Battle Tickets and more.",
-   "sources": ["gamespot.com", "palworld.wiki.gg", "paldb.cc"]},
-  {"claim": "IV inheritance: 30% father / 30% mother / 40% random per stat",
+   "sources": [
+    "gamespot.com",
+    "palworld.wiki.gg",
+    "paldb.cc"
+   ]
+  },
+  {
+   "claim": "IV inheritance: 30% father / 30% mother / 40% random per stat",
    "verdict": "confirmed",
    "evidence": "Confirmed by several sources incl. the arithmetic 0.6³ ≈ 21.6% for triple-100 with two perfect parents.",
-   "sources": ["palworld.wiki.gg", "game8.co", "steam community"]},
-  {"claim": "Passive inheritance ~24% male / ~20% female per slot",
+   "sources": [
+    "palworld.wiki.gg",
+    "game8.co",
+    "steam community"
+   ]
+  },
+  {
+   "claim": "Passive inheritance ~24% male / ~20% female per slot",
    "verdict": "plausible",
    "evidence": "All sources cite the same small EA-era dataset (~100 eggs); datamining suggests a different underlying mechanism (pooled draw). The direction 'male inherits more often' holds.",
-   "sources": ["game8.co", "various (same origin)"]},
-  {"claim": "\"10 species have no wild spawns\" (from the earlier session)",
+   "sources": [
+    "game8.co",
+    "various (same origin)"
+   ]
+  },
+  {
+   "claim": "\"10 species have no wild spawns\" (from the earlier session)",
    "verdict": "contradicted",
    "evidence": "DEBUNKED: all ten (Solenne, Renjishi, Univolt Cryst, Mycora, Venusa etc.) can be caught in the World Tree region (lvl 75+) as regular spawns or field bosses. 1.0 removed the breed-only category. At lvl 44, breeding is still the realistic route.",
-   "sources": ["game8.co", "palmods.gg", "mobalytics.gg"]},
-  {"claim": "Astralym cannot be obtained in 1.0",
+   "sources": [
+    "game8.co",
+    "palmods.gg",
+    "mobalytics.gg"
+   ]
+  },
+  {
+   "claim": "Astralym cannot be obtained in 1.0",
    "verdict": "confirmed",
    "evidence": "Story boss; cannot be caught, does not exist as an alpha, and is not a reward.",
-   "sources": ["game8.co", "palmods.gg"]},
-  {"claim": "All 12 aura pals (+1 work suitability to the base) check out",
+   "sources": [
+    "game8.co",
+    "palmods.gg"
+   ]
+  },
+  {
+   "claim": "All 12 aura pals (+1 work suitability to the base) check out",
    "verdict": "confirmed",
    "evidence": "All twelve confirmed per species (Ribbuny, Tetroise, Wumpo, Amione, Cinnamoth, Clovee, Eikthyrdeer Terra, Katress Ignis, Mycora, Petallia, Puffolt, Smokie Cryst). Never buffs the carrier, does not stack, works from the base. Oil Extraction has no aura.",
-   "sources": ["palmods.gg", "op.gg", "game8.co", "palworld.wiki.gg"]},
-  {"claim": "Sekhmet boosts Anubis; Braloha speeds up eggs; Dynamoff cuts incubation time",
+   "sources": [
+    "palmods.gg",
+    "op.gg",
+    "game8.co",
+    "palworld.wiki.gg"
+   ]
+  },
+  {
+   "claim": "Sekhmet boosts Anubis; Braloha speeds up eggs; Dynamoff cuts incubation time",
    "verdict": "confirmed",
    "evidence": "Sekhmet's real skill is 'Desert Empress': Anubis work speed +20–40% (+ own workbench bonus). Braloha 'Balmy Weather': egg production +20–50%. Dynamoff 'Electro-Massage Incubation': incubation −20–40%.",
-   "sources": ["game8.co", "op.gg", "palworld.wiki.gg"]},
-  {"claim": "Level cap 80; Breeding Farm tech 19; 299 species total",
+   "sources": [
+    "game8.co",
+    "op.gg",
+    "palworld.wiki.gg"
+   ]
+  },
+  {
+   "claim": "Level cap 80; Breeding Farm tech 19; 299 species total",
    "verdict": "confirmed",
    "evidence": "Level cap 65→80 confirmed. Breeding Farm tech 19 (2 tech points). Species count: 287 Paldeck entries + the Terraria crossover (Sealed Realm of Terraria dungeon, all rank 3100) ≈ the dataset's 299; Astralym is unobtainable.",
-   "sources": ["keengamer.com", "games.gg", "game8.co", "xgamingserver.com"]}
+   "sources": [
+    "keengamer.com",
+    "games.gg",
+    "game8.co",
+    "xgamingserver.com"
+   ]
+  },
+  {
+   "claim": "Passive inheritance count is weighted 40/30/20/10 for drawing 1/2/3/4 passives from the parents' combined de-duplicated pool",
+   "verdict": "confirmed",
+   "evidence": "GameSettings.PassiveInheritNum = [4,3,2,1], read from the game files by palcalc's DB generator (PalCalc.GenDB/BuildDBProgram.cs, PalCalc.Model/db.json). Matches palworld.wiki.gg/Breeding's published mechanic."
+  },
+  {
+   "claim": "Random extra passives are an independent roll weighted 40/30/20/10 for adding 0/1/2/3 new passives, capped at 4 total slots",
+   "verdict": "confirmed",
+   "evidence": "GameSettings.PassiveRandomAddNum = [4,3,2,1] over 0..3 (same source). The engine's closed-form model built on these weights reproduces the community's measured 40/24/12/10 clean-inheritance table exactly (app/tests/odds.test.ts) and matches a 200k-egg Monte Carlo simulation."
+  },
+  {
+   "claim": "IV/talent inheritance takes 1/2/3 stat categories from the parents with weights 3/2/1 (50%/33.3%/16.7%); at least one is always inherited; each inherited category picks mother or father 50/50",
+   "verdict": "confirmed",
+   "evidence": "GameSettings.TalentInheritNum = [3,2,1] (same game-file source); community's '30/30/40 per stat' model (Austin John Gaming testing, palworld.wiki.gg) is the same distribution seen per-category."
+  },
+  {
+   "claim": "Vegetable Cake gives 2 eggs per cycle at the base ~1% mutation rate each (a throughput gain, not a 2% rate); Extravagant Vegetable Cake raises mutation to ~3% per egg",
+   "verdict": "plausible",
+   "evidence": "paldb.cc/en/Mutation (2026-07-18) and in-game item descriptions. The game's DA_BreedingItemEffectData table has not been published field-by-field, so cake numbers are community-measured, not datamined."
+  },
+  {
+   "claim": "Special Cake overrides the number of passives drawn from the parents (reported up to 6 carried)",
+   "verdict": "plausible",
+   "evidence": "In-game item description ('more likely to inherit multiple passive skills') + PassiveInheritCountOverride field name visible in palcalc's notes on DA_BreedingItemEffectData; exact override value not published."
+  },
+  {
+   "claim": "Five mutation-exclusive passives exist (Immortality, Idiosyncratic, Babysitter, Heavily Armored, Skymarcher); once obtained they are inheritable like normal passives",
+   "verdict": "confirmed",
+   "evidence": "paldb.cc/en/Mutation lists all five with inheritability; cross-checked against beliarance/palworld-kb passives dataset (mutation_exclusive flags)."
+  }
  ]
 }

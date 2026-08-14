@@ -7,6 +7,7 @@ import { CalculatorPage } from './modules/calculator';
 import { PaldexPage } from './modules/paldex';
 import { BoxPage } from './modules/box';
 import { PlanPage } from './modules/plan';
+import { OddsPage } from './modules/odds';
 import { ReferencePage } from './modules/misc';
 
 const Logo = () => (
@@ -24,11 +25,13 @@ const icons = {
   paldex: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9" /><path d="M3 12h6m6 0h6" /><circle cx="12" cy="12" r="3" /></svg>,
   box: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 8l8-4 8 4v8l-8 4-8-4Z" stroke-linejoin="round" /><path d="M4 8l8 4 8-4M12 12v8" /></svg>,
   ref: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H5Z" stroke-linejoin="round" /><path d="M19 4h-5a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h6Z" stroke-linejoin="round" /></svg>,
+  odds: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10m5 10V4m5 16v-7m5 7V8" stroke-linecap="round" /></svg>,
 };
 
 const NAV = [
   { hash: 'calc', label: 'Calculator', icon: icons.calc, match: 'calc' },
   { hash: 'plan', label: 'Route Planner', icon: icons.plan, match: 'plan' },
+  { hash: 'odds', label: 'Odds Lab', icon: icons.odds, match: 'odds' },
   { hash: 'paldex', label: 'Paldex', icon: icons.paldex, match: 'paldex' },
   { hash: 'box', label: 'My Box', icon: icons.box, match: 'box' },
   { hash: 'reference', label: 'Reference', icon: icons.ref, match: 'reference' },
@@ -73,6 +76,7 @@ export function App() {
           page === 'paldex' ? <PaldexPage /> :
           page === 'box' ? <BoxPage /> :
           page === 'plan' ? <PlanPage /> :
+          page === 'odds' ? <OddsPage /> :
           <ReferencePage />
         )}
       </main>

@@ -29,6 +29,7 @@ const breeding = readJson('breeding_1_0.json');
 const palsJson = readJson('pals_1_0.json');
 const iconMap = readJson('icon_map.json');
 const verification = readJson('verification.json');
+const passives = readJson('passives_1_0.json');
 
 const icons = {};
 for (const [name, file] of Object.entries(iconMap.files)) {
@@ -36,7 +37,7 @@ for (const [name, file] of Object.entries(iconMap.files)) {
   icons[name] = `data:image/png;base64,${b64}`;
 }
 
-const embed = JSON.stringify({ breeding, pals: palsJson, icons, verification })
+const embed = JSON.stringify({ breeding, pals: palsJson, icons, verification, passives })
   .replace(/</g, '\\u003c');
 
 const html = `<!doctype html>

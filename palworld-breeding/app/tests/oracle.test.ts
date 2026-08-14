@@ -22,17 +22,37 @@ const engine = new BreedingEngine(data);
 const known = new Set(engine.species);
 
 describe('oracle replay', () => {
-  it('reproduces all 44,851 game-file results with zero mismatches', () => {
+  it('reproduces every game-file result with zero mismatches and zero skips', () => {
     let ok = 0;
+    let skipped = 0;
     const bad: string[] = [];
     for (const [a, b, c] of oracle.rows) {
-      if (!known.has(a) || !known.has(b)) continue;
+      if (!known.has(a) || !known.has(b)) {
+        skipped++;
+        continue;
+      }
       const got = engine.childrenOf(a, b).map((x) => x.species);
       if (got.includes(c)) ok++;
       else bad.push(`${a} + ${b}: oracle ${c}, engine ${got.join('/')}`);
     }
+    // the first ten make a readable failure message...
     expect(bad.slice(0, 10)).toEqual([]);
-    expect(ok).toBeGreaterThanOrEqual(44000);
+    // ...and this is the gate: not one row may mismatch or be quietly skipped
+    expect(bad.length).toBe(0);
+    expect(skipped).toBe(0);
+    expect(ok).toBe(oracle.rows.length);
+    expect(ok).toBe(44851);
+  });
+
+  it('is symmetric — parent order never changes the outcome', () => {
+    for (const [a, b] of oracle.rows) {
+      const ab = engine.childrenOf(a, b).map((x) => x.species).sort();
+      const ba = engine.childrenOf(b, a).map((x) => x.species).sort();
+      if (ab.join() !== ba.join()) {
+        throw new Error(`asymmetric: ${a} + ${b} -> ${ab.join('/')} vs ${ba.join('/')}`);
+      }
+    }
+    expect(true).toBe(true);
   });
 
   it('flags the tie-break case and resolves it upward', () => {
@@ -52,10 +72,12 @@ describe('oracle replay', () => {
 
   it('never produces an excluded species from the generic formula', () => {
     const excluded = new Set(data.excluded_from_generic_pool);
-    for (const [a, b] of oracle.rows.slice(0, 2000)) {
+    const leaked = new Set<string>();
+    for (const [a, b] of oracle.rows) {
       const ch = engine.childOf(a, b);
-      if (ch.kind === 'generic') expect(excluded.has(ch.species)).toBe(false);
+      if (ch.kind === 'generic' && excluded.has(ch.species)) leaked.add(ch.species);
     }
+    expect([...leaked]).toEqual([]);
   });
 });
 

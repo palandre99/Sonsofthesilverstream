@@ -1,0 +1,1369 @@
+{
+ "game_version": "1.0",
+ "extracted": "2026-08-14",
+ "source": {
+  "dataset": "github.com/beliarance/palworld-kb data/passives.json",
+  "dataset_updated": "2026-07-14",
+  "upstream": [
+   {
+    "url": "https://paldb.cc/en/Passive_Skills",
+    "what": "primary: full 114-passive 1.0 list with ranks, effect values, weights, pool tags, native/exclusive pal links (+ extended 298-entry gear/NPC tab, excluded)",
+    "fetched": "2026-07-14"
+   },
+   {
+    "url": "https://palworld.gg/passive-skills",
+    "what": "cross-check: 58 passives with rank + effect text; 54 overlap, 0 numeric conflicts",
+    "fetched": "2026-07-14"
+   },
+   {
+    "url": "https://xgamingserver.com/blog/palworld-mutations-guide/",
+    "what": "checked for mutation-exclusive passive names; confirms mutated pals get a unique passive but names not listed",
+    "fetched": "2026-07-14"
+   }
+  ],
+  "tier_scale": "paldb.cc rank: -3..-1 detrimental, 1..4 positive, 5 = new 1.0 'World Tree' gold tier (weight 5, not in wild random pool)"
+ },
+ "passives": [
+  {
+   "name": "Demon's Hand",
+   "tier": 5,
+   "category": "work",
+   "effects": "Work Speed +90%, SAN dreceases +15.0% faster, World Tree harvestables won't vanish when approached.",
+   "breedable": true,
+   "breedable_known": false,
+   "mutation_exclusive": false,
+   "world_tree": true,
+   "exclusive_to": []
+  },
+  {
+   "name": "Dimensional Leap",
+   "tier": 5,
+   "category": "mount",
+   "effects": "Movement Speed +50%, Increases Hunger depletion rate by +15.0%, World Tree resources will not vanish when approached.",
+   "breedable": true,
+   "breedable_known": false,
+   "mutation_exclusive": false,
+   "world_tree": true,
+   "exclusive_to": []
+  },
+  {
+   "name": "God of Destruction",
+   "tier": 5,
+   "category": "combat",
+   "effects": "Attack +40%, Defense +20%, Max Health -50%, World Tree resources will not vanish when approached.",
+   "breedable": true,
+   "breedable_known": false,
+   "mutation_exclusive": false,
+   "world_tree": true,
+   "exclusive_to": []
+  },
+  {
+   "name": "Hermit Sage",
+   "tier": 5,
+   "category": "work",
+   "effects": "SAN depletion rate -50.0%, Work Speed -20%, World Tree resources will not vanish when approached.",
+   "breedable": true,
+   "breedable_known": false,
+   "mutation_exclusive": false,
+   "world_tree": true,
+   "exclusive_to": []
+  },
+  {
+   "name": "Sanctified Meat Shield",
+   "tier": 5,
+   "category": "combat",
+   "effects": "Defense +50%, Attack -30%, World Tree resources will not vanish when approached.",
+   "breedable": true,
+   "breedable_known": false,
+   "mutation_exclusive": false,
+   "world_tree": true,
+   "exclusive_to": []
+  },
+  {
+   "name": "Twin-Edged Holy Blade",
+   "tier": 5,
+   "category": "combat",
+   "effects": "Attack +50%, Defense -30%, World Tree resources will not vanish when approached.",
+   "breedable": true,
+   "breedable_known": false,
+   "mutation_exclusive": false,
+   "world_tree": true,
+   "exclusive_to": []
+  },
+  {
+   "name": "World Tree Seedbed",
+   "tier": 5,
+   "category": "work",
+   "effects": "Decrease Hunger depletion rate by +50.0%, HP -20%, World Tree resources will not vanish when approached.",
+   "breedable": true,
+   "breedable_known": false,
+   "mutation_exclusive": false,
+   "world_tree": true,
+   "exclusive_to": []
+  },
+  {
+   "name": "Babysitter",
+   "tier": 4,
+   "category": "work",
+   "effects": "While at a base, increases egg production speed by +30% and incubation speed by +30% for Pals assigned to a Breeding Farm.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": true,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Demon God",
+   "tier": 4,
+   "category": "combat",
+   "effects": "Attack +30%, Defense +5%",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Diamond Body",
+   "tier": 4,
+   "category": "combat",
+   "effects": "Defense +30%, Immune to Flinch, Immune to Knockback",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Eternal Engine",
+   "tier": 4,
+   "category": "mount",
+   "effects": "Max stamina +75%, *This effect is only valid for rideable pals.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Eternal Flame",
+   "tier": 4,
+   "category": "combat",
+   "effects": "30% increase to Fire attack damage., 30% increase to Lightning attack damage.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": [
+    "Blazamut Ryu"
+   ]
+  },
+  {
+   "name": "Heart of the Immovable King",
+   "tier": 4,
+   "category": "work",
+   "effects": "SAN drops +20.0% slower.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Heavily Armored",
+   "tier": 4,
+   "category": "combat",
+   "effects": "Immune to Explosion Damage",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": true,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Idiosyncratic",
+   "tier": 4,
+   "category": "combat",
+   "effects": "Pal and Player Auto Health Regeneration Rate +50%, Defense +25%, Immune to Poison Damage, Immune to Burn Damage",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": true,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Immortality",
+   "tier": 4,
+   "category": "combat",
+   "effects": "Life Steal +5%, Pal Auto Health Regeneration Rate +100%, Attack +15%",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": true,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Invader",
+   "tier": 4,
+   "category": "combat",
+   "effects": "30% increase in Dark attack damage., 30% increase in Dragon attack damage.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": [
+    "Xenolord"
+   ]
+  },
+  {
+   "name": "King of the Waves",
+   "tier": 4,
+   "category": "mount",
+   "effects": "50% increase movement speed on water.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Lavish Hospitality",
+   "tier": 4,
+   "category": "utility",
+   "effects": "Your Dropped Items + 100%",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Legend",
+   "tier": 4,
+   "category": "mixed",
+   "effects": "Attack +20%, Defense +20%, Movement Speed increases 20%",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": [
+    "Paladius",
+    "Necromus",
+    "Frostallion",
+    "Frostallion Noct",
+    "Neptilius",
+    "Jetragon"
+   ]
+  },
+  {
+   "name": "Lightfooted",
+   "tier": 4,
+   "category": "mount",
+   "effects": "Mounted Jump Count +1",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Lucky",
+   "tier": 4,
+   "category": "mixed",
+   "effects": "Attack +15%, Defense +15%, Work Speed +20%",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Lunker",
+   "tier": 4,
+   "category": "combat",
+   "effects": "20% increase to Water attack damage, 20% increase to Ice attack damage, 20% increase to defense.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": [
+    "Neptilius"
+   ]
+  },
+  {
+   "name": "Mastery of Fasting",
+   "tier": 4,
+   "category": "work",
+   "effects": "Hunger decreases +20.0% slower.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Ranch Master",
+   "tier": 4,
+   "category": "work",
+   "effects": "Farming's Work Suitability +2",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Remarkable Craftsmanship",
+   "tier": 4,
+   "category": "work",
+   "effects": "Work Speed +75%",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Savior",
+   "tier": 4,
+   "category": "combat",
+   "effects": "30% increase in Neutral attack damage., 30% increase in Grass attack damage.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": [
+    "Hartalis"
+   ]
+  },
+  {
+   "name": "Siren of the Void",
+   "tier": 4,
+   "category": "combat",
+   "effects": "30% increase in Dark attack damage., 30% increase in Ice attack damage.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": [
+    "Bellanoir Libero"
+   ]
+  },
+  {
+   "name": "Skymarcher",
+   "tier": 4,
+   "category": "mount",
+   "effects": "Mounted Jump Count +2",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": true,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Swift",
+   "tier": 4,
+   "category": "mount",
+   "effects": "30% increase to movement speed.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Vampiric",
+   "tier": 4,
+   "category": "mixed",
+   "effects": "Absorbs a portion of the damage dealt to restore Health., Does not sleep at night and continues to work.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Ace Swimmer",
+   "tier": 3,
+   "category": "mount",
+   "effects": "40% increase movement speed on water.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Artisan",
+   "tier": 3,
+   "category": "work",
+   "effects": "Work Speed +50%",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Burly Body",
+   "tier": 3,
+   "category": "combat",
+   "effects": "Defense +20%, Immune to Flinch",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Celestial Emperor",
+   "tier": 3,
+   "category": "combat",
+   "effects": "30% increase in Neutral attack damage.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": [
+    "Paladius"
+   ]
+  },
+  {
+   "name": "Diet Lover",
+   "tier": 3,
+   "category": "work",
+   "effects": "Hunger decreases +15.0% slower.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Divine Dragon",
+   "tier": 3,
+   "category": "combat",
+   "effects": "30% increase in Dragon attack damage.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": [
+    "Jetragon"
+   ]
+  },
+  {
+   "name": "Earth Emperor",
+   "tier": 3,
+   "category": "combat",
+   "effects": "30% increase in Earth attack damage.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": [
+    "Anubis"
+   ]
+  },
+  {
+   "name": "Farmhand",
+   "tier": 3,
+   "category": "work",
+   "effects": "Farming's Work Suitability +1",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Ferocious",
+   "tier": 3,
+   "category": "combat",
+   "effects": "Attack +20%",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Flame Emperor",
+   "tier": 3,
+   "category": "combat",
+   "effects": "30% increase in Fire attack damage.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": [
+    "Blazamut"
+   ]
+  },
+  {
+   "name": "Healing Coach",
+   "tier": 3,
+   "category": "utility",
+   "effects": "Player Auto Health Regeneration Rate +5%",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Ice Emperor",
+   "tier": 3,
+   "category": "combat",
+   "effects": "30% increase in Ice attack damage.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": [
+    "Frostallion"
+   ]
+  },
+  {
+   "name": "Infinite Stamina",
+   "tier": 3,
+   "category": "mount",
+   "effects": "Max stamina +50%, *This effect is only valid for rideable pals.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Logging Foreman",
+   "tier": 3,
+   "category": "work",
+   "effects": "25% increase in Player Logging Efficiency.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Lord of Lightning",
+   "tier": 3,
+   "category": "combat",
+   "effects": "30% increase in Lightning attack damage.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": [
+    "Orserk"
+   ]
+  },
+  {
+   "name": "Lord of the Sea",
+   "tier": 3,
+   "category": "combat",
+   "effects": "30% increase in Water attack damage.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": [
+    "Jormuntide"
+   ]
+  },
+  {
+   "name": "Lord of the Underworld",
+   "tier": 3,
+   "category": "combat",
+   "effects": "30% increase in Dark attack damage.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": [
+    "Necromus",
+    "Frostallion Noct"
+   ]
+  },
+  {
+   "name": "Mine Foreman",
+   "tier": 3,
+   "category": "work",
+   "effects": "25% increase in Player Mining Efficiency.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Motivational Leader",
+   "tier": 3,
+   "category": "work",
+   "effects": "25% increase in Player Work Speed.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Noble",
+   "tier": 3,
+   "category": "utility",
+   "effects": "Increases the value of items when sold by +5%",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Philanthropist",
+   "tier": 3,
+   "category": "work",
+   "effects": "When assigned to a Breeding Farm, breeding speed is increased by 100%.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Reload Master",
+   "tier": 3,
+   "category": "combat",
+   "effects": "Player Reload Speed +4%",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Runner",
+   "tier": 3,
+   "category": "mount",
+   "effects": "20% increase to movement speed.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Serenity",
+   "tier": 3,
+   "category": "combat",
+   "effects": "Active skill cooldown reduction 30%, Attack +10%",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Service-Minded",
+   "tier": 3,
+   "category": "utility",
+   "effects": "Your Dropped Items + 50%",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Spirit Emperor",
+   "tier": 3,
+   "category": "combat",
+   "effects": "30% increase in Grass attack damage.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": [
+    "Lyleen"
+   ]
+  },
+  {
+   "name": "Stronghold Strategist",
+   "tier": 3,
+   "category": "combat",
+   "effects": "10% increase in Player Defense.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Vanguard",
+   "tier": 3,
+   "category": "combat",
+   "effects": "10% increase in Player Attack.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Wellness Watcher",
+   "tier": 3,
+   "category": "utility",
+   "effects": "Player Stamina Consumption -5.0%",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Workaholic",
+   "tier": 3,
+   "category": "work",
+   "effects": "SAN drops +15.0% slower.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Heavyweight",
+   "tier": 2,
+   "category": "combat",
+   "effects": "Defense +20%, Immune to Knockback",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": [],
+   "native_pals": [
+    "Kingpaca",
+    "Kingpaca Cryst",
+    "Mammorest",
+    "Mammorest Cryst",
+    "Broncherry",
+    "Broncherry Aqua",
+    "Braloha",
+    "Reptyro",
+    "Reptyro Cryst",
+    "Pierdon",
+    "Pierdon Cryst",
+    "Wumpo",
+    "Wumpo Botan",
+    "Dualith",
+    "Dualith Noct",
+    "Knocklem",
+    "Knocklem Ignis",
+    "Silvegis",
+    "Aegidron"
+   ]
+  },
+  {
+   "name": "Musclehead",
+   "tier": 2,
+   "category": "combat",
+   "effects": "Attack +30%, Work Speed -50%",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Abnormal",
+   "tier": 1,
+   "category": "combat",
+   "effects": "10% decrease in incoming Neutral damage.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": [],
+   "native_pals": [
+    "Lovander"
+   ]
+  },
+  {
+   "name": "Aggressive",
+   "tier": 1,
+   "category": "combat",
+   "effects": "Attack +10%, Defense -10%",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Blood of the Dragon",
+   "tier": 1,
+   "category": "combat",
+   "effects": "10% increase in Dragon attack damage.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Botanical Barrier",
+   "tier": 1,
+   "category": "combat",
+   "effects": "10% decrease in incoming Grass damage.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Brave",
+   "tier": 1,
+   "category": "combat",
+   "effects": "Attack +10%",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Capacitor",
+   "tier": 1,
+   "category": "combat",
+   "effects": "10% increase in Lightning attack damage.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Cheery",
+   "tier": 1,
+   "category": "combat",
+   "effects": "10% decrease in incoming Dark damage.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Coldblooded",
+   "tier": 1,
+   "category": "combat",
+   "effects": "10% increase in Ice attack damage.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Conceited",
+   "tier": 1,
+   "category": "work",
+   "effects": "Work Speed +10%, Defense -10%",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Dainty Eater",
+   "tier": 1,
+   "category": "work",
+   "effects": "Hunger decreases +10.0% slower.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Dragonkiller",
+   "tier": 1,
+   "category": "combat",
+   "effects": "10% decrease in incoming Dragon damage.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Earthquake Resistant",
+   "tier": 1,
+   "category": "combat",
+   "effects": "10% decrease in incoming Earth damage.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Fine Furs",
+   "tier": 1,
+   "category": "utility",
+   "effects": "Increases the value of items when sold by +3%",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Fit as a Fiddle",
+   "tier": 1,
+   "category": "mount",
+   "effects": "Max stamina +25%, *This effect is only valid for rideable pals.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Fragrant Foliage",
+   "tier": 1,
+   "category": "combat",
+   "effects": "10% increase in Grass attack damage.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Hard Skin",
+   "tier": 1,
+   "category": "combat",
+   "effects": "Defense +10%",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": [],
+   "native_pals": [
+    "Digtoise",
+    "Warsect",
+    "Warsect Terra",
+    "Astegon"
+   ]
+  },
+  {
+   "name": "Heated Body",
+   "tier": 1,
+   "category": "combat",
+   "effects": "10% decrease in incoming Ice damage.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Hooligan",
+   "tier": 1,
+   "category": "combat",
+   "effects": "Attack +15%, Work Speed -10%",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": [],
+   "native_pals": [
+    "Gorirat",
+    "Gorirat Terra"
+   ]
+  },
+  {
+   "name": "Hydromaniac",
+   "tier": 1,
+   "category": "combat",
+   "effects": "10% increase in Water attack damage.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Impatient",
+   "tier": 1,
+   "category": "combat",
+   "effects": "Active skill cooldown reduction 15%",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Insomnia",
+   "tier": 1,
+   "category": "work",
+   "effects": "Does not sleep and continues to work even at night.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Insulated Body",
+   "tier": 1,
+   "category": "combat",
+   "effects": "10% decrease in incoming Lightning damage.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Masochist",
+   "tier": 1,
+   "category": "combat",
+   "effects": "Defense +15%, Attack -15%",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Nimble",
+   "tier": 1,
+   "category": "mount",
+   "effects": "10% increase to movement speed.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Otherworldly Cells",
+   "tier": 1,
+   "category": "combat",
+   "effects": "Attack +10%, Fire damage reduction 15%, Lightning damage reduction 15%",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": [
+    "Xenovader",
+    "Xenogard",
+    "Xenolord"
+   ]
+  },
+  {
+   "name": "Positive Thinker",
+   "tier": 1,
+   "category": "work",
+   "effects": "SAN drops +10.0% slower.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Power of Gaia",
+   "tier": 1,
+   "category": "combat",
+   "effects": "10% increase in Earth attack damage.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Pyromaniac",
+   "tier": 1,
+   "category": "combat",
+   "effects": "10% increase in Fire attack damage.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Sadist",
+   "tier": 1,
+   "category": "combat",
+   "effects": "Attack +15%, Defense -15%",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": [],
+   "native_pals": [
+    "Splatterina"
+   ]
+  },
+  {
+   "name": "Serious",
+   "tier": 1,
+   "category": "work",
+   "effects": "Work Speed +20%",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Sleek Stroke",
+   "tier": 1,
+   "category": "mount",
+   "effects": "30% increase movement speed on water.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Spirit of Zen",
+   "tier": 1,
+   "category": "combat",
+   "effects": "10% increase in Neutral attack damage.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Suntan Lover",
+   "tier": 1,
+   "category": "combat",
+   "effects": "10% decrease in incoming Fire damage.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Veil of Darkness",
+   "tier": 1,
+   "category": "combat",
+   "effects": "10% increase in Dark attack damage.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Waterproof",
+   "tier": 1,
+   "category": "combat",
+   "effects": "10% decrease in incoming Water damage.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Work Slave",
+   "tier": 1,
+   "category": "work",
+   "effects": "Work Speed +30%, Attack -30%",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Clumsy",
+   "tier": -1,
+   "category": "detrimental",
+   "effects": "Work Speed -10%",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Coward",
+   "tier": -1,
+   "category": "detrimental",
+   "effects": "Attack -10%",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": [],
+   "native_pals": [
+    "Cattiva"
+   ]
+  },
+  {
+   "name": "Downtrodden",
+   "tier": -1,
+   "category": "detrimental",
+   "effects": "Defense -10%",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Easygoing",
+   "tier": -1,
+   "category": "detrimental",
+   "effects": "Active skill cooldown extension -15%",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Glutton",
+   "tier": -1,
+   "category": "detrimental",
+   "effects": "Hunger decreases +10.0% faster.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": [],
+   "native_pals": [
+    "Relaxaurus"
+   ]
+  },
+  {
+   "name": "Mercy Hit",
+   "tier": -1,
+   "category": "detrimental",
+   "effects": "Pacifist., Will not reduce the target's Health below 1.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": [],
+   "native_pals": [
+    "item: Ring of Mercy",
+    "item: Pal Tamers Glasses"
+   ]
+  },
+  {
+   "name": "Night Owl",
+   "tier": -1,
+   "category": "detrimental",
+   "effects": "Tends to nap through the day, due to being nocturnal.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Shabby",
+   "tier": -1,
+   "category": "detrimental",
+   "effects": "Decrease the value of items when sold by -10%",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Sickly",
+   "tier": -1,
+   "category": "detrimental",
+   "effects": "Max Stamina -25%, *This effect is only valid for rideable pals.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Unstable",
+   "tier": -1,
+   "category": "detrimental",
+   "effects": "SAN drops +10.0% faster.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Bottomless Stomach",
+   "tier": -2,
+   "category": "detrimental",
+   "effects": "Hunger decreases +15.0% faster.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Destructive",
+   "tier": -2,
+   "category": "detrimental",
+   "effects": "SAN drops +15.0% faster.",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Brittle",
+   "tier": -3,
+   "category": "detrimental",
+   "effects": "Defense -20%",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Pacifist",
+   "tier": -3,
+   "category": "detrimental",
+   "effects": "Attack -20%",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  },
+  {
+   "name": "Slacker",
+   "tier": -3,
+   "category": "detrimental",
+   "effects": "Work Speed -30%",
+   "breedable": true,
+   "breedable_known": true,
+   "mutation_exclusive": false,
+   "world_tree": false,
+   "exclusive_to": []
+  }
+ ]
+}

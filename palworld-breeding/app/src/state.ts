@@ -21,8 +21,28 @@ export interface PalInfo {
   egg_types: string[];
 }
 
+/** One entry of the 1.0 passive-skill database (data/passives_1_0.json). */
+export interface PassiveInfo {
+  name: string;
+  tier: number | null;
+  category: string;
+  effects: string;
+  /** false only where the source positively says it cannot be inherited */
+  breedable: boolean;
+  /** whether the source confirmed the breedable flag at all */
+  breedable_known: boolean;
+  /** only ever appears on a mutated pal first */
+  mutation_exclusive: boolean;
+  /** 1.0 gold "World Tree" tier — not in the wild random pool */
+  world_tree: boolean;
+  /** boss/legendary species that natively carry it */
+  exclusive_to: string[];
+  native_pals?: string[];
+}
+
 export const dataReady = signal(false);
 export const pals = signal<Record<string, PalInfo>>({});
+export const passives = signal<PassiveInfo[]>([]);
 export const iconFiles = signal<Record<string, string>>({});
 export let engine: BreedingEngine | null = null;
 export const breedingRaw = signal<BreedingData | null>(null);
@@ -100,16 +120,19 @@ export async function loadData(): Promise<void> {
   const emb = (window as unknown as { __HATCHLAB_EMBED?: {
     breeding: BreedingData; pals: { pals: Record<string, PalInfo> };
     icons: Record<string, string>; verification: { claims: never[] };
+    passives: { passives: PassiveInfo[] };
   } }).__HATCHLAB_EMBED;
-  const [breeding, palsJson, icons, verif] = emb
-    ? [emb.breeding, emb.pals, { files: emb.icons }, emb.verification]
+  const [breeding, palsJson, icons, verif, passivesJson] = emb
+    ? [emb.breeding, emb.pals, { files: emb.icons }, emb.verification, emb.passives]
     : await Promise.all([
         fetch('data/breeding_1_0.json').then((r) => r.json()) as Promise<BreedingData>,
         fetch('data/pals_1_0.json').then((r) => r.json()),
         fetch('data/icon_map.json').then((r) => r.json()),
         fetch('data/verification.json').then((r) => r.json()),
+        fetch('data/passives_1_0.json').then((r) => r.json()),
       ]);
   verification.value = (verif as { claims: never[] } | undefined)?.claims ?? [];
+  passives.value = (passivesJson as { passives: PassiveInfo[] } | undefined)?.passives ?? [];
   engine = new BreedingEngine(breeding);
   breedingRaw.value = breeding;
   selfOnly.value = new Set(breeding.self_breed_only);
@@ -141,6 +164,7 @@ export type Route =
   | { page: 'paldex'; pal?: string }
   | { page: 'box' }
   | { page: 'plan' }
+  | { page: 'odds' }
   | { page: 'reference' };
 
 function parseHash(): Route {
@@ -153,6 +177,8 @@ function parseHash(): Route {
       return { page: 'box' };
     case 'plan':
       return { page: 'plan' };
+    case 'odds':
+      return { page: 'odds' };
     case 'reference':
       return { page: 'reference' };
     default:
