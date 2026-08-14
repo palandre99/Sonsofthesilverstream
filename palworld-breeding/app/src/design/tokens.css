@@ -2,9 +2,9 @@
    Light theme fully supported; components only ever use tokens. */
 
 @font-face{font-family:'Manrope';font-style:normal;font-weight:200 800;font-display:swap;
-  src:url(/fonts/manrope-sub.woff2) format('woff2')}
+  src:url(fonts/manrope-sub.woff2) format('woff2')}
 @font-face{font-family:'Baloo 2';font-style:normal;font-weight:400 800;font-display:swap;
-  src:url(/fonts/baloo2-sub.woff2) format('woff2')}
+  src:url(fonts/baloo2-sub.woff2) format('woff2')}
 
 :root{
   /* dark (default) */

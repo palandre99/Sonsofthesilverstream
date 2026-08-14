@@ -1,10 +1,10 @@
 /** Paldex — browsable grid of all species with a detail drawer. */
 import { useMemo, useState } from 'preact/hooks';
 import {
-  box, breedingRaw, engine, nav, palNumberSort, pals, route, selfOnly,
-  toggleOwned, workLabel,
+  box, breedingRaw, engine, hasGender, nav, ownedAny, palNumberSort, pals, route,
+  selfOnly, workLabel,
 } from '../state';
-import { ElementChips, LockBadge, PalIcon, StatBars, WorkChips } from '../components/shared';
+import { ElementChips, GenderToggles, LockBadge, PalIcon, StatBars, WorkChips } from '../components/shared';
 
 const ELEMENTS = ['Neutral', 'Fire', 'Water', 'Grass', 'Electric', 'Ice', 'Ground', 'Dark', 'Dragon'];
 const WORKS = ['Kindling', 'Watering', 'Planting', 'Generating_Electricity', 'Handiwork',
@@ -21,7 +21,6 @@ function Drawer({ name, onClose }: { name: string; onClose: () => void }) {
     (g) => g.child === name || g.mother === name || g.father === name,
   );
   const inPool = !new Set(raw.excluded_from_generic_pool).has(name);
-  const owned = box.value.has(name);
 
   return (
     <>
@@ -40,14 +39,15 @@ function Drawer({ name, onClose }: { name: string; onClose: () => void }) {
           </div>
         </header>
 
-        <label class="ownrow">
+        <div class="ownrow">
           <PalIcon name={name} size={28} />
-          I own {name}
-          <span class="switch">
-            <input type="checkbox" checked={owned} onChange={() => toggleOwned(name)} />
-            <span />
+          <span>In my box
+            <div style={{ fontSize: '11.5px', color: 'var(--muted)', fontWeight: 600 }}>
+              mark which genders you have
+            </div>
           </span>
-        </label>
+          <span style={{ marginLeft: 'auto' }}><GenderToggles name={name} /></span>
+        </div>
 
         <section>
           <h4>Stats</h4>
@@ -164,8 +164,10 @@ export function PaldexPage() {
         .filter((n) => (pals.value[n].work ?? {})[work] !== undefined)
         .sort((a, b) => (pals.value[b].work[work] ?? 0) - (pals.value[a].work[work] ?? 0));
     }
-    if (ownFilter === 'owned') list = list.filter((n) => box.value.has(n));
-    if (ownFilter === 'missing') list = list.filter((n) => !box.value.has(n));
+    if (ownFilter === 'owned') list = list.filter((n) => ownedAny(n));
+    if (ownFilter === 'missing') list = list.filter((n) => !ownedAny(n));
+    if (ownFilter === 'pairready') list = list.filter((n) => hasGender(n, 'm') && hasGender(n, 'f'));
+    if (ownFilter === 'gendergap') list = list.filter((n) => ownedAny(n) && !(hasGender(n, 'm') && hasGender(n, 'f')));
     return list;
   }, [q, el, work, ownFilter, box.value, pals.value]);
 
@@ -191,6 +193,8 @@ export function PaldexPage() {
           aria-label="Ownership">
           <option value="">Owned + missing</option>
           <option value="owned">Owned</option>
+          <option value="pairready">Owned ♂ + ♀</option>
+          <option value="gendergap">Missing a gender</option>
           <option value="missing">Missing</option>
         </select>
       </div>
@@ -208,7 +212,10 @@ export function PaldexPage() {
               </span>
             </span>
             <span class="num">#{pals.value[n].number || '—'}</span>
-            {box.value.has(n) && <span class="owndot" title="owned" />}
+            {ownedAny(n) && (
+              <span class={`owndot${hasGender(n, 'm') && hasGender(n, 'f') ? '' : ' half'}`}
+                title={hasGender(n, 'm') && hasGender(n, 'f') ? 'owned ♂ + ♀' : 'owned — one gender only'} />
+            )}
           </button>
         ))}
         {!names.length && <div class="empty">Nothing matches those filters.</div>}

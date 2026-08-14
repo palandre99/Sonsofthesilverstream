@@ -159,6 +159,16 @@
 .palcard .num{margin-left:auto;color:var(--faint);font-size:12px;align-self:flex-start}
 .owndot{width:10px;height:10px;border-radius:50%;background:var(--ok);flex:none;
   box-shadow:0 0 0 3px var(--ok-soft)}
+.owndot.half{background:var(--warn);box-shadow:0 0 0 3px var(--warn-soft)}
+.gtoggles{display:inline-flex;gap:5px;margin-left:auto}
+.gt{width:30px;height:30px;border-radius:9px;border:1.5px solid var(--line2);
+  background:var(--surface2);color:var(--faint);font-size:15px;font-weight:800;
+  cursor:pointer;display:grid;place-items:center;line-height:1;padding:0;
+  transition:background .12s,color .12s,border-color .12s}
+.gt:hover{border-color:var(--accent)}
+.gt.m.on{background:var(--male);border-color:var(--male);color:#fff}
+.gt.f.on{background:var(--female);border-color:var(--female);color:#fff}
+.gtoggles.sm .gt{width:24px;height:24px;font-size:12.5px;border-radius:7px}
 
 /* ---------- detail drawer ---------- */
 .drawer-back{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:40}

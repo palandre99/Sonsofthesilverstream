@@ -1,6 +1,6 @@
 /** Shared presentational components. */
 import { useEffect, useRef, useState } from 'preact/hooks';
-import { iconFiles, pals, workLabel, topWork, type PalInfo } from '../state';
+import { hasGender, iconFiles, pals, setOwnedGender, topWork, workLabel, type PalInfo } from '../state';
 
 export function PalIcon({ name, size = 44, gender }: {
   name: string; size?: number; gender?: 'm' | 'f';
@@ -151,5 +151,26 @@ export function PalPicker({ value, onPick, placeholder = 'Choose a pal…', filt
         </div>
       )}
     </div>
+  );
+}
+
+
+/** ♂/♀ ownership toggles for one species. */
+export function GenderToggles({ name, size = 'md' }: { name: string; size?: 'sm' | 'md' }) {
+  return (
+    <span class={`gtoggles ${size}`}>
+      {(['m', 'f'] as const).map((g) => {
+        const on = hasGender(name, g);
+        return (
+          <button type="button" class={`gt ${g}${on ? ' on' : ''}`}
+            aria-pressed={on}
+            aria-label={`I have a ${g === 'm' ? 'male' : 'female'} ${name}`}
+            title={`I have a ${g === 'm' ? 'male' : 'female'} ${name}`}
+            onClick={(e) => { e.stopPropagation(); setOwnedGender(name, g, !on); }}>
+            {g === 'm' ? '♂' : '♀'}
+          </button>
+        );
+      })}
+    </span>
   );
 }

@@ -15,9 +15,12 @@ const cssFile = assets.find((f) => f.endsWith('.css'));
 const js = readFileSync(join(dist, 'assets', jsFile), 'utf8');
 let css = readFileSync(join(dist, 'assets', cssFile), 'utf8');
 
-// inline fonts referenced as /fonts/*.woff2
-css = css.replace(/url\(\/fonts\/([\w.-]+\.woff2)\)/g, (_, f) => {
-  const b64 = readFileSync(join(root, 'public/fonts', f)).toString('base64');
+// inline every woff2 reference (Vite emits them as hashed assets)
+css = css.replace(/url\(([^)]*?[\w-]+\.woff2)\)/g, (_, ref) => {
+  const base = ref.split('/').pop();
+  const hit = assets.find((f) => f === base)
+    ?? assets.find((f) => f.startsWith(base.replace(/\.woff2$/, '').split('-').slice(0, 2).join('-')) && f.endsWith('.woff2'));
+  const b64 = readFileSync(join(dist, 'assets', hit)).toString('base64');
   return `url(data:font/woff2;base64,${b64})`;
 });
 

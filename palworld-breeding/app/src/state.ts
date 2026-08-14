@@ -28,10 +28,13 @@ export let engine: BreedingEngine | null = null;
 export const breedingRaw = signal<BreedingData | null>(null);
 export const selfOnly = signal<Set<string>>(new Set());
 
-const BOX_KEY = 'hatchlab-box-v1';
+const BOX_KEY = 'hatchlab-box-v2';
+const BOX_KEY_V1 = 'hatchlab-box-v1';
 const THEME_KEY = 'hatchlab-theme';
 
-export const box = signal<Set<string>>(new Set());
+/** Per-species ownership with gender detail: do you have a male / a female? */
+export interface OwnedGenders { m: boolean; f: boolean }
+export const box = signal<Record<string, OwnedGenders>>({});
 export const theme = signal<'dark' | 'light'>(
   (localStorage.getItem(THEME_KEY) as 'dark' | 'light') || 'dark',
 );
@@ -41,15 +44,55 @@ effect(() => {
   localStorage.setItem(THEME_KEY, theme.value);
 });
 
-export function toggleOwned(name: string): void {
-  const next = new Set(box.value);
-  if (next.has(name)) next.delete(name);
-  else next.add(name);
+function saveBox(next: Record<string, OwnedGenders>): void {
   box.value = next;
-  localStorage.setItem(BOX_KEY, JSON.stringify([...next].sort()));
+  localStorage.setItem(BOX_KEY, JSON.stringify(next));
 }
 
-export const ownedCount = computed(() => box.value.size);
+export function setOwnedGender(name: string, gender: 'm' | 'f', val: boolean): void {
+  const cur = box.value[name] ?? { m: false, f: false };
+  const entry = { ...cur, [gender]: val };
+  const next = { ...box.value };
+  if (!entry.m && !entry.f) delete next[name];
+  else next[name] = entry;
+  saveBox(next);
+}
+
+/** Convenience: toggle full ownership (both genders on, or clear). */
+export function toggleOwned(name: string): void {
+  const cur = box.value[name];
+  const next = { ...box.value };
+  if (cur) delete next[name];
+  else next[name] = { m: true, f: true };
+  saveBox(next);
+}
+
+export function ownedAny(name: string): boolean {
+  const o = box.value[name];
+  return !!(o && (o.m || o.f));
+}
+
+export function hasGender(name: string, g: 'm' | 'f'): boolean {
+  return !!box.value[name]?.[g];
+}
+
+/** Can these two species pair up RIGHT NOW given owned genders?
+ * genderNote (from a gendered combo) pins which parent must be female. */
+export function canPairNow(a: string, b: string, genderNote?: string | null): boolean {
+  const oa = box.value[a];
+  const ob = box.value[b];
+  if (!oa || !ob) return false;
+  if (a === b) return oa.m && oa.f;
+  if (genderNote) {
+    return genderNote.includes(`female ${a}`) ? oa.f && ob.m : oa.m && ob.f;
+  }
+  return (oa.m && ob.f) || (oa.f && ob.m);
+}
+
+export const ownedCount = computed(() => Object.keys(box.value).length);
+export const pairReadyCount = computed(
+  () => Object.values(box.value).filter((o) => o.m && o.f).length,
+);
 
 export const verification = signal<{ claim: string; verdict: string; evidence: string }[]>([]);
 
@@ -73,10 +116,21 @@ export async function loadData(): Promise<void> {
   pals.value = palsJson.pals;
   iconFiles.value = icons.files;
   try {
-    const saved = JSON.parse(localStorage.getItem(BOX_KEY) || '[]') as string[];
-    box.value = new Set(saved.filter((n) => n in palsJson.pals));
+    const v2 = localStorage.getItem(BOX_KEY);
+    if (v2) {
+      const saved = JSON.parse(v2) as Record<string, OwnedGenders>;
+      box.value = Object.fromEntries(
+        Object.entries(saved).filter(([n]) => n in palsJson.pals),
+      );
+    } else {
+      // migrate v1 (names only): assume both genders, user can refine
+      const v1 = JSON.parse(localStorage.getItem(BOX_KEY_V1) || '[]') as string[];
+      box.value = Object.fromEntries(
+        v1.filter((n) => n in palsJson.pals).map((n) => [n, { m: true, f: true }]),
+      );
+    }
   } catch {
-    box.value = new Set();
+    box.value = {};
   }
   dataReady.value = true;
 }

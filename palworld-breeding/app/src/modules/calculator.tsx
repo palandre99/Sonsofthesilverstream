@@ -1,6 +1,6 @@
 /** Calculator — pair→child and child→parents (reverse lookup). */
 import { useMemo, useState } from 'preact/hooks';
-import { engine, box, pals, selfOnly, nav } from '../state';
+import { canPairNow, engine, nav, ownedAny, pals, selfOnly } from '../state';
 import { ElementChips, LockBadge, PalIcon, PalPicker, WorkChips } from '../components/shared';
 import type { ChildResult } from '../engine/types';
 
@@ -21,6 +21,7 @@ function ResultFlags({ ch }: { ch: ChildResult }) {
 function PairResult({ a, b }: { a: string; b: string }) {
   const e = engine!;
   const results = e.childrenOf(a, b);
+  const bothOwned = ownedAny(a) && ownedAny(b);
   const ra = e.ranks.get(a)!;
   const rb = e.ranks.get(b)!;
   const target = Math.floor((ra + rb + 1) / 2);
@@ -57,6 +58,13 @@ function PairResult({ a, b }: { a: string; b: string }) {
             {ch.kind === 'gendered' && (
               <span class="mathnote">{ch.genderNote} → {ch.species}. Swap the genders for the other child.</span>
             )}
+            {bothOwned && !canPairNow(a, b, ch.genderNote) && (
+              <span class="mathnote" style={{ color: 'var(--warn)' }}>
+                ⚠ You own both species, but not a working ♂/♀ combination
+                {ch.kind === 'gendered' ? ` — this child needs ${ch.genderNote}` : ''}.
+                Swap a gender with the Pal Reverser or breed another copy.
+              </span>
+            )}
             <button class="btn" style={{ alignSelf: 'flex-start' }}
               onClick={() => nav(`paldex/${encodeURIComponent(ch.species)}`)}>
               View {ch.species} in Paldex
@@ -70,7 +78,6 @@ function PairResult({ a, b }: { a: string; b: string }) {
 
 function ReverseLookup({ target }: { target: string }) {
   const e = engine!;
-  const owned = box.value;
   const [showAll, setShowAll] = useState(false);
 
   const pairs = useMemo(() => {
@@ -89,15 +96,18 @@ function ReverseLookup({ target }: { target: string }) {
   }, [target]);
 
   const groups = useMemo(() => {
-    const both: typeof pairs = [];
+    const ready: typeof pairs = [];
+    const blocked: typeof pairs = [];
     const one: typeof pairs = [];
     const none: typeof pairs = [];
     for (const p of pairs) {
-      const n = (owned.has(p.a) ? 1 : 0) + (owned.has(p.b) ? 1 : 0);
-      (n === 2 ? both : n === 1 ? one : none).push(p);
+      if (canPairNow(p.a, p.b, p.note)) ready.push(p);
+      else if (ownedAny(p.a) && ownedAny(p.b)) blocked.push(p);
+      else if (ownedAny(p.a) || ownedAny(p.b)) one.push(p);
+      else none.push(p);
     }
-    return { both, one, none };
-  }, [pairs, owned]);
+    return { ready, blocked, one, none };
+  }, [pairs]);
 
   const Group = ({ title, items, hint }: { title: string; items: typeof pairs; hint: string }) => (
     <>
@@ -140,8 +150,13 @@ function ReverseLookup({ target }: { target: string }) {
   }
   return (
     <>
-      <Group title="From your box" items={groups.both} hint="both parents owned — breed now" />
-      <Group title="One step away" items={groups.one} hint="you own one parent" />
+      <Group title="Breed right now" items={groups.ready}
+        hint="you have the genders this pair needs" />
+      {groups.blocked.length > 0 && (
+        <Group title="Own both — wrong genders" items={groups.blocked}
+          hint="fix with the Pal Reverser or another copy" />
+      )}
+      <Group title="One step away" items={groups.one} hint="you own one parent species" />
       <Group title="All other pairs" items={groups.none} hint="neither parent owned yet" />
     </>
   );
