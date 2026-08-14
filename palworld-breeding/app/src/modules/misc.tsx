@@ -157,7 +157,7 @@ export function ReferencePage() {
           game-dump icons via <a href="https://github.com/dbgoodm/PalDex" target="_blank" rel="noopener">dbgoodm/PalDex</a>.
           Passive database: palworld-kb (114 passives, 2026-07-14).</p>
         <p class="dim small" style={{ marginTop: '8px' }}>
-          HatchLab is a fan project — not affiliated with or endorsed by Pocketpair.
+          Palforge is a fan project — not affiliated with or endorsed by Pocketpair.
           Game data © Pocketpair, used under the fan content policy. No ads, no tracking,
           no accounts; your box lives in your browser only.</p>
       </Section>

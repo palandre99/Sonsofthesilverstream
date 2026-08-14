@@ -2,13 +2,13 @@
 setlocal
 
 REM ============================================================
-REM HatchLab - BUILD DEV CLIENT (~15 min, then never again)
+REM Palforge - BUILD DEV CLIENT (~15 min, then never again)
 REM ============================================================
-REM Builds the "HatchLab DEV" version of the app. This is the one
+REM Builds the "Palforge DEV" version of the app. This is the one
 REM that talks to the Metro dev server on your PC, so JS changes
 REM land on the phone the moment a file is saved.
 REM
-REM Only run this if you do NOT already have the HatchLab DEV
+REM Only run this if you do NOT already have the Palforge DEV
 REM icon on your phone. After it's installed, you never need
 REM this again - START-APP.cmd takes over from there.
 REM
@@ -23,7 +23,7 @@ cd /d "%~dp0palworld-breeding\mobile"
 
 echo.
 echo ===============================================
-echo  HatchLab - Build dev client (one-time, ~15 min)
+echo  Palforge - Build dev client (one-time, ~15 min)
 echo ===============================================
 echo.
 

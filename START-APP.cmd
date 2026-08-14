@@ -6,7 +6,7 @@ cd /d "%~dp0palworld-breeding\mobile"
 
 echo.
 echo ===============================================
-echo  HatchLab - Dev Server (works on WiFi AND 5G)
+echo  Palforge - Dev Server (works on WiFi AND 5G)
 echo ===============================================
 echo.
 echo  Makes JS changes land on the phone automatically.

@@ -1,9 +1,9 @@
-// scripts/start-dev.js — HatchLab dev server launcher.
+// scripts/start-dev.js — Palforge dev server launcher.
 //
 // Runs `npx expo start --dev-client --tunnel --clear`.
 //
 // **Tunnel only, always. No LAN fallback.** Same doctrine as Stride's
-// launcher: the HatchLab DEV client on the phone must reach Metro from ANY
+// launcher: the Palforge DEV client on the phone must reach Metro from ANY
 // network — home WiFi, 5G outside, hotel WiFi. Only the ngrok tunnel does
 // that; a 192.168.x.x LAN URL dies the moment the phone leaves the house.
 //
@@ -76,7 +76,7 @@ function extractDeepLink(rawManifest) {
   const httpsHost = hostUri.startsWith('http')
     ? hostUri
     : 'https://' + hostUri.replace(/:\d+$/, '');
-  return 'exp+hatchlab://expo-development-client/?url=' + encodeURIComponent(httpsHost);
+  return 'exp+palforge://expo-development-client/?url=' + encodeURIComponent(httpsHost);
 }
 
 async function pollForUrl() {
@@ -117,11 +117,11 @@ function writeOutputs(url) {
       '<!DOCTYPE html>',
       '<html><head><meta charset="utf-8">',
       '<meta http-equiv="refresh" content="0; url=' + url + '">',
-      '<title>Open HatchLab Dev</title>',
+      '<title>Open Palforge Dev</title>',
       '<style>body{font-family:system-ui,sans-serif;background:#0C1618;color:#E6F0F1;padding:40px;text-align:center}',
       'a{display:inline-block;padding:16px 24px;background:#3FC1C9;color:#08191B;border-radius:12px;font-weight:600;text-decoration:none;word-break:break-all}</style>',
       '</head><body>',
-      '<h1>Tap to open HatchLab Dev</h1>',
+      '<h1>Tap to open Palforge Dev</h1>',
       '<p><a href="' + url + '">' + url + '</a></p>',
       '</body></html>',
     ].join('\n');

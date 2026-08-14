@@ -12,11 +12,10 @@ import { OddsPage } from './modules/odds';
 import { ReferencePage } from './modules/misc';
 
 const Logo = () => (
-  <svg viewBox="0 0 32 40" aria-hidden="true">
-    <path d="M16 2C9 2 3 14 3 24a13 13 0 0 0 26 0C29 14 23 2 16 2Z"
-      fill="none" stroke="currentColor" stroke-width="2.6" />
-    <path d="M10 22l4 4 3-6 3 5 2-3" fill="none" stroke="currentColor"
-      stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+  <svg viewBox="0 0 100 100" aria-hidden="true">
+    <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" stroke-width="7" />
+    <path d="M13 50h22m30 0h22" stroke="currentColor" stroke-width="9" />
+    <circle cx="50" cy="50" r="12" fill="none" stroke="currentColor" stroke-width="7" />
   </svg>
 );
 
@@ -79,7 +78,7 @@ export function App() {
       <aside class="side">
         <a class="brand" href="#/calc">
           <Logo />
-          <b>HatchLab</b>
+          <b>Palforge</b>
         </a>
         <nav class="nav" aria-label="Main">
           {NAV.map((n) => (

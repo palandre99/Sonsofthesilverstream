@@ -1,9 +1,9 @@
-# HatchLab on your iPhone — the three buttons
+# Palforge on your iPhone — the three buttons
 
 Same system as Stride. Double-click, that's it.
 
 ## 1. BUILD-DEV.cmd — run ONCE (~15 min)
-Builds the **HatchLab DEV** app for your phone in Expo's cloud.
+Builds the **Palforge DEV** app for your phone in Expo's cloud.
 - It asks *"Do you want to log in to your Apple account?"* → type `y`
 - Apple ID `palandre99@gmail.com` + your password (+ the 2FA code that pops up on your phone)
 - Every other question: just press **Enter**
@@ -19,13 +19,13 @@ After the icon is on your phone you never run this again.
 Starts the dev server in **tunnel mode: works on WiFi AND 5G**, anywhere.
 The moment the URL is ready it's copied to your clipboard, shown in the
 window, and saved to `CURRENT-DEV-URL.txt` / `.html` in this folder — open
-the HatchLab DEV app on the phone and it connects; every change lands live.
+the Palforge DEV app on the phone and it connects; every change lands live.
 
 ## 3. Updates are AUTOMATIC — you click nothing
 - Connected to the dev server (button 2): changes arrive **live while you
   use the app**, exactly like Stride.
 - Otherwise: Claude pushes updates from his side after each work block —
-  just close and reopen HatchLab and the newest version is there.
+  just close and reopen Palforge and the newest version is there.
 - `PUSH-UPDATE.cmd` exists only as an emergency backup if Claude is
   offline and you want to push the latest code yourself.
 

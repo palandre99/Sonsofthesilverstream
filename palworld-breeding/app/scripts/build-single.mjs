@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/** Builds dist/HatchLab-app.html — the whole app as one self-contained file:
+/** Builds dist/Palforge-app.html — the whole app as one self-contained file:
  * inlined JS/CSS, embedded data, all 298 icons and both fonts as data URIs.
  * Run AFTER `npm run build`. */
 import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
@@ -46,7 +46,7 @@ const html = `<!doctype html>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="color-scheme" content="dark light" />
-<title>HatchLab — Palworld breeding, solved</title>
+<title>Palforge — the Palworld companion</title>
 <style>${css}</style>
 </head>
 <body>
@@ -56,6 +56,6 @@ const html = `<!doctype html>
 </body>
 </html>`;
 
-const out = join(dist, 'HatchLab-app.html');
+const out = join(dist, 'Palforge-app.html');
 writeFileSync(out, html);
 console.log(`wrote ${out} (${(html.length / 1024 / 1024).toFixed(1)} MB)`);

@@ -2,7 +2,7 @@
 setlocal
 
 REM ============================================================
-REM HatchLab - PUSH OTA UPDATE (~2 minutes)
+REM Palforge - PUSH OTA UPDATE (~2 minutes)
 REM ============================================================
 REM Pushes the latest JavaScript code to the installed app on
 REM your phone via Expo's Update channel. No new build needed -
@@ -16,7 +16,7 @@ cd /d "%~dp0palworld-breeding\mobile"
 
 echo.
 echo ===============================================
-echo  HatchLab - Push OTA Update
+echo  Palforge - Push OTA Update
 echo ===============================================
 echo.
 
@@ -39,12 +39,12 @@ echo.
 echo Step 2 of 2: Publishing OTA update to both channels...
 echo.
 
-call npx eas-cli update --branch development --message "HatchLab update"
-call npx eas-cli update --branch preview --message "HatchLab update"
+call npx eas-cli update --branch development --message "Palforge update"
+call npx eas-cli update --branch preview --message "Palforge update"
 
 echo.
 echo ===============================================
-echo  Update published. Re-open HatchLab on your
+echo  Update published. Re-open Palforge on your
 echo  phone to receive it. Force-quit and reopen
 echo  if needed.
 echo ===============================================

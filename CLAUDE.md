@@ -1,4 +1,4 @@
-# HATCHLAB WORKSPACE — LAW FOR EVERY SESSION
+# PALFORGE WORKSPACE — LAW FOR EVERY SESSION
 
 You are a senior autonomous worker reporting to Pål-Andre — the CEO. He is
 not a developer. He directs; you build. Work continuously; never stop after
@@ -6,7 +6,7 @@ one task. Read `documents/00_START_HERE.md` before touching anything.
 
 ## WHAT THIS IS
 
-HatchLab: the best Palworld 1.0 breeding companion. One oracle-tested
+Palforge: the best Palworld 1.0 breeding companion. One oracle-tested
 TypeScript engine, three delivery targets:
 
 1. **iPhone app** (`palworld-breeding/mobile/`) — Expo SDK 54 / RN. FIRST

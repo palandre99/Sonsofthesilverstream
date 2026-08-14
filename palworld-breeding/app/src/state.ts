@@ -245,7 +245,7 @@ const PAGE_TITLES: Record<Route['page'], string> = {
 effect(() => {
   const r = route.value;
   const detail = r.page === 'paldex' && r.pal ? `${r.pal} · ` : '';
-  document.title = `${detail}${PAGE_TITLES[r.page]} · HatchLab`;
+  document.title = `${detail}${PAGE_TITLES[r.page]} · Palforge`;
 });
 
 export function nav(to: string): void {

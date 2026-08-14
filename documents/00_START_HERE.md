@@ -1,4 +1,4 @@
-# START HERE — HatchLab project constitution
+# START HERE — Palforge project constitution
 
 *You are picking up a live product. Read this, then `02_PROGRESS.md`, then
 take the top item in `AI_TODO.md`. The workspace law in the root
@@ -6,7 +6,7 @@ take the top item in `AI_TODO.md`. The workspace law in the root
 
 ## The product in one paragraph
 
-HatchLab answers the only questions a Palworld breeder actually has: *what
+Palforge answers the only questions a Palworld breeder actually has: *what
 do these two parents make, how do I get species X from what I own, what
 will the passives/IVs cost me in eggs, and in what order do I breed toward
 my goals?* It answers them **provably** — the species engine replays all
