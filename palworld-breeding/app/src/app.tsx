@@ -13,8 +13,9 @@ import { ReferencePage } from './modules/misc';
 const Logo = () => (
   <svg viewBox="0 0 100 100" aria-hidden="true">
     <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" stroke-width="7" />
-    <path d="M13 50h22m30 0h22" stroke="currentColor" stroke-width="9" />
-    <circle cx="50" cy="50" r="12" fill="none" stroke="currentColor" stroke-width="7" />
+    <path d="M12 50h30m16 0h30" stroke="currentColor" stroke-width="5" />
+    <circle cx="50" cy="50" r="6.5" fill="none" stroke="currentColor" stroke-width="5" />
+    <path d="M27 37 A27 27 0 0 1 56 23" stroke="currentColor" stroke-width="5" fill="none" stroke-linecap="round" opacity="0.55" />
   </svg>
 );
 

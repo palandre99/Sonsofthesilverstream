@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Generate the PWA icons for the Palforge sphere mark (pure stdlib).
 
-The mark: an original stylized capture-sphere — teal orb, dark equator band,
-dark center ring with a teal button. Flat, geometric, ours (not the game's
-sphere asset).
+The mark: an original pal-sphere-style orb — two-tone teal hemispheres,
+thin band, small button, highlight arc. Deliberately NOT pokeball
+proportions (no fat band, no big ringed center).
 
 Outputs (app/public/):
   icon.png          1024x1024 opaque   — iOS masks its own corners
@@ -14,9 +14,12 @@ import struct
 import zlib
 from pathlib import Path
 
-BG = (12, 22, 24)        # #0C1618
-TEAL = (63, 193, 201)    # #3FC1C9
-DARK = (12, 22, 24)      # band + ring, same as bg for a die-cut look
+BG = (12, 22, 24)         # #0C1618
+TEAL = (63, 193, 201)     # #3FC1C9 upper shell
+LOW = (30, 116, 124)      # deeper teal lower shell
+DARK = (12, 22, 24)       # thin band + button ring
+CORE = (230, 240, 241)    # button core
+GLINT = (169, 236, 240)   # upper-shell highlight arc
 
 OUT = Path(__file__).resolve().parent.parent / "public"
 
@@ -38,20 +41,31 @@ def png_bytes(width, height, rgba):
 def sphere_color(x, y):
     """Color of the mark at (x, y) in a 100x100 box, or None outside.
 
-    Geometry: orb center (50,50) R=40; equator band half-height 7.5;
-    center ring outer r=15.5, button r=9.
+    Pal-sphere look (NOT a pokeball): two-tone hemispheres, THIN band,
+    small button without the big ring, highlight arc on the upper shell.
+    Geometry: orb center (50,50) R=40; band half-height 3.2; button r6/3.8.
     """
     dx, dy = x - 50.0, y - 50.0
     r2 = dx * dx + dy * dy
     if r2 > 40.0 * 40.0:
         return None
-    if dx * dx + dy * dy <= 9.0 * 9.0:
-        return TEAL                    # button
-    if r2 <= 15.5 * 15.5:
-        return DARK                    # ring around the button
-    if abs(dy) <= 7.5:
-        return DARK                    # equator band
-    return TEAL                        # shell
+    # small button: dark ring, light core
+    if r2 <= 3.8 * 3.8:
+        return CORE
+    if r2 <= 6.0 * 6.0:
+        return DARK
+    # thin equator band
+    if abs(dy) <= 3.2:
+        return DARK
+    if dy < 0:
+        # upper shell: teal with a highlight arc
+        import math
+        r = math.sqrt(r2)
+        if 27.0 <= r <= 33.0 and dy < -8 and dx < 10:
+            return GLINT
+        return TEAL
+    # lower shell: deeper tone
+    return LOW
 
 
 def render(size, egg_scale, opaque_bg, out):
