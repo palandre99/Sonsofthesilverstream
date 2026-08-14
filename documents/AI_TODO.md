@@ -23,6 +23,21 @@ Add everything you find; finding nothing means you didn't look.*
 - [ ] **First OTA update flow test**: land a visible change, `eas update
       --branch development`, confirm pickup on reopen.
 
+## SMART PLANNING (CEO strategic direction, 2026-08-15)
+
+- [x] 2026-08-15: v1 "Make it faster" card on the Plan: cake/ingredient math
+      from the verified recipe, ranch-producer coverage from real
+      ranch_produce data, accelerator scheduling hints (Braloha/Dynamoff).
+- [ ] RESEARCH before modeling (CEO mentioned, unverified): Grintale
+      "more eggs" claim; pals that raise alpha/mutation odds ("the two
+      dinosaurs"); any other breeding-economy partner skills. Verify against
+      datamines/community measurements; only then add to the card.
+- [ ] Booster-aware planning v2: option to weight the route so accelerator
+      subtrees complete first (true reordering, not just a hint); "add
+      producer as target" one-tap action.
+- [ ] Cake economics v2: expected eggs (not minimum) from the Odds Lab
+      model per step; ranch throughput rates per producer.
+
 ## SELF-FOUND IMPROVEMENTS (own audit, 2026-08-15 00:05)
 
 - [x] 2026-08-15: Plan management — Start over (reverses tick-registered pals)

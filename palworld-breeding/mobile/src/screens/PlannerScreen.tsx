@@ -4,6 +4,7 @@ import { ActivityIndicator, Modal, Pressable, ScrollView, Text, View } from 'rea
 import * as Haptics from 'expo-haptics';
 import { AnimatedCheck, HatchBurst, type Rarity, type TickState } from '../ui/celebrate';
 import { PalDetail } from '../ui/PalDetail';
+import { acceleratorStatus, cakeNeeds, ranchCoverage } from '../engine/boosters';
 import { T } from '../theme';
 import {
   Badge, Btn, Card, PageHead, PalIcon, PalPicker, WorkChips, s,
@@ -224,6 +225,13 @@ export function PlannerScreen() {
       .sort((x, y) => (y.done / y.total) - (x.done / x.total) || x.name.localeCompare(y.name));
   }, [plan, checks]);
 
+  const needs = plan ? cakeNeeds(plan.steps.length) : null;
+  const coverage = plan ? ranchCoverage(pals, ownedAny) : [];
+  const accel = plan
+    ? acceleratorStatus(plan.steps, ownedAny, (sid) => !!checks[sid])
+    : [];
+  const accelWorth = accel.filter((a) => !a.owned || a.planPhase != null);
+
   return (
     <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
       <PageHead title="Route Planner"
@@ -346,6 +354,45 @@ export function PlannerScreen() {
                   );
                 })}
               </View>
+            </Card>
+          )}
+
+          {needs && (
+            <Card style={{ marginTop: 12, gap: 8 }}>
+              <Text style={s.h3}>Make it faster</Text>
+              <Text style={[s.body, { fontSize: 12.5 }]}>
+                {plan!.steps.length} steps means at least {needs.cakes} cakes:
+                {' '}~{needs.flour} flour · {needs.berries} berries · {needs.milk} milk
+                · {needs.eggs} eggs · {needs.honey} honey. Ranch coverage:
+              </Text>
+              <View style={[s.wrap]}>
+                {coverage.map((c) => (
+                  <Badge key={c.ingredient}
+                    kind={c.owned.length ? 'ok' : 'warn'}>
+                    {c.ingredient}: {c.owned.length
+                      ? `${c.owned[0]} ✓`
+                      : `need ${c.producers.slice(0, 2).join(' / ')}`}
+                  </Badge>
+                ))}
+              </View>
+              {accelWorth.length > 0 && (
+                <View style={{ gap: 4, marginTop: 2 }}>
+                  {accelWorth.map((a) => (
+                    <Text key={a.name} style={[s.body, { fontSize: 12.5 }]}>
+                      ⚡ <Text style={{ color: T.ink, fontWeight: '700' }}>{a.name}</Text>
+                      {' '}({a.effect}){' — '}
+                      {a.done || a.owned
+                        ? 'working for you already ✓'
+                        : a.planPhase != null
+                          ? `in your plan at phase ${a.planPhase} — do that branch FIRST, every egg after comes faster`
+                          : 'not in this plan — consider adding it as a target'}
+                    </Text>
+                  ))}
+                </View>
+              )}
+              <Text style={[s.body, { fontSize: 11, color: T.faint }]}>
+                Speed effects are community-measured; cake math is the verified recipe.
+              </Text>
             </Card>
           )}
 
