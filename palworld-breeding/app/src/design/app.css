@@ -52,6 +52,7 @@
   font-size:12px;font-weight:700;background:var(--surface2);color:var(--muted);
   white-space:nowrap}
 .chip.work{color:var(--ink)}
+.chip.work img{width:18px;height:18px;display:inline-block;vertical-align:-4px}
 .chip.work b{color:var(--accent-ink)}
 .chip.el-neutral{background:var(--el-neutral-soft);color:var(--el-neutral)}
 .chip.el-fire{background:var(--el-fire-soft);color:var(--el-fire)}

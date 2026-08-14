@@ -414,9 +414,8 @@ export function PlannerScreen() {
                       </View>
                       <View style={[s.wrap]}>
                         {st.isTarget && <Badge kind="gold">Goal</Badge>}
-                        {st.kind === 'unique' && <Badge kind="unique">unique</Badge>}
+                        {st.kind === 'unique' && <Badge kind="unique">fixed recipe</Badge>}
                         {st.kind === 'gendered' && <Badge kind="warn">gender locked</Badge>}
-                        {st.tieBreak && <Badge kind="warn">tie-break</Badge>}
                         {st.reusedAsParent >= 2 && (
                           <Badge kind="plain">keep ♂+♀ — parent in {st.reusedAsParent} steps</Badge>
                         )}
@@ -426,7 +425,10 @@ export function PlannerScreen() {
                         {!checked && !partial && (m.ready
                           ? <Badge kind="ok">ready now</Badge>
                           : <Badge kind="plain">waiting for {m.missing.join(' + ')}</Badge>)}
-                        <WorkChips name={st.child} top={1} />
+                      </View>
+                      {/* the result's full work suitabilities — always its own row */}
+                      <View style={[s.wrap, { paddingLeft: 36 }]}>
+                        <WorkChips name={st.child} all />
                       </View>
                     </Card>
                   );

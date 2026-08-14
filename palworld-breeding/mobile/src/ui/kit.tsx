@@ -6,6 +6,7 @@ import {
 import * as Haptics from 'expo-haptics';
 import { ELEMENT_COLORS, T } from '../theme';
 import { PAL_ICONS } from '../data/icons.g';
+import { WORK_ICONS } from '../data/workIcons';
 import {
   hasGender, ownedAny, palNumberSort, pals, setOwnedGender, topWork, useAppVersion, workLabel,
 } from '../store';
@@ -67,16 +68,29 @@ export function ElementChips({ name }: { name: string }) {
   );
 }
 
-export function WorkChips({ name, top = 2 }: { name: string; top?: number }) {
+export function WorkChips({ name, top = 2, all = false }: {
+  name: string; top?: number; all?: boolean;
+}) {
   const p = pals[name];
   if (!p) return null;
+  const jobs = all
+    ? (Object.entries(p.work ?? {}).sort((a, b) => b[1] - a[1]) as [string, number][])
+    : topWork(p, top);
   return (
     <>
-      {topWork(p, top).map(([job, lvl]) => (
-        <View key={job} style={[s.chip, { backgroundColor: T.surface2 }]}>
-          <Text style={[s.chipText, { color: T.ink }]}>
-            {workLabel(job)} <Text style={{ color: T.accentInk }}>{lvl}</Text>
-          </Text>
+      {jobs.map(([job, lvl]) => (
+        <View key={job}
+          accessible accessibilityLabel={`${workLabel(job)} ${lvl}`}
+          style={[s.chip, {
+            backgroundColor: T.surface2, flexDirection: 'row',
+            alignItems: 'center', gap: 5, paddingHorizontal: 8, paddingVertical: 4,
+          }]}>
+          {WORK_ICONS[job] ? (
+            <Image source={WORK_ICONS[job]} style={{ width: 20, height: 20 }} />
+          ) : (
+            <Text style={[s.chipText, { color: T.ink }]}>{workLabel(job)}</Text>
+          )}
+          <Text style={[s.chipText, { color: T.accentInk }]}>{lvl}</Text>
         </View>
       ))}
     </>

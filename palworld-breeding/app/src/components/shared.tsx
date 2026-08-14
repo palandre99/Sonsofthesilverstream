@@ -1,6 +1,27 @@
 /** Shared presentational components. */
 import { useEffect, useRef, useState } from 'preact/hooks';
 import { hasGender, iconFiles, pals, setOwnedGender, topWork, workLabel, type PalInfo } from '../state';
+import iKindling from '../assets/work/Kindling.png';
+import iWatering from '../assets/work/Watering.png';
+import iPlanting from '../assets/work/Planting.png';
+import iElectric from '../assets/work/ElectricityGeneration.png';
+import iHandiwork from '../assets/work/Handiwork.png';
+import iGathering from '../assets/work/Gathering.png';
+import iLumbering from '../assets/work/Lumbering.png';
+import iMining from '../assets/work/Mining.png';
+import iMedicine from '../assets/work/MedicineProduction.png';
+import iCooling from '../assets/work/Cooling.png';
+import iTransporting from '../assets/work/Transporting.png';
+import iFarming from '../assets/work/Farming.png';
+
+/** The game's own work-suitability icons (game dump via palcalc). */
+const WORK_ICONS: Record<string, string> = {
+  Kindling: iKindling, Watering: iWatering, Planting: iPlanting,
+  Generating_Electricity: iElectric, Handiwork: iHandiwork,
+  Gathering: iGathering, Lumbering: iLumbering, Mining: iMining,
+  Medicine: iMedicine, Cooling: iCooling, Transporting: iTransporting,
+  Farming: iFarming,
+};
 
 export function PalIcon({ name, size = 44, gender }: {
   name: string; size?: number; gender?: 'm' | 'f';
@@ -40,13 +61,23 @@ export function ElementChips({ name }: { name: string }) {
   );
 }
 
-export function WorkChips({ name, top = 3 }: { name: string; top?: number }) {
+export function WorkChips({ name, top = 3, all = false }: {
+  name: string; top?: number; all?: boolean;
+}) {
   const p = pals.value[name];
   if (!p) return null;
+  const jobs = all
+    ? (Object.entries(p.work ?? {}).sort((a, b) => b[1] - a[1]) as [string, number][])
+    : topWork(p, top);
   return (
     <>
-      {topWork(p, top).map(([job, lvl]) => (
-        <span class="chip work">{workLabel(job)} <b>{lvl}</b></span>
+      {jobs.map(([job, lvl]) => (
+        <span key={job} class="chip work" title={workLabel(job)}>
+          {WORK_ICONS[job]
+            ? <img src={WORK_ICONS[job]} alt={workLabel(job)} />
+            : workLabel(job)}{' '}
+          <b>{lvl}</b>
+        </span>
       ))}
     </>
   );

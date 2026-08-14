@@ -369,13 +369,12 @@ export function PlanPage() {
                         {s.parents[0]} <span class="plus">+</span> {s.parents[1]}
                         <span class="plus"> = </span>
                         <PalIcon name={s.child} size={30} /> <b>{s.child}</b>
-                        <WorkChips name={s.child} top={2} />
+                        <WorkChips name={s.child} all />
                       </span>
                       <span class="tag" style={{ display: 'flex', gap: '5px', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
                         {s.isTarget && <span class="badge gold">Goal</span>}
-                        {s.kind === 'unique' && <span class="badge unique">unique</span>}
+                        {s.kind === 'unique' && <span class="badge unique">fixed recipe</span>}
                         {s.kind === 'gendered' && <LockBadge />}
-                        {s.tieBreak && <span class="badge warn">tie-break</span>}
                         {s.reusedAsParent >= 2 && (
                           <span class="badge plain">keep ♂ + ♀ — parent in {s.reusedAsParent} steps</span>
                         )}

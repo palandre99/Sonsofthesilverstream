@@ -4,9 +4,13 @@ import React from 'react';
 import { Modal, ScrollView, Text, View } from 'react-native';
 import { T } from '../theme';
 import { Badge, Btn, Card, ElementChips, GenderToggles, PalIcon, s } from './kit';
+import { Image } from 'react-native';
 import {
   breeding, engine, pals, selfOnly, useAppVersion, workLabel,
 } from '../store';
+import { WORK_ICONS } from '../data/workIcons';
+import { PalMap } from './PalMap';
+import { ALPHA_SPOTS } from '../data/alphaSpots.g';
 
 function StatBar({ label, v }: { label: string; v: number | null }) {
   return (
@@ -68,7 +72,13 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
             <Text style={s.h3}>Work suitability</Text>
             <View style={[s.wrap, { marginTop: 8 }]}>
               {Object.entries(p.work).sort((x, y) => y[1] - x[1]).map(([job, lvl]) => (
-                <View key={job} style={[s.chip, { backgroundColor: T.surface2 }]}>
+                <View key={job} style={[s.chip, {
+                  backgroundColor: T.surface2, flexDirection: 'row',
+                  alignItems: 'center', gap: 5, paddingHorizontal: 8, paddingVertical: 3,
+                }]}>
+                  {WORK_ICONS[job] && (
+                    <Image source={WORK_ICONS[job]} style={{ width: 20, height: 20 }} />
+                  )}
                   <Text style={[s.chipText, { color: T.ink }]}>
                     {workLabel(job)} <Text style={{ color: T.accentInk }}>{lvl}</Text>
                   </Text>
@@ -149,12 +159,15 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
           </Card>
         )}
 
-        <Card style={{ marginTop: 10 }}>
-          <Text style={s.h3}>In the wild</Text>
-          <View style={[s.wrap, { marginTop: 8 }]}>
+        <Card style={{ marginTop: 10, gap: 8 }}>
+          <Text style={s.h3}>Where to find it</Text>
+          <PalMap name={name} />
+          <View style={[s.wrap]}>
             {p.wild
               ? p.regions.map((r) => <Badge key={r} kind="plain">{r}</Badge>)
-              : <Badge kind="plain">no regular wild spawn</Badge>}
+              : !ALPHA_SPOTS[name]
+                ? <Badge kind="plain">no regular wild spawn — breed it</Badge>
+                : null}
             {p.egg_types.map((e) => <Badge key={e} kind="plain">🥚 {e}</Badge>)}
           </View>
         </Card>
