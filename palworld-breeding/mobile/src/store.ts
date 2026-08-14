@@ -114,17 +114,84 @@ export function useAppVersion(): number {
   return useSyncExternalStore(subscribe, () => version);
 }
 
-const KEYS = { box: 'hatchlab-box-v2', checks: 'hatchlab-checks-v1', plan: 'hatchlab-plan-v1' };
+/* ---------------- save profiles ----------------
+ * People run multiple worlds/saves (Dododex solves the same problem with
+ * per-server profiles). Each profile namespaces its own box/checks/plan.
+ * The 'default' profile uses the ORIGINAL storage keys so nobody's data is
+ * lost by this feature appearing. */
 
-async function persist(key: keyof typeof KEYS): Promise<void> {
+export interface Profile { id: string; name: string }
+
+const PROFILES_KEY = 'palforge-profiles-v1';
+let profiles: Profile[] = [{ id: 'default', name: 'My world' }];
+let activeProfile = 'default';
+
+export const getProfiles = (): Profile[] => profiles;
+export const getActiveProfile = (): Profile =>
+  profiles.find((p) => p.id === activeProfile) ?? profiles[0];
+
+function keysFor(profileId: string): { box: string; checks: string; plan: string } {
+  if (profileId === 'default') {
+    return { box: 'hatchlab-box-v2', checks: 'hatchlab-checks-v1', plan: 'hatchlab-plan-v1' };
+  }
+  return {
+    box: `palforge-${profileId}-box`,
+    checks: `palforge-${profileId}-checks`,
+    plan: `palforge-${profileId}-plan`,
+  };
+}
+
+async function persistProfiles(): Promise<void> {
   try {
-    await AsyncStorage.setItem(KEYS[key], JSON.stringify(state[key]));
+    await AsyncStorage.setItem(PROFILES_KEY, JSON.stringify({ profiles, active: activeProfile }));
+  } catch { /* in-memory only */ }
+}
+
+export async function createProfile(name: string): Promise<void> {
+  const id = `p${Date.now().toString(36)}`;
+  profiles = [...profiles, { id, name: name.trim() || `World ${profiles.length + 1}` }];
+  await persistProfiles();
+  await switchProfile(id);
+}
+
+export async function renameProfile(id: string, name: string): Promise<void> {
+  profiles = profiles.map((p) => (p.id === id ? { ...p, name: name.trim() || p.name } : p));
+  await persistProfiles();
+  emit();
+}
+
+export async function deleteProfile(id: string): Promise<void> {
+  if (id === 'default' || profiles.length <= 1) return; // the original save stays
+  const k = keysFor(id);
+  try {
+    await AsyncStorage.multiRemove([k.box, k.checks, k.plan]);
+  } catch { /* best-effort */ }
+  profiles = profiles.filter((p) => p.id !== id);
+  if (activeProfile === id) activeProfile = profiles[0].id;
+  await persistProfiles();
+  await loadProfileData();
+}
+
+export async function switchProfile(id: string): Promise<void> {
+  if (!profiles.some((p) => p.id === id)) return;
+  activeProfile = id;
+  await persistProfiles();
+  await loadProfileData();
+}
+
+async function persist(key: 'box' | 'checks' | 'plan'): Promise<void> {
+  try {
+    await AsyncStorage.setItem(keysFor(activeProfile)[key], JSON.stringify(state[key]));
   } catch { /* persistence unavailable — keep running in-memory */ }
 }
 
-export async function loadPersisted(): Promise<void> {
+async function loadProfileData(): Promise<void> {
+  state.box = {};
+  state.checks = {};
+  state.plan = null;
   try {
-    const [b, c, p] = await AsyncStorage.multiGet([KEYS.box, KEYS.checks, KEYS.plan]);
+    const k = keysFor(activeProfile);
+    const [b, c, p] = await AsyncStorage.multiGet([k.box, k.checks, k.plan]);
     if (b[1]) {
       const saved = JSON.parse(b[1]) as Record<string, OwnedGenders>;
       state.box = Object.fromEntries(
@@ -138,6 +205,20 @@ export async function loadPersisted(): Promise<void> {
     }
   } catch { /* fresh start */ }
   emit();
+}
+
+export async function loadPersisted(): Promise<void> {
+  try {
+    const raw = await AsyncStorage.getItem(PROFILES_KEY);
+    if (raw) {
+      const saved = JSON.parse(raw) as { profiles: Profile[]; active: string };
+      if (Array.isArray(saved.profiles) && saved.profiles.length) {
+        profiles = saved.profiles;
+        activeProfile = saved.active;
+      }
+    }
+  } catch { /* default registry */ }
+  await loadProfileData();
 }
 
 /* ---------------- box ---------------- */
