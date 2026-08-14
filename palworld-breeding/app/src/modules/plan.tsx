@@ -197,7 +197,7 @@ export function PlanPage() {
   // ready-state: bred intermediates count as either gender (you can rebreed),
   // owned-only species use the real gender toggles from My Box.
   const stepMeta = useMemo(() => {
-    if (!plan) return new Map<string, { ready: boolean; missing: string[] }>();
+    if (!plan) return new Map<string, { ready: boolean; missing: string[]; hint: string | null }>();
     // legacy boolean ticks predate gender recording — treat as both genders;
     // modern ticks wrote real genders into the box, which avail() reads
     const bred = new Set(
