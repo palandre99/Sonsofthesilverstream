@@ -37,6 +37,12 @@ TypeScript engine, three delivery targets:
   oracle tests must pass. Never fork their behavior.
 - **Tunnel only for the dev server.** The CEO tests on 5G away from home.
   `mobile/scripts/start-dev.js` has no LAN fallback — keep it that way.
+- **Navigation architecture is CEO-final (2026-08-15):** side panel = main
+  domains (Breeding / Map / Tools & Items / Bosses & Raids / Settings, two
+  snap widths); bottom bar = the current domain's own tabs with the Paldex
+  ALWAYS in the center slot — it is the app's anchor. Registry:
+  `mobile/src/nav/domains.ts`. Unbuilt sections ship as designed
+  coming-soon screens. Do not restructure without the CEO.
 - **The CEO's launchers are API.** `BUILD-DEV.cmd`, `START-APP.cmd`,
   `PUSH-UPDATE.cmd` at this root must keep working exactly as documented
   in `README-PHONE.md`. He double-clicks; he does not run terminals.

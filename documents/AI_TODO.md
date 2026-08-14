@@ -46,6 +46,12 @@ Add everything you find; finding nothing means you didn't look.*
 
 ## WEBSITE
 
+- [ ] Web parity for the domain architecture (side panel domains + per-domain
+      tabs, Paldex center) — mobile shipped 2026-08-15, web still has the flat
+      sidebar.
+- [ ] Web parity for the in-game-style info card (stats icons, food
+      drumsticks, drops, boss map panel).
+
 - [ ] Verify the Pages deploy at /Sonsofthesilverstream/hatchlab/ (SW scope,
       icons, fonts, offline) once DNS/CDN settles; add the link to the
       repo README + root README-PHONE.
