@@ -198,3 +198,101 @@ Lighthouse) — everything testable without a phone is done and green.
 - The personal guide stays alive during the build — it is the daily driver until M4 supersedes it.
 
 *Plan written 2026-08-14. Palworld 1.0 (build 24575149 data), level cap 80, 299 species.*
+
+---
+
+## 10. v2 roadmap (research-backed)
+
+*Added 2026-08-15. This section supersedes the gut-feel "v2 backlog" list in
+§7. Ordering is now evidence-ranked from two research rounds:
+`documents/03_MARKET_RESEARCH.md` (the Palworld market) and
+`documents/04_PRODUCT_BLUEPRINT.md` (design/IA blueprints from Dododex,
+Poke Genie, HoYoLAB, paimon.moe, Genshin Optimizer, MapGenie, MH/Terraria
+companions). Every rank cites its proof. The strategic model is Dododex:
+a single calculator that grew into a 12M-download definitive companion by
+keeping the calculator first and attaching everything else to it.*
+
+**R0 — Data refresh + verified badge surfaced in-app.** *(precondition, days)*
+Re-extract against the newest build (paldb.gg was serving build 4797106687,
+Aug 12 — newer than our July extraction; possible Terraria-collab roster
+changes), re-run the 44,851-row oracle, then put the build number + "verified"
+badge on every result screen and a public /verification page.
+*Evidence: Round 1 §12 (stale-data kill list: PalSphere died stuck at Pal
+#111, XGamingServer still advertises EA numbers); Dododex's v2.8 headline
+feature was per-entity game-version badges — the best companion in any genre
+treats version-stamping as product, not plumbing.*
+
+**R1 — Navigation restructure: 4 tabs + hub, global search.** *(structural,
+do before adding sections)* Move to [Today] [Breed] [Paldex] [Box] [More-hub];
+unified fuzzy search (pals + items + reference) in every header; deep links
+kept. Ship the Today tab shell (active plans, timers placeholder, patch news
+row) even before its full content exists.
+*Evidence: Apple HIG 3–5 tab rule; NN/g hamburger-discoverability findings;
+HoYoLAB's Tools-hub pattern; Dododex's search-first IA (3 menus + search
+covers 200+ creatures). Adding sections before fixing nav is how paldb.cc
+became five disconnected tools.*
+
+**R2 — Paldex completion tracker (caught / alpha / lucky + catch bonus).**
+Offline, per-profile, exportable; filter chips for owned/missing/alpha/lucky;
+completion snapshot card on Today.
+*Evidence: the most-requested feature across three competing Palworld apps'
+reviews (Round 1 §8); Paltopia Collector Mode is the incumbent bar; MapGenie
+made found-markers core; cheap to build on the existing Paldex.*
+
+**R3 — Profiles (multi-world/save).** Profile = box + plans + tracker +
+settings; invisible until a second profile is created; switcher in Box/Today
+headers; per-profile JSON export with documented schema; whole-app backup.
+*Evidence: Dododex server-rate presets, ARK Smart Breeding per-server
+libraries, paimon.moe per-account profiles, Genshin Optimizer database
+export (04_PRODUCT_BLUEPRINT §4 has the full spec). Must land BEFORE save
+import so imports have somewhere to go.*
+
+**R4 — Box import via desktop handoff.** Web drop-zone parses .sav read-only
+(palworld-save-tools stack, incl. 1.0 GlobalPalStorage) → QR/link → "import
+into profile X" with merge/replace preview.
+*Evidence: Round 1 flagship #2 — PalSphere proved demand then died; PalCalc
+proves feasibility but is trapped on Windows; import friction is the reach
+ceiling (Poke Genie's 20M installs came from frictionless import).*
+
+**R5 — Execution mode + timers + widget.** Per-step check-offs with live egg
+counters, expected-vs-actual, incubation timers with notifications, then a
+home-screen/lock-screen widget ("next egg / next step"). This is the
+daily-retention engine.
+*Evidence: PalCalc added step checkboxes Aug 2026 (market moving plan→execute);
+HoYoLAB's resin widget is the genre's strongest daily-open device; Dododex
+ships starve/torpor/breeding timers as core, not extras.*
+
+**R6 — Spawns-in-routes ("catch this parent here").** Spawn cards inline in
+route steps + a spawn block on each Paldex page. Not a map product.
+*Evidence: data already in `pal_locations.json`; Dododex links spawn maps
+from every creature page rather than making the map the product; MapGenie's
+paywall resentment + blank-map 1★s mark the full-map trap (Round 1 §5.6).*
+
+**R7 — Items & Tech, breeding-adjacent slice first.** Cakes, eggs, incubator,
+condenser, key materials — each cross-linked from the calculators that use
+them; full item/tech DB only after the slice proves out.
+*Evidence: Dododex's Items menu exists to serve its calculator (kibble = ARK's
+cake); Pocket Wiki for Terraria (4.7★, $6.99, offline, no ads) proves the
+paid-quality bar for a full crafting DB; Paltopia's stale post-1.0 tech tree
+is the incumbent weakness on record.*
+
+**R8 — Odds Lab v2.5: telemetry.** Opt-in anonymous hatch telemetry to settle
+the contested mutation rates (0.6% vs 1% vs 3%); publish aggregates openly.
+*Evidence: Dododex industrialized exactly this (2.5M crowdsourced gathering
+ratings from 180K users); PinDrop/OP.GG/PalCalc all publicly punt on these
+numbers — first measured answer becomes the citation (Round 1 §9 #3).*
+
+**R9+ (v3 horizon, in evidence order):** team builder + capture calc from the
+owned box (Marriland archetype; Pal Analyzer demand signal) → bosses/raids
+pages with check-offs (Dododex bosses category; Paltopia review requests) →
+community benchmarking (akasha.cv/Pikalytics pattern) → screenshot OCR import
+moonshot (Poke Genie's 20M-install mechanic).
+
+**Standing quality gates for every R-item:** the 15-point AAA checklist in
+`04_PRODUCT_BLUEPRINT.md` §5 (data badge, unified search, fixed detail
+anatomy, offline-complete, no ads/free dark mode, taught empty states,
+fenced community content, patch-day news, native citizenship) plus the
+existing §6 gates (oracle replay, Playwright, Lighthouse). Monetization stays
+Round-1 doctrine: facts free forever; at most one $4.99–9.99 supporter unlock
+(Paltopia's proven anchor; PalCodex's 1.0★ is the tombstone of the
+alternative).

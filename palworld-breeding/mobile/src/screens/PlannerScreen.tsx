@@ -7,8 +7,8 @@ import {
   Badge, Btn, Card, PageHead, PalIcon, PalPicker, WorkChips, s,
 } from '../ui/kit';
 import {
-  completeStep, getBox, getChecks, getPlan, hasGender, ownedAny, savePlan,
-  selfOnly, uncheckStep, useAppVersion, engine,
+  clearPlan, completeStep, getBox, getChecks, getPlan, hasGender, ownedAny,
+  resetPlanProgress, savePlan, selfOnly, uncheckStep, useAppVersion, engine,
 } from '../store';
 import { planFor, stepId } from '../engine/planner';
 import { parseGenderNote } from '../engine/formula';
@@ -95,6 +95,7 @@ export function PlannerScreen() {
   const [planError, setPlanError] = useState<string | null>(null);
   const [picking, setPicking] = useState(false);
   const [hatching, setHatching] = useState<{ sid: string; child: string } | null>(null);
+  const [managing, setManaging] = useState<'none' | 'reset' | 'clear'>('none');
 
   const box = getBox();
   const ownedNames = Object.keys(box);
@@ -259,9 +260,13 @@ export function PlannerScreen() {
               <Text style={s.tileLabel}>READY NOW</Text>
             </View>
           </View>
-          <Text style={[s.body, { marginTop: 6, fontSize: 12 }]}>
-            planned {plan.planned.slice(0, 10)} — re-plan after box changes
-          </Text>
+          <View style={[s.wrap, { marginTop: 8, alignItems: 'center' }]}>
+            <Text style={[s.body, { fontSize: 12 }]}>
+              planned {plan.planned.slice(0, 10)}
+            </Text>
+            <Btn small label="Start over" onPress={() => setManaging('reset')} />
+            <Btn small danger label="Clear plan" onPress={() => setManaging('clear')} />
+          </View>
 
           {plan.unreachable.length > 0 && (
             <Card style={{ backgroundColor: T.warnSoft, borderColor: T.warn, marginTop: 12 }}>
@@ -376,6 +381,37 @@ export function PlannerScreen() {
       {hatching && (
         <HatchSheet child={hatching.child} sid={hatching.sid}
           onClose={() => setHatching(null)} />
+      )}
+
+      {managing !== 'none' && (
+        <Modal visible transparent animationType="fade"
+          onRequestClose={() => setManaging('none')}>
+          <View style={{
+            flex: 1, backgroundColor: 'rgba(0,0,0,0.55)',
+            alignItems: 'center', justifyContent: 'center', padding: 28,
+          }}>
+            <Card style={{ width: '100%', borderColor: managing === 'clear' ? T.bad : T.line }}>
+              <Text style={s.h2}>
+                {managing === 'reset' ? 'Start this plan over?' : 'Clear the plan?'}
+              </Text>
+              <Text style={[s.body, { marginTop: 6 }]}>
+                {managing === 'reset'
+                  ? 'Every tick is undone properly — pals that ticks registered are removed from your Paldex again; anything you owned before stays.'
+                  : 'Forgets the plan and its ticks so you can plan fresh. Your collection stays exactly as it is — hatched pals are still yours.'}
+              </Text>
+              <View style={[s.wrap, { marginTop: 14 }]}>
+                <Btn danger={managing === 'clear'} primary={managing === 'reset'}
+                  label={managing === 'reset' ? 'Start over' : 'Clear plan'}
+                  onPress={() => {
+                    if (managing === 'reset') resetPlanProgress();
+                    else clearPlan();
+                    setManaging('none');
+                  }} />
+                <Btn label="Cancel" onPress={() => setManaging('none')} />
+              </View>
+            </Card>
+          </View>
+        </Modal>
       )}
 
       <PalPicker

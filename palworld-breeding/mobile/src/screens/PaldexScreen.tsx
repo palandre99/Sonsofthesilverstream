@@ -336,6 +336,7 @@ export function PaldexScreen() {
       </ScrollView>
       <FlatList
         style={{ marginTop: 8 }}
+        keyboardShouldPersistTaps="handled"
         data={names}
         keyExtractor={(n) => n}
         initialNumToRender={12}

@@ -109,6 +109,36 @@ describe('Route Planner', () => {
     expect(state.box.value['Chikipi']).toEqual({ m: true, f: true });
   });
 
+  it('Start over undoes all ticks properly; Clear plan keeps the collection', () => {
+    const steps = [{
+      wave: 1, parents: ['Lamball', 'Cattiva'] as [string, string], child: 'Hoocrates',
+      kind: 'generic' as const, tieBreak: false, margin: 2, genderNote: null,
+      isTarget: true, neededBy: ['Hoocrates'], reusedAsParent: 0,
+    }];
+    localStorage.setItem('hatchlab-plan-v1', JSON.stringify({
+      targets: ['Hoocrates'], steps, unreachable: [], planned: '2026-08-14',
+    }));
+    render(<PlanPage />);
+    // hatch it via the tick
+    fireEvent.change(document.querySelector('.tick input') as HTMLInputElement,
+      { target: { checked: true } });
+    fireEvent.click(screen.getByRole('button', { name: '♂ + ♀ both' }));
+    expect(state.box.value['Hoocrates']).toEqual({ m: true, f: true });
+
+    // Start over: tick-registered pal is removed again
+    fireEvent.click(screen.getByRole('button', { name: 'Start over' }));
+    fireEvent.click(screen.getAllByRole('button', { name: 'Start over' }).at(-1)!);
+    expect(state.box.value['Hoocrates']).toBeUndefined();
+    expect(JSON.parse(localStorage.getItem('hatchlab-plan-checks-v1')!)).toEqual({});
+
+    // Clear plan: the plan disappears, the pre-owned collection stays
+    fireEvent.click(screen.getByRole('button', { name: 'Clear plan' }));
+    fireEvent.click(screen.getAllByRole('button', { name: 'Clear plan' }).at(-1)!);
+    expect(document.querySelector('.tick')).toBeNull();
+    expect(document.body.textContent).not.toContain('Goal progress');
+    expect(state.box.value['Lamball']).toEqual({ m: true, f: true });
+  });
+
   it('untick removes exactly what the tick added', () => {
     const steps = [{
       wave: 1, parents: ['Lamball', 'Cattiva'] as [string, string], child: 'Hoocrates',

@@ -321,6 +321,38 @@ export function completeStep(sid: string, child: string, got: { m: boolean; f: b
   emit();
 }
 
+/** "Start over": untick every step properly — reversing exactly what each
+ * tick registered into the collection (never pre-owned pals). */
+export function resetPlanProgress(): void {
+  for (const sid of Object.keys(state.checks)) {
+    const c = (state.checks as Record<string, unknown>)[sid];
+    if (c && typeof c === 'object') {
+      const sc = c as StepCheckShape;
+      const child = sid.slice(sid.lastIndexOf('>') + 1);
+      const cur = state.box[child];
+      if (cur) {
+        const next = { m: cur.m && !sc.addedM, f: cur.f && !sc.addedF };
+        if (!next.m && !next.f) delete state.box[child];
+        else state.box[child] = next;
+      }
+    }
+  }
+  state.checks = {};
+  void persist('checks');
+  void persist('box');
+  emit();
+}
+
+/** "Clear plan": forget the plan and its ticks. The collection stays —
+ * pals you hatched are still real. */
+export function clearPlan(): void {
+  state.plan = null;
+  state.checks = {};
+  void persist('plan');
+  void persist('checks');
+  emit();
+}
+
 export function uncheckStep(sid: string, child: string): void {
   const c = (state.checks as Record<string, unknown>)[sid];
   delete (state.checks as Record<string, unknown>)[sid];

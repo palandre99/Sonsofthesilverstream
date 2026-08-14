@@ -71,6 +71,7 @@ export function PlanPage() {
   const [plannedAt, setPlannedAt] = useState<string | null>(saved?.planned ?? null);
   const [checks, setChecks] = useState<Record<string, CheckValue>>(loadChecks());
   const [hatching, setHatching] = useState<{ sid: string; child: string } | null>(null);
+  const [managing, setManaging] = useState<'none' | 'reset' | 'clear'>('none');
 
   const ownedNames = Object.keys(box.value);
 
@@ -112,6 +113,33 @@ export function PlanPage() {
     setChecks(next);
     storage.set(CHECKS_KEY, JSON.stringify(next));
     setHatching(null);
+  };
+
+  /** "Start over": undo every tick properly — remove exactly what each tick
+   * registered, keep anything owned beforehand. */
+  const resetProgress = () => {
+    for (const [sid, c] of Object.entries(checks)) {
+      if (c && typeof c === 'object') {
+        const child = sid.slice(sid.lastIndexOf('>') + 1);
+        if (c.addedM) setOwnedGender(child, 'm', false);
+        if (c.addedF) setOwnedGender(child, 'f', false);
+      }
+    }
+    setChecks({});
+    storage.set(CHECKS_KEY, JSON.stringify({}));
+    setManaging('none');
+  };
+
+  /** "Clear plan": forget plan + ticks; the collection stays. */
+  const clearPlan = () => {
+    setPlan(null);
+    setPlanMs(null);
+    setPlannedAt(null);
+    setTargets([]);
+    setChecks({});
+    storage.set(CHECKS_KEY, JSON.stringify({}));
+    storage.set(PLAN_KEY, '');
+    setManaging('none');
   };
 
   const uncheckStep = (sid: string, child: string) => {
@@ -263,6 +291,10 @@ export function PlanPage() {
             {plannedAt && (
               <div class="tile"><b>{plannedAt.slice(0, 10)}</b><span>planned on — re-plan after box changes</span></div>
             )}
+            <span class="bulkbtns" style={{ alignSelf: 'center' }}>
+              <button class="btn sm" onClick={() => setManaging('reset')}>Start over</button>
+              <button class="btn sm danger" onClick={() => setManaging('clear')}>Clear plan</button>
+            </span>
           </div>
 
           {targetProgress.length > 0 && (
@@ -359,6 +391,27 @@ export function PlanPage() {
             </div>
           </div>
         </>
+      )}
+
+      {managing !== 'none' && (
+        <div class="hatchback" onClick={() => setManaging('none')}>
+          <div class="card bigcard hatchcard" role="dialog" aria-modal="true"
+            onClick={(e) => e.stopPropagation()}>
+            <h2>{managing === 'reset' ? 'Start this plan over?' : 'Clear the plan?'}</h2>
+            <p style={{ color: 'var(--muted)', fontSize: '13.5px' }}>
+              {managing === 'reset'
+                ? 'Every tick is undone properly — pals that ticks registered are removed from your Paldex again; anything you owned before stays.'
+                : 'Forgets the plan and its ticks so you can plan fresh. Your collection stays exactly as it is — hatched pals are still yours.'}
+            </p>
+            <div class="importbtns">
+              <button class={managing === 'clear' ? 'btn danger' : 'btn primary'}
+                onClick={() => (managing === 'reset' ? resetProgress() : clearPlan())}>
+                {managing === 'reset' ? 'Start over' : 'Clear plan'}
+              </button>
+              <button class="btn" onClick={() => setManaging('none')}>Cancel</button>
+            </div>
+          </div>
+        </div>
       )}
 
       {hatching && (

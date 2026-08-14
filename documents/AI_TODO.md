@@ -23,6 +23,27 @@ Add everything you find; finding nothing means you didn't look.*
 - [ ] **First OTA update flow test**: land a visible change, `eas update
       --branch development`, confirm pickup on reopen.
 
+## SELF-FOUND IMPROVEMENTS (own audit, 2026-08-15 00:05)
+
+- [x] 2026-08-15: Plan management — Start over (reverses tick-registered pals)
+      + Clear plan (keeps collection). Both platforms, tested.
+- [x] 2026-08-15: Paldex list taps while keyboard open (keyboardShouldPersistTaps).
+- [ ] Mobile Calculator: no way to clear/swap a picked parent — add long-press
+      to clear + a swap button between the pickers.
+- [ ] Mobile: picker modals should show recently-picked pals first.
+- [ ] Planner: "Plan N targets" silently replaces the current plan — warn when
+      an unfinished plan exists (checks > 0).
+- [ ] Planner phases: a phase whose steps are all done should collapse.
+- [ ] Odds Lab mobile: parent panels lose passives when switching tabs — keep
+      state per session (lift state up or persist).
+- [ ] Drawer: gesture to open should work mid-screen swipe (currently edge-only
+      32px) — evaluate against scroll conflicts.
+- [ ] Haptics on step-complete uses success notification; add a tiny confetti
+      or scale animation on the hero row for the "hatched!" moment.
+- [ ] Paldex row: tapping ♂/♀ needs a subtle scale/opacity animation.
+- [ ] Web hatch dialog: Escape should close it (click-away works today).
+- [ ] Coming-soon screens: add a "vote for this" tally later (local count).
+
 ## WEBSITE
 
 - [ ] Verify the Pages deploy at /Sonsofthesilverstream/hatchlab/ (SW scope,
