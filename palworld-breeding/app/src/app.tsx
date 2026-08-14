@@ -1,6 +1,7 @@
 /** HatchLab app shell: sidebar navigation (bottom bar on mobile) + router. */
 import './design/tokens.css';
 import './design/app.css';
+import { Component, type ComponentChildren } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import { dataReady, loadData, route, theme } from './state';
 import { CalculatorPage } from './modules/calculator';
@@ -37,6 +38,34 @@ const NAV = [
   { hash: 'reference', label: 'Reference', icon: icons.ref, match: 'reference' },
 ];
 
+/** Render errors on one page must never blank the whole app. */
+class Boundary extends Component<{ children: ComponentChildren }, { err: Error | null }> {
+  state = { err: null as Error | null };
+  static getDerivedStateFromError(err: Error) {
+    return { err };
+  }
+  override componentDidUpdate(prev: { children: ComponentChildren }) {
+    // navigating away from a crashed page gives it a fresh start
+    if (this.state.err && prev.children !== this.props.children) {
+      this.setState({ err: null });
+    }
+  }
+  render() {
+    if (this.state.err) {
+      return (
+        <div class="card bigcard" role="alert">
+          <h2>This page hit an error</h2>
+          <p>{String(this.state.err)}</p>
+          <p style={{ marginTop: '10px' }}>
+            <button class="btn" onClick={() => this.setState({ err: null })}>Try again</button>
+          </p>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 export function App() {
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
@@ -72,12 +101,14 @@ export function App() {
         {error && <div class="notebox">Failed to load data: {error}</div>}
         {!dataReady.value && !error && <div class="empty">Loading Paldex…</div>}
         {dataReady.value && (
-          page === 'calc' ? <CalculatorPage /> :
-          page === 'paldex' ? <PaldexPage /> :
-          page === 'box' ? <BoxPage /> :
-          page === 'plan' ? <PlanPage /> :
-          page === 'odds' ? <OddsPage /> :
-          <ReferencePage />
+          <Boundary>
+            {page === 'calc' ? <CalculatorPage /> :
+            page === 'paldex' ? <PaldexPage /> :
+            page === 'box' ? <BoxPage /> :
+            page === 'plan' ? <PlanPage /> :
+            page === 'odds' ? <OddsPage /> :
+            <ReferencePage />}
+          </Boundary>
         )}
       </main>
     </div>

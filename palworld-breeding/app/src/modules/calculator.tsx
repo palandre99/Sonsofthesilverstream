@@ -1,6 +1,7 @@
-/** Calculator — pair→child and child→parents (reverse lookup). */
-import { useMemo, useState } from 'preact/hooks';
-import { canPairNow, engine, nav, ownedAny, pals, selfOnly } from '../state';
+/** Calculator — pair→child and child→parents (reverse lookup).
+ * Deep link: #/calc/<name> opens reverse mode with that target picked. */
+import { useEffect, useMemo, useState } from 'preact/hooks';
+import { canPairNow, engine, nav, ownedAny, pals, route, selfOnly } from '../state';
 import { ElementChips, LockBadge, PalIcon, PalPicker, WorkChips } from '../components/shared';
 import type { ChildResult } from '../engine/types';
 
@@ -163,10 +164,20 @@ function ReverseLookup({ target }: { target: string }) {
 }
 
 export function CalculatorPage() {
-  const [mode, setMode] = useState<'pair' | 'reverse'>('pair');
+  const linked = route.value.page === 'calc' ? route.value.target : undefined;
+  const validLink = linked && linked in pals.value ? linked : null;
+  const [mode, setMode] = useState<'pair' | 'reverse'>(validLink ? 'reverse' : 'pair');
   const [a, setA] = useState<string | null>(null);
   const [b, setB] = useState<string | null>(null);
-  const [target, setTarget] = useState<string | null>(null);
+  const [target, setTarget] = useState<string | null>(validLink);
+
+  // follow deep-link changes while the page is mounted (e.g. from a drawer)
+  useEffect(() => {
+    if (validLink) {
+      setMode('reverse');
+      setTarget(validLink);
+    }
+  }, [validLink]);
 
   return (
     <>
@@ -177,8 +188,10 @@ export function CalculatorPage() {
           and the higher-rank tie-break included.</p>
       </div>
       <div class="calcmodes" role="tablist">
-        <button class={mode === 'pair' ? 'on' : ''} onClick={() => setMode('pair')}>Pair → child</button>
-        <button class={mode === 'reverse' ? 'on' : ''} onClick={() => setMode('reverse')}>Child → parents</button>
+        <button role="tab" aria-selected={mode === 'pair'} class={mode === 'pair' ? 'on' : ''}
+          onClick={() => setMode('pair')}>Pair → child</button>
+        <button role="tab" aria-selected={mode === 'reverse'} class={mode === 'reverse' ? 'on' : ''}
+          onClick={() => setMode('reverse')}>Child → parents</button>
       </div>
 
       {mode === 'pair' ? (

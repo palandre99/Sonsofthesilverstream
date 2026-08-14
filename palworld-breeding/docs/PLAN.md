@@ -161,15 +161,19 @@ Ownership UI, filters, text/JSON import-export, versioned store with migrations.
 Worker-based multi-target planner; phases, ready-states, keep-genders, per-target progress; presets incl. Pål-Andre's plan.
 *Accept: reproduces the 48-step plan from his box exactly; plans arbitrary target sets < 3 s.*
 
-**M5 — Odds Lab**
+**M5 — Odds Lab** ✅ *done 2026-08-14*
 Passive/IV/mutation math with sources for every formula; cake economics.
-*Accept: probabilities match the verified models; every formula links its source.*
+*Delivered: closed-form model on the game's own GameSettings weights (via palcalc's game-file dump) — reproduces the community's 40/24/12/10 table as a derived result, verified against an independent 200k-egg Monte Carlo simulation; real 114-passive database with mutation/boss-exclusive warnings; IV odds matching palcalc's reference; honest cake table (community numbers labelled as such).*
 
-**M6 — Polish + PWA + Launch**
-Service worker, installable, offline; Lighthouse budgets met; reference module; final visual pass; name decision; deploy to GitHub Pages publicly.
-*Accept: airplane-mode works end-to-end; budgets green; README/credits/fan-content compliance done.*
+**M6 — Polish + PWA + Launch** ✅ *shipped to the branch 2026-08-14 (public deploy pending name decision)*
+Service worker, installable, offline; reference module; final visual pass.
+*Delivered: web manifest + real egg icons (192/512/maskable), build-generated service worker (versioned precache of shell+data, cache-first runtime icons, offline navigation fallback), production-only registration; Reference rebuilt as a full mechanics handbook with the 29-claim verification table; error boundary, Escape-close drawer, per-page titles, calc deep links (#/calc/Anubis), scroll restore; My Box got a real import/export panel (text+JSON round-trip, merge/replace preview), ownership/element filters and bulk actions; planning moved to a Web Worker with persisted plans and per-goal progress bars. 60 vitest tests including the exact 44,851-row oracle replay and DOM-level UI tests.*
 
-**v2 backlog (post-launch):** interactive map + spawn layers (the data is already in `pal_locations.json`), save-file import (palworld-save-tools → WASM or drag-drop JSON), Norwegian i18n, shareable plan links (URL-encoded state), passive-aware route planning, community presets.
+**What's left before public launch:** the name decision (CEO call), a GitHub Pages
+deploy of `app/dist/`, and an on-device pass (install prompt, airplane mode,
+Lighthouse) — everything testable without a phone is done and green.
+
+**v2 backlog (post-launch):** interactive map + spawn layers (the data is already in `pal_locations.json`), save-file import (palworld-save-tools → WASM or drag-drop JSON), Norwegian i18n, shareable plan links (URL-encoded state), passive-aware route planning (Odds Lab × Route Planner: plan to a species *with* a passive set, costed in eggs), community presets, Special Cake exact override value once datamined.
 
 ---
 

@@ -1,12 +1,26 @@
-# HatchLab — Palworld 1.0 breeding planner
+# HatchLab — Palworld 1.0 breeding, solved
 
-The plan: build the best Palworld breeding app on the web. Currently shipping:
-a provably-correct breeding engine, a versioned 1.0 dataset, and **the guide** —
-a tabbed web app that plans the shortest shared breeding tree from your box to
-the best breedable pals, with real game icons, stats and progress tracking.
+The best Palworld breeding app on the web: a provably-correct engine, a
+versioned 1.0 dataset, and **the app** (`app/`) — an installable, offline-first
+PWA with six modules: Calculator (pair→child and child→parents), Route Planner
+(shortest shared breeding tree from *your* box, in a Web Worker, with per-goal
+progress), Odds Lab (passive/IV/mutation probabilities from the game's own
+inheritance weights), Paldex, My Box (gendered ownership, import/export) and a
+Reference handbook with 29 verified claims.
 
-**Roadmap:** see [`docs/PLAN.md`](docs/PLAN.md) — six milestones from this guide
-to a public PWA (calculator, route planner, My Box, Paldex, Odds Lab).
+All six milestones (M0–M6) are done — see [`docs/PLAN.md`](docs/PLAN.md).
+Left before public launch: the name decision + a Pages deploy + an on-device pass.
+
+```bash
+cd app
+npm install
+npm test           # 60 tests incl. the exact 44,851-row oracle replay
+npm run build      # dist/ — static PWA, deployable anywhere
+npm run build:single  # dist/HatchLab-app.html — the whole app as ONE file
+```
+
+The original Python planner + generated guide below remain as the reference
+implementation and data pipeline.
 
 ## Quick start
 

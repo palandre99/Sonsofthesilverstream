@@ -166,7 +166,7 @@ export async function loadData(): Promise<void> {
 
 /* ---------------- routing (hash-based) ---------------- */
 export type Route =
-  | { page: 'calc' }
+  | { page: 'calc'; target?: string }
   | { page: 'paldex'; pal?: string }
   | { page: 'box' }
   | { page: 'plan' }
@@ -176,9 +176,12 @@ export type Route =
 function parseHash(): Route {
   const h = location.hash.replace(/^#\/?/, '');
   const [head, ...rest] = h.split('/');
+  const tail = rest.length ? decodeURIComponent(rest.join('/')) : undefined;
   switch (head) {
+    case 'calc':
+      return { page: 'calc', target: tail };
     case 'paldex':
-      return { page: 'paldex', pal: rest.length ? decodeURIComponent(rest.join('/')) : undefined };
+      return { page: 'paldex', pal: tail };
     case 'box':
       return { page: 'box' };
     case 'plan':
@@ -194,7 +197,24 @@ function parseHash(): Route {
 
 export const route = signal<Route>(parseHash());
 window.addEventListener('hashchange', () => {
+  const prev = route.value.page;
   route.value = parseHash();
+  if (route.value.page !== prev) window.scrollTo(0, 0);
+});
+
+const PAGE_TITLES: Record<Route['page'], string> = {
+  calc: 'Calculator',
+  plan: 'Route Planner',
+  odds: 'Odds Lab',
+  paldex: 'Paldex',
+  box: 'My Box',
+  reference: 'Reference',
+};
+
+effect(() => {
+  const r = route.value;
+  const detail = r.page === 'paldex' && r.pal ? `${r.pal} · ` : '';
+  document.title = `${detail}${PAGE_TITLES[r.page]} · HatchLab`;
 });
 
 export function nav(to: string): void {

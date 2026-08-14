@@ -1,5 +1,5 @@
 /** Paldex — browsable grid of all species with a detail drawer. */
-import { useMemo, useState } from 'preact/hooks';
+import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import {
   box, breedingRaw, engine, hasGender, nav, ownedAny, palNumberSort, pals, route,
   selfOnly, workLabel,
@@ -13,6 +13,18 @@ const WORKS = ['Kindling', 'Watering', 'Planting', 'Generating_Electricity', 'Ha
 function Drawer({ name, onClose }: { name: string; onClose: () => void }) {
   const p = pals.value[name];
   const raw = breedingRaw.value!;
+  const closeRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    // focus lands inside the dialog; Escape closes it
+    closeRef.current?.focus();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [name]);
+
   if (!p) return null;
 
   const asChild = raw.unique_combos.filter((c) => c.child === name);
@@ -25,8 +37,8 @@ function Drawer({ name, onClose }: { name: string; onClose: () => void }) {
   return (
     <>
       <div class="drawer-back" onClick={onClose} />
-      <aside class="drawer" role="dialog" aria-label={name}>
-        <button class="close" onClick={onClose} aria-label="Close">✕</button>
+      <aside class="drawer" role="dialog" aria-modal="true" aria-label={name}>
+        <button class="close" ref={closeRef} onClick={onClose} aria-label="Close">✕</button>
         <header>
           <PalIcon name={name} size={76} />
           <div>
@@ -108,8 +120,8 @@ function Drawer({ name, onClose }: { name: string; onClose: () => void }) {
                 </div>
               )}
               <button class="btn" style={{ alignSelf: 'flex-start', marginTop: '4px' }}
-                onClick={() => { nav('calc'); }}>
-                Find parent pairs in the Calculator
+                onClick={() => nav(`calc/${encodeURIComponent(name)}`)}>
+                All parent pairs for {name} →
               </button>
             </div>
           )}
