@@ -1,0 +1,42 @@
+/** HatchLab design tokens — the app commits to the dark game-companion look
+ * (same palette as the web app's dark theme in design/tokens.css). */
+export const T = {
+  bg: '#0C1618',
+  bg2: '#101D20',
+  surface: '#152528',
+  surface2: '#1C3136',
+  raised: '#213A40',
+  ink: '#E6F0F1',
+  muted: '#8FA6AA',
+  faint: '#5E767B',
+  line: '#27424A',
+  line2: '#31505A',
+  accent: '#3FC1C9',
+  accentInk: '#8FE3E8',
+  accentSoft: '#12333A',
+  gold: '#F0B441',
+  goldInk: '#F6CD79',
+  goldSoft: '#33270D',
+  ok: '#5BD08B',
+  okSoft: '#12321F',
+  warn: '#EDB95E',
+  warnSoft: '#33270F',
+  bad: '#F08A77',
+  badSoft: '#3A1912',
+  male: '#5EA9E8',
+  female: '#F084B4',
+  r: 14,
+  rSm: 9,
+} as const;
+
+export const ELEMENT_COLORS: Record<string, { fg: string; bg: string }> = {
+  neutral: { fg: '#AEB9BD', bg: '#26333A' },
+  fire: { fg: '#F09A80', bg: '#3B1F17' },
+  water: { fg: '#8FC1E8', bg: '#17303F' },
+  grass: { fg: '#9CCB8B', bg: '#1E3319' },
+  electric: { fg: '#E7CB6A', bg: '#362D10' },
+  ice: { fg: '#88CFE2', bg: '#12333D' },
+  ground: { fg: '#D3A96F', bg: '#352815' },
+  dark: { fg: '#C0A9E8', bg: '#2A203D' },
+  dragon: { fg: '#A6B0F0', bg: '#20264A' },
+};

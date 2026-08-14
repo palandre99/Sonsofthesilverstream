@@ -1,0 +1,216 @@
+/** App state: the oracle-tested engine, data, ownership box, plan, persistence.
+ *
+ * A tiny external store (useSyncExternalStore) — no state library needed.
+ * Everything persists to AsyncStorage best-effort; the app works fully
+ * in-memory if storage is unavailable.
+ */
+import { useSyncExternalStore } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { BreedingEngine } from './engine/formula';
+import type { BreedingData, PlanStep } from './engine/types';
+import breedingJson from './data/breeding_1_0.json';
+import palsJson from './data/pals_1_0.json';
+import passivesJson from './data/passives_1_0.json';
+import verificationJson from './data/verification.json';
+
+/* ---------------- data ---------------- */
+
+export interface PalInfo {
+  number: string;
+  elements: string[];
+  work: Record<string, number>;
+  rarity: string | null;
+  hp: number | null;
+  atk: number | null;
+  def: number | null;
+  combi_rank: number | null;
+  partner_skill: string | null;
+  partner_effect: string | null;
+  nocturnal: boolean | null;
+  wild: boolean;
+  regions: string[];
+  egg_types: string[];
+}
+
+export interface PassiveInfo {
+  name: string;
+  tier: number | null;
+  category: string;
+  effects: string;
+  breedable: boolean;
+  mutation_exclusive: boolean;
+  world_tree: boolean;
+  exclusive_to: string[];
+}
+
+export const breeding = breedingJson as unknown as BreedingData;
+export const pals = (palsJson as unknown as { pals: Record<string, PalInfo> }).pals;
+export const passives = (passivesJson as unknown as { passives: PassiveInfo[] }).passives;
+export const claims = (verificationJson as unknown as {
+  claims: { claim: string; verdict: string; evidence: string }[];
+}).claims;
+
+export const engine = new BreedingEngine(breeding);
+export const selfOnly = new Set(breeding.self_breed_only);
+export const PAL_NAMES = Object.keys(pals);
+
+export function palNumberSort(a: string, b: string): number {
+  const ma = /^(\d+)([A-Z]?)$/.exec(pals[a]?.number ?? '');
+  const mb = /^(\d+)([A-Z]?)$/.exec(pals[b]?.number ?? '');
+  if (ma && mb) {
+    const d = Number(ma[1]) - Number(mb[1]);
+    if (d) return d;
+    return ma[2].localeCompare(mb[2]);
+  }
+  if (ma) return -1;
+  if (mb) return 1;
+  return a.localeCompare(b);
+}
+
+export function workLabel(job: string): string {
+  const j = job.replace(/_/g, ' ');
+  return j === 'Generating Electricity' ? 'Electricity' : j;
+}
+
+export function topWork(p: PalInfo, n = 3): [string, number][] {
+  return Object.entries(p.work ?? {})
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, n) as [string, number][];
+}
+
+/* ---------------- persisted state ---------------- */
+
+export interface OwnedGenders { m: boolean; f: boolean }
+
+export interface SavedPlan {
+  targets: string[];
+  steps: PlanStep[];
+  unreachable: string[];
+  planned: string;
+}
+
+interface State {
+  box: Record<string, OwnedGenders>;
+  checks: Record<string, true>;
+  plan: SavedPlan | null;
+}
+
+const state: State = { box: {}, checks: {}, plan: null };
+let version = 0;
+const listeners = new Set<() => void>();
+
+function emit(): void {
+  version++;
+  for (const l of listeners) l();
+}
+
+function subscribe(l: () => void): () => void {
+  listeners.add(l);
+  return () => listeners.delete(l);
+}
+
+/** Re-render when anything changes; read state via the exported getters. */
+export function useAppVersion(): number {
+  return useSyncExternalStore(subscribe, () => version);
+}
+
+const KEYS = { box: 'hatchlab-box-v2', checks: 'hatchlab-checks-v1', plan: 'hatchlab-plan-v1' };
+
+async function persist(key: keyof typeof KEYS): Promise<void> {
+  try {
+    await AsyncStorage.setItem(KEYS[key], JSON.stringify(state[key]));
+  } catch { /* persistence unavailable — keep running in-memory */ }
+}
+
+export async function loadPersisted(): Promise<void> {
+  try {
+    const [b, c, p] = await AsyncStorage.multiGet([KEYS.box, KEYS.checks, KEYS.plan]);
+    if (b[1]) {
+      const saved = JSON.parse(b[1]) as Record<string, OwnedGenders>;
+      state.box = Object.fromEntries(
+        Object.entries(saved).filter(([n]) => Object.hasOwn(pals, n)),
+      );
+    }
+    if (c[1]) state.checks = JSON.parse(c[1]) as Record<string, true>;
+    if (p[1]) {
+      const plan = JSON.parse(p[1]) as SavedPlan;
+      if (Array.isArray(plan.targets) && Array.isArray(plan.steps)) state.plan = plan;
+    }
+  } catch { /* fresh start */ }
+  emit();
+}
+
+/* ---------------- box ---------------- */
+
+export const getBox = () => state.box;
+export const ownedAny = (n: string) => !!(state.box[n]?.m || state.box[n]?.f);
+export const hasGender = (n: string, g: 'm' | 'f') => !!state.box[n]?.[g];
+export const ownedCount = () => Object.keys(state.box).length;
+export const pairReadyCount = () =>
+  Object.values(state.box).filter((o) => o.m && o.f).length;
+
+export function setOwnedGender(name: string, g: 'm' | 'f', val: boolean): void {
+  const cur = state.box[name] ?? { m: false, f: false };
+  const entry = { ...cur, [g]: val };
+  if (!entry.m && !entry.f) delete state.box[name];
+  else state.box[name] = entry;
+  void persist('box');
+  emit();
+}
+
+export function toggleOwned(name: string): void {
+  if (state.box[name]) delete state.box[name];
+  else state.box[name] = { m: true, f: true };
+  void persist('box');
+  emit();
+}
+
+export function importNames(entries: [string, OwnedGenders][], replace: boolean): number {
+  if (replace) state.box = {};
+  let added = 0;
+  for (const [name, g] of entries) {
+    if (!Object.hasOwn(pals, name)) continue;
+    const cur = state.box[name];
+    state.box[name] = cur ? { m: cur.m || g.m, f: cur.f || g.f } : g;
+    added++;
+  }
+  void persist('box');
+  emit();
+  return added;
+}
+
+export function clearBox(): void {
+  state.box = {};
+  void persist('box');
+  emit();
+}
+
+export function canPairNow(a: string, b: string, genderNote?: string | null): boolean {
+  const oa = state.box[a];
+  const ob = state.box[b];
+  if (!oa || !ob) return false;
+  if (a === b) return oa.m && oa.f;
+  if (genderNote) {
+    const m = /^female (.+) \+ male (.+)$/.exec(genderNote);
+    if (m) return m[1] === a ? oa.f && ob.m : oa.m && ob.f;
+  }
+  return (oa.m && ob.f) || (oa.f && ob.m);
+}
+
+/* ---------------- plan + checks ---------------- */
+
+export const getPlan = () => state.plan;
+export const getChecks = () => state.checks;
+
+export function savePlan(plan: SavedPlan): void {
+  state.plan = plan;
+  void persist('plan');
+  emit();
+}
+
+export function toggleCheck(sid: string): void {
+  if (state.checks[sid]) delete state.checks[sid];
+  else state.checks[sid] = true;
+  void persist('checks');
+  emit();
+}

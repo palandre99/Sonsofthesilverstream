@@ -1,0 +1,46 @@
+{
+  "expo": {
+    "name": "HatchLab",
+    "slug": "hatchlab",
+    "scheme": "hatchlab",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0C1618"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.palandre.hatchlab",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "package": "com.palandre.hatchlab",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0C1618"
+      },
+      "edgeToEdgeEnabled": true
+    },
+    "updates": {
+      "enabled": false,
+      "checkAutomatically": "NEVER",
+      "fallbackToCacheTimeout": 0
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "3bb92cd1-1a95-440b-a5bf-1c3f711e71b8"
+      }
+    },
+    "owner": "palandre99"
+  }
+}
