@@ -1,0 +1,1525 @@
+<title>Eggfabrikken</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root{
+  --bg:#EDF2F3; --surface:#FFFFFF; --surface2:#E2EAEB; --ink:#182528;
+  --muted:#54696E; --line:#C9D6D8; --accent:#17777E; --accent-ink:#0F5A60;
+  --ok:#2E7D46; --ok-bg:#DDEEE2; --warn:#8A5A0B; --warn-bg:#F5E7C8;
+  --bad:#A33B2E; --bad-bg:#F4DCD7; --gold:#B98718; --gold-bg:#F6ECD2;
+  --el-neutral:#5F6B70;--el-neutral-bg:#E4E8EA; --el-fire:#B23B24;--el-fire-bg:#F6DDD6;
+  --el-water:#20618F;--el-water-bg:#D9E7F2; --el-grass:#3D7A31;--el-grass-bg:#DFEDD9;
+  --el-electric:#8A6D0B;--el-electric-bg:#F5ECC8; --el-ice:#1F7186;--el-ice-bg:#D7EDF2;
+  --el-ground:#7A5426;--el-ground-bg:#EFE3D2; --el-dark:#5A4380;--el-dark-bg:#E6DFF1;
+  --el-dragon:#4A54A8;--el-dragon-bg:#DEE1F4;
+}
+:root:not([data-theme="light"]){}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0F1B1D; --surface:#16252A; --surface2:#1D3036; --ink:#E3EDEE;
+    --muted:#94A9AC; --line:#2C4147; --accent:#4FB3BA; --accent-ink:#7BCDD2;
+    --ok:#7FC795; --ok-bg:#1C3A28; --warn:#E4B564; --warn-bg:#3C2F13;
+    --bad:#E59180; --bad-bg:#42201A; --gold:#E2BC5F; --gold-bg:#3A2F12;
+    --el-neutral:#AEB9BD;--el-neutral-bg:#28353A; --el-fire:#EE9A82;--el-fire-bg:#402019;
+    --el-water:#8FC1E8;--el-water-bg:#1B3348; --el-grass:#9CCB8B;--el-grass-bg:#22371D;
+    --el-electric:#E7CB6A;--el-electric-bg:#3B3112; --el-ice:#88CFE2;--el-ice-bg:#153742;
+    --el-ground:#D3A96F;--el-ground-bg:#3A2C18; --el-dark:#C0A9E8;--el-dark-bg:#2E2342;
+    --el-dragon:#A6B0F0;--el-dragon-bg:#232A52;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0F1B1D; --surface:#16252A; --surface2:#1D3036; --ink:#E3EDEE;
+  --muted:#94A9AC; --line:#2C4147; --accent:#4FB3BA; --accent-ink:#7BCDD2;
+  --ok:#7FC795; --ok-bg:#1C3A28; --warn:#E4B564; --warn-bg:#3C2F13;
+  --bad:#E59180; --bad-bg:#42201A; --gold:#E2BC5F; --gold-bg:#3A2F12;
+  --el-neutral:#AEB9BD;--el-neutral-bg:#28353A; --el-fire:#EE9A82;--el-fire-bg:#402019;
+  --el-water:#8FC1E8;--el-water-bg:#1B3348; --el-grass:#9CCB8B;--el-grass-bg:#22371D;
+  --el-electric:#E7CB6A;--el-electric-bg:#3B3112; --el-ice:#88CFE2;--el-ice-bg:#153742;
+  --el-ground:#D3A96F;--el-ground-bg:#3A2C18; --el-dark:#C0A9E8;--el-dark-bg:#2E2342;
+  --el-dragon:#A6B0F0;--el-dragon-bg:#232A52;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:16px/1.55 system-ui,"Segoe UI",Roboto,-apple-system,sans-serif;}
+main,.hero,.bar{max-width:1080px;margin:0 auto;padding:0 20px}
+h1,h2,h3,h4{font-family:ui-rounded,"Hiragino Maru Gothic ProN","Trebuchet MS",
+  "Segoe UI",system-ui,sans-serif;text-wrap:balance;line-height:1.15}
+code{font:0.9em ui-monospace,"Cascadia Mono",Menlo,Consolas,monospace;
+  background:var(--surface2);padding:1px 5px;border-radius:4px}
+a{color:var(--accent-ink)}
+.hero{padding:44px 20px 20px}
+.eyebrow{text-transform:uppercase;letter-spacing:.14em;font-size:12px;color:var(--muted);margin:0}
+.hero h1{font-size:clamp(38px,6vw,58px);margin:.05em 0 .15em;color:var(--accent-ink)}
+.lede{max-width:62ch;color:var(--muted);margin:0 0 18px}
+.tiles{display:flex;gap:12px;flex-wrap:wrap}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:10px;
+  padding:10px 18px;min-width:120px}
+.tile b{display:block;font-size:28px;font-variant-numeric:tabular-nums;color:var(--accent-ink)}
+.tile b i{font-style:normal;font-size:16px;color:var(--muted)}
+.tile span{font-size:12.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.bar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:14px;
+  background:var(--bg);border-bottom:1px solid var(--line);padding:9px 20px;font-size:14px}
+.bar a{color:var(--muted);text-decoration:none;font-weight:600}
+.bar a:hover,.bar a:focus-visible{color:var(--accent-ink)}
+.prog{flex:0 0 130px;height:8px;border-radius:4px;background:var(--surface2);overflow:hidden}
+.prog span{display:block;height:100%;width:0;background:var(--accent);transition:width .25s}
+#progtxt{font-variant-numeric:tabular-nums;color:var(--muted);min-width:64px}
+#reset{margin-left:auto;background:none;border:1px solid var(--line);border-radius:6px;
+  color:var(--muted);padding:3px 10px;cursor:pointer;font-size:12.5px}
+#reset:hover{color:var(--bad);border-color:var(--bad)}
+section{margin:38px 0}
+h2{font-size:26px;border-bottom:2px solid var(--line);padding-bottom:6px}
+h2 .pc{font-size:14px;color:var(--ok);margin-left:10px}
+.rules{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:6px 20px}
+.rules p{max-width:75ch}
+.hint{color:var(--muted);font-size:14.5px;max-width:75ch}
+.phase{margin:22px 0}
+.phase h3{display:flex;align-items:baseline;gap:12px;margin:0 0 8px}
+.ph{color:var(--accent-ink);font-size:20px}
+.pc{color:var(--muted);font-size:13px;font-weight:400}
+ol.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.step{display:grid;grid-template-columns:auto 1fr auto;gap:6px 14px;align-items:center;
+  background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 14px}
+.step.target{border-left:4px solid var(--gold)}
+.step .tienote{grid-column:1/-1;margin:2px 0 0;font-size:13.5px;background:var(--warn-bg);
+  color:var(--warn);border-radius:8px;padding:7px 10px;max-width:none}
+.step .tienote.alt{background:var(--surface2);color:var(--muted)}
+.step.checked{opacity:.55}
+.step.checked .recipe{text-decoration:line-through;text-decoration-color:var(--muted);
+  text-decoration-thickness:1px}
+.tick input{position:absolute;opacity:0;width:26px;height:26px;cursor:pointer}
+.tick span{display:inline-block;width:24px;height:24px;border:2px solid var(--line);
+  border-radius:7px;background:var(--surface2);position:relative;cursor:pointer;transition:all .15s}
+.tick input:checked+span{background:var(--ok);border-color:var(--ok)}
+.tick input:checked+span::after{content:"✓";position:absolute;inset:0;display:grid;
+  place-items:center;color:#fff;font-size:15px;font-weight:700}
+.tick input:focus-visible+span{outline:2px solid var(--accent);outline-offset:2px}
+.recipe{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.parent,.child{display:flex;align-items:center;gap:8px}
+.child{flex:1 1 300px;min-width:260px}
+.pn{font-size:14.5px;font-weight:600}
+.op{color:var(--muted);font-weight:700}
+.cn{display:flex;flex-direction:column;gap:3px}
+.cn b{font-size:16.5px}
+.meta,.meta2{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+.meta2{font-size:12.5px;color:var(--muted)}
+.detail{font-variant-numeric:tabular-nums}
+.egg{white-space:nowrap}
+.side{display:flex;flex-direction:column;align-items:flex-end;gap:5px;font-size:12.5px}
+.needs{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;max-width:320px}
+.nlbl{color:var(--muted);text-transform:uppercase;font-size:10.5px;letter-spacing:.07em;
+  align-self:center}
+.chip{display:inline-block;border-radius:20px;padding:1px 9px;font-size:12px;font-weight:600;
+  background:var(--surface2);color:var(--muted)}
+.chip.work{background:var(--surface2);color:var(--ink)}
+.chip.work b{color:var(--accent-ink)}
+.chip.need{background:var(--gold-bg);color:var(--gold)}
+.badge{display:inline-block;border-radius:6px;padding:2px 8px;font-size:11.5px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.05em}
+.badge.unique{background:var(--el-dragon-bg);color:var(--el-dragon)}
+.badge.warn,.badge.v-warn{background:var(--warn-bg);color:var(--warn)}
+.badge.now{background:var(--ok-bg);color:var(--ok)}
+.badge.goal{background:var(--gold-bg);color:var(--gold)}
+.badge.keep{background:var(--el-water-bg);color:var(--el-water);text-transform:none}
+.badge.own,.badge.v-ok{background:var(--ok-bg);color:var(--ok)}
+.badge.v-bad{background:var(--bad-bg);color:var(--bad)}
+.pic{position:relative;display:inline-grid;place-items:center;width:var(--s);height:var(--s);
+  border-radius:50%;background:var(--surface2);border:1.5px solid var(--line);overflow:hidden;
+  flex:none}
+.pic img{width:100%;height:100%;object-fit:cover;display:block}
+.pic.noimg img{display:none}
+.pic.noimg::after{content:attr(data-mono);font-size:calc(var(--s)*.34);font-weight:800;
+  color:var(--muted)}
+.pic.noimg.el-fire::after{color:var(--el-fire)} .pic.noimg.el-fire{background:var(--el-fire-bg)}
+.pic.noimg.el-water::after{color:var(--el-water)} .pic.noimg.el-water{background:var(--el-water-bg)}
+.pic.noimg.el-grass::after{color:var(--el-grass)} .pic.noimg.el-grass{background:var(--el-grass-bg)}
+.pic.noimg.el-electric::after{color:var(--el-electric)} .pic.noimg.el-electric{background:var(--el-electric-bg)}
+.pic.noimg.el-ice::after{color:var(--el-ice)} .pic.noimg.el-ice{background:var(--el-ice-bg)}
+.pic.noimg.el-ground::after{color:var(--el-ground)} .pic.noimg.el-ground{background:var(--el-ground-bg)}
+.pic.noimg.el-dark::after{color:var(--el-dark)} .pic.noimg.el-dark{background:var(--el-dark-bg)}
+.pic.noimg.el-dragon::after{color:var(--el-dragon)} .pic.noimg.el-dragon{background:var(--el-dragon-bg)}
+.chip.el-neutral{background:var(--el-neutral-bg);color:var(--el-neutral)}
+.chip.el-fire{background:var(--el-fire-bg);color:var(--el-fire)}
+.chip.el-water{background:var(--el-water-bg);color:var(--el-water)}
+.chip.el-grass{background:var(--el-grass-bg);color:var(--el-grass)}
+.chip.el-electric{background:var(--el-electric-bg);color:var(--el-electric)}
+.chip.el-ice{background:var(--el-ice-bg);color:var(--el-ice)}
+.chip.el-ground{background:var(--el-ground-bg);color:var(--el-ground)}
+.chip.el-dark{background:var(--el-dark-bg);color:var(--el-dark)}
+.chip.el-dragon{background:var(--el-dragon-bg);color:var(--el-dragon)}
+.hist .step{grid-template-columns:auto 1fr;padding:6px 14px}
+.hcheck{color:var(--ok);font-weight:800;font-size:18px}
+.keep{list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:10px}
+.keep li{display:flex;align-items:center;gap:8px;background:var(--surface);
+  border:1px solid var(--line);border-radius:24px;padding:5px 14px 5px 6px;font-size:14px}
+.goals{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin:12px 0 26px}
+.goal{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.goal header{display:flex;gap:12px;align-items:center;margin-bottom:8px}
+.goal h4{margin:0;font-size:18px}
+.goal .meta{margin:4px 0}
+.pskill{font-size:13.5px;color:var(--muted);margin:8px 0 0}
+.aura{font-size:13.5px;color:var(--gold);font-weight:600;margin:8px 0 0}
+.stats{display:flex;flex-direction:column;gap:4px;margin-top:10px}
+.stat{display:grid;grid-template-columns:34px 1fr 34px;gap:8px;align-items:center;font-size:12px}
+.sl{color:var(--muted);font-weight:700;letter-spacing:.05em}
+.sb{height:8px;border-radius:4px;background:var(--surface2);overflow:hidden}
+.sb span{display:block;height:100%;border-radius:4px 3px 3px 4px;background:var(--accent)}
+.sv{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink)}
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px;margin:10px 0}
+th{text-align:left;color:var(--muted);text-transform:uppercase;font-size:11.5px;
+  letter-spacing:.07em;border-bottom:2px solid var(--line);padding:6px 10px}
+td{border-bottom:1px solid var(--line);padding:8px 10px;vertical-align:top}
+tr.now td{background:var(--ok-bg)}
+.verif td:first-child{max-width:340px}
+.foot{color:var(--muted);font-size:13px}
+@media (max-width:700px){
+  .step{grid-template-columns:auto 1fr}
+  .side{grid-column:2;align-items:flex-start}
+  .needs{justify-content:flex-start}
+  .bar{flex-wrap:wrap}
+}
+@media (prefers-reduced-motion: reduce){
+  *{transition:none !important}
+}
+</style>
+<header class="hero">
+  <p class="eyebrow">Palworld 1.0 · kun breeding · Pål-Andre · lvl 44</p>
+  <h1>Eggfabrikken</h1>
+  <p class="lede">Fra 101 arter i rosteret til de beste palsene i spillet — én kake om gangen.
+  Planen er regnet ut som korteste delte tre: felles mellomledd telles bare én gang.</p>
+  <div class="tiles">
+    <div class="tile"><b>48</b><span>breeding-steg</span></div>
+    <div class="tile"><b>27</b><span>endemål</span></div>
+    <div class="tile"><b>259<i>/299</i></b><span>arter nåbare</span></div>
+    <div class="tile"><b>2</b><span>steg å verifisere</span></div>
+  </div>
+</header>
+<nav class="bar" aria-label="Fremdrift og innhold">
+  <div class="prog"><span id="progfill"></span></div>
+  <span id="progtxt">0 / 48</span>
+  <a href="#plan">Plan</a><a href="#maal">Mål</a><a href="#drift">Drift</a><a href="#kilder">Kilder</a>
+  <button id="reset" type="button" title="Nullstill avkryssing">nullstill</button>
+</nav>
+<main>
+<section id="regler">
+  <h2>Slik virker formelen</h2>
+  <div class="rules">
+    <p><b>Unik oppskrift først.</b> 134 par har fast fasit (f.eks. Frostplume + Univolt =
+    Univolt Cryst), og ett par er kjønnsavhengig (Katress/Wixen). Treffer paret ingen oppskrift,
+    blir barnet arten med CombiRank nærmest
+    <code>⌊(rank<sub>A</sub> + rank<sub>B</sub> + 1) / 2⌋</code> — men bare blant de
+    183 artene i den <b>generiske puljen</b>: varianter og legendariske som kun finnes som
+    oppskriftsbarn kan aldri dukke opp av formelen.</p>
+    <p><b>Ved eksakt uavgjort</b> vinner høyeste CombiRank. Hele modellen (formel, pulje og
+    tie-break) er verifisert mot spillfilenes egen fasit: alle 44 851 forhåndsberegnede
+    1.0-resultater i palcalc-datasettet replikeres uten ett eneste avvik, og regelen stemmer
+    med spillertesten Turtacle + Aegidron → Nitemary. De 2 stegene som avhenger av
+    tie-break er likevel merket <span class="badge warn">tie-break</span> — vil du være
+    hundre prosent trygg, test dem med én kake først.</p>
+    <p><b>Kjønn:</b> hvert steg trenger hann av den ene forelderen og hunn av den andre
+    (hvilken er likegyldig for arten). Avkom er ~50/50 — mellomledd som gjenbrukes bør
+    beholdes i begge kjønn. Kjønn kan også byttes med <b>Pal Reverser</b>.</p>
+  </div>
+</section>
+<section id="historikk">
+  <h2>Ryggraden så langt <span class="pc">5 steg fullført ✓</span></h2>
+  <ol class="steps hist"><li class="step done"><span class="hcheck">✓</span><div class="recipe"><span class="parent"><span class="pic el-electric" style="--s:32px" data-mono="B"><img src="icons/ThunderBird.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ThunderBird_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Beakon</span></span><span class="op">+</span><span class="parent"><span class="pic el-dark" style="--s:32px" data-mono="H"><img src="icons/HadesBird.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_HadesBird_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Helzephyr</span></span><span class="op">=</span><span class="child"><span class="pic el-dark" style="--s:36px" data-mono="HL"><img src="icons/HadesBird_Electric.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_HadesBird_Electric_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="cn"><b>Helzephyr Lux</b></span></span></div></li><li class="step done"><span class="hcheck">✓</span><div class="recipe"><span class="parent"><span class="pic el-dark" style="--s:32px" data-mono="HL"><img src="icons/HadesBird_Electric.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_HadesBird_Electric_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Helzephyr Lux</span></span><span class="op">+</span><span class="parent"><span class="pic el-grass" style="--s:32px" data-mono="V"><img src="icons/GrassRabbitMan.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_GrassRabbitMan_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Verdash</span></span><span class="op">=</span><span class="child"><span class="pic el-fire" style="--s:36px" data-mono="R"><img src="icons/VolcanicMonster.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VolcanicMonster_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="cn"><b>Reptyro</b></span></span></div></li><li class="step done"><span class="hcheck">✓</span><div class="recipe"><span class="parent"><span class="pic el-ice" style="--s:32px" data-mono="F"><img src="icons/IceFox.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_IceFox_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Foxcicle</span></span><span class="op">+</span><span class="parent"><span class="pic el-fire" style="--s:32px" data-mono="R"><img src="icons/VolcanicMonster.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VolcanicMonster_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Reptyro</span></span><span class="op">=</span><span class="child"><span class="pic el-ice" style="--s:36px" data-mono="RC"><img src="icons/VolcanicMonster_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VolcanicMonster_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="cn"><b>Reptyro Cryst</b></span></span></div></li><li class="step done"><span class="hcheck">✓</span><div class="recipe"><span class="parent"><span class="pic el-fire" style="--s:32px" data-mono="B"><img src="icons/Manticore.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Manticore_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Blazehowl</span></span><span class="op">+</span><span class="parent"><span class="pic el-dragon" style="--s:32px" data-mono="Q"><img src="icons/SkyDragon.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SkyDragon_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Quivern</span></span><span class="op">=</span><span class="child"><span class="pic el-ground" style="--s:36px" data-mono="W"><img src="icons/HerculesBeetle.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_HerculesBeetle_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="cn"><b>Warsect</b></span></span></div></li><li class="step done"><span class="hcheck">✓</span><div class="recipe"><span class="parent"><span class="pic el-ground" style="--s:32px" data-mono="D"><img src="icons/DrillGame.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_DrillGame_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Digtoise</span></span><span class="op">+</span><span class="parent"><span class="pic el-ground" style="--s:32px" data-mono="W"><img src="icons/HerculesBeetle.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_HerculesBeetle_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Warsect</span></span><span class="op">=</span><span class="child"><span class="pic el-ground" style="--s:36px" data-mono="WT"><img src="icons/HerculesBeetle_Ground.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_HerculesBeetle_Ground_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="cn"><b>Warsect Terra</b></span></span></div></li></ol>
+</section>
+<section id="plan">
+  <h2>Planen — 48 steg i 8 faser</h2>
+  <p class="hint">Innen samme fase kan alt bres parallelt (har du ledige farmer, kjør flere par
+  samtidig). Kryss av etter hvert — lagres i nettleseren.</p>
+  <section class="phase" id="fase-1"><h3><span class="ph">Fase 1</span><span class="pc">22 steg</span></h3><ol class="steps"><li class="step target" data-sid="Arsox+Bristla=Amione">
+<label class="tick"><input type="checkbox" aria-label="Fullført: Arsox + Bristla = Amione"><span></span></label>
+<div class="recipe">
+  <span class="parent"><span class="pic el-fire" style="--s:40px" data-mono="A"><img src="icons/FlameBuffalo.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_FlameBuffalo_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Arsox</span></span>
+  <span class="op">+</span>
+  <span class="parent"><span class="pic el-grass" style="--s:40px" data-mono="B"><img src="icons/LittleBriarRose.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_LittleBriarRose_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Bristla</span></span>
+  <span class="op">=</span>
+  <span class="child"><span class="pic el-water" style="--s:52px" data-mono="A"><img src="icons/ClioneTwins.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ClioneTwins_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
+    <span class="cn"><b>Amione</b>
+      <span class="meta"><span class="chip el-water">Vann</span><span class="chip work">Handiwork <b>2</b></span><span class="chip work">Watering <b>1</b></span><span class="chip work">Transporting <b>1</b></span></span>
+      <span class="meta2"><span class="egg">🥚 Damp Egg</span><span class="detail">rank-mål 2505 → Amione (2520) · margin 10</span></span>
+    </span>
+  </span>
+</div>
+<div class="side"><span class="badge goal">MÅL</span>
+  <div class="needs"><span class="nlbl">trengs til</span><span class="chip need">Amione</span></div>
+</div>
+
+
+
+</li><li class="step" data-sid="Arsox+Chillet=Chillet_Ignis">
+<label class="tick"><input type="checkbox" aria-label="Fullført: Arsox + Chillet = Chillet Ignis"><span></span></label>
+<div class="recipe">
+  <span class="parent"><span class="pic el-fire" style="--s:40px" data-mono="A"><img src="icons/FlameBuffalo.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_FlameBuffalo_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Arsox</span></span>
+  <span class="op">+</span>
+  <span class="parent"><span class="pic el-ice" style="--s:40px" data-mono="C"><img src="icons/WeaselDragon.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_WeaselDragon_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Chillet</span></span>
+  <span class="op">=</span>
+  <span class="child"><span class="pic el-fire" style="--s:52px" data-mono="CI"><img src="icons/WeaselDragon_Fire.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_WeaselDragon_Fire_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
+    <span class="cn"><b>Chillet Ignis</b>
+      <span class="meta"><span class="chip el-fire">Ild</span><span class="chip el-dragon">Drage</span><span class="chip work">Kindling <b>4</b></span><span class="chip work">Gathering <b>3</b></span></span>
+      <span class="meta2"><span class="egg">🥚 Large Scorching Egg · trenger varme</span></span>
+    </span>
+  </span>
+</div>
+<div class="side"><span class="badge unique">unik oppskrift</span>
+  <div class="needs"><span class="nlbl">trengs til</span><span class="chip need">Whalaska Ignis</span></div>
+</div>
+
+
+
+</li><li class="step target" data-sid="Arsox+Dazzi=Puffolt">
+<label class="tick"><input type="checkbox" aria-label="Fullført: Arsox + Dazzi = Puffolt"><span></span></label>
+<div class="recipe">
+  <span class="parent"><span class="pic el-fire" style="--s:40px" data-mono="A"><img src="icons/FlameBuffalo.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_FlameBuffalo_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Arsox</span></span>
+  <span class="op">+</span>
+  <span class="parent"><span class="pic el-electric" style="--s:40px" data-mono="D"><img src="icons/RaijinDaughter.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_RaijinDaughter_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Dazzi</span></span>
+  <span class="op">=</span>
+  <span class="child"><span class="pic el-electric" style="--s:52px" data-mono="P"><img src="icons/ElecPomeranian.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ElecPomeranian_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
+    <span class="cn"><b>Puffolt</b>
+      <span class="meta"><span class="chip el-electric">Elektrisk</span><span class="chip work">Electricity <b>2</b></span><span class="chip work">Transporting <b>1</b></span></span>
+      <span class="meta2"><span class="egg">🥚 Electric Egg</span><span class="detail">rank-mål 2360 → Puffolt (2360) · margin 10</span></span>
+    </span>
+  </span>
+</div>
+<div class="side"><span class="badge goal">MÅL</span>
+  <div class="needs"><span class="nlbl">trengs til</span><span class="chip need">Puffolt</span></div>
+</div>
+
+
+
+</li><li class="step" data-sid="Arsox+Suzaku=Smokie">
+<label class="tick"><input type="checkbox" aria-label="Fullført: Arsox + Suzaku = Smokie"><span></span></label>
+<div class="recipe">
+  <span class="parent"><span class="pic el-fire" style="--s:40px" data-mono="A"><img src="icons/FlameBuffalo.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_FlameBuffalo_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Arsox</span></span>
+  <span class="op">+</span>
+  <span class="parent"><span class="pic el-fire" style="--s:40px" data-mono="S"><img src="icons/Suzaku.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Suzaku_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Suzaku</span></span>
+  <span class="op">=</span>
+  <span class="child"><span class="pic el-dark" style="--s:52px" data-mono="S"><img src="icons/BlackPuppy.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_BlackPuppy_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
+    <span class="cn"><b>Smokie</b>
+      <span class="meta"><span class="chip el-dark">Mørke</span><span class="chip work">Gathering <b>2</b></span></span>
+      <span class="meta2"><span class="egg">🥚 Dark Egg</span><span class="detail">rank-mål 1760 → Smokie (1760) · margin 10</span></span>
+    </span>
+  </span>
+</div>
+<div class="side">
+  <div class="needs"><span class="nlbl">trengs til</span><span class="chip need">Smokie Cryst</span></div>
+</div>
+
+
+
+</li><li class="step" data-sid="Arsox+Wistella=Slowatt">
+<label class="tick"><input type="checkbox" aria-label="Fullført: Arsox + Wistella = Slowatt"><span></span></label>
+<div class="recipe">
+  <span class="parent"><span class="pic el-fire" style="--s:40px" data-mono="A"><img src="icons/FlameBuffalo.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_FlameBuffalo_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Arsox</span></span>
+  <span class="op">+</span>
+  <span class="parent"><span class="pic el-dark" style="--s:40px" data-mono="W"><img src="icons/MoonChild.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_MoonChild_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Wistella</span></span>
+  <span class="op">=</span>
+  <span class="child"><span class="pic el-electric" style="--s:52px" data-mono="S"><img src="icons/ElecLizard.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ElecLizard_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
+    <span class="cn"><b>Slowatt</b>
+      <span class="meta"><span class="chip el-electric">Elektrisk</span><span class="chip work">Electricity <b>3</b></span></span>
+      <span class="meta2"><span class="egg">🥚 Electric Egg</span><span class="detail">rank-mål 1750 → Slowatt (1750) · margin 10</span></span>
+    </span>
+  </span>
+</div>
+<div class="side">
+  <div class="needs"><span class="nlbl">trengs til</span><span class="chip need">Solmora Lux</span></div>
+</div>
+
+
+
+</li><li class="step target" data-sid="Beakon+Dumud=Lullu">
+<label class="tick"><input type="checkbox" aria-label="Fullført: Beakon + Dumud = Lullu"><span></span></label>
+<div class="recipe">
+  <span class="parent"><span class="pic el-electric" style="--s:40px" data-mono="B"><img src="icons/ThunderBird.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ThunderBird_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Beakon</span></span>
+  <span class="op">+</span>
+  <span class="parent"><span class="pic el-ground" style="--s:40px" data-mono="D"><img src="icons/LazyCatfish.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_LazyCatfish_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Dumud</span></span>
+  <span class="op">=</span>
+  <span class="child"><span class="pic el-grass" style="--s:52px" data-mono="L"><img src="icons/LeafPrincess.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_LeafPrincess_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
+    <span class="cn"><b>Lullu</b>
+      <span class="meta"><span class="chip el-grass">Gress</span><span class="chip work">Planting <b>3</b></span><span class="chip work">Handiwork <b>3</b></span><span class="chip work">Medicine <b>3</b></span></span>
+      <span class="meta2"><span class="egg">🥚 Verdant Egg</span><span class="detail">rank-mål 1990 → Lullu (1990) · margin 10</span></span>
+    </span>
+  </span>
+</div>
+<div class="side"><span class="badge goal">MÅL</span>
+  <div class="needs"><span class="nlbl">trengs til</span><span class="chip need">Lullu</span></div>
+</div>
+
+
+
+</li><li class="step" data-sid="Beakon+Vanwyrm=Kitsun">
+<label class="tick"><input type="checkbox" aria-label="Fullført: Beakon + Vanwyrm = Kitsun"><span></span></label>
+<div class="recipe">
+  <span class="parent"><span class="pic el-electric" style="--s:40px" data-mono="B"><img src="icons/ThunderBird.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ThunderBird_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Beakon</span></span>
+  <span class="op">+</span>
+  <span class="parent"><span class="pic el-fire" style="--s:40px" data-mono="V"><img src="icons/BirdDragon.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_BirdDragon_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Vanwyrm</span></span>
+  <span class="op">=</span>
+  <span class="child"><span class="pic el-fire" style="--s:52px" data-mono="K"><img src="icons/AmaterasuWolf.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_AmaterasuWolf_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
+    <span class="cn"><b>Kitsun</b>
+      <span class="meta"><span class="chip el-fire">Ild</span><span class="chip work">Kindling <b>3</b></span></span>
+      <span class="meta2"><span class="egg">🥚 Large Scorching Egg · trenger varme</span><span class="detail">rank-mål 1670 → Kitsun (1670) · margin 10</span></span>
+    </span>
+  </span>
+</div>
+<div class="side">
+  <div class="needs"><span class="nlbl">trengs til</span><span class="chip need">Celesdir Noct</span></div>
+</div>
+
+
+
+</li><li class="step" data-sid="Blazehowl+Broncherry=Solmora">
+<label class="tick"><input type="checkbox" aria-label="Fullført: Blazehowl + Broncherry = Solmora"><span></span></label>
+<div class="recipe">
+  <span class="parent"><span class="pic el-fire" style="--s:40px" data-mono="B"><img src="icons/Manticore.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Manticore_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Blazehowl</span></span>
+  <span class="op">+</span>
+  <span class="parent"><span class="pic el-grass" style="--s:40px" data-mono="B"><img src="icons/SakuraSaurus.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SakuraSaurus_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Broncherry</span></span>
+  <span class="op">=</span>
+  <span class="child"><span class="pic el-water" style="--s:52px" data-mono="S"><img src="icons/KingSunfish.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_KingSunfish_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
+    <span class="cn"><b>Solmora</b>
+      <span class="meta"><span class="chip el-water">Vann</span><span class="chip work">Watering <b>4</b></span></span>
+      <span class="meta2"><span class="egg">🥚 Damp Egg</span><span class="detail">rank-mål 1370 → Solmora (1370) · margin 10</span></span>
+    </span>
+  </span>
+</div>
+<div class="side">
+  <div class="needs"><span class="nlbl">trengs til</span><span class="chip need">Solmora Lux</span></div>
+</div>
+
+
+
+</li><li class="step" data-sid="Blazehowl+Reptyro_Cryst=Sootseer">
+<label class="tick"><input type="checkbox" aria-label="Fullført: Blazehowl + Reptyro Cryst = Sootseer"><span></span></label>
+<div class="recipe">
+  <span class="parent"><span class="pic el-fire" style="--s:40px" data-mono="B"><img src="icons/Manticore.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Manticore_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Blazehowl</span></span>
+  <span class="op">+</span>
+  <span class="parent"><span class="pic el-ice" style="--s:40px" data-mono="RC"><img src="icons/VolcanicMonster_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VolcanicMonster_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Reptyro Cryst</span></span>
+  <span class="op">=</span>
+  <span class="child"><span class="pic el-dark" style="--s:52px" data-mono="S"><img src="icons/CandleGhost.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_CandleGhost_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
+    <span class="cn"><b>Sootseer</b>
+      <span class="meta"><span class="chip el-dark">Mørke</span><span class="chip el-fire">Ild</span><span class="chip work">Kindling <b>3</b></span><span class="chip work">Handiwork <b>3</b></span><span class="chip work">Mining <b>3</b></span></span>
+      <span class="meta2"><span class="egg">🥚 Large Dark Egg</span><span class="detail">rank-mål 980 → Sootseer (980) · margin 10</span></span>
+    </span>
+  </span>
+</div>
+<div class="side">
+  <div class="needs"><span class="nlbl">trengs til</span><span class="chip need">Sibelyx Primo</span></div>
+</div>
+
+
+
+</li><li class="step" data-sid="Broncherry+Menasting=Nyafia">
+<label class="tick"><input type="checkbox" aria-label="Fullført: Broncherry + Menasting = Nyafia"><span></span></label>
+<div class="recipe">
+  <span class="parent"><span class="pic el-grass" style="--s:40px" data-mono="B"><img src="icons/SakuraSaurus.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SakuraSaurus_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Broncherry</span></span>
+  <span class="op">+</span>
+  <span class="parent"><span class="pic el-dark" style="--s:40px" data-mono="M"><img src="icons/DarkScorpion.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_DarkScorpion_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Menasting</span></span>
+  <span class="op">=</span>
+  <span class="child"><span class="pic el-dark" style="--s:52px" data-mono="N"><img src="icons/BadCatgirl.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_BadCatgirl_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
+    <span class="cn"><b>Nyafia</b>
+      <span class="meta"><span class="chip el-dark">Mørke</span><span class="chip work">Handiwork <b>4</b></span><span class="chip work">Gathering <b>4</b></span><span class="chip work">Transporting <b>3</b></span></span>
+      <span class="meta2"><span class="egg">🥚 Dark Egg</span><span class="detail">rank-mål 1250 → Nyafia (1250) · margin 10</span></span>
+    </span>
+  </span>
+</div>
+<div class="side">
+  <div class="needs"><span class="nlbl">trengs til</span><span class="chip need">Celesdir Noct</span></div>
+</div>
+
+
+
+</li><li class="step target" data-sid="Broncherry_Aqua+Petallia=Dynamoff">
+<label class="tick"><input type="checkbox" aria-label="Fullført: Broncherry Aqua + Petallia = Dynamoff"><span></span></label>
+<div class="recipe">
+  <span class="parent"><span class="pic el-grass" style="--s:40px" data-mono="BA"><img src="icons/SakuraSaurus_Water.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SakuraSaurus_Water_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Broncherry Aqua</span></span>
+  <span class="op">+</span>
+  <span class="parent"><span class="pic el-grass" style="--s:40px" data-mono="P"><img src="icons/FlowerDoll.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_FlowerDoll_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Petallia</span></span>
+  <span class="op">=</span>
+  <span class="child"><span class="pic el-electric" style="--s:52px" data-mono="D"><img src="icons/ThunderFluffyBird.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ThunderFluffyBird_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
+    <span class="cn"><b>Dynamoff</b>
+      <span class="meta"><span class="chip el-electric">Elektrisk</span><span class="chip work">Electricity <b>6</b></span><span class="chip work">Gathering <b>3</b></span><span class="chip work">Transporting <b>3</b></span></span>
+      <span class="meta2"><span class="egg">🥚 Large Electric Egg</span><span class="detail">rank-mål 1400 → Dynamoff (1400) · margin 10</span></span>
+    </span>
+  </span>
+</div>
+<div class="side"><span class="badge goal">MÅL</span>
+  <div class="needs"><span class="nlbl">trengs til</span><span class="chip need">Dynamoff</span></div>
+</div>
+
+
+
+</li><li class="step target" data-sid="Broncherry_Aqua+Reptyro_Cryst=Wumpo">
+<label class="tick"><input type="checkbox" aria-label="Fullført: Broncherry Aqua + Reptyro Cryst = Wumpo"><span></span></label>
+<div class="recipe">
+  <span class="parent"><span class="pic el-grass" style="--s:40px" data-mono="BA"><img src="icons/SakuraSaurus_Water.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SakuraSaurus_Water_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Broncherry Aqua</span></span>
+  <span class="op">+</span>
+  <span class="parent"><span class="pic el-ice" style="--s:40px" data-mono="RC"><img src="icons/VolcanicMonster_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VolcanicMonster_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Reptyro Cryst</span></span>
+  <span class="op">=</span>
+  <span class="child"><span class="pic el-ice" style="--s:52px" data-mono="W"><img src="icons/Yeti.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Yeti_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
+    <span class="cn"><b>Wumpo</b>
+      <span class="meta"><span class="chip el-ice">Is</span><span class="chip work">Transporting <b>6</b></span><span class="chip work">Lumbering <b>5</b></span><span class="chip work">Cooling <b>5</b></span></span>
+      <span class="meta2"><span class="egg">🥚 Large Frozen Egg · trenger kulde</span><span class="detail">rank-mål 840 → Wumpo (830) · margin 10</span></span>
+    </span>
+  </span>
+</div>
+<div class="side"><span class="badge goal">MÅL</span><span class="badge keep">forelder i 2 steg til — behold hann + hunn</span>
+  <div class="needs"><span class="nlbl">trengs til</span><span class="chip need">Celesdir Noct</span><span class="chip need">Starryon Primo</span><span class="chip need">Whalaska Ignis</span><span class="chip need">Wumpo</span></div>
+</div>
+
+
+
+</li><li class="step" data-sid="Menasting+Reptyro_Cryst=Frostplume">
+<label class="tick"><input type="checkbox" aria-label="Fullført: Menasting + Reptyro Cryst = Frostplume"><span></span></label>
+<div class="recipe">
+  <span class="parent"><span class="pic el-dark" style="--s:40px" data-mono="M"><img src="icons/DarkScorpion.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_DarkScorpion_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Menasting</span></span>
+  <span class="op">+</span>
+  <span class="parent"><span class="pic el-ice" style="--s:40px" data-mono="RC"><img src="icons/VolcanicMonster_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VolcanicMonster_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Reptyro Cryst</span></span>
+  <span class="op">=</span>
+  <span class="child"><span class="pic el-ice" style="--s:52px" data-mono="F"><img src="icons/SnowPeafowl.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SnowPeafowl_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
+    <span class="cn"><b>Frostplume</b>
+      <span class="meta"><span class="chip el-ice">Is</span><span class="chip work">Cooling <b>4</b></span><span class="chip work">Gathering <b>2</b></span></span>
+      <span class="meta2"><span class="egg">🥚 Frozen Egg · trenger kulde</span><span class="detail">rank-mål 860 → Frostplume (860) · margin 10</span></span>
+    </span>
+  </span>
+</div>
+<div class="side"><span class="badge now">egg i farmen nå</span><span class="badge keep">forelder i 3 steg til — behold hann + hunn</span>
+  <div class="needs"><span class="nlbl">trengs til</span><span class="chip need">Anubis</span><span class="chip need">Astegon</span><span class="chip need">Blazamut</span><span class="chip need">Knocklem</span><span class="chip need">Ophydia</span><span class="chip need">+3</span></div>
+</div>
+
+
+<p class="tienote alt">Alternativ rute med samme resultat: Broncherry Aqua + Warsect Terra.</p>
+</li><li class="step target" data-sid="Eikthyrdeer+Hangyu=Eikthyrdeer_Terra">
+<label class="tick"><input type="checkbox" aria-label="Fullført: Eikthyrdeer + Hangyu = Eikthyrdeer Terra"><span></span></label>
+<div class="recipe">
+  <span class="parent"><span class="pic el-neutral" style="--s:40px" data-mono="E"><img src="icons/Deer.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Deer_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Eikthyrdeer</span></span>
+  <span class="op">+</span>
+  <span class="parent"><span class="pic el-ground" style="--s:40px" data-mono="H"><img src="icons/WindChimes.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_WindChimes_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Hangyu</span></span>
+  <span class="op">=</span>
+  <span class="child"><span class="pic el-ground" style="--s:52px" data-mono="ET"><img src="icons/Deer_Ground.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Deer_Ground_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
+    <span class="cn"><b>Eikthyrdeer Terra</b>
+      <span class="meta"><span class="chip el-ground">Jord</span><span class="chip work">Lumbering <b>2</b></span></span>
+      <span class="meta2"><span class="egg">🥚 Large Rocky Egg</span></span>
+    </span>
+  </span>
+</div>
+<div class="side"><span class="badge unique">unik oppskrift</span><span class="badge goal">MÅL</span>
+  <div class="needs"><span class="nlbl">trengs til</span><span class="chip need">Celesdir Noct</span><span class="chip need">Eikthyrdeer Terra</span><span class="chip need">Starryon Primo</span></div>
+</div>
+
+
+
+</li><li class="step target" data-sid="Felbat+Quivern=Prunelia">
+<label class="tick"><input type="checkbox" aria-label="Fullført: Felbat + Quivern = Prunelia"><span></span></label>
+<div class="recipe">
+  <span class="parent"><span class="pic el-dark" style="--s:40px" data-mono="F"><img src="icons/CatVampire.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_CatVampire_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Felbat</span></span>
+  <span class="op">+</span>
+  <span class="parent"><span class="pic el-dragon" style="--s:40px" data-mono="Q"><img src="icons/SkyDragon.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SkyDragon_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Quivern</span></span>
+  <span class="op">=</span>
+  <span class="child"><span class="pic el-grass" style="--s:52px" data-mono="P"><img src="icons/BlueberryFairy.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_BlueberryFairy_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
+    <span class="cn"><b>Prunelia</b>
+      <span class="meta"><span class="chip el-grass">Gress</span><span class="chip el-dark">Mørke</span><span class="chip work">Planting <b>3</b></span><span class="chip work">Medicine <b>3</b></span><span class="chip work">Gathering <b>2</b></span></span>
+      <span class="meta2"><span class="egg">🥚 Large Verdant Egg</span><span class="detail">rank-mål 1390 → Prunelia (1390) · margin 10</span></span>
+    </span>
+  </span>
+</div>
+<div class="side"><span class="badge goal">MÅL</span>
+  <div class="needs"><span class="nlbl">trengs til</span><span class="chip need">Prunelia</span></div>
+</div>
+
+
+
+</li><li class="step target" data-sid="Helzephyr+Reptyro_Cryst=Sekhmet">
+<label class="tick"><input type="checkbox" aria-label="Fullført: Helzephyr + Reptyro Cryst = Sekhmet"><span></span></label>
+<div class="recipe">
+  <span class="parent"><span class="pic el-dark" style="--s:40px" data-mono="H"><img src="icons/HadesBird.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_HadesBird_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Helzephyr</span></span>
+  <span class="op">+</span>
+  <span class="parent"><span class="pic el-ice" style="--s:40px" data-mono="RC"><img src="icons/VolcanicMonster_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VolcanicMonster_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Reptyro Cryst</span></span>
+  <span class="op">=</span>
+  <span class="child"><span class="pic el-ground" style="--s:52px" data-mono="S"><img src="icons/Sekhmet.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Sekhmet_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
+    <span class="cn"><b>Sekhmet</b>
+      <span class="meta"><span class="chip el-ground">Jord</span><span class="chip work">Handiwork <b>6</b></span><span class="chip work">Mining <b>3</b></span><span class="chip work">Transporting <b>2</b></span></span>
+      <span class="meta2"><span class="egg">🥚 Large Rocky Egg</span><span class="detail">rank-mål 865 → Sekhmet (870) · margin 0</span></span>
+    </span>
+  </span>
+</div>
+<div class="side"><span class="badge warn">tie-break — verifiser!</span><span class="badge goal">MÅL</span>
+  <div class="needs"><span class="nlbl">trengs til</span><span class="chip need">Sekhmet</span></div>
+</div>
+<p class="tienote">⚠️ Utfallet avhenger av tie-break-regelen («høyeste CombiRank vinner» — bekreftet av én spillertest). Hvis regelen slår motsatt vei, klekkes <b>Frostplume</b> i stedet — test med én kake før du satser stort.</p>
+
+
+</li><li class="step" data-sid="Helzephyr_Lux+Mammorest=Starryon">
+<label class="tick"><input type="checkbox" aria-label="Fullført: Helzephyr Lux + Mammorest = Starryon"><span></span></label>
+<div class="recipe">
+  <span class="parent"><span class="pic el-dark" style="--s:40px" data-mono="HL"><img src="icons/HadesBird_Electric.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_HadesBird_Electric_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Helzephyr Lux</span></span>
+  <span class="op">+</span>
+  <span class="parent"><span class="pic el-grass" style="--s:40px" data-mono="M"><img src="icons/GrassMammoth.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_GrassMammoth_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Mammorest</span></span>
+  <span class="op">=</span>
+  <span class="child"><span class="pic el-dark" style="--s:52px" data-mono="S"><img src="icons/NightBlueHorse.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_NightBlueHorse_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
+    <span class="cn"><b>Starryon</b>
+      <span class="meta"><span class="chip el-dark">Mørke</span><span class="chip work">Gathering <b>5</b></span></span>
+      <span class="meta2"><span class="egg">🥚 Large Dark Egg</span><span class="detail">rank-mål 1150 → Starryon (1150) · margin 10</span></span>
+    </span>
+  </span>
+</div>
+<div class="side">
+  <div class="needs"><span class="nlbl">trengs til</span><span class="chip need">Starryon Primo</span></div>
+</div>
+
+
+
+</li><li class="step target" data-sid="Helzephyr_Lux+Warsect_Terra=Tetroise">
+<label class="tick"><input type="checkbox" aria-label="Fullført: Helzephyr Lux + Warsect Terra = Tetroise"><span></span></label>
+<div class="recipe">
+  <span class="parent"><span class="pic el-dark" style="--s:40px" data-mono="HL"><img src="icons/HadesBird_Electric.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_HadesBird_Electric_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Helzephyr Lux</span></span>
+  <span class="op">+</span>
+  <span class="parent"><span class="pic el-ground" style="--s:40px" data-mono="WT"><img src="icons/HerculesBeetle_Ground.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_HerculesBeetle_Ground_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Warsect Terra</span></span>
+  <span class="op">=</span>
+  <span class="child"><span class="pic el-ground" style="--s:52px" data-mono="T"><img src="icons/CubeTurtle.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_CubeTurtle_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
+    <span class="cn"><b>Tetroise</b>
+      <span class="meta"><span class="chip el-ground">Jord</span><span class="chip work">Mining <b>4</b></span></span>
+      <span class="meta2"><span class="egg">🥚 Huge Rocky Egg</span><span class="detail">rank-mål 795 → Tetroise (790) · margin 10</span></span>
+    </span>
+  </span>
+</div>
+<div class="side"><span class="badge goal">MÅL</span>
+  <div class="needs"><span class="nlbl">trengs til</span><span class="chip need">Tetroise</span></div>
+</div>
+
+
+
+</li><li class="step target" data-sid="Katress+Wixen=Katress_Ignis">
+<label class="tick"><input type="checkbox" aria-label="Fullført: Katress + Wixen = Katress Ignis"><span></span></label>
+<div class="recipe">
+  <span class="parent"><span class="pic el-dark" style="--s:40px" data-mono="K"><img src="icons/CatMage.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_CatMage_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Katress</span></span>
+  <span class="op">+</span>
+  <span class="parent"><span class="pic el-fire" style="--s:40px" data-mono="W"><img src="icons/FoxMage.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_FoxMage_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Wixen</span></span>
+  <span class="op">=</span>
+  <span class="child"><span class="pic el-dark" style="--s:52px" data-mono="KI"><img src="icons/CatMage_Fire.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_CatMage_Fire_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
+    <span class="cn"><b>Katress Ignis</b>
+      <span class="meta"><span class="chip el-dark">Mørke</span><span class="chip el-fire">Ild</span><span class="chip work">Kindling <b>3</b></span><span class="chip work">Handiwork <b>3</b></span><span class="chip work">Medicine <b>3</b></span></span>
+      <span class="meta2"><span class="egg">🥚 Large Dark Egg</span></span>
+    </span>
+  </span>
+</div>
+<div class="side"><span class="badge warn">kjønn avgjør</span><span class="badge goal">MÅL</span>
+  <div class="needs"><span class="nlbl">trengs til</span><span class="chip need">Katress Ignis</span></div>
+</div>
+
+<p class="tienote">♀♂ Spillets eneste kjønnsavhengige par: <b>hunn Katress + hann Wixen</b> gir Katress Ignis — bytter du kjønnene, får du det andre barnet (Katress Ignis ↔ Wixen Noct). Feil kjønn = feil pal, så dobbeltsjekk paret før kaka legges inn.</p>
+
+</li><li class="step target" data-sid="Mammorest+Reptyro_Cryst=Venusa">
+<label class="tick"><input type="checkbox" aria-label="Fullført: Mammorest + Reptyro Cryst = Venusa"><span></span></label>
+<div class="recipe">
+  <span class="parent"><span class="pic el-grass" style="--s:40px" data-mono="M"><img src="icons/GrassMammoth.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_GrassMammoth_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Mammorest</span></span>
+  <span class="op">+</span>
+  <span class="parent"><span class="pic el-ice" style="--s:40px" data-mono="RC"><img src="icons/VolcanicMonster_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VolcanicMonster_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Reptyro Cryst</span></span>
+  <span class="op">=</span>
+  <span class="child"><span class="pic el-dark" style="--s:52px" data-mono="V"><img src="icons/SnakeGirl.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SnakeGirl_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
+    <span class="cn"><b>Venusa</b>
+      <span class="meta"><span class="chip el-dark">Mørke</span><span class="chip work">Handiwork <b>6</b></span><span class="chip work">Gathering <b>6</b></span><span class="chip work">Medicine <b>5</b></span></span>
+      <span class="meta2"><span class="egg">🥚 Large Dark Egg</span><span class="detail">rank-mål 970 → Venusa (970) · margin 10</span></span>
+    </span>
+  </span>
+</div>
+<div class="side"><span class="badge goal">MÅL</span>
+  <div class="needs"><span class="nlbl">trengs til</span><span class="chip need">Venusa</span></div>
+</div>
+
+
+
+</li><li class="step" data-sid="Quivern+Reptyro_Cryst=Loomen">
+<label class="tick"><input type="checkbox" aria-label="Fullført: Quivern + Reptyro Cryst = Loomen"><span></span></label>
+<div class="recipe">
+  <span class="parent"><span class="pic el-dragon" style="--s:40px" data-mono="Q"><img src="icons/SkyDragon.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SkyDragon_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Quivern</span></span>
+  <span class="op">+</span>
+  <span class="parent"><span class="pic el-ice" style="--s:40px" data-mono="RC"><img src="icons/VolcanicMonster_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VolcanicMonster_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Reptyro Cryst</span></span>
+  <span class="op">=</span>
+  <span class="child"><span class="pic el-dark" style="--s:52px" data-mono="L"><img src="icons/LanternButler.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_LanternButler_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
+    <span class="cn"><b>Loomen</b>
+      <span class="meta"><span class="chip el-dark">Mørke</span><span class="chip el-fire">Ild</span><span class="chip work">Kindling <b>4</b></span><span class="chip work">Handiwork <b>4</b></span><span class="chip work">Medicine <b>4</b></span></span>
+      <span class="meta2"><span class="egg">🥚 Large Dark Egg</span><span class="detail">rank-mål 905 → Loomen (890) · margin 10</span></span>
+    </span>
+  </span>
+</div>
+<div class="side">
+  <div class="needs"><span class="nlbl">trengs til</span><span class="chip need">Mycora</span></div>
+</div>
+
+
+
+</li><li class="step target" data-sid="Vanwyrm_Cryst+Warsect_Terra=Braloha">
+<label class="tick"><input type="checkbox" aria-label="Fullført: Vanwyrm Cryst + Warsect Terra = Braloha"><span></span></label>
+<div class="recipe">
+  <span class="parent"><span class="pic el-ice" style="--s:40px" data-mono="VC"><img src="icons/BirdDragon_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_BirdDragon_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Vanwyrm Cryst</span></span>
+  <span class="op">+</span>
+  <span class="parent"><span class="pic el-ground" style="--s:40px" data-mono="WT"><img src="icons/HerculesBeetle_Ground.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_HerculesBeetle_Ground_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Warsect Terra</span></span>
+  <span class="op">=</span>
+  <span class="child"><span class="pic el-grass" style="--s:52px" data-mono="B"><img src="icons/Plesiosaur.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Plesiosaur_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
+    <span class="cn"><b>Braloha</b>
+      <span class="meta"><span class="chip el-grass">Gress</span><span class="chip el-ground">Jord</span><span class="chip work">Planting <b>5</b></span><span class="chip work">Gathering <b>5</b></span><span class="chip work">Mining <b>3</b></span></span>
+      <span class="meta2"><span class="egg">🥚 Huge Verdant Egg</span><span class="detail">rank-mål 1030 → Braloha (1030) · margin 10</span></span>
+    </span>
+  </span>
+</div>
+<div class="side"><span class="badge goal">MÅL</span>
+  <div class="needs"><span class="nlbl">trengs til</span><span class="chip need">Braloha</span></div>
+</div>
+
+
+
+</li></ol></section><section class="phase" id="fase-2"><h3><span class="ph">Fase 2</span><span class="pc">10 steg</span></h3><ol class="steps"><li class="step" data-sid="Beakon+Frostplume=Beakon_Cryst">
+<label class="tick"><input type="checkbox" aria-label="Fullført: Beakon + Frostplume = Beakon Cryst"><span></span></label>
+<div class="recipe">
+  <span class="parent"><span class="pic el-electric" style="--s:40px" data-mono="B"><img src="icons/ThunderBird.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ThunderBird_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Beakon</span></span>
+  <span class="op">+</span>
+  <span class="parent"><span class="pic el-ice" style="--s:40px" data-mono="F"><img src="icons/SnowPeafowl.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SnowPeafowl_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Frostplume</span></span>
+  <span class="op">=</span>
+  <span class="child"><span class="pic el-ice" style="--s:52px" data-mono="BC"><img src="icons/ThunderBird_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ThunderBird_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
+    <span class="cn"><b>Beakon Cryst</b>
+      <span class="meta"><span class="chip el-ice">Is</span><span class="chip work">Cooling <b>5</b></span><span class="chip work">Transporting <b>5</b></span><span class="chip work">Gathering <b>2</b></span></span>
+      <span class="meta2"><span class="egg">🥚 Large Frozen Egg · trenger kulde</span></span>
+    </span>
+  </span>
+</div>
+<div class="side"><span class="badge unique">unik oppskrift</span><span class="badge keep">forelder i 3 steg til — behold hann + hunn</span>
+  <div class="needs"><span class="nlbl">trengs til</span><span class="chip need">Anubis</span><span class="chip need">Blazamut</span><span class="chip need">Knocklem</span><span class="chip need">Ophydia</span><span class="chip need">Renjishi</span><span class="chip need">+1</span></div>
+</div>
+
+
+
+</li><li class="step target" data-sid="Frostplume+Univolt=Univolt_Cryst">
+<label class="tick"><input type="checkbox" aria-label="Fullført: Frostplume + Univolt = Univolt Cryst"><span></span></label>
+<div class="recipe">
+  <span class="parent"><span class="pic el-ice" style="--s:40px" data-mono="F"><img src="icons/SnowPeafowl.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SnowPeafowl_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Frostplume</span></span>
+  <span class="op">+</span>
+  <span class="parent"><span class="pic el-electric" style="--s:40px" data-mono="U"><img src="icons/Kirin.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Kirin_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Univolt</span></span>
+  <span class="op">=</span>
+  <span class="child"><span class="pic el-ice" style="--s:52px" data-mono="UC"><img src="icons/Kirin_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Kirin_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
+    <span class="cn"><b>Univolt Cryst</b>
+      <span class="meta"><span class="chip el-ice">Is</span><span class="chip work">Cooling <b>6</b></span><span class="chip work">Lumbering <b>3</b></span></span>
+      <span class="meta2"><span class="egg">🥚 Large Frozen Egg · trenger kulde</span></span>
+    </span>
+  </span>
+</div>
+<div class="side"><span class="badge unique">unik oppskrift</span><span class="badge goal">MÅL</span>
+  <div class="needs"><span class="nlbl">trengs til</span><span class="chip need">Univolt Cryst</span></div>
+</div>
+
+
+
+</li><li class="step" data-sid="Frostplume+Warsect_Terra=Moldron">
+<label class="tick"><input type="checkbox" aria-label="Fullført: Frostplume + Warsect Terra = Moldron"><span></span></label>
+<div class="recipe">
+  <span class="parent"><span class="pic el-ice" style="--s:40px" data-mono="F"><img src="icons/SnowPeafowl.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SnowPeafowl_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Frostplume</span></span>
+  <span class="op">+</span>
+  <span class="parent"><span class="pic el-ground" style="--s:40px" data-mono="WT"><img src="icons/HerculesBeetle_Ground.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_HerculesBeetle_Ground_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Warsect Terra</span></span>
+  <span class="op">=</span>
+  <span class="child"><span class="pic el-fire" style="--s:52px" data-mono="M"><img src="icons/VolcanoDragon.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VolcanoDragon_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
+    <span class="cn"><b>Moldron</b>
+      <span class="meta"><span class="chip el-fire">Ild</span><span class="chip el-ground">Jord</span><span class="chip work">Kindling <b>5</b></span><span class="chip work">Mining <b>5</b></span></span>
+      <span class="meta2"><span class="egg">🥚 Large Scorching Egg · trenger varme</span><span class="detail">rank-mål 745 → Moldron (750) · margin 10</span></span>
+    </span>
+  </span>
+</div>
+<div class="side">
+  <div class="needs"><span class="nlbl">trengs til</span><span class="chip need">Anubis</span><span class="chip need">Astegon</span></div>
+</div>
+
+
+
+</li><li class="step" data-sid="Kitsun+Nyafia=Kitsun_Noct">
+<label class="tick"><input type="checkbox" aria-label="Fullført: Kitsun + Nyafia = Kitsun Noct"><span></span></label>
+<div class="recipe">
+  <span class="parent"><span class="pic el-fire" style="--s:40px" data-mono="K"><img src="icons/AmaterasuWolf.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_AmaterasuWolf_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Kitsun</span></span>
+  <span class="op">+</span>
+  <span class="parent"><span class="pic el-dark" style="--s:40px" data-mono="N"><img src="icons/BadCatgirl.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_BadCatgirl_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Nyafia</span></span>
+  <span class="op">=</span>
+  <span class="child"><span class="pic el-dark" style="--s:52px" data-mono="KN"><img src="icons/AmaterasuWolf_Dark.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_AmaterasuWolf_Dark_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
+    <span class="cn"><b>Kitsun Noct</b>
+      <span class="meta"><span class="chip el-dark">Mørke</span><span class="chip work">Kindling <b>4</b></span></span>
+      <span class="meta2"><span class="egg">🥚 Large Dark Egg</span></span>
+    </span>
+  </span>
+</div>
+<div class="side"><span class="badge unique">unik oppskrift</span>
+  <div class="needs"><span class="nlbl">trengs til</span><span class="chip need">Celesdir Noct</span></div>
+</div>
+
+
+
+</li><li class="step target" data-sid="Loomen+Warsect_Terra=Mycora">
+<label class="tick"><input type="checkbox" aria-label="Fullført: Loomen + Warsect Terra = Mycora"><span></span></label>
+<div class="recipe">
+  <span class="parent"><span class="pic el-dark" style="--s:40px" data-mono="L"><img src="icons/LanternButler.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_LanternButler_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Loomen</span></span>
+  <span class="op">+</span>
+  <span class="parent"><span class="pic el-ground" style="--s:40px" data-mono="WT"><img src="icons/HerculesBeetle_Ground.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_HerculesBeetle_Ground_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Warsect Terra</span></span>
+  <span class="op">=</span>
+  <span class="child"><span class="pic el-grass" style="--s:52px" data-mono="M"><img src="icons/MushroomLady.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_MushroomLady_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
+    <span class="cn"><b>Mycora</b>
+      <span class="meta"><span class="chip el-grass">Gress</span><span class="chip work">Planting <b>6</b></span><span class="chip work">Medicine <b>6</b></span><span class="chip work">Handiwork <b>4</b></span></span>
+      <span class="meta2"><span class="egg">🥚 Large Verdant Egg</span><span class="detail">rank-mål 760 → Mycora (760) · margin 10</span></span>
+    </span>
+  </span>
+</div>
+<div class="side"><span class="badge goal">MÅL</span>
+  <div class="needs"><span class="nlbl">trengs til</span><span class="chip need">Mycora</span></div>
+</div>
+
+
+
+</li><li class="step target" data-sid="Munchill+Smokie=Smokie_Cryst">
+<label class="tick"><input type="checkbox" aria-label="Fullført: Munchill + Smokie = Smokie Cryst"><span></span></label>
+<div class="recipe">
+  <span class="parent"><span class="pic el-ice" style="--s:40px" data-mono="M"><img src="icons/IceCrocodile.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_IceCrocodile_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Munchill</span></span>
+  <span class="op">+</span>
+  <span class="parent"><span class="pic el-dark" style="--s:40px" data-mono="S"><img src="icons/BlackPuppy.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_BlackPuppy_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Smokie</span></span>
+  <span class="op">=</span>
+  <span class="child"><span class="pic el-dark" style="--s:52px" data-mono="SC"><img src="icons/BlackPuppy_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_BlackPuppy_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
+    <span class="cn"><b>Smokie Cryst</b>
+      <span class="meta"><span class="chip el-dark">Mørke</span><span class="chip el-ice">Is</span><span class="chip work">Gathering <b>2</b></span><span class="chip work">Cooling <b>2</b></span></span>
+      <span class="meta2"><span class="egg">🥚 Dark Egg</span></span>
+    </span>
+  </span>
+</div>
+<div class="side"><span class="badge unique">unik oppskrift</span><span class="badge goal">MÅL</span>
+  <div class="needs"><span class="nlbl">trengs til</span><span class="chip need">Smokie Cryst</span></div>
+</div>
+
+
+
+</li><li class="step" data-sid="Reptyro_Cryst+Wumpo=Whalaska">
+<label class="tick"><input type="checkbox" aria-label="Fullført: Reptyro Cryst + Wumpo = Whalaska"><span></span></label>
+<div class="recipe">
+  <span class="parent"><span class="pic el-ice" style="--s:40px" data-mono="RC"><img src="icons/VolcanicMonster_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VolcanicMonster_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Reptyro Cryst</span></span>
+  <span class="op">+</span>
+  <span class="parent"><span class="pic el-ice" style="--s:40px" data-mono="W"><img src="icons/Yeti.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Yeti_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Wumpo</span></span>
+  <span class="op">=</span>
+  <span class="child"><span class="pic el-ice" style="--s:52px" data-mono="W"><img src="icons/IceNarwhal.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_IceNarwhal_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
+    <span class="cn"><b>Whalaska</b>
+      <span class="meta"><span class="chip el-ice">Is</span><span class="chip el-water">Vann</span><span class="chip work">Cooling <b>6</b></span><span class="chip work">Watering <b>5</b></span></span>
+      <span class="meta2"><span class="egg">🥚 Huge Frozen Egg · trenger kulde</span><span class="detail">rank-mål 715 → Whalaska (710) · margin 10</span></span>
+    </span>
+  </span>
+</div>
+<div class="side">
+  <div class="needs"><span class="nlbl">trengs til</span><span class="chip need">Whalaska Ignis</span></div>
+</div>
+
+
+
+</li><li class="step target" data-sid="Slowatt+Solmora=Solmora_Lux">
+<label class="tick"><input type="checkbox" aria-label="Fullført: Slowatt + Solmora = Solmora Lux"><span></span></label>
+<div class="recipe">
+  <span class="parent"><span class="pic el-electric" style="--s:40px" data-mono="S"><img src="icons/ElecLizard.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ElecLizard_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Slowatt</span></span>
+  <span class="op">+</span>
+  <span class="parent"><span class="pic el-water" style="--s:40px" data-mono="S"><img src="icons/KingSunfish.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_KingSunfish_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Solmora</span></span>
+  <span class="op">=</span>
+  <span class="child"><span class="pic el-water" style="--s:52px" data-mono="SL"><img src="icons/KingSunfish_Thunder.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_KingSunfish_Thunder_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
+    <span class="cn"><b>Solmora Lux</b>
+      <span class="meta"><span class="chip el-water">Vann</span><span class="chip el-electric">Elektrisk</span><span class="chip work">Electricity <b>6</b></span><span class="chip work">Watering <b>4</b></span></span>
+      <span class="meta2"><span class="egg">🥚 Large Damp Egg</span></span>
+    </span>
+  </span>
+</div>
+<div class="side"><span class="badge unique">unik oppskrift</span><span class="badge goal">MÅL</span>
+  <div class="needs"><span class="nlbl">trengs til</span><span class="chip need">Solmora Lux</span></div>
+</div>
+
+
+
+</li><li class="step" data-sid="Sootseer+Warsect_Terra=Lapure">
+<label class="tick"><input type="checkbox" aria-label="Fullført: Sootseer + Warsect Terra = Lapure"><span></span></label>
+<div class="recipe">
+  <span class="parent"><span class="pic el-dark" style="--s:40px" data-mono="S"><img src="icons/CandleGhost.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_CandleGhost_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Sootseer</span></span>
+  <span class="op">+</span>
+  <span class="parent"><span class="pic el-ground" style="--s:40px" data-mono="WT"><img src="icons/HerculesBeetle_Ground.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_HerculesBeetle_Ground_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Warsect Terra</span></span>
+  <span class="op">=</span>
+  <span class="child"><span class="pic el-neutral" style="--s:52px" data-mono="L"><img src="icons/SleeveRabbit.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SleeveRabbit_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
+    <span class="cn"><b>Lapure</b>
+      <span class="meta"><span class="chip el-neutral">Nøytral</span><span class="chip work">Handiwork <b>6</b></span><span class="chip work">Gathering <b>5</b></span></span>
+      <span class="meta2"><span class="egg">🥚 Common Egg</span><span class="detail">rank-mål 805 → Lapure (810) · margin 10</span></span>
+    </span>
+  </span>
+</div>
+<div class="side">
+  <div class="needs"><span class="nlbl">trengs til</span><span class="chip need">Sibelyx Primo</span></div>
+</div>
+
+
+
+</li><li class="step" data-sid="Warsect_Terra+Wumpo=Gildane">
+<label class="tick"><input type="checkbox" aria-label="Fullført: Warsect Terra + Wumpo = Gildane"><span></span></label>
+<div class="recipe">
+  <span class="parent"><span class="pic el-ground" style="--s:40px" data-mono="WT"><img src="icons/HerculesBeetle_Ground.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_HerculesBeetle_Ground_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Warsect Terra</span></span>
+  <span class="op">+</span>
+  <span class="parent"><span class="pic el-ice" style="--s:40px" data-mono="W"><img src="icons/Yeti.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Yeti_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Wumpo</span></span>
+  <span class="op">=</span>
+  <span class="child"><span class="pic el-ground" style="--s:52px" data-mono="G"><img src="icons/GoldenHorse.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_GoldenHorse_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
+    <span class="cn"><b>Gildane</b>
+      <span class="meta"><span class="chip el-ground">Jord</span><span class="chip work">Gathering <b>5</b></span></span>
+      <span class="meta2"><span class="egg">🥚 Huge Rocky Egg</span><span class="detail">rank-mål 730 → Gildane (730) · margin 20</span></span>
+    </span>
+  </span>
+</div>
+<div class="side">
+  <div class="needs"><span class="nlbl">trengs til</span><span class="chip need">Celesdir Noct</span><span class="chip need">Starryon Primo</span></div>
+</div>
+
+
+
+</li></ol></section><section class="phase" id="fase-3"><h3><span class="ph">Fase 3</span><span class="pc">5 steg</span></h3><ol class="steps"><li class="step" data-sid="Beakon_Cryst+Reptyro_Cryst=Jormuntide">
+<label class="tick"><input type="checkbox" aria-label="Fullført: Beakon Cryst + Reptyro Cryst = Jormuntide"><span></span></label>
+<div class="recipe">
+  <span class="parent"><span class="pic el-ice" style="--s:40px" data-mono="BC"><img src="icons/ThunderBird_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ThunderBird_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Beakon Cryst</span></span>
+  <span class="op">+</span>
+  <span class="parent"><span class="pic el-ice" style="--s:40px" data-mono="RC"><img src="icons/VolcanicMonster_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VolcanicMonster_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Reptyro Cryst</span></span>
+  <span class="op">=</span>
+  <span class="child"><span class="pic el-dragon" style="--s:52px" data-mono="J"><img src="icons/Umihebi.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Umihebi_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
+    <span class="cn"><b>Jormuntide</b>
+      <span class="meta"><span class="chip el-dragon">Drage</span><span class="chip el-water">Vann</span><span class="chip work">Watering <b>7</b></span></span>
+      <span class="meta2"><span class="egg">🥚 Huge Dragon Egg</span><span class="detail">rank-mål 590 → Jormuntide (590) · margin 20</span></span>
+    </span>
+  </span>
+</div>
+<div class="side">
+  <div class="needs"><span class="nlbl">trengs til</span><span class="chip need">Blazamut</span><span class="chip need">Knocklem</span><span class="chip need">Ophydia</span><span class="chip need">Renjishi</span><span class="chip need">Solenne</span></div>
+</div>
+
+
+
+</li><li class="step target" data-sid="Chillet_Ignis+Whalaska=Whalaska_Ignis">
+<label class="tick"><input type="checkbox" aria-label="Fullført: Chillet Ignis + Whalaska = Whalaska Ignis"><span></span></label>
+<div class="recipe">
+  <span class="parent"><span class="pic el-fire" style="--s:40px" data-mono="CI"><img src="icons/WeaselDragon_Fire.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_WeaselDragon_Fire_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Chillet Ignis</span></span>
+  <span class="op">+</span>
+  <span class="parent"><span class="pic el-ice" style="--s:40px" data-mono="W"><img src="icons/IceNarwhal.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_IceNarwhal_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Whalaska</span></span>
+  <span class="op">=</span>
+  <span class="child"><span class="pic el-ice" style="--s:52px" data-mono="WI"><img src="icons/IceNarwhal_Fire.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_IceNarwhal_Fire_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
+    <span class="cn"><b>Whalaska Ignis</b>
+      <span class="meta"><span class="chip el-ice">Is</span><span class="chip el-fire">Ild</span><span class="chip work">Cooling <b>6</b></span><span class="chip work">Kindling <b>5</b></span></span>
+      <span class="meta2"><span class="egg">🥚 Huge Frozen Egg · trenger kulde</span></span>
+    </span>
+  </span>
+</div>
+<div class="side"><span class="badge unique">unik oppskrift</span><span class="badge goal">MÅL</span>
+  <div class="needs"><span class="nlbl">trengs til</span><span class="chip need">Whalaska Ignis</span></div>
+</div>
+
+
+
+</li><li class="step" data-sid="Eikthyrdeer_Terra+Gildane=Celesdir">
+<label class="tick"><input type="checkbox" aria-label="Fullført: Eikthyrdeer Terra + Gildane = Celesdir"><span></span></label>
+<div class="recipe">
+  <span class="parent"><span class="pic el-ground" style="--s:40px" data-mono="ET"><img src="icons/Deer_Ground.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Deer_Ground_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Eikthyrdeer Terra</span></span>
+  <span class="op">+</span>
+  <span class="parent"><span class="pic el-ground" style="--s:40px" data-mono="G"><img src="icons/GoldenHorse.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_GoldenHorse_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Gildane</span></span>
+  <span class="op">=</span>
+  <span class="child"><span class="pic el-neutral" style="--s:52px" data-mono="C"><img src="icons/WhiteDeer.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_WhiteDeer_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
+    <span class="cn"><b>Celesdir</b>
+      <span class="meta"><span class="chip el-neutral">Nøytral</span><span class="chip work">Lumbering <b>7</b></span><span class="chip work">Gathering <b>4</b></span></span>
+      <span class="meta2"><span class="egg">🥚 Large Common Egg</span></span>
+    </span>
+  </span>
+</div>
+<div class="side"><span class="badge unique">unik oppskrift</span><span class="badge keep">forelder i 2 steg til — behold hann + hunn</span>
+  <div class="needs"><span class="nlbl">trengs til</span><span class="chip need">Celesdir Noct</span><span class="chip need">Starryon Primo</span></div>
+</div>
+
+
+
+</li><li class="step target" data-sid="Lapure+Sibelyx=Sibelyx_Primo">
+<label class="tick"><input type="checkbox" aria-label="Fullført: Lapure + Sibelyx = Sibelyx Primo"><span></span></label>
+<div class="recipe">
+  <span class="parent"><span class="pic el-neutral" style="--s:40px" data-mono="L"><img src="icons/SleeveRabbit.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SleeveRabbit_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Lapure</span></span>
+  <span class="op">+</span>
+  <span class="parent"><span class="pic el-ice" style="--s:40px" data-mono="S"><img src="icons/WhiteMoth.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_WhiteMoth_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Sibelyx</span></span>
+  <span class="op">=</span>
+  <span class="child"><span class="pic el-neutral" style="--s:52px" data-mono="SP"><img src="icons/WhiteMoth_Neutral.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_WhiteMoth_Neutral_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
+    <span class="cn"><b>Sibelyx Primo</b>
+      <span class="meta"><span class="chip el-neutral">Nøytral</span><span class="chip work">Farming <b>4</b></span><span class="chip work">Medicine <b>3</b></span></span>
+      <span class="meta2"><span class="egg">🥚 Huge Common Egg</span></span>
+    </span>
+  </span>
+</div>
+<div class="side"><span class="badge unique">unik oppskrift</span><span class="badge goal">MÅL</span>
+  <div class="needs"><span class="nlbl">trengs til</span><span class="chip need">Sibelyx Primo</span></div>
+</div>
+
+
+
+</li><li class="step" data-sid="Moldron+Reptyro_Cryst=Moldron_Cryst">
+<label class="tick"><input type="checkbox" aria-label="Fullført: Moldron + Reptyro Cryst = Moldron Cryst"><span></span></label>
+<div class="recipe">
+  <span class="parent"><span class="pic el-fire" style="--s:40px" data-mono="M"><img src="icons/VolcanoDragon.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VolcanoDragon_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Moldron</span></span>
+  <span class="op">+</span>
+  <span class="parent"><span class="pic el-ice" style="--s:40px" data-mono="RC"><img src="icons/VolcanicMonster_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VolcanicMonster_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Reptyro Cryst</span></span>
+  <span class="op">=</span>
+  <span class="child"><span class="pic el-ice" style="--s:52px" data-mono="MC"><img src="icons/VolcanoDragon_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VolcanoDragon_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
+    <span class="cn"><b>Moldron Cryst</b>
+      <span class="meta"><span class="chip el-ice">Is</span><span class="chip el-ground">Jord</span><span class="chip work">Mining <b>5</b></span><span class="chip work">Cooling <b>5</b></span></span>
+      <span class="meta2"><span class="egg">🥚 Huge Frozen Egg · trenger kulde</span></span>
+    </span>
+  </span>
+</div>
+<div class="side"><span class="badge unique">unik oppskrift</span><span class="badge keep">forelder i 2 steg til — behold hann + hunn</span>
+  <div class="needs"><span class="nlbl">trengs til</span><span class="chip need">Anubis</span><span class="chip need">Astegon</span></div>
+</div>
+
+
+
+</li></ol></section><section class="phase" id="fase-4"><h3><span class="ph">Fase 4</span><span class="pc">5 steg</span></h3><ol class="steps"><li class="step target" data-sid="Beakon_Cryst+Moldron_Cryst=Anubis">
+<label class="tick"><input type="checkbox" aria-label="Fullført: Beakon Cryst + Moldron Cryst = Anubis"><span></span></label>
+<div class="recipe">
+  <span class="parent"><span class="pic el-ice" style="--s:40px" data-mono="BC"><img src="icons/ThunderBird_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ThunderBird_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Beakon Cryst</span></span>
+  <span class="op">+</span>
+  <span class="parent"><span class="pic el-ice" style="--s:40px" data-mono="MC"><img src="icons/VolcanoDragon_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VolcanoDragon_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Moldron Cryst</span></span>
+  <span class="op">=</span>
+  <span class="child"><span class="pic el-ground" style="--s:52px" data-mono="A"><img src="icons/Anubis.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Anubis_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
+    <span class="cn"><b>Anubis</b>
+      <span class="meta"><span class="chip el-ground">Jord</span><span class="chip work">Handiwork <b>6</b></span><span class="chip work">Mining <b>6</b></span><span class="chip work">Transporting <b>4</b></span></span>
+      <span class="meta2"><span class="egg">🥚 Huge Rocky Egg</span><span class="detail">rank-mål 480 → Anubis (480) · margin 10</span></span>
+    </span>
+  </span>
+</div>
+<div class="side"><span class="badge goal">MÅL</span>
+  <div class="needs"><span class="nlbl">trengs til</span><span class="chip need">Anubis</span></div>
+</div>
+
+
+
+</li><li class="step" data-sid="Blazehowl+Jormuntide=Jormuntide_Ignis">
+<label class="tick"><input type="checkbox" aria-label="Fullført: Blazehowl + Jormuntide = Jormuntide Ignis"><span></span></label>
+<div class="recipe">
+  <span class="parent"><span class="pic el-fire" style="--s:40px" data-mono="B"><img src="icons/Manticore.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Manticore_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Blazehowl</span></span>
+  <span class="op">+</span>
+  <span class="parent"><span class="pic el-dragon" style="--s:40px" data-mono="J"><img src="icons/Umihebi.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Umihebi_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Jormuntide</span></span>
+  <span class="op">=</span>
+  <span class="child"><span class="pic el-dragon" style="--s:52px" data-mono="JI"><img src="icons/Umihebi_Fire.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Umihebi_Fire_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
+    <span class="cn"><b>Jormuntide Ignis</b>
+      <span class="meta"><span class="chip el-dragon">Drage</span><span class="chip el-fire">Ild</span><span class="chip work">Kindling <b>7</b></span></span>
+      <span class="meta2"><span class="egg">🥚 Huge Dragon Egg</span></span>
+    </span>
+  </span>
+</div>
+<div class="side"><span class="badge unique">unik oppskrift</span><span class="badge keep">forelder i 5 steg til — behold hann + hunn</span>
+  <div class="needs"><span class="nlbl">trengs til</span><span class="chip need">Blazamut</span><span class="chip need">Knocklem</span><span class="chip need">Ophydia</span><span class="chip need">Renjishi</span><span class="chip need">Solenne</span></div>
+</div>
+
+
+
+</li><li class="step target" data-sid="Celesdir+Kitsun_Noct=Celesdir_Noct">
+<label class="tick"><input type="checkbox" aria-label="Fullført: Celesdir + Kitsun Noct = Celesdir Noct"><span></span></label>
+<div class="recipe">
+  <span class="parent"><span class="pic el-neutral" style="--s:40px" data-mono="C"><img src="icons/WhiteDeer.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_WhiteDeer_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Celesdir</span></span>
+  <span class="op">+</span>
+  <span class="parent"><span class="pic el-dark" style="--s:40px" data-mono="KN"><img src="icons/AmaterasuWolf_Dark.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_AmaterasuWolf_Dark_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Kitsun Noct</span></span>
+  <span class="op">=</span>
+  <span class="child"><span class="pic el-dark" style="--s:52px" data-mono="CN"><img src="icons/WhiteDeer_Dark.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_WhiteDeer_Dark_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
+    <span class="cn"><b>Celesdir Noct</b>
+      <span class="meta"><span class="chip el-dark">Mørke</span><span class="chip work">Lumbering <b>8</b></span><span class="chip work">Gathering <b>4</b></span></span>
+      <span class="meta2"><span class="egg">🥚 Large Dark Egg</span></span>
+    </span>
+  </span>
+</div>
+<div class="side"><span class="badge unique">unik oppskrift</span><span class="badge goal">MÅL</span>
+  <div class="needs"><span class="nlbl">trengs til</span><span class="chip need">Celesdir Noct</span></div>
+</div>
+
+
+
+</li><li class="step target" data-sid="Celesdir+Starryon=Starryon_Primo">
+<label class="tick"><input type="checkbox" aria-label="Fullført: Celesdir + Starryon = Starryon Primo"><span></span></label>
+<div class="recipe">
+  <span class="parent"><span class="pic el-neutral" style="--s:40px" data-mono="C"><img src="icons/WhiteDeer.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_WhiteDeer_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Celesdir</span></span>
+  <span class="op">+</span>
+  <span class="parent"><span class="pic el-dark" style="--s:40px" data-mono="S"><img src="icons/NightBlueHorse.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_NightBlueHorse_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Starryon</span></span>
+  <span class="op">=</span>
+  <span class="child"><span class="pic el-neutral" style="--s:52px" data-mono="SP"><img src="icons/NightBlueHorse_Neutral.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_NightBlueHorse_Neutral_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
+    <span class="cn"><b>Starryon Primo</b>
+      <span class="meta"><span class="chip el-neutral">Nøytral</span><span class="chip work">Gathering <b>7</b></span></span>
+      <span class="meta2"><span class="egg">🥚 Huge Common Egg</span></span>
+    </span>
+  </span>
+</div>
+<div class="side"><span class="badge unique">unik oppskrift</span><span class="badge goal">MÅL</span>
+  <div class="needs"><span class="nlbl">trengs til</span><span class="chip need">Starryon Primo</span></div>
+</div>
+
+
+
+</li><li class="step target" data-sid="Moldron_Cryst+Reptyro_Cryst=Astegon">
+<label class="tick"><input type="checkbox" aria-label="Fullført: Moldron Cryst + Reptyro Cryst = Astegon"><span></span></label>
+<div class="recipe">
+  <span class="parent"><span class="pic el-ice" style="--s:40px" data-mono="MC"><img src="icons/VolcanoDragon_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VolcanoDragon_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Moldron Cryst</span></span>
+  <span class="op">+</span>
+  <span class="parent"><span class="pic el-ice" style="--s:40px" data-mono="RC"><img src="icons/VolcanicMonster_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VolcanicMonster_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Reptyro Cryst</span></span>
+  <span class="op">=</span>
+  <span class="child"><span class="pic el-dragon" style="--s:52px" data-mono="A"><img src="icons/BlackMetalDragon.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_BlackMetalDragon_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
+    <span class="cn"><b>Astegon</b>
+      <span class="meta"><span class="chip el-dragon">Drage</span><span class="chip el-dark">Mørke</span><span class="chip work">Mining <b>7</b></span><span class="chip work">Handiwork <b>3</b></span></span>
+      <span class="meta2"><span class="egg">🥚 Huge Dragon Egg</span><span class="detail">rank-mål 490 → Astegon (490) · margin 10</span></span>
+    </span>
+  </span>
+</div>
+<div class="side"><span class="badge goal">MÅL</span>
+  <div class="needs"><span class="nlbl">trengs til</span><span class="chip need">Astegon</span></div>
+</div>
+
+
+
+</li></ol></section><section class="phase" id="fase-5"><h3><span class="ph">Fase 5</span><span class="pc">2 steg</span></h3><ol class="steps"><li class="step" data-sid="Beakon_Cryst+Jormuntide_Ignis=Flaracle">
+<label class="tick"><input type="checkbox" aria-label="Fullført: Beakon Cryst + Jormuntide Ignis = Flaracle"><span></span></label>
+<div class="recipe">
+  <span class="parent"><span class="pic el-ice" style="--s:40px" data-mono="BC"><img src="icons/ThunderBird_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ThunderBird_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Beakon Cryst</span></span>
+  <span class="op">+</span>
+  <span class="parent"><span class="pic el-dragon" style="--s:40px" data-mono="JI"><img src="icons/Umihebi_Fire.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Umihebi_Fire_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Jormuntide Ignis</span></span>
+  <span class="op">=</span>
+  <span class="child"><span class="pic el-fire" style="--s:52px" data-mono="F"><img src="icons/FoxExorcist.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_FoxExorcist_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
+    <span class="cn"><b>Flaracle</b>
+      <span class="meta"><span class="chip el-fire">Ild</span><span class="chip work">Kindling <b>7</b></span><span class="chip work">Handiwork <b>6</b></span><span class="chip work">Transporting <b>2</b></span></span>
+      <span class="meta2"><span class="egg">🥚 Large Scorching Egg · trenger varme</span><span class="detail">rank-mål 375 → Flaracle (390) · margin 20</span></span>
+    </span>
+  </span>
+</div>
+<div class="side">
+  <div class="needs"><span class="nlbl">trengs til</span><span class="chip need">Knocklem</span><span class="chip need">Ophydia</span><span class="chip need">Solenne</span></div>
+</div>
+
+
+
+</li><li class="step target" data-sid="Jormuntide_Ignis+Warsect_Terra=Blazamut">
+<label class="tick"><input type="checkbox" aria-label="Fullført: Jormuntide Ignis + Warsect Terra = Blazamut"><span></span></label>
+<div class="recipe">
+  <span class="parent"><span class="pic el-dragon" style="--s:40px" data-mono="JI"><img src="icons/Umihebi_Fire.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Umihebi_Fire_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Jormuntide Ignis</span></span>
+  <span class="op">+</span>
+  <span class="parent"><span class="pic el-ground" style="--s:40px" data-mono="WT"><img src="icons/HerculesBeetle_Ground.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_HerculesBeetle_Ground_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Warsect Terra</span></span>
+  <span class="op">=</span>
+  <span class="child"><span class="pic el-fire" style="--s:52px" data-mono="B"><img src="icons/KingBahamut.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_KingBahamut_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
+    <span class="cn"><b>Blazamut</b>
+      <span class="meta"><span class="chip el-fire">Ild</span><span class="chip work">Mining <b>7</b></span><span class="chip work">Kindling <b>6</b></span></span>
+      <span class="meta2"><span class="egg">🥚 Huge Scorching Egg · trenger varme</span><span class="detail">rank-mål 400 → Blazamut (410) · margin 0</span></span>
+    </span>
+  </span>
+</div>
+<div class="side"><span class="badge warn">tie-break — verifiser!</span><span class="badge goal">MÅL</span>
+  <div class="needs"><span class="nlbl">trengs til</span><span class="chip need">Blazamut</span><span class="chip need">Renjishi</span></div>
+</div>
+<p class="tienote">⚠️ Utfallet avhenger av tie-break-regelen («høyeste CombiRank vinner» — bekreftet av én spillertest). Hvis regelen slår motsatt vei, klekkes <b>Flaracle</b> i stedet — test med én kake før du satser stort. Trygg alternativ-rute: Celesdir Noct + Univolt Cryst; eller Jormuntide Ignis + Sibelyx Primo.</p>
+
+
+</li></ol></section><section class="phase" id="fase-6"><h3><span class="ph">Fase 6</span><span class="pc">2 steg</span></h3><ol class="steps"><li class="step target" data-sid="Blazamut+Jormuntide_Ignis=Renjishi">
+<label class="tick"><input type="checkbox" aria-label="Fullført: Blazamut + Jormuntide Ignis = Renjishi"><span></span></label>
+<div class="recipe">
+  <span class="parent"><span class="pic el-fire" style="--s:40px" data-mono="B"><img src="icons/KingBahamut.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_KingBahamut_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Blazamut</span></span>
+  <span class="op">+</span>
+  <span class="parent"><span class="pic el-dragon" style="--s:40px" data-mono="JI"><img src="icons/Umihebi_Fire.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Umihebi_Fire_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Jormuntide Ignis</span></span>
+  <span class="op">=</span>
+  <span class="child"><span class="pic el-fire" style="--s:52px" data-mono="R"><img src="icons/KabukiMan.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_KabukiMan_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
+    <span class="cn"><b>Renjishi</b>
+      <span class="meta"><span class="chip el-fire">Ild</span><span class="chip work">Kindling <b>8</b></span><span class="chip work">Handiwork <b>6</b></span><span class="chip work">Gathering <b>5</b></span></span>
+      <span class="meta2"><span class="egg">🥚 Large Scorching Egg · trenger varme</span><span class="detail">rank-mål 290 → Renjishi (290) · margin 10</span></span>
+    </span>
+  </span>
+</div>
+<div class="side"><span class="badge goal">MÅL</span>
+  <div class="needs"><span class="nlbl">trengs til</span><span class="chip need">Renjishi</span></div>
+</div>
+
+
+
+</li><li class="step target" data-sid="Flaracle+Jormuntide_Ignis=Solenne">
+<label class="tick"><input type="checkbox" aria-label="Fullført: Flaracle + Jormuntide Ignis = Solenne"><span></span></label>
+<div class="recipe">
+  <span class="parent"><span class="pic el-fire" style="--s:40px" data-mono="F"><img src="icons/FoxExorcist.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_FoxExorcist_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Flaracle</span></span>
+  <span class="op">+</span>
+  <span class="parent"><span class="pic el-dragon" style="--s:40px" data-mono="JI"><img src="icons/Umihebi_Fire.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Umihebi_Fire_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Jormuntide Ignis</span></span>
+  <span class="op">=</span>
+  <span class="child"><span class="pic el-dark" style="--s:52px" data-mono="S"><img src="icons/MonochromeQueen.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_MonochromeQueen_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
+    <span class="cn"><b>Solenne</b>
+      <span class="meta"><span class="chip el-dark">Mørke</span><span class="chip el-neutral">Nøytral</span><span class="chip work">Handiwork <b>8</b></span><span class="chip work">Gathering <b>4</b></span><span class="chip work">Transporting <b>2</b></span></span>
+      <span class="meta2"><span class="egg">🥚 Large Dark Egg</span><span class="detail">rank-mål 280 → Solenne (280) · margin 10</span></span>
+    </span>
+  </span>
+</div>
+<div class="side"><span class="badge goal">MÅL</span><span class="badge keep">forelder i 2 steg til — behold hann + hunn</span>
+  <div class="needs"><span class="nlbl">trengs til</span><span class="chip need">Knocklem</span><span class="chip need">Ophydia</span><span class="chip need">Solenne</span></div>
+</div>
+
+
+
+</li></ol></section><section class="phase" id="fase-7"><h3><span class="ph">Fase 7</span><span class="pc">1 steg</span></h3><ol class="steps"><li class="step target" data-sid="Jormuntide_Ignis+Solenne=Ophydia">
+<label class="tick"><input type="checkbox" aria-label="Fullført: Jormuntide Ignis + Solenne = Ophydia"><span></span></label>
+<div class="recipe">
+  <span class="parent"><span class="pic el-dragon" style="--s:40px" data-mono="JI"><img src="icons/Umihebi_Fire.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Umihebi_Fire_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Jormuntide Ignis</span></span>
+  <span class="op">+</span>
+  <span class="parent"><span class="pic el-dark" style="--s:40px" data-mono="S"><img src="icons/MonochromeQueen.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_MonochromeQueen_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Solenne</span></span>
+  <span class="op">=</span>
+  <span class="child"><span class="pic el-grass" style="--s:52px" data-mono="O"><img src="icons/LotusDragon.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_LotusDragon_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
+    <span class="cn"><b>Ophydia</b>
+      <span class="meta"><span class="chip el-grass">Gress</span><span class="chip el-water">Vann</span><span class="chip work">Planting <b>7</b></span><span class="chip work">Watering <b>5</b></span></span>
+      <span class="meta2"><span class="egg">🥚 Huge Verdant Egg</span><span class="detail">rank-mål 225 → Ophydia (230) · margin 30</span></span>
+    </span>
+  </span>
+</div>
+<div class="side"><span class="badge goal">MÅL</span>
+  <div class="needs"><span class="nlbl">trengs til</span><span class="chip need">Knocklem</span><span class="chip need">Ophydia</span></div>
+</div>
+
+
+
+</li></ol></section><section class="phase" id="fase-8"><h3><span class="ph">Fase 8</span><span class="pc">1 steg</span></h3><ol class="steps"><li class="step target" data-sid="Ophydia+Solenne=Knocklem">
+<label class="tick"><input type="checkbox" aria-label="Fullført: Ophydia + Solenne = Knocklem"><span></span></label>
+<div class="recipe">
+  <span class="parent"><span class="pic el-grass" style="--s:40px" data-mono="O"><img src="icons/LotusDragon.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_LotusDragon_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Ophydia</span></span>
+  <span class="op">+</span>
+  <span class="parent"><span class="pic el-dark" style="--s:40px" data-mono="S"><img src="icons/MonochromeQueen.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_MonochromeQueen_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Solenne</span></span>
+  <span class="op">=</span>
+  <span class="child"><span class="pic el-ground" style="--s:52px" data-mono="K"><img src="icons/WingGolem.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_WingGolem_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
+    <span class="cn"><b>Knocklem</b>
+      <span class="meta"><span class="chip el-ground">Jord</span><span class="chip work">Mining <b>7</b></span><span class="chip work">Transporting <b>7</b></span><span class="chip work">Gathering <b>4</b></span></span>
+      <span class="meta2"><span class="egg">🥚 Huge Rocky Egg</span><span class="detail">rank-mål 255 → Knocklem (260) · margin 20</span></span>
+    </span>
+  </span>
+</div>
+<div class="side"><span class="badge goal">MÅL</span>
+  <div class="needs"><span class="nlbl">trengs til</span><span class="chip need">Knocklem</span></div>
+</div>
+
+
+
+</li></ol></section>
+</section>
+<section id="behold">
+  <h2>Behold begge kjønn av disse</h2>
+  <p class="hint">Mellomledd som skal være forelder i to eller flere steg:</p>
+  <ul class="keep"><li><span class="pic el-dragon" style="--s:28px" data-mono="JI"><img src="icons/Umihebi_Fire.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Umihebi_Fire_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span> <b>Jormuntide Ignis</b> — 5 steg</li><li><span class="pic el-ice" style="--s:28px" data-mono="BC"><img src="icons/ThunderBird_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ThunderBird_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span> <b>Beakon Cryst</b> — 3 steg</li><li><span class="pic el-ice" style="--s:28px" data-mono="F"><img src="icons/SnowPeafowl.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SnowPeafowl_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span> <b>Frostplume</b> — 3 steg</li><li><span class="pic el-neutral" style="--s:28px" data-mono="C"><img src="icons/WhiteDeer.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_WhiteDeer_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span> <b>Celesdir</b> — 2 steg</li><li><span class="pic el-dark" style="--s:28px" data-mono="S"><img src="icons/MonochromeQueen.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_MonochromeQueen_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span> <b>Solenne</b> — 2 steg</li><li><span class="pic el-ice" style="--s:28px" data-mono="W"><img src="icons/Yeti.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Yeti_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span> <b>Wumpo</b> — 2 steg</li><li><span class="pic el-ice" style="--s:28px" data-mono="MC"><img src="icons/VolcanoDragon_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VolcanoDragon_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span> <b>Moldron Cryst</b> — 2 steg</li></ul>
+</section>
+<section id="maal">
+  <h2>Målgalleriet</h2>
+  <p class="hint">Dette er de beste artene som faktisk <b>kan bres</b> fra rosteret ditt.
+  De få som er naturlig sterkere per jobb (Aegidron Mining 8, Shaolong Watering 8, Dandilord
+  Planting 8, Jetragon Gathering 8, Silvance Medicine 8, Bastigor Cooling 8) er alle
+  self-breed-only eller alpha-fangst — utenfor rekkevidde med kun breeding. De fleste målene
+  spawner også vilt i World Tree-regionen (lvl 75+), men på lvl 44 er eggfabrikken veien.</p>
+  <h3>Topparbeidere</h3><div class="goals"><article class="goal">
+<header><span class="pic el-dark" style="--s:56px" data-mono="S"><img src="icons/MonochromeQueen.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_MonochromeQueen_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><div><h4>Solenne</h4>
+<div class="meta"><span class="chip el-dark">Mørke</span><span class="chip el-neutral">Nøytral</span></div></div></header>
+<div class="meta"><span class="chip work">Handiwork <b>8</b></span><span class="chip work">Gathering <b>4</b></span><span class="chip work">Transporting <b>2</b></span></div>
+<div class="stats"><div class="stat"><span class="sl">HP</span><span class="sb"><span style="width:73%"></span></span><span class="sv">110</span></div><div class="stat"><span class="sl">ATK</span><span class="sb"><span style="width:77%"></span></span><span class="sv">115</span></div><div class="stat"><span class="sl">DEF</span><span class="sb"><span style="width:77%"></span></span><span class="sv">115</span></div></div>
+<p class="pskill"><b>Untainted Maiden:</b> While in party, increases the player&#x27;s Attack by 30~80% if all Pals in party are different species. (Does not stack)</p>
+
+</article><article class="goal">
+<header><span class="pic el-dark" style="--s:56px" data-mono="CN"><img src="icons/WhiteDeer_Dark.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_WhiteDeer_Dark_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><div><h4>Celesdir Noct</h4>
+<div class="meta"><span class="chip el-dark">Mørke</span><span class="badge unique">ingen vanlig villspawn</span></div></div></header>
+<div class="meta"><span class="chip work">Lumbering <b>8</b></span><span class="chip work">Gathering <b>4</b></span></div>
+<div class="stats"><div class="stat"><span class="sl">HP</span><span class="sb"><span style="width:80%"></span></span><span class="sv">120</span></div><div class="stat"><span class="sl">ATK</span><span class="sb"><span style="width:77%"></span></span><span class="sv">115</span></div><div class="stat"><span class="sl">DEF</span><span class="sb"><span style="width:67%"></span></span><span class="sv">100</span></div></div>
+<p class="pskill"><b>Blessing of Chaos:</b> Can be ridden. While in party, the Pal fighting alongside you gradually loses Health in exchange for 40~80% Attack increase. (Does not stack)</p>
+
+</article><article class="goal">
+<header><span class="pic el-fire" style="--s:56px" data-mono="R"><img src="icons/KabukiMan.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_KabukiMan_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><div><h4>Renjishi</h4>
+<div class="meta"><span class="chip el-fire">Ild</span></div></div></header>
+<div class="meta"><span class="chip work">Kindling <b>8</b></span><span class="chip work">Handiwork <b>6</b></span><span class="chip work">Gathering <b>5</b></span><span class="chip work">Transporting <b>5</b></span></div>
+<div class="stats"><div class="stat"><span class="sl">HP</span><span class="sb"><span style="width:70%"></span></span><span class="sv">105</span></div><div class="stat"><span class="sl">ATK</span><span class="sb"><span style="width:80%"></span></span><span class="sv">120</span></div><div class="stat"><span class="sl">DEF</span><span class="sb"><span style="width:67%"></span></span><span class="sv">100</span></div></div>
+<p class="pskill"><b>Stage Combat:</b> While in party, the player&#x27;s attacks inflict Burn 2~6. (Does not stack)</p>
+
+</article><article class="goal">
+<header><span class="pic el-ground" style="--s:56px" data-mono="K"><img src="icons/WingGolem.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_WingGolem_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><div><h4>Knocklem</h4>
+<div class="meta"><span class="chip el-ground">Jord</span></div></div></header>
+<div class="meta"><span class="chip work">Mining <b>7</b></span><span class="chip work">Transporting <b>7</b></span><span class="chip work">Gathering <b>4</b></span></div>
+<div class="stats"><div class="stat"><span class="sl">HP</span><span class="sb"><span style="width:70%"></span></span><span class="sv">105</span></div><div class="stat"><span class="sl">ATK</span><span class="sb"><span style="width:73%"></span></span><span class="sv">110</span></div><div class="stat"><span class="sl">DEF</span><span class="sb"><span style="width:90%"></span></span><span class="sv">135</span></div></div>
+<p class="pskill"><b>Steel Guardian Mode:</b> When activated, a steel resolve increases Knocklem&#x27;s Attack by 50~200% and Defense by 50~200% for a limited time.</p>
+
+</article><article class="goal">
+<header><span class="pic el-neutral" style="--s:56px" data-mono="SP"><img src="icons/NightBlueHorse_Neutral.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_NightBlueHorse_Neutral_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><div><h4>Starryon Primo</h4>
+<div class="meta"><span class="chip el-neutral">Nøytral</span></div></div></header>
+<div class="meta"><span class="chip work">Gathering <b>7</b></span></div>
+<div class="stats"><div class="stat"><span class="sl">HP</span><span class="sb"><span style="width:73%"></span></span><span class="sv">110</span></div><div class="stat"><span class="sl">ATK</span><span class="sb"><span style="width:70%"></span></span><span class="sv">105</span></div><div class="stat"><span class="sl">DEF</span><span class="sb"><span style="width:67%"></span></span><span class="sv">100</span></div></div>
+<p class="pskill"><b>Light Dancer:</b> Can be ridden. Boosts Jump Power while mounted. This Pal’s Movement Speed increases by 5~25% for each other Neutral Pal in your party. (Excluding Starryon Primo)</p>
+
+</article><article class="goal">
+<header><span class="pic el-grass" style="--s:56px" data-mono="O"><img src="icons/LotusDragon.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_LotusDragon_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><div><h4>Ophydia</h4>
+<div class="meta"><span class="chip el-grass">Gress</span><span class="chip el-water">Vann</span></div></div></header>
+<div class="meta"><span class="chip work">Planting <b>7</b></span><span class="chip work">Watering <b>5</b></span></div>
+<div class="stats"><div class="stat"><span class="sl">HP</span><span class="sb"><span style="width:87%"></span></span><span class="sv">130</span></div><div class="stat"><span class="sl">ATK</span><span class="sb"><span style="width:77%"></span></span><span class="sv">115</span></div><div class="stat"><span class="sl">DEF</span><span class="sb"><span style="width:80%"></span></span><span class="sv">120</span></div></div>
+<p class="pskill"><b>Glorious Mist:</b> Can be ridden. While in party, the player&#x27;s attacks inflict Soak 2~6. (Does not stack)</p>
+
+</article><article class="goal">
+<header><span class="pic el-ground" style="--s:56px" data-mono="A"><img src="icons/Anubis.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Anubis_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><div><h4>Anubis</h4>
+<div class="meta"><span class="chip el-ground">Jord</span></div></div></header>
+<div class="meta"><span class="chip work">Handiwork <b>6</b></span><span class="chip work">Mining <b>6</b></span><span class="chip work">Transporting <b>4</b></span></div>
+<div class="stats"><div class="stat"><span class="sl">HP</span><span class="sb"><span style="width:80%"></span></span><span class="sv">120</span></div><div class="stat"><span class="sl">ATK</span><span class="sb"><span style="width:87%"></span></span><span class="sv">130</span></div><div class="stat"><span class="sl">DEF</span><span class="sb"><span style="width:67%"></span></span><span class="sv">100</span></div></div>
+<p class="pskill"><b>Guardian of the Desert:</b> When activated, Anubis changes the player&#x27;s attack type to Ground and increases Attack by 30~50%. Occasionally evades attacks with a flash sidestep during battle.</p>
+
+</article><article class="goal">
+<header><span class="pic el-dragon" style="--s:56px" data-mono="A"><img src="icons/BlackMetalDragon.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_BlackMetalDragon_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><div><h4>Astegon</h4>
+<div class="meta"><span class="chip el-dragon">Drage</span><span class="chip el-dark">Mørke</span></div></div></header>
+<div class="meta"><span class="chip work">Mining <b>7</b></span><span class="chip work">Handiwork <b>3</b></span></div>
+<div class="stats"><div class="stat"><span class="sl">HP</span><span class="sb"><span style="width:67%"></span></span><span class="sv">100</span></div><div class="stat"><span class="sl">ATK</span><span class="sb"><span style="width:83%"></span></span><span class="sv">125</span></div><div class="stat"><span class="sl">DEF</span><span class="sb"><span style="width:83%"></span></span><span class="sv">125</span></div></div>
+<p class="pskill"><b>Black Ankylosaur:</b> Can be ridden as a flying mount. Increases the damage dealt to ores by 1100~3300%, and you can obtain 150~300% more Ore while mounted.</p>
+
+</article><article class="goal">
+<header><span class="pic el-fire" style="--s:56px" data-mono="B"><img src="icons/KingBahamut.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_KingBahamut_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><div><h4>Blazamut</h4>
+<div class="meta"><span class="chip el-fire">Ild</span></div></div></header>
+<div class="meta"><span class="chip work">Mining <b>7</b></span><span class="chip work">Kindling <b>6</b></span></div>
+<div class="stats"><div class="stat"><span class="sl">HP</span><span class="sb"><span style="width:67%"></span></span><span class="sv">100</span></div><div class="stat"><span class="sl">ATK</span><span class="sb"><span style="width:100%"></span></span><span class="sv">150</span></div><div class="stat"><span class="sl">DEF</span><span class="sb"><span style="width:80%"></span></span><span class="sv">120</span></div></div>
+<p class="pskill"><b>Magma Kaiser:</b> Can be ridden. While in party, increases the Attack and Defense of the Pal fighting alongside you by 5~10% whenever you defeat an enemy. This effect lasts 20 seconds and stacks up to five times.</p>
+
+</article><article class="goal">
+<header><span class="pic el-neutral" style="--s:56px" data-mono="SP"><img src="icons/WhiteMoth_Neutral.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_WhiteMoth_Neutral_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><div><h4>Sibelyx Primo</h4>
+<div class="meta"><span class="chip el-neutral">Nøytral</span></div></div></header>
+<div class="meta"><span class="chip work">Farming <b>4</b></span><span class="chip work">Medicine <b>3</b></span></div>
+<div class="stats"><div class="stat"><span class="sl">HP</span><span class="sb"><span style="width:77%"></span></span><span class="sv">115</span></div><div class="stat"><span class="sl">ATK</span><span class="sb"><span style="width:67%"></span></span><span class="sv">100</span></div><div class="stat"><span class="sl">DEF</span><span class="sb"><span style="width:67%"></span></span><span class="sv">100</span></div></div>
+<p class="pskill"><b>Gilded Shroud:</b> While in party, increases Defense of Neutral Pals by 15~30%. (Does not stack) Sometimes makes High Quality Cloth when assigned to Ranch.</p>
+
+</article><article class="goal">
+<header><span class="pic el-dark" style="--s:56px" data-mono="V"><img src="icons/SnakeGirl.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SnakeGirl_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><div><h4>Venusa</h4>
+<div class="meta"><span class="chip el-dark">Mørke</span></div></div></header>
+<div class="meta"><span class="chip work">Handiwork <b>6</b></span><span class="chip work">Gathering <b>6</b></span><span class="chip work">Medicine <b>5</b></span><span class="chip work">Transporting <b>2</b></span></div>
+<div class="stats"><div class="stat"><span class="sl">HP</span><span class="sb"><span style="width:53%"></span></span><span class="sv">80</span></div><div class="stat"><span class="sl">ATK</span><span class="sb"><span style="width:67%"></span></span><span class="sv">100</span></div><div class="stat"><span class="sl">DEF</span><span class="sb"><span style="width:60%"></span></span><span class="sv">90</span></div></div>
+<p class="pskill"><b>Snake&#x27;s Sagacity:</b> While in party, the player&#x27;s attacks inflict Blind 2~6. (Does not stack)</p>
+
+</article><article class="goal">
+<header><span class="pic el-grass" style="--s:56px" data-mono="M"><img src="icons/MushroomLady.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_MushroomLady_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><div><h4>Mycora</h4>
+<div class="meta"><span class="chip el-grass">Gress</span></div></div></header>
+<div class="meta"><span class="chip work">Planting <b>6</b></span><span class="chip work">Medicine <b>6</b></span><span class="chip work">Handiwork <b>4</b></span><span class="chip work">Gathering <b>4</b></span></div>
+<div class="stats"><div class="stat"><span class="sl">HP</span><span class="sb"><span style="width:70%"></span></span><span class="sv">105</span></div><div class="stat"><span class="sl">ATK</span><span class="sb"><span style="width:67%"></span></span><span class="sv">100</span></div><div class="stat"><span class="sl">DEF</span><span class="sb"><span style="width:60%"></span></span><span class="sv">90</span></div></div>
+<p class="pskill"><b>Charming Spore:</b> While at a base, increases the Medicine Production Work Suitability Level for all other Base Pals by +1. (Does not stack)</p>
+<p class="aura">✨ Aura: +1 Medicine Production for alle pals i basen</p>
+</article><article class="goal">
+<header><span class="pic el-ice" style="--s:56px" data-mono="UC"><img src="icons/Kirin_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Kirin_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><div><h4>Univolt Cryst</h4>
+<div class="meta"><span class="chip el-ice">Is</span></div></div></header>
+<div class="meta"><span class="chip work">Cooling <b>6</b></span><span class="chip work">Lumbering <b>3</b></span></div>
+<div class="stats"><div class="stat"><span class="sl">HP</span><span class="sb"><span style="width:53%"></span></span><span class="sv">80</span></div><div class="stat"><span class="sl">ATK</span><span class="sb"><span style="width:73%"></span></span><span class="sv">110</span></div><div class="stat"><span class="sl">DEF</span><span class="sb"><span style="width:73%"></span></span><span class="sv">110</span></div></div>
+<p class="pskill"><b>Frigid Deity:</b> Can be ridden. While mounted, changes the player’s attack type to Ice and increases Attack by 5~20%.</p>
+
+</article><article class="goal">
+<header><span class="pic el-ice" style="--s:56px" data-mono="WI"><img src="icons/IceNarwhal_Fire.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_IceNarwhal_Fire_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><div><h4>Whalaska Ignis</h4>
+<div class="meta"><span class="chip el-ice">Is</span><span class="chip el-fire">Ild</span></div></div></header>
+<div class="meta"><span class="chip work">Cooling <b>6</b></span><span class="chip work">Kindling <b>5</b></span></div>
+<div class="stats"><div class="stat"><span class="sl">HP</span><span class="sb"><span style="width:70%"></span></span><span class="sv">105</span></div><div class="stat"><span class="sl">ATK</span><span class="sb"><span style="width:80%"></span></span><span class="sv">120</span></div><div class="stat"><span class="sl">DEF</span><span class="sb"><span style="width:73%"></span></span><span class="sv">110</span></div></div>
+<p class="pskill"><b>Cozy Whale Cruiser:</b> Can be ridden. While in party, fishing minigame begins with the capture gauge 7~17% higher than usual, and capture progress increases by 7~17% while the bars overlap. (Does not stack)</p>
+
+</article><article class="goal">
+<header><span class="pic el-water" style="--s:56px" data-mono="SL"><img src="icons/KingSunfish_Thunder.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_KingSunfish_Thunder_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><div><h4>Solmora Lux</h4>
+<div class="meta"><span class="chip el-water">Vann</span><span class="chip el-electric">Elektrisk</span></div></div></header>
+<div class="meta"><span class="chip work">Electricity <b>6</b></span><span class="chip work">Watering <b>4</b></span></div>
+<div class="stats"><div class="stat"><span class="sl">HP</span><span class="sb"><span style="width:60%"></span></span><span class="sv">90</span></div><div class="stat"><span class="sl">ATK</span><span class="sb"><span style="width:67%"></span></span><span class="sv">100</span></div><div class="stat"><span class="sl">DEF</span><span class="sb"><span style="width:57%"></span></span><span class="sv">85</span></div></div>
+<p class="pskill"><b>Shocking Fish:</b> Can be ridden to travel on water. While mounted, changes the player&#x27;s attack type to Electric and increases Attack by 5~20%. While in party, makes it easier to fish up talented Pals. (Does not stack)</p>
+
+</article></div><h3>Aura-pals (+1 arbeidsnivå til hele basen)</h3><div class="goals"><article class="goal">
+<header><span class="pic el-ground" style="--s:56px" data-mono="T"><img src="icons/CubeTurtle.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_CubeTurtle_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><div><h4>Tetroise</h4>
+<div class="meta"><span class="chip el-ground">Jord</span></div></div></header>
+<div class="meta"><span class="chip work">Mining <b>4</b></span></div>
+<div class="stats"><div class="stat"><span class="sl">HP</span><span class="sb"><span style="width:63%"></span></span><span class="sv">95</span></div><div class="stat"><span class="sl">ATK</span><span class="sb"><span style="width:67%"></span></span><span class="sv">100</span></div><div class="stat"><span class="sl">DEF</span><span class="sb"><span style="width:90%"></span></span><span class="sv">135</span></div></div>
+<p class="pskill"><b>Masonry Archelon:</b> Can be ridden While at a base, increases the Mining Work Suitability Level for all other Base Pals by +1. (Does not stack)</p>
+<p class="aura">✨ Aura: +1 Mining for alle pals i basen</p>
+</article><article class="goal">
+<header><span class="pic el-ice" style="--s:56px" data-mono="W"><img src="icons/Yeti.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Yeti_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><div><h4>Wumpo</h4>
+<div class="meta"><span class="chip el-ice">Is</span></div></div></header>
+<div class="meta"><span class="chip work">Transporting <b>6</b></span><span class="chip work">Lumbering <b>5</b></span><span class="chip work">Cooling <b>5</b></span><span class="chip work">Handiwork <b>3</b></span></div>
+<div class="stats"><div class="stat"><span class="sl">HP</span><span class="sb"><span style="width:93%"></span></span><span class="sv">140</span></div><div class="stat"><span class="sl">ATK</span><span class="sb"><span style="width:67%"></span></span><span class="sv">100</span></div><div class="stat"><span class="sl">DEF</span><span class="sb"><span style="width:67%"></span></span><span class="sv">100</span></div></div>
+<p class="pskill"><b>Guardian of the Snowy Mountain:</b> Can be ridden. While at a base, increases the Transporting Work Suitability Level for all other Base Pals by +1. (Does not stack)</p>
+<p class="aura">✨ Aura: +1 Transporting for alle pals i basen</p>
+</article><article class="goal">
+<header><span class="pic el-water" style="--s:56px" data-mono="A"><img src="icons/ClioneTwins.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ClioneTwins_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><div><h4>Amione</h4>
+<div class="meta"><span class="chip el-water">Vann</span></div></div></header>
+<div class="meta"><span class="chip work">Handiwork <b>2</b></span><span class="chip work">Watering <b>1</b></span><span class="chip work">Transporting <b>1</b></span></div>
+<div class="stats"><div class="stat"><span class="sl">HP</span><span class="sb"><span style="width:43%"></span></span><span class="sv">65</span></div><div class="stat"><span class="sl">ATK</span><span class="sb"><span style="width:67%"></span></span><span class="sv">100</span></div><div class="stat"><span class="sl">DEF</span><span class="sb"><span style="width:43%"></span></span><span class="sv">65</span></div></div>
+<p class="pskill"><b>Magical Twin Powers:</b> While at a base, increases the Watering Work Suitability Level for all other Base Pals by +1. (Does not stack)</p>
+<p class="aura">✨ Aura: +1 Watering for alle pals i basen</p>
+</article><article class="goal">
+<header><span class="pic el-ground" style="--s:56px" data-mono="ET"><img src="icons/Deer_Ground.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Deer_Ground_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><div><h4>Eikthyrdeer Terra</h4>
+<div class="meta"><span class="chip el-ground">Jord</span></div></div></header>
+<div class="meta"><span class="chip work">Lumbering <b>2</b></span></div>
+<div class="stats"><div class="stat"><span class="sl">HP</span><span class="sb"><span style="width:63%"></span></span><span class="sv">95</span></div><div class="stat"><span class="sl">ATK</span><span class="sb"><span style="width:53%"></span></span><span class="sv">80</span></div><div class="stat"><span class="sl">DEF</span><span class="sb"><span style="width:53%"></span></span><span class="sv">80</span></div></div>
+<p class="pskill"><b>Guardian of the Golden Forest:</b> Can be ridden. Can perform a double jump while mounted. While at a base, increases the Lumbering Work Suitability Level for all other Base Pals by +1 (Does not stack)</p>
+<p class="aura">✨ Aura: +1 Lumbering for alle pals i basen</p>
+</article><article class="goal">
+<header><span class="pic el-dark" style="--s:56px" data-mono="KI"><img src="icons/CatMage_Fire.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_CatMage_Fire_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><div><h4>Katress Ignis</h4>
+<div class="meta"><span class="chip el-dark">Mørke</span><span class="chip el-fire">Ild</span><span class="badge unique">ingen vanlig villspawn</span></div></div></header>
+<div class="meta"><span class="chip work">Kindling <b>3</b></span><span class="chip work">Handiwork <b>3</b></span><span class="chip work">Medicine <b>3</b></span><span class="chip work">Transporting <b>2</b></span></div>
+<div class="stats"><div class="stat"><span class="sl">HP</span><span class="sb"><span style="width:63%"></span></span><span class="sv">95</span></div><div class="stat"><span class="sl">ATK</span><span class="sb"><span style="width:70%"></span></span><span class="sv">105</span></div><div class="stat"><span class="sl">DEF</span><span class="sb"><span style="width:60%"></span></span><span class="sv">90</span></div></div>
+<p class="pskill"><b>Blazing Black Magic:</b> While at a base, increases the Kindling Work Suitability Level for all other Base Pals by +1. (Does not stack)</p>
+<p class="aura">✨ Aura: +1 Kindling for alle pals i basen</p>
+</article><article class="goal">
+<header><span class="pic el-electric" style="--s:56px" data-mono="P"><img src="icons/ElecPomeranian.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ElecPomeranian_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><div><h4>Puffolt</h4>
+<div class="meta"><span class="chip el-electric">Elektrisk</span></div></div></header>
+<div class="meta"><span class="chip work">Electricity <b>2</b></span><span class="chip work">Transporting <b>1</b></span></div>
+<div class="stats"><div class="stat"><span class="sl">HP</span><span class="sb"><span style="width:50%"></span></span><span class="sv">75</span></div><div class="stat"><span class="sl">ATK</span><span class="sb"><span style="width:67%"></span></span><span class="sv">100</span></div><div class="stat"><span class="sl">DEF</span><span class="sb"><span style="width:47%"></span></span><span class="sv">70</span></div></div>
+<p class="pskill"><b>Crackle Booster:</b> While at a base, increases the Generating Electricity Work Suitability Level for all other Base Pals by +1. (Does not stack)</p>
+<p class="aura">✨ Aura: +1 Generating Electricity for alle pals i basen</p>
+</article><article class="goal">
+<header><span class="pic el-dark" style="--s:56px" data-mono="SC"><img src="icons/BlackPuppy_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_BlackPuppy_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><div><h4>Smokie Cryst</h4>
+<div class="meta"><span class="chip el-dark">Mørke</span><span class="chip el-ice">Is</span></div></div></header>
+<div class="meta"><span class="chip work">Gathering <b>2</b></span><span class="chip work">Cooling <b>2</b></span></div>
+<div class="stats"><div class="stat"><span class="sl">HP</span><span class="sb"><span style="width:57%"></span></span><span class="sv">85</span></div><div class="stat"><span class="sl">ATK</span><span class="sb"><span style="width:67%"></span></span><span class="sv">100</span></div><div class="stat"><span class="sl">DEF</span><span class="sb"><span style="width:60%"></span></span><span class="sv">90</span></div></div>
+<p class="pskill"><b>Cryo Instincts:</b> While at a base, increases the Cooling Work Suitability Level for all other Base Pals by +1. (Does not stack)</p>
+<p class="aura">✨ Aura: +1 Cooling for alle pals i basen</p>
+</article><article class="goal">
+<header><span class="pic el-grass" style="--s:56px" data-mono="M"><img src="icons/MushroomLady.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_MushroomLady_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><div><h4>Mycora</h4>
+<div class="meta"><span class="chip el-grass">Gress</span></div></div></header>
+<div class="meta"><span class="chip work">Planting <b>6</b></span><span class="chip work">Medicine <b>6</b></span><span class="chip work">Handiwork <b>4</b></span><span class="chip work">Gathering <b>4</b></span></div>
+<div class="stats"><div class="stat"><span class="sl">HP</span><span class="sb"><span style="width:70%"></span></span><span class="sv">105</span></div><div class="stat"><span class="sl">ATK</span><span class="sb"><span style="width:67%"></span></span><span class="sv">100</span></div><div class="stat"><span class="sl">DEF</span><span class="sb"><span style="width:60%"></span></span><span class="sv">90</span></div></div>
+<p class="pskill"><b>Charming Spore:</b> While at a base, increases the Medicine Production Work Suitability Level for all other Base Pals by +1. (Does not stack)</p>
+<p class="aura">✨ Aura: +1 Medicine Production for alle pals i basen</p>
+</article><article class="goal">
+<header><span class="pic el-neutral" style="--s:56px" data-mono="R"><img src="icons/PinkRabbit.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_PinkRabbit_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><div><h4>Ribbuny</h4>
+<div class="meta"><span class="chip el-neutral">Nøytral</span><span class="badge own">i rosteret ✓</span></div></div></header>
+<div class="meta"><span class="chip work">Handiwork <b>1</b></span><span class="chip work">Gathering <b>1</b></span><span class="chip work">Transporting <b>1</b></span></div>
+<div class="stats"><div class="stat"><span class="sl">HP</span><span class="sb"><span style="width:50%"></span></span><span class="sv">75</span></div><div class="stat"><span class="sl">ATK</span><span class="sb"><span style="width:67%"></span></span><span class="sv">100</span></div><div class="stat"><span class="sl">DEF</span><span class="sb"><span style="width:47%"></span></span><span class="sv">70</span></div></div>
+<p class="pskill"><b>Happy-Go-Lucky Bunny:</b> While in party, increases Attack of Neutral Pals by 15~30%. (Does not stack) While at a base, increases the Handiwork Work Suitability Level for all other Base Pals by +1. (Does not stack)</p>
+<p class="aura">✨ Aura: +1 Handiwork for alle pals i basen</p>
+</article><article class="goal">
+<header><span class="pic el-grass" style="--s:56px" data-mono="C"><img src="icons/CuteButterfly.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_CuteButterfly_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><div><h4>Cinnamoth</h4>
+<div class="meta"><span class="chip el-grass">Gress</span><span class="badge own">i rosteret ✓</span></div></div></header>
+<div class="meta"><span class="chip work">Planting <b>2</b></span><span class="chip work">Gathering <b>2</b></span><span class="chip work">Medicine <b>2</b></span></div>
+<div class="stats"><div class="stat"><span class="sl">HP</span><span class="sb"><span style="width:47%"></span></span><span class="sv">70</span></div><div class="stat"><span class="sl">ATK</span><span class="sb"><span style="width:67%"></span></span><span class="sv">100</span></div><div class="stat"><span class="sl">DEF</span><span class="sb"><span style="width:53%"></span></span><span class="sv">80</span></div></div>
+<p class="pskill"><b>Mysterious Scales:</b> When activated, attacks the targeted enemy with Poison Fog. While at a base, increases the Farming Work Suitability Level for all other Base Pals by +1. (Does not stack)</p>
+<p class="aura">✨ Aura: +1 Farming for alle pals i basen</p>
+</article><article class="goal">
+<header><span class="pic el-grass" style="--s:56px" data-mono="C"><img src="icons/CloverFairy.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_CloverFairy_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><div><h4>Clovee</h4>
+<div class="meta"><span class="chip el-grass">Gress</span><span class="chip el-neutral">Nøytral</span><span class="badge own">i rosteret ✓</span></div></div></header>
+<div class="meta"><span class="chip work">Planting <b>1</b></span><span class="chip work">Gathering <b>1</b></span></div>
+<div class="stats"><div class="stat"><span class="sl">HP</span><span class="sb"><span style="width:53%"></span></span><span class="sv">80</span></div><div class="stat"><span class="sl">ATK</span><span class="sb"><span style="width:67%"></span></span><span class="sv">100</span></div><div class="stat"><span class="sl">DEF</span><span class="sb"><span style="width:43%"></span></span><span class="sv">65</span></div></div>
+<p class="pskill"><b>Happy Clover:</b> While at a base, increases the Gathering Work Suitability Level for all other Base Pals by +1. (Does not stack)</p>
+<p class="aura">✨ Aura: +1 Gathering for alle pals i basen</p>
+</article><article class="goal">
+<header><span class="pic el-grass" style="--s:56px" data-mono="P"><img src="icons/FlowerDoll.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_FlowerDoll_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><div><h4>Petallia</h4>
+<div class="meta"><span class="chip el-grass">Gress</span><span class="badge own">i rosteret ✓</span></div></div></header>
+<div class="meta"><span class="chip work">Planting <b>4</b></span><span class="chip work">Medicine <b>4</b></span><span class="chip work">Handiwork <b>3</b></span><span class="chip work">Gathering <b>3</b></span><span class="chip work">Transporting <b>2</b></span></div>
+<div class="stats"><div class="stat"><span class="sl">HP</span><span class="sb"><span style="width:67%"></span></span><span class="sv">100</span></div><div class="stat"><span class="sl">ATK</span><span class="sb"><span style="width:67%"></span></span><span class="sv">100</span></div><div class="stat"><span class="sl">DEF</span><span class="sb"><span style="width:67%"></span></span><span class="sv">100</span></div></div>
+<p class="pskill"><b>Blessing of the Flower Spirit:</b> When activated, soothing blossoms restore the player&#x27;s Health by 75~85%. While at a base, increases the Planting Work Suitability Level for all other Base Pals by +1. (Does not stack)</p>
+<p class="aura">✨ Aura: +1 Planting for alle pals i basen</p>
+</article></div><h3>Breeding-støtte (gjør resten av planen raskere)</h3><div class="goals"><article class="goal">
+<header><span class="pic el-grass" style="--s:56px" data-mono="B"><img src="icons/Plesiosaur.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Plesiosaur_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><div><h4>Braloha</h4>
+<div class="meta"><span class="chip el-grass">Gress</span><span class="chip el-ground">Jord</span></div></div></header>
+<div class="meta"><span class="chip work">Planting <b>5</b></span><span class="chip work">Gathering <b>5</b></span><span class="chip work">Mining <b>3</b></span></div>
+<div class="stats"><div class="stat"><span class="sl">HP</span><span class="sb"><span style="width:87%"></span></span><span class="sv">130</span></div><div class="stat"><span class="sl">ATK</span><span class="sb"><span style="width:67%"></span></span><span class="sv">100</span></div><div class="stat"><span class="sl">DEF</span><span class="sb"><span style="width:80%"></span></span><span class="sv">120</span></div></div>
+<p class="pskill"><b>Balmy Weather:</b> Can be ridden. While in your base, increases the egg production speed of Pals assigned to Breeding Farm by 20~50%. (Does not stack)</p>
+<p class="aura">✨ egg production speed +20~50% at Breeding Farm</p>
+</article><article class="goal">
+<header><span class="pic el-electric" style="--s:56px" data-mono="D"><img src="icons/ThunderFluffyBird.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ThunderFluffyBird_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><div><h4>Dynamoff</h4>
+<div class="meta"><span class="chip el-electric">Elektrisk</span></div></div></header>
+<div class="meta"><span class="chip work">Electricity <b>6</b></span><span class="chip work">Gathering <b>3</b></span><span class="chip work">Transporting <b>3</b></span></div>
+<div class="stats"><div class="stat"><span class="sl">HP</span><span class="sb"><span style="width:50%"></span></span><span class="sv">75</span></div><div class="stat"><span class="sl">ATK</span><span class="sb"><span style="width:67%"></span></span><span class="sv">100</span></div><div class="stat"><span class="sl">DEF</span><span class="sb"><span style="width:53%"></span></span><span class="sv">80</span></div></div>
+<p class="pskill"><b>Electro-Massage Incubation:</b> Can be ridden as a flying mount. While at a base, shortens the time it takes to incubate eggs by 20~40%. (Does not stack)</p>
+<p class="aura">✨ egg incubation time -20~40%</p>
+</article><article class="goal">
+<header><span class="pic el-grass" style="--s:56px" data-mono="L"><img src="icons/LeafPrincess.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_LeafPrincess_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><div><h4>Lullu</h4>
+<div class="meta"><span class="chip el-grass">Gress</span></div></div></header>
+<div class="meta"><span class="chip work">Planting <b>3</b></span><span class="chip work">Handiwork <b>3</b></span><span class="chip work">Medicine <b>3</b></span><span class="chip work">Gathering <b>2</b></span></div>
+<div class="stats"><div class="stat"><span class="sl">HP</span><span class="sb"><span style="width:60%"></span></span><span class="sv">90</span></div><div class="stat"><span class="sl">ATK</span><span class="sb"><span style="width:67%"></span></span><span class="sv">100</span></div><div class="stat"><span class="sl">DEF</span><span class="sb"><span style="width:53%"></span></span><span class="sv">80</span></div></div>
+<p class="pskill"><b>Floral Boost:</b> While at a base, Lullu fills farms with good spirits, increasing the growth rate of the crops by 50~70%.</p>
+<p class="aura">✨ crop growth rate +50~70%</p>
+</article><article class="goal">
+<header><span class="pic el-grass" style="--s:56px" data-mono="P"><img src="icons/BlueberryFairy.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_BlueberryFairy_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><div><h4>Prunelia</h4>
+<div class="meta"><span class="chip el-grass">Gress</span><span class="chip el-dark">Mørke</span></div></div></header>
+<div class="meta"><span class="chip work">Planting <b>3</b></span><span class="chip work">Medicine <b>3</b></span><span class="chip work">Gathering <b>2</b></span><span class="chip work">Handiwork <b>1</b></span><span class="chip work">Transporting <b>1</b></span></div>
+<div class="stats"><div class="stat"><span class="sl">HP</span><span class="sb"><span style="width:70%"></span></span><span class="sv">105</span></div><div class="stat"><span class="sl">ATK</span><span class="sb"><span style="width:67%"></span></span><span class="sv">100</span></div><div class="stat"><span class="sl">DEF</span><span class="sb"><span style="width:67%"></span></span><span class="sv">100</span></div></div>
+<p class="pskill"><b>Prayer for Abundant Harvest:</b> While at a base, Prunelia&#x27;s prayers bless the crops, increasing their harvest by 18~35%.</p>
+<p class="aura">✨ harvest +18~35%</p>
+</article><article class="goal">
+<header><span class="pic el-ground" style="--s:56px" data-mono="S"><img src="icons/Sekhmet.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Sekhmet_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><div><h4>Sekhmet</h4>
+<div class="meta"><span class="chip el-ground">Jord</span></div></div></header>
+<div class="meta"><span class="chip work">Handiwork <b>6</b></span><span class="chip work">Mining <b>3</b></span><span class="chip work">Transporting <b>2</b></span></div>
+<div class="stats"><div class="stat"><span class="sl">HP</span><span class="sb"><span style="width:73%"></span></span><span class="sv">110</span></div><div class="stat"><span class="sl">ATK</span><span class="sb"><span style="width:77%"></span></span><span class="sv">115</span></div><div class="stat"><span class="sl">DEF</span><span class="sb"><span style="width:67%"></span></span><span class="sv">100</span></div></div>
+<p class="pskill"><b>Desert Empress:</b> While at base, boosts Anubis&#x27;s work speed by 20~40%. Increases efficiency by 30~60% if Sekhmet is also working at a Workbench, Workshop, or other related facilities. (Does not stack)</p>
+<p class="aura">✨ Anubis work speed +20~40%; self +30~60% at workbenches</p>
+</article></div>
+</section>
+<section id="drift">
+  <h2>Drift av eggfabrikken (lvl 44)</h2>
+  <div class="rules">
+  <p>Breeding Farm er tech 19, standardkaka tech 17 — alt i denne planen kan kjøres på
+  standardkaker. Inkubasjonstiden ble halvert i 1.0 (nye verdener), og Ancient Hatchery
+  (lvl 76) venter i endgame.</p>
+  <h3>Kaker</h3>
+  <div class="tablewrap"><table>
+  <thead><tr><th>Kake</th><th>Tech</th><th>Stasjon</th><th>Effekt</th><th>Mutasjon</th></tr></thead>
+  <tbody>
+  <tr class="now"><td><b>Cake</b></td><td>17 ✓</td><td>Cooking Pot</td><td>standard — driver alt i planen</td><td>~1&nbsp;% per egg</td></tr>
+  <tr class="now"><td><b>Mushroom Cake</b></td><td>30 ✓</td><td>Cooking Pot</td><td>bedre IV hos avkom</td><td>~1&nbsp;%</td></tr>
+  <tr><td><b>Vegetable Cake</b></td><td>47</td><td>Electric Kitchen</td><td><b>2 egg per syklus</b> — nærmeste store oppgradering (3 nivåer unna!)</td><td>1&nbsp;% × 2 egg (≈2&nbsp;%/syklus)</td></tr>
+  <tr><td><b>Extravagant Veg. Cake</b></td><td>60</td><td>Large-Scale Stone Oven</td><td>best mutasjonssjanse + IV</td><td>~3&nbsp;% per egg</td></tr>
+  <tr><td><b>Special Cake</b></td><td>74</td><td>Ancient Kitchen</td><td>arver flere passiver</td><td>–</td></tr>
+  </tbody></table></div>
+  <p class="hint">Oppskrift standardkake: 5 mel · 8 røde bær · 7 melk · 8 egg · 2 honning
+  (Mozzarina, Chikipi og Beegarde på ranch dekker melk/egg/honning).
+  Artsplanen trenger bare standardkaker — spar de dyre til passiv/IV/mutasjonsjakt etterpå.</p>
+  <h3>Rekkefølgen for én perfekt pal</h3>
+  <p>1) <b>Art</b> (denne planen) → 2) <b>passiver</b> (Pal Surgery Table, tech 38: implanter
+  for 10–50k gull per operasjon; standard-implanter forbrukes ikke — chain-breeding for passiver
+  er i praksis foreldet) → 3) <b>IV</b> (Mushroom Cake, samme-art-avl; arv per stat: 30&nbsp;% far /
+  30&nbsp;% mor / 40&nbsp;% tilfeldig) → 4) <b>kondensering</b> → 5) <b>Awakening</b> til slutt.
+  Kjønn byttes med Pal Reverser (forbrukes; kjøpes bl.a. for Bounty Tokens).</p>
+  <h3>Kondensering (1.0)</h3>
+  <p>4★ koster <b>48 kopier</b> totalt: 4 / 8 / 12 / 24 per stjerne (gamle guider sier 116 —
+  utdatert). Hver stjerne løfter én arbeidsegenskap ett nivå; 4★ løfter alle, og
+  partner-skill-nivå = stjerner + 1. Mutant-egg klekkes med 2★ — da gjenstår bare 12 + 24 = 36.
+  Tips: <b>Starfruit</b> (kjøpes for Dog Coins) kan erstatte kopier i condenseren.</p>
+  <h3>Mutasjon</h3>
+  <p>~1 % per egg med standardkake (~3 % med Extravagant). Mutanten klekkes som Alpha med 2★,
+  IV ~91–100 og fire passiver hvorav minst to regnbue — men <b>arten kan bli en annen</b> (og
+  sterkere) enn parets normale barn. Volum vinner: kjør flere farmer, og la Braloha (+20–50 %
+  egg-fart) og Dynamoff (−20–40 % inkubasjonstid) jobbe for deg når de er bredd i fase 1.</p>
+  </div>
+</section>
+<section id="kilder2">
+<h2>Bekreftet vs. usikkert</h2>
+<p>Kryssjekket 23 påstander mot uavhengige kilder (2026-08-14 · 8 parallelle research-agenter, ~240 søk/oppslag mot uavhengige kilder + kodegjennomgang av palcalc og spillets råtabeller).
+Full kildeliste ligger i <code>data/verification.json</code>.</p>
+<div class="tablewrap"><table class="verif">
+<thead><tr><th>Påstand</th><th>Status</th><th>Belegg</th></tr></thead>
+<tbody><tr><td>Artsformelen: barnet er arten med CombiRank nærmest ⌊(rankA+rankB+1)/2⌋</td><td><span class="badge v-ok">bekreftet</span></td><td>Verifisert på kodenivå i palcalc (åpen kildekode-solver generert fra spillfilene) og replikert her mot alle 44 851 forhåndsberegnede 1.0-resultater uten avvik.</td></tr><tr><td>Tie-break: ved eksakt uavgjort vinner høyeste CombiRank (1.0-endring)</td><td><span class="badge v-ok">bekreftet</span></td><td>Alle 14 021 tie-par i 1.0-fasiten går til høyeste rank (0 unntak); spillets felt CombiDuplicatePriority = CombiRank×100. Gammel wiki-tekst («lavest indeks») er utdatert EA-omtale. Stemmer også med spillertesten Turtacle+Aegidron→Nitemary.</td></tr><tr><td>Unike oppskriftsbarn er ekskludert fra den generiske puljen (183 arter igjen)</td><td><span class="badge v-ok">bekreftet</span></td><td>palcalc filtrerer alle DT_PalCombiUnique-barn ut av puljen; med denne modellen matcher alle 44 851 resultater, uten den bommer 14 699 par. palworld.gg sin ignoreCombi-39-modell er feil for 1.0.</td></tr><tr><td>Katress+Wixen er spillets eneste kjønnsavhengige par</td><td><span class="badge v-ok">bekreftet</span></td><td>Nøyaktig 2 kjønnsspesifikke rader av 44 851: hunn Katress + hann Wixen → Katress Ignis; hunn Wixen + hann Katress → Wixen Noct.</td></tr><tr><td>Samme art + samme art gir alltid samme art</td><td><span class="badge v-ok">bekreftet</span></td><td>Kortslutning i spillkoden før all annen logikk; 299/299 selv-par i fasiten bekrefter.</td></tr><tr><td>EA-oppskriftene for Lyleen, Grizzbolt, Faleris, Orserk og Shadowbeak er fjernet i 1.0</td><td><span class="badge v-ok">bekreftet</span></td><td>Verifisert mot spillets råtabell med interne ID-er: ingen av de fem gamle parene finnes; alle fem artene har kun selv-par-rad. (Mossanda+Grizzbolt=Mossanda Lux ble derimot beholdt.)</td></tr><tr><td>Condenser 1.0: 48 kopier til 4★, fordelt 4/8/12/24</td><td><span class="badge v-ok">bekreftet</span></td><td>Patch-notes-sammendrag og flere uavhengige guider bekrefter 116→48; per-stjerne-fordelingen stemmer med spillermålingen. NB: Starfruit (Dog Coins) kan erstatte kopier.</td></tr><tr><td>Stjerner: +1 arbeidsnivå per stjerne, 4★ løfter alle, partner-skill = stjerner+1</td><td><span class="badge v-ok">bekreftet</span></td><td>Bekreftet i patch-notes og wiki — men «beste jobb først»-rekkefølgen på mellomstjerner er IKKE bekreftet noe sted; spillet sier bare «én av egenskapene».</td></tr><tr><td>Kaketrinn: Cake 17 / Mushroom 30 / Vegetable 47 / Extravagant 60 / Special 74</td><td><span class="badge v-ok">bekreftet</span></td><td>Tech-nivåer, stasjoner og effekter bekreftet av flere kilder (én avviker på Special-nivået; flertallet sier 74).</td></tr><tr><td>Mutasjonssjanse: ~1 % basis, ~3 % med Extravagant Vegetable Cake</td><td><span class="badge v-ok">bekreftet</span></td><td>Bekreftet — men Vegetable Cake gir IKKE 2 % per egg: den gir 2 egg à 1 % (≈2 % per syklus). Forrige økts tall var upresist på dette punktet.</td></tr><tr><td>Mutant-egg: klekkes som Alpha med 2★, IV ~91–100, minst 2 regnbue-passiver</td><td><span class="badge v-ok">bekreftet</span></td><td>2★ og Alpha-status bekreftet; «4 passiver hvorav minst 2 regnbue» per wiki (ikke alle er mutasjonseksklusive); IV-intervallet 91–100 er guide-konsensus, wiki sier bare «svært høye».</td></tr><tr><td>De 5 regnbue-passivene: Immortality, Idiosyncratic, Babysitter, Heavily Armored, Skymarcher</td><td><span class="badge v-ok">bekreftet</span></td><td>Eksakt samme fem hos wiki, game8 og paldb; «Skirmisher» finnes ikke. Kan arves videre med vanlig breeding når en forelder har dem.</td></tr><tr><td>Arbeidsnivå går til 10 med eksponentiell skala (Lv5=400 … Lv10=5400)</td><td><span class="badge v-ok">bekreftet</span></td><td>Handiwork-verditabellen (50/80/140/240/400/680/1100/1900/3200/5400) bekreftet av flere uavhengige kilder.</td></tr><tr><td>Pal Surgery Table (tech 38): implanter passiver for gull, implanter forbrukes ikke</td><td><span class="badge v-ok">bekreftet</span></td><td>Tech 38 bekreftet; 10–50k gull per operasjon avhengig av sjeldenhet; standard-implanter gjenbrukes (1.0 har i tillegg engangs-implanter fra World Tree-relikvier).</td></tr><tr><td>Pal Reverser bytter kjønn</td><td><span class="badge v-ok">bekreftet</span></td><td>Gjenstand (ikke stasjon) brukt ved operasjonsbordet; forbrukes ved bruk; kjøpes for Bounty Tokens / Battle Tickets m.m.</td></tr><tr><td>IV-arv: 30 % far / 30 % mor / 40 % tilfeldig per stat</td><td><span class="badge v-ok">bekreftet</span></td><td>Bekreftet av flere kilder inkl. regnestykket 0,6³ ≈ 21,6 % for trippel-100 med to perfekte foreldre.</td></tr><tr><td>Astralym kan ikke skaffes i 1.0</td><td><span class="badge v-ok">bekreftet</span></td><td>Story-boss; kan ikke fanges, finnes ikke som alpha og gis ikke som belønning.</td></tr><tr><td>Alle 12 aura-pals (+1 arbeidsnivå til basen) stemmer</td><td><span class="badge v-ok">bekreftet</span></td><td>Alle tolv bekreftet per art (Ribbuny, Tetroise, Wumpo, Amione, Cinnamoth, Clovee, Eikthyrdeer Terra, Katress Ignis, Mycora, Petallia, Puffolt, Smokie Cryst). Gjelder ikke bæreren selv, stakker ikke, virker fra basen. Oil Extraction har ingen aura.</td></tr><tr><td>Sekhmet boost&#x27;er Anubis; Braloha gir egg-fart; Dynamoff kutter inkubasjonstid</td><td><span class="badge v-ok">bekreftet</span></td><td>Sekhmets ekte skill er «Desert Empress»: Anubis-arbeidsfart +20–40 % (+ egen benk-bonus). Braloha «Balmy Weather»: eggproduksjon +20–50 %. Dynamoff «Electro-Massage Incubation»: inkubasjon −20–40 %.</td></tr><tr><td>Nivåtak 80; Breeding Farm tech 19; totaltall 299 arter</td><td><span class="badge v-ok">bekreftet</span></td><td>Nivåtak 65→80 bekreftet. Breeding Farm tech 19 (2 tech-poeng). Artstall: 287 Paldeck-oppføringer + Terraria-crossover (Sealed Realm of Terraria-dungeon, alle rank 3100) ≈ datasettets 299; Astralym er uoppnåelig.</td></tr><tr><td>«164 unike kombinasjoner» (paldb-visningen)</td><td><span class="badge v-warn">sannsynlig</span></td><td>Spillets råtabell har 258 rader totalt (mange redundante X+X=X-rader og event-innhold). De 136 kryss-radene stemmer eksakt med paldb — det er dem planen bruker (134 vanlige + 2 kjønnsavhengige). Tallet «164» er paldbs visningsvalg, ikke feil data.</td></tr><tr><td>Passiv-arv ~24 % hann / ~20 % hunn per slot</td><td><span class="badge v-warn">sannsynlig</span></td><td>Alle kilder siterer samme lille EA-datasett (~100 egg); datamine antyder en annen underliggende mekanisme (pulje-trekk). Retningen «hann arver oftere» står seg.</td></tr><tr><td>«10 arter finnes ikke vilt» (fra forrige økt)</td><td><span class="badge v-bad">motsagt</span></td><td>AVKREFTET: alle ti (Solenne, Renjishi, Univolt Cryst, Mycora, Venusa m.fl.) kan fanges i World Tree-regionen (lvl 75+) som vanlig spawn eller feltboss. 1.0 fjernet «breed-only»-kategorien. På lvl 44 er breeding likevel den realistiske veien.</td></tr></tbody></table></div></section>
+<section id="kilder">
+  <h2>Kilder og oppdatering</h2>
+  <p>Data: paldb.cc (CombiRank-tabell + 164 unike kombinasjoner, hentet 2026-07-14),
+  palworld.wiki.gg, palworld.ludbase.com, via 1.0-datasettet
+  <a href="https://github.com/beliarance/palworld-kb">beliarance/palworld-kb</a> @ cf9ecbe.
+  Mekanikk kryssjekket mot uavhengige kilder 2026-08-14 — se <code>data/verification.json</code>.
+  Artsformelen er testet mot 31 kjente par (<code>tests/</code>).</p>
+  <p>Ny pal i boksen? <code>python3 planner.py add &lt;navn&gt;</code> og deretter
+  <code>python3 build_guide.py</code> → denne siden regenereres med oppdatert plan.
+  Uidentifisert fra gamle lista: «godbin» — mente du Gobfin Ignis? Legg til riktig navn i
+  <code>roster.txt</code>.</p>
+  <p class="foot">Ikoner: cdn.paldb.cc (vises når du er på nett; ellers monogram).
+  Generert 2026-08-14 ·
+  Palworld 1.0 · nivåtak 80.</p>
+</section>
+</main>
+<script>
+(function(){
+  var KEY='eggfabrikken-v1';
+  var state={};
+  try{state=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
+  var steps=[].slice.call(document.querySelectorAll('.step[data-sid]'));
+  var fill=document.getElementById('progfill');
+  var txt=document.getElementById('progtxt');
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
+  function update(){
+    var done=steps.filter(function(s){return s.classList.contains('checked')}).length;
+    if(fill)fill.style.width=(steps.length?100*done/steps.length:0)+'%';
+    if(txt)txt.textContent=done+' / '+steps.length;
+  }
+  steps.forEach(function(li){
+    var sid=li.getAttribute('data-sid');
+    var cb=li.querySelector('input[type=checkbox]');
+    if(state[sid]){cb.checked=true;li.classList.add('checked');}
+    cb.addEventListener('change',function(){
+      state[sid]=cb.checked; if(!cb.checked)delete state[sid];
+      li.classList.toggle('checked',cb.checked); save(); update();
+    });
+  });
+  var reset=document.getElementById('reset');
+  if(reset)reset.addEventListener('click',function(){
+    if(!confirm('Nullstille all avkryssing?'))return;
+    state={}; save();
+    steps.forEach(function(li){li.classList.remove('checked');
+      li.querySelector('input').checked=false;});
+    update();
+  });
+  update();
+})();
+</script>

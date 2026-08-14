@@ -1,0 +1,37 @@
+# Endemål — de beste palsene som kan bres (Palworld 1.0)
+# Rediger fritt; kjør 'python3 planner.py plan' etterpå.
+
+# --- Topparbeidere ---
+Solenne          # Handiwork 8
+Celesdir Noct    # Lumbering 8
+Renjishi         # Kindling 8
+Knocklem         # Mining 7 + Transporting 7
+Starryon Primo   # Gathering 7
+Ophydia          # Planting 7
+Anubis           # klassikeren — Handiwork/Mining/Transport
+Astegon          # Mining 7 — beste Mining som kan bres (Aegidron 8 er utenfor rekkevidde)
+Blazamut         # Kindling/Mining
+Sibelyx Primo    # variant — vill kun i World Tree (lvl 75+)
+Venusa           # vill kun i World Tree (lvl 75+)
+Mycora           # Medicine-aura (vill kun i World Tree)
+Univolt Cryst    # variant — vill kun lvl 75+
+Whalaska Ignis   # 1.0-variant
+Solmora Lux      # 1.0-variant
+
+# --- Aura-pals (+1 arbeidsnivå til alle i basen; én per arbeidstype) ---
+# Ribbuny (Handiwork), Cinnamoth (Farming), Clovee (Gathering) og
+# Petallia (Planting) er allerede i rosteret.
+Tetroise         # Mining-aura
+Wumpo            # Transporting-aura
+Amione           # Watering-aura
+Eikthyrdeer Terra # Lumbering-aura
+Katress Ignis    # Kindling-aura
+Puffolt          # Generating Electricity-aura
+Smokie Cryst     # Cooling-aura
+
+# --- Breeding-støtte (anbefalt ekstra — gjør resten av planen raskere) ---
+Braloha          # eggproduksjon +20–50 % på Breeding Farm
+Dynamoff         # inkubasjonstid −20–40 %
+Lullu            # avlingsvekst +50–70 % (kake-ingredienser)
+Prunelia         # innhøsting +18–35 % (kake-ingredienser)
+Sekhmet          # Anubis-parhest: Anubis +20–40 % arbeidsfart

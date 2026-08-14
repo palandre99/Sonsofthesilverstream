@@ -1,0 +1,111 @@
+# Pål-Andres roster — Palworld 1.0 (oppdatert 2026-08-14)
+# Én pal per linje. Kommentarer med '#'. Rediger fritt og kjør:
+#   python3 planner.py plan
+# Nye pals legges til med:  python3 planner.py add <navn>
+
+Arsox
+Beakon
+Beegarde
+Blazehowl
+Bristla
+Broncherry
+Caprity
+Caprity Noct
+Cattiva
+Celaray
+Chikipi
+Chillet
+Cinnamoth
+Clovee
+Cremis
+Croajiro
+Daedream
+Dazzi
+Digtoise
+Direhowl
+Dumud
+Eikthyrdeer
+Elizabee
+Elphidran
+Felbat
+Flambelle
+Flopie
+Foxcicle
+Foxparks
+Fuddler
+Galeclaw
+Gobfin
+Grintale
+Gumoss
+Hangyu
+Helzephyr
+Herbil
+Hoocrates
+Incineram
+Jolthog
+Jolthog Cryst
+Katress
+Kelpsea
+Killamari
+Killamari Primo
+Lamball
+Leafan
+Leezpunk
+Lifmunk
+Loupmoon
+Lunaris
+Mammorest
+Mau
+Melpaca
+Menasting
+Mossanda
+Mozzarina
+Muffly
+Munchill
+Nitewing
+Pengullet
+Penking
+Petallia
+Pupperai
+Pyrin
+Quivern
+Rayhound
+Reindrix
+Ribbuny
+Ribbuny Botan
+Robinquill
+Rooby
+Rushoar
+Sibelyx
+Sparkit
+Surfent
+Suzaku
+Swee
+Tanzee
+Tarantriss
+Teafant
+Tocotoco
+Tombat
+Univolt
+Vaelet
+Vanwyrm
+Vanwyrm Cryst
+Verdash
+Vixy
+Wispaw
+Wixen
+Woolipop
+Xenovader
+
+# --- Bredd/skaffet siden oppstart ---
+Wistella
+Broncherry Aqua
+Fuack
+Helzephyr Lux
+Reptyro
+Reptyro Cryst
+Warsect
+Warsect Terra
+
+# "godbin" fra den opprinnelige lista er uidentifisert — nærmeste kandidater:
+# Gobfin (står alt i lista), Gobfin Ignis, Robinquill. Legg til riktig navn selv.
