@@ -1,6 +1,6 @@
 {
  "game_version": "1.0",
- "extracted": "2026-08-14",
+ "extracted": "2026-08-15",
  "source": {
   "dataset": "github.com/beliarance/palworld-kb @ cf9ecbe (2026-07-20)",
   "upstream": [
@@ -33,6 +33,18 @@
    "size": "XL",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_DomeArmorDragon_icon_normal.webp",
+   "food": 9,
+   "drops": [
+    "Thermal Core",
+    "Giant Pal Soul",
+    "World Tree Holy Water",
+    "Dragon Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 79,
    "wild": false,
    "regions": [],
    "alpha_locations": [
@@ -72,6 +84,13 @@
    "size": "XS",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ClioneTwins_icon_normal.webp",
+   "food": 3,
+   "drops": [
+    "Aquatic Pal Fluids"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 65,
    "wild": true,
    "regions": [
     "Golden Hills",
@@ -111,6 +130,18 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Anubis_icon_normal.webp",
+   "food": 8,
+   "drops": [
+    "Bone",
+    "Large Pal Soul",
+    "Innovative Technical Manual",
+    "Ground Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Sandstone Gate Islet",
@@ -146,6 +177,14 @@
    "size": "M",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_FlameBuffalo_icon_normal.webp",
+   "food": 3,
+   "drops": [
+    "Horn",
+    "Flame Organ"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 34,
    "wild": true,
    "regions": [
     "Foot of the Volcano",
@@ -188,6 +227,18 @@
    "size": "XL",
    "mount": "flying",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_BlackMetalDragon_icon_normal.webp",
+   "food": 7,
+   "drops": [
+    "Plasteel",
+    "Large Pal Soul",
+    "Dragon Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic",
+    "Gorgeous Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "The World Tree [Lv. 80]"
@@ -216,6 +267,14 @@
    "size": "XL",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_WorldTreeDragon_icon_normal.webp",
+   "food": null,
+   "drops": [
+    "Leather",
+    "High Quality Pal Oil"
+   ],
+   "ranch_produce": [],
+   "craft_speed": null,
+   "max_wild_level": null,
    "wild": false,
    "regions": [],
    "alpha_locations": [],
@@ -245,6 +304,18 @@
    "size": "L",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_BlueThunderHorse_icon_normal.webp",
+   "food": 8,
+   "drops": [
+    "Electric Organ",
+    "Electric Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic",
+    "Gorgeous Ancient Relic",
+    "Glowing Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Frozen Coral Hill",
@@ -283,6 +354,18 @@
    "size": "L",
    "mount": "swim",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_BlueDragon_icon_normal.webp",
+   "food": 5,
+   "drops": [
+    "Cloth",
+    "Aquatic Pal Fluids",
+    "Water Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic",
+    "Gorgeous Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Verdant Brook",
@@ -323,6 +406,18 @@
    "size": "L",
    "mount": "swim",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_BlueDragon_Ice_icon_normal.webp",
+   "food": 5,
+   "drops": [
+    "Cloth",
+    "Aquatic Pal Fluids",
+    "Ice Organ",
+    "Ice Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Frozen Coral Hill",
@@ -360,6 +455,15 @@
    "size": "S",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_OniGhostGirl_icon_normal.webp",
+   "food": 5,
+   "drops": [
+    "Cloth",
+    "Horn",
+    "Small Pal Soul"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 69,
    "wild": true,
    "regions": [
     "Azure Woodland",
@@ -398,6 +502,18 @@
    "size": "M",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SnowTigerBeastman_icon_normal.webp",
+   "food": 9,
+   "drops": [
+    "Leather",
+    "Ice Organ",
+    "World Tree Holy Water",
+    "Ice Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Foot of the World Tree",
@@ -432,6 +548,18 @@
    "size": "L",
    "mount": "flying",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ThunderBird_icon_normal.webp",
+   "food": 5,
+   "drops": [
+    "Electric Organ",
+    "Electric Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic",
+    "Gorgeous Ancient Relic",
+    "Glowing Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Desiccated Dunes",
@@ -474,6 +602,18 @@
    "size": "L",
    "mount": "flying",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ThunderBird_Ice_icon_normal.webp",
+   "food": 5,
+   "drops": [
+    "Ice Organ",
+    "World Tree Holy Water",
+    "Water Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic",
+    "Gorgeous Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 77,
    "wild": true,
    "regions": [
     "Foot of the World Tree",
@@ -511,6 +651,15 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SoldierBee_icon_normal.webp",
+   "food": 3,
+   "drops": [
+    "Honey"
+   ],
+   "ranch_produce": [
+    "Honey"
+   ],
+   "craft_speed": 0,
+   "max_wild_level": 34,
    "wild": true,
    "regions": [
     "Gobfin's Turf",
@@ -548,6 +697,13 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_NightLady_icon_normal.webp",
+   "food": 7,
+   "drops": [
+    "Dark Fragment"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": null,
    "wild": false,
    "regions": [],
    "alpha_locations": [],
@@ -582,6 +738,14 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_NightLady_Dark_icon_normal.webp",
+   "food": 7,
+   "drops": [
+    "Dark Fragment",
+    "High Quality Recovery Meds"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": null,
    "wild": false,
    "regions": [],
    "alpha_locations": [],
@@ -615,6 +779,18 @@
    "size": "XL",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_KingBahamut_icon_normal.webp",
+   "food": 9,
+   "drops": [
+    "Coal",
+    "Flame Organ",
+    "Fire Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic",
+    "Gorgeous Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Flamepulse Islet",
@@ -653,6 +829,18 @@
    "size": "XL",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_KingBahamut_Dragon_icon_normal.webp",
+   "food": 9,
+   "drops": [
+    "Coal",
+    "Medium Pal Soul",
+    "Dragon Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic",
+    "Gorgeous Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": null,
    "wild": false,
    "regions": [],
    "alpha_locations": [],
@@ -686,6 +874,18 @@
    "size": "L",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Manticore_icon_normal.webp",
+   "food": 6,
+   "drops": [
+    "Flame Organ",
+    "Fire Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic",
+    "Gorgeous Ancient Relic",
+    "Glowing Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Foot of the Volcano",
@@ -728,6 +928,18 @@
    "size": "L",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Manticore_Dark_icon_normal.webp",
+   "food": 6,
+   "drops": [
+    "Flame Organ",
+    "Fire Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic",
+    "Gorgeous Ancient Relic",
+    "Glowing Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Frozen Coral Hill",
@@ -767,6 +979,13 @@
    "size": "S",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_YakushimaMonster001_Blue_icon_normal.webp",
+   "food": 2,
+   "drops": [
+    "Hallowed Bar"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 35,
    "wild": true,
    "regions": [
     "Sealed Realm of Terraria - Terraria dungeon island SE of Fisherman's Point, near Isle of Eternal Summer"
@@ -803,6 +1022,18 @@
    "size": "XL",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Plesiosaur_icon_normal.webp",
+   "food": 7,
+   "drops": [
+    "Leather",
+    "Red Berries",
+    "Lettuce Seeds",
+    "Tomato Seeds",
+    "Grass Radiant Gem",
+    "Decayed Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Sea Breeze Archipelago",
@@ -846,6 +1077,14 @@
    "size": "S",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_LittleBriarRose_icon_normal.webp",
+   "food": 2,
+   "drops": [
+    "Tomato Seeds",
+    "Beautiful Flower"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 29,
    "wild": true,
    "regions": [
     "Ancient Ritual Site",
@@ -885,6 +1124,18 @@
    "size": "XL",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SakuraSaurus_icon_normal.webp",
+   "food": 6,
+   "drops": [
+    "Broncherry Meat",
+    "Onion Seeds",
+    "Grass Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic",
+    "Gorgeous Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Ancient Ritual Site",
@@ -925,6 +1176,18 @@
    "size": "XL",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SakuraSaurus_Water_icon_normal.webp",
+   "food": 6,
+   "drops": [
+    "Broncherry Meat",
+    "Onion Seeds",
+    "Grass Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic",
+    "Gorgeous Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Verdant Brook",
@@ -964,6 +1227,14 @@
    "size": "M",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SumoDog_icon_normal.webp",
+   "food": 6,
+   "drops": [
+    "Bone",
+    "Fiber"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 56,
    "wild": true,
    "regions": [
     "Dancing Sakura Shrine",
@@ -1002,6 +1273,14 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Ronin_icon_normal.webp",
+   "food": 5,
+   "drops": [
+    "Bone",
+    "Ingot"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 59,
    "wild": true,
    "regions": [
     "Desiccated Dunes",
@@ -1047,6 +1326,15 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Ronin_Dark_icon_normal.webp",
+   "food": 5,
+   "drops": [
+    "Flame Organ",
+    "Ingot",
+    "Medium Pal Soul"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 67,
    "wild": true,
    "regions": [
     "Deserted Ash Plateau",
@@ -1087,6 +1375,17 @@
    "size": "S",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_BerryGoat_icon_normal.webp",
+   "food": 2,
+   "drops": [
+    "Caprity Meat",
+    "Red Berries",
+    "Horn"
+   ],
+   "ranch_produce": [
+    "Red Berries"
+   ],
+   "craft_speed": 0,
+   "max_wild_level": 30,
    "wild": true,
    "regions": [
     "Crescent Moon Shore",
@@ -1127,6 +1426,18 @@
    "size": "S",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_BerryGoat_Dark_icon_normal.webp",
+   "food": 2,
+   "drops": [
+    "Caprity Meat",
+    "Red Berries",
+    "Horn",
+    "Venom Gland"
+   ],
+   "ranch_produce": [
+    "Venom Gland"
+   ],
+   "craft_speed": 0,
+   "max_wild_level": 58,
    "wild": true,
    "regions": [
     "Loess Plains",
@@ -1170,6 +1481,18 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VenusFlytrap_icon_normal.webp",
+   "food": 7,
+   "drops": [
+    "Venom Gland",
+    "Fiber",
+    "World Tree Holy Water",
+    "Grass Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 48,
    "wild": true,
    "regions": [
     "No. 3 Wildlife Sanctuary"
@@ -1206,6 +1529,13 @@
    "size": "XS",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_PinkCat_icon_normal.webp",
+   "food": 1,
+   "drops": [
+    "Red Berries"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 20,
    "wild": true,
    "regions": [
     "Sea Breeze Archipelago",
@@ -1245,6 +1575,13 @@
    "size": "S",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_YakushimaMonster003_icon_normal.webp",
+   "food": 2,
+   "drops": [
+    "Hallowed Bar"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 41,
    "wild": true,
    "regions": [
     "Sealed Realm of Terraria - Terraria dungeon island SE of Fisherman's Point, near Isle of Eternal Summer"
@@ -1276,6 +1613,17 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_DarkCrow_icon_normal.webp",
+   "food": 3,
+   "drops": [
+    "Bone",
+    "Venom Gland",
+    "Small Pal Soul"
+   ],
+   "ranch_produce": [
+    "Bone"
+   ],
+   "craft_speed": 0,
+   "max_wild_level": 57,
    "wild": true,
    "regions": [
     "Desiccated Dunes",
@@ -1317,6 +1665,13 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_FlyingManta_icon_normal.webp",
+   "food": 2,
+   "drops": [
+    "Aquatic Pal Fluids"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 20,
    "wild": true,
    "regions": [
     "Flying Fish Coast",
@@ -1359,6 +1714,13 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_FlyingManta_Thunder_icon_normal.webp",
+   "food": 2,
+   "drops": [
+    "Aquatic Pal Fluids"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 55,
    "wild": true,
    "regions": [
     "Oasis Isle",
@@ -1397,6 +1759,18 @@
    "size": "M",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_WhiteDeer_icon_normal.webp",
+   "food": 8,
+   "drops": [
+    "Leather",
+    "Horn",
+    "Hexolite Quartz",
+    "Neutral Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Deserted Ash Plateau",
@@ -1437,6 +1811,18 @@
    "size": "M",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_WhiteDeer_Dark_icon_normal.webp",
+   "food": 8,
+   "drops": [
+    "Leather",
+    "Horn",
+    "Dark Fragment",
+    "World Tree Holy Water",
+    "Dark Radiant Gem",
+    "Decayed Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 79,
    "wild": false,
    "regions": [],
    "alpha_locations": [
@@ -1471,6 +1857,16 @@
    "size": "XS",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ChickenPal_icon_normal.webp",
+   "food": 1,
+   "drops": [
+    "Egg",
+    "Chikipi Poultry"
+   ],
+   "ranch_produce": [
+    "Egg"
+   ],
+   "craft_speed": 0,
+   "max_wild_level": 25,
    "wild": true,
    "regions": [
     "Eastern Wild Island",
@@ -1512,6 +1908,18 @@
    "size": "M",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_WeaselDragon_icon_normal.webp",
+   "food": 3,
+   "drops": [
+    "Leather",
+    "Ice Organ",
+    "Ice Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic",
+    "Gorgeous Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Foot of the Astral Mountains",
@@ -1554,6 +1962,18 @@
    "size": "M",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_WeaselDragon_Fire_icon_normal.webp",
+   "food": 3,
+   "drops": [
+    "Leather",
+    "Flame Organ",
+    "Fire Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic",
+    "Gorgeous Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Dancing Sakura Shrine",
@@ -1598,6 +2018,15 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_CuteButterfly_icon_normal.webp",
+   "food": 2,
+   "drops": [
+    "Honey",
+    "Lettuce Seeds",
+    "Tomato Seeds"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 29,
    "wild": true,
    "regions": [
     "Ancient Ritual Site",
@@ -1643,6 +2072,13 @@
    "size": "XS",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_CloverFairy_icon_normal.webp",
+   "food": 1,
+   "drops": [
+    "Berry Seeds"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 13,
    "wild": true,
    "regions": [
     "Windswept Island",
@@ -1683,6 +2119,15 @@
    "size": "XS",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_WoolFox_icon_normal.webp",
+   "food": 1,
+   "drops": [
+    "Wool"
+   ],
+   "ranch_produce": [
+    "Wool"
+   ],
+   "craft_speed": 0,
+   "max_wild_level": 13,
    "wild": true,
    "regions": [
     "Isle of Silence",
@@ -1725,6 +2170,14 @@
    "size": "XS",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_KendoFrog_icon_normal.webp",
+   "food": 2,
+   "drops": [
+    "Aquatic Pal Fluids",
+    "Cloth"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 65,
    "wild": true,
    "regions": [
     "Sea Breeze Archipelago",
@@ -1768,6 +2221,15 @@
    "size": "XS",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_KendoFrog_Dark_icon_normal.webp",
+   "food": 2,
+   "drops": [
+    "Aquatic Pal Fluids",
+    "Cloth",
+    "Venom Gland"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Scorched Hill",
@@ -1808,6 +2270,13 @@
    "size": "L",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_WhiteTiger_icon_normal.webp",
+   "food": 7,
+   "drops": [
+    "Ice Organ"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 49,
    "wild": true,
    "regions": [
     "Astral Mountains"
@@ -1847,6 +2316,13 @@
    "size": "L",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_WhiteTiger_Ground_icon_normal.webp",
+   "food": 7,
+   "drops": [
+    "Ore"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 64,
    "wild": true,
    "regions": [
     "Deserted Ash Plateau"
@@ -1886,6 +2362,14 @@
    "size": "XS",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_DreamDemon_icon_normal.webp",
+   "food": 1,
+   "drops": [
+    "Venom Gland",
+    "Small Pal Soul"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 16,
    "wild": true,
    "regions": [
     "Sea Breeze Archipelago",
@@ -1929,6 +2413,18 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_FlowerPrince_icon_normal.webp",
+   "food": 9,
+   "drops": [
+    "Giant Pal Soul",
+    "Ancient Civilization Core",
+    "Venom Gland",
+    "World Tree Holy Water",
+    "Grass Radiant Gem",
+    "Decayed Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": null,
    "wild": false,
    "regions": [],
    "alpha_locations": [
@@ -1962,6 +2458,13 @@
    "size": "S",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_FeatherOstrich_icon_normal.webp",
+   "food": 3,
+   "drops": [
+    "Bone"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 49,
    "wild": true,
    "regions": [
     "Desiccated Dunes",
@@ -2003,6 +2506,14 @@
    "size": "XS",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_RaijinDaughter_icon_normal.webp",
+   "food": 2,
+   "drops": [
+    "Electric Organ",
+    "Dazzi Cloud"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 55,
    "wild": true,
    "regions": [
     "Twilight Dunes",
@@ -2046,6 +2557,15 @@
    "size": "XS",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_RaijinDaughter_Water_icon_normal.webp",
+   "food": 2,
+   "drops": [
+    "Electric Organ",
+    "Dazzi Cloud",
+    "Dark Fragment"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 66,
    "wild": true,
    "regions": [
     "Stone Pillar Cave",
@@ -2086,6 +2606,13 @@
    "size": "S",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_YakushimaBoss001_Small_icon_normal.webp",
+   "food": 2,
+   "drops": [
+    "Hallowed Bar"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 35,
    "wild": true,
    "regions": [
     "Sealed Realm of Terraria - Terraria dungeon island SE of Fisherman's Point, near Isle of Eternal Summer"
@@ -2119,6 +2646,15 @@
    "size": "XS",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_NegativeKoala_icon_normal.webp",
+   "food": 1,
+   "drops": [
+    "Venom Gland"
+   ],
+   "ranch_produce": [
+    "Venom Gland"
+   ],
+   "craft_speed": 0,
+   "max_wild_level": 35,
    "wild": true,
    "regions": [
     "Bamboo Groves",
@@ -2158,6 +2694,14 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_DrillGame_icon_normal.webp",
+   "food": 5,
+   "drops": [
+    "Ore",
+    "High Quality Pal Oil"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 44,
    "wild": true,
    "regions": [
     "Desiccated Dunes",
@@ -2200,6 +2744,14 @@
    "size": "L",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_FlowerDinosaur_icon_normal.webp",
+   "food": 4,
+   "drops": [
+    "Tomato Seeds",
+    "Lettuce Seeds"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 35,
    "wild": true,
    "regions": [
     "Eastern Wild Island",
@@ -2241,6 +2793,14 @@
    "size": "L",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_FlowerDinosaur_Electric_icon_normal.webp",
+   "food": 4,
+   "drops": [
+    "Tomato Seeds",
+    "Carrot Seeds"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 47,
    "wild": true,
    "regions": [
     "Desiccated Dunes",
@@ -2281,6 +2841,15 @@
    "size": "S",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Garm_icon_normal.webp",
+   "food": 2,
+   "drops": [
+    "Leather",
+    "Ruby",
+    "Gold Coin"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 14,
    "wild": true,
    "regions": [
     "Deep Bamboo Thicket",
@@ -2324,6 +2893,13 @@
    "size": "S",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SifuDog_icon_normal.webp",
+   "food": 5,
+   "drops": [
+    "Bone"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 56,
    "wild": true,
    "regions": [
     "Dancing Sakura Shrine",
@@ -2366,6 +2942,18 @@
    "size": "XL",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_GrassGolem_icon_normal.webp",
+   "food": 8,
+   "drops": [
+    "Beautiful Flower",
+    "Large Pal Soul",
+    "World Tree Holy Water",
+    "Ground Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Foot of the World Tree",
@@ -2410,6 +2998,18 @@
    "size": "XL",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_GrassGolem_Dark_icon_normal.webp",
+   "food": 8,
+   "drops": [
+    "Mysterious Mushroom",
+    "Large Pal Soul",
+    "World Tree Holy Water",
+    "Dark Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 77,
    "wild": true,
    "regions": [
     "Foot of the World Tree",
@@ -2447,6 +3047,16 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_LazyCatfish_icon_normal.webp",
+   "food": 3,
+   "drops": [
+    "Raw Dumud",
+    "High Quality Pal Oil"
+   ],
+   "ranch_produce": [
+    "High Quality Pal Oil"
+   ],
+   "craft_speed": 0,
+   "max_wild_level": 50,
    "wild": true,
    "regions": [
     "Dry Sandy Beach",
@@ -2491,6 +3101,17 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_LazyCatfish_Gold_icon_normal.webp",
+   "food": 3,
+   "drops": [
+    "Raw Dumud",
+    "High Quality Pal Oil",
+    "Gold Coin"
+   ],
+   "ranch_produce": [
+    "High Quality Pal Oil"
+   ],
+   "craft_speed": 0,
+   "max_wild_level": 65,
    "wild": true,
    "regions": [
     "Sakurajima - Northern Rock Field",
@@ -2531,6 +3152,18 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ClownRabbit_icon_normal.webp",
+   "food": 8,
+   "drops": [
+    "Leather",
+    "Flame Organ",
+    "World Tree Holy Water",
+    "Fire Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 74,
    "wild": true,
    "regions": [
     "Foot of the World Tree",
@@ -2569,6 +3202,13 @@
    "size": "M",
    "mount": "flying",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ThunderFluffyBird_icon_normal.webp",
+   "food": 6,
+   "drops": [
+    "Electric Organ"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 69,
    "wild": true,
    "regions": [
     "Waterlily Gorge",
@@ -2607,6 +3247,18 @@
    "size": "L",
    "mount": "flying",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_GhostDragon_icon_normal.webp",
+   "food": 9,
+   "drops": [
+    "Leather",
+    "High Quality Pal Oil",
+    "Dragon Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic",
+    "Gorgeous Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "The World Tree [Lv. 80]",
@@ -2642,6 +3294,18 @@
    "size": "L",
    "mount": "flying",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_GhostDragon_Fire_icon_normal.webp",
+   "food": 9,
+   "drops": [
+    "Leather",
+    "High Quality Pal Oil",
+    "Flame Organ",
+    "World Tree Holy Water",
+    "Dragon Radiant Gem",
+    "Decayed Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 77,
    "wild": true,
    "regions": [
     "Foot of the World Tree",
@@ -2673,6 +3337,18 @@
    "size": "L",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Deer_icon_normal.webp",
+   "food": 2,
+   "drops": [
+    "Eikthyrdeer Venison",
+    "Leather",
+    "Horn",
+    "Neutral Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Marsh Island",
@@ -2716,6 +3392,18 @@
    "size": "L",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Deer_Ground_icon_normal.webp",
+   "food": 2,
+   "drops": [
+    "Eikthyrdeer Venison",
+    "Leather",
+    "Horn",
+    "Ground Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Flying Fish Coast",
@@ -2753,6 +3441,18 @@
    "size": "L",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_GrassMinotaur_icon_normal.webp",
+   "food": 8,
+   "drops": [
+    "Horn",
+    "Leather",
+    "World Tree Holy Water",
+    "Grass Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Bamboo Groves",
@@ -2793,6 +3493,18 @@
    "size": "L",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_GrassMinotaur_Ice_icon_normal.webp",
+   "food": 8,
+   "drops": [
+    "Horn",
+    "Leather",
+    "Ice Organ",
+    "World Tree Holy Water",
+    "Ice Radiant Gem",
+    "Decayed Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 77,
    "wild": true,
    "regions": [
     "Foot of the World Tree",
@@ -2828,6 +3540,14 @@
    "size": "L",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_QueenBee_icon_normal.webp",
+   "food": 5,
+   "drops": [
+    "Honey",
+    "Elizabee's Staff"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 39,
    "wild": true,
    "regions": [
     "Gobfin's Turf",
@@ -2865,6 +3585,18 @@
    "size": "L",
    "mount": "flying",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_FairyDragon_icon_normal.webp",
+   "food": 3,
+   "drops": [
+    "High Quality Pal Oil",
+    "Dragon Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic",
+    "Gorgeous Ancient Relic",
+    "Glowing Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Ancient Ritual Site",
@@ -2907,6 +3639,18 @@
    "size": "L",
    "mount": "flying",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_FairyDragon_Water_icon_normal.webp",
+   "food": 3,
+   "drops": [
+    "High Quality Pal Oil",
+    "Dragon Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic",
+    "Gorgeous Ancient Relic",
+    "Glowing Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Frostbound Mountains",
@@ -2944,6 +3688,13 @@
    "size": "S",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_YakushimaMonster002_icon_normal.webp",
+   "food": 2,
+   "drops": [
+    "Hallowed Bar"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 44,
    "wild": true,
    "regions": [
     "Sealed Realm of Terraria - Terraria dungeon island SE of Fisherman's Point, near Isle of Eternal Summer"
@@ -2974,6 +3725,13 @@
    "size": "L",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_YakushimaBoss001_icon_normal.webp",
+   "food": 2,
+   "drops": [
+    "Hallowed Bar"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 45,
    "wild": true,
    "regions": [
     "Sealed Realm of Terraria - Terraria dungeon island SE of Fisherman's Point, near Isle of Eternal Summer"
@@ -3007,6 +3765,18 @@
    "size": "L",
    "mount": "flying",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Horus_icon_normal.webp",
+   "food": 9,
+   "drops": [
+    "Flame Organ",
+    "World Tree Holy Water",
+    "Electric Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic",
+    "Gorgeous Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Foot of the World Tree",
@@ -3042,6 +3812,18 @@
    "size": "L",
    "mount": "flying",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Horus_Water_icon_normal.webp",
+   "food": 9,
+   "drops": [
+    "Aquatic Pal Fluids",
+    "World Tree Holy Water",
+    "Electric Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic",
+    "Gorgeous Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Frozen Coral Hill",
@@ -3081,6 +3863,14 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_CatVampire_icon_normal.webp",
+   "food": 7,
+   "drops": [
+    "Cloth",
+    "Small Pal Soul"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 66,
    "wild": true,
    "regions": [
     "The Oculus Gate, Tower in Sight",
@@ -3120,6 +3910,18 @@
    "size": "S",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_FengyunDeeper_icon_normal.webp",
+   "food": 5,
+   "drops": [
+    "Leather",
+    "Horn",
+    "Neutral Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic",
+    "Gorgeous Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "No. 3 Wildlife Sanctuary",
@@ -3157,6 +3959,18 @@
    "size": "S",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_FengyunDeeper_Electric_icon_normal.webp",
+   "food": 5,
+   "drops": [
+    "Leather",
+    "Horn",
+    "Electric Organ",
+    "Electric Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Stone Pillar Cave",
@@ -3198,6 +4012,15 @@
    "size": "S",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_StuffedShark_icon_normal.webp",
+   "food": 2,
+   "drops": [
+    "Leather",
+    "Small Pal Soul",
+    "Aquatic Pal Fluids"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 40,
    "wild": true,
    "regions": [
     "Desiccated Dunes",
@@ -3240,6 +4063,15 @@
    "size": "S",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_StuffedShark_Fire_icon_normal.webp",
+   "food": 2,
+   "drops": [
+    "Leather",
+    "Small Pal Soul",
+    "Flame Organ"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": null,
    "wild": true,
    "regions": [
     "Deserted Ash Plateau",
@@ -3278,6 +4110,16 @@
    "size": "XS",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_LavaGirl_icon_normal.webp",
+   "food": 2,
+   "drops": [
+    "Flame Organ",
+    "High Quality Pal Oil"
+   ],
+   "ranch_produce": [
+    "Flame Organ"
+   ],
+   "craft_speed": 0,
+   "max_wild_level": 50,
    "wild": true,
    "regions": [
     "Foot of the Volcano",
@@ -3319,6 +4161,18 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_FoxExorcist_icon_normal.webp",
+   "food": 8,
+   "drops": [
+    "Leather",
+    "Flame Organ",
+    "World Tree Holy Water",
+    "Fire Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Foot of the World Tree",
@@ -3361,6 +4215,14 @@
    "size": "XS",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_FlowerRabbit_icon_normal.webp",
+   "food": 2,
+   "drops": [
+    "Low Grade Medical Supplies",
+    "Lettuce Seeds"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 35,
    "wild": true,
    "regions": [
     "Crescent Moon Shore",
@@ -3399,6 +4261,16 @@
    "size": "S",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_IceFox_icon_normal.webp",
+   "food": 4,
+   "drops": [
+    "Leather",
+    "Ice Organ"
+   ],
+   "ranch_produce": [
+    "Ice Organ"
+   ],
+   "craft_speed": 0,
+   "max_wild_level": 37,
    "wild": true,
    "regions": [
     "No. 1 Wildlife Sanctuary",
@@ -3437,6 +4309,14 @@
    "size": "XS",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Kitsunebi_icon_normal.webp",
+   "food": 1,
+   "drops": [
+    "Leather",
+    "Flame Organ"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 18,
    "wild": true,
    "regions": [
     "Fortress Ruins",
@@ -3476,6 +4356,14 @@
    "size": "XS",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Kitsunebi_Ice_icon_normal.webp",
+   "food": 1,
+   "drops": [
+    "Leather",
+    "Ice Organ"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 58,
    "wild": true,
    "regions": [
     "Abandoned Ruins",
@@ -3514,6 +4402,14 @@
    "size": "L",
    "mount": "flying",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_IceHorse_icon_normal.webp",
+   "food": 9,
+   "drops": [
+    "Ice Organ",
+    "Diamond"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 60,
    "wild": false,
    "regions": [],
    "alpha_locations": [
@@ -3547,6 +4443,14 @@
    "size": "L",
    "mount": "flying",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_IceHorse_Dark_icon_normal.webp",
+   "food": 9,
+   "drops": [
+    "Diamond",
+    "Large Pal Soul"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 65,
    "wild": false,
    "regions": [],
    "alpha_locations": [
@@ -3581,6 +4485,13 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SnowPeafowl_icon_normal.webp",
+   "food": 5,
+   "drops": [
+    "Ice Organ"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 68,
    "wild": true,
    "regions": [
     "Farcry Marsh",
@@ -3622,6 +4533,14 @@
    "size": "XS",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_BluePlatypus_icon_normal.webp",
+   "food": 1,
+   "drops": [
+    "Leather",
+    "Aquatic Pal Fluids"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 20,
    "wild": true,
    "regions": [
     "Sea Breeze Archipelago",
@@ -3665,6 +4584,15 @@
    "size": "XS",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_BluePlatypus_Fire_icon_normal.webp",
+   "food": 1,
+   "drops": [
+    "Leather",
+    "Aquatic Pal Fluids",
+    "Flame Organ"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 50,
    "wild": true,
    "regions": [
     "Dry Sandy Beach",
@@ -3704,6 +4632,13 @@
    "size": "XS",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_CuteMole_icon_normal.webp",
+   "food": 2,
+   "drops": [
+    "Leather"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 40,
    "wild": true,
    "regions": [
     "Desiccated Dunes",
@@ -3744,6 +4679,14 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Eagle_icon_normal.webp",
+   "food": 2,
+   "drops": [
+    "Galeclaw Poultry",
+    "Leather"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 29,
    "wild": true,
    "regions": [
     "Ancient Ritual Site",
@@ -3786,6 +4729,14 @@
    "size": "M",
    "mount": "swim",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_GhostAnglerfish_icon_normal.webp",
+   "food": 7,
+   "drops": [
+    "Bone",
+    "Venom Gland"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Scorched Ashland",
@@ -3828,6 +4779,14 @@
    "size": "M",
    "mount": "swim",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_GhostAnglerfish_Fire_icon_normal.webp",
+   "food": 7,
+   "drops": [
+    "Bone",
+    "Flame Organ"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": null,
    "wild": true,
    "regions": [
     "Deserted Ash Plateau",
@@ -3863,6 +4822,13 @@
    "size": "L",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_GoldenHorse_icon_normal.webp",
+   "food": 8,
+   "drops": [
+    "Leather"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 66,
    "wild": true,
    "regions": [
     "Loess Plains",
@@ -3906,6 +4872,14 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_MummyPal_icon_normal.webp",
+   "food": 6,
+   "drops": [
+    "Cloth",
+    "Leather"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Desiccated Dunes",
@@ -3945,6 +4919,14 @@
    "size": "S",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_OctopusGirl_icon_normal.webp",
+   "food": 3,
+   "drops": [
+    "Aquatic Pal Fluids",
+    "Gloopie Tentacle"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Scorched Ashland",
@@ -3987,6 +4969,14 @@
    "size": "S",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_OctopusGirl_Neutral_icon_normal.webp",
+   "food": 3,
+   "drops": [
+    "Aquatic Pal Fluids",
+    "Gloopie Tentacle"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 66,
    "wild": true,
    "regions": [
     "Foot of the World Tree",
@@ -4026,6 +5016,13 @@
    "size": "S",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SharkKid_icon_normal.webp",
+   "food": 2,
+   "drops": [
+    "Aquatic Pal Fluids"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 34,
    "wild": true,
    "regions": [
     "Gobfin's Turf",
@@ -4066,6 +5063,13 @@
    "size": "S",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SharkKid_Fire_icon_normal.webp",
+   "food": 2,
+   "drops": [
+    "Flame Organ"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 50,
    "wild": true,
    "regions": [
     "Phantom Isle",
@@ -4106,6 +5110,18 @@
    "size": "S",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Gorilla_icon_normal.webp",
+   "food": 3,
+   "drops": [
+    "Leather",
+    "Bone",
+    "Neutral Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic",
+    "Gorgeous Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Frostbound Mountains",
@@ -4146,6 +5162,18 @@
    "size": "S",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Gorilla_Ground_icon_normal.webp",
+   "food": 3,
+   "drops": [
+    "Ore",
+    "Bone",
+    "Ground Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic",
+    "Gorgeous Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Desiccated Dunes",
@@ -4185,6 +5213,13 @@
    "size": "S",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_YakushimaMonster001_icon_normal.webp",
+   "food": 2,
+   "drops": [
+    "Hallowed Bar"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 35,
    "wild": true,
    "regions": [
     "Sealed Realm of Terraria - Terraria dungeon island SE of Fisherman's Point, near Isle of Eternal Summer"
@@ -4215,6 +5250,13 @@
    "size": "M",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_NaughtyCat_icon_normal.webp",
+   "food": 4,
+   "drops": [
+    "High Quality Pal Oil"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 48,
    "wild": true,
    "regions": [
     "Ancient Ritual Site",
@@ -4258,6 +5300,18 @@
    "size": "L",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ElecPanda_icon_normal.webp",
+   "food": 6,
+   "drops": [
+    "Electric Organ",
+    "Leather",
+    "World Tree Holy Water",
+    "Electric Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Foot of the World Tree",
@@ -4293,6 +5347,14 @@
    "size": "XS",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_PlantSlime_icon_normal.webp",
+   "food": 1,
+   "drops": [
+    "Berry Seeds",
+    "Gumoss Leaf"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 4,
    "wild": true,
    "regions": [
     "Eastern Wild Island",
@@ -4335,6 +5397,14 @@
    "size": "XS",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_WindChimes_icon_normal.webp",
+   "food": 1,
+   "drops": [
+    "Fiber",
+    "Wheat Seeds"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 40,
    "wild": true,
    "regions": [
     "Bamboo Groves",
@@ -4378,6 +5448,14 @@
    "size": "XS",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_WindChimes_Ice_icon_normal.webp",
+   "food": 1,
+   "drops": [
+    "Fiber",
+    "Ice Organ"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 60,
    "wild": true,
    "regions": [
     "Foot of the Astral Mountains",
@@ -4416,6 +5494,15 @@
    "size": "L",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_LegendDeer_icon_normal.webp",
+   "food": 9,
+   "drops": [
+    "Horn",
+    "Leather",
+    "Large Pal Soul"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": null,
    "wild": false,
    "regions": [],
    "alpha_locations": [],
@@ -4448,6 +5535,18 @@
    "size": "L",
    "mount": "flying",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_HadesBird_icon_normal.webp",
+   "food": 7,
+   "drops": [
+    "Venom Gland",
+    "Medium Pal Soul",
+    "Dark Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic",
+    "Gorgeous Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Scorched Hill",
@@ -4487,6 +5586,18 @@
    "size": "L",
    "mount": "flying",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_HadesBird_Electric_icon_normal.webp",
+   "food": 7,
+   "drops": [
+    "Electric Organ",
+    "Medium Pal Soul",
+    "Dark Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic",
+    "Gorgeous Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Sakurajima - Northern Rock Field",
@@ -4529,6 +5640,14 @@
    "size": "XS",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_LeafMomonga_icon_normal.webp",
+   "food": 1,
+   "drops": [
+    "Leather",
+    "Wheat Seeds"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 50,
    "wild": true,
    "regions": [
     "Deep Bamboo Thicket",
@@ -4568,6 +5687,14 @@
    "size": "XS",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_WizardOwl_icon_normal.webp",
+   "food": 1,
+   "drops": [
+    "Fiber",
+    "Advanced Technical Manual"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 22,
    "wild": true,
    "regions": [
     "Bamboo Groves",
@@ -4608,6 +5735,14 @@
    "size": "XS",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_HoodGhost_icon_normal.webp",
+   "food": 3,
+   "drops": [
+    "Small Pal Soul",
+    "Horn"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 69,
    "wild": true,
    "regions": [
     "Azure Woodland",
@@ -4647,6 +5782,13 @@
    "size": "S",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_IceWitch_icon_normal.webp",
+   "food": 5,
+   "drops": [
+    "Ice Organ"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": null,
    "wild": true,
    "regions": [
     "Astral Mountains"
@@ -4681,6 +5823,13 @@
    "size": "S",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_YakushimaMonster003_Purple_icon_normal.webp",
+   "food": 2,
+   "drops": [
+    "Hallowed Bar"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 44,
    "wild": true,
    "regions": [
     "Sealed Realm of Terraria - Terraria dungeon island SE of Fisherman's Point, near Isle of Eternal Summer"
@@ -4711,6 +5860,13 @@
    "size": "S",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_YakushimaMonster001_Pink_icon_normal.webp",
+   "food": 3,
+   "drops": [
+    "Hallowed Bar"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 44,
    "wild": true,
    "regions": [
     "Sealed Realm of Terraria - Terraria dungeon island SE of Fisherman's Point, near Isle of Eternal Summer"
@@ -4745,6 +5901,14 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Baphomet_icon_normal.webp",
+   "food": 5,
+   "drops": [
+    "Horn",
+    "Leather"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 44,
    "wild": true,
    "regions": [
     "Mount Obsidian",
@@ -4786,6 +5950,14 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Baphomet_Dark_icon_normal.webp",
+   "food": 5,
+   "drops": [
+    "Horn",
+    "Leather"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 39,
    "wild": true,
    "regions": [
     "No. 2 Wildlife Sanctuary"
@@ -4824,6 +5996,14 @@
    "size": "S",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_JellyfishFairy_icon_normal.webp",
+   "food": 3,
+   "drops": [
+    "Aquatic Pal Fluids",
+    "Jelliette Bell Flesh"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Withered Seaside",
@@ -4870,6 +6050,14 @@
    "size": "S",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_JellyfishGhost_icon_normal.webp",
+   "food": 3,
+   "drops": [
+    "Aquatic Pal Fluids",
+    "Jellroy Bell Flesh"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Deserted Ash Plateau",
@@ -4909,6 +6097,16 @@
    "size": "XL",
    "mount": "flying",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_JetDragon_icon_normal.webp",
+   "food": 9,
+   "drops": [
+    "Soralite",
+    "Thermal Core",
+    "Diamond",
+    "Large Pal Soul"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 70,
    "wild": false,
    "regions": [],
    "alpha_locations": [
@@ -4943,6 +6141,13 @@
    "size": "XS",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Hedgehog_icon_normal.webp",
+   "food": 1,
+   "drops": [
+    "Electric Organ"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 13,
    "wild": true,
    "regions": [
     "Windswept Island",
@@ -4980,6 +6185,13 @@
    "size": "XS",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Hedgehog_Ice_icon_normal.webp",
+   "food": 1,
+   "drops": [
+    "Ice Organ"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 24,
    "wild": true,
    "regions": [
     "Bamboo Groves",
@@ -5018,6 +6230,18 @@
    "size": "XL",
    "mount": "swim",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Umihebi_icon_normal.webp",
+   "food": 8,
+   "drops": [
+    "Aquatic Pal Fluids",
+    "Dragon Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic",
+    "Gorgeous Ancient Relic",
+    "Glowing Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "The World Tree [Lv. 80]"
@@ -5054,6 +6278,18 @@
    "size": "XL",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Umihebi_Fire_icon_normal.webp",
+   "food": 8,
+   "drops": [
+    "High Quality Pal Oil",
+    "Flame Organ",
+    "Dragon Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic",
+    "Gorgeous Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Emberstone Plateau",
@@ -5091,6 +6327,15 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_CatMage_icon_normal.webp",
+   "food": 4,
+   "drops": [
+    "Leather",
+    "Katress Hair",
+    "Advanced Technical Manual"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 46,
    "wild": true,
    "regions": [
     "Ancient Ritual Site",
@@ -5138,6 +6383,15 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_CatMage_Fire_icon_normal.webp",
+   "food": 4,
+   "drops": [
+    "Flame Organ",
+    "Katress Hair",
+    "Advanced Technical Manual"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 52,
    "wild": false,
    "regions": [],
    "alpha_locations": [
@@ -5173,6 +6427,16 @@
    "size": "XS",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Kelpie_icon_normal.webp",
+   "food": 1,
+   "drops": [
+    "Raw Kelpsea",
+    "Aquatic Pal Fluids"
+   ],
+   "ranch_produce": [
+    "Aquatic Pal Fluids"
+   ],
+   "craft_speed": 0,
+   "max_wild_level": 20,
    "wild": true,
    "regions": [
     "Sea Breeze Archipelago",
@@ -5213,6 +6477,16 @@
    "size": "XS",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Kelpie_Fire_icon_normal.webp",
+   "food": 1,
+   "drops": [
+    "Raw Kelpsea",
+    "Flame Organ"
+   ],
+   "ranch_produce": [
+    "Flame Organ"
+   ],
+   "craft_speed": 0,
+   "max_wild_level": 38,
    "wild": true,
    "regions": [
     "Dry Sandy Beach",
@@ -5252,6 +6526,15 @@
    "size": "XS",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SmallArmadillo_icon_normal.webp",
+   "food": 3,
+   "drops": [
+    "Leather",
+    "Bone",
+    "Crude Oil"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 49,
    "wild": true,
    "regions": [
     "Sakurajima - Southern Sandbar",
@@ -5293,6 +6576,15 @@
    "size": "XS",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_NegativeOctopus_icon_normal.webp",
+   "food": 2,
+   "drops": [
+    "Venom Gland",
+    "Killamari Tentacle",
+    "Aquatic Pal Fluids"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 62,
    "wild": true,
    "regions": [
     "Scorched Ashland",
@@ -5335,6 +6627,14 @@
    "size": "XS",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_NegativeOctopus_Neutral_icon_normal.webp",
+   "food": 2,
+   "drops": [
+    "Aquatic Pal Fluids",
+    "Killamari Tentacle"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 55,
    "wild": true,
    "regions": [
     "Phantom Isle",
@@ -5372,6 +6672,18 @@
    "size": "XL",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_KingAlpaca_icon_normal.webp",
+   "food": 4,
+   "drops": [
+    "Wool",
+    "Neutral Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic",
+    "Gorgeous Ancient Relic",
+    "Glowing Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "The World Tree [Lv. 80]"
@@ -5405,6 +6717,14 @@
    "size": "XL",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_KingAlpaca_Ice_icon_normal.webp",
+   "food": 4,
+   "drops": [
+    "Wool",
+    "Ice Organ"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 46,
    "wild": false,
    "regions": [],
    "alpha_locations": [
@@ -5440,6 +6760,14 @@
    "size": "M",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_AmaterasuWolf_icon_normal.webp",
+   "food": 5,
+   "drops": [
+    "Flame Organ",
+    "Leather"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 38,
    "wild": true,
    "regions": [
     "No. 2 Wildlife Sanctuary",
@@ -5475,6 +6803,15 @@
    "size": "M",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_AmaterasuWolf_Dark_icon_normal.webp",
+   "food": 5,
+   "drops": [
+    "Flame Organ",
+    "Leather",
+    "Dark Fragment"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 66,
    "wild": true,
    "regions": [
     "Scorched Hill",
@@ -5517,6 +6854,18 @@
    "size": "L",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_WingGolem_icon_normal.webp",
+   "food": 9,
+   "drops": [
+    "Ore",
+    "World Tree Holy Water",
+    "Electric Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic",
+    "Gorgeous Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Foot of the World Tree",
@@ -5558,6 +6907,18 @@
    "size": "L",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_WingGolem_Fire_icon_normal.webp",
+   "food": 9,
+   "drops": [
+    "Ore",
+    "Flame Organ",
+    "World Tree Holy Water",
+    "Fire Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 73,
    "wild": true,
    "regions": [
     "Bicornis Islet",
@@ -5592,6 +6953,16 @@
    "size": "XS",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SheepBall_icon_normal.webp",
+   "food": 1,
+   "drops": [
+    "Wool",
+    "Lamball Mutton"
+   ],
+   "ranch_produce": [
+    "Wool"
+   ],
+   "craft_speed": 0,
+   "max_wild_level": 20,
    "wild": true,
    "regions": [
     "Eastern Wild Island",
@@ -5634,6 +7005,13 @@
    "size": "S",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_BrownRabbit_icon_normal.webp",
+   "food": 4,
+   "drops": [
+    "Leather"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 69,
    "wild": true,
    "regions": [
     "Azure Woodland",
@@ -5670,6 +7048,13 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SleeveRabbit_icon_normal.webp",
+   "food": 7,
+   "drops": [
+    "Leather"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 69,
    "wild": true,
    "regions": [
     "Enchanted Firmament",
@@ -5708,6 +7093,13 @@
    "size": "S",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_PandaGirl_icon_normal.webp",
+   "food": 7,
+   "drops": [
+    "Leather"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 69,
    "wild": true,
    "regions": [
     "Enchanted Firmament",
@@ -5747,6 +7139,15 @@
    "size": "S",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_LizardMan_icon_normal.webp",
+   "food": 2,
+   "drops": [
+    "Copper Key",
+    "Silver Key",
+    "Leezpunk Crest"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 40,
    "wild": true,
    "regions": [
     "Desiccated Dunes",
@@ -5790,6 +7191,15 @@
    "size": "S",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_LizardMan_Fire_icon_normal.webp",
+   "food": 2,
+   "drops": [
+    "Flame Organ",
+    "Silver Key",
+    "Leezpunk Crest"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 40,
    "wild": true,
    "regions": [
     "Foot of the Volcano",
@@ -5832,6 +7242,14 @@
    "size": "XS",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Carbunclo_icon_normal.webp",
+   "food": 1,
+   "drops": [
+    "Wheat Seeds",
+    "Low Grade Medical Supplies"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 14,
    "wild": true,
    "regions": [
     "Sea Breeze Archipelago",
@@ -5874,6 +7292,18 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_LanternButler_icon_normal.webp",
+   "food": 7,
+   "drops": [
+    "High Quality Pal Oil",
+    "Leather",
+    "Venom Gland",
+    "World Tree Holy Water",
+    "Dark Radiant Gem",
+    "Decayed Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 77,
    "wild": true,
    "regions": [
     "Foot of the World Tree",
@@ -5905,6 +7335,13 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Werewolf_icon_normal.webp",
+   "food": 3,
+   "drops": [
+    "Bone"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 38,
    "wild": true,
    "regions": [
     "Deep Bamboo Thicket",
@@ -5945,6 +7382,13 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Werewolf_Ice_icon_normal.webp",
+   "food": 3,
+   "drops": [
+    "Bone"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 66,
    "wild": true,
    "regions": [
     "Foot of the Astral Mountains",
@@ -5988,6 +7432,17 @@
    "size": "L",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_PinkLizard_icon_normal.webp",
+   "food": 4,
+   "drops": [
+    "Mushroom",
+    "Cake",
+    "Suspicious Juice",
+    "Strange Juice",
+    "Memory Wiping Medicine"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 42,
    "wild": true,
    "regions": [
     "Desiccated Dunes",
@@ -6033,6 +7488,14 @@
    "size": "S",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_LeafPrincess_icon_normal.webp",
+   "food": 4,
+   "drops": [
+    "Beautiful Flower",
+    "Red Berries"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 65,
    "wild": true,
    "regions": [
     "Dancing Sakura Shrine",
@@ -6072,6 +7535,13 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Mutant_icon_normal.webp",
+   "food": 4,
+   "drops": [
+    "Paldium Fragment"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 49,
    "wild": true,
    "regions": [
     "Foot of the Astral Mountains",
@@ -6115,6 +7585,18 @@
    "size": "L",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_LilyQueen_icon_normal.webp",
+   "food": 8,
+   "drops": [
+    "High Quality Recovery Meds",
+    "Beautiful Flower",
+    "Innovative Technical Manual",
+    "World Tree Holy Water",
+    "Electric Radiant Gem",
+    "Decayed Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Foot of the World Tree",
@@ -6151,6 +7633,18 @@
    "size": "L",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_LilyQueen_Dark_icon_normal.webp",
+   "food": 8,
+   "drops": [
+    "High Quality Recovery Meds",
+    "Beautiful Flower",
+    "Innovative Technical Manual",
+    "World Tree Holy Water",
+    "Electric Radiant Gem",
+    "Decayed Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Foot of the World Tree",
@@ -6192,6 +7686,18 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_DarkFlameFox_icon_normal.webp",
+   "food": 8,
+   "drops": [
+    "Leather",
+    "Flame Organ",
+    "World Tree Holy Water",
+    "Dark Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 77,
    "wild": true,
    "regions": [
     "Foot of the World Tree",
@@ -6229,6 +7735,18 @@
    "size": "XL",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_GrassMammoth_icon_normal.webp",
+   "food": 6,
+   "drops": [
+    "High Quality Pal Oil",
+    "Leather",
+    "Mammorest Meat",
+    "Grass Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Foot of the Astral Mountains",
@@ -6271,6 +7789,18 @@
    "size": "XL",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_GrassMammoth_Ice_icon_normal.webp",
+   "food": 6,
+   "drops": [
+    "High Quality Pal Oil",
+    "Leather",
+    "Mammorest Meat",
+    "Ice Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "No. 1 Wildlife Sanctuary",
@@ -6311,6 +7841,15 @@
    "size": "M",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_GhostBeast_icon_normal.webp",
+   "food": 5,
+   "drops": [
+    "Bone",
+    "Small Pal Soul",
+    "Crude Oil"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 60,
    "wild": true,
    "regions": [
     "Foot of the Astral Mountains",
@@ -6351,6 +7890,16 @@
    "size": "XS",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Bastet_icon_normal.webp",
+   "food": 1,
+   "drops": [
+    "Gold Coin",
+    "Leather"
+   ],
+   "ranch_produce": [
+    "Gold Coin"
+   ],
+   "craft_speed": 0,
+   "max_wild_level": 25,
    "wild": false,
    "regions": [],
    "alpha_locations": [
@@ -6386,6 +7935,16 @@
    "size": "XS",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Bastet_Ice_icon_normal.webp",
+   "food": 1,
+   "drops": [
+    "Ice Organ",
+    "Sapphire"
+   ],
+   "ranch_produce": [
+    "Ice Organ"
+   ],
+   "craft_speed": 0,
+   "max_wild_level": 45,
    "wild": true,
    "regions": [
     "Foot of the Astral Mountains",
@@ -6423,6 +7982,16 @@
    "size": "M",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Alpaca_icon_normal.webp",
+   "food": 2,
+   "drops": [
+    "Wool",
+    "Leather"
+   ],
+   "ranch_produce": [
+    "Wool"
+   ],
+   "craft_speed": 0,
+   "max_wild_level": 17,
    "wild": true,
    "regions": [
     "Eastern Wild Island",
@@ -6464,6 +8033,14 @@
    "size": "L",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_DarkScorpion_icon_normal.webp",
+   "food": 6,
+   "drops": [
+    "Medium Pal Soul",
+    "Venom Gland"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 44,
    "wild": true,
    "regions": [
     "Desiccated Dunes",
@@ -6504,6 +8081,14 @@
    "size": "L",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_DarkScorpion_Ground_icon_normal.webp",
+   "food": 6,
+   "drops": [
+    "Medium Pal Soul",
+    "Sapphire"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 55,
    "wild": true,
    "regions": [
     "No. 3 Wildlife Sanctuary"
@@ -6542,6 +8127,15 @@
    "size": "XS",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_MimicDog_icon_normal.webp",
+   "food": 3,
+   "drops": [
+    "Gold Coin",
+    "Dog Coin",
+    "Training Manual (XL)"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Desiccated Dunes",
@@ -6581,6 +8175,18 @@
    "size": "L",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VolcanoDragon_icon_normal.webp",
+   "food": 8,
+   "drops": [
+    "Flame Organ",
+    "Leather",
+    "Fire Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic",
+    "Gorgeous Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Mount Obsidian",
@@ -6621,6 +8227,14 @@
    "size": "L",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VolcanoDragon_Ice_icon_normal.webp",
+   "food": 8,
+   "drops": [
+    "Ice Organ",
+    "Leather"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 78,
    "wild": false,
    "regions": [],
    "alpha_locations": [
@@ -6657,6 +8271,18 @@
    "size": "L",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_GrassPanda_icon_normal.webp",
+   "food": 4,
+   "drops": [
+    "Hardwood",
+    "Leather",
+    "Carrot Seeds",
+    "Grass Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Gobfin's Turf",
@@ -6699,6 +8325,18 @@
    "size": "L",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_GrassPanda_Electric_icon_normal.webp",
+   "food": 4,
+   "drops": [
+    "Hardwood",
+    "Electric Organ",
+    "Leather",
+    "World Tree Holy Water",
+    "Electric Radiant Gem",
+    "Decayed Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Foot of the World Tree",
@@ -6736,6 +8374,16 @@
    "size": "S",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_CowPal_icon_normal.webp",
+   "food": 2,
+   "drops": [
+    "Mozzarina Meat",
+    "Milk"
+   ],
+   "ranch_produce": [
+    "Milk"
+   ],
+   "craft_speed": 0,
+   "max_wild_level": 19,
    "wild": true,
    "regions": [
     "Marsh Island",
@@ -6775,6 +8423,13 @@
    "size": "XS",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_FluffyBird_icon_normal.webp",
+   "food": 3,
+   "drops": [
+    "Ice Organ"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 65,
    "wild": true,
    "regions": [
     "Ancient Ritual Site",
@@ -6817,6 +8472,15 @@
    "size": "S",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_IceCrocodile_icon_normal.webp",
+   "food": 3,
+   "drops": [
+    "Munchill Meat",
+    "Aquatic Pal Fluids",
+    "Ice Organ"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 60,
    "wild": true,
    "regions": [
     "Frozen Coral Hill",
@@ -6863,6 +8527,18 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_MushroomLady_icon_normal.webp",
+   "food": 7,
+   "drops": [
+    "Mushroom",
+    "Mysterious Mushroom",
+    "World Tree Holy Water",
+    "Ground Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 78,
    "wild": true,
    "regions": [
     "Foot of the World Tree",
@@ -6897,6 +8573,15 @@
    "size": "L",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_BlackCentaur_icon_normal.webp",
+   "food": 9,
+   "drops": [
+    "Hexolite",
+    "Diamond",
+    "Large Pal Soul"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 60,
    "wild": false,
    "regions": [],
    "alpha_locations": [
@@ -6932,6 +8617,13 @@
    "size": "XS",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_CactusDoll_icon_normal.webp",
+   "food": 2,
+   "drops": [
+    "Fiber"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 40,
    "wild": true,
    "regions": [
     "Desiccated Dunes",
@@ -6970,6 +8662,14 @@
    "size": "XS",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_CactusDoll_Dark_icon_normal.webp",
+   "food": 2,
+   "drops": [
+    "Fiber",
+    "Venom Gland"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 36,
    "wild": true,
    "regions": [
     "Desiccated Dunes",
@@ -7003,6 +8703,16 @@
    "size": "XL",
    "mount": "swim",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_PoseidonOrca_icon_normal.webp",
+   "food": 9,
+   "drops": [
+    "Coralum Ore",
+    "Hexolite",
+    "Diamond",
+    "Large Pal Soul"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 60,
    "wild": false,
    "regions": [],
    "alpha_locations": [
@@ -7037,6 +8747,13 @@
    "size": "S",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_GhostRabbit_icon_normal.webp",
+   "food": 6,
+   "drops": [
+    "Small Pal Soul"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 67,
    "wild": true,
    "regions": [
     "The Oculus Gate, Tower in Sight",
@@ -7079,6 +8796,18 @@
    "size": "S",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_GhostRabbit_Grass_icon_normal.webp",
+   "food": 6,
+   "drops": [
+    "Medium Pal Soul",
+    "World Tree Holy Water",
+    "Grass Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic",
+    "Gorgeous Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 54,
    "wild": true,
    "regions": [
     "Islet of Circular Ruins"
@@ -7109,6 +8838,13 @@
    "size": "M",
    "mount": "flying",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_HawkBird_icon_normal.webp",
+   "food": 2,
+   "drops": [
+    "Leather"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 40,
    "wild": true,
    "regions": [
     "Marsh Island",
@@ -7149,6 +8885,14 @@
    "size": "XS",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_NightFox_icon_normal.webp",
+   "food": 1,
+   "drops": [
+    "Leather",
+    "Small Pal Soul"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 25,
    "wild": true,
    "regions": [
     "Isle of Silence",
@@ -7191,6 +8935,13 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_BadCatgirl_icon_normal.webp",
+   "food": 6,
+   "drops": [
+    "Leather"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 60,
    "wild": true,
    "regions": [
     "Stone Pillar Cave",
@@ -7231,6 +8982,13 @@
    "size": "S",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_MysteryMask_icon_normal.webp",
+   "food": 5,
+   "drops": [
+    "Dark Fragment"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 66,
    "wild": true,
    "regions": [
     "Deserted Ash Plateau",
@@ -7273,6 +9031,18 @@
    "size": "L",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_LotusDragon_icon_normal.webp",
+   "food": 9,
+   "drops": [
+    "High Quality Pal Oil",
+    "Large Pal Soul",
+    "Grass Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic",
+    "Gorgeous Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "The World Tree [Lv. 80]"
@@ -7308,6 +9078,18 @@
    "size": "L",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ThunderDragonMan_icon_normal.webp",
+   "food": 9,
+   "drops": [
+    "Electric Organ",
+    "World Tree Holy Water",
+    "Electric Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic",
+    "Gorgeous Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Foot of the World Tree",
@@ -7341,6 +9123,15 @@
    "size": "L",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SaintCentaur_icon_normal.webp",
+   "food": 9,
+   "drops": [
+    "Hexolite",
+    "Diamond",
+    "Large Pal Soul"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 60,
    "wild": false,
    "regions": [],
    "alpha_locations": [
@@ -7376,6 +9167,15 @@
    "size": "M",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_TropicalOstrich_icon_normal.webp",
+   "food": 6,
+   "drops": [
+    "Hardwood",
+    "Onion Seeds",
+    "Carrot Seeds"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 50,
    "wild": true,
    "regions": [
     "Desiccated Dunes",
@@ -7416,6 +9216,14 @@
    "size": "XL",
    "mount": "flying",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_KingWhale_icon_normal.webp",
+   "food": 9,
+   "drops": [
+    "Diamond",
+    "Giant Pal Soul"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": null,
    "wild": false,
    "regions": [],
    "alpha_locations": [
@@ -7453,6 +9261,14 @@
    "size": "XS",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Penguin_icon_normal.webp",
+   "food": 1,
+   "drops": [
+    "Ice Organ",
+    "Aquatic Pal Fluids"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 45,
    "wild": true,
    "regions": [
     "Flying Fish Coast",
@@ -7497,6 +9313,14 @@
    "size": "XS",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Penguin_Electric_icon_normal.webp",
+   "food": 1,
+   "drops": [
+    "Electric Organ",
+    "Aquatic Pal Fluids"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 55,
    "wild": true,
    "regions": [
     "Scars of War",
@@ -7538,6 +9362,14 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_CaptainPenguin_icon_normal.webp",
+   "food": 4,
+   "drops": [
+    "Ice Organ",
+    "Penking Plume"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 44,
    "wild": true,
    "regions": [
     "Foot of the Astral Mountains",
@@ -7582,6 +9414,14 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_CaptainPenguin_Black_icon_normal.webp",
+   "food": 4,
+   "drops": [
+    "Electric Organ",
+    "Penking Plume"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": null,
    "wild": true,
    "regions": [
     "Dancing Sakura Shrine",
@@ -7625,6 +9465,14 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_FlowerDoll_icon_normal.webp",
+   "food": 6,
+   "drops": [
+    "Beautiful Flower",
+    "Potato Seeds"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 57,
    "wild": true,
    "regions": [
     "Crescent Moon Shore",
@@ -7667,6 +9515,11 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_FlowerDoll_Fire_icon_normal.webp",
+   "food": 6,
+   "drops": [],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 73,
    "wild": true,
    "regions": [
     "Foot of the World Tree",
@@ -7698,6 +9551,15 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_RockBeast_icon_normal.webp",
+   "food": 8,
+   "drops": [
+    "Ore",
+    "Coal",
+    "Sulfur"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 50,
    "wild": true,
    "regions": [
     "Flamepulse Islet"
@@ -7731,6 +9593,18 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_RockBeast_Ice_icon_normal.webp",
+   "food": 8,
+   "drops": [
+    "Soralite",
+    "Ice Organ",
+    "Pure Quartz",
+    "World Tree Holy Water",
+    "Ice Radiant Gem",
+    "Decayed Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 69,
    "wild": true,
    "regions": [
     "Farcry Marsh",
@@ -7770,6 +9644,13 @@
    "size": "S",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_IceSeal_icon_normal.webp",
+   "food": 4,
+   "drops": [
+    "Ice Organ"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 60,
    "wild": true,
    "regions": [
     "Frozen Coral Hill",
@@ -7811,6 +9692,18 @@
    "size": "S",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_IceSeal_Ground_icon_normal.webp",
+   "food": 4,
+   "drops": [
+    "Leather",
+    "Aquatic Pal Fluids",
+    "World Tree Holy Water",
+    "Ground Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 60,
    "wild": true,
    "regions": [
     "Suncrest Islet"
@@ -7846,6 +9739,13 @@
    "size": "S",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ScorpionMan_icon_normal.webp",
+   "food": 5,
+   "drops": [
+    "Venom Gland"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 49,
    "wild": true,
    "regions": [
     "Sakurajima - Southern Sandbar",
@@ -7886,6 +9786,13 @@
    "size": "S",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ScorpionMan_Electric_icon_normal.webp",
+   "food": 5,
+   "drops": [
+    "Electric Organ"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 70,
    "wild": true,
    "regions": [
     "Sandstone Gate Islet"
@@ -7926,6 +9833,15 @@
    "size": "S",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_BlueberryFairy_icon_normal.webp",
+   "food": 5,
+   "drops": [
+    "Low Grade Medical Supplies",
+    "Beautiful Flower",
+    "Carrot Seeds"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 66,
    "wild": true,
    "regions": [
     "Scorched Hill",
@@ -7971,6 +9887,13 @@
    "size": "XS",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ElecPomeranian_icon_normal.webp",
+   "food": 3,
+   "drops": [
+    "Electric Organ"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 69,
    "wild": true,
    "regions": [
     "Bamboo Groves",
@@ -8012,6 +9935,13 @@
    "size": "XS",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SamuraiDog_icon_normal.webp",
+   "food": 1,
+   "drops": [
+    "Bone"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 4,
    "wild": true,
    "regions": [
     "Flying Fish Coast",
@@ -8046,6 +9976,13 @@
    "size": "S",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_YakushimaMonster001_Purple_icon_normal.webp",
+   "food": 3,
+   "drops": [
+    "Hallowed Bar"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 41,
    "wild": true,
    "regions": [
     "Sealed Realm of Terraria - Terraria dungeon island SE of Fisherman's Point, near Isle of Eternal Summer"
@@ -8077,6 +10014,18 @@
    "size": "L",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_FireKirin_icon_normal.webp",
+   "food": 4,
+   "drops": [
+    "Flame Organ",
+    "Leather",
+    "Fire Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic",
+    "Gorgeous Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Mount Obsidian",
@@ -8119,6 +10068,18 @@
    "size": "L",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_FireKirin_Dark_icon_normal.webp",
+   "food": 4,
+   "drops": [
+    "Flame Organ",
+    "Leather",
+    "Fire Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic",
+    "Gorgeous Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Dry Sandy Beach",
@@ -8161,6 +10122,18 @@
    "size": "L",
    "mount": "flying",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SkyDragon_icon_normal.webp",
+   "food": 6,
+   "drops": [
+    "High Quality Pal Oil",
+    "Dragon Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic",
+    "Gorgeous Ancient Relic",
+    "Glowing Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Enchanted Firmament",
@@ -8204,6 +10177,18 @@
    "size": "L",
    "mount": "flying",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SkyDragon_Grass_icon_normal.webp",
+   "food": 6,
+   "drops": [
+    "High Quality Pal Oil",
+    "Beautiful Flower",
+    "Red Berries",
+    "Dragon Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Dancing Sakura Shrine",
@@ -8243,6 +10228,18 @@
    "size": "L",
    "mount": "flying",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_RedArmorBird_icon_normal.webp",
+   "food": 7,
+   "drops": [
+    "Flame Organ",
+    "Fire Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic",
+    "Gorgeous Ancient Relic",
+    "Glowing Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Mount Obsidian",
@@ -8282,6 +10279,13 @@
    "size": "M",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_YakushimaMonster001_Rainbow_icon_normal.webp",
+   "food": 3,
+   "drops": [
+    "Hallowed Bar"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 44,
    "wild": true,
    "regions": [
     "Sealed Realm of Terraria - Terraria dungeon island SE of Fisherman's Point, near Isle of Eternal Summer"
@@ -8312,6 +10316,13 @@
    "size": "M",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ThunderDog_icon_normal.webp",
+   "food": 4,
+   "drops": [
+    "Electric Organ"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 58,
    "wild": true,
    "regions": [
     "Foot of the Astral Mountains",
@@ -8351,6 +10362,18 @@
    "size": "M",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ThunderDog_Ice_icon_normal.webp",
+   "food": 4,
+   "drops": [
+    "Ice Organ",
+    "World Tree Holy Water",
+    "Water Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic",
+    "Gorgeous Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 77,
    "wild": true,
    "regions": [
     "Foot of the World Tree",
@@ -8384,6 +10407,13 @@
    "size": "S",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_YakushimaMonster001_Red_icon_normal.webp",
+   "food": 3,
+   "drops": [
+    "Hallowed Bar"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 41,
    "wild": true,
    "regions": [
     "Sealed Realm of Terraria - Terraria dungeon island SE of Fisherman's Point, near Isle of Eternal Summer"
@@ -8415,6 +10445,18 @@
    "size": "M",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_IceDeer_icon_normal.webp",
+   "food": 4,
+   "drops": [
+    "Reindrix Venison",
+    "Leather",
+    "Horn",
+    "Ice Organ",
+    "Ice Radiant Gem",
+    "Decayed Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "No. 1 Wildlife Sanctuary",
@@ -8456,6 +10498,18 @@
    "size": "XL",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_LazyDragon_icon_normal.webp",
+   "food": 7,
+   "drops": [
+    "High Quality Pal Oil",
+    "Ruby",
+    "Dragon Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic",
+    "Gorgeous Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Bamboo Groves",
@@ -8495,6 +10549,18 @@
    "size": "XL",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_LazyDragon_Electric_icon_normal.webp",
+   "food": 7,
+   "drops": [
+    "High Quality Pal Oil",
+    "Electric Organ",
+    "Sapphire",
+    "Dragon Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Scorched Hill",
@@ -8535,6 +10601,18 @@
    "size": "L",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_KabukiMan_icon_normal.webp",
+   "food": 8,
+   "drops": [
+    "Leather",
+    "Flame Organ",
+    "World Tree Holy Water",
+    "Fire Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "The World Tree [Lv. 80]"
@@ -8569,6 +10647,13 @@
    "size": "L",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VolcanicMonster_icon_normal.webp",
+   "food": 7,
+   "drops": [
+    "Flame Organ"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 50,
    "wild": true,
    "regions": [
     "Ruined Fortress City",
@@ -8610,6 +10695,13 @@
    "size": "L",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VolcanicMonster_Ice_icon_normal.webp",
+   "food": 7,
+   "drops": [
+    "Ice Organ"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 67,
    "wild": true,
    "regions": [
     "Frozen Coral Hill",
@@ -8653,6 +10745,16 @@
    "size": "XS",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_PinkRabbit_icon_normal.webp",
+   "food": 1,
+   "drops": [
+    "Leather",
+    "Beautiful Flower",
+    "Ribbuny Ribbon",
+    "Berry Seeds"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 35,
    "wild": true,
    "regions": [
     "Eastern Wild Island",
@@ -8698,6 +10800,16 @@
    "size": "XS",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_PinkRabbit_Grass_icon_normal.webp",
+   "food": 1,
+   "drops": [
+    "Leather",
+    "Ribbuny Ribbon",
+    "Carrot Seeds",
+    "Carrot"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 58,
    "wild": true,
    "regions": [
     "Crescent Moon Shore",
@@ -8743,6 +10855,14 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_RobinHood_icon_normal.webp",
+   "food": 3,
+   "drops": [
+    "Potato Seeds",
+    "Arrow"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 34,
    "wild": true,
    "regions": [
     "Gobfin's Turf",
@@ -8786,6 +10906,14 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_RobinHood_Ground_icon_normal.webp",
+   "food": 3,
+   "drops": [
+    "Potato Seeds",
+    "Arrow"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 55,
    "wild": true,
    "regions": [
     "Desiccated Dunes",
@@ -8826,6 +10954,16 @@
    "size": "S",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_FlameBambi_icon_normal.webp",
+   "food": 1,
+   "drops": [
+    "Flame Organ",
+    "Leather"
+   ],
+   "ranch_produce": [
+    "Flame Organ"
+   ],
+   "craft_speed": 0,
+   "max_wild_level": 30,
    "wild": true,
    "regions": [
     "Isle of Murmurs",
@@ -8866,6 +11004,18 @@
    "size": "M",
    "mount": "flying",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ThiefBird_icon_normal.webp",
+   "food": 8,
+   "drops": [
+    "Leather",
+    "Ruby",
+    "World Tree Holy Water",
+    "Electric Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 78,
    "wild": true,
    "regions": [
     "Foot of the World Tree",
@@ -8898,6 +11048,15 @@
    "size": "S",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Boar_icon_normal.webp",
+   "food": 1,
+   "drops": [
+    "Rushoar Pork",
+    "Leather",
+    "Bone"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 25,
    "wild": true,
    "regions": [
     "Sea Breeze Archipelago",
@@ -8942,6 +11101,18 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Sekhmet_icon_normal.webp",
+   "food": 7,
+   "drops": [
+    "Leather",
+    "Large Pal Soul",
+    "Ground Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic",
+    "Gorgeous Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Desiccated Dunes",
@@ -8981,6 +11152,18 @@
    "size": "L",
    "mount": "flying",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_MoonQueen_icon_normal.webp",
+   "food": 9,
+   "drops": [
+    "High Quality Cloth",
+    "Sapphire",
+    "World Tree Holy Water",
+    "Electric Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Foot of the World Tree",
@@ -9013,6 +11196,18 @@
    "size": "L",
    "mount": "flying",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_BlackGriffon_icon_normal.webp",
+   "food": 8,
+   "drops": [
+    "Plasteel",
+    "Carbon Fiber",
+    "Innovative Technical Manual",
+    "Large Pal Soul",
+    "Dark Radiant Gem",
+    "Decayed Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "No. 3 Wildlife Sanctuary",
@@ -9048,6 +11243,18 @@
    "size": "XL",
    "mount": "flying",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_BlueSkyDragon_icon_normal.webp",
+   "food": 9,
+   "drops": [
+    "Horn",
+    "Leather",
+    "Large Pal Soul",
+    "World Tree Holy Water",
+    "Electric Radiant Gem",
+    "Decayed Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 78,
    "wild": true,
    "regions": [
     "Foot of the World Tree",
@@ -9083,6 +11290,21 @@
    "size": "S",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_MushroomDragon_icon_normal.webp",
+   "food": 5,
+   "drops": [
+    "Mushroom",
+    "Red Berries",
+    "World Tree Holy Water",
+    "Grass Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic"
+   ],
+   "ranch_produce": [
+    "Mushroom",
+    "Cavern Mushroom"
+   ],
+   "craft_speed": 0,
+   "max_wild_level": 77,
    "wild": true,
    "regions": [
     "Sakurajima - Mushroom Wetlands",
@@ -9127,6 +11349,14 @@
    "size": "S",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_MushroomDragon_Dark_icon_normal.webp",
+   "food": 5,
+   "drops": [
+    "Venom Gland",
+    "Mysterious Mushroom"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 77,
    "wild": true,
    "regions": [
     "Frozen Coral Hill",
@@ -9168,6 +11398,16 @@
    "size": "L",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_WhiteMoth_icon_normal.webp",
+   "food": 5,
+   "drops": [
+    "High Quality Cloth",
+    "Ice Organ"
+   ],
+   "ranch_produce": [
+    "High Quality Cloth"
+   ],
+   "craft_speed": 0,
+   "max_wild_level": 45,
    "wild": true,
    "regions": [
     "No. 1 Wildlife Sanctuary",
@@ -9209,6 +11449,20 @@
    "size": "L",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_WhiteMoth_Neutral_icon_normal.webp",
+   "food": 5,
+   "drops": [
+    "High Quality Cloth",
+    "High Quality Pal Oil",
+    "World Tree Holy Water",
+    "Neutral Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic"
+   ],
+   "ranch_produce": [
+    "High Quality Cloth"
+   ],
+   "craft_speed": 0,
+   "max_wild_level": 78,
    "wild": true,
    "regions": [
     "Foot of the World Tree",
@@ -9245,6 +11499,18 @@
    "size": "L",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Mothman_icon_normal.webp",
+   "food": 9,
+   "drops": [
+    "Giant Pal Soul",
+    "Ancient Civilization Core",
+    "World Tree Holy Water",
+    "Grass Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": null,
    "wild": false,
    "regions": [],
    "alpha_locations": [
@@ -9278,6 +11544,18 @@
    "size": "L",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_WhiteShieldDragon_icon_normal.webp",
+   "food": 8,
+   "drops": [
+    "Chromite",
+    "Dragon Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic",
+    "Gorgeous Ancient Relic",
+    "Glowing Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "The World Tree [Lv. 80]"
@@ -9316,6 +11594,14 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SwordCutlassfish_icon_normal.webp",
+   "food": 5,
+   "drops": [
+    "Skutlass Sashimi",
+    "Aquatic Pal Fluids"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 66,
    "wild": true,
    "regions": [
     "Waterlily Gorge",
@@ -9357,6 +11643,18 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SwordCutlassfish_Fire_icon_normal.webp",
+   "food": 5,
+   "drops": [
+    "Skutlass Sashimi",
+    "Flame Organ",
+    "World Tree Holy Water",
+    "Water Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 44,
    "wild": true,
    "regions": [
     "Foot of the World Tree",
@@ -9390,6 +11688,14 @@
    "size": "S",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ElecLizard_icon_normal.webp",
+   "food": 4,
+   "drops": [
+    "Aquatic Pal Fluids",
+    "Electric Organ"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 66,
    "wild": true,
    "regions": [
     "Azure Woodland",
@@ -9426,6 +11732,13 @@
    "size": "XS",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_BlackPuppy_icon_normal.webp",
+   "food": 3,
+   "drops": [
+    "Chromite"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 66,
    "wild": true,
    "regions": [
     "Deserted Ash Plateau",
@@ -9472,6 +11785,18 @@
    "size": "XS",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_BlackPuppy_Ice_icon_normal.webp",
+   "food": 3,
+   "drops": [
+    "Ice Organ",
+    "Medium Pal Soul",
+    "World Tree Holy Water",
+    "Dark Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 64,
    "wild": true,
    "regions": [
     "Glacial Memento Islet"
@@ -9502,6 +11827,14 @@
    "size": "S",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ElecSnail_icon_normal.webp",
+   "food": 4,
+   "drops": [
+    "Electric Organ",
+    "Aquatic Pal Fluids"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 69,
    "wild": true,
    "regions": [
     "Enchanted Firmament",
@@ -9542,6 +11875,18 @@
    "size": "S",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ElecSnail_Ground_icon_normal.webp",
+   "food": 4,
+   "drops": [
+    "Electric Organ",
+    "High Quality Pal Oil",
+    "World Tree Holy Water",
+    "Electric Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 76,
    "wild": true,
    "regions": [
     "Foot of the World Tree",
@@ -9576,6 +11921,18 @@
    "size": "S",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SmallYeti_icon_normal.webp",
+   "food": 5,
+   "drops": [
+    "Leather",
+    "Wool",
+    "World Tree Holy Water",
+    "Ice Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 34,
    "wild": true,
    "regions": [
     "Frostbound Mountains"
@@ -9612,6 +11969,18 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_MonochromeQueen_icon_normal.webp",
+   "food": 9,
+   "drops": [
+    "Dark Fragment",
+    "High Quality Recovery Meds",
+    "World Tree Holy Water",
+    "Neutral Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 78,
    "wild": true,
    "regions": [
     "Foot of the World Tree",
@@ -9643,6 +12012,14 @@
    "size": "M",
    "mount": "swim",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_KingSunfish_icon_normal.webp",
+   "food": 6,
+   "drops": [
+    "High Quality Pal Oil",
+    "Aquatic Pal Fluids"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 67,
    "wild": true,
    "regions": [
     "Waterlily Gorge",
@@ -9681,6 +12058,18 @@
    "size": "M",
    "mount": "swim",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_KingSunfish_Thunder_icon_normal.webp",
+   "food": 6,
+   "drops": [
+    "High Quality Pal Oil",
+    "Electric Organ",
+    "World Tree Holy Water",
+    "Electric Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 78,
    "wild": true,
    "regions": [
     "Foot of the World Tree",
@@ -9722,6 +12111,17 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_CandleGhost_icon_normal.webp",
+   "food": 7,
+   "drops": [
+    "Medium Pal Soul",
+    "Bone",
+    "Crude Oil"
+   ],
+   "ranch_produce": [
+    "Bone"
+   ],
+   "craft_speed": 0,
+   "max_wild_level": 67,
    "wild": true,
    "regions": [
     "Frozen Coral Hill",
@@ -9762,6 +12162,13 @@
    "size": "S",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_DandelionGirl_icon_normal.webp",
+   "food": 3,
+   "drops": [
+    "Wheat Seeds"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 69,
    "wild": true,
    "regions": [
     "Enchanted Firmament",
@@ -9801,6 +12208,15 @@
    "size": "XS",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ElecCat_icon_normal.webp",
+   "food": 1,
+   "drops": [
+    "Electric Organ"
+   ],
+   "ranch_produce": [
+    "Electric Organ"
+   ],
+   "craft_speed": 0,
+   "max_wild_level": 12,
    "wild": true,
    "regions": [
     "Golden Hills"
@@ -9836,6 +12252,18 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_GrimGirl_icon_normal.webp",
+   "food": 7,
+   "drops": [
+    "Dark Fragment",
+    "Dark Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic",
+    "Gorgeous Ancient Relic",
+    "Glowing Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Scorched Hill",
@@ -9876,6 +12304,18 @@
    "size": "M",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_NightBlueHorse_icon_normal.webp",
+   "food": 6,
+   "drops": [
+    "Leather",
+    "Dark Fragment",
+    "Dark Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic",
+    "Gorgeous Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Loess Plains",
@@ -9916,6 +12356,18 @@
    "size": "M",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_NightBlueHorse_Neutral_icon_normal.webp",
+   "food": 6,
+   "drops": [
+    "Leather",
+    "Nightstar Sand",
+    "World Tree Holy Water",
+    "Neutral Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 76,
    "wild": true,
    "regions": [
     "Foot of the World Tree",
@@ -9948,6 +12400,15 @@
    "size": "M",
    "mount": "swim",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Serpent_icon_normal.webp",
+   "food": 3,
+   "drops": [
+    "Aquatic Pal Fluids"
+   ],
+   "ranch_produce": [
+    "Leather"
+   ],
+   "craft_speed": 0,
+   "max_wild_level": 35,
    "wild": true,
    "regions": [
     "Verdant Brook",
@@ -9987,6 +12448,14 @@
    "size": "M",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Serpent_Ground_icon_normal.webp",
+   "food": 3,
+   "drops": [
+    "Aquatic Pal Fluids",
+    "Ore"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 63,
    "wild": true,
    "regions": [
     "Desiccated Dunes",
@@ -10026,6 +12495,18 @@
    "size": "XL",
    "mount": "flying",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Suzaku_icon_normal.webp",
+   "food": 7,
+   "drops": [
+    "Flame Organ",
+    "Fire Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic",
+    "Gorgeous Ancient Relic",
+    "Glowing Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Desiccated Dunes",
@@ -10065,6 +12546,18 @@
    "size": "XL",
    "mount": "flying",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Suzaku_Water_icon_normal.webp",
+   "food": 7,
+   "drops": [
+    "Aquatic Pal Fluids",
+    "Water Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic",
+    "Gorgeous Ancient Relic",
+    "Glowing Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Farcry Marsh",
@@ -10100,6 +12593,14 @@
    "size": "XS",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_MopBaby_icon_normal.webp",
+   "food": 1,
+   "drops": [
+    "Wool",
+    "Swee Hair"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 34,
    "wild": true,
    "regions": [
     "Abandoned Ruins",
@@ -10138,6 +12639,13 @@
    "size": "L",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_MopKing_icon_normal.webp",
+   "food": 4,
+   "drops": [
+    "Wool"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 40,
    "wild": true,
    "regions": [
     "Abandoned Ruins",
@@ -10182,6 +12690,13 @@
    "size": "XS",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Monkey_icon_normal.webp",
+   "food": 1,
+   "drops": [
+    "Mushroom"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 20,
    "wild": true,
    "regions": [
     "Sea Breeze Archipelago",
@@ -10224,6 +12739,14 @@
    "size": "XS",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Monkey_Fire_icon_normal.webp",
+   "food": 1,
+   "drops": [
+    "Mushroom",
+    "Flame Organ"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 12,
    "wild": true,
    "regions": [
     "Autumn Rocks",
@@ -10261,6 +12784,14 @@
    "size": "S",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_PurpleSpider_icon_normal.webp",
+   "food": 4,
+   "drops": [
+    "Fiber",
+    "Venom Gland"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 58,
    "wild": true,
    "regions": [
     "Gobfin's Turf",
@@ -10299,6 +12830,13 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Ganesha_icon_normal.webp",
+   "food": 1,
+   "drops": [
+    "Aquatic Pal Fluids"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 25,
    "wild": true,
    "regions": [
     "Isle of Silence",
@@ -10342,6 +12880,18 @@
    "size": "XL",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_CubeTurtle_icon_normal.webp",
+   "food": 8,
+   "drops": [
+    "Ruby",
+    "Large Pal Soul",
+    "Ground Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic",
+    "Gorgeous Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Desiccated Dunes",
@@ -10380,6 +12930,18 @@
    "size": "XL",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_CubeTurtle_Neutral_icon_normal.webp",
+   "food": 8,
+   "drops": [
+    "Emerald",
+    "Large Pal Soul",
+    "World Tree Holy Water",
+    "Neutral Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 78,
    "wild": true,
    "regions": [
     "Foot of the World Tree",
@@ -10416,6 +12978,14 @@
    "size": "S",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ColorfulBird_icon_normal.webp",
+   "food": 2,
+   "drops": [
+    "Gunpowder",
+    "Tocotoco Feather"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 47,
    "wild": true,
    "regions": [
     "Desiccated Dunes",
@@ -10458,6 +13028,14 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_CatBat_icon_normal.webp",
+   "food": 2,
+   "drops": [
+    "Leather",
+    "Small Pal Soul"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 45,
    "wild": true,
    "regions": [
     "Marsh Island",
@@ -10499,6 +13077,14 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_RedFlowerBird_icon_normal.webp",
+   "food": 6,
+   "drops": [
+    "Beautiful Flower",
+    "Fiber"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 69,
    "wild": true,
    "regions": [
     "Farcry Marsh",
@@ -10539,6 +13125,14 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_TentacleTurtle_icon_normal.webp",
+   "food": 3,
+   "drops": [
+    "Aquatic Pal Fluids",
+    "Bone"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 50,
    "wild": true,
    "regions": [
     "Sea Breeze Archipelago",
@@ -10581,6 +13175,14 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_TentacleTurtle_Ground_icon_normal.webp",
+   "food": 3,
+   "drops": [
+    "Aquatic Pal Fluids",
+    "Bone"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 65,
    "wild": true,
    "regions": [
     "Oasis Isle",
@@ -10619,6 +13221,18 @@
    "size": "M",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Kirin_icon_normal.webp",
+   "food": 3,
+   "drops": [
+    "Leather",
+    "Electric Organ",
+    "Horn",
+    "Electric Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Bamboo Groves",
@@ -10659,6 +13273,18 @@
    "size": "M",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Kirin_Ice_icon_normal.webp",
+   "food": 3,
+   "drops": [
+    "Leather",
+    "Horn",
+    "Ice Organ",
+    "World Tree Holy Water",
+    "Ice Radiant Gem",
+    "Decayed Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 77,
    "wild": true,
    "regions": [
     "Foot of the World Tree",
@@ -10695,6 +13321,17 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VioletFairy_icon_normal.webp",
+   "food": 5,
+   "drops": [
+    "Low Grade Medical Supplies",
+    "Tomato Seeds",
+    "Onion Seeds"
+   ],
+   "ranch_produce": [
+    "various seeds"
+   ],
+   "craft_speed": 0,
+   "max_wild_level": 57,
    "wild": true,
    "regions": [
     "Flying Fish Coast",
@@ -10733,6 +13370,13 @@
    "size": "S",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_LongCat_icon_normal.webp",
+   "food": 4,
+   "drops": [
+    "Leather"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 69,
    "wild": true,
    "regions": [
     "Enchanted Firmament",
@@ -10773,6 +13417,15 @@
    "size": "L",
    "mount": "flying",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_BirdDragon_icon_normal.webp",
+   "food": 5,
+   "drops": [
+    "Bone",
+    "Ruby",
+    "Gold Coin"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 63,
    "wild": true,
    "regions": [
     "Scorched Ashland",
@@ -10814,6 +13467,15 @@
    "size": "L",
    "mount": "flying",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_BirdDragon_Ice_icon_normal.webp",
+   "food": 5,
+   "drops": [
+    "Bone",
+    "Ice Organ",
+    "Sapphire"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 67,
    "wild": true,
    "regions": [
     "Frozen Coral Hill",
@@ -10856,6 +13518,18 @@
    "size": "S",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SnakeGirl_icon_normal.webp",
+   "food": 6,
+   "drops": [
+    "Aquatic Pal Fluids",
+    "Venom Gland",
+    "World Tree Holy Water",
+    "Electric Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 77,
    "wild": true,
    "regions": [
     "Foot of the World Tree",
@@ -10891,6 +13565,14 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_GrassRabbitMan_icon_normal.webp",
+   "food": 6,
+   "drops": [
+    "Leather",
+    "Bone"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 53,
    "wild": true,
    "regions": [
     "Dancing Sakura Shrine",
@@ -10931,6 +13613,16 @@
    "size": "XS",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_CuteFox_icon_normal.webp",
+   "food": 1,
+   "drops": [
+    "Leather",
+    "Bone"
+   ],
+   "ranch_produce": [
+    "items from the ground"
+   ],
+   "craft_speed": 0,
+   "max_wild_level": 25,
    "wild": true,
    "regions": [
     "Sea Breeze Archipelago",
@@ -10974,6 +13666,18 @@
    "size": "L",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_HerculesBeetle_icon_normal.webp",
+   "food": 6,
+   "drops": [
+    "Honey",
+    "Ground Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic",
+    "Gorgeous Ancient Relic",
+    "Glowing Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Verdant Brook",
@@ -11012,6 +13716,13 @@
    "size": "L",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_HerculesBeetle_Ground_icon_normal.webp",
+   "food": 6,
+   "drops": [
+    "Honey"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 64,
    "wild": true,
    "regions": [
     "Loess Plains",
@@ -11054,6 +13765,18 @@
    "size": "XL",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_IceNarwhal_icon_normal.webp",
+   "food": 8,
+   "drops": [
+    "Aquatic Pal Fluids",
+    "Coralum Ore",
+    "Ice Organ",
+    "Large Pal Soul",
+    "Ice Radiant Gem",
+    "Decayed Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Feybreak Shipwreck",
@@ -11094,6 +13817,18 @@
    "size": "XL",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_IceNarwhal_Fire_icon_normal.webp",
+   "food": 8,
+   "drops": [
+    "Aquatic Pal Fluids",
+    "Coralum Ore",
+    "Flame Organ",
+    "Large Pal Soul",
+    "World Tree Holy Water",
+    "Fire Radiant Gem"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Foot of the World Tree",
@@ -11134,6 +13869,18 @@
    "size": "S",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_GhostBlackCat_icon_normal.webp",
+   "food": 6,
+   "drops": [
+    "Small Pal Soul",
+    "Leather",
+    "World Tree Holy Water",
+    "Ground Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 73,
    "wild": true,
    "regions": [
     "Marsh Island",
@@ -11172,6 +13919,18 @@
    "size": "S",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_MoonChild_icon_normal.webp",
+   "food": 5,
+   "drops": [
+    "Nightstar Sand",
+    "Small Pal Soul",
+    "World Tree Holy Water",
+    "Electric Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 78,
    "wild": true,
    "regions": [
     "Foot of the World Tree",
@@ -11207,6 +13966,14 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_FoxMage_icon_normal.webp",
+   "food": 4,
+   "drops": [
+    "Flame Organ",
+    "Advanced Technical Manual"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 38,
    "wild": true,
    "regions": [
     "Ruined Fortress City",
@@ -11250,6 +14017,14 @@
    "size": "M",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_FoxMage_Dark_icon_normal.webp",
+   "food": 4,
+   "drops": [
+    "Medium Pal Soul",
+    "Advanced Technical Manual"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 55,
    "wild": true,
    "regions": [
     "Sakurajima - Southern Sandbar",
@@ -11292,6 +14067,16 @@
    "size": "S",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SweetsSheep_icon_normal.webp",
+   "food": 1,
+   "drops": [
+    "Cotton Candy",
+    "High Quality Pal Oil"
+   ],
+   "ranch_produce": [
+    "Cotton Candy"
+   ],
+   "craft_speed": 0,
+   "max_wild_level": 19,
    "wild": true,
    "regions": [
     "Sea Breeze Archipelago",
@@ -11334,6 +14119,16 @@
    "size": "S",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SweetsSheep_Ground_icon_normal.webp",
+   "food": 1,
+   "drops": [
+    "Caramel Cotton Candy",
+    "Wool"
+   ],
+   "ranch_produce": [
+    "Caramel Cotton Candy"
+   ],
+   "craft_speed": 0,
+   "max_wild_level": 60,
    "wild": true,
    "regions": [
     "Suncrest Islet"
@@ -11371,6 +14166,18 @@
    "size": "L",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Yeti_icon_normal.webp",
+   "food": 7,
+   "drops": [
+    "Ice Organ",
+    "Beautiful Flower",
+    "Ice Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic",
+    "Gorgeous Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Astral Mountains",
@@ -11411,6 +14218,18 @@
    "size": "L",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Yeti_Grass_icon_normal.webp",
+   "food": 7,
+   "drops": [
+    "Hardwood",
+    "Beautiful Flower",
+    "Carrot Seeds",
+    "Grass Radiant Gem",
+    "Decayed Ancient Relic",
+    "Dormant Ancient Relic"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 80,
    "wild": true,
    "regions": [
     "Dancing Sakura Shrine",
@@ -11450,6 +14269,14 @@
    "size": "L",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_WhiteAlienDragon_icon_normal.webp",
+   "food": 7,
+   "drops": [
+    "Meteorite Fragment",
+    "High Quality Pal Oil"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": null,
    "wild": false,
    "regions": [],
    "alpha_locations": [],
@@ -11483,6 +14310,13 @@
    "size": "L",
    "mount": "flying",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_DarkMechaDragon_icon_normal.webp",
+   "food": 8,
+   "drops": [
+    "Meteorite Fragment"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": null,
    "wild": false,
    "regions": [],
    "alpha_locations": [],
@@ -11516,6 +14350,13 @@
    "size": "S",
    "mount": null,
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_DarkAlien_icon_normal.webp",
+   "food": 4,
+   "drops": [
+    "Meteorite Fragment"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 30,
    "wild": false,
    "regions": [],
    "alpha_locations": [],
@@ -11548,6 +14389,13 @@
    "size": "XS",
    "mount": "ground",
    "icon": "https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_GuardianDog_icon_normal.webp",
+   "food": 3,
+   "drops": [
+    "Leather"
+   ],
+   "ranch_produce": [],
+   "craft_speed": 0,
+   "max_wild_level": 65,
    "wild": true,
    "regions": [
     "Dancing Sakura Shrine",

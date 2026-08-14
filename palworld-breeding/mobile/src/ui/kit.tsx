@@ -7,6 +7,7 @@ import * as Haptics from 'expo-haptics';
 import { ELEMENT_COLORS, T } from '../theme';
 import { PAL_ICONS } from '../data/icons.g';
 import { WORK_ICONS } from '../data/workIcons';
+import { ELEMENT_ICONS } from '../data/statIcons';
 import {
   hasGender, ownedAny, palNumberSort, pals, setOwnedGender, topWork, useAppVersion, workLabel,
 } from '../store';
@@ -59,7 +60,13 @@ export function ElementChips({ name }: { name: string }) {
       {(pals[name]?.elements ?? []).map((e) => {
         const c = ELEMENT_COLORS[e.toLowerCase()] ?? ELEMENT_COLORS.neutral;
         return (
-          <View key={e} style={[s.chip, { backgroundColor: c.bg }]}>
+          <View key={e} style={[s.chip, {
+            backgroundColor: c.bg, flexDirection: 'row',
+            alignItems: 'center', gap: 4, paddingHorizontal: 7,
+          }]}>
+            {ELEMENT_ICONS[e] && (
+              <Image source={ELEMENT_ICONS[e]} style={{ width: 14, height: 14 }} />
+            )}
             <Text style={[s.chipText, { color: c.fg }]}>{e}</Text>
           </View>
         );

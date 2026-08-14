@@ -27,6 +27,12 @@ export interface PalInfo {
   partner_skill: string | null;
   partner_effect: string | null;
   nocturnal: boolean | null;
+  food: number | null;
+  size: string | null;
+  drops: string[];
+  ranch_produce: string[] | null;
+  craft_speed: number | null;
+  max_wild_level: number | null;
   wild: boolean;
   regions: string[];
   egg_types: string[];
@@ -236,35 +242,40 @@ export const pairReadyCount = () =>
 export function setOwnedGender(name: string, g: 'm' | 'f', val: boolean): void {
   const cur = state.box[name] ?? { m: false, f: false };
   const entry = { ...cur, [g]: val };
-  if (!entry.m && !entry.f) delete state.box[name];
-  else state.box[name] = entry;
+  const next = { ...state.box };
+  if (!entry.m && !entry.f) delete next[name];
+  else next[name] = entry;
+  state.box = next;
   void persist('box');
   emit();
 }
 
 export function toggleOwned(name: string): void {
-  if (state.box[name]) delete state.box[name];
-  else state.box[name] = { m: true, f: true };
+  const next = { ...state.box };
+  if (next[name]) delete next[name];
+  else next[name] = { m: true, f: true };
+  state.box = next;
   void persist('box');
   emit();
 }
 
 export function importNames(entries: [string, OwnedGenders][], replace: boolean): number {
-  if (replace) state.box = {};
+  const next = replace ? {} : { ...state.box };
   let added = 0;
   for (const [name, g] of entries) {
     if (!Object.hasOwn(pals, name)) continue;
-    const cur = state.box[name];
-    state.box[name] = cur ? { m: cur.m || g.m, f: cur.f || g.f } : g;
+    const cur = next[name];
+    next[name] = cur ? { m: cur.m || g.m, f: cur.f || g.f } : g;
     added++;
   }
+  state.box = next;
   void persist('box');
   emit();
   return added;
 }
 
 export function clearBox(): void {
-  state.box = {};
+  state.box = {};  // fresh reference by construction
   void persist('box');
   emit();
 }
@@ -312,10 +323,10 @@ export function completeStep(sid: string, child: string, got: { m: boolean; f: b
     addedM: got.m && !hadM,
     addedF: got.f && !hadF,
   };
-  (state.checks as Record<string, unknown>)[sid] = entry;
+  state.checks = { ...state.checks, [sid]: entry };
   const cur = state.box[child] ?? { m: false, f: false };
-  const next = { m: cur.m || got.m, f: cur.f || got.f };
-  if (next.m || next.f) state.box[child] = next;
+  const merged = { m: cur.m || got.m, f: cur.f || got.f };
+  if (merged.m || merged.f) state.box = { ...state.box, [child]: merged };
   void persist('checks');
   void persist('box');
   emit();
@@ -324,19 +335,21 @@ export function completeStep(sid: string, child: string, got: { m: boolean; f: b
 /** "Start over": untick every step properly — reversing exactly what each
  * tick registered into the collection (never pre-owned pals). */
 export function resetPlanProgress(): void {
+  const nextBox = { ...state.box };
   for (const sid of Object.keys(state.checks)) {
     const c = (state.checks as Record<string, unknown>)[sid];
     if (c && typeof c === 'object') {
       const sc = c as StepCheckShape;
       const child = sid.slice(sid.lastIndexOf('>') + 1);
-      const cur = state.box[child];
+      const cur = nextBox[child];
       if (cur) {
-        const next = { m: cur.m && !sc.addedM, f: cur.f && !sc.addedF };
-        if (!next.m && !next.f) delete state.box[child];
-        else state.box[child] = next;
+        const entry = { m: cur.m && !sc.addedM, f: cur.f && !sc.addedF };
+        if (!entry.m && !entry.f) delete nextBox[child];
+        else nextBox[child] = entry;
       }
     }
   }
+  state.box = nextBox;
   state.checks = {};
   void persist('checks');
   void persist('box');
@@ -355,15 +368,19 @@ export function clearPlan(): void {
 
 export function uncheckStep(sid: string, child: string): void {
   const c = (state.checks as Record<string, unknown>)[sid];
-  delete (state.checks as Record<string, unknown>)[sid];
+  const nextChecks = { ...state.checks };
+  delete (nextChecks as Record<string, unknown>)[sid];
+  state.checks = nextChecks;
   if (c && typeof c === 'object') {
     // remove only what the tick contributed
     const sc = c as StepCheck;
     const cur = state.box[child];
     if (cur) {
-      const next = { m: cur.m && !sc.addedM, f: cur.f && !sc.addedF };
-      if (!next.m && !next.f) delete state.box[child];
-      else state.box[child] = next;
+      const entry = { m: cur.m && !sc.addedM, f: cur.f && !sc.addedF };
+      const nextBox = { ...state.box };
+      if (!entry.m && !entry.f) delete nextBox[child];
+      else nextBox[child] = entry;
+      state.box = nextBox;
     }
   }
   void persist('checks');

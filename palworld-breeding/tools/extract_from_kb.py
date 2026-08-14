@@ -19,11 +19,33 @@ KB = Path(sys.argv[1] if len(sys.argv) > 1 else "/workspace/beliarance/palworld-
 OUT = Path(__file__).resolve().parent.parent / "data"
 
 
+def load_palcalc_extras(path):
+    """FoodAmount/CraftSpeed/MaxWildLevel from palcalc's game-file db."""
+    import json as _json
+    food, craft, maxlvl = {}, {}, {}
+    try:
+        db = _json.load(open(path, encoding="utf-8-sig"))
+        for pal in db.get("Pals", []):
+            n = pal.get("Name")
+            if not n:
+                continue
+            food[n] = pal.get("FoodAmount")
+            craft[n] = pal.get("CraftSpeed")
+            maxlvl[n] = pal.get("MaxWildLevel")
+    except Exception as ex:
+        print(f"(palcalc extras unavailable: {ex})")
+    return food, craft, maxlvl
+
+
 def main() -> None:
-    b = json.loads((KB / "data/breeding.json").read_text())
-    idx = json.loads((KB / "data/index.json").read_text())["pals"]
-    icons = json.loads((KB / "data/icons.json").read_text())["pals"]
-    loc = json.loads((KB / "data/pal_locations.json").read_text())["pals"]
+    palcalc_db = sys.argv[2] if len(sys.argv) > 2 else None
+    food_by_name, craft_by_name, maxlvl_by_name = (
+        load_palcalc_extras(palcalc_db) if palcalc_db else ({}, {}, {})
+    )
+    b = json.loads((KB / "data/breeding.json").read_text(encoding="utf-8"))
+    idx = json.loads((KB / "data/index.json").read_text(encoding="utf-8"))["pals"]
+    icons = json.loads((KB / "data/icons.json").read_text(encoding="utf-8"))["pals"]
+    loc = json.loads((KB / "data/pal_locations.json").read_text(encoding="utf-8"))["pals"]
 
     ranks = b["combi_ranks"]
     combos = b["special_combos"]
@@ -118,6 +140,12 @@ def main() -> None:
             "size": p.get("size"),
             "mount": p.get("mount"),
             "icon": icons.get(name),
+            "food": food_by_name.get(name),
+            "size": p.get("size"),
+            "drops": (p.get("drops") or [])[:6],
+            "ranch_produce": p.get("ranch_produce"),
+            "craft_speed": craft_by_name.get(name),
+            "max_wild_level": maxlvl_by_name.get(name),
             "wild": wild,
             "regions": regions[:4],
             "alpha_locations": (l.get("alpha_locations") or [])[:2],
@@ -133,8 +161,8 @@ def main() -> None:
     }
 
     OUT.mkdir(parents=True, exist_ok=True)
-    (OUT / "breeding_1_0.json").write_text(json.dumps(breeding, indent=1, ensure_ascii=False))
-    (OUT / "pals_1_0.json").write_text(json.dumps(meta, indent=1, ensure_ascii=False))
+    (OUT / "breeding_1_0.json").write_text(json.dumps(breeding, indent=1, ensure_ascii=False), encoding="utf-8")
+    (OUT / "pals_1_0.json").write_text(json.dumps(meta, indent=1, ensure_ascii=False), encoding="utf-8")
     print(f"wrote {OUT}/breeding_1_0.json ({len(ranks)} pals, {len(cross)} cross combos, "
           f"{len(self_only)} self-only, pool {len(ranks) - len(excluded)})")
     print(f"wrote {OUT}/pals_1_0.json ({len(pals)} pals)")

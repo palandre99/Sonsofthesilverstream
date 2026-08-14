@@ -10,12 +10,14 @@ import {
 } from '../store';
 import { WORK_ICONS } from '../data/workIcons';
 import { PalMap } from './PalMap';
+import { STAT_ICONS } from '../data/statIcons';
 import { ALPHA_SPOTS } from '../data/alphaSpots.g';
 
-function StatBar({ label, v }: { label: string; v: number | null }) {
+function StatBar({ label, icon, v }: { label: string; icon?: number; v: number | null }) {
   return (
     <View style={[s.row, { gap: 8 }]}>
-      <Text style={{ color: T.muted, width: 34, fontSize: 11, fontWeight: '800' }}>{label}</Text>
+      {icon != null && <Image source={icon} style={{ width: 18, height: 18 }} />}
+      <Text style={{ color: T.muted, width: 56, fontSize: 11, fontWeight: '800' }}>{label}</Text>
       <View style={{ flex: 1, height: 8, borderRadius: 4, backgroundColor: T.surface2 }}>
         <View style={{
           width: `${Math.min(100, ((v ?? 0) / 150) * 100)}%`,
@@ -60,12 +62,49 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
           <GenderToggles name={name} />
         </Card>
 
-        <Card style={{ marginTop: 10, gap: 6 }}>
-          <Text style={s.h3}>Stats</Text>
-          <StatBar label="HP" v={p.hp} />
-          <StatBar label="ATK" v={p.atk} />
-          <StatBar label="DEF" v={p.def} />
+        <Card style={{ marginTop: 10, gap: 7 }}>
+          <Text style={s.h3}>Base stats</Text>
+          <StatBar label="Health" icon={STAT_ICONS.health} v={p.hp} />
+          <StatBar label="Attack" icon={STAT_ICONS.attack} v={p.atk} />
+          <StatBar label="Defense" icon={STAT_ICONS.defense} v={p.def} />
+          {p.food != null && (
+            <View style={[s.row, { gap: 8, marginTop: 2 }]}>
+              <Image source={STAT_ICONS.food_on} style={{ width: 18, height: 18 }} />
+              <Text style={{ color: T.muted, width: 56, fontSize: 11, fontWeight: '800' }}>Food</Text>
+              <View style={{ flexDirection: 'row', gap: 2 }}>
+                {Array.from({ length: 10 }, (_, i) => (
+                  <Image
+                    key={i}
+                    source={i < (p.food ?? 0) ? STAT_ICONS.food_on : STAT_ICONS.food_off}
+                    style={{ width: 15, height: 15, opacity: i < (p.food ?? 0) ? 1 : 0.45 }}
+                  />
+                ))}
+              </View>
+            </View>
+          )}
+          <View style={[s.wrap, { marginTop: 4 }]}>
+            {p.size && <Badge kind="plain">size {p.size}</Badge>}
+            {p.rarity && (
+              <Badge kind={p.rarity === 'Legendary' ? 'gold'
+                : p.rarity === 'Epic' ? 'unique'
+                : p.rarity === 'Rare' ? 'ok' : 'plain'}>{p.rarity}</Badge>
+            )}
+            {p.craft_speed != null && <Badge kind="plain">work speed {p.craft_speed}</Badge>}
+            {p.max_wild_level != null && <Badge kind="plain">wild up to Lv {p.max_wild_level}</Badge>}
+          </View>
         </Card>
+
+        {(p.drops?.length > 0 || (p.ranch_produce?.length ?? 0) > 0) && (
+          <Card style={{ marginTop: 10 }}>
+            <Text style={s.h3}>Drops</Text>
+            <View style={[s.wrap, { marginTop: 8 }]}>
+              {p.drops.map((d) => <Badge key={d} kind="plain">{d}</Badge>)}
+              {(p.ranch_produce ?? []).map((r) => (
+                <Badge key={`r-${r}`} kind="ok">Ranch: {r}</Badge>
+              ))}
+            </View>
+          </Card>
+        )}
 
         {Object.keys(p.work ?? {}).length > 0 && (
           <Card style={{ marginTop: 10 }}>
