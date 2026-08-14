@@ -86,6 +86,23 @@ function planSync(roster: string[], targets: string[]): PlanOutcome {
   return { steps, unreachable, ms: performance.now() - t0 };
 }
 
+/** Sync compute after one macrotask (lets the busy state paint), never hangs:
+ * planSync errors reject rather than dying inside the timer callback. */
+function planSoon(roster: string[], targets: string[]): Promise<PlanOutcome> {
+  return new Promise<PlanOutcome>((resolve, reject) => {
+    setTimeout(() => {
+      try {
+        resolve(planSync(roster, targets));
+      } catch (e) {
+        reject(e instanceof Error ? e : new Error(String(e)));
+      }
+    }, 30);
+  });
+}
+
+/** No plan takes this long; a silent worker means something is wrong. */
+const WORKER_TIMEOUT_MS = 120_000;
+
 /** Plan in the worker when possible, otherwise synchronously after a yield. */
 export function requestPlan(roster: string[], targets: string[]): Promise<PlanOutcome> {
   if (!inited) return Promise.reject(new Error('planner not initialised'));
@@ -93,27 +110,26 @@ export function requestPlan(roster: string[], targets: string[]): Promise<PlanOu
   const w = getWorker();
   if (w) {
     return new Promise<PlanOutcome>((resolve, reject) => {
-      pending.set(id, { resolve, reject });
+      const timer = setTimeout(() => {
+        if (pending.delete(id)) reject(new Error('planner timed out'));
+      }, WORKER_TIMEOUT_MS);
+      pending.set(id, {
+        resolve: (r) => {
+          clearTimeout(timer);
+          resolve(r);
+        },
+        reject: (e) => {
+          clearTimeout(timer);
+          reject(e);
+        },
+      });
       w.postMessage({ type: 'plan', id, roster, targets });
     }).catch((e) => {
       // worker died mid-request — recompute synchronously so the user still
       // gets their plan
-      if (workerBroken) {
-        return new Promise<PlanOutcome>((resolve) => {
-          setTimeout(() => resolve(planSync(roster, targets)), 30);
-        });
-      }
+      if (workerBroken) return planSoon(roster, targets);
       throw e;
     });
   }
-  return new Promise<PlanOutcome>((resolve, reject) => {
-    // one macrotask of delay so the button's busy state can paint first
-    setTimeout(() => {
-      try {
-        resolve(planSync(roster, targets));
-      } catch (e) {
-        reject(e as Error);
-      }
-    }, 30);
-  });
+  return planSoon(roster, targets);
 }

@@ -46,11 +46,11 @@ async function addPassiveToParent(panelTitle: string, passiveName: string) {
 }
 
 describe('Odds Lab page', () => {
-  it('renders the three tabs and defaults to passives', () => {
+  it('renders the three sections and defaults to passives', () => {
     render(<OddsPage />);
-    expect(screen.getByRole('tab', { name: 'Passive skills' })).toBeTruthy();
-    expect(screen.getByRole('tab', { name: 'Stats (IVs)' })).toBeTruthy();
-    expect(screen.getByRole('tab', { name: 'Cakes & mutation' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Passive skills' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Stats (IVs)' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Cakes & mutation' })).toBeTruthy();
     expect(screen.getByText('The pool')).toBeTruthy();
   });
 
@@ -91,7 +91,7 @@ describe('Odds Lab page', () => {
 
   it('computes IV odds for the selected stats', () => {
     render(<OddsPage />);
-    fireEvent.click(screen.getByRole('tab', { name: 'Stats (IVs)' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Stats (IVs)' }));
     // default: one stat selected -> 5/9 = 55.6%
     expect(document.querySelector('.oddscard.hero b')!.textContent).toBe('55.6%');
     // select all three -> 1/6 = 16.7%
@@ -102,7 +102,7 @@ describe('Odds Lab page', () => {
 
   it('renders the cake table with the honest per-cycle math', () => {
     render(<OddsPage />);
-    fireEvent.click(screen.getByRole('tab', { name: 'Cakes & mutation' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Cakes & mutation' }));
     const text = document.body.textContent!;
     expect(text).toContain('Vegetable Cake');
     // 1 - 0.99^2 as a per-cycle rate

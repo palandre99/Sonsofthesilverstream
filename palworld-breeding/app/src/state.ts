@@ -1,6 +1,6 @@
 /** Global app state: loaded data, the breeding engine, My Box, theme, routing. */
 import { computed, effect, signal } from '@preact/signals';
-import { BreedingEngine } from './engine/formula';
+import { BreedingEngine, parseGenderNote } from './engine/formula';
 import { initPlanner } from './engine/planClient';
 import type { BreedingData } from './engine/types';
 
@@ -57,21 +57,39 @@ const BOX_KEY = 'hatchlab-box-v2';
 const BOX_KEY_V1 = 'hatchlab-box-v1';
 const THEME_KEY = 'hatchlab-theme';
 
+/** localStorage that never throws: Safari "Block all cookies" raises
+ * SecurityError on ACCESS, and writes can hit quota. The app must boot and
+ * run without persistence rather than white-screen. */
+export const storage = {
+  get(key: string): string | null {
+    try {
+      return localStorage.getItem(key);
+    } catch {
+      return null;
+    }
+  },
+  set(key: string, value: string): void {
+    try {
+      localStorage.setItem(key, value);
+    } catch { /* persistence unavailable — keep running in-memory */ }
+  },
+};
+
 /** Per-species ownership with gender detail: do you have a male / a female? */
 export interface OwnedGenders { m: boolean; f: boolean }
 export const box = signal<Record<string, OwnedGenders>>({});
 export const theme = signal<'dark' | 'light'>(
-  (localStorage.getItem(THEME_KEY) as 'dark' | 'light') || 'dark',
+  (storage.get(THEME_KEY) as 'dark' | 'light') || 'dark',
 );
 
 effect(() => {
   document.documentElement.dataset.theme = theme.value;
-  localStorage.setItem(THEME_KEY, theme.value);
+  storage.set(THEME_KEY, theme.value);
 });
 
 function saveBox(next: Record<string, OwnedGenders>): void {
   box.value = next;
-  localStorage.setItem(BOX_KEY, JSON.stringify(next));
+  storage.set(BOX_KEY, JSON.stringify(next));
 }
 
 export function setOwnedGender(name: string, gender: 'm' | 'f', val: boolean): void {
@@ -109,7 +127,8 @@ export function canPairNow(a: string, b: string, genderNote?: string | null): bo
   if (!oa || !ob) return false;
   if (a === b) return oa.m && oa.f;
   if (genderNote) {
-    return genderNote.includes(`female ${a}`) ? oa.f && ob.m : oa.m && ob.f;
+    const parsed = parseGenderNote(genderNote);
+    if (parsed) return parsed.mother === a ? oa.f && ob.m : oa.m && ob.f;
   }
   return (oa.m && ob.f) || (oa.f && ob.m);
 }
@@ -145,17 +164,20 @@ export async function loadData(): Promise<void> {
   pals.value = palsJson.pals;
   iconFiles.value = icons.files;
   try {
-    const v2 = localStorage.getItem(BOX_KEY);
+    // Object.hasOwn (not `in`): a saved key like "constructor" must not pass
+    // the filter and reach the engine as a fake species.
+    const v2 = storage.get(BOX_KEY);
     if (v2) {
       const saved = JSON.parse(v2) as Record<string, OwnedGenders>;
       box.value = Object.fromEntries(
-        Object.entries(saved).filter(([n]) => n in palsJson.pals),
+        Object.entries(saved).filter(([n]) => Object.hasOwn(palsJson.pals, n)),
       );
     } else {
       // migrate v1 (names only): assume both genders, user can refine
-      const v1 = JSON.parse(localStorage.getItem(BOX_KEY_V1) || '[]') as string[];
+      const v1 = JSON.parse(storage.get(BOX_KEY_V1) || '[]') as string[];
       box.value = Object.fromEntries(
-        v1.filter((n) => n in palsJson.pals).map((n) => [n, { m: true, f: true }]),
+        v1.filter((n) => Object.hasOwn(palsJson.pals, n))
+          .map((n) => [n, { m: true, f: true }]),
       );
     }
   } catch {
@@ -173,10 +195,19 @@ export type Route =
   | { page: 'odds' }
   | { page: 'reference' };
 
+/** decodeURIComponent that survives truncated/mangled links ("Katress%2"). */
+function safeDecode(s: string): string {
+  try {
+    return decodeURIComponent(s);
+  } catch {
+    return s;
+  }
+}
+
 function parseHash(): Route {
   const h = location.hash.replace(/^#\/?/, '');
   const [head, ...rest] = h.split('/');
-  const tail = rest.length ? decodeURIComponent(rest.join('/')) : undefined;
+  const tail = rest.length ? safeDecode(rest.join('/')) : undefined;
   switch (head) {
     case 'calc':
       return { page: 'calc', target: tail };

@@ -2,9 +2,10 @@
 /** Generates dist/sw.js after `vite build`.
  *
  * The precache list is built from what is actually in dist/ (hashed assets,
- * data files, fonts, manifest, PWA icons) and the cache version is a hash of
- * that list + file sizes — so every deploy with changed content activates a
- * fresh cache, and unchanged deploys reuse the old one.
+ * data files, fonts, manifest, PWA icons) and the cache version is a sha256
+ * over the FULL content of every listed file (plus index.html) — any byte
+ * changing anywhere activates a fresh cache on the next visit, unchanged
+ * deploys reuse the old one.
  *
  * Pal icons (public/icons/, ~6 MB) are NOT precached: they load cache-first
  * at runtime, so the pals you have seen work offline and first paint stays
@@ -27,19 +28,23 @@ function walk(dir) {
       if (name === 'icons') continue;
       out.push(...walk(p));
     } else {
-      if (name === 'sw.js' || name === 'HatchLab-app.html') continue;
+      // index.html is cached as '.' — caching it twice risks a redirected
+      // response for the file URL on hosts that 308 /index.html -> /
+      if (name === 'sw.js' || name === 'HatchLab-app.html' || name === 'index.html') continue;
       out.push(p);
     }
   }
   return out;
 }
 
+// FULL content hash. The data files keep stable names across deploys, so the
+// cache version is the ONLY thing that gets updated data to existing users —
+// a partial hash here would strand installed users on stale data forever.
 const files = walk(dist).map((p) => relative(dist, p).replace(/\\/g, '/')).sort();
 const hash = createHash('sha256');
-for (const f of files) {
+for (const f of [...files, 'index.html']) {
   hash.update(f);
-  hash.update(String(statSync(join(dist, f)).size));
-  hash.update(readFileSync(join(dist, f)).subarray(0, 4096));
+  hash.update(readFileSync(join(dist, f)));
 }
 const version = hash.digest('hex').slice(0, 12);
 
@@ -81,13 +86,16 @@ self.addEventListener('fetch', (e) => {
     return;
   }
 
-  // shell + data: cache-first from the versioned precache, network fallback
+  // shell + data: cache-first from the versioned precache, network fallback.
+  // ignoreSearch only for navigations (so '/?utm=x' hits the shell) — asset
+  // and data URLs keep their query strings meaningful for cache busting.
   e.respondWith(
-    caches.match(e.request, { ignoreSearch: true }).then((hit) => {
+    caches.match(e.request, { ignoreSearch: e.request.mode === 'navigate' }).then((hit) => {
       if (hit) return hit;
       return fetch(e.request).catch(() => {
-        // offline navigation to a deep link -> serve the app shell
-        if (e.request.mode === 'navigate') return caches.match('index.html');
+        // offline navigation to a deep link -> serve the app shell ('.', the
+        // scope root — never 'index.html', which some hosts 308-redirect)
+        if (e.request.mode === 'navigate') return caches.match('.');
         return Response.error();
       });
     }),

@@ -111,3 +111,12 @@ export class BreedingEngine {
 export function pairKey(a: string, b: string): string {
   return a < b ? `${a}|${b}` : `${b}|${a}`;
 }
+
+/** Parse a genderNote ("female Katress + male Wixen") into its parents.
+ * Exact-boundary parsing — substring checks like includes(`female ${name}`)
+ * break as soon as a gendered combo involves a prefix-colliding species name
+ * (85 such names exist, e.g. Katress / Katress Ignis). */
+export function parseGenderNote(note: string): { mother: string; father: string } | null {
+  const m = /^female (.+) \+ male (.+)$/.exec(note);
+  return m ? { mother: m[1], father: m[2] } : null;
+}

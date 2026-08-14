@@ -4,9 +4,10 @@
  * so they count as both — that's what the keep-both-genders warnings are for).
  * Planning runs in a Web Worker; targets, results and check-offs persist. */
 import { useMemo, useState } from 'preact/hooks';
-import { box, hasGender, nav, ownedAny, selfOnly } from '../state';
+import { box, hasGender, nav, ownedAny, selfOnly, storage } from '../state';
 import { GenderToggles, LockBadge, PalIcon, PalPicker, WorkChips } from '../components/shared';
 import { stepId } from '../engine/planner';
+import { parseGenderNote } from '../engine/formula';
 import { requestPlan } from '../engine/planClient';
 import type { PlanStep } from '../engine/types';
 
@@ -32,7 +33,7 @@ const CHECKS_KEY = 'hatchlab-plan-checks-v1';
 const PLAN_KEY = 'hatchlab-plan-v1';
 
 function loadChecks(): Record<string, true> {
-  try { return JSON.parse(localStorage.getItem(CHECKS_KEY) || '{}'); } catch { return {}; }
+  try { return JSON.parse(storage.get(CHECKS_KEY) || '{}'); } catch { return {}; }
 }
 
 interface SavedPlan {
@@ -44,7 +45,7 @@ interface SavedPlan {
 
 function loadSaved(): SavedPlan | null {
   try {
-    const raw = localStorage.getItem(PLAN_KEY);
+    const raw = storage.get(PLAN_KEY);
     if (!raw) return null;
     const p = JSON.parse(raw) as SavedPlan;
     return Array.isArray(p.targets) && Array.isArray(p.steps) ? p : null;
@@ -60,6 +61,7 @@ export function PlanPage() {
   const [busy, setBusy] = useState(false);
   const [planError, setPlanError] = useState<string | null>(null);
   const [planMs, setPlanMs] = useState<number | null>(null);
+  const [plannedAt, setPlannedAt] = useState<string | null>(saved?.planned ?? null);
   const [checks, setChecks] = useState<Record<string, true>>(loadChecks());
 
   const ownedNames = Object.keys(box.value);
@@ -79,7 +81,9 @@ export function PlanPage() {
       .then((r) => {
         setPlan({ steps: r.steps, unreachable: r.unreachable });
         setPlanMs(r.ms);
-        localStorage.setItem(PLAN_KEY, JSON.stringify({
+        setPlannedAt(new Date().toISOString());
+        // best-effort persist — a quota failure must not read as a plan failure
+        storage.set(PLAN_KEY, JSON.stringify({
           targets, steps: r.steps, unreachable: r.unreachable,
           planned: new Date().toISOString(),
         } satisfies SavedPlan));
@@ -93,7 +97,7 @@ export function PlanPage() {
     if (next[sid]) delete next[sid];
     else next[sid] = true;
     setChecks(next);
-    localStorage.setItem(CHECKS_KEY, JSON.stringify(next));
+    storage.set(CHECKS_KEY, JSON.stringify(next));
   };
 
   // ready-state: bred intermediates count as either gender (you can rebreed),
@@ -121,7 +125,8 @@ export function PlanPage() {
       let ready = false;
       if (!missing.length) {
         if (s.genderNote) {
-          ready = s.genderNote.includes(`female ${a}`) ? oa.f && ob.m : oa.m && ob.f;
+          const parsed = parseGenderNote(s.genderNote);
+          ready = parsed?.mother === a ? oa.f && ob.m : oa.m && ob.f;
         } else if (a === b) {
           ready = oa.m && oa.f;
         } else {
@@ -194,7 +199,7 @@ export function PlanPage() {
         {targets.length > 0 && (
           <div class="kv" style={{ marginBottom: '12px' }}>
             {targets.map((t) => (
-              <span class="chip" style={{ gap: '6px' }}>
+              <span key={t} class="chip" style={{ gap: '6px' }}>
                 <PalIcon name={t} size={20} />
                 {t}
                 {ownedAny(t) && ' ✓'}
@@ -224,9 +229,12 @@ export function PlanPage() {
           <div class="boxstats">
             <div class="tile"><b>{plan.steps.length}</b><span>breeding steps</span></div>
             <div class="tile"><b>{done} / {plan.steps.length}</b><span>done</span></div>
-            <div class="tile"><b>{[...stepMeta.values()].filter((m) => m.ready).length}</b><span>ready right now</span></div>
+            <div class="tile"><b>{[...stepMeta.entries()].filter(([sid, m]) => m.ready && !checks[sid]).length}</b><span>ready right now</span></div>
             {planMs !== null && (
               <div class="tile"><b>{planMs < 1000 ? `${Math.round(planMs)}ms` : `${(planMs / 1000).toFixed(1)}s`}</b><span>planned in</span></div>
+            )}
+            {plannedAt && (
+              <div class="tile"><b>{plannedAt.slice(0, 10)}</b><span>planned on — re-plan after box changes</span></div>
             )}
           </div>
 
@@ -235,7 +243,7 @@ export function PlanPage() {
               <h2>Goal progress</h2>
               <div class="goalgrid">
                 {targetProgress.map((t) => (
-                  <div class={`goalrow${t.done === t.total ? ' complete' : ''}`}>
+                  <div key={t.name} class={`goalrow${t.done === t.total ? ' complete' : ''}`}>
                     <PalIcon name={t.name} size={30} />
                     <span class="gname">{t.name}</span>
                     <span class="gbar"><span style={{ width: `${(t.done / t.total) * 100}%` }} /></span>
@@ -254,7 +262,7 @@ export function PlanPage() {
             </div>
           )}
           {waves.map(([wave, steps]) => (
-            <section style={{ margin: '18px 0' }}>
+            <section key={wave} style={{ margin: '18px 0' }}>
               <div class="grouphead">
                 <h3>Phase {wave}</h3>
                 <span>
@@ -268,7 +276,7 @@ export function PlanPage() {
                   const m = stepMeta.get(sid)!;
                   const checked = !!checks[sid];
                   return (
-                    <div class={`card pairitem planstep${checked ? ' done' : m.ready ? ' ready' : ''}`}>
+                    <div key={sid} class={`card pairitem planstep${checked ? ' done' : m.ready ? ' ready' : ''}`}>
                       <label class="tick">
                         <input type="checkbox" checked={checked}
                           aria-label={`Done: ${s.parents[0]} + ${s.parents[1]} = ${s.child}`}
@@ -276,9 +284,9 @@ export function PlanPage() {
                         <span />
                       </label>
                       <PalIcon name={s.parents[0]} size={36}
-                        gender={s.genderNote?.includes(`female ${s.parents[0]}`) ? 'f' : s.genderNote ? 'm' : undefined} />
+                        gender={s.genderNote ? (parseGenderNote(s.genderNote)?.mother === s.parents[0] ? 'f' : 'm') : undefined} />
                       <PalIcon name={s.parents[1]} size={36}
-                        gender={s.genderNote?.includes(`female ${s.parents[1]}`) ? 'f' : s.genderNote ? 'm' : undefined} />
+                        gender={s.genderNote ? (parseGenderNote(s.genderNote)?.mother === s.parents[1] ? 'f' : 'm') : undefined} />
                       <span class="names">
                         {s.parents[0]} <span class="plus">+</span> {s.parents[1]}
                         <span class="plus"> = </span>
@@ -313,7 +321,7 @@ export function PlanPage() {
                 .flatMap((s) => s.parents))]
                 .filter((n) => ownedAny(n) && !(hasGender(n, 'm') && hasGender(n, 'f')))
                 .map((n) => (
-                  <span class="chip" style={{ gap: '7px', padding: '5px 12px' }}>
+                  <span key={n} class="chip" style={{ gap: '7px', padding: '5px 12px' }}>
                     <PalIcon name={n} size={22} /> {n}
                     <GenderToggles name={n} size="sm" />
                   </span>

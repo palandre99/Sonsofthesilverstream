@@ -4,10 +4,11 @@
  *
  *  1. against the published community inheritance table (40/24/12/10), which
  *     the model must REPRODUCE rather than assume; and
- *  2. against a Monte Carlo simulation written independently from the closed
- *     form — it simulates the mechanic step by step (roll a count, draw from
- *     the pool, roll random additions, cap at four slots). If the algebra and
- *     the simulation disagree, one of them is wrong.
+ *  2. against a Monte Carlo simulation of the mechanic step by step (roll a
+ *     count, draw from the pool, roll random additions, cap at four slots).
+ *     The simulation shares the model's documented simplification — random
+ *     additions are treated as never being a DESIRED passive — so it verifies
+ *     the algebra, not that assumption (see the note in src/engine/odds.ts).
  */
 import { describe, expect, it } from 'vitest';
 import {
@@ -192,12 +193,6 @@ describe('passive odds edge cases', () => {
     expect(o.totalCount).toHaveLength(MAX_PASSIVES + 1);
   });
 
-  it('improves the odds when a cake forces a bigger draw', () => {
-    const normal = passiveOdds({ poolSize: 6, desiredCount: 4 }).allDesired;
-    const forced = passiveOdds({ poolSize: 6, desiredCount: 4, inheritCap: 6 }).allDesired;
-    expect(forced).toBeGreaterThan(normal);
-    expect(forced).toBeCloseTo(1, 10); // drawing all six must include the four
-  });
 });
 
 describe('IV odds', () => {

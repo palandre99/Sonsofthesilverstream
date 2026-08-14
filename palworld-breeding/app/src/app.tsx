@@ -38,17 +38,17 @@ const NAV = [
   { hash: 'reference', label: 'Reference', icon: icons.ref, match: 'reference' },
 ];
 
-/** Render errors on one page must never blank the whole app. */
+/** Render errors on one page must never blank the whole app.
+ * Mounted with key={page}, so navigating to another page replaces the whole
+ * boundary — a crashed page resets on navigation and ONLY on navigation
+ * (comparing children vnodes would "reset" on every parent re-render). */
 class Boundary extends Component<{ children: ComponentChildren }, { err: Error | null }> {
   state = { err: null as Error | null };
   static getDerivedStateFromError(err: Error) {
     return { err };
   }
-  override componentDidUpdate(prev: { children: ComponentChildren }) {
-    // navigating away from a crashed page gives it a fresh start
-    if (this.state.err && prev.children !== this.props.children) {
-      this.setState({ err: null });
-    }
+  override componentDidCatch(err: Error) {
+    console.error('page crashed:', err); // keep the stack for bug reports
   }
   render() {
     if (this.state.err) {
@@ -101,7 +101,7 @@ export function App() {
         {error && <div class="notebox">Failed to load data: {error}</div>}
         {!dataReady.value && !error && <div class="empty">Loading Paldex…</div>}
         {dataReady.value && (
-          <Boundary>
+          <Boundary key={page}>
             {page === 'calc' ? <CalculatorPage /> :
             page === 'paldex' ? <PaldexPage /> :
             page === 'box' ? <BoxPage /> :

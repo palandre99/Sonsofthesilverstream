@@ -14,16 +14,40 @@ function Drawer({ name, onClose }: { name: string; onClose: () => void }) {
   const p = pals.value[name];
   const raw = breedingRaw.value!;
   const closeRef = useRef<HTMLButtonElement>(null);
+  const drawerRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    // focus lands inside the dialog; Escape closes it
+    // real modality: focus enters the dialog, Tab cycles inside it, Escape
+    // closes, and focus returns to whatever opened it
+    const opener = document.activeElement as HTMLElement | null;
     closeRef.current?.focus();
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') {
+        onClose();
+        return;
+      }
+      if (e.key !== 'Tab' || !drawerRef.current) return;
+      const focusables = drawerRef.current.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+      );
+      if (!focusables.length) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      const inside = drawerRef.current.contains(document.activeElement);
+      if (e.shiftKey && (document.activeElement === first || !inside)) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && (document.activeElement === last || !inside)) {
+        e.preventDefault();
+        first.focus();
+      }
     };
     document.addEventListener('keydown', onKey);
-    return () => document.removeEventListener('keydown', onKey);
-  }, [name]);
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      opener?.focus?.();
+    };
+  }, [name, onClose]);
 
   if (!p) return null;
 
@@ -37,7 +61,7 @@ function Drawer({ name, onClose }: { name: string; onClose: () => void }) {
   return (
     <>
       <div class="drawer-back" onClick={onClose} />
-      <aside class="drawer" role="dialog" aria-modal="true" aria-label={name}>
+      <aside class="drawer" role="dialog" aria-modal="true" aria-label={name} ref={drawerRef}>
         <button class="close" ref={closeRef} onClick={onClose} aria-label="Close">✕</button>
         <header>
           <PalIcon name={name} size={76} />
@@ -96,7 +120,7 @@ function Drawer({ name, onClose }: { name: string; onClose: () => void }) {
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
               {asChild.map((c) => (
-                <div class="recipe-line">
+                <div key={c.parents.join()} class="recipe-line">
                   <span class="badge unique">unique</span>
                   <PalIcon name={c.parents[0]} size={26} /> {c.parents[0]}
                   <span class="plus">+</span>
@@ -105,7 +129,7 @@ function Drawer({ name, onClose }: { name: string; onClose: () => void }) {
                 </div>
               ))}
               {gendered.filter((g) => g.child === name).map((g) => (
-                <div class="recipe-line">
+                <div key={g.mother} class="recipe-line">
                   <LockBadge />
                   <PalIcon name={g.mother} size={26} gender="f" /> {g.mother}
                   <span class="plus">+</span>
@@ -127,14 +151,14 @@ function Drawer({ name, onClose }: { name: string; onClose: () => void }) {
           )}
         </section>
 
-        {asParent.length > 0 && (
+        {(asParent.length > 0 || gendered.some((g) => g.child !== name)) && (
           <section>
-            <h4>Unique recipes as a parent</h4>
+            <h4>Special recipes as a parent</h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
               {asParent.map((c) => {
                 const other = c.parents[0] === name ? c.parents[1] : c.parents[0];
                 return (
-                  <div class="recipe-line">
+                  <div key={c.child} class="recipe-line">
                     {name} <span class="plus">+</span>
                     <PalIcon name={other} size={26} /> {other}
                     <span class="eq">=</span>
@@ -142,6 +166,16 @@ function Drawer({ name, onClose }: { name: string; onClose: () => void }) {
                   </div>
                 );
               })}
+              {gendered.filter((g) => g.child !== name).map((g) => (
+                <div key={g.child} class="recipe-line">
+                  <LockBadge />
+                  <PalIcon name={g.mother} size={26} gender="f" /> {g.mother}
+                  <span class="plus">+</span>
+                  <PalIcon name={g.father} size={26} gender="m" /> {g.father}
+                  <span class="eq">=</span>
+                  <PalIcon name={g.child} size={26} /> {g.child}
+                </div>
+              ))}
             </div>
           </section>
         )}
@@ -150,9 +184,9 @@ function Drawer({ name, onClose }: { name: string; onClose: () => void }) {
           <h4>In the wild</h4>
           <div class="kv">
             {p.wild
-              ? p.regions.map((r) => <span class="chip">{r}</span>)
+              ? p.regions.map((r) => <span key={r} class="chip">{r}</span>)
               : <span class="badge plain">no regular wild spawn</span>}
-            {p.egg_types.map((e) => <span class="chip">🥚 {e}</span>)}
+            {p.egg_types.map((e) => <span key={e} class="chip">🥚 {e}</span>)}
           </div>
         </section>
       </aside>
@@ -212,7 +246,7 @@ export function PaldexPage() {
       </div>
       <div class="pdxgrid">
         {names.map((n) => (
-          <button class="palcard" onClick={() => nav(`paldex/${encodeURIComponent(n)}`)}>
+          <button key={n} class="palcard" onClick={() => nav(`paldex/${encodeURIComponent(n)}`)}>
             <PalIcon name={n} size={46} />
             <span class="nm">
               <b>{n}</b>

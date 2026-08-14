@@ -75,6 +75,28 @@ describe('My Box import', () => {
   });
 });
 
+describe('My Box import edge cases', () => {
+  it('never resurrects species from false/null JSON values', () => {
+    render(<BoxPage />);
+    const ta = openImport();
+    const evil = JSON.stringify({ box: { Anubis: false, Lamball: null, Cattiva: true } });
+    fireEvent.input(ta, { target: { value: evil } });
+    // only Cattiva (true) is recognised as owned
+    expect(document.querySelector('.importmeta')!.textContent).toContain('1 recognised');
+    fireEvent.click(screen.getByRole('button', { name: /Add 1 pals/ }));
+    expect(state.box.value['Anubis']).toBeUndefined();
+    expect(state.box.value['Lamball']).toBeUndefined();
+    expect(state.box.value['Cattiva']).toEqual({ m: true, f: true });
+  });
+
+  it('ignores an {m:false, f:false} entry instead of importing it', () => {
+    render(<BoxPage />);
+    const ta = openImport();
+    fireEvent.input(ta, { target: { value: JSON.stringify({ Anubis: { m: false, f: false } }) } });
+    expect(document.querySelector('.importmeta')!.textContent).toContain('0 recognised');
+  });
+});
+
 describe('My Box clear', () => {
   it('requires explicit confirmation and then empties the box', () => {
     state.box.value = { Anubis: { m: true, f: true } };
@@ -93,7 +115,7 @@ describe('My Box filters', () => {
       Lamball: { m: true, f: true },
     };
     render(<BoxPage />);
-    fireEvent.click(screen.getByRole('tab', { name: 'One gender only' }));
+    fireEvent.click(screen.getByRole('button', { name: 'One gender only' }));
     const rows = document.querySelectorAll('.boxrow');
     expect(rows.length).toBe(1);
     expect(rows[0].textContent).toContain('Anubis');
@@ -107,5 +129,17 @@ describe('My Box filters', () => {
     // Jolthog + Jolthog Cryst both exist in 1.0
     expect(state.box.value['Jolthog']).toEqual({ m: true, f: true });
     expect(state.box.value['Jolthog Cryst']).toEqual({ m: true, f: true });
+  });
+
+  it('requires a second click to bulk un-own', () => {
+    state.box.value = { Jolthog: { m: true, f: true } };
+    render(<BoxPage />);
+    const search = screen.getByLabelText('Search box') as HTMLInputElement;
+    fireEvent.input(search, { target: { value: 'Jolthog' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Un-own all shown' }));
+    // first click only arms — nothing deleted yet
+    expect(state.box.value['Jolthog']).toEqual({ m: true, f: true });
+    fireEvent.click(screen.getByRole('button', { name: /Really un-own/ }));
+    expect(state.box.value['Jolthog']).toBeUndefined();
   });
 });

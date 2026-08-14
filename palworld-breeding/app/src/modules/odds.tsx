@@ -22,16 +22,15 @@ import {
 
 function pct(p: number): string {
   if (!isFinite(p) || p <= 0) return '0%';
-  if (p >= 0.995) return '100%';
-  if (p >= 0.1) return `${(p * 100).toFixed(1)}%`;
+  if (p >= 0.99995) return '100%';
   if (p >= 0.01) return `${(p * 100).toFixed(1)}%`;
   return `${(p * 100).toFixed(2)}%`;
 }
 
 function oneIn(p: number): string {
-  if (!isFinite(p) || p <= 0) return 'never';
+  if (!isFinite(p) || p <= 0) return 'not possible';
   const n = 1 / p;
-  return `1 in ${n < 10 ? n.toFixed(1) : Math.round(n)}`;
+  return `1 in ${n < 10 ? n.toFixed(1) : Math.round(n)} eggs`;
 }
 
 const TIER_CLASS: Record<string, string> = {
@@ -108,7 +107,7 @@ function PassivePicker({ onPick, exclude, label }: {
             }} />
           <div class="list" role="listbox">
             {matches.map((p, i) => (
-              <button type="button" class={i === hi ? 'hi' : ''} role="option"
+              <button key={p.name} type="button" class={i === hi ? 'hi' : ''} role="option"
                 aria-selected={i === hi} onClick={() => pick(p.name)}>
                 <span class={`badge ${TIER_CLASS[String(p.tier)] ?? 'plain'}`}>
                   {p.tier != null && p.tier > 0 ? `T${p.tier}` : 'neg'}
@@ -147,7 +146,7 @@ function ParentPanel({ title, list, setList, other }: {
         {list.map((n) => {
           const p = byName.get(n);
           return p ? (
-            <PassiveChip p={p} onRemove={() => setList(list.filter((x) => x !== n))} />
+            <PassiveChip key={n} p={p} onRemove={() => setList(list.filter((x) => x !== n))} />
           ) : null;
         })}
         {list.length === 0 && <span class="dim">No passives yet.</span>}
@@ -172,8 +171,9 @@ function OddsReadout({ poolSize, desiredCount, cake }: {
 }) {
   const odds = passiveOdds({ poolSize, desiredCount });
   const c = cakeById(cake);
-  const eggsPerCycle = c.eggsPerCycle;
-  const cycles = odds.expectedEggs / eggsPerCycle;
+  const cyclesFor90 = isFinite(odds.eggsFor90)
+    ? Math.ceil(odds.eggsFor90 / c.eggsPerCycle)
+    : null;
 
   return (
     <>
@@ -181,18 +181,18 @@ function OddsReadout({ poolSize, desiredCount, cake }: {
         <div class="oddscard hero">
           <span class="lbl">All {desiredCount} wanted passives</span>
           <b>{pct(odds.allDesired)}</b>
-          <span class="sub">{oneIn(odds.allDesired)} eggs</span>
+          <span class="sub">{oneIn(odds.allDesired)}</span>
         </div>
         <div class="oddscard">
           <span class="lbl">Exactly those, no junk</span>
           <b>{pct(odds.exactlyDesired)}</b>
-          <span class="sub">{oneIn(odds.exactlyDesired)} eggs</span>
+          <span class="sub">{oneIn(odds.exactlyDesired)}</span>
         </div>
         <div class="oddscard">
           <span class="lbl">Eggs for 90% confidence</span>
           <b>{isFinite(odds.eggsFor90) ? odds.eggsFor90 : '—'}</b>
           <span class="sub">
-            {isFinite(cycles) ? `${Math.ceil(attemptsFor(odds.allDesired, 0.9) / eggsPerCycle)} cycles on ${c.name}` : 'not reachable'}
+            {cyclesFor90 !== null ? `${cyclesFor90} cycles on ${c.name}` : 'not reachable'}
           </span>
         </div>
       </div>
@@ -203,9 +203,9 @@ function OddsReadout({ poolSize, desiredCount, cake }: {
           brand-new random passives on top of what it inherited.</p>
         <div class="distbars">
           {odds.totalCount.map((p, k) => (
-            <div class="distbar">
+            <div key={k} class="distbar">
               <span class="dl">{k}</span>
-              <span class="db"><span style={{ width: `${Math.max(1, p * 100)}%` }} /></span>
+              <span class="db"><span style={{ width: `${p === 0 ? 0 : Math.max(1, p * 100)}%` }} /></span>
               <span class="dv">{pct(p)}</span>
             </div>
           ))}
@@ -275,9 +275,11 @@ function PassivesTab() {
             {pool.map((n) => {
               const p = byName.get(n);
               const on = want.includes(n);
+              const capped = !on && desired.length >= 4;
               return (
-                <label class={`poolitem${on ? ' on' : ''}`}>
-                  <input type="checkbox" checked={on}
+                <label key={n} class={`poolitem${on ? ' on' : ''}${capped ? ' capped' : ''}`}
+                  title={capped ? 'A pal has four passive slots - wanting more than 4 is impossible' : undefined}>
+                  <input type="checkbox" checked={on} disabled={capped}
                     onChange={() => setWant(on ? want.filter((x) => x !== n) : [...want, n])} />
                   <span class="pi-name">{n}</span>
                   {p && <span class="pi-eff">{p.effects}</span>}
@@ -290,11 +292,12 @@ function PassivesTab() {
           <p class="poolsum">
             Pool of <b>{pool.length}</b> · wanted <b>{desired.length}</b>
             {junk > 0 && <> · <span class="warnink">{junk} junk</span></>}
+            {desired.length >= 4 && <> · <span class="dim">4 is the slot cap</span></>}
           </p>
         )}
       </div>
 
-      {warnings.map((w) => <div class="notebox">{w}</div>)}
+      {warnings.map((w) => <div key={w} class="notebox">{w}</div>)}
 
       {desired.length > 0 ? (
         <>
@@ -302,9 +305,12 @@ function PassivesTab() {
             <label class="dim" for="cakesel">Cake</label>
             <select id="cakesel" value={cake}
               onChange={(e) => setCake(e.currentTarget.value as CakeId)}>
-              {CAKES.map((c) => <option value={c.id}>{c.name}</option>)}
+              {CAKES.filter((c) => c.id !== 'special')
+                .map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
             </select>
-            <span class="dim small">{cakeById(cake).effect}</span>
+            <span class="dim small">{cakeById(cake).effect} (Special Cake is not
+              listed: its passive override is not datamined, and this page does not
+              invent numbers.)</span>
           </div>
           <OddsReadout poolSize={pool.length} desiredCount={desired.length} cake={cake} />
         </>
@@ -327,7 +333,7 @@ function PassivesTab() {
           </thead>
           <tbody>
             {oddsTable().map((r) => (
-              <tr>
+              <tr key={r.skills}>
                 <td>{r.skills}</td>
                 <td><b>{pct(r.clean)}</b></td>
                 <td>{pct(r.withJunk)}</td>
@@ -363,7 +369,7 @@ function IvTab() {
           {IV_LABELS.map(([id, label]) => {
             const on = picked.includes(id);
             return (
-              <button type="button" class={`ivbtn${on ? ' on' : ''}`} aria-pressed={on}
+              <button key={id} type="button" class={`ivbtn${on ? ' on' : ''}`} aria-pressed={on}
                 onClick={() => setPicked(on ? picked.filter((x) => x !== id) : [...picked, id])}>
                 {label}
               </button>
@@ -382,7 +388,7 @@ function IvTab() {
           <div class="oddscard hero">
             <span class="lbl">{specific ? 'From your chosen parent' : 'Inherited from either parent'}</span>
             <b>{pct(p)}</b>
-            <span class="sub">{oneIn(p)} eggs</span>
+            <span class="sub">{oneIn(p)}</span>
           </div>
           <div class="oddscard">
             <span class="lbl">Eggs for 90% confidence</span>
@@ -415,7 +421,7 @@ function IvTab() {
             {[1, 2, 3].map((k) => {
               const o = ivOdds(k);
               return (
-                <tr>
+                <tr key={k}>
                   <td>{k}</td>
                   <td><b>{pct(o.categoriesInherited)}</b></td>
                   <td>{o.eggsFor90}</td>
@@ -456,7 +462,7 @@ function CakesTab() {
               {CAKES.map((c) => {
                 const m = mutationPlan(c.id);
                 return (
-                  <tr>
+                  <tr key={c.id}>
                     <td><b>{c.name}</b></td>
                     <td>{c.eggsPerCycle}</td>
                     <td>{pct(m.mutationPerEgg)}</td>
@@ -484,7 +490,7 @@ function CakesTab() {
           {(['cake', 'vegetable', 'extravagant'] as CakeId[]).map((id) => {
             const m = mutationPlan(id);
             return (
-              <div class={`oddscard${id === 'extravagant' ? ' hero' : ''}`}>
+              <div key={id} class={`oddscard${id === 'extravagant' ? ' hero' : ''}`}>
                 <span class="lbl">{cakeById(id).name}</span>
                 <b>{m.cyclesFor90}</b>
                 <span class="sub">cycles for 90% · {Math.round(m.expectedEggs)} eggs average</span>
@@ -497,11 +503,11 @@ function CakesTab() {
       {mutationPassives.length > 0 && (
         <div class="card bigcard" style={{ marginTop: '14px' }}>
           <h2>The mutation-only passives</h2>
-          <p>These five exist nowhere else. Once a pal carries one, it breeds down
+          <p>{mutationPassives.length === 5 ? 'These five' : `These ${mutationPassives.length}`} exist nowhere else. Once a pal carries one, it breeds down
             like any other passive — so a single mutant is a permanent source.</p>
           <div class="poolwrap" style={{ marginTop: '10px' }}>
             {mutationPassives.map((p) => (
-              <div class="poolitem on" style={{ cursor: 'default' }}>
+              <div key={p.name} class="poolitem on" style={{ cursor: 'default' }}>
                 <span class="pi-name">{p.name}</span>
                 <span class="pi-eff">{p.effects}</span>
               </div>
@@ -529,9 +535,9 @@ export function OddsPage() {
           driving this page are the game's own values, and the model reproduces the
           community's measured inheritance table rather than assuming it.</p>
       </div>
-      <div class="calcmodes" role="tablist">
+      <div class="calcmodes" role="group" aria-label="Odds Lab section">
         {tabs.map(([id, label]) => (
-          <button role="tab" aria-selected={mode === id} class={mode === id ? 'on' : ''}
+          <button key={id} aria-pressed={mode === id} class={mode === id ? 'on' : ''}
             onClick={() => setMode(id)}>{label}</button>
         ))}
       </div>

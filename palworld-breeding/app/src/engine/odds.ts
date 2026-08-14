@@ -81,16 +81,23 @@ export function subsetContainsAll(pool: number, chosen: number, desired: number)
  *      inherited ones are kept (this is the behaviour palcalc's solver assumes
  *      when it switches to "at least N random" for the 4-slot case)
  *
- * `inheritCap` overrides step 2's draw for the what-if Special Cake mode; it is
- * NOT a verified game value, so callers must label it as a hypothetical.
+ * Known simplification (shared with palcalc): the R random passives are treated
+ * as never being one of the DESIRED passives. In the game they roll from the
+ * global list (~114 entries), so a wanted passive can occasionally arrive "for
+ * free" — allDesired is therefore understated by roughly desired/114 per random
+ * slot (order 1–2% relative). The Monte Carlo in tests/odds.test.ts simulates
+ * the same simplified mechanic: it independently checks the algebra, not this
+ * assumption.
+ *
+ * The Special Cake's inherit-count override is deliberately NOT modelled: its
+ * exact value has never been datamined, and pretending otherwise would put
+ * invented numbers next to verified ones.
  */
 export interface PassiveModel {
   /** distinct passives across both parents */
   poolSize: number;
   /** how many of those pool passives you actually want */
   desiredCount: number;
-  /** forces the number drawn from the pool (Special Cake what-if); undefined = normal roll */
-  inheritCap?: number;
 }
 
 export interface PassiveOdds {
@@ -107,20 +114,18 @@ export interface PassiveOdds {
 }
 
 /** Distribution of how many pool passives are actually inherited. */
-function inheritedDistribution(poolSize: number, inheritCap?: number): Map<number, number> {
+function inheritedDistribution(poolSize: number): Map<number, number> {
   const out = new Map<number, number>();
-  const add = (k: number, p: number) => out.set(k, (out.get(k) ?? 0) + p);
-  if (inheritCap !== undefined) {
-    add(Math.min(inheritCap, poolSize), 1);
-    return out;
+  for (const [x, p] of passiveInheritP) {
+    const k = Math.min(x, poolSize);
+    out.set(k, (out.get(k) ?? 0) + p);
   }
-  for (const [x, p] of passiveInheritP) add(Math.min(x, poolSize), p);
   return out;
 }
 
 export function passiveOdds(model: PassiveModel): PassiveOdds {
-  const { poolSize, desiredCount, inheritCap } = model;
-  const inherited = inheritedDistribution(poolSize, inheritCap);
+  const { poolSize, desiredCount } = model;
+  const inherited = inheritedDistribution(poolSize);
 
   // P(all desired inherited). Random additions never displace inherited
   // passives, so they do not enter this marginal at all.
@@ -184,6 +189,8 @@ export interface IvOdds {
   categoriesInherited: number;
   /** ...and every one of them came from the specific parent you wanted */
   fromChosenParent: number;
+  /** egg counts for categoriesInherited — recompute with attemptsFor() when
+   * the question is fromChosenParent instead */
   expectedEggs: number;
   eggsFor90: number;
 }
@@ -223,8 +230,8 @@ export interface Cake {
   name: string;
   /** eggs produced per breeding cycle */
   eggsPerCycle: number;
-  /** mutation chance per egg (null = same as the base cake) */
-  mutationPerEgg: number | null;
+  /** mutation chance per egg */
+  mutationPerEgg: number;
   effect: string;
   /** how well-established the numbers are */
   confidence: 'game-data' | 'community';
@@ -274,7 +281,7 @@ export const CAKES: Cake[] = [
     name: 'Special Cake',
     eggsPerCycle: 1,
     mutationPerEgg: 0.01,
-    effect: 'Overrides how many passives are drawn from the parents — reported to carry up to 6.',
+    effect: 'Carries more parent passives (reported up to 6). The exact override is not datamined, so the Odds Lab does not model it.',
     confidence: 'community',
   },
 ];
@@ -297,7 +304,7 @@ export interface MutationPlan {
 
 export function mutationPlan(id: CakeId): MutationPlan {
   const cake = cakeById(id);
-  const per = cake.mutationPerEgg ?? 0.01;
+  const per = cake.mutationPerEgg;
   const eggs = cake.eggsPerCycle;
   const perCycle = 1 - Math.pow(1 - per, eggs);
   return {

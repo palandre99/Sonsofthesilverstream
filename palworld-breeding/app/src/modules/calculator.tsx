@@ -2,6 +2,7 @@
  * Deep link: #/calc/<name> opens reverse mode with that target picked. */
 import { useEffect, useMemo, useState } from 'preact/hooks';
 import { canPairNow, engine, nav, ownedAny, pals, route, selfOnly } from '../state';
+import { parseGenderNote } from '../engine/formula';
 import { ElementChips, LockBadge, PalIcon, PalPicker, WorkChips } from '../components/shared';
 import type { ChildResult } from '../engine/types';
 
@@ -29,13 +30,13 @@ function PairResult({ a, b }: { a: string; b: string }) {
   return (
     <>
       {results.map((ch) => (
-        <div class="card resultcard">
+        <div key={ch.species} class="card resultcard">
           <span class="who">
             <PalIcon name={a} size={52}
-              gender={ch.kind === 'gendered' ? (ch.genderNote!.includes(`female ${a}`) ? 'f' : 'm') : undefined} />
+              gender={ch.kind === 'gendered' ? (parseGenderNote(ch.genderNote!)?.mother === a ? 'f' : 'm') : undefined} />
             <span class="plus" style={{ color: 'var(--faint)', fontWeight: 800 }}>+</span>
             <PalIcon name={b} size={52}
-              gender={ch.kind === 'gendered' ? (ch.genderNote!.includes(`female ${b}`) ? 'f' : 'm') : undefined} />
+              gender={ch.kind === 'gendered' ? (parseGenderNote(ch.genderNote!)?.mother === b ? 'f' : 'm') : undefined} />
           </span>
           <span class="arrow">→</span>
           <span class="childcol">
@@ -119,9 +120,9 @@ function ReverseLookup({ target }: { target: string }) {
       {items.length === 0 && <div class="card pairitem"><span class="names" style={{ color: 'var(--faint)' }}>none</span></div>}
       <div class="pairlist">
         {(showAll ? items : items.slice(0, 12)).map((p) => (
-          <div class="card pairitem">
-            <PalIcon name={p.a} size={36} gender={p.note?.includes(`female ${p.a}`) ? 'f' : p.note ? 'm' : undefined} />
-            <PalIcon name={p.b} size={36} gender={p.note?.includes(`female ${p.b}`) ? 'f' : p.note ? 'm' : undefined} />
+          <div key={`${p.a}|${p.b}`} class="card pairitem">
+            <PalIcon name={p.a} size={36} gender={p.note ? (parseGenderNote(p.note)?.mother === p.a ? 'f' : 'm') : undefined} />
+            <PalIcon name={p.b} size={36} gender={p.note ? (parseGenderNote(p.note)?.mother === p.b ? 'f' : 'm') : undefined} />
             <span class="names">{p.a} <span class="plus">+</span> {p.b}</span>
             <span class="tag">
               {p.kind === 'unique' && <span class="badge unique">unique</span>}
@@ -165,7 +166,7 @@ function ReverseLookup({ target }: { target: string }) {
 
 export function CalculatorPage() {
   const linked = route.value.page === 'calc' ? route.value.target : undefined;
-  const validLink = linked && linked in pals.value ? linked : null;
+  const validLink = linked && Object.hasOwn(pals.value, linked) ? linked : null;
   const [mode, setMode] = useState<'pair' | 'reverse'>(validLink ? 'reverse' : 'pair');
   const [a, setA] = useState<string | null>(null);
   const [b, setB] = useState<string | null>(null);
@@ -187,10 +188,10 @@ export function CalculatorPage() {
           from the game files — unique recipes, the gender-locked pair, pool exclusions
           and the higher-rank tie-break included.</p>
       </div>
-      <div class="calcmodes" role="tablist">
-        <button role="tab" aria-selected={mode === 'pair'} class={mode === 'pair' ? 'on' : ''}
+      <div class="calcmodes" role="group" aria-label="Calculator mode">
+        <button aria-pressed={mode === 'pair'} class={mode === 'pair' ? 'on' : ''}
           onClick={() => setMode('pair')}>Pair → child</button>
-        <button role="tab" aria-selected={mode === 'reverse'} class={mode === 'reverse' ? 'on' : ''}
+        <button aria-pressed={mode === 'reverse'} class={mode === 'reverse' ? 'on' : ''}
           onClick={() => setMode('reverse')}>Child → parents</button>
       </div>
 

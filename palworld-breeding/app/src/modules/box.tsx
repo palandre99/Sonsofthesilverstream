@@ -1,9 +1,9 @@
 /** My Box — ownership with gender detail, filters, bulk actions and
  * proper import/export (no prompt()/alert() — a real panel with preview). */
-import { useMemo, useState } from 'preact/hooks';
+import { useEffect, useMemo, useState } from 'preact/hooks';
 import {
   box, engine, hasGender, ownedAny, pairReadyCount, palNumberSort, pals,
-  toggleOwned, type OwnedGenders,
+  storage, toggleOwned, type OwnedGenders,
 } from '../state';
 import { closure } from '../engine/planner';
 import { ElementChips, GenderToggles, PalIcon, WorkChips } from '../components/shared';
@@ -23,7 +23,7 @@ function parseImport(text: string, valid: Set<string>): {
   entries: [string, OwnedGenders][]; unknown: string[];
 } {
   const lower = new Map([...valid].map((n) => [n.toLowerCase(), n]));
-  const entries: [string, OwnedGenders][] = [];
+  const byName = new Map<string, OwnedGenders>();
   const unknown: string[] = [];
   const trimmed = text.trim();
 
@@ -34,13 +34,17 @@ function parseImport(text: string, valid: Set<string>): {
       for (const [k, v] of Object.entries(source)) {
         const name = lower.get(k.toLowerCase());
         if (!name) { unknown.push(k); continue; }
-        const g = v as Partial<OwnedGenders> | boolean;
-        const owned: OwnedGenders = typeof g === 'object' && g !== null
-          ? { m: !!g.m, f: !!g.f }
-          : { m: true, f: true };
-        if (owned.m || owned.f) entries.push([name, owned]);
+        // hand-edited/legacy values: only `true` or an {m,f} object mean
+        // "owned" — false/null/other must NOT resurrect a species as owned
+        let owned: OwnedGenders | null = null;
+        if (v === true) owned = { m: true, f: true };
+        else if (typeof v === 'object' && v !== null) {
+          const g = v as Partial<OwnedGenders>;
+          owned = { m: g.m === true, f: g.f === true };
+        }
+        if (owned && (owned.m || owned.f)) byName.set(name, owned);
       }
-      return { entries, unknown };
+      return { entries: [...byName], unknown };
     } catch { /* fall through to line parsing */ }
   }
 
@@ -52,14 +56,13 @@ function parseImport(text: string, valid: Set<string>): {
     const name = lower.get((m?.[1] ?? line).trim().toLowerCase());
     if (!name) { unknown.push(line); continue; }
     const g = (m?.[2] ?? '').toLowerCase();
-    const prev = entries.find(([n]) => n === name);
     const add: OwnedGenders = g === '♂' || g === 'm' ? { m: true, f: false }
       : g === '♀' || g === 'f' ? { m: false, f: true }
       : { m: true, f: true };
-    if (prev) { prev[1] = { m: prev[1].m || add.m, f: prev[1].f || add.f }; }
-    else entries.push([name, add]);
+    const prev = byName.get(name);
+    byName.set(name, prev ? { m: prev.m || add.m, f: prev.f || add.f } : add);
   }
-  return { entries, unknown };
+  return { entries: [...byName], unknown };
 }
 
 function ImportPanel({ onClose }: { onClose: () => void }) {
@@ -75,7 +78,7 @@ function ImportPanel({ onClose }: { onClose: () => void }) {
       next[name] = cur ? { m: cur.m || g.m, f: cur.f || g.f } : g;
     }
     box.value = next;
-    localStorage.setItem('hatchlab-box-v2', JSON.stringify(next));
+    storage.set('hatchlab-box-v2', JSON.stringify(next));
     onClose();
   };
 
@@ -126,7 +129,7 @@ function ClearPanel({ onClose }: { onClose: () => void }) {
       <div class="importbtns">
         <button class="btn danger" onClick={() => {
           box.value = {};
-          localStorage.setItem('hatchlab-box-v2', '{}');
+          storage.set('hatchlab-box-v2', '{}');
           onClose();
         }}>Yes, clear {n} species</button>
         <button class="btn" onClick={onClose}>Keep my box</button>
@@ -141,6 +144,7 @@ export function BoxPage() {
   const [element, setElement] = useState('all');
   const [panel, setPanel] = useState<'none' | 'import' | 'clear'>('none');
   const [copied, setCopied] = useState<'' | 'list' | 'json'>('');
+  const [armUnown, setArmUnown] = useState(false);
 
   const owned = box.value;
   const ownedNames = Object.keys(owned);
@@ -171,6 +175,9 @@ export function BoxPage() {
     }
   }, [q, filter, element, pals.value, owned]);
 
+  // a different filter/search shows a different set — disarm the bulk delete
+  useEffect(() => setArmUnown(false), [q, filter, element]);
+
   const copy = async (what: 'list' | 'json') => {
     const text = what === 'list'
       ? ownedNames.sort().map((n) => {
@@ -194,7 +201,7 @@ export function BoxPage() {
       else delete next[n];
     }
     box.value = next;
-    localStorage.setItem('hatchlab-box-v2', JSON.stringify(next));
+    storage.set('hatchlab-box-v2', JSON.stringify(next));
   };
 
   return (
@@ -230,9 +237,9 @@ export function BoxPage() {
           {elements.map((e) => <option value={e}>{e}</option>)}
         </select>
       </div>
-      <div class="filterrow" role="tablist" aria-label="Ownership filter">
+      <div class="filterrow" role="group" aria-label="Ownership filter">
         {FILTERS.map(([id, label]) => (
-          <button role="tab" aria-selected={filter === id}
+          <button key={id} aria-pressed={filter === id}
             class={`fbtn${filter === id ? ' on' : ''}`}
             onClick={() => setFilter(id)}>{label}</button>
         ))}
@@ -240,7 +247,14 @@ export function BoxPage() {
         {filter !== 'all' || q || element !== 'all' ? (
           <span class="bulkbtns">
             <button class="btn sm" onClick={() => bulkSet(true)}>Own all shown</button>
-            <button class="btn sm" onClick={() => bulkSet(false)}>Un-own all shown</button>
+            <button class={`btn sm${armUnown ? ' danger' : ''}`}
+              onClick={() => {
+                if (!armUnown) { setArmUnown(true); return; }
+                bulkSet(false);
+                setArmUnown(false);
+              }}>
+              {armUnown ? `Really un-own ${names.filter(ownedAny).length}?` : 'Un-own all shown'}
+            </button>
           </span>
         ) : null}
       </div>
@@ -248,7 +262,7 @@ export function BoxPage() {
         {names.map((n) => {
           const has = ownedAny(n);
           return (
-            <div class={`boxrow${has ? '' : ' off'}`}>
+            <div key={n} class={`boxrow${has ? '' : ' off'}`}>
               <button class="rowmain" onClick={() => toggleOwned(n)}
                 aria-label={`Toggle ownership of ${n}`}>
                 <PalIcon name={n} size={34} />
