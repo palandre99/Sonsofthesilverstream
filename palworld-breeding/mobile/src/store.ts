@@ -94,6 +94,9 @@ export interface SavedPlan {
   steps: PlanStep[];
   unreachable: string[];
   planned: string;
+  /** the box at plan time — reshapes re-plan against THIS so finished
+   * steps (and their ticks) survive; absent on old saves */
+  roster?: string[];
 }
 
 interface State {
@@ -372,8 +375,17 @@ export function clearPlan(): void {
 export function addPlanTarget(name: string): void {
   if (!state.plan || state.plan.targets.includes(name)) return;
   const targets = [...state.plan.targets, name];
-  const { steps, unreachable } = planFor(engine, Object.keys(state.box), targets);
-  state.plan = { ...state.plan, targets, steps, unreachable };
+  const roster = state.plan.roster ?? Object.keys(state.box);
+  try {
+    const { steps, unreachable } = planFor(engine, roster, targets);
+    state.plan = {
+      ...state.plan, targets, steps, unreachable,
+      planned: new Date().toISOString(), roster,
+    };
+  } catch (e) {
+    console.error('addPlanTarget failed:', e);
+    return;
+  }
   void persist('plan');
   emit();
 }
@@ -384,8 +396,17 @@ export function removePlanTarget(name: string): void {
   if (!state.plan || !state.plan.targets.includes(name)) return;
   const targets = state.plan.targets.filter((t) => t !== name);
   if (!targets.length) return;
-  const { steps, unreachable } = planFor(engine, Object.keys(state.box), targets);
-  state.plan = { ...state.plan, targets, steps, unreachable };
+  const roster = state.plan.roster ?? Object.keys(state.box);
+  try {
+    const { steps, unreachable } = planFor(engine, roster, targets);
+    state.plan = {
+      ...state.plan, targets, steps, unreachable,
+      planned: new Date().toISOString(), roster,
+    };
+  } catch (e) {
+    console.error('removePlanTarget failed:', e);
+    return;
+  }
   void persist('plan');
   emit();
 }

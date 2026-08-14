@@ -45,7 +45,6 @@ export function cakeNeeds(steps: number): CakeNeeds {
 const PRODUCE_TO_INGREDIENT: Record<string, 'milk' | 'eggs' | 'honey' | 'berries'> = {
   Milk: 'milk',
   Egg: 'eggs',
-  Eggs: 'eggs',
   Honey: 'honey',
   'Red Berries': 'berries',
 };

@@ -135,7 +135,10 @@ export function PlannerScreen() {
     setTimeout(() => {
       try {
         const { steps, unreachable } = planFor(engine, ownedNames, targets);
-        savePlan({ targets, steps, unreachable, planned: new Date().toISOString() });
+        savePlan({
+          targets, steps, unreachable,
+          planned: new Date().toISOString(), roster: ownedNames,
+        });
         void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       } catch (e) {
         setPlanError(String(e instanceof Error ? e.message : e));
@@ -269,22 +272,31 @@ export function PlannerScreen() {
   }, [plan, checks]);
 
   const needs = plan ? cakeNeeds(plan.steps.length) : null;
-  // helper advice re-plans per candidate — compute off the first paint
+  // helper advice re-plans per candidate. One shared derivations pass keeps
+  // it ~one planFor's cost, and it recomputes only when the PLAN changes —
+  // ticking pals must never freeze the thread (post-mortem 2026-08-15).
   const [advice, setAdvice] = useState<HelperAdvice[]>([]);
   useEffect(() => {
-    if (!plan) {
+    if (!plan || plan.steps.length === 0) {
       setAdvice([]);
       return;
     }
-    const t = setTimeout(
-      () => setAdvice(helperAdvice(engine, Object.keys(getBox()), ownedAny, plan)),
-      30,
-    );
+    const t = setTimeout(() => {
+      try {
+        setAdvice(helperAdvice(engine, Object.keys(getBox()), ownedAny, plan));
+      } catch (e) {
+        console.error('helperAdvice failed:', e);
+        setAdvice([]);
+      }
+    }, 60);
     return () => clearTimeout(t);
-  }, [plan, box]);
-  const covered = advice.filter((a) => a.status === 'covered');
-  // best first, capped so the card stays scannable
-  const activeAdvice = advice.filter((a) => a.status !== 'covered').slice(0, 5);
+  }, [plan]);
+  // ownership is checked LIVE at render so a freshly hatched helper flips to
+  // covered instantly without paying the planner again
+  const covered = advice.filter((a) => a.status === 'covered' || ownedAny(a.helper.name));
+  const activeAdvice = advice
+    .filter((a) => a.status !== 'covered' && !ownedAny(a.helper.name))
+    .slice(0, 5);
 
   return (
     <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
@@ -478,13 +490,14 @@ export function PlannerScreen() {
                           }} />
                       </View>
                     )}
-                    {isTarget && (
+                    {isTarget && plan!.targets.length > 1 && (
                       <View style={[s.wrap]}>
                         <Btn small label="Remove from plan"
                           onPress={() => {
                             void Haptics.selectionAsync();
                             removePlanTarget(h.name);
-                            setTargets((prev) => prev.filter((t) => t !== h.name));
+                            setTargets((prev) =>
+                              prev.length > 1 ? prev.filter((t) => t !== h.name) : prev);
                           }} />
                       </View>
                     )}

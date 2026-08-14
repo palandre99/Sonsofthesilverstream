@@ -8,7 +8,7 @@
  * alpha-egg chance — all real partner skills, quoted near-verbatim.
  */
 import type { BreedingEngine } from './formula';
-import { planFor } from './planner';
+import { derivations, planFor } from './planner';
 import type { PlanStep } from './types';
 
 export interface HelperDef {
@@ -30,25 +30,25 @@ export interface HelperDef {
 export const HELPERS: HelperDef[] = [
   {
     name: 'Chikipi', role: 'ranch', ingredient: 'eggs', score: 5,
-    effect: 'Lays Eggs when assigned to the Ranch',
+    effect: 'Sometimes lays an Egg when assigned to the Ranch',
     why: 'Every cake needs 8 eggs — no eggs, no cakes, no breeding.',
     confidence: 'game-data',
   },
   {
     name: 'Mozzarina', role: 'ranch', ingredient: 'milk', score: 5,
-    effect: 'Drops Milk when assigned to the Ranch',
+    effect: 'Sometimes drops Milk when assigned to the Ranch',
     why: 'Every cake needs 7 milk, and the Ranch is the only hands-free source.',
     confidence: 'game-data',
   },
   {
     name: 'Beegarde', role: 'ranch', ingredient: 'honey', score: 5,
-    effect: 'Drops Honey when assigned to the Ranch',
+    effect: 'Sometimes drops Honey when assigned to the Ranch',
     why: 'Every cake needs 2 honey — the Ranch is the only steady source.',
     confidence: 'game-data',
   },
   {
     name: 'Caprity', role: 'ranch', ingredient: 'berries', score: 4,
-    effect: 'Drops Red Berries when assigned to the Ranch',
+    effect: 'Sometimes drops Red Berries when assigned to the Ranch',
     why: '8 berries per cake. A berry plantation works too — Caprity needs no farmhands.',
     confidence: 'game-data',
   },
@@ -84,7 +84,7 @@ export const HELPERS: HelperDef[] = [
   },
   {
     name: 'Ribbuny', role: 'base', score: 2,
-    effect: '+1 Handiwork level for every pal in your base',
+    effect: '+1 Handiwork level for every other pal in your base',
     why: 'Faster milling and crafting for the cake supply chain.',
     confidence: 'game-data',
   },
@@ -111,9 +111,23 @@ export function helperAdvice(
   engine: BreedingEngine,
   ownedNames: string[],
   ownedAny: (n: string) => boolean,
-  plan: { targets: string[]; steps: PlanStep[] },
+  plan: { targets: string[]; steps: PlanStep[]; roster?: string[] },
 ): HelperAdvice[] {
-  const planChild = new Map(plan.steps.map((s) => [s.child, s.wave]));
+  // Cost math runs against the plan's ORIGINAL roster (falling back to the
+  // current box for old saves): ticking steps grows the box, and mixing a
+  // grown box with plan-time step counts made "+N steps" go negative.
+  const roster = plan.roster ?? ownedNames;
+  // derivations depends only on the roster — pay the expensive pass ONCE
+  // and reuse it for the base plan and every candidate (was: once per
+  // candidate, a measured multi-second JS-thread freeze).
+  const derivs = derivations(engine, new Set(roster));
+  const base = planFor(engine, roster, plan.targets, derivs).steps.length;
+  // earliest phase that breeds each child (a child can appear via two steps)
+  const planChild = new Map<string, number>();
+  for (const s of plan.steps) {
+    const w = planChild.get(s.child);
+    if (w == null || s.wave < w) planChild.set(s.child, s.wave);
+  }
   const nSteps = plan.steps.length;
   const out: HelperAdvice[] = [];
 
@@ -133,9 +147,9 @@ export function helperAdvice(
       });
       continue;
     }
-    const res = planFor(engine, ownedNames, [...plan.targets, h.name]);
+    const res = planFor(engine, roster, [...plan.targets, h.name], derivs);
     if (res.unreachable.includes(h.name)) continue; // don't tease the impossible
-    const addSteps = res.steps.length - nSteps;
+    const addSteps = Math.max(0, res.steps.length - base);
     const recommended = addSteps === 0
       || (h.role === 'ranch' ? nSteps >= 6 && addSteps <= 3
         : h.score >= 3 && nSteps >= 10 && addSteps <= 3);

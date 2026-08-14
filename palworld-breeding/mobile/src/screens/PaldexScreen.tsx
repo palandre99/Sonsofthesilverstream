@@ -177,8 +177,8 @@ function applyFilters(list: string[], f: Filters): string[] {
 }
 
 /** The Filter & Sort sheet — in-game sorting, but better. */
-function FilterSheet({ filters, sort, count, onApply, onClose }: {
-  filters: Filters; sort: SortKey; count: number;
+function FilterSheet({ filters, sort, onApply, onClose }: {
+  filters: Filters; sort: SortKey;
   onApply: (f: Filters, s: SortKey) => void; onClose: () => void;
 }) {
   const [f, setF] = useState<Filters>(filters);
@@ -304,8 +304,12 @@ export function PaldexScreen() {
     return sorted(list, sort);
   }, [q, filters, sort, box]);
 
+  const OWN_LABELS: Record<Filters['own'], string> = {
+    all: 'All', owned: 'Owned', missing: 'Missing',
+    pairready: 'Have ♂+♀', onegender: 'One gender',
+  };
   const activeBits: string[] = [];
-  if (filters.own !== 'all') activeBits.push(filters.own);
+  if (filters.own !== 'all') activeBits.push(OWN_LABELS[filters.own]);
   if (filters.elements.length) activeBits.push(filters.elements.join('/'));
   if (filters.work) activeBits.push(workLabel(filters.work));
   if (sort !== 'number') {
@@ -362,7 +366,7 @@ export function PaldexScreen() {
       />
       {open && <PalDetail name={open} onClose={() => setOpen(null)} />}
       {sheet === 'filter' && (
-        <FilterSheet filters={filters} sort={sort} count={names.length}
+        <FilterSheet filters={filters} sort={sort}
           onApply={(f, sk) => { setFilters(f); setSort(sk); setSheet('none'); }}
           onClose={() => setSheet('none')} />
       )}

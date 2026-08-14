@@ -106,9 +106,13 @@ export function planFor(
   engine: BreedingEngine,
   roster: Iterable<string>,
   targets: string[],
+  /** optional precomputed derivations(engine, roster) — derivations depends
+   * only on the roster, so callers re-planning many target variations can
+   * pay the expensive fixpoint once and reuse it */
+  precomputed?: ReturnType<typeof derivations>,
 ): PlanResult {
   const rosterSet = new Set(roster);
-  const derivs = derivations(engine, rosterSet);
+  const derivs = precomputed ?? derivations(engine, rosterSet);
   const unreachable = targets.filter((t) => !derivs.has(t));
   const wanted = new Set(targets.filter((t) => derivs.has(t)));
 

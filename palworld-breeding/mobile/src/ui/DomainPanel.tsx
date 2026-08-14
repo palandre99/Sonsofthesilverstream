@@ -37,14 +37,18 @@ export function DomainPanel({ open, domain, onSelect, onClose }: {
   }, [open, x, fade]);
 
   // drag anywhere on the panel: left = close, right = grow to full,
-  // release snaps to the nearest clean width
+  // release snaps to the nearest clean width. The responder is created once,
+  // so it must read width through a ref — the raw state var would be a stale
+  // closure frozen at first render.
+  const widthRef = useRef(width);
+  widthRef.current = width;
   const pan = useRef({ startWidth: W_COMPACT });
   const responder = useRef(
     PanResponder.create({
       onMoveShouldSetPanResponder: (_e, g) =>
         Math.abs(g.dx) > 10 && Math.abs(g.dx) > Math.abs(g.dy),
       onPanResponderGrant: () => {
-        pan.current.startWidth = width;
+        pan.current.startWidth = widthRef.current;
       },
       onPanResponderRelease: (_e, g) => {
         if (g.dx < -60 || g.vx < -0.6) {
@@ -53,7 +57,7 @@ export function DomainPanel({ open, domain, onSelect, onClose }: {
         }
         const target = pan.current.startWidth + g.dx;
         const snapped = target > (W_COMPACT + W_FULL) / 2 ? W_FULL : W_COMPACT;
-        if (snapped !== width) void Haptics.selectionAsync();
+        if (snapped !== widthRef.current) void Haptics.selectionAsync();
         setWidth(snapped);
       },
     }),

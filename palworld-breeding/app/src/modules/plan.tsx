@@ -57,6 +57,9 @@ interface SavedPlan {
   steps: PlanStep[];
   unreachable: string[];
   planned: string; // ISO date
+  /** the box at plan time — reshapes re-plan against THIS so finished
+   * steps (and their ticks) survive; absent on old saves */
+  roster?: string[];
 }
 
 function loadSaved(): SavedPlan | null {
@@ -81,6 +84,9 @@ export function PlanPage() {
   const [checks, setChecks] = useState<Record<string, CheckValue>>(loadChecks());
   const [hatching, setHatching] = useState<{ sid: string; child: string } | null>(null);
   const [managing, setManaging] = useState<'none' | 'reset' | 'clear'>('none');
+  // the box the current plan was computed against — reshapes reuse it so
+  // finished steps (and their ticks) survive
+  const [planRoster, setPlanRoster] = useState<string[] | undefined>(saved?.roster);
 
   const ownedNames = Object.keys(box.value);
 
@@ -92,37 +98,38 @@ export function PlanPage() {
     setTargets([...merged]);
   };
 
-  const run = (list: string[] = targets) => {
+  const run = (list: string[] = targets, roster: string[] = ownedNames) => {
     setBusy(true);
     setPlanError(null);
-    requestPlan(ownedNames, list)
+    requestPlan(roster, list)
       .then((r) => {
         setPlan({ steps: r.steps, unreachable: r.unreachable });
         setPlanMs(r.ms);
         setPlannedAt(new Date().toISOString());
+        setPlanRoster(roster);
         // best-effort persist — a quota failure must not read as a plan failure
         storage.set(PLAN_KEY, JSON.stringify({
           targets: list, steps: r.steps, unreachable: r.unreachable,
-          planned: new Date().toISOString(),
+          planned: new Date().toISOString(), roster,
         } satisfies SavedPlan));
       })
       .catch((e) => setPlanError(String(e instanceof Error ? e.message : e)))
       .finally(() => setBusy(false));
   };
 
-  /** One tap from the advice card: add/remove a helper goal and re-plan.
-   * Checks key on step ids, so surviving steps keep their ticks. */
+  /** One tap from the advice card: add/remove a helper goal and re-plan
+   * AGAINST THE PLAN'S ORIGINAL ROSTER — finished steps keep their ticks. */
   const addHelper = (n: string) => {
     if (targets.includes(n)) return;
     const next = [...targets, n];
     setTargets(next);
-    run(next);
+    run(next, planRoster ?? ownedNames);
   };
   const removeHelper = (n: string) => {
     const next = targets.filter((t) => t !== n);
     if (!next.length) return;
     setTargets(next);
-    run(next);
+    run(next, planRoster ?? ownedNames);
   };
 
   const completeStep = (sid: string, child: string, got: { m: boolean; f: boolean }) => {
@@ -179,20 +186,32 @@ export function PlanPage() {
     storage.set(CHECKS_KEY, JSON.stringify(next));
   };
 
-  // helper advice re-plans per missing helper — compute off the first paint
+  // helper advice re-plans per missing helper. One shared derivations pass
+  // inside helperAdvice keeps it ~one planFor's cost, and it recomputes only
+  // when the PLAN changes — ticking pals must never freeze the thread.
   const [advice, setAdvice] = useState<HelperAdvice[]>([]);
   useEffect(() => {
-    if (!plan || !engine || !targets.length) {
+    if (!plan || plan.steps.length === 0 || !engine || !targets.length) {
       setAdvice([]);
       return;
     }
-    const t = setTimeout(() => setAdvice(
-      helperAdvice(engine!, Object.keys(box.value), ownedAny,
-        { targets, steps: plan.steps })), 30);
+    const t = setTimeout(() => {
+      try {
+        setAdvice(helperAdvice(engine!, Object.keys(box.value), ownedAny,
+          { targets, steps: plan.steps, roster: planRoster }));
+      } catch (e) {
+        console.error('helperAdvice failed:', e);
+        setAdvice([]);
+      }
+    }, 60);
     return () => clearTimeout(t);
-  }, [plan, box.value]);
-  const covered = advice.filter((a) => a.status === 'covered');
-  const activeAdvice = advice.filter((a) => a.status !== 'covered').slice(0, 5);
+  }, [plan]);
+  // ownership is checked LIVE at render so a freshly hatched helper flips to
+  // covered instantly without paying the planner again
+  const covered = advice.filter((a) => a.status === 'covered' || ownedAny(a.helper.name));
+  const activeAdvice = advice
+    .filter((a) => a.status !== 'covered' && !ownedAny(a.helper.name))
+    .slice(0, 5);
 
   // ready-state: bred intermediates count as either gender (you can rebreed),
   // owned-only species use the real gender toggles from My Box.
