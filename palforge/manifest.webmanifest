@@ -1,8 +1,8 @@
 {
-  "name": "HatchLab — Palworld breeding, solved",
-  "short_name": "HatchLab",
+  "name": "Palforge — the Palworld companion",
+  "short_name": "Palforge",
   "description": "The Palworld 1.0 breeding companion: calculator, route planner, odds lab and Paldex — verified against the game files. Works offline.",
-  "id": "hatchlab",
+  "id": "palforge",
   "start_url": ".",
   "scope": ".",
   "display": "standalone",
