@@ -155,9 +155,11 @@ describe('Route Planner', () => {
     fireEvent.click(screen.getByRole('button', { name: '♀ only' }));
     // registered from the tick
     expect(state.box.value['Hoocrates']).toEqual({ m: false, f: true });
-    // untick reverses it completely (it was added by the tick)
+    // clicking a PARTIAL tick offers complete-or-untick; untick reverses it
     fireEvent.change(document.querySelector('.tick input') as HTMLInputElement,
       { target: { checked: false } });
+    expect(document.body.textContent).toContain('Complete Hoocrates?');
+    fireEvent.click(screen.getByRole('button', { name: 'Untick step' }));
     expect(state.box.value['Hoocrates']).toBeUndefined();
   });
 });

@@ -1,15 +1,32 @@
 /** Route Planner — shortest shared breeding tree from your box, on-device. */
 import React, { useMemo, useState } from 'react';
-import { ActivityIndicator, Modal, ScrollView, Text, View } from 'react-native';
+import { ActivityIndicator, Modal, Pressable, ScrollView, Text, View } from 'react-native';
 import * as Haptics from 'expo-haptics';
+import { AnimatedCheck, HatchBurst, type Rarity, type TickState } from '../ui/celebrate';
+import { PalDetail } from '../ui/PalDetail';
 import { T } from '../theme';
 import {
   Badge, Btn, Card, PageHead, PalIcon, PalPicker, WorkChips, s,
 } from '../ui/kit';
 import {
   clearPlan, completeStep, getBox, getChecks, getPlan, hasGender, ownedAny,
-  resetPlanProgress, savePlan, selfOnly, uncheckStep, useAppVersion, engine,
+  pals, resetPlanProgress, savePlan, selfOnly, uncheckStep, useAppVersion,
+  engine,
 } from '../store';
+
+/** none / partial (one gender hatched) / full (both, or a legacy tick). */
+function tickStateOf(c: unknown): TickState {
+  if (!c) return 'none';
+  if (c === true) return 'full';
+  const sc = c as { m: boolean; f: boolean };
+  return sc.m && sc.f ? 'full' : 'partial';
+}
+
+function partialGlyph(c: unknown): string | undefined {
+  if (!c || c === true) return undefined;
+  const sc = c as { m: boolean; f: boolean };
+  return sc.m ? '♂' : sc.f ? '♀' : undefined;
+}
 import { planFor, stepId } from '../engine/planner';
 import { parseGenderNote } from '../engine/formula';
 import type { PlanStep } from '../engine/types';
@@ -32,33 +49,22 @@ const PRESETS: Record<string, { label: string; targets: string[] }> = {
   },
 };
 
-function Check({ on, onPress }: { on: boolean; onPress: () => void }) {
-  return (
-    <Text
-      onPress={() => {
-        void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-        onPress();
-      }}
-      style={{
-        width: 26, height: 26, borderRadius: 8, borderWidth: 2,
-        borderColor: on ? T.ok : T.line2, backgroundColor: on ? T.ok : T.surface2,
-        color: '#fff', textAlign: 'center', lineHeight: 22, fontWeight: '800',
-        overflow: 'hidden',
-      }}
-    >{on ? '✓' : ' '}</Text>
-  );
-}
+// (tick rendering lives in ui/celebrate.tsx — AnimatedCheck)
 
 /** "Hatched it! Which genders do you have?" — one tick registers the pal in
  * the Paldex too, so nothing is entered twice. */
-function HatchSheet({ child, sid, onClose }: {
-  child: string; sid: string; onClose: () => void;
+function HatchSheet({ child, sid, have, onClose }: {
+  child: string; sid: string;
+  /** genders already recorded (partial tick) — undefined for a fresh tick */
+  have?: { m: boolean; f: boolean };
+  onClose: () => void;
 }) {
   const pick = (m: boolean, f: boolean) => {
     void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     completeStep(sid, child, { m, f });
     onClose();
   };
+  const partial = have && (have.m !== have.f);
   return (
     <Modal visible transparent animationType="fade" onRequestClose={onClose}>
       <View style={{
@@ -67,15 +73,31 @@ function HatchSheet({ child, sid, onClose }: {
       }}>
         <Card style={{ width: '100%', alignItems: 'center' }}>
           <PalIcon name={child} size={56} />
-          <Text style={[s.h2, { marginTop: 8 }]}>Hatched {child}!</Text>
+          <Text style={[s.h2, { marginTop: 8 }]}>
+            {partial ? `Complete ${child}?` : `Hatched ${child}!`}
+          </Text>
           <Text style={[s.body, { marginTop: 4, textAlign: 'center' }]}>
-            Which genders do you have? It goes straight into your Paldex —
-            no double registration.
+            {partial
+              ? `You have the ${have!.m ? '♂' : '♀'} — hatch the ${have!.m ? '♀' : '♂'} and the step turns green.`
+              : 'Which genders do you have? It goes straight into your Paldex — no double registration.'}
           </Text>
           <View style={[s.wrap, { marginTop: 14, justifyContent: 'center' }]}>
-            <Btn label="♂ only" onPress={() => pick(true, false)} />
-            <Btn label="♀ only" onPress={() => pick(false, true)} />
-            <Btn primary label="♂ + ♀ both" onPress={() => pick(true, true)} />
+            {partial ? (
+              <>
+                <Btn primary label={`Got the ${have!.m ? '♀' : '♂'} — complete it`}
+                  onPress={() => pick(true, true)} />
+                <Btn danger label="Untick step" onPress={() => {
+                  uncheckStep(sid, child);
+                  onClose();
+                }} />
+              </>
+            ) : (
+              <>
+                <Btn label="♂ only" onPress={() => pick(true, false)} />
+                <Btn label="♀ only" onPress={() => pick(false, true)} />
+                <Btn primary label="♂ + ♀ both" onPress={() => pick(true, true)} />
+              </>
+            )}
           </View>
           <View style={{ marginTop: 10 }}>
             <Btn small label="Cancel" onPress={onClose} />
@@ -96,6 +118,8 @@ export function PlannerScreen() {
   const [picking, setPicking] = useState(false);
   const [hatching, setHatching] = useState<{ sid: string; child: string } | null>(null);
   const [managing, setManaging] = useState<'none' | 'reset' | 'clear'>('none');
+  const [bursts, setBursts] = useState<Record<string, number>>({});
+  const [viewing, setViewing] = useState<string | null>(null);
 
   const box = getBox();
   const ownedNames = Object.keys(box);
@@ -122,13 +146,17 @@ export function PlannerScreen() {
   const stepMeta = useMemo(() => {
     const meta = new Map<string, { ready: boolean; missing: string[] }>();
     if (!plan) return meta;
-    const bred = new Set(
-      plan.steps.filter((st) => checks[stepId(st.parents[0], st.parents[1], st.child)])
+    // legacy boolean ticks predate gender recording — treat as both genders;
+    // modern ticks wrote real genders into the box, so the box is the truth
+    const legacyBred = new Set(
+      plan.steps.filter((st) => checks[stepId(st.parents[0], st.parents[1], st.child)] === true)
         .map((st) => st.child),
     );
-    const avail = (n: string) => bred.has(n)
-      ? { m: true, f: true }
-      : { m: hasGender(n, 'm'), f: hasGender(n, 'f') };
+    const bred = legacyBred;
+    const avail = (n: string) => ({
+      m: legacyBred.has(n) || hasGender(n, 'm'),
+      f: legacyBred.has(n) || hasGender(n, 'f'),
+    });
     for (const st of plan.steps) {
       const [a, b] = st.parents;
       const oa = avail(a);
@@ -167,7 +195,12 @@ export function PlannerScreen() {
   }, [plan]);
 
   const done = plan
-    ? plan.steps.filter((st) => checks[stepId(st.parents[0], st.parents[1], st.child)]).length
+    ? plan.steps.filter((st) =>
+        tickStateOf(checks[stepId(st.parents[0], st.parents[1], st.child)]) === 'full').length
+    : 0;
+  const partialCount = plan
+    ? plan.steps.filter((st) =>
+        tickStateOf(checks[stepId(st.parents[0], st.parents[1], st.child)]) === 'partial').length
     : 0;
   const readyNow = plan
     ? [...stepMeta.entries()].filter(([sid, m]) => m.ready && !checks[sid]).length
@@ -178,7 +211,7 @@ export function PlannerScreen() {
     if (!plan) return [];
     const byGoal = new Map<string, { total: number; done: number }>();
     for (const st of plan.steps) {
-      const isDone = !!checks[stepId(st.parents[0], st.parents[1], st.child)];
+      const isDone = tickStateOf(checks[stepId(st.parents[0], st.parents[1], st.child)]) === 'full';
       for (const g of st.neededBy) {
         const cur = byGoal.get(g) ?? { total: 0, done: 0 };
         cur.total++;
@@ -254,8 +287,13 @@ export function PlannerScreen() {
               <Text style={s.tileLabel}>STEPS</Text>
             </View>
             <View style={s.tile}>
-              <Text style={s.tileBig}>{done}/{plan.steps.length}</Text>
+              <Text style={s.tileBig}>{done}<Text style={{ fontSize: 14, color: T.muted }}>/{plan.steps.length}</Text></Text>
               <Text style={s.tileLabel}>DONE</Text>
+              {partialCount > 0 && (
+                <Text style={{ color: T.warn, fontSize: 10, fontWeight: '800' }}>
+                  +{partialCount} half
+                </Text>
+              )}
             </View>
             <View style={s.tile}>
               <Text style={s.tileBig}>{readyNow}</Text>
@@ -286,7 +324,9 @@ export function PlannerScreen() {
                   const complete = g.done === g.total;
                   return (
                     <View key={g.name} style={[s.row, { gap: 8 }]}>
-                      <PalIcon name={g.name} size={26} />
+                      <Pressable onPress={() => setViewing(g.name)} hitSlop={4}>
+                        <PalIcon name={g.name} size={26} />
+                      </Pressable>
                       <Text style={{
                         color: T.ink, fontWeight: '700', fontSize: 14, width: 132,
                       }} numberOfLines={1}>{g.name}</Text>
@@ -321,29 +361,39 @@ export function PlannerScreen() {
                 {steps.map((st) => {
                   const sid = stepId(st.parents[0], st.parents[1], st.child);
                   const m = stepMeta.get(sid)!;
-                  const checked = !!checks[sid];
+                  const tick = tickStateOf(checks[sid]);
+                  const checked = tick === 'full';
+                  const partial = tick === 'partial';
                   const mother = st.genderNote ? parseGenderNote(st.genderNote)?.mother : undefined;
                   return (
                     <Card key={sid} style={{
                       padding: 14, gap: 10, opacity: checked ? 0.55 : 1,
                       borderLeftWidth: 4,
-                      borderLeftColor: checked ? T.line : m.ready ? T.ok : T.line,
+                      borderLeftColor: checked ? T.line
+                        : partial ? T.warn
+                        : m.ready ? T.ok : T.line,
                     }}>
                       {/* parents */}
                       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-                        <Check on={checked} onPress={() => {
-                          if (checked) uncheckStep(sid, st.child);
-                          else setHatching({ sid, child: st.child });
-                        }} />
-                        <PalIcon name={st.parents[0]} size={38}
-                          gender={st.genderNote ? (mother === st.parents[0] ? 'f' : 'm') : undefined} />
+                        <AnimatedCheck state={tick} glyph={partialGlyph(checks[sid])}
+                          onPress={() => {
+                            void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                            if (tick === 'full') uncheckStep(sid, st.child);
+                            else setHatching({ sid, child: st.child });
+                          }} />
+                        <Pressable onPress={() => setViewing(st.parents[0])} hitSlop={4}>
+                          <PalIcon name={st.parents[0]} size={38}
+                            gender={st.genderNote ? (mother === st.parents[0] ? 'f' : 'm') : undefined} />
+                        </Pressable>
                         <Text style={{
                           color: T.ink, fontWeight: '700', fontSize: 15.5, flexShrink: 1,
                           textDecorationLine: checked ? 'line-through' : 'none',
                         }}>{st.parents[0]}</Text>
                         <Text style={{ color: T.faint, fontWeight: '800', fontSize: 15 }}>+</Text>
-                        <PalIcon name={st.parents[1]} size={38}
-                          gender={st.genderNote ? (mother === st.parents[1] ? 'f' : 'm') : undefined} />
+                        <Pressable onPress={() => setViewing(st.parents[1])} hitSlop={4}>
+                          <PalIcon name={st.parents[1]} size={38}
+                            gender={st.genderNote ? (mother === st.parents[1] ? 'f' : 'm') : undefined} />
+                        </Pressable>
                         <Text style={{
                           color: T.ink, fontWeight: '700', fontSize: 15.5, flexShrink: 1,
                           textDecorationLine: checked ? 'line-through' : 'none',
@@ -352,7 +402,11 @@ export function PlannerScreen() {
                       {/* result — the hero line */}
                       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingLeft: 36 }}>
                         <Text style={{ color: T.accent, fontWeight: '800', fontSize: 18 }}>→</Text>
-                        <PalIcon name={st.child} size={46} />
+                        <Pressable onPress={() => setViewing(st.child)} hitSlop={4}>
+                          <PalIcon name={st.child} size={46} />
+                          <HatchBurst burstKey={bursts[sid] ?? 0}
+                            rarity={(pals[st.child]?.rarity ?? 'Common') as Rarity} />
+                        </Pressable>
                         <Text style={{
                           color: T.accentInk, fontWeight: '800', fontSize: 19, flexShrink: 1,
                           textDecorationLine: checked ? 'line-through' : 'none',
@@ -366,7 +420,10 @@ export function PlannerScreen() {
                         {st.reusedAsParent >= 2 && (
                           <Badge kind="plain">keep ♂+♀ — parent in {st.reusedAsParent} steps</Badge>
                         )}
-                        {!checked && (m.ready
+                        {partial && (
+                          <Badge kind="warn">half done — missing the {partialGlyph(checks[sid]) === '♂' ? '♀' : '♂'}</Badge>
+                        )}
+                        {!checked && !partial && (m.ready
                           ? <Badge kind="ok">ready now</Badge>
                           : <Badge kind="plain">waiting for {m.missing.join(' + ')}</Badge>)}
                         <WorkChips name={st.child} top={1} />
@@ -380,9 +437,21 @@ export function PlannerScreen() {
         </>
       )}
 
+      {viewing && <PalDetail name={viewing} onClose={() => setViewing(null)} />}
+
       {hatching && (
         <HatchSheet child={hatching.child} sid={hatching.sid}
-          onClose={() => setHatching(null)} />
+          have={(() => {
+            const c = checks[hatching.sid];
+            return c && c !== true ? { m: c.m, f: c.f } : undefined;
+          })()}
+          onClose={() => {
+            const c = getChecks()[hatching.sid];
+            if (tickStateOf(c) !== 'none') {
+              setBursts((b) => ({ ...b, [hatching.sid]: (b[hatching.sid] ?? 0) + 1 }));
+            }
+            setHatching(null);
+          }} />
       )}
 
       {managing !== 'none' && (
@@ -420,6 +489,7 @@ export function PlannerScreen() {
         visible={picking}
         onClose={() => setPicking(false)}
         title="Add a target"
+        exclude={new Set(targets)}
         onPick={(n) => {
           if (!targets.includes(n)) setTargets([...targets, n]);
         }}

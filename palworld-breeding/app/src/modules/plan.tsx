@@ -43,6 +43,13 @@ function loadChecks(): Record<string, CheckValue> {
   try { return JSON.parse(storage.get(CHECKS_KEY) || '{}'); } catch { return {}; }
 }
 
+/** none / partial (one gender hatched, amber) / full (both, green). */
+export function tickStateOf(c: CheckValue | undefined): 'none' | 'partial' | 'full' {
+  if (!c) return 'none';
+  if (c === true) return 'full';
+  return c.m && c.f ? 'full' : 'partial';
+}
+
 interface SavedPlan {
   targets: string[];
   steps: PlanStep[];
@@ -159,8 +166,10 @@ export function PlanPage() {
   // owned-only species use the real gender toggles from My Box.
   const stepMeta = useMemo(() => {
     if (!plan) return new Map<string, { ready: boolean; missing: string[] }>();
+    // legacy boolean ticks predate gender recording — treat as both genders;
+    // modern ticks wrote real genders into the box, which avail() reads
     const bred = new Set(
-      plan.steps.filter((s) => checks[stepId(s.parents[0], s.parents[1], s.child)])
+      plan.steps.filter((s) => checks[stepId(s.parents[0], s.parents[1], s.child)] === true)
         .map((s) => s.child),
     );
     const avail = (n: string): { m: boolean; f: boolean } => {
@@ -206,7 +215,10 @@ export function PlanPage() {
   }, [plan]);
 
   const done = plan
-    ? plan.steps.filter((s) => checks[stepId(s.parents[0], s.parents[1], s.child)]).length
+    ? plan.steps.filter((s) => tickStateOf(checks[stepId(s.parents[0], s.parents[1], s.child)]) === 'full').length
+    : 0;
+  const partialCount = plan
+    ? plan.steps.filter((s) => tickStateOf(checks[stepId(s.parents[0], s.parents[1], s.child)]) === 'partial').length
     : 0;
 
   // per-target progress: how many of the steps each goal depends on are done
@@ -215,7 +227,7 @@ export function PlanPage() {
     const byTarget = new Map<string, { total: number; done: number }>();
     for (const s of plan.steps) {
       const sid = stepId(s.parents[0], s.parents[1], s.child);
-      const isDone = !!checks[sid];
+      const isDone = tickStateOf(checks[sid]) === 'full';
       for (const t of s.neededBy) {
         const cur = byTarget.get(t) ?? { total: 0, done: 0 };
         cur.total++;
@@ -283,7 +295,7 @@ export function PlanPage() {
         <>
           <div class="boxstats">
             <div class="tile"><b>{plan.steps.length}</b><span>breeding steps</span></div>
-            <div class="tile"><b>{done} / {plan.steps.length}</b><span>done</span></div>
+            <div class="tile"><b>{done} / {plan.steps.length}</b><span>done{partialCount > 0 ? ` · ${partialCount} half` : ''}</span></div>
             <div class="tile"><b>{[...stepMeta.entries()].filter(([sid, m]) => m.ready && !checks[sid]).length}</b><span>ready right now</span></div>
             {planMs !== null && (
               <div class="tile"><b>{planMs < 1000 ? `${Math.round(planMs)}ms` : `${(planMs / 1000).toFixed(1)}s`}</b><span>planned in</span></div>
@@ -333,10 +345,14 @@ export function PlanPage() {
                 {steps.map((s) => {
                   const sid = stepId(s.parents[0], s.parents[1], s.child);
                   const m = stepMeta.get(sid)!;
-                  const checked = !!checks[sid];
+                  const tick = tickStateOf(checks[sid]);
+                  const checked = tick === 'full';
+                  const partial = tick === 'partial';
+                  const pGlyph = partial && typeof checks[sid] === 'object'
+                    ? ((checks[sid] as StepCheck).m ? '♂' : '♀') : '';
                   return (
-                    <div key={sid} class={`card pairitem planstep${checked ? ' done' : m.ready ? ' ready' : ''}`}>
-                      <label class="tick">
+                    <div key={sid} class={`card pairitem planstep${checked ? ' done' : partial ? ' partial' : m.ready ? ' ready' : ''}`}>
+                      <label class={`tick${partial ? ' half' : ''}`} data-glyph={pGlyph}>
                         <input type="checkbox" checked={checked}
                           aria-label={`Done: ${s.parents[0]} + ${s.parents[1]} = ${s.child}`}
                           onChange={() => {
@@ -363,7 +379,10 @@ export function PlanPage() {
                         {s.reusedAsParent >= 2 && (
                           <span class="badge plain">keep ♂ + ♀ — parent in {s.reusedAsParent} steps</span>
                         )}
-                        {!checked && (m.ready
+                        {partial && (
+                          <span class="badge warn">half done — missing the {pGlyph === '♂' ? '♀' : '♂'}</span>
+                        )}
+                        {!checked && !partial && (m.ready
                           ? <span class="badge ok">ready now</span>
                           : <span class="badge plain">waiting for {m.missing.join(' + ')}</span>)}
                       </span>
@@ -414,28 +433,49 @@ export function PlanPage() {
         </div>
       )}
 
-      {hatching && (
-        <div class="hatchback" onClick={() => setHatching(null)}>
-          <div class="card bigcard hatchcard" role="dialog" aria-modal="true"
-            aria-label={`Hatched ${hatching.child}`}
-            onClick={(e) => e.stopPropagation()}>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
-              <PalIcon name={hatching.child} size={56} />
-              <h2>Hatched {hatching.child}!</h2>
-              <p style={{ color: 'var(--muted)', fontSize: '13.5px', textAlign: 'center', margin: 0 }}>
-                Which genders do you have? It goes straight into your Paldex —
-                no double registration.
-              </p>
-              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'center', marginTop: '8px' }}>
-                <button class="btn" onClick={() => completeStep(hatching.sid, hatching.child, { m: true, f: false })}>♂ only</button>
-                <button class="btn" onClick={() => completeStep(hatching.sid, hatching.child, { m: false, f: true })}>♀ only</button>
-                <button class="btn primary" onClick={() => completeStep(hatching.sid, hatching.child, { m: true, f: true })}>♂ + ♀ both</button>
+      {hatching && (() => {
+        const cur = checks[hatching.sid];
+        const have = cur && cur !== true ? cur : null;
+        const isPartial = !!have && have.m !== have.f;
+        return (
+          <div class="hatchback" onClick={() => setHatching(null)}>
+            <div class="card bigcard hatchcard" role="dialog" aria-modal="true"
+              aria-label={`Hatched ${hatching.child}`}
+              onClick={(e) => e.stopPropagation()}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+                <PalIcon name={hatching.child} size={56} />
+                <h2>{isPartial ? `Complete ${hatching.child}?` : `Hatched ${hatching.child}!`}</h2>
+                <p style={{ color: 'var(--muted)', fontSize: '13.5px', textAlign: 'center', margin: 0 }}>
+                  {isPartial
+                    ? `You have the ${have!.m ? '♂' : '♀'} — hatch the ${have!.m ? '♀' : '♂'} and the step turns green.`
+                    : 'Which genders do you have? It goes straight into your Paldex — no double registration.'}
+                </p>
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'center', marginTop: '8px' }}>
+                  {isPartial ? (
+                    <>
+                      <button class="btn primary"
+                        onClick={() => completeStep(hatching.sid, hatching.child, { m: true, f: true })}>
+                        Got the {have!.m ? '♀' : '♂'} — complete it
+                      </button>
+                      <button class="btn danger" onClick={() => {
+                        uncheckStep(hatching.sid, hatching.child);
+                        setHatching(null);
+                      }}>Untick step</button>
+                    </>
+                  ) : (
+                    <>
+                      <button class="btn" onClick={() => completeStep(hatching.sid, hatching.child, { m: true, f: false })}>♂ only</button>
+                      <button class="btn" onClick={() => completeStep(hatching.sid, hatching.child, { m: false, f: true })}>♀ only</button>
+                      <button class="btn primary" onClick={() => completeStep(hatching.sid, hatching.child, { m: true, f: true })}>♂ + ♀ both</button>
+                    </>
+                  )}
+                </div>
+                <button class="btn sm" style={{ marginTop: '4px' }} onClick={() => setHatching(null)}>Cancel</button>
               </div>
-              <button class="btn sm" style={{ marginTop: '4px' }} onClick={() => setHatching(null)}>Cancel</button>
             </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
 
       {!plan && !busy && (
         <div class="card bigcard">

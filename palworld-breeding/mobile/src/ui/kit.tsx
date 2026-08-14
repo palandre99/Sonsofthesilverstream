@@ -7,7 +7,7 @@ import * as Haptics from 'expo-haptics';
 import { ELEMENT_COLORS, T } from '../theme';
 import { PAL_ICONS } from '../data/icons.g';
 import {
-  hasGender, palNumberSort, pals, setOwnedGender, topWork, useAppVersion, workLabel,
+  hasGender, ownedAny, palNumberSort, pals, setOwnedGender, topWork, useAppVersion, workLabel,
 } from '../store';
 
 /* ---------------- pal icon ---------------- */
@@ -213,11 +213,18 @@ export function GenderToggles({ name, size = 30 }: { name: string; size?: number
 
 /* ---------------- pal picker (modal) ---------------- */
 
-export function PalPicker({ visible, onClose, onPick, title }: {
-  visible: boolean; onClose: () => void; onPick: (name: string) => void; title: string;
+export function PalPicker({ visible, onClose, onPick, title, exclude }: {
+  visible: boolean;
+  onClose: () => void;
+  onPick: (name: string) => void;
+  title: string;
+  /** names that can't be picked again (already targets) — shown, but dimmed */
+  exclude?: Set<string>;
 }) {
   const [q, setQ] = useState('');
   const inputRef = useRef<TextInput>(null);
+  useAppVersion();
+
   const names = useMemo(() => {
     const all = [...Object.keys(pals)].sort(palNumberSort);
     if (!q) return all;
@@ -232,50 +239,118 @@ export function PalPicker({ visible, onClose, onPick, title }: {
     }
   }, [visible]);
 
+  const recents = getRecentPicks().filter((n) => Object.hasOwn(pals, n));
+  const showRecents = !q && recents.length > 0;
+
+  const Row = ({ n }: { n: string }) => {
+    const excluded = exclude?.has(n) ?? false;
+    const owned = ownedAny(n);
+    return (
+      <Pressable
+        disabled={excluded}
+        onPress={() => {
+          void Haptics.selectionAsync();
+          rememberPick(n);
+          onPick(n);
+          onClose();
+        }}
+        style={({ pressed }) => [{
+          flexDirection: 'row', alignItems: 'center', gap: 12,
+          paddingVertical: 9, paddingHorizontal: 12, borderRadius: 12,
+          backgroundColor: pressed ? T.accentSoft : T.surface,
+          borderWidth: 1, borderColor: pressed ? T.accent : T.line,
+          marginBottom: 6, opacity: excluded ? 0.45 : 1,
+        }]}
+      >
+        <PalIcon name={n} size={46} />
+        <View style={{ flex: 1, gap: 3 }}>
+          <Text style={{ color: T.ink, fontWeight: '800', fontSize: 16 }}>
+            {n} <Text style={{ color: T.faint, fontSize: 11, fontWeight: '700' }}>#{pals[n]?.number || '—'}</Text>
+          </Text>
+          <View style={{ flexDirection: 'row', gap: 5, flexWrap: 'wrap' }}>
+            <ElementChips name={n} />
+          </View>
+        </View>
+        {excluded ? (
+          <Badge kind="plain">added</Badge>
+        ) : owned ? (
+          <View style={{
+            width: 10, height: 10, borderRadius: 5, backgroundColor: T.ok,
+          }} />
+        ) : null}
+      </Pressable>
+    );
+  };
+
   return (
     <Modal visible={visible} animationType="slide" presentationStyle="pageSheet"
       onRequestClose={onClose}>
-      <View style={{ flex: 1, backgroundColor: T.bg2, padding: 16 }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
-          <Text style={[s.h2, { flex: 1 }]}>{title}</Text>
-          <Btn label="Close" onPress={onClose} small />
+      <View style={{ flex: 1, backgroundColor: T.bg2 }}>
+        <View style={{
+          paddingHorizontal: 16, paddingTop: 16, paddingBottom: 10, gap: 12,
+          borderBottomWidth: 1, borderBottomColor: T.line, backgroundColor: T.bg2,
+        }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Text style={[s.h2, { flex: 1 }]}>{title}</Text>
+            <Btn label="Close" onPress={onClose} small />
+          </View>
+          <TextInput
+            ref={inputRef}
+            value={q}
+            onChangeText={setQ}
+            placeholder="Search 299 pals…"
+            placeholderTextColor={T.faint}
+            autoCorrect={false}
+            autoCapitalize="none"
+            clearButtonMode="while-editing"
+            style={{
+              backgroundColor: T.surface, borderColor: T.line2, borderWidth: 1.5,
+              borderRadius: 13, paddingHorizontal: 16, paddingVertical: 13,
+              color: T.ink, fontSize: 16.5, fontWeight: '600',
+            }}
+          />
         </View>
-        <TextInput
-          ref={inputRef}
-          value={q}
-          onChangeText={setQ}
-          placeholder="Search pals…"
-          placeholderTextColor={T.faint}
-          autoCorrect={false}
-          autoCapitalize="none"
-          style={[s.search, { marginBottom: 8 }]}
-        />
         <FlatList
           data={names}
           keyExtractor={(n) => n}
           keyboardShouldPersistTaps="handled"
-          initialNumToRender={16}
-          renderItem={({ item: n }) => (
-            <Pressable
-              onPress={() => {
-                void Haptics.selectionAsync();
-                onPick(n);
-                onClose();
-              }}
-              style={({ pressed }) => [{
-                flexDirection: 'row', alignItems: 'center', gap: 10,
-                paddingVertical: 7, paddingHorizontal: 8, borderRadius: 10,
-              }, pressed && { backgroundColor: T.accentSoft }]}
-            >
-              <PalIcon name={n} size={34} />
-              <Text style={{ color: T.ink, fontWeight: '600', fontSize: 15, flex: 1 }}>{n}</Text>
-              <Text style={{ color: T.faint, fontSize: 12 }}>#{pals[n]?.number || '—'}</Text>
-            </Pressable>
-          )}
+          initialNumToRender={12}
+          windowSize={7}
+          contentContainerStyle={{ padding: 12, paddingBottom: 40 }}
+          ListHeaderComponent={showRecents ? (
+            <View style={{ marginBottom: 10 }}>
+              <Text style={{
+                color: T.faint, fontSize: 10.5, fontWeight: '800',
+                letterSpacing: 1, textTransform: 'uppercase', marginBottom: 6,
+                paddingHorizontal: 2,
+              }}>Recent</Text>
+              {recents.map((n) => <Row key={`r-${n}`} n={n} />)}
+              <Text style={{
+                color: T.faint, fontSize: 10.5, fontWeight: '800',
+                letterSpacing: 1, textTransform: 'uppercase',
+                marginTop: 8, marginBottom: 2, paddingHorizontal: 2,
+              }}>All pals</Text>
+            </View>
+          ) : null}
+          renderItem={({ item: n }) => <Row n={n} />}
+          ListEmptyComponent={
+            <View style={{ alignItems: 'center', marginTop: 40, gap: 6 }}>
+              <Text style={{ fontSize: 34 }}>🔍</Text>
+              <Text style={{ color: T.muted, fontWeight: '700' }}>No pal matches “{q}”</Text>
+              <Text style={{ color: T.faint, fontSize: 12.5 }}>Check the spelling — or breed something new.</Text>
+            </View>
+          }
         />
       </View>
     </Modal>
   );
+}
+
+/* recently picked pals (session + persisted lightweight) */
+let recentPicks: string[] = [];
+export const getRecentPicks = () => recentPicks;
+export function rememberPick(n: string): void {
+  recentPicks = [n, ...recentPicks.filter((x) => x !== n)].slice(0, 5);
 }
 
 /* ---------------- styles ---------------- */

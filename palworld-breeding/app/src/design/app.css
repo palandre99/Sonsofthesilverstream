@@ -228,6 +228,13 @@
 /* ---------- route planner ---------- */
 .planstep{border-left:4px solid var(--line)}
 .planstep.ready{border-left-color:var(--ok)}
+.planstep.partial{border-left-color:var(--warn)}
+.tick.half span{background:var(--warn);border-color:var(--warn)}
+.tick.half span::after{content:attr(data-glyph);position:absolute;inset:0;display:grid;
+  place-items:center;color:#fff;font-size:13px;font-weight:800}
+.tick.half{position:relative}
+.tick.half::after{content:attr(data-glyph);position:absolute;inset:0;display:grid;
+  place-items:center;color:#fff;font-size:13px;font-weight:800;pointer-events:none}
 .planstep.done{opacity:.55}
 .planstep.done .names{text-decoration:line-through;
   text-decoration-color:var(--muted);text-decoration-thickness:1px}
