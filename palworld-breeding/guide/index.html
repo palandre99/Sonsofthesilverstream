@@ -7,6 +7,7 @@
   --accent-soft:#D6E8E9;
   --ok:#2E7D46; --ok-bg:#DDEEE2; --warn:#8A5A0B; --warn-bg:#F5E7C8;
   --bad:#A33B2E; --bad-bg:#F4DCD7; --gold:#B98718; --gold-bg:#F6ECD2;
+  --male:#2A6FB0; --female:#C2497D;
   --shadow:0 1px 2px rgba(24,37,40,.05),0 4px 14px rgba(24,37,40,.06);
   --el-neutral:#5F6B70;--el-neutral-bg:#E4E8EA; --el-fire:#B23B24;--el-fire-bg:#F6DDD6;
   --el-water:#20618F;--el-water-bg:#D9E7F2; --el-grass:#3D7A31;--el-grass-bg:#DFEDD9;
@@ -21,6 +22,7 @@
     --accent-soft:#173A3E;
     --ok:#7FC795; --ok-bg:#1C3A28; --warn:#E4B564; --warn-bg:#3C2F13;
     --bad:#E59180; --bad-bg:#42201A; --gold:#E2BC5F; --gold-bg:#3A2F12;
+    --male:#5E9FD8; --female:#E07CAC;
     --shadow:none;
     --el-neutral:#AEB9BD;--el-neutral-bg:#28353A; --el-fire:#EE9A82;--el-fire-bg:#402019;
     --el-water:#8FC1E8;--el-water-bg:#1B3348; --el-grass:#9CCB8B;--el-grass-bg:#22371D;
@@ -35,6 +37,7 @@
   --accent-soft:#173A3E;
   --ok:#7FC795; --ok-bg:#1C3A28; --warn:#E4B564; --warn-bg:#3C2F13;
   --bad:#E59180; --bad-bg:#42201A; --gold:#E2BC5F; --gold-bg:#3A2F12;
+  --male:#5E9FD8; --female:#E07CAC;
   --shadow:none;
   --el-neutral:#AEB9BD;--el-neutral-bg:#28353A; --el-fire:#EE9A82;--el-fire-bg:#402019;
   --el-water:#8FC1E8;--el-water-bg:#1B3348; --el-grass:#9CCB8B;--el-grass-bg:#22371D;
@@ -73,7 +76,8 @@ main{max-width:1100px;margin:0 auto;padding:0 20px 40px}
 .prog{width:86px;height:7px;border-radius:4px;background:var(--surface2);overflow:hidden}
 .prog span{display:block;height:100%;width:0;background:var(--accent);transition:width .25s}
 /* ---- hero ---- */
-.hero{padding:40px 0 8px}
+.hero{padding:40px 0 8px;background:radial-gradient(640px 240px at 12% -10%,
+  var(--accent-soft),transparent 72%)}
 .eyebrow{text-transform:uppercase;letter-spacing:.14em;font-size:11.5px;
   font-weight:700;color:var(--muted);margin:0 0 6px}
 .hero h1{font-size:clamp(32px,4.6vw,46px);font-weight:800;color:var(--accent-ink)}
@@ -98,7 +102,15 @@ h3{font-size:19px;margin:22px 0 6px}
 .histbox summary:focus-visible{outline:2px solid var(--accent);border-radius:4px}
 /* ---- steps ---- */
 .phase{margin:20px 0}
-.phase h3{display:flex;align-items:baseline;gap:12px;margin:0 0 8px}
+.phase>summary{display:flex;align-items:baseline;gap:12px;margin:0 0 8px;cursor:pointer;
+  list-style:none}
+.phase>summary::-webkit-details-marker{display:none}
+.phase>summary::before{content:"";width:0;height:0;border-left:6px solid var(--muted);
+  border-top:5px solid transparent;border-bottom:5px solid transparent;
+  transition:transform .15s;align-self:center}
+.phase[open]>summary::before{transform:rotate(90deg)}
+.phase>summary:focus-visible{outline:2px solid var(--accent);border-radius:6px}
+.phase-done-slot .badge{margin-left:2px}
 .ph{color:var(--accent-ink);font-size:20px;font-weight:700}
 .pc{color:var(--muted);font-size:13px;font-weight:500}
 ol.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
@@ -177,6 +189,29 @@ ol.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;g
 .chip.el-ground{background:var(--el-ground-bg);color:var(--el-ground)}
 .chip.el-dark{background:var(--el-dark-bg);color:var(--el-dark)}
 .chip.el-dragon{background:var(--el-dragon-bg);color:var(--el-dragon)}
+/* ---- gender pins & lock ---- */
+.gwrap{position:relative;display:inline-flex}
+.gpin{position:absolute;right:-5px;bottom:-3px;width:17px;height:17px;border-radius:50%;
+  display:grid;place-items:center;font-style:normal;font-size:10.5px;font-weight:800;
+  color:#fff;border:2px solid var(--surface);line-height:1;cursor:default}
+.gpin.f{background:var(--female)}
+.gpin.m{background:var(--male)}
+.badge.lock{background:var(--warn-bg);color:var(--warn);display:inline-flex;
+  align-items:center;gap:4px;text-transform:none}
+.badge.lock svg{width:9px;height:11px;fill:currentColor;flex:none}
+/* ---- next actions ---- */
+.nextbox{background:var(--accent-soft);border:1px solid var(--line);border-radius:14px;
+  padding:12px 20px 16px;margin:16px 0}
+.nextbox h3{margin:4px 0 10px;color:var(--accent-ink)}
+.nextlist{display:flex;flex-wrap:wrap;gap:8px}
+.nextchip{appearance:none;border:1px solid var(--line);background:var(--surface);
+  border-radius:20px;padding:6px 14px;font:inherit;font-size:13.5px;font-weight:600;
+  color:var(--ink);cursor:pointer;transition:border-color .12s,color .12s}
+.nextchip b{color:var(--accent-ink)}
+.nextchip:hover{border-color:var(--accent);color:var(--accent-ink)}
+.nextchip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.nextmore{align-self:center;color:var(--muted);font-size:13px}
+.step.flash{outline:2px solid var(--accent);outline-offset:2px}
 /* ---- history & keep ---- */
 .hist .step{grid-template-columns:auto 1fr;padding:6px 14px;border-left-width:1px}
 .hcheck{color:var(--ok);font-weight:800;font-size:17px}
@@ -314,16 +349,22 @@ tr.now td{background:var(--ok-bg)}
     er likegyldig — unntatt Katress/Wixen). Avkom er ~50/50, så mellomledd som gjenbrukes
     bør beholdes i begge kjønn. Kjønn kan byttes med Pal Reverser.</p>
     <p class="hint">Steg med grønn kant er <b>klare nå</b> — begge foreldrene finnes blant
-    palsene du eier (Paldex-fanen) eller har bredd (avkryssede steg). Alt i samme fase kan
+    palsene du eier (Paldex-fanen) eller har bredd (avkryssede steg). Der kjønnet er
+    <b>låst</b> (kun Katress/Wixen) viser kortet ♀/♂-merker på foreldrene og en hengelås —
+    ellers er fordelingen valgfri, bare det er én hann og én hunn. Alt i samme fase kan
     kjøres parallelt med flere farmer.</p>
   </div>
+  <div class="nextbox">
+    <h3>Klar nå — legg i farmen</h3>
+    <div id="next-list" class="nextlist"></div>
+  </div>
   <h2>Planen <span class="pc">48 steg · 8 faser</span></h2>
-  <section class="phase" id="fase-1"><h3><span class="ph">Fase 1</span><span class="pc phase-count" data-wave="1">22 steg</span></h3><ol class="steps"><li class="step target" data-sid="Arsox+Bristla=Amione" data-a="Arsox" data-b="Bristla" data-c="Amione">
+  <details class="phase" id="fase-1" open><summary><span class="ph">Fase 1</span><span class="pc phase-count" data-wave="1">22 steg</span><span class="phase-done-slot"></span></summary><ol class="steps"><li class="step target" data-sid="Arsox+Bristla=Amione" data-a="Arsox" data-b="Bristla" data-c="Amione">
 <label class="tick"><input type="checkbox" aria-label="Fullført: Arsox + Bristla = Amione"><span></span></label>
 <div class="recipe">
-  <span class="parent"><span class="pic el-fire" style="--s:40px" data-mono="A"><img src="icons/FlameBuffalo.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_FlameBuffalo_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Arsox</span></span>
-  <span class="op">+</span>
-  <span class="parent"><span class="pic el-grass" style="--s:40px" data-mono="B"><img src="icons/LittleBriarRose.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_LittleBriarRose_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Bristla</span></span>
+  <span class="parent"><span class="gwrap"><span class="pic el-fire" style="--s:40px" data-mono="A"><img src="icons/FlameBuffalo.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_FlameBuffalo_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Arsox</span></span>
+  <span class="op" title="Trenger hann av den ene og hunn av den andre — valgfri fordeling">+</span>
+  <span class="parent"><span class="gwrap"><span class="pic el-grass" style="--s:40px" data-mono="B"><img src="icons/LittleBriarRose.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_LittleBriarRose_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Bristla</span></span>
   <span class="op">=</span>
   <span class="child"><span class="pic el-water" style="--s:52px" data-mono="A"><img src="icons/ClioneTwins.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ClioneTwins_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
     <span class="cn"><b>Amione</b>
@@ -341,9 +382,9 @@ tr.now td{background:var(--ok-bg)}
 </li><li class="step" data-sid="Arsox+Chillet=Chillet_Ignis" data-a="Arsox" data-b="Chillet" data-c="Chillet Ignis">
 <label class="tick"><input type="checkbox" aria-label="Fullført: Arsox + Chillet = Chillet Ignis"><span></span></label>
 <div class="recipe">
-  <span class="parent"><span class="pic el-fire" style="--s:40px" data-mono="A"><img src="icons/FlameBuffalo.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_FlameBuffalo_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Arsox</span></span>
-  <span class="op">+</span>
-  <span class="parent"><span class="pic el-ice" style="--s:40px" data-mono="C"><img src="icons/WeaselDragon.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_WeaselDragon_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Chillet</span></span>
+  <span class="parent"><span class="gwrap"><span class="pic el-fire" style="--s:40px" data-mono="A"><img src="icons/FlameBuffalo.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_FlameBuffalo_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Arsox</span></span>
+  <span class="op" title="Trenger hann av den ene og hunn av den andre — valgfri fordeling">+</span>
+  <span class="parent"><span class="gwrap"><span class="pic el-ice" style="--s:40px" data-mono="C"><img src="icons/WeaselDragon.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_WeaselDragon_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Chillet</span></span>
   <span class="op">=</span>
   <span class="child"><span class="pic el-fire" style="--s:52px" data-mono="CI"><img src="icons/WeaselDragon_Fire.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_WeaselDragon_Fire_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
     <span class="cn"><b>Chillet Ignis</b>
@@ -361,9 +402,9 @@ tr.now td{background:var(--ok-bg)}
 </li><li class="step target" data-sid="Arsox+Dazzi=Puffolt" data-a="Arsox" data-b="Dazzi" data-c="Puffolt">
 <label class="tick"><input type="checkbox" aria-label="Fullført: Arsox + Dazzi = Puffolt"><span></span></label>
 <div class="recipe">
-  <span class="parent"><span class="pic el-fire" style="--s:40px" data-mono="A"><img src="icons/FlameBuffalo.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_FlameBuffalo_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Arsox</span></span>
-  <span class="op">+</span>
-  <span class="parent"><span class="pic el-electric" style="--s:40px" data-mono="D"><img src="icons/RaijinDaughter.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_RaijinDaughter_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Dazzi</span></span>
+  <span class="parent"><span class="gwrap"><span class="pic el-fire" style="--s:40px" data-mono="A"><img src="icons/FlameBuffalo.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_FlameBuffalo_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Arsox</span></span>
+  <span class="op" title="Trenger hann av den ene og hunn av den andre — valgfri fordeling">+</span>
+  <span class="parent"><span class="gwrap"><span class="pic el-electric" style="--s:40px" data-mono="D"><img src="icons/RaijinDaughter.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_RaijinDaughter_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Dazzi</span></span>
   <span class="op">=</span>
   <span class="child"><span class="pic el-electric" style="--s:52px" data-mono="P"><img src="icons/ElecPomeranian.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ElecPomeranian_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
     <span class="cn"><b>Puffolt</b>
@@ -381,9 +422,9 @@ tr.now td{background:var(--ok-bg)}
 </li><li class="step" data-sid="Arsox+Suzaku=Smokie" data-a="Arsox" data-b="Suzaku" data-c="Smokie">
 <label class="tick"><input type="checkbox" aria-label="Fullført: Arsox + Suzaku = Smokie"><span></span></label>
 <div class="recipe">
-  <span class="parent"><span class="pic el-fire" style="--s:40px" data-mono="A"><img src="icons/FlameBuffalo.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_FlameBuffalo_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Arsox</span></span>
-  <span class="op">+</span>
-  <span class="parent"><span class="pic el-fire" style="--s:40px" data-mono="S"><img src="icons/Suzaku.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Suzaku_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Suzaku</span></span>
+  <span class="parent"><span class="gwrap"><span class="pic el-fire" style="--s:40px" data-mono="A"><img src="icons/FlameBuffalo.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_FlameBuffalo_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Arsox</span></span>
+  <span class="op" title="Trenger hann av den ene og hunn av den andre — valgfri fordeling">+</span>
+  <span class="parent"><span class="gwrap"><span class="pic el-fire" style="--s:40px" data-mono="S"><img src="icons/Suzaku.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Suzaku_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Suzaku</span></span>
   <span class="op">=</span>
   <span class="child"><span class="pic el-dark" style="--s:52px" data-mono="S"><img src="icons/BlackPuppy.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_BlackPuppy_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
     <span class="cn"><b>Smokie</b>
@@ -401,9 +442,9 @@ tr.now td{background:var(--ok-bg)}
 </li><li class="step" data-sid="Arsox+Wistella=Slowatt" data-a="Arsox" data-b="Wistella" data-c="Slowatt">
 <label class="tick"><input type="checkbox" aria-label="Fullført: Arsox + Wistella = Slowatt"><span></span></label>
 <div class="recipe">
-  <span class="parent"><span class="pic el-fire" style="--s:40px" data-mono="A"><img src="icons/FlameBuffalo.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_FlameBuffalo_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Arsox</span></span>
-  <span class="op">+</span>
-  <span class="parent"><span class="pic el-dark" style="--s:40px" data-mono="W"><img src="icons/MoonChild.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_MoonChild_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Wistella</span></span>
+  <span class="parent"><span class="gwrap"><span class="pic el-fire" style="--s:40px" data-mono="A"><img src="icons/FlameBuffalo.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_FlameBuffalo_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Arsox</span></span>
+  <span class="op" title="Trenger hann av den ene og hunn av den andre — valgfri fordeling">+</span>
+  <span class="parent"><span class="gwrap"><span class="pic el-dark" style="--s:40px" data-mono="W"><img src="icons/MoonChild.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_MoonChild_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Wistella</span></span>
   <span class="op">=</span>
   <span class="child"><span class="pic el-electric" style="--s:52px" data-mono="S"><img src="icons/ElecLizard.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ElecLizard_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
     <span class="cn"><b>Slowatt</b>
@@ -421,9 +462,9 @@ tr.now td{background:var(--ok-bg)}
 </li><li class="step target" data-sid="Beakon+Dumud=Lullu" data-a="Beakon" data-b="Dumud" data-c="Lullu">
 <label class="tick"><input type="checkbox" aria-label="Fullført: Beakon + Dumud = Lullu"><span></span></label>
 <div class="recipe">
-  <span class="parent"><span class="pic el-electric" style="--s:40px" data-mono="B"><img src="icons/ThunderBird.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ThunderBird_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Beakon</span></span>
-  <span class="op">+</span>
-  <span class="parent"><span class="pic el-ground" style="--s:40px" data-mono="D"><img src="icons/LazyCatfish.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_LazyCatfish_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Dumud</span></span>
+  <span class="parent"><span class="gwrap"><span class="pic el-electric" style="--s:40px" data-mono="B"><img src="icons/ThunderBird.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ThunderBird_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Beakon</span></span>
+  <span class="op" title="Trenger hann av den ene og hunn av den andre — valgfri fordeling">+</span>
+  <span class="parent"><span class="gwrap"><span class="pic el-ground" style="--s:40px" data-mono="D"><img src="icons/LazyCatfish.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_LazyCatfish_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Dumud</span></span>
   <span class="op">=</span>
   <span class="child"><span class="pic el-grass" style="--s:52px" data-mono="L"><img src="icons/LeafPrincess.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_LeafPrincess_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
     <span class="cn"><b>Lullu</b>
@@ -441,9 +482,9 @@ tr.now td{background:var(--ok-bg)}
 </li><li class="step" data-sid="Beakon+Vanwyrm=Kitsun" data-a="Beakon" data-b="Vanwyrm" data-c="Kitsun">
 <label class="tick"><input type="checkbox" aria-label="Fullført: Beakon + Vanwyrm = Kitsun"><span></span></label>
 <div class="recipe">
-  <span class="parent"><span class="pic el-electric" style="--s:40px" data-mono="B"><img src="icons/ThunderBird.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ThunderBird_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Beakon</span></span>
-  <span class="op">+</span>
-  <span class="parent"><span class="pic el-fire" style="--s:40px" data-mono="V"><img src="icons/BirdDragon.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_BirdDragon_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Vanwyrm</span></span>
+  <span class="parent"><span class="gwrap"><span class="pic el-electric" style="--s:40px" data-mono="B"><img src="icons/ThunderBird.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ThunderBird_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Beakon</span></span>
+  <span class="op" title="Trenger hann av den ene og hunn av den andre — valgfri fordeling">+</span>
+  <span class="parent"><span class="gwrap"><span class="pic el-fire" style="--s:40px" data-mono="V"><img src="icons/BirdDragon.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_BirdDragon_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Vanwyrm</span></span>
   <span class="op">=</span>
   <span class="child"><span class="pic el-fire" style="--s:52px" data-mono="K"><img src="icons/AmaterasuWolf.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_AmaterasuWolf_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
     <span class="cn"><b>Kitsun</b>
@@ -461,9 +502,9 @@ tr.now td{background:var(--ok-bg)}
 </li><li class="step" data-sid="Blazehowl+Broncherry=Solmora" data-a="Blazehowl" data-b="Broncherry" data-c="Solmora">
 <label class="tick"><input type="checkbox" aria-label="Fullført: Blazehowl + Broncherry = Solmora"><span></span></label>
 <div class="recipe">
-  <span class="parent"><span class="pic el-fire" style="--s:40px" data-mono="B"><img src="icons/Manticore.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Manticore_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Blazehowl</span></span>
-  <span class="op">+</span>
-  <span class="parent"><span class="pic el-grass" style="--s:40px" data-mono="B"><img src="icons/SakuraSaurus.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SakuraSaurus_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Broncherry</span></span>
+  <span class="parent"><span class="gwrap"><span class="pic el-fire" style="--s:40px" data-mono="B"><img src="icons/Manticore.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Manticore_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Blazehowl</span></span>
+  <span class="op" title="Trenger hann av den ene og hunn av den andre — valgfri fordeling">+</span>
+  <span class="parent"><span class="gwrap"><span class="pic el-grass" style="--s:40px" data-mono="B"><img src="icons/SakuraSaurus.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SakuraSaurus_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Broncherry</span></span>
   <span class="op">=</span>
   <span class="child"><span class="pic el-water" style="--s:52px" data-mono="S"><img src="icons/KingSunfish.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_KingSunfish_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
     <span class="cn"><b>Solmora</b>
@@ -481,9 +522,9 @@ tr.now td{background:var(--ok-bg)}
 </li><li class="step" data-sid="Blazehowl+Reptyro_Cryst=Sootseer" data-a="Blazehowl" data-b="Reptyro Cryst" data-c="Sootseer">
 <label class="tick"><input type="checkbox" aria-label="Fullført: Blazehowl + Reptyro Cryst = Sootseer"><span></span></label>
 <div class="recipe">
-  <span class="parent"><span class="pic el-fire" style="--s:40px" data-mono="B"><img src="icons/Manticore.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Manticore_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Blazehowl</span></span>
-  <span class="op">+</span>
-  <span class="parent"><span class="pic el-ice" style="--s:40px" data-mono="RC"><img src="icons/VolcanicMonster_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VolcanicMonster_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Reptyro Cryst</span></span>
+  <span class="parent"><span class="gwrap"><span class="pic el-fire" style="--s:40px" data-mono="B"><img src="icons/Manticore.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Manticore_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Blazehowl</span></span>
+  <span class="op" title="Trenger hann av den ene og hunn av den andre — valgfri fordeling">+</span>
+  <span class="parent"><span class="gwrap"><span class="pic el-ice" style="--s:40px" data-mono="RC"><img src="icons/VolcanicMonster_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VolcanicMonster_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Reptyro Cryst</span></span>
   <span class="op">=</span>
   <span class="child"><span class="pic el-dark" style="--s:52px" data-mono="S"><img src="icons/CandleGhost.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_CandleGhost_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
     <span class="cn"><b>Sootseer</b>
@@ -501,9 +542,9 @@ tr.now td{background:var(--ok-bg)}
 </li><li class="step" data-sid="Broncherry+Menasting=Nyafia" data-a="Broncherry" data-b="Menasting" data-c="Nyafia">
 <label class="tick"><input type="checkbox" aria-label="Fullført: Broncherry + Menasting = Nyafia"><span></span></label>
 <div class="recipe">
-  <span class="parent"><span class="pic el-grass" style="--s:40px" data-mono="B"><img src="icons/SakuraSaurus.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SakuraSaurus_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Broncherry</span></span>
-  <span class="op">+</span>
-  <span class="parent"><span class="pic el-dark" style="--s:40px" data-mono="M"><img src="icons/DarkScorpion.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_DarkScorpion_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Menasting</span></span>
+  <span class="parent"><span class="gwrap"><span class="pic el-grass" style="--s:40px" data-mono="B"><img src="icons/SakuraSaurus.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SakuraSaurus_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Broncherry</span></span>
+  <span class="op" title="Trenger hann av den ene og hunn av den andre — valgfri fordeling">+</span>
+  <span class="parent"><span class="gwrap"><span class="pic el-dark" style="--s:40px" data-mono="M"><img src="icons/DarkScorpion.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_DarkScorpion_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Menasting</span></span>
   <span class="op">=</span>
   <span class="child"><span class="pic el-dark" style="--s:52px" data-mono="N"><img src="icons/BadCatgirl.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_BadCatgirl_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
     <span class="cn"><b>Nyafia</b>
@@ -521,9 +562,9 @@ tr.now td{background:var(--ok-bg)}
 </li><li class="step target" data-sid="Broncherry_Aqua+Petallia=Dynamoff" data-a="Broncherry Aqua" data-b="Petallia" data-c="Dynamoff">
 <label class="tick"><input type="checkbox" aria-label="Fullført: Broncherry Aqua + Petallia = Dynamoff"><span></span></label>
 <div class="recipe">
-  <span class="parent"><span class="pic el-grass" style="--s:40px" data-mono="BA"><img src="icons/SakuraSaurus_Water.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SakuraSaurus_Water_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Broncherry Aqua</span></span>
-  <span class="op">+</span>
-  <span class="parent"><span class="pic el-grass" style="--s:40px" data-mono="P"><img src="icons/FlowerDoll.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_FlowerDoll_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Petallia</span></span>
+  <span class="parent"><span class="gwrap"><span class="pic el-grass" style="--s:40px" data-mono="BA"><img src="icons/SakuraSaurus_Water.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SakuraSaurus_Water_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Broncherry Aqua</span></span>
+  <span class="op" title="Trenger hann av den ene og hunn av den andre — valgfri fordeling">+</span>
+  <span class="parent"><span class="gwrap"><span class="pic el-grass" style="--s:40px" data-mono="P"><img src="icons/FlowerDoll.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_FlowerDoll_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Petallia</span></span>
   <span class="op">=</span>
   <span class="child"><span class="pic el-electric" style="--s:52px" data-mono="D"><img src="icons/ThunderFluffyBird.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ThunderFluffyBird_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
     <span class="cn"><b>Dynamoff</b>
@@ -541,9 +582,9 @@ tr.now td{background:var(--ok-bg)}
 </li><li class="step target" data-sid="Broncherry_Aqua+Reptyro_Cryst=Wumpo" data-a="Broncherry Aqua" data-b="Reptyro Cryst" data-c="Wumpo">
 <label class="tick"><input type="checkbox" aria-label="Fullført: Broncherry Aqua + Reptyro Cryst = Wumpo"><span></span></label>
 <div class="recipe">
-  <span class="parent"><span class="pic el-grass" style="--s:40px" data-mono="BA"><img src="icons/SakuraSaurus_Water.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SakuraSaurus_Water_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Broncherry Aqua</span></span>
-  <span class="op">+</span>
-  <span class="parent"><span class="pic el-ice" style="--s:40px" data-mono="RC"><img src="icons/VolcanicMonster_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VolcanicMonster_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Reptyro Cryst</span></span>
+  <span class="parent"><span class="gwrap"><span class="pic el-grass" style="--s:40px" data-mono="BA"><img src="icons/SakuraSaurus_Water.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SakuraSaurus_Water_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Broncherry Aqua</span></span>
+  <span class="op" title="Trenger hann av den ene og hunn av den andre — valgfri fordeling">+</span>
+  <span class="parent"><span class="gwrap"><span class="pic el-ice" style="--s:40px" data-mono="RC"><img src="icons/VolcanicMonster_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VolcanicMonster_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Reptyro Cryst</span></span>
   <span class="op">=</span>
   <span class="child"><span class="pic el-ice" style="--s:52px" data-mono="W"><img src="icons/Yeti.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Yeti_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
     <span class="cn"><b>Wumpo</b>
@@ -561,9 +602,9 @@ tr.now td{background:var(--ok-bg)}
 </li><li class="step" data-sid="Menasting+Reptyro_Cryst=Frostplume" data-a="Menasting" data-b="Reptyro Cryst" data-c="Frostplume">
 <label class="tick"><input type="checkbox" aria-label="Fullført: Menasting + Reptyro Cryst = Frostplume"><span></span></label>
 <div class="recipe">
-  <span class="parent"><span class="pic el-dark" style="--s:40px" data-mono="M"><img src="icons/DarkScorpion.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_DarkScorpion_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Menasting</span></span>
-  <span class="op">+</span>
-  <span class="parent"><span class="pic el-ice" style="--s:40px" data-mono="RC"><img src="icons/VolcanicMonster_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VolcanicMonster_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Reptyro Cryst</span></span>
+  <span class="parent"><span class="gwrap"><span class="pic el-dark" style="--s:40px" data-mono="M"><img src="icons/DarkScorpion.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_DarkScorpion_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Menasting</span></span>
+  <span class="op" title="Trenger hann av den ene og hunn av den andre — valgfri fordeling">+</span>
+  <span class="parent"><span class="gwrap"><span class="pic el-ice" style="--s:40px" data-mono="RC"><img src="icons/VolcanicMonster_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VolcanicMonster_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Reptyro Cryst</span></span>
   <span class="op">=</span>
   <span class="child"><span class="pic el-ice" style="--s:52px" data-mono="F"><img src="icons/SnowPeafowl.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SnowPeafowl_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
     <span class="cn"><b>Frostplume</b>
@@ -581,9 +622,9 @@ tr.now td{background:var(--ok-bg)}
 </li><li class="step target" data-sid="Eikthyrdeer+Hangyu=Eikthyrdeer_Terra" data-a="Eikthyrdeer" data-b="Hangyu" data-c="Eikthyrdeer Terra">
 <label class="tick"><input type="checkbox" aria-label="Fullført: Eikthyrdeer + Hangyu = Eikthyrdeer Terra"><span></span></label>
 <div class="recipe">
-  <span class="parent"><span class="pic el-neutral" style="--s:40px" data-mono="E"><img src="icons/Deer.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Deer_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Eikthyrdeer</span></span>
-  <span class="op">+</span>
-  <span class="parent"><span class="pic el-ground" style="--s:40px" data-mono="H"><img src="icons/WindChimes.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_WindChimes_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Hangyu</span></span>
+  <span class="parent"><span class="gwrap"><span class="pic el-neutral" style="--s:40px" data-mono="E"><img src="icons/Deer.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Deer_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Eikthyrdeer</span></span>
+  <span class="op" title="Trenger hann av den ene og hunn av den andre — valgfri fordeling">+</span>
+  <span class="parent"><span class="gwrap"><span class="pic el-ground" style="--s:40px" data-mono="H"><img src="icons/WindChimes.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_WindChimes_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Hangyu</span></span>
   <span class="op">=</span>
   <span class="child"><span class="pic el-ground" style="--s:52px" data-mono="ET"><img src="icons/Deer_Ground.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Deer_Ground_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
     <span class="cn"><b>Eikthyrdeer Terra</b>
@@ -601,9 +642,9 @@ tr.now td{background:var(--ok-bg)}
 </li><li class="step target" data-sid="Felbat+Quivern=Prunelia" data-a="Felbat" data-b="Quivern" data-c="Prunelia">
 <label class="tick"><input type="checkbox" aria-label="Fullført: Felbat + Quivern = Prunelia"><span></span></label>
 <div class="recipe">
-  <span class="parent"><span class="pic el-dark" style="--s:40px" data-mono="F"><img src="icons/CatVampire.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_CatVampire_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Felbat</span></span>
-  <span class="op">+</span>
-  <span class="parent"><span class="pic el-dragon" style="--s:40px" data-mono="Q"><img src="icons/SkyDragon.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SkyDragon_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Quivern</span></span>
+  <span class="parent"><span class="gwrap"><span class="pic el-dark" style="--s:40px" data-mono="F"><img src="icons/CatVampire.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_CatVampire_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Felbat</span></span>
+  <span class="op" title="Trenger hann av den ene og hunn av den andre — valgfri fordeling">+</span>
+  <span class="parent"><span class="gwrap"><span class="pic el-dragon" style="--s:40px" data-mono="Q"><img src="icons/SkyDragon.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SkyDragon_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Quivern</span></span>
   <span class="op">=</span>
   <span class="child"><span class="pic el-grass" style="--s:52px" data-mono="P"><img src="icons/BlueberryFairy.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_BlueberryFairy_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
     <span class="cn"><b>Prunelia</b>
@@ -621,9 +662,9 @@ tr.now td{background:var(--ok-bg)}
 </li><li class="step target" data-sid="Helzephyr+Reptyro_Cryst=Sekhmet" data-a="Helzephyr" data-b="Reptyro Cryst" data-c="Sekhmet">
 <label class="tick"><input type="checkbox" aria-label="Fullført: Helzephyr + Reptyro Cryst = Sekhmet"><span></span></label>
 <div class="recipe">
-  <span class="parent"><span class="pic el-dark" style="--s:40px" data-mono="H"><img src="icons/HadesBird.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_HadesBird_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Helzephyr</span></span>
-  <span class="op">+</span>
-  <span class="parent"><span class="pic el-ice" style="--s:40px" data-mono="RC"><img src="icons/VolcanicMonster_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VolcanicMonster_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Reptyro Cryst</span></span>
+  <span class="parent"><span class="gwrap"><span class="pic el-dark" style="--s:40px" data-mono="H"><img src="icons/HadesBird.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_HadesBird_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Helzephyr</span></span>
+  <span class="op" title="Trenger hann av den ene og hunn av den andre — valgfri fordeling">+</span>
+  <span class="parent"><span class="gwrap"><span class="pic el-ice" style="--s:40px" data-mono="RC"><img src="icons/VolcanicMonster_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VolcanicMonster_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Reptyro Cryst</span></span>
   <span class="op">=</span>
   <span class="child"><span class="pic el-ground" style="--s:52px" data-mono="S"><img src="icons/Sekhmet.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Sekhmet_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
     <span class="cn"><b>Sekhmet</b>
@@ -641,9 +682,9 @@ tr.now td{background:var(--ok-bg)}
 </li><li class="step" data-sid="Helzephyr_Lux+Mammorest=Starryon" data-a="Helzephyr Lux" data-b="Mammorest" data-c="Starryon">
 <label class="tick"><input type="checkbox" aria-label="Fullført: Helzephyr Lux + Mammorest = Starryon"><span></span></label>
 <div class="recipe">
-  <span class="parent"><span class="pic el-dark" style="--s:40px" data-mono="HL"><img src="icons/HadesBird_Electric.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_HadesBird_Electric_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Helzephyr Lux</span></span>
-  <span class="op">+</span>
-  <span class="parent"><span class="pic el-grass" style="--s:40px" data-mono="M"><img src="icons/GrassMammoth.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_GrassMammoth_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Mammorest</span></span>
+  <span class="parent"><span class="gwrap"><span class="pic el-dark" style="--s:40px" data-mono="HL"><img src="icons/HadesBird_Electric.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_HadesBird_Electric_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Helzephyr Lux</span></span>
+  <span class="op" title="Trenger hann av den ene og hunn av den andre — valgfri fordeling">+</span>
+  <span class="parent"><span class="gwrap"><span class="pic el-grass" style="--s:40px" data-mono="M"><img src="icons/GrassMammoth.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_GrassMammoth_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Mammorest</span></span>
   <span class="op">=</span>
   <span class="child"><span class="pic el-dark" style="--s:52px" data-mono="S"><img src="icons/NightBlueHorse.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_NightBlueHorse_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
     <span class="cn"><b>Starryon</b>
@@ -661,9 +702,9 @@ tr.now td{background:var(--ok-bg)}
 </li><li class="step target" data-sid="Helzephyr_Lux+Warsect_Terra=Tetroise" data-a="Helzephyr Lux" data-b="Warsect Terra" data-c="Tetroise">
 <label class="tick"><input type="checkbox" aria-label="Fullført: Helzephyr Lux + Warsect Terra = Tetroise"><span></span></label>
 <div class="recipe">
-  <span class="parent"><span class="pic el-dark" style="--s:40px" data-mono="HL"><img src="icons/HadesBird_Electric.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_HadesBird_Electric_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Helzephyr Lux</span></span>
-  <span class="op">+</span>
-  <span class="parent"><span class="pic el-ground" style="--s:40px" data-mono="WT"><img src="icons/HerculesBeetle_Ground.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_HerculesBeetle_Ground_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Warsect Terra</span></span>
+  <span class="parent"><span class="gwrap"><span class="pic el-dark" style="--s:40px" data-mono="HL"><img src="icons/HadesBird_Electric.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_HadesBird_Electric_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Helzephyr Lux</span></span>
+  <span class="op" title="Trenger hann av den ene og hunn av den andre — valgfri fordeling">+</span>
+  <span class="parent"><span class="gwrap"><span class="pic el-ground" style="--s:40px" data-mono="WT"><img src="icons/HerculesBeetle_Ground.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_HerculesBeetle_Ground_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Warsect Terra</span></span>
   <span class="op">=</span>
   <span class="child"><span class="pic el-ground" style="--s:52px" data-mono="T"><img src="icons/CubeTurtle.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_CubeTurtle_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
     <span class="cn"><b>Tetroise</b>
@@ -681,9 +722,9 @@ tr.now td{background:var(--ok-bg)}
 </li><li class="step target" data-sid="Katress+Wixen=Katress_Ignis" data-a="Katress" data-b="Wixen" data-c="Katress Ignis">
 <label class="tick"><input type="checkbox" aria-label="Fullført: Katress + Wixen = Katress Ignis"><span></span></label>
 <div class="recipe">
-  <span class="parent"><span class="pic el-dark" style="--s:40px" data-mono="K"><img src="icons/CatMage.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_CatMage_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Katress</span></span>
-  <span class="op">+</span>
-  <span class="parent"><span class="pic el-fire" style="--s:40px" data-mono="W"><img src="icons/FoxMage.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_FoxMage_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Wixen</span></span>
+  <span class="parent"><span class="gwrap"><span class="pic el-dark" style="--s:40px" data-mono="K"><img src="icons/CatMage.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_CatMage_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><i class="gpin f" title="må være hunn">♀</i></span><span class="pn">Katress</span></span>
+  <span class="op" title="Kjønnene er LÅST for dette paret — se merkene">+</span>
+  <span class="parent"><span class="gwrap"><span class="pic el-fire" style="--s:40px" data-mono="W"><img src="icons/FoxMage.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_FoxMage_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><i class="gpin m" title="må være hann">♂</i></span><span class="pn">Wixen</span></span>
   <span class="op">=</span>
   <span class="child"><span class="pic el-dark" style="--s:52px" data-mono="KI"><img src="icons/CatMage_Fire.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_CatMage_Fire_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
     <span class="cn"><b>Katress Ignis</b>
@@ -692,18 +733,18 @@ tr.now td{background:var(--ok-bg)}
     </span>
   </span>
 </div>
-<div class="side"><span class="ready-slot"></span><span class="badge warn">kjønn avgjør</span><span class="badge goal">Mål</span>
+<div class="side"><span class="ready-slot"></span><span class="badge lock"><svg viewBox="0 0 10 12" aria-hidden="true"><rect x="1" y="5" width="8" height="6" rx="1.4"/><path d="M3 5V3.4a2 2 0 0 1 4 0V5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>kjønn låst</span><span class="badge goal">Mål</span>
   <div class="needs"><span class="nlbl">trengs til</span><span class="chip need">Katress Ignis</span></div>
 </div>
 
-<p class="note warn-note">♀♂ Spillets eneste kjønnsavhengige par: <b>hunn Katress + hann Wixen</b> gir Katress Ignis — motsatt kjønn gir det andre barnet (Katress Ignis ↔ Wixen Noct). Dobbeltsjekk kjønnene før kaka legges inn.</p>
+<p class="note warn-note">Spillets eneste kjønnslåste par — merkene på ikonene viser fasiten: <b>hunn Katress + hann Wixen</b> gir Katress Ignis. Bytter du kjønnene, får du det andre barnet (Katress Ignis ↔ Wixen Noct). Feil kjønn = feil pal.</p>
 
 </li><li class="step target" data-sid="Mammorest+Reptyro_Cryst=Venusa" data-a="Mammorest" data-b="Reptyro Cryst" data-c="Venusa">
 <label class="tick"><input type="checkbox" aria-label="Fullført: Mammorest + Reptyro Cryst = Venusa"><span></span></label>
 <div class="recipe">
-  <span class="parent"><span class="pic el-grass" style="--s:40px" data-mono="M"><img src="icons/GrassMammoth.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_GrassMammoth_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Mammorest</span></span>
-  <span class="op">+</span>
-  <span class="parent"><span class="pic el-ice" style="--s:40px" data-mono="RC"><img src="icons/VolcanicMonster_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VolcanicMonster_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Reptyro Cryst</span></span>
+  <span class="parent"><span class="gwrap"><span class="pic el-grass" style="--s:40px" data-mono="M"><img src="icons/GrassMammoth.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_GrassMammoth_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Mammorest</span></span>
+  <span class="op" title="Trenger hann av den ene og hunn av den andre — valgfri fordeling">+</span>
+  <span class="parent"><span class="gwrap"><span class="pic el-ice" style="--s:40px" data-mono="RC"><img src="icons/VolcanicMonster_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VolcanicMonster_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Reptyro Cryst</span></span>
   <span class="op">=</span>
   <span class="child"><span class="pic el-dark" style="--s:52px" data-mono="V"><img src="icons/SnakeGirl.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SnakeGirl_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
     <span class="cn"><b>Venusa</b>
@@ -721,9 +762,9 @@ tr.now td{background:var(--ok-bg)}
 </li><li class="step" data-sid="Quivern+Reptyro_Cryst=Loomen" data-a="Quivern" data-b="Reptyro Cryst" data-c="Loomen">
 <label class="tick"><input type="checkbox" aria-label="Fullført: Quivern + Reptyro Cryst = Loomen"><span></span></label>
 <div class="recipe">
-  <span class="parent"><span class="pic el-dragon" style="--s:40px" data-mono="Q"><img src="icons/SkyDragon.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SkyDragon_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Quivern</span></span>
-  <span class="op">+</span>
-  <span class="parent"><span class="pic el-ice" style="--s:40px" data-mono="RC"><img src="icons/VolcanicMonster_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VolcanicMonster_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Reptyro Cryst</span></span>
+  <span class="parent"><span class="gwrap"><span class="pic el-dragon" style="--s:40px" data-mono="Q"><img src="icons/SkyDragon.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SkyDragon_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Quivern</span></span>
+  <span class="op" title="Trenger hann av den ene og hunn av den andre — valgfri fordeling">+</span>
+  <span class="parent"><span class="gwrap"><span class="pic el-ice" style="--s:40px" data-mono="RC"><img src="icons/VolcanicMonster_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VolcanicMonster_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Reptyro Cryst</span></span>
   <span class="op">=</span>
   <span class="child"><span class="pic el-dark" style="--s:52px" data-mono="L"><img src="icons/LanternButler.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_LanternButler_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
     <span class="cn"><b>Loomen</b>
@@ -741,9 +782,9 @@ tr.now td{background:var(--ok-bg)}
 </li><li class="step target" data-sid="Vanwyrm_Cryst+Warsect_Terra=Braloha" data-a="Vanwyrm Cryst" data-b="Warsect Terra" data-c="Braloha">
 <label class="tick"><input type="checkbox" aria-label="Fullført: Vanwyrm Cryst + Warsect Terra = Braloha"><span></span></label>
 <div class="recipe">
-  <span class="parent"><span class="pic el-ice" style="--s:40px" data-mono="VC"><img src="icons/BirdDragon_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_BirdDragon_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Vanwyrm Cryst</span></span>
-  <span class="op">+</span>
-  <span class="parent"><span class="pic el-ground" style="--s:40px" data-mono="WT"><img src="icons/HerculesBeetle_Ground.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_HerculesBeetle_Ground_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Warsect Terra</span></span>
+  <span class="parent"><span class="gwrap"><span class="pic el-ice" style="--s:40px" data-mono="VC"><img src="icons/BirdDragon_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_BirdDragon_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Vanwyrm Cryst</span></span>
+  <span class="op" title="Trenger hann av den ene og hunn av den andre — valgfri fordeling">+</span>
+  <span class="parent"><span class="gwrap"><span class="pic el-ground" style="--s:40px" data-mono="WT"><img src="icons/HerculesBeetle_Ground.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_HerculesBeetle_Ground_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Warsect Terra</span></span>
   <span class="op">=</span>
   <span class="child"><span class="pic el-grass" style="--s:52px" data-mono="B"><img src="icons/Plesiosaur.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Plesiosaur_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
     <span class="cn"><b>Braloha</b>
@@ -758,12 +799,12 @@ tr.now td{background:var(--ok-bg)}
 
 
 
-</li></ol></section><section class="phase" id="fase-2"><h3><span class="ph">Fase 2</span><span class="pc phase-count" data-wave="2">10 steg</span></h3><ol class="steps"><li class="step" data-sid="Beakon+Frostplume=Beakon_Cryst" data-a="Beakon" data-b="Frostplume" data-c="Beakon Cryst">
+</li></ol></details><details class="phase" id="fase-2" open><summary><span class="ph">Fase 2</span><span class="pc phase-count" data-wave="2">10 steg</span><span class="phase-done-slot"></span></summary><ol class="steps"><li class="step" data-sid="Beakon+Frostplume=Beakon_Cryst" data-a="Beakon" data-b="Frostplume" data-c="Beakon Cryst">
 <label class="tick"><input type="checkbox" aria-label="Fullført: Beakon + Frostplume = Beakon Cryst"><span></span></label>
 <div class="recipe">
-  <span class="parent"><span class="pic el-electric" style="--s:40px" data-mono="B"><img src="icons/ThunderBird.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ThunderBird_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Beakon</span></span>
-  <span class="op">+</span>
-  <span class="parent"><span class="pic el-ice" style="--s:40px" data-mono="F"><img src="icons/SnowPeafowl.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SnowPeafowl_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Frostplume</span></span>
+  <span class="parent"><span class="gwrap"><span class="pic el-electric" style="--s:40px" data-mono="B"><img src="icons/ThunderBird.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ThunderBird_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Beakon</span></span>
+  <span class="op" title="Trenger hann av den ene og hunn av den andre — valgfri fordeling">+</span>
+  <span class="parent"><span class="gwrap"><span class="pic el-ice" style="--s:40px" data-mono="F"><img src="icons/SnowPeafowl.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SnowPeafowl_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Frostplume</span></span>
   <span class="op">=</span>
   <span class="child"><span class="pic el-ice" style="--s:52px" data-mono="BC"><img src="icons/ThunderBird_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ThunderBird_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
     <span class="cn"><b>Beakon Cryst</b>
@@ -781,9 +822,9 @@ tr.now td{background:var(--ok-bg)}
 </li><li class="step target" data-sid="Frostplume+Univolt=Univolt_Cryst" data-a="Frostplume" data-b="Univolt" data-c="Univolt Cryst">
 <label class="tick"><input type="checkbox" aria-label="Fullført: Frostplume + Univolt = Univolt Cryst"><span></span></label>
 <div class="recipe">
-  <span class="parent"><span class="pic el-ice" style="--s:40px" data-mono="F"><img src="icons/SnowPeafowl.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SnowPeafowl_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Frostplume</span></span>
-  <span class="op">+</span>
-  <span class="parent"><span class="pic el-electric" style="--s:40px" data-mono="U"><img src="icons/Kirin.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Kirin_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Univolt</span></span>
+  <span class="parent"><span class="gwrap"><span class="pic el-ice" style="--s:40px" data-mono="F"><img src="icons/SnowPeafowl.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SnowPeafowl_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Frostplume</span></span>
+  <span class="op" title="Trenger hann av den ene og hunn av den andre — valgfri fordeling">+</span>
+  <span class="parent"><span class="gwrap"><span class="pic el-electric" style="--s:40px" data-mono="U"><img src="icons/Kirin.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Kirin_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Univolt</span></span>
   <span class="op">=</span>
   <span class="child"><span class="pic el-ice" style="--s:52px" data-mono="UC"><img src="icons/Kirin_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Kirin_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
     <span class="cn"><b>Univolt Cryst</b>
@@ -801,9 +842,9 @@ tr.now td{background:var(--ok-bg)}
 </li><li class="step" data-sid="Frostplume+Warsect_Terra=Moldron" data-a="Frostplume" data-b="Warsect Terra" data-c="Moldron">
 <label class="tick"><input type="checkbox" aria-label="Fullført: Frostplume + Warsect Terra = Moldron"><span></span></label>
 <div class="recipe">
-  <span class="parent"><span class="pic el-ice" style="--s:40px" data-mono="F"><img src="icons/SnowPeafowl.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SnowPeafowl_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Frostplume</span></span>
-  <span class="op">+</span>
-  <span class="parent"><span class="pic el-ground" style="--s:40px" data-mono="WT"><img src="icons/HerculesBeetle_Ground.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_HerculesBeetle_Ground_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Warsect Terra</span></span>
+  <span class="parent"><span class="gwrap"><span class="pic el-ice" style="--s:40px" data-mono="F"><img src="icons/SnowPeafowl.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SnowPeafowl_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Frostplume</span></span>
+  <span class="op" title="Trenger hann av den ene og hunn av den andre — valgfri fordeling">+</span>
+  <span class="parent"><span class="gwrap"><span class="pic el-ground" style="--s:40px" data-mono="WT"><img src="icons/HerculesBeetle_Ground.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_HerculesBeetle_Ground_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Warsect Terra</span></span>
   <span class="op">=</span>
   <span class="child"><span class="pic el-fire" style="--s:52px" data-mono="M"><img src="icons/VolcanoDragon.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VolcanoDragon_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
     <span class="cn"><b>Moldron</b>
@@ -821,9 +862,9 @@ tr.now td{background:var(--ok-bg)}
 </li><li class="step" data-sid="Kitsun+Nyafia=Kitsun_Noct" data-a="Kitsun" data-b="Nyafia" data-c="Kitsun Noct">
 <label class="tick"><input type="checkbox" aria-label="Fullført: Kitsun + Nyafia = Kitsun Noct"><span></span></label>
 <div class="recipe">
-  <span class="parent"><span class="pic el-fire" style="--s:40px" data-mono="K"><img src="icons/AmaterasuWolf.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_AmaterasuWolf_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Kitsun</span></span>
-  <span class="op">+</span>
-  <span class="parent"><span class="pic el-dark" style="--s:40px" data-mono="N"><img src="icons/BadCatgirl.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_BadCatgirl_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Nyafia</span></span>
+  <span class="parent"><span class="gwrap"><span class="pic el-fire" style="--s:40px" data-mono="K"><img src="icons/AmaterasuWolf.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_AmaterasuWolf_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Kitsun</span></span>
+  <span class="op" title="Trenger hann av den ene og hunn av den andre — valgfri fordeling">+</span>
+  <span class="parent"><span class="gwrap"><span class="pic el-dark" style="--s:40px" data-mono="N"><img src="icons/BadCatgirl.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_BadCatgirl_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Nyafia</span></span>
   <span class="op">=</span>
   <span class="child"><span class="pic el-dark" style="--s:52px" data-mono="KN"><img src="icons/AmaterasuWolf_Dark.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_AmaterasuWolf_Dark_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
     <span class="cn"><b>Kitsun Noct</b>
@@ -841,9 +882,9 @@ tr.now td{background:var(--ok-bg)}
 </li><li class="step target" data-sid="Loomen+Warsect_Terra=Mycora" data-a="Loomen" data-b="Warsect Terra" data-c="Mycora">
 <label class="tick"><input type="checkbox" aria-label="Fullført: Loomen + Warsect Terra = Mycora"><span></span></label>
 <div class="recipe">
-  <span class="parent"><span class="pic el-dark" style="--s:40px" data-mono="L"><img src="icons/LanternButler.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_LanternButler_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Loomen</span></span>
-  <span class="op">+</span>
-  <span class="parent"><span class="pic el-ground" style="--s:40px" data-mono="WT"><img src="icons/HerculesBeetle_Ground.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_HerculesBeetle_Ground_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Warsect Terra</span></span>
+  <span class="parent"><span class="gwrap"><span class="pic el-dark" style="--s:40px" data-mono="L"><img src="icons/LanternButler.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_LanternButler_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Loomen</span></span>
+  <span class="op" title="Trenger hann av den ene og hunn av den andre — valgfri fordeling">+</span>
+  <span class="parent"><span class="gwrap"><span class="pic el-ground" style="--s:40px" data-mono="WT"><img src="icons/HerculesBeetle_Ground.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_HerculesBeetle_Ground_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Warsect Terra</span></span>
   <span class="op">=</span>
   <span class="child"><span class="pic el-grass" style="--s:52px" data-mono="M"><img src="icons/MushroomLady.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_MushroomLady_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
     <span class="cn"><b>Mycora</b>
@@ -861,9 +902,9 @@ tr.now td{background:var(--ok-bg)}
 </li><li class="step target" data-sid="Munchill+Smokie=Smokie_Cryst" data-a="Munchill" data-b="Smokie" data-c="Smokie Cryst">
 <label class="tick"><input type="checkbox" aria-label="Fullført: Munchill + Smokie = Smokie Cryst"><span></span></label>
 <div class="recipe">
-  <span class="parent"><span class="pic el-ice" style="--s:40px" data-mono="M"><img src="icons/IceCrocodile.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_IceCrocodile_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Munchill</span></span>
-  <span class="op">+</span>
-  <span class="parent"><span class="pic el-dark" style="--s:40px" data-mono="S"><img src="icons/BlackPuppy.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_BlackPuppy_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Smokie</span></span>
+  <span class="parent"><span class="gwrap"><span class="pic el-ice" style="--s:40px" data-mono="M"><img src="icons/IceCrocodile.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_IceCrocodile_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Munchill</span></span>
+  <span class="op" title="Trenger hann av den ene og hunn av den andre — valgfri fordeling">+</span>
+  <span class="parent"><span class="gwrap"><span class="pic el-dark" style="--s:40px" data-mono="S"><img src="icons/BlackPuppy.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_BlackPuppy_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Smokie</span></span>
   <span class="op">=</span>
   <span class="child"><span class="pic el-dark" style="--s:52px" data-mono="SC"><img src="icons/BlackPuppy_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_BlackPuppy_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
     <span class="cn"><b>Smokie Cryst</b>
@@ -881,9 +922,9 @@ tr.now td{background:var(--ok-bg)}
 </li><li class="step" data-sid="Reptyro_Cryst+Wumpo=Whalaska" data-a="Reptyro Cryst" data-b="Wumpo" data-c="Whalaska">
 <label class="tick"><input type="checkbox" aria-label="Fullført: Reptyro Cryst + Wumpo = Whalaska"><span></span></label>
 <div class="recipe">
-  <span class="parent"><span class="pic el-ice" style="--s:40px" data-mono="RC"><img src="icons/VolcanicMonster_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VolcanicMonster_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Reptyro Cryst</span></span>
-  <span class="op">+</span>
-  <span class="parent"><span class="pic el-ice" style="--s:40px" data-mono="W"><img src="icons/Yeti.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Yeti_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Wumpo</span></span>
+  <span class="parent"><span class="gwrap"><span class="pic el-ice" style="--s:40px" data-mono="RC"><img src="icons/VolcanicMonster_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VolcanicMonster_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Reptyro Cryst</span></span>
+  <span class="op" title="Trenger hann av den ene og hunn av den andre — valgfri fordeling">+</span>
+  <span class="parent"><span class="gwrap"><span class="pic el-ice" style="--s:40px" data-mono="W"><img src="icons/Yeti.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Yeti_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Wumpo</span></span>
   <span class="op">=</span>
   <span class="child"><span class="pic el-ice" style="--s:52px" data-mono="W"><img src="icons/IceNarwhal.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_IceNarwhal_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
     <span class="cn"><b>Whalaska</b>
@@ -901,9 +942,9 @@ tr.now td{background:var(--ok-bg)}
 </li><li class="step target" data-sid="Slowatt+Solmora=Solmora_Lux" data-a="Slowatt" data-b="Solmora" data-c="Solmora Lux">
 <label class="tick"><input type="checkbox" aria-label="Fullført: Slowatt + Solmora = Solmora Lux"><span></span></label>
 <div class="recipe">
-  <span class="parent"><span class="pic el-electric" style="--s:40px" data-mono="S"><img src="icons/ElecLizard.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ElecLizard_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Slowatt</span></span>
-  <span class="op">+</span>
-  <span class="parent"><span class="pic el-water" style="--s:40px" data-mono="S"><img src="icons/KingSunfish.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_KingSunfish_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Solmora</span></span>
+  <span class="parent"><span class="gwrap"><span class="pic el-electric" style="--s:40px" data-mono="S"><img src="icons/ElecLizard.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ElecLizard_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Slowatt</span></span>
+  <span class="op" title="Trenger hann av den ene og hunn av den andre — valgfri fordeling">+</span>
+  <span class="parent"><span class="gwrap"><span class="pic el-water" style="--s:40px" data-mono="S"><img src="icons/KingSunfish.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_KingSunfish_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Solmora</span></span>
   <span class="op">=</span>
   <span class="child"><span class="pic el-water" style="--s:52px" data-mono="SL"><img src="icons/KingSunfish_Thunder.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_KingSunfish_Thunder_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
     <span class="cn"><b>Solmora Lux</b>
@@ -921,9 +962,9 @@ tr.now td{background:var(--ok-bg)}
 </li><li class="step" data-sid="Sootseer+Warsect_Terra=Lapure" data-a="Sootseer" data-b="Warsect Terra" data-c="Lapure">
 <label class="tick"><input type="checkbox" aria-label="Fullført: Sootseer + Warsect Terra = Lapure"><span></span></label>
 <div class="recipe">
-  <span class="parent"><span class="pic el-dark" style="--s:40px" data-mono="S"><img src="icons/CandleGhost.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_CandleGhost_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Sootseer</span></span>
-  <span class="op">+</span>
-  <span class="parent"><span class="pic el-ground" style="--s:40px" data-mono="WT"><img src="icons/HerculesBeetle_Ground.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_HerculesBeetle_Ground_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Warsect Terra</span></span>
+  <span class="parent"><span class="gwrap"><span class="pic el-dark" style="--s:40px" data-mono="S"><img src="icons/CandleGhost.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_CandleGhost_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Sootseer</span></span>
+  <span class="op" title="Trenger hann av den ene og hunn av den andre — valgfri fordeling">+</span>
+  <span class="parent"><span class="gwrap"><span class="pic el-ground" style="--s:40px" data-mono="WT"><img src="icons/HerculesBeetle_Ground.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_HerculesBeetle_Ground_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Warsect Terra</span></span>
   <span class="op">=</span>
   <span class="child"><span class="pic el-neutral" style="--s:52px" data-mono="L"><img src="icons/SleeveRabbit.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SleeveRabbit_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
     <span class="cn"><b>Lapure</b>
@@ -941,9 +982,9 @@ tr.now td{background:var(--ok-bg)}
 </li><li class="step" data-sid="Warsect_Terra+Wumpo=Gildane" data-a="Warsect Terra" data-b="Wumpo" data-c="Gildane">
 <label class="tick"><input type="checkbox" aria-label="Fullført: Warsect Terra + Wumpo = Gildane"><span></span></label>
 <div class="recipe">
-  <span class="parent"><span class="pic el-ground" style="--s:40px" data-mono="WT"><img src="icons/HerculesBeetle_Ground.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_HerculesBeetle_Ground_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Warsect Terra</span></span>
-  <span class="op">+</span>
-  <span class="parent"><span class="pic el-ice" style="--s:40px" data-mono="W"><img src="icons/Yeti.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Yeti_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Wumpo</span></span>
+  <span class="parent"><span class="gwrap"><span class="pic el-ground" style="--s:40px" data-mono="WT"><img src="icons/HerculesBeetle_Ground.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_HerculesBeetle_Ground_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Warsect Terra</span></span>
+  <span class="op" title="Trenger hann av den ene og hunn av den andre — valgfri fordeling">+</span>
+  <span class="parent"><span class="gwrap"><span class="pic el-ice" style="--s:40px" data-mono="W"><img src="icons/Yeti.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Yeti_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Wumpo</span></span>
   <span class="op">=</span>
   <span class="child"><span class="pic el-ground" style="--s:52px" data-mono="G"><img src="icons/GoldenHorse.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_GoldenHorse_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
     <span class="cn"><b>Gildane</b>
@@ -958,12 +999,12 @@ tr.now td{background:var(--ok-bg)}
 
 
 
-</li></ol></section><section class="phase" id="fase-3"><h3><span class="ph">Fase 3</span><span class="pc phase-count" data-wave="3">5 steg</span></h3><ol class="steps"><li class="step" data-sid="Beakon_Cryst+Reptyro_Cryst=Jormuntide" data-a="Beakon Cryst" data-b="Reptyro Cryst" data-c="Jormuntide">
+</li></ol></details><details class="phase" id="fase-3" open><summary><span class="ph">Fase 3</span><span class="pc phase-count" data-wave="3">5 steg</span><span class="phase-done-slot"></span></summary><ol class="steps"><li class="step" data-sid="Beakon_Cryst+Reptyro_Cryst=Jormuntide" data-a="Beakon Cryst" data-b="Reptyro Cryst" data-c="Jormuntide">
 <label class="tick"><input type="checkbox" aria-label="Fullført: Beakon Cryst + Reptyro Cryst = Jormuntide"><span></span></label>
 <div class="recipe">
-  <span class="parent"><span class="pic el-ice" style="--s:40px" data-mono="BC"><img src="icons/ThunderBird_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ThunderBird_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Beakon Cryst</span></span>
-  <span class="op">+</span>
-  <span class="parent"><span class="pic el-ice" style="--s:40px" data-mono="RC"><img src="icons/VolcanicMonster_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VolcanicMonster_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Reptyro Cryst</span></span>
+  <span class="parent"><span class="gwrap"><span class="pic el-ice" style="--s:40px" data-mono="BC"><img src="icons/ThunderBird_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ThunderBird_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Beakon Cryst</span></span>
+  <span class="op" title="Trenger hann av den ene og hunn av den andre — valgfri fordeling">+</span>
+  <span class="parent"><span class="gwrap"><span class="pic el-ice" style="--s:40px" data-mono="RC"><img src="icons/VolcanicMonster_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VolcanicMonster_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Reptyro Cryst</span></span>
   <span class="op">=</span>
   <span class="child"><span class="pic el-dragon" style="--s:52px" data-mono="J"><img src="icons/Umihebi.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Umihebi_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
     <span class="cn"><b>Jormuntide</b>
@@ -981,9 +1022,9 @@ tr.now td{background:var(--ok-bg)}
 </li><li class="step target" data-sid="Chillet_Ignis+Whalaska=Whalaska_Ignis" data-a="Chillet Ignis" data-b="Whalaska" data-c="Whalaska Ignis">
 <label class="tick"><input type="checkbox" aria-label="Fullført: Chillet Ignis + Whalaska = Whalaska Ignis"><span></span></label>
 <div class="recipe">
-  <span class="parent"><span class="pic el-fire" style="--s:40px" data-mono="CI"><img src="icons/WeaselDragon_Fire.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_WeaselDragon_Fire_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Chillet Ignis</span></span>
-  <span class="op">+</span>
-  <span class="parent"><span class="pic el-ice" style="--s:40px" data-mono="W"><img src="icons/IceNarwhal.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_IceNarwhal_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Whalaska</span></span>
+  <span class="parent"><span class="gwrap"><span class="pic el-fire" style="--s:40px" data-mono="CI"><img src="icons/WeaselDragon_Fire.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_WeaselDragon_Fire_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Chillet Ignis</span></span>
+  <span class="op" title="Trenger hann av den ene og hunn av den andre — valgfri fordeling">+</span>
+  <span class="parent"><span class="gwrap"><span class="pic el-ice" style="--s:40px" data-mono="W"><img src="icons/IceNarwhal.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_IceNarwhal_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Whalaska</span></span>
   <span class="op">=</span>
   <span class="child"><span class="pic el-ice" style="--s:52px" data-mono="WI"><img src="icons/IceNarwhal_Fire.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_IceNarwhal_Fire_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
     <span class="cn"><b>Whalaska Ignis</b>
@@ -1001,9 +1042,9 @@ tr.now td{background:var(--ok-bg)}
 </li><li class="step" data-sid="Eikthyrdeer_Terra+Gildane=Celesdir" data-a="Eikthyrdeer Terra" data-b="Gildane" data-c="Celesdir">
 <label class="tick"><input type="checkbox" aria-label="Fullført: Eikthyrdeer Terra + Gildane = Celesdir"><span></span></label>
 <div class="recipe">
-  <span class="parent"><span class="pic el-ground" style="--s:40px" data-mono="ET"><img src="icons/Deer_Ground.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Deer_Ground_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Eikthyrdeer Terra</span></span>
-  <span class="op">+</span>
-  <span class="parent"><span class="pic el-ground" style="--s:40px" data-mono="G"><img src="icons/GoldenHorse.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_GoldenHorse_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Gildane</span></span>
+  <span class="parent"><span class="gwrap"><span class="pic el-ground" style="--s:40px" data-mono="ET"><img src="icons/Deer_Ground.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Deer_Ground_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Eikthyrdeer Terra</span></span>
+  <span class="op" title="Trenger hann av den ene og hunn av den andre — valgfri fordeling">+</span>
+  <span class="parent"><span class="gwrap"><span class="pic el-ground" style="--s:40px" data-mono="G"><img src="icons/GoldenHorse.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_GoldenHorse_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Gildane</span></span>
   <span class="op">=</span>
   <span class="child"><span class="pic el-neutral" style="--s:52px" data-mono="C"><img src="icons/WhiteDeer.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_WhiteDeer_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
     <span class="cn"><b>Celesdir</b>
@@ -1021,9 +1062,9 @@ tr.now td{background:var(--ok-bg)}
 </li><li class="step target" data-sid="Lapure+Sibelyx=Sibelyx_Primo" data-a="Lapure" data-b="Sibelyx" data-c="Sibelyx Primo">
 <label class="tick"><input type="checkbox" aria-label="Fullført: Lapure + Sibelyx = Sibelyx Primo"><span></span></label>
 <div class="recipe">
-  <span class="parent"><span class="pic el-neutral" style="--s:40px" data-mono="L"><img src="icons/SleeveRabbit.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SleeveRabbit_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Lapure</span></span>
-  <span class="op">+</span>
-  <span class="parent"><span class="pic el-ice" style="--s:40px" data-mono="S"><img src="icons/WhiteMoth.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_WhiteMoth_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Sibelyx</span></span>
+  <span class="parent"><span class="gwrap"><span class="pic el-neutral" style="--s:40px" data-mono="L"><img src="icons/SleeveRabbit.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SleeveRabbit_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Lapure</span></span>
+  <span class="op" title="Trenger hann av den ene og hunn av den andre — valgfri fordeling">+</span>
+  <span class="parent"><span class="gwrap"><span class="pic el-ice" style="--s:40px" data-mono="S"><img src="icons/WhiteMoth.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_WhiteMoth_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Sibelyx</span></span>
   <span class="op">=</span>
   <span class="child"><span class="pic el-neutral" style="--s:52px" data-mono="SP"><img src="icons/WhiteMoth_Neutral.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_WhiteMoth_Neutral_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
     <span class="cn"><b>Sibelyx Primo</b>
@@ -1041,9 +1082,9 @@ tr.now td{background:var(--ok-bg)}
 </li><li class="step" data-sid="Moldron+Reptyro_Cryst=Moldron_Cryst" data-a="Moldron" data-b="Reptyro Cryst" data-c="Moldron Cryst">
 <label class="tick"><input type="checkbox" aria-label="Fullført: Moldron + Reptyro Cryst = Moldron Cryst"><span></span></label>
 <div class="recipe">
-  <span class="parent"><span class="pic el-fire" style="--s:40px" data-mono="M"><img src="icons/VolcanoDragon.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VolcanoDragon_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Moldron</span></span>
-  <span class="op">+</span>
-  <span class="parent"><span class="pic el-ice" style="--s:40px" data-mono="RC"><img src="icons/VolcanicMonster_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VolcanicMonster_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Reptyro Cryst</span></span>
+  <span class="parent"><span class="gwrap"><span class="pic el-fire" style="--s:40px" data-mono="M"><img src="icons/VolcanoDragon.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VolcanoDragon_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Moldron</span></span>
+  <span class="op" title="Trenger hann av den ene og hunn av den andre — valgfri fordeling">+</span>
+  <span class="parent"><span class="gwrap"><span class="pic el-ice" style="--s:40px" data-mono="RC"><img src="icons/VolcanicMonster_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VolcanicMonster_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Reptyro Cryst</span></span>
   <span class="op">=</span>
   <span class="child"><span class="pic el-ice" style="--s:52px" data-mono="MC"><img src="icons/VolcanoDragon_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VolcanoDragon_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
     <span class="cn"><b>Moldron Cryst</b>
@@ -1058,12 +1099,12 @@ tr.now td{background:var(--ok-bg)}
 
 
 
-</li></ol></section><section class="phase" id="fase-4"><h3><span class="ph">Fase 4</span><span class="pc phase-count" data-wave="4">5 steg</span></h3><ol class="steps"><li class="step target" data-sid="Beakon_Cryst+Moldron_Cryst=Anubis" data-a="Beakon Cryst" data-b="Moldron Cryst" data-c="Anubis">
+</li></ol></details><details class="phase" id="fase-4" open><summary><span class="ph">Fase 4</span><span class="pc phase-count" data-wave="4">5 steg</span><span class="phase-done-slot"></span></summary><ol class="steps"><li class="step target" data-sid="Beakon_Cryst+Moldron_Cryst=Anubis" data-a="Beakon Cryst" data-b="Moldron Cryst" data-c="Anubis">
 <label class="tick"><input type="checkbox" aria-label="Fullført: Beakon Cryst + Moldron Cryst = Anubis"><span></span></label>
 <div class="recipe">
-  <span class="parent"><span class="pic el-ice" style="--s:40px" data-mono="BC"><img src="icons/ThunderBird_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ThunderBird_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Beakon Cryst</span></span>
-  <span class="op">+</span>
-  <span class="parent"><span class="pic el-ice" style="--s:40px" data-mono="MC"><img src="icons/VolcanoDragon_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VolcanoDragon_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Moldron Cryst</span></span>
+  <span class="parent"><span class="gwrap"><span class="pic el-ice" style="--s:40px" data-mono="BC"><img src="icons/ThunderBird_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ThunderBird_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Beakon Cryst</span></span>
+  <span class="op" title="Trenger hann av den ene og hunn av den andre — valgfri fordeling">+</span>
+  <span class="parent"><span class="gwrap"><span class="pic el-ice" style="--s:40px" data-mono="MC"><img src="icons/VolcanoDragon_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VolcanoDragon_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Moldron Cryst</span></span>
   <span class="op">=</span>
   <span class="child"><span class="pic el-ground" style="--s:52px" data-mono="A"><img src="icons/Anubis.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Anubis_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
     <span class="cn"><b>Anubis</b>
@@ -1081,9 +1122,9 @@ tr.now td{background:var(--ok-bg)}
 </li><li class="step" data-sid="Blazehowl+Jormuntide=Jormuntide_Ignis" data-a="Blazehowl" data-b="Jormuntide" data-c="Jormuntide Ignis">
 <label class="tick"><input type="checkbox" aria-label="Fullført: Blazehowl + Jormuntide = Jormuntide Ignis"><span></span></label>
 <div class="recipe">
-  <span class="parent"><span class="pic el-fire" style="--s:40px" data-mono="B"><img src="icons/Manticore.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Manticore_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Blazehowl</span></span>
-  <span class="op">+</span>
-  <span class="parent"><span class="pic el-dragon" style="--s:40px" data-mono="J"><img src="icons/Umihebi.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Umihebi_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Jormuntide</span></span>
+  <span class="parent"><span class="gwrap"><span class="pic el-fire" style="--s:40px" data-mono="B"><img src="icons/Manticore.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Manticore_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Blazehowl</span></span>
+  <span class="op" title="Trenger hann av den ene og hunn av den andre — valgfri fordeling">+</span>
+  <span class="parent"><span class="gwrap"><span class="pic el-dragon" style="--s:40px" data-mono="J"><img src="icons/Umihebi.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Umihebi_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Jormuntide</span></span>
   <span class="op">=</span>
   <span class="child"><span class="pic el-dragon" style="--s:52px" data-mono="JI"><img src="icons/Umihebi_Fire.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Umihebi_Fire_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
     <span class="cn"><b>Jormuntide Ignis</b>
@@ -1101,9 +1142,9 @@ tr.now td{background:var(--ok-bg)}
 </li><li class="step target" data-sid="Celesdir+Kitsun_Noct=Celesdir_Noct" data-a="Celesdir" data-b="Kitsun Noct" data-c="Celesdir Noct">
 <label class="tick"><input type="checkbox" aria-label="Fullført: Celesdir + Kitsun Noct = Celesdir Noct"><span></span></label>
 <div class="recipe">
-  <span class="parent"><span class="pic el-neutral" style="--s:40px" data-mono="C"><img src="icons/WhiteDeer.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_WhiteDeer_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Celesdir</span></span>
-  <span class="op">+</span>
-  <span class="parent"><span class="pic el-dark" style="--s:40px" data-mono="KN"><img src="icons/AmaterasuWolf_Dark.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_AmaterasuWolf_Dark_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Kitsun Noct</span></span>
+  <span class="parent"><span class="gwrap"><span class="pic el-neutral" style="--s:40px" data-mono="C"><img src="icons/WhiteDeer.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_WhiteDeer_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Celesdir</span></span>
+  <span class="op" title="Trenger hann av den ene og hunn av den andre — valgfri fordeling">+</span>
+  <span class="parent"><span class="gwrap"><span class="pic el-dark" style="--s:40px" data-mono="KN"><img src="icons/AmaterasuWolf_Dark.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_AmaterasuWolf_Dark_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Kitsun Noct</span></span>
   <span class="op">=</span>
   <span class="child"><span class="pic el-dark" style="--s:52px" data-mono="CN"><img src="icons/WhiteDeer_Dark.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_WhiteDeer_Dark_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
     <span class="cn"><b>Celesdir Noct</b>
@@ -1121,9 +1162,9 @@ tr.now td{background:var(--ok-bg)}
 </li><li class="step target" data-sid="Celesdir+Starryon=Starryon_Primo" data-a="Celesdir" data-b="Starryon" data-c="Starryon Primo">
 <label class="tick"><input type="checkbox" aria-label="Fullført: Celesdir + Starryon = Starryon Primo"><span></span></label>
 <div class="recipe">
-  <span class="parent"><span class="pic el-neutral" style="--s:40px" data-mono="C"><img src="icons/WhiteDeer.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_WhiteDeer_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Celesdir</span></span>
-  <span class="op">+</span>
-  <span class="parent"><span class="pic el-dark" style="--s:40px" data-mono="S"><img src="icons/NightBlueHorse.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_NightBlueHorse_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Starryon</span></span>
+  <span class="parent"><span class="gwrap"><span class="pic el-neutral" style="--s:40px" data-mono="C"><img src="icons/WhiteDeer.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_WhiteDeer_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Celesdir</span></span>
+  <span class="op" title="Trenger hann av den ene og hunn av den andre — valgfri fordeling">+</span>
+  <span class="parent"><span class="gwrap"><span class="pic el-dark" style="--s:40px" data-mono="S"><img src="icons/NightBlueHorse.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_NightBlueHorse_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Starryon</span></span>
   <span class="op">=</span>
   <span class="child"><span class="pic el-neutral" style="--s:52px" data-mono="SP"><img src="icons/NightBlueHorse_Neutral.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_NightBlueHorse_Neutral_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
     <span class="cn"><b>Starryon Primo</b>
@@ -1141,9 +1182,9 @@ tr.now td{background:var(--ok-bg)}
 </li><li class="step target" data-sid="Moldron_Cryst+Reptyro_Cryst=Astegon" data-a="Moldron Cryst" data-b="Reptyro Cryst" data-c="Astegon">
 <label class="tick"><input type="checkbox" aria-label="Fullført: Moldron Cryst + Reptyro Cryst = Astegon"><span></span></label>
 <div class="recipe">
-  <span class="parent"><span class="pic el-ice" style="--s:40px" data-mono="MC"><img src="icons/VolcanoDragon_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VolcanoDragon_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Moldron Cryst</span></span>
-  <span class="op">+</span>
-  <span class="parent"><span class="pic el-ice" style="--s:40px" data-mono="RC"><img src="icons/VolcanicMonster_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VolcanicMonster_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Reptyro Cryst</span></span>
+  <span class="parent"><span class="gwrap"><span class="pic el-ice" style="--s:40px" data-mono="MC"><img src="icons/VolcanoDragon_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VolcanoDragon_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Moldron Cryst</span></span>
+  <span class="op" title="Trenger hann av den ene og hunn av den andre — valgfri fordeling">+</span>
+  <span class="parent"><span class="gwrap"><span class="pic el-ice" style="--s:40px" data-mono="RC"><img src="icons/VolcanicMonster_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VolcanicMonster_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Reptyro Cryst</span></span>
   <span class="op">=</span>
   <span class="child"><span class="pic el-dragon" style="--s:52px" data-mono="A"><img src="icons/BlackMetalDragon.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_BlackMetalDragon_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
     <span class="cn"><b>Astegon</b>
@@ -1158,12 +1199,12 @@ tr.now td{background:var(--ok-bg)}
 
 
 
-</li></ol></section><section class="phase" id="fase-5"><h3><span class="ph">Fase 5</span><span class="pc phase-count" data-wave="5">2 steg</span></h3><ol class="steps"><li class="step" data-sid="Beakon_Cryst+Jormuntide_Ignis=Flaracle" data-a="Beakon Cryst" data-b="Jormuntide Ignis" data-c="Flaracle">
+</li></ol></details><details class="phase" id="fase-5" open><summary><span class="ph">Fase 5</span><span class="pc phase-count" data-wave="5">2 steg</span><span class="phase-done-slot"></span></summary><ol class="steps"><li class="step" data-sid="Beakon_Cryst+Jormuntide_Ignis=Flaracle" data-a="Beakon Cryst" data-b="Jormuntide Ignis" data-c="Flaracle">
 <label class="tick"><input type="checkbox" aria-label="Fullført: Beakon Cryst + Jormuntide Ignis = Flaracle"><span></span></label>
 <div class="recipe">
-  <span class="parent"><span class="pic el-ice" style="--s:40px" data-mono="BC"><img src="icons/ThunderBird_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ThunderBird_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Beakon Cryst</span></span>
-  <span class="op">+</span>
-  <span class="parent"><span class="pic el-dragon" style="--s:40px" data-mono="JI"><img src="icons/Umihebi_Fire.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Umihebi_Fire_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Jormuntide Ignis</span></span>
+  <span class="parent"><span class="gwrap"><span class="pic el-ice" style="--s:40px" data-mono="BC"><img src="icons/ThunderBird_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ThunderBird_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Beakon Cryst</span></span>
+  <span class="op" title="Trenger hann av den ene og hunn av den andre — valgfri fordeling">+</span>
+  <span class="parent"><span class="gwrap"><span class="pic el-dragon" style="--s:40px" data-mono="JI"><img src="icons/Umihebi_Fire.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Umihebi_Fire_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Jormuntide Ignis</span></span>
   <span class="op">=</span>
   <span class="child"><span class="pic el-fire" style="--s:52px" data-mono="F"><img src="icons/FoxExorcist.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_FoxExorcist_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
     <span class="cn"><b>Flaracle</b>
@@ -1181,9 +1222,9 @@ tr.now td{background:var(--ok-bg)}
 </li><li class="step target" data-sid="Jormuntide_Ignis+Warsect_Terra=Blazamut" data-a="Jormuntide Ignis" data-b="Warsect Terra" data-c="Blazamut">
 <label class="tick"><input type="checkbox" aria-label="Fullført: Jormuntide Ignis + Warsect Terra = Blazamut"><span></span></label>
 <div class="recipe">
-  <span class="parent"><span class="pic el-dragon" style="--s:40px" data-mono="JI"><img src="icons/Umihebi_Fire.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Umihebi_Fire_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Jormuntide Ignis</span></span>
-  <span class="op">+</span>
-  <span class="parent"><span class="pic el-ground" style="--s:40px" data-mono="WT"><img src="icons/HerculesBeetle_Ground.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_HerculesBeetle_Ground_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Warsect Terra</span></span>
+  <span class="parent"><span class="gwrap"><span class="pic el-dragon" style="--s:40px" data-mono="JI"><img src="icons/Umihebi_Fire.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Umihebi_Fire_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Jormuntide Ignis</span></span>
+  <span class="op" title="Trenger hann av den ene og hunn av den andre — valgfri fordeling">+</span>
+  <span class="parent"><span class="gwrap"><span class="pic el-ground" style="--s:40px" data-mono="WT"><img src="icons/HerculesBeetle_Ground.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_HerculesBeetle_Ground_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Warsect Terra</span></span>
   <span class="op">=</span>
   <span class="child"><span class="pic el-fire" style="--s:52px" data-mono="B"><img src="icons/KingBahamut.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_KingBahamut_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
     <span class="cn"><b>Blazamut</b>
@@ -1198,12 +1239,12 @@ tr.now td{background:var(--ok-bg)}
 <p class="note warn-note">Utfallet avhenger av tie-break-regelen (datamine-bekreftet, 0 unntak av 14 021 — men test gjerne med én kake). Slår den motsatt vei, klekkes <b>Flaracle</b> i stedet — også en art planen trenger. Trygg alternativ-rute: Celesdir Noct + Univolt Cryst; eller Jormuntide Ignis + Sibelyx Primo.</p>
 
 
-</li></ol></section><section class="phase" id="fase-6"><h3><span class="ph">Fase 6</span><span class="pc phase-count" data-wave="6">2 steg</span></h3><ol class="steps"><li class="step target" data-sid="Blazamut+Jormuntide_Ignis=Renjishi" data-a="Blazamut" data-b="Jormuntide Ignis" data-c="Renjishi">
+</li></ol></details><details class="phase" id="fase-6" open><summary><span class="ph">Fase 6</span><span class="pc phase-count" data-wave="6">2 steg</span><span class="phase-done-slot"></span></summary><ol class="steps"><li class="step target" data-sid="Blazamut+Jormuntide_Ignis=Renjishi" data-a="Blazamut" data-b="Jormuntide Ignis" data-c="Renjishi">
 <label class="tick"><input type="checkbox" aria-label="Fullført: Blazamut + Jormuntide Ignis = Renjishi"><span></span></label>
 <div class="recipe">
-  <span class="parent"><span class="pic el-fire" style="--s:40px" data-mono="B"><img src="icons/KingBahamut.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_KingBahamut_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Blazamut</span></span>
-  <span class="op">+</span>
-  <span class="parent"><span class="pic el-dragon" style="--s:40px" data-mono="JI"><img src="icons/Umihebi_Fire.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Umihebi_Fire_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Jormuntide Ignis</span></span>
+  <span class="parent"><span class="gwrap"><span class="pic el-fire" style="--s:40px" data-mono="B"><img src="icons/KingBahamut.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_KingBahamut_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Blazamut</span></span>
+  <span class="op" title="Trenger hann av den ene og hunn av den andre — valgfri fordeling">+</span>
+  <span class="parent"><span class="gwrap"><span class="pic el-dragon" style="--s:40px" data-mono="JI"><img src="icons/Umihebi_Fire.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Umihebi_Fire_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Jormuntide Ignis</span></span>
   <span class="op">=</span>
   <span class="child"><span class="pic el-fire" style="--s:52px" data-mono="R"><img src="icons/KabukiMan.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_KabukiMan_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
     <span class="cn"><b>Renjishi</b>
@@ -1221,9 +1262,9 @@ tr.now td{background:var(--ok-bg)}
 </li><li class="step target" data-sid="Flaracle+Jormuntide_Ignis=Solenne" data-a="Flaracle" data-b="Jormuntide Ignis" data-c="Solenne">
 <label class="tick"><input type="checkbox" aria-label="Fullført: Flaracle + Jormuntide Ignis = Solenne"><span></span></label>
 <div class="recipe">
-  <span class="parent"><span class="pic el-fire" style="--s:40px" data-mono="F"><img src="icons/FoxExorcist.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_FoxExorcist_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Flaracle</span></span>
-  <span class="op">+</span>
-  <span class="parent"><span class="pic el-dragon" style="--s:40px" data-mono="JI"><img src="icons/Umihebi_Fire.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Umihebi_Fire_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Jormuntide Ignis</span></span>
+  <span class="parent"><span class="gwrap"><span class="pic el-fire" style="--s:40px" data-mono="F"><img src="icons/FoxExorcist.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_FoxExorcist_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Flaracle</span></span>
+  <span class="op" title="Trenger hann av den ene og hunn av den andre — valgfri fordeling">+</span>
+  <span class="parent"><span class="gwrap"><span class="pic el-dragon" style="--s:40px" data-mono="JI"><img src="icons/Umihebi_Fire.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Umihebi_Fire_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Jormuntide Ignis</span></span>
   <span class="op">=</span>
   <span class="child"><span class="pic el-dark" style="--s:52px" data-mono="S"><img src="icons/MonochromeQueen.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_MonochromeQueen_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
     <span class="cn"><b>Solenne</b>
@@ -1238,12 +1279,12 @@ tr.now td{background:var(--ok-bg)}
 
 
 
-</li></ol></section><section class="phase" id="fase-7"><h3><span class="ph">Fase 7</span><span class="pc phase-count" data-wave="7">1 steg</span></h3><ol class="steps"><li class="step target" data-sid="Jormuntide_Ignis+Solenne=Ophydia" data-a="Jormuntide Ignis" data-b="Solenne" data-c="Ophydia">
+</li></ol></details><details class="phase" id="fase-7" open><summary><span class="ph">Fase 7</span><span class="pc phase-count" data-wave="7">1 steg</span><span class="phase-done-slot"></span></summary><ol class="steps"><li class="step target" data-sid="Jormuntide_Ignis+Solenne=Ophydia" data-a="Jormuntide Ignis" data-b="Solenne" data-c="Ophydia">
 <label class="tick"><input type="checkbox" aria-label="Fullført: Jormuntide Ignis + Solenne = Ophydia"><span></span></label>
 <div class="recipe">
-  <span class="parent"><span class="pic el-dragon" style="--s:40px" data-mono="JI"><img src="icons/Umihebi_Fire.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Umihebi_Fire_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Jormuntide Ignis</span></span>
-  <span class="op">+</span>
-  <span class="parent"><span class="pic el-dark" style="--s:40px" data-mono="S"><img src="icons/MonochromeQueen.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_MonochromeQueen_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Solenne</span></span>
+  <span class="parent"><span class="gwrap"><span class="pic el-dragon" style="--s:40px" data-mono="JI"><img src="icons/Umihebi_Fire.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Umihebi_Fire_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Jormuntide Ignis</span></span>
+  <span class="op" title="Trenger hann av den ene og hunn av den andre — valgfri fordeling">+</span>
+  <span class="parent"><span class="gwrap"><span class="pic el-dark" style="--s:40px" data-mono="S"><img src="icons/MonochromeQueen.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_MonochromeQueen_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Solenne</span></span>
   <span class="op">=</span>
   <span class="child"><span class="pic el-grass" style="--s:52px" data-mono="O"><img src="icons/LotusDragon.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_LotusDragon_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
     <span class="cn"><b>Ophydia</b>
@@ -1258,12 +1299,12 @@ tr.now td{background:var(--ok-bg)}
 
 
 
-</li></ol></section><section class="phase" id="fase-8"><h3><span class="ph">Fase 8</span><span class="pc phase-count" data-wave="8">1 steg</span></h3><ol class="steps"><li class="step target" data-sid="Ophydia+Solenne=Knocklem" data-a="Ophydia" data-b="Solenne" data-c="Knocklem">
+</li></ol></details><details class="phase" id="fase-8" open><summary><span class="ph">Fase 8</span><span class="pc phase-count" data-wave="8">1 steg</span><span class="phase-done-slot"></span></summary><ol class="steps"><li class="step target" data-sid="Ophydia+Solenne=Knocklem" data-a="Ophydia" data-b="Solenne" data-c="Knocklem">
 <label class="tick"><input type="checkbox" aria-label="Fullført: Ophydia + Solenne = Knocklem"><span></span></label>
 <div class="recipe">
-  <span class="parent"><span class="pic el-grass" style="--s:40px" data-mono="O"><img src="icons/LotusDragon.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_LotusDragon_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Ophydia</span></span>
-  <span class="op">+</span>
-  <span class="parent"><span class="pic el-dark" style="--s:40px" data-mono="S"><img src="icons/MonochromeQueen.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_MonochromeQueen_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span><span class="pn">Solenne</span></span>
+  <span class="parent"><span class="gwrap"><span class="pic el-grass" style="--s:40px" data-mono="O"><img src="icons/LotusDragon.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_LotusDragon_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Ophydia</span></span>
+  <span class="op" title="Trenger hann av den ene og hunn av den andre — valgfri fordeling">+</span>
+  <span class="parent"><span class="gwrap"><span class="pic el-dark" style="--s:40px" data-mono="S"><img src="icons/MonochromeQueen.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_MonochromeQueen_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span></span><span class="pn">Solenne</span></span>
   <span class="op">=</span>
   <span class="child"><span class="pic el-ground" style="--s:52px" data-mono="K"><img src="icons/WingGolem.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_WingGolem_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span>
     <span class="cn"><b>Knocklem</b>
@@ -1278,7 +1319,7 @@ tr.now td{background:var(--ok-bg)}
 
 
 
-</li></ol></section>
+</li></ol></details>
   <h2>Behold begge kjønn</h2>
   <p class="hint">Mellomledd som skal være forelder i to eller flere steg:</p>
   <ul class="keep"><li><span class="pic el-dragon" style="--s:28px" data-mono="JI"><img src="icons/Umihebi_Fire.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Umihebi_Fire_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span> <b>Jormuntide Ignis</b> — 5 steg</li><li><span class="pic el-ice" style="--s:28px" data-mono="F"><img src="icons/SnowPeafowl.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_SnowPeafowl_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span> <b>Frostplume</b> — 3 steg</li><li><span class="pic el-ice" style="--s:28px" data-mono="BC"><img src="icons/ThunderBird_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_ThunderBird_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span> <b>Beakon Cryst</b> — 3 steg</li><li><span class="pic el-ice" style="--s:28px" data-mono="W"><img src="icons/Yeti.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_Yeti_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span> <b>Wumpo</b> — 2 steg</li><li><span class="pic el-ice" style="--s:28px" data-mono="MC"><img src="icons/VolcanoDragon_Ice.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_VolcanoDragon_Ice_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span> <b>Moldron Cryst</b> — 2 steg</li><li><span class="pic el-neutral" style="--s:28px" data-mono="C"><img src="icons/WhiteDeer.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_WhiteDeer_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span> <b>Celesdir</b> — 2 steg</li><li><span class="pic el-dark" style="--s:28px" data-mono="S"><img src="icons/MonochromeQueen.png" alt="" loading="lazy" data-alt="https://cdn.paldb.cc/image/Pal/Texture/PalIcon/Normal/T_MonochromeQueen_icon_normal.webp" onerror="if(this.dataset.alt){this.src=this.dataset.alt;delete this.dataset.alt}else{this.parentNode.classList.add('noimg')}"></span> <b>Solenne</b> — 2 steg</li></ul>
@@ -3528,13 +3569,48 @@ tr.now td{background:var(--ok-bg)}
     if(ptxt) ptxt.textContent = done + ' / ' + stepEls.length;
     if(tileReady) tileReady.textContent = ready;
 
-    // phase counts
+    // phase counts + done badges
     [].slice.call(document.querySelectorAll('.phase')).forEach(function(ph){
       var els = [].slice.call(ph.querySelectorAll('.step[data-sid]'));
       var d = els.filter(function(e){ return e.classList.contains('checked'); }).length;
       var c = ph.querySelector('.phase-count');
       if(c) c.textContent = d + ' av ' + els.length + ' steg';
+      var slot = ph.querySelector('.phase-done-slot');
+      if(slot) slot.innerHTML = (d === els.length && els.length)
+        ? '<span class="badge ready-b">ferdig ✓</span>' : '';
     });
+
+    // "klar nå" quick actions
+    var nl = document.getElementById('next-list');
+    if(nl){
+      nl.innerHTML = '';
+      var readyEls = stepEls.filter(function(li){ return li.classList.contains('ready'); });
+      readyEls.slice(0, 6).forEach(function(li){
+        var btn = document.createElement('button');
+        btn.type = 'button'; btn.className = 'nextchip';
+        btn.innerHTML = li.dataset.a + ' + ' + li.dataset.b +
+          ' → <b>' + li.dataset.c + '</b>';
+        btn.addEventListener('click', function(){
+          var det = li.closest('details'); if(det) det.open = true;
+          var smooth = !(window.matchMedia &&
+            window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+          li.scrollIntoView({behavior: smooth ? 'smooth' : 'auto', block: 'center'});
+          li.classList.add('flash');
+          setTimeout(function(){ li.classList.remove('flash'); }, 1600);
+        });
+        nl.appendChild(btn);
+      });
+      if(readyEls.length > 6){
+        var more = document.createElement('span');
+        more.className = 'nextmore';
+        more.textContent = '+ ' + (readyEls.length - 6) + ' til lenger ned';
+        nl.appendChild(more);
+      }
+      if(!readyEls.length){
+        nl.innerHTML = '<span class="hint">Ingen steg er klare akkurat nå — huk av det du ' +
+          'eier i Paldex-fanen, eller fullfør steg som andre venter på.</span>';
+      }
+    }
 
     // goal progress
     [].slice.call(document.querySelectorAll('.goal[data-goal]')).forEach(function(g){

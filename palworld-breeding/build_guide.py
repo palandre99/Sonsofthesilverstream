@@ -217,7 +217,12 @@ def step_card(s: dict, have_before: set[str]) -> str:
     if s["kind"] == "unique":
         flags.append('<span class="badge unique">unik oppskrift</span>')
     if s["kind"] == "gendered":
-        flags.append('<span class="badge warn">kjønn avgjør</span>')
+        flags.append('<span class="badge lock">'
+                     '<svg viewBox="0 0 10 12" aria-hidden="true">'
+                     '<rect x="1" y="5" width="8" height="6" rx="1.4"/>'
+                     '<path d="M3 5V3.4a2 2 0 0 1 4 0V5" fill="none" '
+                     'stroke="currentColor" stroke-width="1.5"/></svg>'
+                     'kjønn låst</span>')
     if s["tie_break"]:
         flags.append('<span class="badge warn">tie-break — verifiser</span>')
     if in_prog:
@@ -253,20 +258,40 @@ def step_card(s: dict, have_before: set[str]) -> str:
 
     gender_html = ""
     if s["kind"] == "gendered":
-        gender_html = (f'<p class="note warn-note">♀♂ Spillets eneste kjønnsavhengige par: '
-                       f'<b>{esc(s["gender_note"])}</b> gir {esc(child)} — motsatt kjønn '
-                       f'gir det andre barnet (Katress Ignis ↔ Wixen Noct). Dobbeltsjekk '
-                       f'kjønnene før kaka legges inn.</p>')
+        gender_html = (f'<p class="note warn-note">Spillets eneste kjønnslåste par — merkene '
+                       f'på ikonene viser fasiten: <b>{esc(s["gender_note"])}</b> gir '
+                       f'{esc(child)}. Bytter du kjønnene, får du det andre barnet '
+                       f'(Katress Ignis ↔ Wixen Noct). Feil kjønn = feil pal.</p>')
 
     egg = egg_hint(child)
     egg_html = f'<span class="egg">🥚 {esc(egg)}</span>' if egg else ""
 
+    # gender pins: ONLY where the game locks genders (Katress/Wixen)
+    pins: dict[str, str] = {}
+    if s["kind"] == "gendered":
+        for g in P.BREEDING.get("gendered_combos", []):
+            if g["child"] == child:
+                pins[g["mother"]] = "f"
+                pins[g["father"]] = "m"
+
+    def parent_html(name: str) -> str:
+        pin = pins.get(name)
+        pin_h = (f'<i class="gpin {pin}" title="må være '
+                 f'{"hunn" if pin == "f" else "hann"}">'
+                 f'{"♀" if pin == "f" else "♂"}</i>') if pin else ""
+        return (f'<span class="parent"><span class="gwrap">{icon_html(name, 40)}'
+                f'{pin_h}</span><span class="pn">{esc(name)}</span></span>')
+
+    op_title = ("Kjønnene er LÅST for dette paret — se merkene"
+                if pins else
+                "Trenger hann av den ene og hunn av den andre — valgfri fordeling")
+
     return f'''<li class="step{' target' if s['is_target'] else ''}" data-sid="{esc(sid)}" data-a="{esc(a)}" data-b="{esc(b)}" data-c="{esc(child)}">
 <label class="tick"><input type="checkbox" aria-label="Fullført: {esc(a)} + {esc(b)} = {esc(child)}"><span></span></label>
 <div class="recipe">
-  <span class="parent">{icon_html(a, 40)}<span class="pn">{esc(a)}</span></span>
-  <span class="op">+</span>
-  <span class="parent">{icon_html(b, 40)}<span class="pn">{esc(b)}</span></span>
+  {parent_html(a)}
+  <span class="op" title="{esc(op_title)}">+</span>
+  {parent_html(b)}
   <span class="op">=</span>
   <span class="child">{icon_html(child, 52)}
     <span class="cn"><b>{esc(child)}</b>
@@ -412,10 +437,11 @@ def build() -> str:
         if s is None or s["wave"] != cur_wave:
             if buf:
                 phases_html.append(
-                    f'<section class="phase" id="fase-{cur_wave}">'
-                    f'<h3><span class="ph">Fase {cur_wave}</span>'
-                    f'<span class="pc phase-count" data-wave="{cur_wave}">{len(buf)} steg</span></h3>'
-                    f'<ol class="steps">{"".join(buf)}</ol></section>')
+                    f'<details class="phase" id="fase-{cur_wave}" open>'
+                    f'<summary><span class="ph">Fase {cur_wave}</span>'
+                    f'<span class="pc phase-count" data-wave="{cur_wave}">{len(buf)} steg</span>'
+                    f'<span class="phase-done-slot"></span></summary>'
+                    f'<ol class="steps">{"".join(buf)}</ol></details>')
                 for x in done_children:
                     have.add(x)
             if s is None:
@@ -515,8 +541,14 @@ def build() -> str:
     er likegyldig — unntatt Katress/Wixen). Avkom er ~50/50, så mellomledd som gjenbrukes
     bør beholdes i begge kjønn. Kjønn kan byttes med Pal Reverser.</p>
     <p class="hint">Steg med grønn kant er <b>klare nå</b> — begge foreldrene finnes blant
-    palsene du eier (Paldex-fanen) eller har bredd (avkryssede steg). Alt i samme fase kan
+    palsene du eier (Paldex-fanen) eller har bredd (avkryssede steg). Der kjønnet er
+    <b>låst</b> (kun Katress/Wixen) viser kortet ♀/♂-merker på foreldrene og en hengelås —
+    ellers er fordelingen valgfri, bare det er én hann og én hunn. Alt i samme fase kan
     kjøres parallelt med flere farmer.</p>
+  </div>
+  <div class="nextbox">
+    <h3>Klar nå — legg i farmen</h3>
+    <div id="next-list" class="nextlist"></div>
   </div>
   <h2>Planen <span class="pc">{n_steps} steg · 8 faser</span></h2>
   {"".join(phases_html)}
@@ -624,6 +656,7 @@ CSS = r'''
   --accent-soft:#D6E8E9;
   --ok:#2E7D46; --ok-bg:#DDEEE2; --warn:#8A5A0B; --warn-bg:#F5E7C8;
   --bad:#A33B2E; --bad-bg:#F4DCD7; --gold:#B98718; --gold-bg:#F6ECD2;
+  --male:#2A6FB0; --female:#C2497D;
   --shadow:0 1px 2px rgba(24,37,40,.05),0 4px 14px rgba(24,37,40,.06);
   --el-neutral:#5F6B70;--el-neutral-bg:#E4E8EA; --el-fire:#B23B24;--el-fire-bg:#F6DDD6;
   --el-water:#20618F;--el-water-bg:#D9E7F2; --el-grass:#3D7A31;--el-grass-bg:#DFEDD9;
@@ -638,6 +671,7 @@ CSS = r'''
     --accent-soft:#173A3E;
     --ok:#7FC795; --ok-bg:#1C3A28; --warn:#E4B564; --warn-bg:#3C2F13;
     --bad:#E59180; --bad-bg:#42201A; --gold:#E2BC5F; --gold-bg:#3A2F12;
+    --male:#5E9FD8; --female:#E07CAC;
     --shadow:none;
     --el-neutral:#AEB9BD;--el-neutral-bg:#28353A; --el-fire:#EE9A82;--el-fire-bg:#402019;
     --el-water:#8FC1E8;--el-water-bg:#1B3348; --el-grass:#9CCB8B;--el-grass-bg:#22371D;
@@ -652,6 +686,7 @@ CSS = r'''
   --accent-soft:#173A3E;
   --ok:#7FC795; --ok-bg:#1C3A28; --warn:#E4B564; --warn-bg:#3C2F13;
   --bad:#E59180; --bad-bg:#42201A; --gold:#E2BC5F; --gold-bg:#3A2F12;
+  --male:#5E9FD8; --female:#E07CAC;
   --shadow:none;
   --el-neutral:#AEB9BD;--el-neutral-bg:#28353A; --el-fire:#EE9A82;--el-fire-bg:#402019;
   --el-water:#8FC1E8;--el-water-bg:#1B3348; --el-grass:#9CCB8B;--el-grass-bg:#22371D;
@@ -690,7 +725,8 @@ main{max-width:1100px;margin:0 auto;padding:0 20px 40px}
 .prog{width:86px;height:7px;border-radius:4px;background:var(--surface2);overflow:hidden}
 .prog span{display:block;height:100%;width:0;background:var(--accent);transition:width .25s}
 /* ---- hero ---- */
-.hero{padding:40px 0 8px}
+.hero{padding:40px 0 8px;background:radial-gradient(640px 240px at 12% -10%,
+  var(--accent-soft),transparent 72%)}
 .eyebrow{text-transform:uppercase;letter-spacing:.14em;font-size:11.5px;
   font-weight:700;color:var(--muted);margin:0 0 6px}
 .hero h1{font-size:clamp(32px,4.6vw,46px);font-weight:800;color:var(--accent-ink)}
@@ -715,7 +751,15 @@ h3{font-size:19px;margin:22px 0 6px}
 .histbox summary:focus-visible{outline:2px solid var(--accent);border-radius:4px}
 /* ---- steps ---- */
 .phase{margin:20px 0}
-.phase h3{display:flex;align-items:baseline;gap:12px;margin:0 0 8px}
+.phase>summary{display:flex;align-items:baseline;gap:12px;margin:0 0 8px;cursor:pointer;
+  list-style:none}
+.phase>summary::-webkit-details-marker{display:none}
+.phase>summary::before{content:"";width:0;height:0;border-left:6px solid var(--muted);
+  border-top:5px solid transparent;border-bottom:5px solid transparent;
+  transition:transform .15s;align-self:center}
+.phase[open]>summary::before{transform:rotate(90deg)}
+.phase>summary:focus-visible{outline:2px solid var(--accent);border-radius:6px}
+.phase-done-slot .badge{margin-left:2px}
 .ph{color:var(--accent-ink);font-size:20px;font-weight:700}
 .pc{color:var(--muted);font-size:13px;font-weight:500}
 ol.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
@@ -794,6 +838,29 @@ ol.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;g
 .chip.el-ground{background:var(--el-ground-bg);color:var(--el-ground)}
 .chip.el-dark{background:var(--el-dark-bg);color:var(--el-dark)}
 .chip.el-dragon{background:var(--el-dragon-bg);color:var(--el-dragon)}
+/* ---- gender pins & lock ---- */
+.gwrap{position:relative;display:inline-flex}
+.gpin{position:absolute;right:-5px;bottom:-3px;width:17px;height:17px;border-radius:50%;
+  display:grid;place-items:center;font-style:normal;font-size:10.5px;font-weight:800;
+  color:#fff;border:2px solid var(--surface);line-height:1;cursor:default}
+.gpin.f{background:var(--female)}
+.gpin.m{background:var(--male)}
+.badge.lock{background:var(--warn-bg);color:var(--warn);display:inline-flex;
+  align-items:center;gap:4px;text-transform:none}
+.badge.lock svg{width:9px;height:11px;fill:currentColor;flex:none}
+/* ---- next actions ---- */
+.nextbox{background:var(--accent-soft);border:1px solid var(--line);border-radius:14px;
+  padding:12px 20px 16px;margin:16px 0}
+.nextbox h3{margin:4px 0 10px;color:var(--accent-ink)}
+.nextlist{display:flex;flex-wrap:wrap;gap:8px}
+.nextchip{appearance:none;border:1px solid var(--line);background:var(--surface);
+  border-radius:20px;padding:6px 14px;font:inherit;font-size:13.5px;font-weight:600;
+  color:var(--ink);cursor:pointer;transition:border-color .12s,color .12s}
+.nextchip b{color:var(--accent-ink)}
+.nextchip:hover{border-color:var(--accent);color:var(--accent-ink)}
+.nextchip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.nextmore{align-self:center;color:var(--muted);font-size:13px}
+.step.flash{outline:2px solid var(--accent);outline-offset:2px}
 /* ---- history & keep ---- */
 .hist .step{grid-template-columns:auto 1fr;padding:6px 14px;border-left-width:1px}
 .hcheck{color:var(--ok);font-weight:800;font-size:17px}
@@ -983,13 +1050,48 @@ JS = r'''
     if(ptxt) ptxt.textContent = done + ' / ' + stepEls.length;
     if(tileReady) tileReady.textContent = ready;
 
-    // phase counts
+    // phase counts + done badges
     [].slice.call(document.querySelectorAll('.phase')).forEach(function(ph){
       var els = [].slice.call(ph.querySelectorAll('.step[data-sid]'));
       var d = els.filter(function(e){ return e.classList.contains('checked'); }).length;
       var c = ph.querySelector('.phase-count');
       if(c) c.textContent = d + ' av ' + els.length + ' steg';
+      var slot = ph.querySelector('.phase-done-slot');
+      if(slot) slot.innerHTML = (d === els.length && els.length)
+        ? '<span class="badge ready-b">ferdig ✓</span>' : '';
     });
+
+    // "klar nå" quick actions
+    var nl = document.getElementById('next-list');
+    if(nl){
+      nl.innerHTML = '';
+      var readyEls = stepEls.filter(function(li){ return li.classList.contains('ready'); });
+      readyEls.slice(0, 6).forEach(function(li){
+        var btn = document.createElement('button');
+        btn.type = 'button'; btn.className = 'nextchip';
+        btn.innerHTML = li.dataset.a + ' + ' + li.dataset.b +
+          ' → <b>' + li.dataset.c + '</b>';
+        btn.addEventListener('click', function(){
+          var det = li.closest('details'); if(det) det.open = true;
+          var smooth = !(window.matchMedia &&
+            window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+          li.scrollIntoView({behavior: smooth ? 'smooth' : 'auto', block: 'center'});
+          li.classList.add('flash');
+          setTimeout(function(){ li.classList.remove('flash'); }, 1600);
+        });
+        nl.appendChild(btn);
+      });
+      if(readyEls.length > 6){
+        var more = document.createElement('span');
+        more.className = 'nextmore';
+        more.textContent = '+ ' + (readyEls.length - 6) + ' til lenger ned';
+        nl.appendChild(more);
+      }
+      if(!readyEls.length){
+        nl.innerHTML = '<span class="hint">Ingen steg er klare akkurat nå — huk av det du ' +
+          'eier i Paldex-fanen, eller fullfør steg som andre venter på.</span>';
+      }
+    }
 
     // goal progress
     [].slice.call(document.querySelectorAll('.goal[data-goal]')).forEach(function(g){
