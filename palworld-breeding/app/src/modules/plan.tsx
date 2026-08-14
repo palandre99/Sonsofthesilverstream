@@ -3,12 +3,14 @@
  * male/female combination (bred intermediates can be rebred to either gender,
  * so they count as both — that's what the keep-both-genders warnings are for).
  * Planning runs in a Web Worker; targets, results and check-offs persist. */
-import { useMemo, useState } from 'preact/hooks';
-import { box, hasGender, nav, ownedAny, selfOnly, setOwnedGender, storage } from '../state';
+import { useEffect, useMemo, useState } from 'preact/hooks';
+import { box, engine, hasGender, nav, ownedAny, selfOnly, setOwnedGender, storage } from '../state';
 import { GenderToggles, LockBadge, PalIcon, PalPicker, WorkChips } from '../components/shared';
 import { stepId } from '../engine/planner';
 import { parseGenderNote } from '../engine/formula';
 import { requestPlan } from '../engine/planClient';
+import { cakeNeeds } from '../engine/boosters';
+import { HELPER_NAMES, helperAdvice, type HelperAdvice } from '../engine/helpers';
 import type { PlanStep } from '../engine/types';
 
 const PRESETS: Record<string, { label: string; targets: string[] }> = {
@@ -90,22 +92,37 @@ export function PlanPage() {
     setTargets([...merged]);
   };
 
-  const run = () => {
+  const run = (list: string[] = targets) => {
     setBusy(true);
     setPlanError(null);
-    requestPlan(ownedNames, targets)
+    requestPlan(ownedNames, list)
       .then((r) => {
         setPlan({ steps: r.steps, unreachable: r.unreachable });
         setPlanMs(r.ms);
         setPlannedAt(new Date().toISOString());
         // best-effort persist — a quota failure must not read as a plan failure
         storage.set(PLAN_KEY, JSON.stringify({
-          targets, steps: r.steps, unreachable: r.unreachable,
+          targets: list, steps: r.steps, unreachable: r.unreachable,
           planned: new Date().toISOString(),
         } satisfies SavedPlan));
       })
       .catch((e) => setPlanError(String(e instanceof Error ? e.message : e)))
       .finally(() => setBusy(false));
+  };
+
+  /** One tap from the advice card: add/remove a helper goal and re-plan.
+   * Checks key on step ids, so surviving steps keep their ticks. */
+  const addHelper = (n: string) => {
+    if (targets.includes(n)) return;
+    const next = [...targets, n];
+    setTargets(next);
+    run(next);
+  };
+  const removeHelper = (n: string) => {
+    const next = targets.filter((t) => t !== n);
+    if (!next.length) return;
+    setTargets(next);
+    run(next);
   };
 
   const completeStep = (sid: string, child: string, got: { m: boolean; f: boolean }) => {
@@ -162,6 +179,21 @@ export function PlanPage() {
     storage.set(CHECKS_KEY, JSON.stringify(next));
   };
 
+  // helper advice re-plans per missing helper — compute off the first paint
+  const [advice, setAdvice] = useState<HelperAdvice[]>([]);
+  useEffect(() => {
+    if (!plan || !engine || !targets.length) {
+      setAdvice([]);
+      return;
+    }
+    const t = setTimeout(() => setAdvice(
+      helperAdvice(engine!, Object.keys(box.value), ownedAny,
+        { targets, steps: plan.steps })), 30);
+    return () => clearTimeout(t);
+  }, [plan, box.value]);
+  const covered = advice.filter((a) => a.status === 'covered');
+  const activeAdvice = advice.filter((a) => a.status !== 'covered').slice(0, 5);
+
   // ready-state: bred intermediates count as either gender (you can rebreed),
   // owned-only species use the real gender toggles from My Box.
   const stepMeta = useMemo(() => {
@@ -176,7 +208,7 @@ export function PlanPage() {
       if (bred.has(n)) return { m: true, f: true };
       return { m: hasGender(n, 'm'), f: hasGender(n, 'f') };
     };
-    const meta = new Map<string, { ready: boolean; missing: string[] }>();
+    const meta = new Map<string, { ready: boolean; missing: string[]; hint: string | null }>();
     for (const s of plan.steps) {
       const [a, b] = s.parents;
       const oa = avail(a);
@@ -187,6 +219,7 @@ export function PlanPage() {
       if (!hasSpecies(a, oa)) missing.push(a);
       if (!hasSpecies(b, ob)) missing.push(b);
       let ready = false;
+      let hint: string | null = null;
       if (!missing.length) {
         if (s.genderNote) {
           const parsed = parseGenderNote(s.genderNote);
@@ -196,9 +229,44 @@ export function PlanPage() {
         } else {
           ready = (oa.m && ob.f) || (oa.f && ob.m);
         }
-        if (!ready && !missing.length) missing.push('a working ♂/♀ combo');
+        if (!ready) {
+          // name the exact ♂/♀ that unlocks this step — never jargon
+          const combos: string[][] = [];
+          if (s.genderNote) {
+            const parsed = parseGenderNote(s.genderNote);
+            const motherIsA = parsed?.mother === a;
+            const need: string[] = [];
+            if (motherIsA) {
+              if (!oa.f) need.push(`♀ ${a}`);
+              if (!ob.m) need.push(`♂ ${b}`);
+            } else {
+              if (!ob.f) need.push(`♀ ${b}`);
+              if (!oa.m) need.push(`♂ ${a}`);
+            }
+            combos.push(need);
+          } else if (a === b) {
+            const need: string[] = [];
+            if (!oa.m) need.push(`♂ ${a}`);
+            if (!oa.f) need.push(`♀ ${a}`);
+            combos.push(need);
+          } else {
+            const n1: string[] = [];
+            if (!oa.m) n1.push(`♂ ${a}`);
+            if (!ob.f) n1.push(`♀ ${b}`);
+            const n2: string[] = [];
+            if (!oa.f) n2.push(`♀ ${a}`);
+            if (!ob.m) n2.push(`♂ ${b}`);
+            combos.push(n1, n2);
+          }
+          const real = combos.filter((c) => c.length);
+          const min = Math.min(...real.map((c) => c.length));
+          const best = real.filter((c) => c.length === min);
+          hint = best.length
+            ? `need a ${best.map((c) => c.join(' + ')).join(' — or a ')}`
+            : null;
+        }
       }
-      meta.set(stepId(a, b, s.child), { ready, missing });
+      meta.set(stepId(a, b, s.child), { ready, missing, hint });
     }
     return meta;
   }, [plan, checks, box.value]);
@@ -210,6 +278,11 @@ export function PlanPage() {
       const list = byWave.get(s.wave) ?? [];
       list.push(s);
       byWave.set(s.wave, list);
+    }
+    // helpers first inside each phase — they pay off for every later step
+    for (const [, list] of byWave) {
+      list.sort((x, y) =>
+        Number(HELPER_NAMES.has(y.child)) - Number(HELPER_NAMES.has(x.child)));
     }
     return [...byWave.entries()].sort((x, y) => x[0] - y[0]);
   }, [plan]);
@@ -280,7 +353,7 @@ export function PlanPage() {
           </div>
         )}
         <button class="btn primary" disabled={!targets.length || !ownedNames.length || busy}
-          onClick={run}>
+          onClick={() => run()}>
           {busy ? 'Planning…' : `Plan ${targets.length || ''} targets`}
         </button>
       </div>
@@ -324,6 +397,79 @@ export function PlanPage() {
               </div>
             </div>
           )}
+          {plan.steps.length === 0 && (
+            <div class="card bigcard" style={{ marginBottom: '16px' }}>
+              <h2>Nothing left to breed</h2>
+              <p>Every goal in this plan is already in your Paldex. Add another
+                target above, or clear the plan.</p>
+            </div>
+          )}
+
+          {plan.steps.length > 0 && (() => {
+            const needs = cakeNeeds(plan.steps.length);
+            return (
+              <div class="card bigcard" style={{ marginBottom: '16px' }}>
+                <h2>Make it faster</h2>
+                <p style={{ fontSize: '13px' }}>
+                  {plan.steps.length} {plan.steps.length === 1 ? 'step' : 'steps'} means
+                  at least {needs.cakes} {needs.cakes === 1 ? 'cake' : 'cakes'}:
+                  {' '}~{needs.flour} flour · {needs.berries} berries · {needs.milk} milk
+                  · {needs.eggs} eggs · {needs.honey} honey.
+                </p>
+                {covered.length > 0 && (
+                  <div class="kv" style={{ margin: '8px 0' }}>
+                    {covered.map((a) => (
+                      <span key={a.helper.name} class="badge ok">{a.helper.name} ✓</span>
+                    ))}
+                  </div>
+                )}
+                {activeAdvice.map((a) => {
+                  const h = a.helper;
+                  const isTarget = targets.includes(h.name);
+                  return (
+                    <div key={h.name} style={{
+                      borderTop: '1px solid var(--line)', paddingTop: '9px', marginTop: '9px',
+                    }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '9px' }}>
+                        <PalIcon name={h.name} size={30} />
+                        <div style={{ flex: 1 }}>
+                          <b style={{ fontSize: '13.5px' }}>
+                            {h.name}
+                            {a.status === 'suggest' && a.recommended && (
+                              <span class="badge gold" style={{ marginLeft: '8px' }}>recommended</span>
+                            )}
+                            {a.status === 'in-plan' && (
+                              <span class="badge plain" style={{ marginLeft: '8px' }}>phase {a.phase}</span>
+                            )}
+                          </b>
+                          <div style={{ color: 'var(--muted)', fontSize: '12px' }}>{h.effect}</div>
+                        </div>
+                      </div>
+                      <p style={{ fontSize: '12.5px', margin: '6px 0' }}>{a.note}</p>
+                      {a.status === 'suggest' && !isTarget && (
+                        <button class={`btn sm${a.recommended ? ' primary' : ''}`} disabled={busy}
+                          onClick={() => addHelper(h.name)}>
+                          {a.addSteps === 0
+                            ? 'Add to plan · free'
+                            : `Add to plan · +${a.addSteps} step${a.addSteps === 1 ? '' : 's'}`}
+                        </button>
+                      )}
+                      {isTarget && (
+                        <button class="btn sm" disabled={busy} onClick={() => removeHelper(h.name)}>
+                          Remove from plan
+                        </button>
+                      )}
+                    </div>
+                  );
+                })}
+                <p style={{ fontSize: '11.5px', color: 'var(--faint)', marginTop: '9px' }}>
+                  All effects are the game's own partner-skill data. Adding or removing
+                  reshapes the plan — steps you've ticked stay ticked.
+                </p>
+              </div>
+            );
+          })()}
+
           {plan.unreachable.length > 0 && (
             <div class="notebox" style={{ marginBottom: '14px' }}>
               Not reachable from your box:{' '}
@@ -382,8 +528,10 @@ export function PlanPage() {
                           <span class="badge warn">half done — missing the {pGlyph === '♂' ? '♀' : '♂'}</span>
                         )}
                         {!checked && !partial && (m.ready
-                          ? <span class="badge ok">ready now</span>
-                          : <span class="badge plain">waiting for {m.missing.join(' + ')}</span>)}
+                          ? <span class="badge ok">✓ ready to breed</span>
+                          : m.hint
+                            ? <span class="badge warn">{m.hint}</span>
+                            : <span class="badge plain">waiting on {m.missing.join(' + ')}</span>)}
                       </span>
                     </div>
                   );
