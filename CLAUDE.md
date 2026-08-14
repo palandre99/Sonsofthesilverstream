@@ -57,6 +57,11 @@ TypeScript engine, three delivery targets:
   main/root) — the web app deploys to `hatchlab/` on main. NEVER touch
   main's root `index.html`.
 - CI: `.github/workflows/ci.yml` runs the oracle gate on every push.
+- **babel-preset-expo must stay pinned to the SDK-54 line (54.0.10, exact).**
+  Installing "latest" (57.x, a future-SDK preset) ships #private fields and
+  broken winter-runtime ordering to the phone: [runtime not ready] SyntaxError
+  / DOMException crashes. Cost an hour on 2026-08-14. `npx expo install`
+  for expo deps, never bare `npm i`.
 
 ## REPORTING STYLE
 

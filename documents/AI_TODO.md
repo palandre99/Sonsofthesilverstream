@@ -5,6 +5,10 @@ Add everything you find; finding nothing means you didn't look.*
 
 ## NOW (app-first)
 
+- [ ] **URGENT — data refresh**: research (03_MARKET_RESEARCH.md) found the game
+      updated Aug 12 (build 4797106687, Terraria collab content) — NEWER than our
+      July 20 extraction. Re-clone palworld-kb / re-extract, re-run the oracle;
+      roster and combos may have moved. Everything data-related waits on this.
 - [ ] **On-device verification pass** once the dev build installs: planner
       speed on hardware (the 27-target plan), list scrolling with 298
       icons, haptics, safe areas, OTA round-trip. Fix what's found.

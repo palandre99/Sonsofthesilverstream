@@ -42,6 +42,7 @@
         "projectId": "3bb92cd1-1a95-440b-a5bf-1c3f711e71b8"
       }
     },
-    "owner": "palandre99"
+    "owner": "palandre99",
+    "jsEngine": "hermes"
   }
 }
