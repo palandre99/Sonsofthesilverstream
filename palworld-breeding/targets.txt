@@ -1,37 +1,37 @@
-# Endemål — de beste palsene som kan bres (Palworld 1.0)
-# Rediger fritt; kjør 'python3 planner.py plan' etterpå.
+# End goals — the best pals you can breed (Palworld 1.0)
+# Edit freely; run 'python3 planner.py plan' afterwards.
 
-# --- Topparbeidere ---
+# --- Top workers ---
 Solenne          # Handiwork 8
 Celesdir Noct    # Lumbering 8
 Renjishi         # Kindling 8
 Knocklem         # Mining 7 + Transporting 7
 Starryon Primo   # Gathering 7
 Ophydia          # Planting 7
-Anubis           # klassikeren — Handiwork/Mining/Transport
-Astegon          # Mining 7 — beste Mining som kan bres (Aegidron 8 er utenfor rekkevidde)
+Anubis           # the classic — Handiwork/Mining/Transport
+Astegon          # Mining 7 — best breedable Mining (Aegidron 8 is out of reach)
 Blazamut         # Kindling/Mining
-Sibelyx Primo    # variant — vill kun i World Tree (lvl 75+)
-Venusa           # vill kun i World Tree (lvl 75+)
-Mycora           # Medicine-aura (vill kun i World Tree)
-Univolt Cryst    # variant — vill kun lvl 75+
-Whalaska Ignis   # 1.0-variant
-Solmora Lux      # 1.0-variant
+Sibelyx Primo    # variant — wild only in the World Tree (lvl 75+)
+Venusa           # wild only in the World Tree (lvl 75+)
+Mycora           # Medicine aura (wild only in the World Tree)
+Univolt Cryst    # variant — wild only lvl 75+
+Whalaska Ignis   # 1.0 variant
+Solmora Lux      # 1.0 variant
 
-# --- Aura-pals (+1 arbeidsnivå til alle i basen; én per arbeidstype) ---
-# Ribbuny (Handiwork), Cinnamoth (Farming), Clovee (Gathering) og
-# Petallia (Planting) er allerede i rosteret.
-Tetroise         # Mining-aura
-Wumpo            # Transporting-aura
-Amione           # Watering-aura
-Eikthyrdeer Terra # Lumbering-aura
-Katress Ignis    # Kindling-aura
-Puffolt          # Generating Electricity-aura
-Smokie Cryst     # Cooling-aura
+# --- Aura pals (+1 work suitability for everyone at the base; one per work type) ---
+# Ribbuny (Handiwork), Cinnamoth (Farming), Clovee (Gathering) and
+# Petallia (Planting) are already in the roster.
+Tetroise         # Mining aura
+Wumpo            # Transporting aura
+Amione           # Watering aura
+Eikthyrdeer Terra # Lumbering aura
+Katress Ignis    # Kindling aura
+Puffolt          # Generating Electricity aura
+Smokie Cryst     # Cooling aura
 
-# --- Breeding-støtte (anbefalt ekstra — gjør resten av planen raskere) ---
-Braloha          # eggproduksjon +20–50 % på Breeding Farm
-Dynamoff         # inkubasjonstid −20–40 %
-Lullu            # avlingsvekst +50–70 % (kake-ingredienser)
-Prunelia         # innhøsting +18–35 % (kake-ingredienser)
-Sekhmet          # Anubis-parhest: Anubis +20–40 % arbeidsfart
+# --- Breeding support (recommended extras — speed up the rest of the plan) ---
+Braloha          # egg production +20–50% at the Breeding Farm
+Dynamoff         # incubation time −20–40%
+Lullu            # crop growth +50–70% (cake ingredients)
+Prunelia         # harvest +18–35% (cake ingredients)
+Sekhmet          # Anubis partner: Anubis +20–40% work speed

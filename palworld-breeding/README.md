@@ -1,73 +1,78 @@
-# Eggfabrikken — Palworld 1.0 breeding-planlegger
+# HatchLab — Palworld 1.0 breeding planner
 
-Pål-Andres verktøy for å bre seg fram til de beste palsene i Palworld 1.0 —
-kun breeding, ingen fangst. Regner ut korteste delte breeding-tre fra rosteret
-til alle mål, og genererer **den ultimate breeding-guiden** som HTML med ekte
-palikoner, stats og avkryssing.
+The plan: build the best Palworld breeding app on the web. Currently shipping:
+a provably-correct breeding engine, a versioned 1.0 dataset, and **the guide** —
+a tabbed web app that plans the shortest shared breeding tree from your box to
+the best breedable pals, with real game icons, stats and progress tracking.
 
-## Kom i gang
+**Roadmap:** see [`docs/PLAN.md`](docs/PLAN.md) — six milestones from this guide
+to a public PWA (calculator, route planner, My Box, Paldex, Odds Lab).
 
-Krever bare Python 3 (ingen pakker, ingen nett etter kloning):
+## Quick start
+
+Only needs Python 3 (no packages, no network after cloning):
 
 ```bash
-python3 planner.py plan              # hele planen i terminalen
-python3 planner.py what Katress Wixen   # hva gir ett par?
-python3 planner.py path Anubis       # billigste vei til én art
-python3 planner.py reachable         # hvilke arter kan nås?
-python3 planner.py add Frostplume    # ny pal i boksen -> oppdatert plan
-python3 build_guide.py               # regenerer guide/index.html
-python3 -m unittest discover tests   # kjør alle testene
+python3 planner.py plan                 # the whole plan in your terminal
+python3 planner.py what Katress Wixen   # what does one pair produce?
+python3 planner.py path Anubis          # cheapest route to one species
+python3 planner.py reachable            # which species can be reached?
+python3 planner.py add Frostplume       # new pal in the box -> updated plan
+python3 build_guide.py                  # regenerate guide/index.html
+python3 -m unittest discover tests      # run the test suite
 ```
 
-Rediger `roster.txt` (palene dine) og `targets.txt` (målene) fritt —
-begge er rene tekstfiler.
+Edit `roster.txt` (your pals) and `targets.txt` (your goals) freely —
+both are plain text files.
 
-## Filene
+## Files
 
-| Fil | Hva |
+| File | What |
 |---|---|
-| `planner.py` | motoren: artsformel, nåbarhet, korteste delte tre, CLI |
-| `build_guide.py` | genererer guiden (`--embed` lager frittstående versjon med innbakte ikoner) |
-| `roster.txt` / `targets.txt` | dine pals og mål — redigerbare |
-| `guide/index.html` | **guiden** — faneinndelt app: Plan (klar-status per steg), Paldex (huk av alt du eier), Mål (fremdrift per pal), Drift, Kilder |
-| `guide/artifact.html` | samme guide som én frittstående fil (alt innbakt) — genereres med `--embed` |
-| `guide/icons/` | 298 ekte spillikoner (github.com/dbgoodm/PalDex, game-dump) |
-| `guide/fonts/` | Baloo 2 + Manrope, subsettet woff2 (OFL, via google/fonts) |
-| `data/breeding_1_0.json` | CombiRanks, 134 unike + 2 kjønnsavhengige kombos, pulje-eksklusjoner |
-| `data/pals_1_0.json` | stats, arbeidsnivåer, partner skills, spawn-info per art |
-| `data/oracle_pairs.json.gz` | fasit: alle 44 851 1.0-resultater (palcalc, generert fra spillfilene) |
-| `data/verification.json` | 23 kryssjekkede påstander med status og kilder |
-| `tools/extract_from_kb.py` | regenererer datafilene fra beliarance/palworld-kb |
-| `tools/validate_against_palcalc.py` | replay av hele fasiten mot motoren |
-| `tests/` | 10 tester: 31 kjente par + strukturelle egenskaper + full orakel-replay |
+| `planner.py` | the engine: species formula, reachability, shortest shared tree, CLI |
+| `build_guide.py` | generates the guide (`--embed` builds the standalone single file) |
+| `roster.txt` / `targets.txt` | your pals and goals — editable |
+| `guide/index.html` | **the guide** — tabbed app: Plan (ready-states per step), Paldex (tick what you own), Goals (progress per pal), Operations, Sources |
+| `guide/artifact.html` | the same guide as one standalone file (everything embedded) |
+| `guide/icons/` | 298 real game icons (github.com/dbgoodm/PalDex, game dump) |
+| `guide/fonts/` | Baloo 2 + Manrope, subset woff2 (OFL, via google/fonts) |
+| `data/breeding_1_0.json` | CombiRanks, 134 unique + 2 gender-locked combos, pool exclusions |
+| `data/pals_1_0.json` | stats, work suitabilities, partner skills, spawn info per species |
+| `data/oracle_pairs.json.gz` | the oracle: all 44,851 1.0 results (palcalc, generated from game files) |
+| `data/verification.json` | 23 cross-checked claims with status and sources |
+| `docs/PLAN.md` | the master plan for the public app |
+| `tools/extract_from_kb.py` | regenerates the data files from beliarance/palworld-kb |
+| `tools/validate_against_palcalc.py` | replays the full oracle against the engine |
+| `tests/` | 10 tests: 31 known pairs + structural properties + full oracle replay |
 
-## Hvorfor det stemmer
+## Why it's correct
 
-Artsformelen (mål `⌊(rankA+rankB+1)/2⌋`, generisk pulje på 183 arter,
-tie-break til høyeste CombiRank) er **replikert mot alle 44 851
-forhåndsberegnede 1.0-resultater** fra palcalc — null avvik — og kryssjekket
-av 8 uavhengige research-agenter (se `data/verification.json`).
-Katress+Wixen er spillets eneste kjønnsavhengige par og håndteres eksplisitt.
+The species formula (target `⌊(rankA+rankB+1)/2⌋`, generic pool of 183 species,
+tie-break to the higher CombiRank) is **replayed against all 44,851 precomputed
+1.0 results** from palcalc — zero mismatches — and cross-checked by 8
+independent research agents (see `data/verification.json`).
+Katress+Wixen is the game's only gender-locked pair and is handled explicitly.
 
-## Guiden som app
+## The guide as an app
 
-Avkryssede steg og Paldex-eierskap lagres i nettleseren og henger sammen:
-et steg lyser **«klar nå»** når begge foreldrene finnes blant det du eier
-eller har bredd, målkortene viser fremdrift per art, og «Kopier roster»
-eksporterer eierskapslisten rett inn i `roster.txt`-format.
+Checked steps and Paldex ownership are saved in your browser and work together:
+a step lights up **"ready now"** when both parents exist among what you own or
+have bred, goal cards show per-species progress, and "Copy roster" exports your
+ownership list straight into `roster.txt` format.
 
-## Teknologivalg
+## Technology choices
 
-Python 3 uten avhengigheter: forhåndsinstallert på det meste, én fil å kjøre,
-og dataene ligger i versjonerte JSON-filer med kilde og dato. Guiden er ren
-statisk HTML uten byggverktøy — funker offline, i alle nettlesere, og kan
-legges rett på GitHub Pages.
+Python 3 with no dependencies: preinstalled almost everywhere, one file to run,
+and the data lives in versioned JSON files with source and date. The guide is
+plain static HTML with no build tools — works offline, in every browser, and
+deploys straight to GitHub Pages. The public app (see the plan) moves to
+TypeScript with the same oracle-tested engine.
 
-## Ved spillpatch
+## On a game patch
 
-1. Oppdater klonen av `beliarance/palworld-kb` (eller tilsvarende datasett).
-2. `python3 tools/extract_from_kb.py <sti>` — nye datafiler med ny dato.
-3. `python3 -m unittest discover tests` — orakelet avslører formelendringer.
-4. `python3 build_guide.py` — ny guide.
+1. Refresh the clone of `beliarance/palworld-kb` (or an equivalent dataset).
+2. `python3 tools/extract_from_kb.py <path>` — new data files with a new date.
+3. `python3 -m unittest discover tests` — the oracle exposes formula changes.
+4. `python3 build_guide.py` — a fresh guide.
 
-Datert 2026-08-14 · Palworld 1.0 (10. juli 2026) · nivåtak 80.
+Dated 2026-08-14 · Palworld 1.0 (released 10 July 2026) · level cap 80.

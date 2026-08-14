@@ -120,8 +120,8 @@ class TestSpeciesFormula(unittest.TestCase):
         kids = children_of("Katress", "Wixen")
         self.assertEqual({k.species for k in kids}, {"Katress Ignis", "Wixen Noct"})
         by = {k.species: k for k in kids}
-        self.assertIn("hunn Katress", by["Katress Ignis"].gender_note)
-        self.assertIn("hunn Wixen", by["Wixen Noct"].gender_note)
+        self.assertIn("female Katress", by["Katress Ignis"].gender_note)
+        self.assertIn("female Wixen", by["Wixen Noct"].gender_note)
 
     def test_full_oracle_replay(self):
         """Replay EVERY breeding result from palcalc's 1.0 dataset (44 851 rows,

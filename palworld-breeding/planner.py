@@ -67,7 +67,7 @@ def resolve(name: str) -> str:
     hits = [v for k, v in _BY_NORM.items() if k.startswith(n)]
     if len(hits) == 1:
         return hits[0]
-    raise KeyError(f"Ukjent pal: {name!r}" + (f" (kandidater: {', '.join(hits)})" if hits else ""))
+    raise KeyError(f"Unknown pal: {name!r}" + (f" (candidates: {', '.join(hits)})" if hits else ""))
 
 
 # ---------------------------------------------------------------- species rule
@@ -94,7 +94,7 @@ def children_of(a: str, b: str) -> tuple[Child, ...]:
     if key in GENDERED:
         return tuple(
             Child(c["child"], "gendered",
-                  gender_note=f'hunn {c["mother"]} + hann {c["father"]}')
+                  gender_note=f'female {c["mother"]} + male {c["father"]}')
             for c in GENDERED[key])
     if key in UNIQUE:
         return (Child(UNIQUE[key], "unique"),)
@@ -238,13 +238,13 @@ def _fmt_step(s: dict) -> str:
     a, b = s["parents"]
     flags = []
     if s["kind"] == "unique":
-        flags.append("unik oppskrift")
+        flags.append("unique recipe")
     if s["kind"] == "gendered":
-        flags.append(f"KJØNN AVGJØR: {s['gender_note']}")
+        flags.append(f"GENDER LOCKED: {s['gender_note']}")
     if s["tie_break"]:
-        flags.append("TIE-BREAK — verifiser!")
+        flags.append("TIE-BREAK — verify!")
     elif s["kind"] == "generic" and s["margin"] is not None and s["margin"] < 10:
-        flags.append(f"liten margin ({s['margin']})")
+        flags.append(f"small margin ({s['margin']})")
     star = "★" if s["is_target"] else " "
     return (f"  {star} {a} + {b} = {s['child']}"
             + (f"   [{'; '.join(flags)}]" if flags else ""))
@@ -253,9 +253,9 @@ def _fmt_step(s: dict) -> str:
 def cmd_reachable(args) -> None:
     roster = set(load_roster())
     known = closure(roster)
-    print(f"Roster: {len(roster)} arter -> nåbare: {len(known)} av {len(RANKS)}")
+    print(f"Roster: {len(roster)} species -> reachable: {len(known)} of {len(RANKS)}")
     missing = sorted(set(RANKS) - known)
-    print(f"Ikke nåbare ({len(missing)}):")
+    print(f"Not reachable ({len(missing)}):")
     for m in missing:
         tag = " [self-breed-only]" if m in SELF_ONLY else ""
         print(f"  - {m}{tag}")
@@ -267,13 +267,13 @@ def cmd_what(args) -> None:
         extra = ""
         if ch.kind == "generic":
             t = (RANKS[a] + RANKS[b] + 1) // 2
-            extra = f" (generisk: mål {t}, {ch.species}={RANKS[ch.species]}, margin {ch.margin})"
+            extra = f" (generic: target {t}, {ch.species}={RANKS[ch.species]}, margin {ch.margin})"
             if ch.tie_break:
-                extra += " [TIE-BREAK-avhengig!]"
+                extra += " [TIE-BREAK-dependent!]"
         elif ch.kind == "unique":
-            extra = " (unik oppskrift)"
+            extra = " (unique recipe)"
         elif ch.kind == "gendered":
-            extra = f" (unik oppskrift, KJØNN AVGJØR: {ch.gender_note})"
+            extra = f" (unique recipe, GENDER LOCKED: {ch.gender_note})"
         print(f"{a} + {b} = {ch.species}{extra}")
 
 
@@ -282,17 +282,17 @@ def cmd_plan(args) -> None:
     targets = ([resolve(t.strip()) for t in args.targets.split(",")]
                if args.targets else load_targets())
     ordered, unreachable, _ = plan_for(roster, targets)
-    print(f"Mål: {len(targets)} arter | steg i planen: {len(ordered)}")
+    print(f"Targets: {len(targets)} species | steps in the plan: {len(ordered)}")
     if unreachable:
-        print("IKKE nåbare via breeding fra dette rosteret:")
+        print("NOT reachable by breeding from this roster:")
         for u in unreachable:
-            tag = " [self-breed-only — må fanges/klekkes]" if u in SELF_ONLY else ""
+            tag = " [self-breed-only — must be caught/hatched]" if u in SELF_ONLY else ""
             print(f"  ! {u}{tag}")
     cur = 0
     for s in ordered:
         if s["wave"] != cur:
             cur = s["wave"]
-            print(f"\n— Fase {cur} —")
+            print(f"\n— Phase {cur} —")
         print(_fmt_step(s))
     # keep-both-genders hints
     parents_used: dict[str, int] = {}
@@ -302,9 +302,9 @@ def cmd_plan(args) -> None:
     hot = {p: n for p, n in parents_used.items()
            if n >= 2 and p not in roster}
     if hot:
-        print("\nMellomledd som brukes i flere steg (behold begge kjønn / flere kopier):")
+        print("\nIntermediates used in several steps (keep both genders / extra copies):")
         for p, n in sorted(hot.items(), key=lambda kv: -kv[1]):
-            print(f"  {p}: {n} steg")
+            print(f"  {p}: {n} steps")
 
 
 def cmd_path(args) -> None:
@@ -312,10 +312,10 @@ def cmd_path(args) -> None:
     t = resolve(args.pal)
     ordered, unreachable, _ = plan_for(roster, [t])
     if unreachable:
-        print(f"{t} er ikke nåbar fra rosteret."
+        print(f"{t} is not reachable from the roster."
               + (" [self-breed-only]" if t in SELF_ONLY else ""))
         return
-    print(f"Billigste vei til {t}: {len(ordered)} steg")
+    print(f"Cheapest route to {t}: {len(ordered)} steps")
     for s in ordered:
         print(_fmt_step(s))
 
@@ -327,13 +327,13 @@ def cmd_add(args) -> None:
     for name in args.pals:
         r = resolve(name)
         if r in have:
-            print(f"{r} er allerede i rosteret.")
+            print(f"{r} is already in the roster.")
             continue
         with path.open("a") as f:
             f.write(f"{r}\n")
         added.append(r)
     if added:
-        print(f"La til: {', '.join(added)}. Ny plan:\n")
+        print(f"Added: {', '.join(added)}. New plan:\n")
         cmd_plan(argparse.Namespace(targets=None))
 
 

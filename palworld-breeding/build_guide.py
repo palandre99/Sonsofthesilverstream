@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
-"""Generates guide/index.html — Eggfabrikken, Pål-Andres Palworld 1.0
-breeding-guide som en faneinndelt liten app.
+"""Generates guide/index.html — HatchLab, the Palworld 1.0 breeding guide
+as a small tabbed app.
 
-    python3 build_guide.py           # guide/index.html  (ikoner fra guide/icons/)
-    python3 build_guide.py --embed   # guide/artifact.html (alt innbakt, én fil)
+    python3 build_guide.py           # guide/index.html  (icons from guide/icons/)
+    python3 build_guide.py --embed   # guide/artifact.html (everything embedded, one file)
 
-Faner: Plan (48 steg med klar-status), Paldex (eierskap for alle 299),
-Mål (galleri med fremdrift), Drift (mekanikk), Kilder (verifisering).
-Avkryssing og eierskap lagres i localStorage; Paldex-eierskap styrer
-hvilke steg som lyser «klar nå».
+Tabs: Plan (48 steps with ready-states), Paldex (ownership for all 299),
+Goals (gallery with progress), Operations (mechanics), Sources (verification).
+Checks and ownership live in localStorage; Paldex ownership drives which
+steps light up as "ready now".
 """
 from __future__ import annotations
 
@@ -49,26 +49,24 @@ HISTORY = [  # allerede bredd (ryggraden steg 1-5) — resultatene står i roste
 ]
 
 GOAL_GROUPS = [
-    ("Topparbeidere",
-     "De beste arbeiderne som kan bres fra rosteret.",
+    ("Top workers",
+     "The best workers you can breed from your box.",
      ["Solenne", "Celesdir Noct", "Renjishi", "Knocklem", "Starryon Primo",
       "Ophydia", "Anubis", "Astegon", "Blazamut", "Sibelyx Primo", "Venusa",
       "Mycora", "Univolt Cryst", "Whalaska Ignis", "Solmora Lux"]),
-    ("Aura-pals",
-     "Én per arbeidstype: +1 arbeidsnivå til alle andre i basen (stakker ikke, "
-     "gjelder ikke bæreren selv).",
+    ("Aura pals",
+     "One per work type: +1 work suitability for every other pal at the base "
+     "(does not stack, never buffs the carrier).",
      ["Tetroise", "Wumpo", "Amione", "Eikthyrdeer Terra", "Katress Ignis",
       "Puffolt", "Smokie Cryst", "Mycora"]),
-    ("Breeding-støtte",
-     "Gjør resten av eggfabrikken raskere: egg-fart, inkubasjon, kakeavlinger "
-     "og Anubis-parhesten.",
+    ("Breeding support",
+     "Makes the rest of the hatchery faster: egg speed, incubation, cake crops, "
+     "and the Anubis work partner.",
      ["Braloha", "Dynamoff", "Lullu", "Prunelia", "Sekhmet"]),
 ]
 AURA_OWNED = ["Ribbuny", "Cinnamoth", "Clovee", "Petallia"]
 
-ELEMENT_NO = {"Neutral": "Nøytral", "Fire": "Ild", "Water": "Vann",
-              "Grass": "Gress", "Electric": "Elektrisk", "Ice": "Is",
-              "Ground": "Jord", "Dark": "Mørke", "Dragon": "Drage"}
+ELEMENT_NO = {"Generating Electricity": "Electricity"}  # display names are English
 
 
 def esc(s) -> str:
@@ -93,9 +91,9 @@ def egg_hint(name: str) -> str:
         return ""
     e = eggs[0]
     if any(w in e for w in ("Scorching", "Flaming")):
-        return f"{e} · trenger varme"
+        return f"{e} · needs heat"
     if any(w in e for w in ("Frozen", "Icy")):
-        return f"{e} · trenger kulde"
+        return f"{e} · needs cold"
     return e
 
 
@@ -170,7 +168,7 @@ def icon_html(name: str, size: int = 44) -> str:
 
 def el_chips(name: str) -> str:
     return "".join(
-        f'<span class="chip el-{e.lower()}">{esc(ELEMENT_NO.get(e, e))}</span>'
+        f'<span class="chip el-{e.lower()}">{esc(e)}</span>'
         for e in pal(name).get("elements") or [])
 
 
@@ -210,28 +208,28 @@ def step_card(s: dict, have_before: set[str]) -> str:
     alt_note = ""
     if in_prog and {a, b} != set(s["parents"]):
         pa, pb = s["parents"]
-        alt_note = f"Alternativ rute med samme resultat: {pa} + {pb}."
+        alt_note = f"Alternative route, same result: {pa} + {pb}."
 
     sid = sid_of(a, b, child)
     flags = []
     if s["kind"] == "unique":
-        flags.append('<span class="badge unique">unik oppskrift</span>')
+        flags.append('<span class="badge unique">unique recipe</span>')
     if s["kind"] == "gendered":
         flags.append('<span class="badge lock">'
                      '<svg viewBox="0 0 10 12" aria-hidden="true">'
                      '<rect x="1" y="5" width="8" height="6" rx="1.4"/>'
                      '<path d="M3 5V3.4a2 2 0 0 1 4 0V5" fill="none" '
                      'stroke="currentColor" stroke-width="1.5"/></svg>'
-                     'kjønn låst</span>')
+                     'gender locked</span>')
     if s["tie_break"]:
-        flags.append('<span class="badge warn">tie-break — verifiser</span>')
+        flags.append('<span class="badge warn">tie-break — verify</span>')
     if in_prog:
-        flags.append('<span class="badge now">egg i farmen nå</span>')
+        flags.append('<span class="badge now">egg in the farm now</span>')
     if s["is_target"]:
-        flags.append('<span class="badge goal">Mål</span>')
+        flags.append('<span class="badge goal">Goal</span>')
     reuse = s["reused_as_parent"]
-    keep = (f'<span class="badge keep">forelder i {reuse} steg til — '
-            f'behold ♂ + ♀</span>') if reuse >= 2 else ""
+    keep = (f'<span class="badge keep">parent in {reuse} more steps — '
+            f'keep ♂ + ♀</span>') if reuse >= 2 else ""
 
     need = s["needed_by"]
     need_chips = "".join(f'<span class="chip need">{esc(n)}</span>' for n in need[:5])
@@ -241,27 +239,27 @@ def step_card(s: dict, have_before: set[str]) -> str:
     detail = ""
     if s["kind"] == "generic":
         t = (P.RANKS[a] + P.RANKS[b] + 1) // 2
-        detail = (f'rank-mål {t} → {esc(child)} ({P.RANKS[child]})'
+        detail = (f'rank target {t} → {esc(child)} ({P.RANKS[child]})'
                   + (f' · margin {s["margin"]}' if s["margin"] is not None else ""))
 
     tie_html = ""
     if s["tie_break"]:
         loser = tie_loser_child(a, b)
         alts = safe_alternatives(child, (a, b), have_before)
-        alt_txt = (" Trygg alternativ-rute: " +
-                   "; eller ".join(f"{x} + {y}" for x, y in alts[:2]) + "."
+        alt_txt = (" Safe alternative route: " +
+                   "; or ".join(f"{x} + {y}" for x, y in alts[:2]) + "."
                    ) if alts else ""
-        tie_html = (f'<p class="note warn-note">Utfallet avhenger av tie-break-regelen '
-                    f'(datamine-bekreftet, 0 unntak av 14 021 — men test gjerne med én '
-                    f'kake). Slår den motsatt vei, klekkes <b>{esc(loser)}</b> i stedet — '
-                    f'også en art planen trenger.{esc(alt_txt)}</p>')
+        tie_html = (f'<p class="note warn-note">This result depends on the tie-break rule '
+                    f'(datamine-confirmed, 0 exceptions in 14,021 — still worth testing with '
+                    f'one cake). If it breaks the other way, <b>{esc(loser)}</b> hatches '
+                    f'instead — also a species the plan needs.{esc(alt_txt)}</p>')
 
     gender_html = ""
     if s["kind"] == "gendered":
-        gender_html = (f'<p class="note warn-note">Spillets eneste kjønnslåste par — merkene '
-                       f'på ikonene viser fasiten: <b>{esc(s["gender_note"])}</b> gir '
-                       f'{esc(child)}. Bytter du kjønnene, får du det andre barnet '
-                       f'(Katress Ignis ↔ Wixen Noct). Feil kjønn = feil pal.</p>')
+        gender_html = (f'<p class="note warn-note">The game\'s only gender-locked pair — the '
+                       f'pins on the icons show the rule: <b>{esc(s["gender_note"])}</b> gives '
+                       f'{esc(child)}. Swap the genders and you get the other child '
+                       f'(Katress Ignis ↔ Wixen Noct). Wrong gender = wrong pal.</p>')
 
     egg = egg_hint(child)
     egg_html = f'<span class="egg">🥚 {esc(egg)}</span>' if egg else ""
@@ -276,18 +274,18 @@ def step_card(s: dict, have_before: set[str]) -> str:
 
     def parent_html(name: str) -> str:
         pin = pins.get(name)
-        pin_h = (f'<i class="gpin {pin}" title="må være '
-                 f'{"hunn" if pin == "f" else "hann"}">'
+        pin_h = (f'<i class="gpin {pin}" title="must be '
+                 f'{"female" if pin == "f" else "male"}">'
                  f'{"♀" if pin == "f" else "♂"}</i>') if pin else ""
         return (f'<span class="parent"><span class="gwrap">{icon_html(name, 40)}'
                 f'{pin_h}</span><span class="pn">{esc(name)}</span></span>')
 
-    op_title = ("Kjønnene er LÅST for dette paret — se merkene"
+    op_title = ("Genders are LOCKED for this pair — see the pins"
                 if pins else
-                "Trenger hann av den ene og hunn av den andre — valgfri fordeling")
+                "Needs a male of one parent and a female of the other — either way works")
 
     return f'''<li class="step{' target' if s['is_target'] else ''}" data-sid="{esc(sid)}" data-a="{esc(a)}" data-b="{esc(b)}" data-c="{esc(child)}">
-<label class="tick"><input type="checkbox" aria-label="Fullført: {esc(a)} + {esc(b)} = {esc(child)}"><span></span></label>
+<label class="tick"><input type="checkbox" aria-label="Done: {esc(a)} + {esc(b)} = {esc(child)}"><span></span></label>
 <div class="recipe">
   {parent_html(a)}
   <span class="op" title="{esc(op_title)}">+</span>
@@ -301,7 +299,7 @@ def step_card(s: dict, have_before: set[str]) -> str:
   </span>
 </div>
 <div class="side"><span class="ready-slot"></span>{"".join(flags)}{keep}
-  {f'<div class="needs"><span class="nlbl">trengs til</span>{need_chips}</div>' if need else ''}
+  {f'<div class="needs"><span class="nlbl">needed for</span>{need_chips}</div>' if need else ''}
 </div>
 {tie_html}
 {gender_html}
@@ -317,14 +315,14 @@ def goal_card(name: str, owned: bool = False) -> str:
     aura = ""
     if bs and bs.get("type") == "suitability":
         aura = (f'<p class="aura">✨ Aura: +{bs["bonus"]} {esc(work_label(bs["task"]))} '
-                f'for alle pals i basen</p>')
+                f'for every pal at the base</p>')
     elif bs and bs.get("effect"):
         aura = f'<p class="aura">✨ {esc(bs["effect"])}</p>'
-    wild = "" if p.get("wild") else '<span class="badge unique">ingen vanlig villspawn</span>'
-    own = '<span class="badge own">i rosteret ✓</span>' if owned else ""
+    wild = "" if p.get("wild") else '<span class="badge unique">no regular wild spawn</span>'
+    own = '<span class="badge own">in your box ✓</span>' if owned else ""
     prog = "" if owned else (
-        '<div class="gprog" role="img" aria-label="fremdrift">'
-        '<div class="gbar"><span></span></div><span class="gtxt">0 av ? steg</span></div>')
+        '<div class="gprog" role="img" aria-label="progress">'
+        '<div class="gbar"><span></span></div><span class="gtxt">0 of ? steps</span></div>')
     return f'''<article class="goal" data-goal="{esc(name)}">
 <header>{icon_html(name, 56)}<div><h4>{esc(name)}</h4>
 <div class="meta">{el_chips(name)}{wild}{own}</div></div></header>
@@ -353,15 +351,15 @@ def paldex_row(name: str) -> str:
     known = name in KNOWN_SET
     tags = []
     if name in TARGET_SET:
-        tags.append('<span class="badge goal">Mål</span>')
+        tags.append('<span class="badge goal">Goal</span>')
     if name in P.SELF_ONLY:
         tags.append('<span class="badge selfonly">self-breed-only</span>')
     elif not known:
-        tags.append('<span class="badge waitb">utenfor rekkevidde</span>')
+        tags.append('<span class="badge waitb">out of reach</span>')
     work = work_chips(name, 2)
     els = " ".join((p.get("elements") or []))
     return f'''<li class="prow" data-name="{esc(name)}" data-els="{esc(els)}" data-num="{esc(num)}">
-<label class="own"><input type="checkbox"{' checked' if owned else ''} aria-label="Eier {esc(name)}"><span></span></label>
+<label class="own"><input type="checkbox"{' checked' if owned else ''} aria-label="Owns {esc(name)}"><span></span></label>
 {icon_html(name, 36)}
 <span class="pxname"><b>{esc(name)}</b><span class="pxnum">#{esc(num)}</span></span>
 <span class="pxmeta">{el_chips(name)}{work}</span>
@@ -381,8 +379,8 @@ def verification_rows() -> str:
     if not VERIF:
         return ""
     order = {"confirmed": 0, "plausible": 1, "contradicted": 2, "not_found": 3}
-    lab = {"confirmed": ("bekreftet", "ok"), "plausible": ("sannsynlig", "warn"),
-           "contradicted": ("motsagt", "bad"), "not_found": ("ikke funnet", "warn")}
+    lab = {"confirmed": ("confirmed", "ok"), "plausible": ("likely", "warn"),
+           "contradicted": ("contradicted", "bad"), "not_found": ("not found", "warn")}
     rows = []
     for item in sorted(VERIF["claims"], key=lambda c: order.get(c["verdict"], 9)):
         t, cls = lab.get(item["verdict"], (item["verdict"], "warn"))
@@ -438,8 +436,8 @@ def build() -> str:
             if buf:
                 phases_html.append(
                     f'<details class="phase" id="fase-{cur_wave}" open>'
-                    f'<summary><span class="ph">Fase {cur_wave}</span>'
-                    f'<span class="pc phase-count" data-wave="{cur_wave}">{len(buf)} steg</span>'
+                    f'<summary><span class="ph">Phase {cur_wave}</span>'
+                    f'<span class="pc phase-count" data-wave="{cur_wave}">{len(buf)} steps</span>'
                     f'<span class="phase-done-slot"></span></summary>'
                     f'<ol class="steps">{"".join(buf)}</ol></details>')
                 for x in done_children:
@@ -472,7 +470,7 @@ def build() -> str:
         for p_ in step_parents(s):
             keep_parents[p_] = keep_parents.get(p_, 0) + 1
     keep_list = "".join(
-        f'<li>{icon_html(p_, 28)} <b>{esc(p_)}</b> — {n} steg</li>'
+        f'<li>{icon_html(p_, 28)} <b>{esc(p_)}</b> — {n} steps</li>'
         for p_, n in sorted(keep_parents.items(), key=lambda kv: -kv[1])
         if n >= 2 and p_ not in ROSTER)
 
@@ -480,11 +478,11 @@ def build() -> str:
 
     verif_html = ""
     if VERIF:
-        verif_html = f'''<h3>Bekreftet vs. usikkert</h3>
-<p class="hint">Kryssjekket {len(VERIF["claims"])} påstander mot uavhengige kilder
+        verif_html = f'''<h3>Confirmed vs. uncertain</h3>
+<p class="hint">Cross-checked {len(VERIF["claims"])} claims against independent sources
 ({esc(VERIF.get("checked", ""))}).</p>
 <div class="tablewrap"><table class="verif">
-<thead><tr><th>Påstand</th><th>Status</th><th>Belegg</th></tr></thead>
+<thead><tr><th>Claim</th><th>Status</th><th>Evidence</th></tr></thead>
 <tbody>{verification_rows()}</tbody></table></div>'''
 
     extracted = json.loads((ROOT / "data" / "breeding_1_0.json").read_text())["extracted"]
@@ -495,18 +493,18 @@ def build() -> str:
 <path d="M10 22l4 4 3-6 3 5 2-3" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>'''
 
-    return f'''<title>Eggfabrikken</title>
+    return f'''<title>HatchLab</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>{fonts}{CSS}</style>
 <script type="application/json" id="appdata">{appdata_json()}</script>
 <header class="top">
-  <a class="brand" href="#plan">{logo}<span class="wordmark">Eggfabrikken</span></a>
-  <nav class="tabs" role="tablist" aria-label="Innhold">
+  <a class="brand" href="#plan">{logo}<span class="wordmark">HatchLab</span></a>
+  <nav class="tabs" role="tablist" aria-label="Contents">
     <button role="tab" data-tab="plan" aria-selected="true">Plan</button>
     <button role="tab" data-tab="paldex" aria-selected="false">Paldex</button>
-    <button role="tab" data-tab="maal" aria-selected="false">Mål</button>
-    <button role="tab" data-tab="drift" aria-selected="false">Drift</button>
-    <button role="tab" data-tab="kilder" aria-selected="false">Kilder</button>
+    <button role="tab" data-tab="maal" aria-selected="false">Goals</button>
+    <button role="tab" data-tab="drift" aria-selected="false">Operations</button>
+    <button role="tab" data-tab="kilder" aria-selected="false">Sources</button>
   </nav>
   <div class="topprog"><div class="prog"><span id="progfill"></span></div>
     <span id="progtxt">0 / {n_steps}</span></div>
@@ -514,137 +512,141 @@ def build() -> str:
 <main>
 <section id="tab-plan" class="tab" role="tabpanel">
   <div class="hero">
-    <p class="eyebrow">Palworld 1.0 · kun breeding · Pål-Andre · lvl 44</p>
-    <h1>Fra roster til toppals,<br>én kake om gangen</h1>
-    <p class="lede">Korteste delte breeding-tre fra dine {len(ROSTER)} arter til de
-    {n_targets} beste palsene som kan bres. Felles mellomledd telles én gang, og formelen
-    bak hvert steg er verifisert mot spillfilenes fasit — alle 44 851 resultater, null avvik.</p>
+    <p class="eyebrow">Palworld 1.0 · breeding only · Pål-Andre · lvl 44</p>
+    <h1>From box to best-in-slot,<br>one cake at a time</h1>
+    <p class="lede">The shortest shared breeding tree from your {len(ROSTER)} species to the
+    {n_targets} best pals you can breed. Shared intermediates are counted once, and the formula
+    behind every step is verified against the game files — all 44,851 results, zero mismatches.</p>
     <div class="tiles">
-      <div class="tile"><b>{n_steps}</b><span>breeding-steg</span></div>
-      <div class="tile"><b>{n_targets}</b><span>endemål</span></div>
-      <div class="tile"><b>{len(KNOWN_SET)}<i>/299</i></b><span>arter nåbare</span></div>
-      <div class="tile"><b id="tile-ready">0</b><span>klare akkurat nå</span></div>
+      <div class="tile"><b>{n_steps}</b><span>breeding steps</span></div>
+      <div class="tile"><b>{n_targets}</b><span>end goals</span></div>
+      <div class="tile"><b>{len(KNOWN_SET)}<i>/299</i></b><span>species reachable</span></div>
+      <div class="tile"><b id="tile-ready">0</b><span>ready right now</span></div>
     </div>
   </div>
   <details class="histbox">
-    <summary>Ryggraden så langt — 5 steg fullført ✓</summary>
+    <summary>Backbone so far — 5 steps done ✓</summary>
     <ol class="steps hist">{hist}</ol>
   </details>
   <div class="rules">
-    <p><b>Slik virker formelen:</b> 134 par har fast fasit, ett par er kjønnsavhengig
-    (Katress/Wixen). Ellers blir barnet arten med CombiRank nærmest
-    <code>⌊(rank<sub>A</sub> + rank<sub>B</sub> + 1) / 2⌋</code> blant de 183 artene i den
-    generiske puljen — varianter og legendariske som kun finnes som oppskriftsbarn kan aldri
-    dukke opp av formelen. Ved eksakt uavgjort vinner høyeste CombiRank. De {len(ties)}
-    stegene som avhenger av tie-break er merket, med trygge alternativer.</p>
-    <p><b>Kjønn:</b> hvert steg trenger ♂ av den ene forelderen og ♀ av den andre (hvilken
-    er likegyldig — unntatt Katress/Wixen). Avkom er ~50/50, så mellomledd som gjenbrukes
-    bør beholdes i begge kjønn. Kjønn kan byttes med Pal Reverser.</p>
-    <p class="hint">Steg med grønn kant er <b>klare nå</b> — begge foreldrene finnes blant
-    palsene du eier (Paldex-fanen) eller har bredd (avkryssede steg). Der kjønnet er
-    <b>låst</b> (kun Katress/Wixen) viser kortet ♀/♂-merker på foreldrene og en hengelås —
-    ellers er fordelingen valgfri, bare det er én hann og én hunn. Alt i samme fase kan
-    kjøres parallelt med flere farmer.</p>
+    <p><b>How the formula works:</b> 134 pairs have a fixed recipe, and one pair is
+    gender-dependent (Katress/Wixen). Otherwise the child is the species whose CombiRank is
+    closest to <code>⌊(rank<sub>A</sub> + rank<sub>B</sub> + 1) / 2⌋</code> among the 183
+    species in the generic pool — variants and legendaries that only exist as recipe children
+    can never come out of the formula. On an exact tie, the higher CombiRank wins. The
+    {len(ties)} steps that depend on the tie-break are flagged, with safe alternatives.</p>
+    <p><b>Gender:</b> every step needs a ♂ of one parent and a ♀ of the other (which one is
+    which doesn't matter — except Katress/Wixen). Offspring are ~50/50, so intermediates that
+    get reused should be kept in both genders. Gender can be swapped with the Pal Reverser.</p>
+    <p class="hint">Steps with a green edge are <b>ready now</b> — both parents exist among
+    the pals you own (Paldex tab) or have bred (checked steps). Where gender is
+    <b>locked</b> (Katress/Wixen only) the card shows ♀/♂ pins on the parents and a padlock —
+    otherwise the split is free, as long as it's one male and one female. Everything in the
+    same phase can run in parallel across multiple farms.</p>
   </div>
   <div class="nextbox">
-    <h3>Klar nå — legg i farmen</h3>
+    <h3>Ready now — put these in the farm</h3>
     <div id="next-list" class="nextlist"></div>
   </div>
-  <h2>Planen <span class="pc">{n_steps} steg · 8 faser</span></h2>
+  <h2>The plan <span class="pc">{n_steps} steps · 8 phases</span></h2>
   {"".join(phases_html)}
-  <h2>Behold begge kjønn</h2>
-  <p class="hint">Mellomledd som skal være forelder i to eller flere steg:</p>
+  <h2>Keep both genders</h2>
+  <p class="hint">Intermediates that will parent two or more steps:</p>
   <ul class="keep">{keep_list}</ul>
 </section>
 <section id="tab-paldex" class="tab" role="tabpanel" hidden>
   <h2>Paldex <span class="pc" id="pdx-count"></span></h2>
-  <p class="hint">Huk av palsene du eier — lagres i nettleseren og styrer hvilke steg i
-  planen som lyser «klar nå». Avkryssede steg teller automatisk som «bredd».
-  Bruk «Kopier roster» for å synce tilbake til <code>roster.txt</code>.</p>
+  <p class="hint">Tick the pals you own — saved in your browser, and it drives which plan
+  steps light up as "ready now". Checked steps automatically count as "bred".
+  Use "Copy roster" to sync back to <code>roster.txt</code>.</p>
   <div class="pdx-controls">
-    <input type="search" id="pdx-search" placeholder="Søk pal …" aria-label="Søk i Paldex">
+    <input type="search" id="pdx-search" placeholder="Search pals…" aria-label="Search Paldex">
     <select id="pdx-filter" aria-label="Filter">
-      <option value="all">Alle</option>
-      <option value="owned">Eier</option>
-      <option value="missing">Mangler</option>
-      <option value="bred">Bredd i planen</option>
-      <option value="goal">Mål</option>
+      <option value="all">All</option>
+      <option value="owned">Owned</option>
+      <option value="missing">Missing</option>
+      <option value="bred">Bred in plan</option>
+      <option value="goal">Goals</option>
       <option value="selfonly">Self-breed-only</option>
     </select>
-    <button id="pdx-export" type="button">Kopier roster</button>
+    <button id="pdx-export" type="button">Copy roster</button>
   </div>
   <ul class="paldex">{paldex}</ul>
 </section>
 <section id="tab-maal" class="tab" role="tabpanel" hidden>
-  <h2>Målgalleriet</h2>
-  <p class="hint">Dette er de beste artene som faktisk <b>kan bres</b> fra rosteret.
-  De få som er naturlig sterkere per jobb (Aegidron Mining 8, Shaolong Watering 8,
-  Dandilord Planting 8, Jetragon Gathering 8, Silvance Medicine 8, Bastigor Cooling 8) er
-  alle self-breed-only eller alpha-fangst — utenfor rekkevidde med kun breeding.
-  Fremdriftslinjen viser hvor mange av artens breeding-steg som er huket av.</p>
+  <h2>Goal gallery</h2>
+  <p class="hint">These are the best species you can actually <b>breed</b> from your box.
+  The few that are naturally stronger per job (Aegidron Mining 8, Shaolong Watering 8,
+  Dandilord Planting 8, Jetragon Gathering 8, Silvance Medicine 8, Bastigor Cooling 8) are
+  all self-breed-only or alpha catches — out of reach through breeding alone.
+  The progress bar shows how many of each species' breeding steps are checked off.</p>
   {"".join(goals_html)}
 </section>
 <section id="tab-drift" class="tab" role="tabpanel" hidden>
-  <h2>Drift av eggfabrikken</h2>
+  <h2>Hatchery operations</h2>
   <div class="rules">
-  <p>Breeding Farm er tech 19, standardkaka tech 17 — alt i denne planen kan kjøres på
-  standardkaker. Inkubasjonstiden ble halvert i 1.0 (nye verdener), og Ancient Hatchery
-  (lvl 76) venter i endgame.</p>
-  <h3>Kaker</h3>
+  <p>The Breeding Farm is tech 19, the standard Cake tech 17 — everything in this plan runs
+  on standard cakes. Incubation time was halved in 1.0 (new worlds), and the Ancient Hatchery
+  (lvl 76) waits in the endgame.</p>
+  <h3>Cakes</h3>
   <div class="tablewrap"><table>
-  <thead><tr><th>Kake</th><th>Tech</th><th>Stasjon</th><th>Effekt</th><th>Mutasjon</th></tr></thead>
+  <thead><tr><th>Cake</th><th>Tech</th><th>Station</th><th>Effect</th><th>Mutation</th></tr></thead>
   <tbody>
-  <tr class="now"><td><b>Cake</b></td><td>17 ✓</td><td>Cooking Pot</td><td>standard — driver alt i planen</td><td>~1&nbsp;% per egg</td></tr>
-  <tr class="now"><td><b>Mushroom Cake</b></td><td>30 ✓</td><td>Cooking Pot</td><td>bedre IV hos avkom</td><td>~1&nbsp;%</td></tr>
-  <tr><td><b>Vegetable Cake</b></td><td>47</td><td>Electric Kitchen</td><td><b>2 egg per syklus</b> — nærmeste store oppgradering (3 nivåer unna!)</td><td>1&nbsp;% × 2 egg (≈2&nbsp;%/syklus)</td></tr>
-  <tr><td><b>Extravagant Veg. Cake</b></td><td>60</td><td>Large-Scale Stone Oven</td><td>best mutasjonssjanse + IV</td><td>~3&nbsp;% per egg</td></tr>
-  <tr><td><b>Special Cake</b></td><td>74</td><td>Ancient Kitchen</td><td>arver flere passiver</td><td>–</td></tr>
+  <tr class="now"><td><b>Cake</b></td><td>17 ✓</td><td>Cooking Pot</td><td>standard — drives the whole plan</td><td>~1&nbsp;% per egg</td></tr>
+  <tr class="now"><td><b>Mushroom Cake</b></td><td>30 ✓</td><td>Cooking Pot</td><td>better IVs on offspring</td><td>~1&nbsp;%</td></tr>
+  <tr><td><b>Vegetable Cake</b></td><td>47</td><td>Electric Kitchen</td><td><b>2 eggs per cycle</b> — the next big upgrade (3 levels away!)</td><td>1&nbsp;% × 2 eggs (≈2&nbsp;%/cycle)</td></tr>
+  <tr><td><b>Extravagant Veg. Cake</b></td><td>60</td><td>Large-Scale Stone Oven</td><td>best mutation odds + IVs</td><td>~3&nbsp;% per egg</td></tr>
+  <tr><td><b>Special Cake</b></td><td>74</td><td>Ancient Kitchen</td><td>inherits more passives</td><td>–</td></tr>
   </tbody></table></div>
-  <p class="hint">Oppskrift standardkake: 5 mel · 8 røde bær · 7 melk · 8 egg · 2 honning
-  (Mozzarina, Chikipi og Beegarde på ranch dekker melk/egg/honning).
-  Artsplanen trenger bare standardkaker — spar de dyre til passiv/IV/mutasjonsjakt etterpå.</p>
-  <h3>Rekkefølgen for én perfekt pal</h3>
-  <p>1) <b>Art</b> (denne planen) → 2) <b>passiver</b> (Pal Surgery Table, tech 38: implanter
-  for 10–50k gull per operasjon; standard-implanter forbrukes ikke — chain-breeding for passiver
-  er i praksis foreldet) → 3) <b>IV</b> (Mushroom Cake, samme-art-avl; arv per stat: 30&nbsp;% far /
-  30&nbsp;% mor / 40&nbsp;% tilfeldig) → 4) <b>kondensering</b> → 5) <b>Awakening</b> til slutt.
-  Kjønn byttes med Pal Reverser (forbrukes; kjøpes bl.a. for Bounty Tokens).</p>
-  <h3>Kondensering (1.0)</h3>
-  <p>4★ koster <b>48 kopier</b> totalt: 4 / 8 / 12 / 24 per stjerne (gamle guider sier 116 —
-  utdatert). Hver stjerne løfter én arbeidsegenskap ett nivå; 4★ løfter alle, og
-  partner-skill-nivå = stjerner + 1. Mutant-egg klekkes med 2★ — da gjenstår bare 12 + 24 = 36.
-  Tips: <b>Starfruit</b> (kjøpes for Dog Coins) kan erstatte kopier i condenseren.</p>
-  <h3>Mutasjon</h3>
-  <p>~1 % per egg med standardkake (~3 % med Extravagant). Mutanten klekkes som Alpha med 2★,
-  IV ~91–100 og fire passiver hvorav minst to regnbue — men <b>arten kan bli en annen</b> (og
-  sterkere) enn parets normale barn. Volum vinner: kjør flere farmer, og la Braloha (+20–50 %
-  egg-fart) og Dynamoff (−20–40 % inkubasjonstid) jobbe for deg når de er bredd i fase 1.</p>
+  <p class="hint">Standard cake recipe: 5 Flour · 8 Red Berries · 7 Milk · 8 Eggs · 2 Honey
+  (Mozzarina, Chikipi and Beegarde on a Ranch cover milk/eggs/honey).
+  The species plan only needs standard cakes — save the expensive ones for passive/IV/mutation
+  hunting afterwards.</p>
+  <h3>The order for one perfect pal</h3>
+  <p>1) <b>Species</b> (this plan) → 2) <b>passives</b> (Pal Surgery Table, tech 38: implants
+  for 10–50k gold per operation; standard implants are not consumed — chain-breeding for
+  passives is effectively obsolete) → 3) <b>IVs</b> (Mushroom Cake, same-species breeding;
+  inheritance per stat: 30&nbsp;% father / 30&nbsp;% mother / 40&nbsp;% random) →
+  4) <b>condensing</b> → 5) <b>Awakening</b> last.
+  Gender is swapped with the Pal Reverser (consumed; bought with Bounty Tokens and more).</p>
+  <h3>Condensing (1.0)</h3>
+  <p>4★ costs <b>48 copies</b> total: 4 / 8 / 12 / 24 per star (old guides say 116 —
+  outdated). Each star raises one work suitability a level; 4★ raises all of them, and
+  partner skill level = stars + 1. Mutant eggs hatch at 2★ — leaving only 12 + 24 = 36.
+  Tip: <b>Starfruit</b> (bought with Dog Coins) can substitute for copies in the condenser.</p>
+  <h3>Mutation</h3>
+  <p>~1% per egg with a standard cake (~3% with Extravagant). The mutant hatches as an Alpha
+  with 2★, IVs ~91–100 and four passives of which at least two are rainbow — but <b>the
+  species can differ</b> from (and outrank) the pair's normal child. Volume wins: run several
+  farms, and let Braloha (+20–50% egg speed) and Dynamoff (−20–40% incubation time) work for
+  you once they're bred in Phase 1.</p>
   </div>
 </section>
 <section id="tab-kilder" class="tab" role="tabpanel" hidden>
-  <h2>Kilder og verifisering</h2>
+  <h2>Sources & verification</h2>
   {verif_html}
-  <h3>Data og oppdatering</h3>
+  <h3>Data & updates</h3>
   <div class="rules">
-  <p>Data: paldb.cc (CombiRank-tabell + unike kombinasjoner, hentet 2026-07-14) via
-  1.0-datasettet <a href="https://github.com/beliarance/palworld-kb">beliarance/palworld-kb</a>,
-  kryssvalidert mot <a href="https://github.com/tylercamp/palcalc">palcalc</a> (alle 44 851
-  forhåndsberegnede 1.0-resultater, generert fra spillfilene — null avvik) og spillets råtabell
-  DT_PalCombiUnique (<a href="https://github.com/Awy64/palworld-atlas-data">palworld-atlas-data</a>).
-  Artsformelen er i tillegg testet mot 31 håndplukkede kjente par.</p>
-  <p>Ny pal i boksen? <code>python3 planner.py add &lt;navn&gt;</code> og
-  <code>python3 build_guide.py</code> → siden regenereres med oppdatert plan.
-  Uidentifisert fra gamle lista: «godbin» — mente du Gobfin Ignis? Legg riktig navn i
+  <p>Data: paldb.cc (CombiRank table + unique combinations, fetched 2026-07-14) via the
+  1.0 dataset <a href="https://github.com/beliarance/palworld-kb">beliarance/palworld-kb</a>,
+  cross-validated against <a href="https://github.com/tylercamp/palcalc">palcalc</a> (all
+  44,851 precomputed 1.0 results generated from the game files — zero mismatches) and the
+  game's raw DT_PalCombiUnique table
+  (<a href="https://github.com/Awy64/palworld-atlas-data">palworld-atlas-data</a>).
+  The species formula is additionally tested against 31 hand-picked known pairs.</p>
+  <p>New pal in your box? <code>python3 planner.py add &lt;name&gt;</code> and
+  <code>python3 build_guide.py</code> → this page regenerates with an updated plan.
+  Unidentified from the old list: "godbin" — did you mean Gobfin Ignis? Put the right name in
   <code>roster.txt</code>.</p>
-  <p class="foot">Ikoner: game-dump via dbgoodm/PalDex · Typografi: Baloo 2 + Manrope (OFL) ·
-  Generert {esc(extracted)} · Palworld 1.0 · nivåtak 80.</p>
+  <p class="foot">Icons: game dump via dbgoodm/PalDex · Type: Baloo 2 + Manrope (OFL) ·
+  Generated {esc(extracted)} · Palworld 1.0 · level cap 80.</p>
   </div>
 </section>
 </main>
 <footer class="pagefoot">
   <span>{logo}</span>
-  <span><b>Eggfabrikken</b> · breeding operations for Pål-Andre · data verifisert mot
-  spillfilene · 2026-08-14</span>
+  <span><b>HatchLab</b> · Palworld breeding operations · data verified against the game
+  files · 2026-08-14</span>
 </footer>
 <script>{JS}</script>'''
 
@@ -1037,12 +1039,12 @@ JS = r'''
       var slot = li.querySelector('.ready-slot');
       if(slot){
         if(checked){ slot.innerHTML = ''; }
-        else if(ok){ slot.innerHTML = '<span class="badge ready-b">klar nå</span>'; }
+        else if(ok){ slot.innerHTML = '<span class="badge ready-b">ready now</span>'; }
         else {
           var miss = [];
           if(!have(li.dataset.a)) miss.push(li.dataset.a);
           if(!have(li.dataset.b)) miss.push(li.dataset.b);
-          slot.innerHTML = '<span class="waitnote">venter på ' + miss.join(' + ') + '</span>';
+          slot.innerHTML = '<span class="waitnote">waiting for ' + miss.join(' + ') + '</span>';
         }
       }
     });
@@ -1055,13 +1057,13 @@ JS = r'''
       var els = [].slice.call(ph.querySelectorAll('.step[data-sid]'));
       var d = els.filter(function(e){ return e.classList.contains('checked'); }).length;
       var c = ph.querySelector('.phase-count');
-      if(c) c.textContent = d + ' av ' + els.length + ' steg';
+      if(c) c.textContent = d + ' of ' + els.length + ' steps';
       var slot = ph.querySelector('.phase-done-slot');
       if(slot) slot.innerHTML = (d === els.length && els.length)
-        ? '<span class="badge ready-b">ferdig ✓</span>' : '';
+        ? '<span class="badge ready-b">done ✓</span>' : '';
     });
 
-    // "klar nå" quick actions
+    // "ready now" quick actions
     var nl = document.getElementById('next-list');
     if(nl){
       nl.innerHTML = '';
@@ -1084,12 +1086,12 @@ JS = r'''
       if(readyEls.length > 6){
         var more = document.createElement('span');
         more.className = 'nextmore';
-        more.textContent = '+ ' + (readyEls.length - 6) + ' til lenger ned';
+        more.textContent = '+ ' + (readyEls.length - 6) + ' more below';
         nl.appendChild(more);
       }
       if(!readyEls.length){
-        nl.innerHTML = '<span class="hint">Ingen steg er klare akkurat nå — huk av det du ' +
-          'eier i Paldex-fanen, eller fullfør steg som andre venter på.</span>';
+        nl.innerHTML = '<span class="hint">No steps are ready right now — tick what you own ' +
+          'in the Paldex tab, or finish the steps others are waiting for.</span>';
       }
     }
 
@@ -1100,7 +1102,7 @@ JS = r'''
       var el = g.querySelector('.gprog'); if(!el) return;
       var d = ids.filter(function(id){ return state.steps[id]; }).length;
       el.querySelector('.gbar span').style.width = (ids.length ? 100*d/ids.length : 0) + '%';
-      el.querySelector('.gtxt').textContent = d + ' av ' + ids.length + ' steg';
+      el.querySelector('.gtxt').textContent = d + ' of ' + ids.length + ' steps';
       g.classList.toggle('gdone', d === ids.length);
     });
 
@@ -1112,12 +1114,12 @@ JS = r'''
       if(o) owned++;
       r.classList.toggle('off', !o && !bred[n]);
       var slot = r.querySelector('.bred-slot');
-      if(slot) slot.innerHTML = bred[n] ? '<span class="badge bredb">bredd ✓</span>' : '';
+      if(slot) slot.innerHTML = bred[n] ? '<span class="badge bredb">bred ✓</span>' : '';
       var cb = r.querySelector('.own input');
       if(cb.checked !== o) cb.checked = o;
     });
     var pc = document.getElementById('pdx-count');
-    if(pc) pc.textContent = 'eier ' + owned + ' av ' + prowEls.length + ' arter';
+    if(pc) pc.textContent = 'you own ' + owned + ' of ' + prowEls.length + ' species';
   }
 
   /* ---------- paldex ---------- */
@@ -1163,8 +1165,8 @@ JS = r'''
     });
     var txt = lines.sort().join('\n') + '\n';
     function done(ok){
-      exp.textContent = ok ? 'Kopiert ✓' : 'Kunne ikke kopiere';
-      setTimeout(function(){ exp.textContent = 'Kopier roster'; }, 1800);
+      exp.textContent = ok ? 'Copied ✓' : 'Copy failed';
+      setTimeout(function(){ exp.textContent = 'Copy roster'; }, 1800);
     }
     if(navigator.clipboard && navigator.clipboard.writeText){
       navigator.clipboard.writeText(txt).then(function(){ done(true); },

@@ -1,7 +1,7 @@
-# Pål-Andres roster — Palworld 1.0 (oppdatert 2026-08-14)
-# Én pal per linje. Kommentarer med '#'. Rediger fritt og kjør:
+# Pål-Andre's roster — Palworld 1.0 (updated 2026-08-14)
+# One pal per line. '#' starts a comment. Edit freely, then run:
 #   python3 planner.py plan
-# Nye pals legges til med:  python3 planner.py add <navn>
+# Add new pals with:  python3 planner.py add <name>
 
 Arsox
 Beakon
@@ -97,7 +97,7 @@ Wixen
 Woolipop
 Xenovader
 
-# --- Bredd/skaffet siden oppstart ---
+# --- Bred/acquired since the start ---
 Wistella
 Broncherry Aqua
 Fuack
@@ -107,5 +107,5 @@ Reptyro Cryst
 Warsect
 Warsect Terra
 
-# "godbin" fra den opprinnelige lista er uidentifisert — nærmeste kandidater:
-# Gobfin (står alt i lista), Gobfin Ignis, Robinquill. Legg til riktig navn selv.
+# "godbin" from the original list is unidentified — closest candidates:
+# Gobfin (already listed), Gobfin Ignis, Robinquill. Add the right name yourself.
