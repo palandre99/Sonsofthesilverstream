@@ -1,17 +1,19 @@
 /** Route Planner — shortest shared breeding tree from your box, on-device. */
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Modal, Pressable, ScrollView, Text, View } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { AnimatedCheck, HatchBurst, type Rarity, type TickState } from '../ui/celebrate';
 import { PalDetail } from '../ui/PalDetail';
-import { acceleratorStatus, cakeNeeds, ranchCoverage } from '../engine/boosters';
+import { cakeNeeds } from '../engine/boosters';
+import { HELPER_NAMES, helperAdvice, type HelperAdvice } from '../engine/helpers';
 import { T } from '../theme';
 import {
   Badge, Btn, Card, PageHead, PalIcon, PalPicker, WorkChips, s,
 } from '../ui/kit';
 import {
   clearPlan, completeStep, getBox, getChecks, getPlan, hasGender, ownedAny,
-  pals, resetPlanProgress, savePlan, selfOnly, uncheckStep, useAppVersion,
+  addPlanTarget, pals, removePlanTarget, resetPlanProgress, savePlan, selfOnly,
+  uncheckStep, useAppVersion,
   engine,
 } from '../store';
 
@@ -145,7 +147,7 @@ export function PlannerScreen() {
 
   // gender-aware ready-states: bred intermediates count as either gender
   const stepMeta = useMemo(() => {
-    const meta = new Map<string, { ready: boolean; missing: string[] }>();
+    const meta = new Map<string, { ready: boolean; missing: string[]; hint: string | null }>();
     if (!plan) return meta;
     // legacy boolean ticks predate gender recording — treat as both genders;
     // modern ticks wrote real genders into the box, so the box is the truth
@@ -168,6 +170,7 @@ export function PlannerScreen() {
       if (!hasSpecies(a, oa)) missing.push(a);
       if (!hasSpecies(b, ob)) missing.push(b);
       let ready = false;
+      let hint: string | null = null;
       if (!missing.length) {
         if (st.genderNote) {
           const parsed = parseGenderNote(st.genderNote);
@@ -177,9 +180,44 @@ export function PlannerScreen() {
         } else {
           ready = (oa.m && ob.f) || (oa.f && ob.m);
         }
-        if (!ready) missing.push('a working ♂/♀ combo');
+        if (!ready) {
+          // name the exact ♂/♀ that unlocks this step — never jargon
+          const combos: string[][] = [];
+          if (st.genderNote) {
+            const parsed = parseGenderNote(st.genderNote);
+            const motherIsA = parsed?.mother === a;
+            const need: string[] = [];
+            if (motherIsA) {
+              if (!oa.f) need.push(`♀ ${a}`);
+              if (!ob.m) need.push(`♂ ${b}`);
+            } else {
+              if (!ob.f) need.push(`♀ ${b}`);
+              if (!oa.m) need.push(`♂ ${a}`);
+            }
+            combos.push(need);
+          } else if (a === b) {
+            const need: string[] = [];
+            if (!oa.m) need.push(`♂ ${a}`);
+            if (!oa.f) need.push(`♀ ${a}`);
+            combos.push(need);
+          } else {
+            const n1: string[] = [];
+            if (!oa.m) n1.push(`♂ ${a}`);
+            if (!ob.f) n1.push(`♀ ${b}`);
+            const n2: string[] = [];
+            if (!oa.f) n2.push(`♀ ${a}`);
+            if (!ob.m) n2.push(`♂ ${b}`);
+            combos.push(n1, n2);
+          }
+          const real = combos.filter((c) => c.length);
+          const min = Math.min(...real.map((c) => c.length));
+          const best = real.filter((c) => c.length === min);
+          hint = best.length
+            ? `need a ${best.map((c) => c.join(' + ')).join(' — or a ')}`
+            : null;
+        }
       }
-      meta.set(stepId(a, b, st.child), { ready, missing });
+      meta.set(stepId(a, b, st.child), { ready, missing, hint });
     }
     return meta;
   }, [plan, checks, box]);
@@ -191,6 +229,11 @@ export function PlannerScreen() {
       const list = byWave.get(st.wave) ?? [];
       list.push(st);
       byWave.set(st.wave, list);
+    }
+    // helpers first inside each phase — they pay off for every later step
+    for (const [, list] of byWave) {
+      list.sort((a, b) =>
+        Number(HELPER_NAMES.has(b.child)) - Number(HELPER_NAMES.has(a.child)));
     }
     return [...byWave.entries()].sort((x, y) => x[0] - y[0]);
   }, [plan]);
@@ -226,11 +269,22 @@ export function PlannerScreen() {
   }, [plan, checks]);
 
   const needs = plan ? cakeNeeds(plan.steps.length) : null;
-  const coverage = plan ? ranchCoverage(pals, ownedAny) : [];
-  const accel = plan
-    ? acceleratorStatus(plan.steps, ownedAny, (sid) => !!checks[sid])
-    : [];
-  const accelWorth = accel.filter((a) => !a.owned || a.planPhase != null);
+  // helper advice re-plans per candidate — compute off the first paint
+  const [advice, setAdvice] = useState<HelperAdvice[]>([]);
+  useEffect(() => {
+    if (!plan) {
+      setAdvice([]);
+      return;
+    }
+    const t = setTimeout(
+      () => setAdvice(helperAdvice(engine, Object.keys(getBox()), ownedAny, plan)),
+      30,
+    );
+    return () => clearTimeout(t);
+  }, [plan, box]);
+  const covered = advice.filter((a) => a.status === 'covered');
+  // best first, capped so the card stays scannable
+  const activeAdvice = advice.filter((a) => a.status !== 'covered').slice(0, 5);
 
   return (
     <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
@@ -357,41 +411,89 @@ export function PlannerScreen() {
             </Card>
           )}
 
-          {needs && (
-            <Card style={{ marginTop: 12, gap: 8 }}>
+          {plan!.steps.length === 0 && (
+            <Card style={{ marginTop: 12 }}>
+              <Text style={s.h3}>Nothing left to breed</Text>
+              <Text style={[s.body, { marginTop: 4 }]}>
+                Every goal in this plan is already in your Paldex. Add another
+                target above, or clear the plan.
+              </Text>
+            </Card>
+          )}
+
+          {needs && plan!.steps.length > 0 && (
+            <Card style={{ marginTop: 12, gap: 10 }}>
               <Text style={s.h3}>Make it faster</Text>
               <Text style={[s.body, { fontSize: 12.5 }]}>
-                {plan!.steps.length} steps means at least {needs.cakes} cakes:
+                {plan!.steps.length} {plan!.steps.length === 1 ? 'step' : 'steps'} means
+                at least {needs.cakes} {needs.cakes === 1 ? 'cake' : 'cakes'}:
                 {' '}~{needs.flour} flour · {needs.berries} berries · {needs.milk} milk
-                · {needs.eggs} eggs · {needs.honey} honey. Ranch coverage:
+                · {needs.eggs} eggs · {needs.honey} honey.
               </Text>
-              <View style={[s.wrap]}>
-                {coverage.map((c) => (
-                  <Badge key={c.ingredient}
-                    kind={c.owned.length ? 'ok' : 'warn'}>
-                    {c.ingredient}: {c.owned.length
-                      ? `${c.owned[0]} ✓`
-                      : `need ${c.producers.slice(0, 2).join(' / ')}`}
-                  </Badge>
-                ))}
-              </View>
-              {accelWorth.length > 0 && (
-                <View style={{ gap: 4, marginTop: 2 }}>
-                  {accelWorth.map((a) => (
-                    <Text key={a.name} style={[s.body, { fontSize: 12.5 }]}>
-                      ⚡ <Text style={{ color: T.ink, fontWeight: '700' }}>{a.name}</Text>
-                      {' '}({a.effect}){' — '}
-                      {a.done || a.owned
-                        ? 'working for you already ✓'
-                        : a.planPhase != null
-                          ? `in your plan at phase ${a.planPhase} — do that branch FIRST, every egg after comes faster`
-                          : 'not in this plan — consider adding it as a target'}
-                    </Text>
+              {covered.length > 0 && (
+                <View style={[s.wrap]}>
+                  {covered.map((a) => (
+                    <Badge key={a.helper.name} kind="ok">{a.helper.name} ✓</Badge>
                   ))}
                 </View>
               )}
+              {activeAdvice.map((a) => {
+                const h = a.helper;
+                const isTarget = plan!.targets.includes(h.name);
+                return (
+                  <View key={h.name} style={{
+                    borderTopWidth: 1, borderTopColor: T.line, paddingTop: 9, gap: 6,
+                  }}>
+                    <Pressable style={[s.row, { gap: 9 }]} onPress={() => setViewing(h.name)}>
+                      <PalIcon name={h.name} size={30} />
+                      <View style={{ flex: 1 }}>
+                        <Text style={{ color: T.ink, fontWeight: '800', fontSize: 13.5 }}>
+                          {h.name}
+                          {a.status === 'suggest' && a.recommended && (
+                            <Text style={{ color: T.goldInk, fontSize: 10 }}>
+                              {'   '}RECOMMENDED
+                            </Text>
+                          )}
+                          {a.status === 'in-plan' && (
+                            <Text style={{ color: T.accentInk, fontSize: 10 }}>
+                              {'   '}PHASE {a.phase}
+                            </Text>
+                          )}
+                        </Text>
+                        <Text style={{ color: T.muted, fontSize: 11.5 }}>{h.effect}</Text>
+                      </View>
+                    </Pressable>
+                    <Text style={[s.body, { fontSize: 12 }]}>{a.note}</Text>
+                    {a.status === 'suggest' && !isTarget && (
+                      <View style={[s.wrap]}>
+                        <Btn small primary={a.recommended}
+                          label={a.addSteps === 0
+                            ? 'Add to plan · free'
+                            : `Add to plan · +${a.addSteps} step${a.addSteps === 1 ? '' : 's'}`}
+                          onPress={() => {
+                            void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+                            addPlanTarget(h.name);
+                            setTargets((prev) =>
+                              prev.includes(h.name) ? prev : [...prev, h.name]);
+                          }} />
+                      </View>
+                    )}
+                    {isTarget && (
+                      <View style={[s.wrap]}>
+                        <Btn small label="Remove from plan"
+                          onPress={() => {
+                            void Haptics.selectionAsync();
+                            removePlanTarget(h.name);
+                            setTargets((prev) => prev.filter((t) => t !== h.name));
+                          }} />
+                      </View>
+                    )}
+                  </View>
+                );
+              })}
               <Text style={[s.body, { fontSize: 11, color: T.faint }]}>
-                Speed effects are community-measured; cake math is the verified recipe.
+                All effects are the game's own partner-skill data. Adding or removing
+                reshapes the plan — steps you've ticked stay ticked.
               </Text>
             </Card>
           )}
@@ -420,31 +522,37 @@ export function PlannerScreen() {
                         : partial ? T.warn
                         : m.ready ? T.ok : T.line,
                     }}>
-                      {/* parents */}
-                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+                      {/* parents — ONE row always: each parent is a
+                          shrinkable icon+name cell, names auto-fit instead
+                          of wrapping (CEO callout 2026-08-15) */}
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
                         <AnimatedCheck state={tick} glyph={partialGlyph(checks[sid])}
                           onPress={() => {
                             void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                             if (tick === 'full') uncheckStep(sid, st.child);
                             else setHatching({ sid, child: st.child });
                           }} />
-                        <Pressable onPress={() => setViewing(st.parents[0])} hitSlop={4}>
+                        <Pressable onPress={() => setViewing(st.parents[0])} hitSlop={4}
+                          style={{ flexDirection: 'row', alignItems: 'center', gap: 8, flexShrink: 1 }}>
                           <PalIcon name={st.parents[0]} size={38}
                             gender={st.genderNote ? (mother === st.parents[0] ? 'f' : 'm') : undefined} />
+                          <Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.72}
+                            style={{
+                              color: T.ink, fontWeight: '700', fontSize: 15.5, flexShrink: 1,
+                              textDecorationLine: checked ? 'line-through' : 'none',
+                            }}>{st.parents[0]}</Text>
                         </Pressable>
-                        <Text style={{
-                          color: T.ink, fontWeight: '700', fontSize: 15.5, flexShrink: 1,
-                          textDecorationLine: checked ? 'line-through' : 'none',
-                        }}>{st.parents[0]}</Text>
                         <Text style={{ color: T.faint, fontWeight: '800', fontSize: 15 }}>+</Text>
-                        <Pressable onPress={() => setViewing(st.parents[1])} hitSlop={4}>
+                        <Pressable onPress={() => setViewing(st.parents[1])} hitSlop={4}
+                          style={{ flexDirection: 'row', alignItems: 'center', gap: 8, flexShrink: 1 }}>
                           <PalIcon name={st.parents[1]} size={38}
                             gender={st.genderNote ? (mother === st.parents[1] ? 'f' : 'm') : undefined} />
+                          <Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.72}
+                            style={{
+                              color: T.ink, fontWeight: '700', fontSize: 15.5, flexShrink: 1,
+                              textDecorationLine: checked ? 'line-through' : 'none',
+                            }}>{st.parents[1]}</Text>
                         </Pressable>
-                        <Text style={{
-                          color: T.ink, fontWeight: '700', fontSize: 15.5, flexShrink: 1,
-                          textDecorationLine: checked ? 'line-through' : 'none',
-                        }}>{st.parents[1]}</Text>
                       </View>
                       {/* result — the hero line */}
                       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingLeft: 36 }}>
@@ -470,8 +578,10 @@ export function PlannerScreen() {
                           <Badge kind="warn">half done — missing the {partialGlyph(checks[sid]) === '♂' ? '♀' : '♂'}</Badge>
                         )}
                         {!checked && !partial && (m.ready
-                          ? <Badge kind="ok">ready now</Badge>
-                          : <Badge kind="plain">waiting for {m.missing.join(' + ')}</Badge>)}
+                          ? <Badge kind="ok">✓ ready to breed</Badge>
+                          : m.hint
+                            ? <Badge kind="warn">{m.hint}</Badge>
+                            : <Badge kind="plain">waiting on {m.missing.join(' + ')}</Badge>)}
                       </View>
                       {/* the result's full work suitabilities — always its own row */}
                       <View style={[s.wrap, { paddingLeft: 36 }]}>

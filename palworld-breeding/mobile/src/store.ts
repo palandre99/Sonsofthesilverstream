@@ -7,6 +7,7 @@
 import { useSyncExternalStore } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BreedingEngine } from './engine/formula';
+import { planFor } from './engine/planner';
 import type { BreedingData, PlanStep } from './engine/types';
 import breedingJson from './data/breeding_1_0.json';
 import palsJson from './data/pals_1_0.json';
@@ -363,6 +364,29 @@ export function clearPlan(): void {
   state.checks = {};
   void persist('plan');
   void persist('checks');
+  emit();
+}
+
+/** Add a goal to the saved plan and reshape it. Checks are keyed by step
+ * id, so every step that survives the reshape keeps its tick. */
+export function addPlanTarget(name: string): void {
+  if (!state.plan || state.plan.targets.includes(name)) return;
+  const targets = [...state.plan.targets, name];
+  const { steps, unreachable } = planFor(engine, Object.keys(state.box), targets);
+  state.plan = { ...state.plan, targets, steps, unreachable };
+  void persist('plan');
+  emit();
+}
+
+/** Change of mind: drop a goal and reshape the plan (a plan keeps at least
+ * one goal). Ticked steps that remain keep their ticks. */
+export function removePlanTarget(name: string): void {
+  if (!state.plan || !state.plan.targets.includes(name)) return;
+  const targets = state.plan.targets.filter((t) => t !== name);
+  if (!targets.length) return;
+  const { steps, unreachable } = planFor(engine, Object.keys(state.box), targets);
+  state.plan = { ...state.plan, targets, steps, unreachable };
+  void persist('plan');
   emit();
 }
 

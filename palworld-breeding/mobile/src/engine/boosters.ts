@@ -42,15 +42,16 @@ export function cakeNeeds(steps: number): CakeNeeds {
 }
 
 /** Which ingredient a ranch product covers (exact product names from data). */
-const PRODUCE_TO_INGREDIENT: Record<string, 'milk' | 'eggs' | 'honey'> = {
+const PRODUCE_TO_INGREDIENT: Record<string, 'milk' | 'eggs' | 'honey' | 'berries'> = {
   Milk: 'milk',
   Egg: 'eggs',
   Eggs: 'eggs',
   Honey: 'honey',
+  'Red Berries': 'berries',
 };
 
 export interface ProducerSuggestion {
-  ingredient: 'milk' | 'eggs' | 'honey';
+  ingredient: 'milk' | 'eggs' | 'honey' | 'berries';
   /** pals that produce it on the Ranch, from real ranch_produce data */
   producers: string[];
   /** producers the player already owns */
@@ -61,8 +62,8 @@ export function ranchCoverage(
   pals: Record<string, PalLike>,
   ownedAny: (n: string) => boolean,
 ): ProducerSuggestion[] {
-  const byIngredient: Record<'milk' | 'eggs' | 'honey', string[]> = {
-    milk: [], eggs: [], honey: [],
+  const byIngredient: Record<'milk' | 'eggs' | 'honey' | 'berries', string[]> = {
+    milk: [], eggs: [], honey: [], berries: [],
   };
   for (const [name, p] of Object.entries(pals)) {
     for (const prod of p.ranch_produce ?? []) {
@@ -70,18 +71,19 @@ export function ranchCoverage(
       if (ing) byIngredient[ing].push(name);
     }
   }
-  return (['milk', 'eggs', 'honey'] as const).map((ing) => ({
+  return (['milk', 'eggs', 'honey', 'berries'] as const).map((ing) => ({
     ingredient: ing,
     producers: byIngredient[ing].sort(),
     owned: byIngredient[ing].filter(ownedAny).sort(),
   }));
 }
 
-/** Pals that make breeding itself faster — community-verified effects
- * (see data/verification.json and the Reference section). */
-export const ACCELERATORS: { name: string; effect: string; confidence: 'community' }[] = [
-  { name: 'Braloha', effect: '+20–50% egg production speed at the Breeding Farm', confidence: 'community' },
-  { name: 'Dynamoff', effect: '−20–40% incubation time', confidence: 'community' },
+/** Pals that make breeding itself faster. VERIFIED against the game's own
+ * partner-skill data (pals_1_0.json) 2026-08-15 — see engine/helpers.ts for
+ * the full scored registry. */
+export const ACCELERATORS: { name: string; effect: string; confidence: 'game-data' }[] = [
+  { name: 'Braloha', effect: '+20–50% egg production speed at the Breeding Farm', confidence: 'game-data' },
+  { name: 'Dynamoff', effect: '−20–40% incubation time', confidence: 'game-data' },
 ];
 
 export interface AcceleratorStatus {

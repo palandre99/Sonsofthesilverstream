@@ -100,3 +100,54 @@ Add everything you find; finding nothing means you didn't look.*
 *Claim an area with a dated line before multi-file work; release when done.*
 
 - (none active)
+
+
+## CEO FEEDBACK LEDGER — night of 2026-08-15 (NOTHING here may be forgotten)
+
+CEO mandate: every piece of feedback lands here the moment it arrives; tick it
+only when shipped AND eye-verified. CEO sleeps ~15h from 01:35; the worker
+loops all night INSIDE the Breeding + Paldex domain (his explicit scope).
+
+### Shipped tonight (verify on device when CEO wakes)
+- [x] Paldex: compact header (list owns the screen), Filter & Sort sheet
+      (in-game style: rarity/work/stat sorts, element + ownership filters,
+      live count) — OTA cc851e51
+- [x] Side panel: vector icons everywhere (no emoji in chrome), real sphere
+      logo, SECTIONS eyebrow, short titles at compact width
+- [x] Map domain re-scoped to EVERYTHING (materials, hackable towers, fishing,
+      bosses, eggs, dungeons, statues, drops, merchants, chests) and made
+      FULLSCREEN — no bottom tabs, filters live in the map (CEO-final)
+- [x] Helper registry (engine/helpers.ts): Chikipi/Mozzarina/Beegarde/Caprity/
+      Braloha/Dynamoff/Grintale/Broncherry(+Aqua)/Ribbuny — ALL verified from
+      game partner-skill data; CEO's "grintale + two dinosaurs" claims CONFIRMED
+- [x] Make it faster v2: Add-to-plan buttons with exact +N step cost, honest
+      RECOMMENDED verdicts, Remove-from-plan, free-byproduct detection
+- [x] In-plan helpers pulled first within their phase + PHASE N pointer
+- [x] Plan step cards: parents row can never wrap a name again (shrinkable
+      cells, auto-fit text) — CEO callout "Warsect Terra"
+- [x] Readiness pills: "ready to breed" / precise "need a M X — or a F Y"
+      gender hints / "waiting on parents" / half-done amber — CEO request
+- [x] Grammar: no "1 steps"/"1 cakes"; empty plan shows "Nothing left to
+      breed" instead of zero-math
+
+### Open — do these before anything else
+- [ ] EYE-VERIFY readiness pills + empty-plan card on 8085, then OTA
+- [ ] Web parity for ALL of tonight (domains nav, filter sheet, helpers card,
+      parents-row fix, readiness pills, vector-icon chrome) — web tests must
+      stay green, engine copies identical
+- [ ] Advice row right after Add: note text lags one recompute — make the
+      in-plan note appear immediately (recompute synchronously on add)
+- [ ] Smart catch-vs-breed advice: when addSteps is huge (Braloha +19),
+      recommend CATCHING it instead — wild spawn regions are in the dataset;
+      show "or catch one: <region>" in the advice row
+- [ ] Paldex header collapse-on-scroll polish (CEO floated it; compact default
+      shipped — evaluate if still worth it)
+- [ ] Jargon audit across every screen (CEO: "if it's not easy to understand
+      it's poor design") — hunt engine words leaking into UI copy
+- [ ] Reference tab: add the verified helper-pal table (partner skills, from
+      game data) so the knowledge is visible outside the plan card
+- [ ] verification.json + ENGINE_STATUS: record partner-skill verification
+      (Braloha/Dynamoff/Grintale/Broncherry/Caprity berries) 2026-08-15
+- [ ] Broncherry alpha-egg details in the pal info card (luck helpers section)
+- [ ] Mobile engine test harness (vitest for mobile copies) — still open
+- [ ] Aug-12 game-update data freshness check (upstream kb + palcalc) — URGENT
