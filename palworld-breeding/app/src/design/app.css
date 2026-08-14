@@ -232,6 +232,41 @@
   place-items:center;color:#fff;font-size:14px;font-weight:800}
 .btn:disabled{opacity:.5;cursor:not-allowed}
 
+/* ---------- plan: goal progress ---------- */
+.goalgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:8px;
+  margin-top:12px}
+.goalrow{display:grid;grid-template-columns:30px minmax(0,auto) 1fr auto;gap:9px;
+  align-items:center;padding:7px 10px;border-radius:10px;background:var(--surface2);
+  font-size:13px}
+.goalrow .gname{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.goalrow .gbar{height:8px;border-radius:4px;background:var(--bg2);overflow:hidden;
+  min-width:40px}
+.goalrow .gbar span{display:block;height:100%;border-radius:4px;background:var(--accent)}
+.goalrow.complete .gbar span{background:var(--ok)}
+.goalrow .gnum{color:var(--muted);font-weight:700;font-size:12px}
+
+/* ---------- box: filters, import/export ---------- */
+.boxactions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.filterrow{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:0 0 14px}
+.fbtn{padding:7px 14px;border-radius:20px;border:1.5px solid var(--line2);
+  background:var(--surface2);color:var(--muted);font-weight:700;font-size:13px;
+  cursor:pointer}
+.fbtn.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent-ink)}
+.bulkbtns{display:flex;gap:6px}
+.btn.sm{padding:6px 12px;font-size:12.5px;border-radius:9px}
+.btn.danger{background:var(--bad-soft);border-color:var(--bad);color:var(--bad)}
+.importpanel{margin-bottom:16px}
+.importpanel textarea{width:100%;margin-top:12px;padding:12px 14px;border-radius:11px;
+  border:1px solid var(--line);background:var(--surface2);color:var(--ink);
+  font:13px/1.5 ui-monospace,Consolas,monospace;resize:vertical}
+.importmeta{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-top:10px;
+  font-size:13.5px;font-weight:700}
+.okink{color:var(--ok)}
+.importbtns{display:flex;gap:10px;margin-top:14px}
+.dangerpanel{border-color:var(--bad)}
+.boxrow .rowmain{display:flex;align-items:center;gap:10px;border:none;background:none;
+  padding:0;cursor:pointer;color:var(--ink);text-align:left;min-width:0}
+
 /* ---------- odds lab ---------- */
 .parentrow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media (max-width:720px){.parentrow{grid-template-columns:1fr}}

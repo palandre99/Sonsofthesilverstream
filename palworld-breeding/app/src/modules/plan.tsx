@@ -1,11 +1,13 @@
 /** Route Planner — multi-target shortest shared breeding tree from your box,
  * gender-aware: a step only counts as "ready" when you actually have a working
  * male/female combination (bred intermediates can be rebred to either gender,
- * so they count as both — that's what the keep-both-genders warnings are for). */
+ * so they count as both — that's what the keep-both-genders warnings are for).
+ * Planning runs in a Web Worker; targets, results and check-offs persist. */
 import { useMemo, useState } from 'preact/hooks';
-import { box, engine, hasGender, nav, ownedAny, selfOnly } from '../state';
+import { box, hasGender, nav, ownedAny, selfOnly } from '../state';
 import { GenderToggles, LockBadge, PalIcon, PalPicker, WorkChips } from '../components/shared';
-import { planFor, stepId } from '../engine/planner';
+import { stepId } from '../engine/planner';
+import { requestPlan } from '../engine/planClient';
 import type { PlanStep } from '../engine/types';
 
 const PRESETS: Record<string, { label: string; targets: string[] }> = {
@@ -27,15 +29,37 @@ const PRESETS: Record<string, { label: string; targets: string[] }> = {
 };
 
 const CHECKS_KEY = 'hatchlab-plan-checks-v1';
+const PLAN_KEY = 'hatchlab-plan-v1';
 
 function loadChecks(): Record<string, true> {
   try { return JSON.parse(localStorage.getItem(CHECKS_KEY) || '{}'); } catch { return {}; }
 }
 
+interface SavedPlan {
+  targets: string[];
+  steps: PlanStep[];
+  unreachable: string[];
+  planned: string; // ISO date
+}
+
+function loadSaved(): SavedPlan | null {
+  try {
+    const raw = localStorage.getItem(PLAN_KEY);
+    if (!raw) return null;
+    const p = JSON.parse(raw) as SavedPlan;
+    return Array.isArray(p.targets) && Array.isArray(p.steps) ? p : null;
+  } catch { return null; }
+}
+
 export function PlanPage() {
-  const [targets, setTargets] = useState<string[]>([]);
-  const [plan, setPlan] = useState<{ steps: PlanStep[]; unreachable: string[] } | null>(null);
+  const saved = useMemo(loadSaved, []);
+  const [targets, setTargets] = useState<string[]>(saved?.targets ?? []);
+  const [plan, setPlan] = useState<{ steps: PlanStep[]; unreachable: string[] } | null>(
+    saved ? { steps: saved.steps, unreachable: saved.unreachable } : null,
+  );
   const [busy, setBusy] = useState(false);
+  const [planError, setPlanError] = useState<string | null>(null);
+  const [planMs, setPlanMs] = useState<number | null>(null);
   const [checks, setChecks] = useState<Record<string, true>>(loadChecks());
 
   const ownedNames = Object.keys(box.value);
@@ -50,14 +74,18 @@ export function PlanPage() {
 
   const run = () => {
     setBusy(true);
-    setPlan(null);
-    setTimeout(() => {
-      try {
-        setPlan(planFor(engine!, ownedNames, targets));
-      } finally {
-        setBusy(false);
-      }
-    }, 30);
+    setPlanError(null);
+    requestPlan(ownedNames, targets)
+      .then((r) => {
+        setPlan({ steps: r.steps, unreachable: r.unreachable });
+        setPlanMs(r.ms);
+        localStorage.setItem(PLAN_KEY, JSON.stringify({
+          targets, steps: r.steps, unreachable: r.unreachable,
+          planned: new Date().toISOString(),
+        } satisfies SavedPlan));
+      })
+      .catch((e) => setPlanError(String(e instanceof Error ? e.message : e)))
+      .finally(() => setBusy(false));
   };
 
   const toggleCheck = (sid: string) => {
@@ -121,6 +149,25 @@ export function PlanPage() {
     ? plan.steps.filter((s) => checks[stepId(s.parents[0], s.parents[1], s.child)]).length
     : 0;
 
+  // per-target progress: how many of the steps each goal depends on are done
+  const targetProgress = useMemo(() => {
+    if (!plan) return [];
+    const byTarget = new Map<string, { total: number; done: number }>();
+    for (const s of plan.steps) {
+      const sid = stepId(s.parents[0], s.parents[1], s.child);
+      const isDone = !!checks[sid];
+      for (const t of s.neededBy) {
+        const cur = byTarget.get(t) ?? { total: 0, done: 0 };
+        cur.total++;
+        if (isDone) cur.done++;
+        byTarget.set(t, cur);
+      }
+    }
+    return [...byTarget.entries()]
+      .map(([name, v]) => ({ name, ...v }))
+      .sort((x, y) => (y.done / y.total) - (x.done / x.total) || x.name.localeCompare(y.name));
+  }, [plan, checks]);
+
   return (
     <>
       <div class="pagehead">
@@ -166,13 +213,38 @@ export function PlanPage() {
         </button>
       </div>
 
+      {planError && (
+        <div class="notebox" style={{ marginBottom: '14px' }}>
+          Planning failed: {planError}. Try again — if it persists, reload the page.
+        </div>
+      )}
+
       {plan && (
         <>
           <div class="boxstats">
             <div class="tile"><b>{plan.steps.length}</b><span>breeding steps</span></div>
             <div class="tile"><b>{done} / {plan.steps.length}</b><span>done</span></div>
             <div class="tile"><b>{[...stepMeta.values()].filter((m) => m.ready).length}</b><span>ready right now</span></div>
+            {planMs !== null && (
+              <div class="tile"><b>{planMs < 1000 ? `${Math.round(planMs)}ms` : `${(planMs / 1000).toFixed(1)}s`}</b><span>planned in</span></div>
+            )}
           </div>
+
+          {targetProgress.length > 0 && (
+            <div class="card bigcard" style={{ marginBottom: '16px' }}>
+              <h2>Goal progress</h2>
+              <div class="goalgrid">
+                {targetProgress.map((t) => (
+                  <div class={`goalrow${t.done === t.total ? ' complete' : ''}`}>
+                    <PalIcon name={t.name} size={30} />
+                    <span class="gname">{t.name}</span>
+                    <span class="gbar"><span style={{ width: `${(t.done / t.total) * 100}%` }} /></span>
+                    <span class="gnum">{t.done}/{t.total}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
           {plan.unreachable.length > 0 && (
             <div class="notebox" style={{ marginBottom: '14px' }}>
               Not reachable from your box:{' '}

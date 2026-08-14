@@ -1,6 +1,7 @@
 /** Global app state: loaded data, the breeding engine, My Box, theme, routing. */
 import { computed, effect, signal } from '@preact/signals';
 import { BreedingEngine } from './engine/formula';
+import { initPlanner } from './engine/planClient';
 import type { BreedingData } from './engine/types';
 
 export interface PalInfo {
@@ -45,6 +46,10 @@ export const pals = signal<Record<string, PalInfo>>({});
 export const passives = signal<PassiveInfo[]>([]);
 export const iconFiles = signal<Record<string, string>>({});
 export let engine: BreedingEngine | null = null;
+/** Test seam: ES module bindings are read-only from outside. */
+export function setEngine(e: BreedingEngine): void {
+  engine = e;
+}
 export const breedingRaw = signal<BreedingData | null>(null);
 export const selfOnly = signal<Set<string>>(new Set());
 
@@ -134,6 +139,7 @@ export async function loadData(): Promise<void> {
   verification.value = (verif as { claims: never[] } | undefined)?.claims ?? [];
   passives.value = (passivesJson as { passives: PassiveInfo[] } | undefined)?.passives ?? [];
   engine = new BreedingEngine(breeding);
+  initPlanner(breeding);
   breedingRaw.value = breeding;
   selfOnly.value = new Set(breeding.self_breed_only);
   pals.value = palsJson.pals;
