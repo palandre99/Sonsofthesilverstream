@@ -91,9 +91,12 @@ export interface SavedPlan {
 
 interface State {
   box: Record<string, OwnedGenders>;
-  checks: Record<string, true>;
+  /** legacy `true` (pre-gender ticks) or a StepCheck record */
+  checks: Record<string, true | StepCheckShape>;
   plan: SavedPlan | null;
 }
+
+interface StepCheckShape { m: boolean; f: boolean; addedM: boolean; addedF: boolean }
 
 const state: State = { box: {}, checks: {}, plan: null };
 let version = 0;
@@ -198,7 +201,7 @@ async function loadProfileData(): Promise<void> {
         Object.entries(saved).filter(([n]) => Object.hasOwn(pals, n)),
       );
     }
-    if (c[1]) state.checks = JSON.parse(c[1]) as Record<string, true>;
+    if (c[1]) state.checks = JSON.parse(c[1]) as Record<string, true | StepCheckShape>;
     if (p[1]) {
       const plan = JSON.parse(p[1]) as SavedPlan;
       if (Array.isArray(plan.targets) && Array.isArray(plan.steps)) state.plan = plan;
@@ -289,9 +292,49 @@ export function savePlan(plan: SavedPlan): void {
   emit();
 }
 
-export function toggleCheck(sid: string): void {
-  if (state.checks[sid]) delete state.checks[sid];
-  else state.checks[sid] = true;
+/* A completed step records WHICH genders hatched and writes them straight
+ * into the collection — one tick, no double registration. It also remembers
+ * what it ADDED, so unticking removes only that (never pre-owned pals). */
+export interface StepCheck {
+  m: boolean;
+  f: boolean;
+  addedM: boolean;
+  addedF: boolean;
+}
+
+export const isChecked = (sid: string): boolean => !!state.checks[sid];
+
+export function completeStep(sid: string, child: string, got: { m: boolean; f: boolean }): void {
+  const hadM = hasGender(child, 'm');
+  const hadF = hasGender(child, 'f');
+  const entry: StepCheck = {
+    m: got.m, f: got.f,
+    addedM: got.m && !hadM,
+    addedF: got.f && !hadF,
+  };
+  (state.checks as Record<string, unknown>)[sid] = entry;
+  const cur = state.box[child] ?? { m: false, f: false };
+  const next = { m: cur.m || got.m, f: cur.f || got.f };
+  if (next.m || next.f) state.box[child] = next;
   void persist('checks');
+  void persist('box');
+  emit();
+}
+
+export function uncheckStep(sid: string, child: string): void {
+  const c = (state.checks as Record<string, unknown>)[sid];
+  delete (state.checks as Record<string, unknown>)[sid];
+  if (c && typeof c === 'object') {
+    // remove only what the tick contributed
+    const sc = c as StepCheck;
+    const cur = state.box[child];
+    if (cur) {
+      const next = { m: cur.m && !sc.addedM, f: cur.f && !sc.addedF };
+      if (!next.m && !next.f) delete state.box[child];
+      else state.box[child] = next;
+    }
+  }
+  void persist('checks');
+  void persist('box');
   emit();
 }

@@ -1,14 +1,14 @@
 /** Route Planner — shortest shared breeding tree from your box, on-device. */
 import React, { useMemo, useState } from 'react';
-import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
+import { ActivityIndicator, Modal, ScrollView, Text, View } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { T } from '../theme';
 import {
   Badge, Btn, Card, PageHead, PalIcon, PalPicker, WorkChips, s,
 } from '../ui/kit';
 import {
-  getBox, getChecks, getPlan, hasGender, ownedAny, savePlan, selfOnly,
-  toggleCheck, useAppVersion, engine,
+  completeStep, getBox, getChecks, getPlan, hasGender, ownedAny, savePlan,
+  selfOnly, uncheckStep, useAppVersion, engine,
 } from '../store';
 import { planFor, stepId } from '../engine/planner';
 import { parseGenderNote } from '../engine/formula';
@@ -32,12 +32,12 @@ const PRESETS: Record<string, { label: string; targets: string[] }> = {
   },
 };
 
-function Check({ on, onToggle }: { on: boolean; onToggle: () => void }) {
+function Check({ on, onPress }: { on: boolean; onPress: () => void }) {
   return (
     <Text
       onPress={() => {
         void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-        onToggle();
+        onPress();
       }}
       style={{
         width: 26, height: 26, borderRadius: 8, borderWidth: 2,
@@ -49,6 +49,43 @@ function Check({ on, onToggle }: { on: boolean; onToggle: () => void }) {
   );
 }
 
+/** "Hatched it! Which genders do you have?" — one tick registers the pal in
+ * the Paldex too, so nothing is entered twice. */
+function HatchSheet({ child, sid, onClose }: {
+  child: string; sid: string; onClose: () => void;
+}) {
+  const pick = (m: boolean, f: boolean) => {
+    void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    completeStep(sid, child, { m, f });
+    onClose();
+  };
+  return (
+    <Modal visible transparent animationType="fade" onRequestClose={onClose}>
+      <View style={{
+        flex: 1, backgroundColor: 'rgba(0,0,0,0.55)',
+        alignItems: 'center', justifyContent: 'center', padding: 28,
+      }}>
+        <Card style={{ width: '100%', alignItems: 'center' }}>
+          <PalIcon name={child} size={56} />
+          <Text style={[s.h2, { marginTop: 8 }]}>Hatched {child}!</Text>
+          <Text style={[s.body, { marginTop: 4, textAlign: 'center' }]}>
+            Which genders do you have? It goes straight into your Paldex —
+            no double registration.
+          </Text>
+          <View style={[s.wrap, { marginTop: 14, justifyContent: 'center' }]}>
+            <Btn label="♂ only" onPress={() => pick(true, false)} />
+            <Btn label="♀ only" onPress={() => pick(false, true)} />
+            <Btn primary label="♂ + ♀ both" onPress={() => pick(true, true)} />
+          </View>
+          <View style={{ marginTop: 10 }}>
+            <Btn small label="Cancel" onPress={onClose} />
+          </View>
+        </Card>
+      </View>
+    </Modal>
+  );
+}
+
 export function PlannerScreen() {
   useAppVersion();
   const saved = getPlan();
@@ -57,6 +94,7 @@ export function PlannerScreen() {
   const [busy, setBusy] = useState(false);
   const [planError, setPlanError] = useState<string | null>(null);
   const [picking, setPicking] = useState(false);
+  const [hatching, setHatching] = useState<{ sid: string; child: string } | null>(null);
 
   const box = getBox();
   const ownedNames = Object.keys(box);
@@ -243,7 +281,7 @@ export function PlannerScreen() {
                     <View key={g.name} style={[s.row, { gap: 8 }]}>
                       <PalIcon name={g.name} size={26} />
                       <Text style={{
-                        color: T.ink, fontWeight: '700', fontSize: 12.5, width: 118,
+                        color: T.ink, fontWeight: '700', fontSize: 14, width: 132,
                       }} numberOfLines={1}>{g.name}</Text>
                       <View style={{
                         flex: 1, height: 8, borderRadius: 4, backgroundColor: T.surface2,
@@ -280,26 +318,40 @@ export function PlannerScreen() {
                   const mother = st.genderNote ? parseGenderNote(st.genderNote)?.mother : undefined;
                   return (
                     <Card key={sid} style={{
-                      padding: 10, opacity: checked ? 0.55 : 1,
+                      padding: 14, gap: 10, opacity: checked ? 0.55 : 1,
                       borderLeftWidth: 4,
                       borderLeftColor: checked ? T.line : m.ready ? T.ok : T.line,
                     }}>
-                      <View style={[s.row, { gap: 8 }]}>
-                        <Check on={checked} onToggle={() => toggleCheck(sid)} />
-                        <PalIcon name={st.parents[0]} size={32}
+                      {/* parents */}
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+                        <Check on={checked} onPress={() => {
+                          if (checked) uncheckStep(sid, st.child);
+                          else setHatching({ sid, child: st.child });
+                        }} />
+                        <PalIcon name={st.parents[0]} size={38}
                           gender={st.genderNote ? (mother === st.parents[0] ? 'f' : 'm') : undefined} />
-                        <PalIcon name={st.parents[1]} size={32}
+                        <Text style={{
+                          color: T.ink, fontWeight: '700', fontSize: 15.5, flexShrink: 1,
+                          textDecorationLine: checked ? 'line-through' : 'none',
+                        }}>{st.parents[0]}</Text>
+                        <Text style={{ color: T.faint, fontWeight: '800', fontSize: 15 }}>+</Text>
+                        <PalIcon name={st.parents[1]} size={38}
                           gender={st.genderNote ? (mother === st.parents[1] ? 'f' : 'm') : undefined} />
                         <Text style={{
-                          color: T.ink, fontWeight: '700', fontSize: 13, flex: 1,
+                          color: T.ink, fontWeight: '700', fontSize: 15.5, flexShrink: 1,
                           textDecorationLine: checked ? 'line-through' : 'none',
-                        }}>
-                          {st.parents[0]} + {st.parents[1]}
-                          {'\n'}<Text style={{ color: T.accentInk }}>= {st.child}</Text>
-                        </Text>
-                        <PalIcon name={st.child} size={38} />
+                        }}>{st.parents[1]}</Text>
                       </View>
-                      <View style={[s.wrap, { marginTop: 7 }]}>
+                      {/* result — the hero line */}
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingLeft: 36 }}>
+                        <Text style={{ color: T.accent, fontWeight: '800', fontSize: 18 }}>→</Text>
+                        <PalIcon name={st.child} size={46} />
+                        <Text style={{
+                          color: T.accentInk, fontWeight: '800', fontSize: 19, flexShrink: 1,
+                          textDecorationLine: checked ? 'line-through' : 'none',
+                        }}>{st.child}</Text>
+                      </View>
+                      <View style={[s.wrap]}>
                         {st.isTarget && <Badge kind="gold">Goal</Badge>}
                         {st.kind === 'unique' && <Badge kind="unique">unique</Badge>}
                         {st.kind === 'gendered' && <Badge kind="warn">gender locked</Badge>}
@@ -319,6 +371,11 @@ export function PlannerScreen() {
             </View>
           ))}
         </>
+      )}
+
+      {hatching && (
+        <HatchSheet child={hatching.child} sid={hatching.sid}
+          onClose={() => setHatching(null)} />
       )}
 
       <PalPicker

@@ -4,7 +4,7 @@
  * so they count as both — that's what the keep-both-genders warnings are for).
  * Planning runs in a Web Worker; targets, results and check-offs persist. */
 import { useMemo, useState } from 'preact/hooks';
-import { box, hasGender, nav, ownedAny, selfOnly, storage } from '../state';
+import { box, hasGender, nav, ownedAny, selfOnly, setOwnedGender, storage } from '../state';
 import { GenderToggles, LockBadge, PalIcon, PalPicker, WorkChips } from '../components/shared';
 import { stepId } from '../engine/planner';
 import { parseGenderNote } from '../engine/formula';
@@ -32,7 +32,14 @@ const PRESETS: Record<string, { label: string; targets: string[] }> = {
 const CHECKS_KEY = 'hatchlab-plan-checks-v1';
 const PLAN_KEY = 'hatchlab-plan-v1';
 
-function loadChecks(): Record<string, true> {
+/** A completed step records WHICH genders hatched and registers the child in
+ * the collection at the same moment — one tick, no double entry. It also
+ * remembers what it ADDED so unticking removes only that. Legacy `true`
+ * values (pre-gender ticks) stay valid. */
+export interface StepCheck { m: boolean; f: boolean; addedM: boolean; addedF: boolean }
+export type CheckValue = true | StepCheck;
+
+function loadChecks(): Record<string, CheckValue> {
   try { return JSON.parse(storage.get(CHECKS_KEY) || '{}'); } catch { return {}; }
 }
 
@@ -62,7 +69,8 @@ export function PlanPage() {
   const [planError, setPlanError] = useState<string | null>(null);
   const [planMs, setPlanMs] = useState<number | null>(null);
   const [plannedAt, setPlannedAt] = useState<string | null>(saved?.planned ?? null);
-  const [checks, setChecks] = useState<Record<string, true>>(loadChecks());
+  const [checks, setChecks] = useState<Record<string, CheckValue>>(loadChecks());
+  const [hatching, setHatching] = useState<{ sid: string; child: string } | null>(null);
 
   const ownedNames = Object.keys(box.value);
 
@@ -92,10 +100,29 @@ export function PlanPage() {
       .finally(() => setBusy(false));
   };
 
-  const toggleCheck = (sid: string) => {
+  const completeStep = (sid: string, child: string, got: { m: boolean; f: boolean }) => {
+    const entry: StepCheck = {
+      m: got.m, f: got.f,
+      addedM: got.m && !hasGender(child, 'm'),
+      addedF: got.f && !hasGender(child, 'f'),
+    };
+    if (got.m) setOwnedGender(child, 'm', true);
+    if (got.f) setOwnedGender(child, 'f', true);
+    const next = { ...checks, [sid]: entry };
+    setChecks(next);
+    storage.set(CHECKS_KEY, JSON.stringify(next));
+    setHatching(null);
+  };
+
+  const uncheckStep = (sid: string, child: string) => {
+    const c = checks[sid];
     const next = { ...checks };
-    if (next[sid]) delete next[sid];
-    else next[sid] = true;
+    delete next[sid];
+    if (c && typeof c === 'object') {
+      // remove only what the tick contributed — never pre-owned pals
+      if (c.addedM) setOwnedGender(child, 'm', false);
+      if (c.addedF) setOwnedGender(child, 'f', false);
+    }
     setChecks(next);
     storage.set(CHECKS_KEY, JSON.stringify(next));
   };
@@ -280,7 +307,10 @@ export function PlanPage() {
                       <label class="tick">
                         <input type="checkbox" checked={checked}
                           aria-label={`Done: ${s.parents[0]} + ${s.parents[1]} = ${s.child}`}
-                          onChange={() => toggleCheck(sid)} />
+                          onChange={() => {
+                            if (checked) uncheckStep(sid, s.child);
+                            else setHatching({ sid, child: s.child });
+                          }} />
                         <span />
                       </label>
                       <PalIcon name={s.parents[0]} size={36}
@@ -329,6 +359,29 @@ export function PlanPage() {
             </div>
           </div>
         </>
+      )}
+
+      {hatching && (
+        <div class="hatchback" onClick={() => setHatching(null)}>
+          <div class="card bigcard hatchcard" role="dialog" aria-modal="true"
+            aria-label={`Hatched ${hatching.child}`}
+            onClick={(e) => e.stopPropagation()}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+              <PalIcon name={hatching.child} size={56} />
+              <h2>Hatched {hatching.child}!</h2>
+              <p style={{ color: 'var(--muted)', fontSize: '13.5px', textAlign: 'center', margin: 0 }}>
+                Which genders do you have? It goes straight into your Paldex —
+                no double registration.
+              </p>
+              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'center', marginTop: '8px' }}>
+                <button class="btn" onClick={() => completeStep(hatching.sid, hatching.child, { m: true, f: false })}>♂ only</button>
+                <button class="btn" onClick={() => completeStep(hatching.sid, hatching.child, { m: false, f: true })}>♀ only</button>
+                <button class="btn primary" onClick={() => completeStep(hatching.sid, hatching.child, { m: true, f: true })}>♂ + ♀ both</button>
+              </div>
+              <button class="btn sm" style={{ marginTop: '4px' }} onClick={() => setHatching(null)}>Cancel</button>
+            </div>
+          </div>
+        </div>
       )}
 
       {!plan && !busy && (

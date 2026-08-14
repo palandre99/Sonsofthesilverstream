@@ -347,3 +347,8 @@
 .bigcard h2{font-size:21px;margin-bottom:8px}
 .bigcard p{color:var(--muted);max-width:70ch}
 .empty{color:var(--muted);padding:30px;text-align:center}
+
+/* ---------- hatch modal ---------- */
+.hatchback{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:50;
+  display:grid;place-items:center;padding:24px}
+.hatchcard{max-width:420px;width:100%}
