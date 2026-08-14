@@ -1,0 +1,30 @@
+name: HatchLab CI
+
+on:
+  push:
+    paths:
+      - "palworld-breeding/**"
+      - ".github/workflows/ci.yml"
+  pull_request:
+    paths:
+      - "palworld-breeding/**"
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: palworld-breeding/app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: palworld-breeding/app/package-lock.json
+      - run: npm ci
+      # the correctness gate: 62 tests incl. the exact 44,851-row oracle replay
+      - run: npm test
+      # typecheck + production build + service worker generation
+      - run: npm run build
+      - run: node --check dist/sw.js
