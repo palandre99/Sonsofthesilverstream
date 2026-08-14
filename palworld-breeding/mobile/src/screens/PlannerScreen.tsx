@@ -160,7 +160,7 @@ export function PlannerScreen() {
       {ownedNames.length === 0 && (
         <Card style={{ backgroundColor: T.warnSoft, borderColor: T.warn, marginBottom: 12 }}>
           <Text style={[s.body, { color: T.warn }]}>
-            Your box is empty — fill it in the Box tab first (or import a list there).
+            Your collection is empty — tick your pals in the Paldex tab first (or import a list there).
           </Text>
         </Card>
       )}

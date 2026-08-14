@@ -6,7 +6,6 @@ import { useEffect, useState } from 'preact/hooks';
 import { dataReady, loadData, route, theme } from './state';
 import { CalculatorPage } from './modules/calculator';
 import { PaldexPage } from './modules/paldex';
-import { BoxPage } from './modules/box';
 import { PlanPage } from './modules/plan';
 import { OddsPage } from './modules/odds';
 import { ReferencePage } from './modules/misc';
@@ -33,7 +32,6 @@ const NAV = [
   { hash: 'plan', label: 'Route Planner', icon: icons.plan, match: 'plan' },
   { hash: 'odds', label: 'Odds Lab', icon: icons.odds, match: 'odds' },
   { hash: 'paldex', label: 'Paldex', icon: icons.paldex, match: 'paldex' },
-  { hash: 'box', label: 'My Box', icon: icons.box, match: 'box' },
   { hash: 'reference', label: 'Reference', icon: icons.ref, match: 'reference' },
 ];
 
@@ -103,7 +101,6 @@ export function App() {
           <Boundary key={page}>
             {page === 'calc' ? <CalculatorPage /> :
             page === 'paldex' ? <PaldexPage /> :
-            page === 'box' ? <BoxPage /> :
             page === 'plan' ? <PlanPage /> :
             page === 'odds' ? <OddsPage /> :
             <ReferencePage />}

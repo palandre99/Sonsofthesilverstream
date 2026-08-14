@@ -9,17 +9,15 @@ import { CalculatorScreen } from './screens/CalculatorScreen';
 import { PlannerScreen } from './screens/PlannerScreen';
 import { OddsScreen } from './screens/OddsScreen';
 import { PaldexScreen } from './screens/PaldexScreen';
-import { BoxScreen } from './screens/BoxScreen';
 import { ReferenceScreen } from './screens/ReferenceScreen';
 
-type Tab = 'calc' | 'plan' | 'odds' | 'paldex' | 'box' | 'ref';
+type Tab = 'calc' | 'plan' | 'odds' | 'paldex' | 'ref';
 
 const TABS: { id: Tab; label: string; glyph: string }[] = [
   { id: 'calc', label: 'Calc', glyph: '🧮' },
   { id: 'plan', label: 'Plan', glyph: '🥚' },
   { id: 'odds', label: 'Odds', glyph: '🎲' },
   { id: 'paldex', label: 'Paldex', glyph: '📖' },
-  { id: 'box', label: 'Box', glyph: '📦' },
   { id: 'ref', label: 'Ref', glyph: 'ℹ️' },
 ];
 
@@ -84,7 +82,6 @@ function Shell() {
             : tab === 'plan' ? <PlannerScreen />
             : tab === 'odds' ? <OddsScreen />
             : tab === 'paldex' ? <PaldexScreen />
-            : tab === 'box' ? <BoxScreen />
             : <ReferenceScreen />}
         </Boundary>
       </View>

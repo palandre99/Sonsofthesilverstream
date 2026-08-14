@@ -184,8 +184,8 @@ export function PlanPage() {
 
       {ownedNames.length === 0 && (
         <div class="notebox" style={{ marginBottom: '16px' }}>
-          Your box is empty — the planner needs to know what you own.
-          Fill it in <a href="#/box">My Box</a> (or import a list there) first.
+          Your collection is empty — the planner needs to know what you own.
+          Tick your pals in the <a href="#/paldex">Paldex</a> (or import a list there) first.
         </div>
       )}
 

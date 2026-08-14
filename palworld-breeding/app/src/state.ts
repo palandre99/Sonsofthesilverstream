@@ -190,7 +190,6 @@ export async function loadData(): Promise<void> {
 export type Route =
   | { page: 'calc'; target?: string }
   | { page: 'paldex'; pal?: string }
-  | { page: 'box' }
   | { page: 'plan' }
   | { page: 'odds' }
   | { page: 'reference' };
@@ -213,8 +212,8 @@ function parseHash(): Route {
       return { page: 'calc', target: tail };
     case 'paldex':
       return { page: 'paldex', pal: tail };
-    case 'box':
-      return { page: 'box' };
+    case 'box': // legacy links: My Box merged into the Paldex
+      return { page: 'paldex' };
     case 'plan':
       return { page: 'plan' };
     case 'odds':
@@ -238,7 +237,6 @@ const PAGE_TITLES: Record<Route['page'], string> = {
   plan: 'Route Planner',
   odds: 'Odds Lab',
   paldex: 'Paldex',
-  box: 'My Box',
   reference: 'Reference',
 };
 
