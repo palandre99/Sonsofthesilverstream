@@ -2,7 +2,8 @@
 import React, { useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 import { T } from '../theme';
-import { Badge, Btn, Card, PageHead, s, type BadgeKind } from '../ui/kit';
+import { Badge, Btn, Card, PageHead, PalIcon, s, type BadgeKind } from '../ui/kit';
+import { HELPERS } from '../engine/helpers';
 import { claims } from '../store';
 
 const VERDICT: Record<string, [string, BadgeKind]> = {
@@ -58,6 +59,26 @@ export function ReferenceScreen() {
         better IVs. Vegetable Cake (47): two eggs per cycle. Extravagant Vegetable Cake
         (60): ~3% mutation per egg. Special Cake (74): carries more parent passives —
         exact override not datamined. Cake in the farm's chest does not spoil.</P>
+      </Section>
+
+      <Section title="Helper pals worth getting early">
+        <P>Straight from the game's partner-skill data — the Planner recommends
+        these automatically when a plan needs them. Stars = how much they matter.</P>
+        <View style={{ gap: 9, marginTop: 10 }}>
+          {HELPERS.map((h) => (
+            <View key={h.name} style={{ flexDirection: 'row', alignItems: 'center', gap: 9 }}>
+              <PalIcon name={h.name} size={30} />
+              <View style={{ flex: 1 }}>
+                <Text style={{ color: T.ink, fontWeight: '800', fontSize: 13 }}>
+                  {h.name}
+                  {'  '}
+                  <Text style={{ color: T.goldInk, fontSize: 10.5 }}>{'★'.repeat(h.score)}</Text>
+                </Text>
+                <Text style={{ color: T.muted, fontSize: 11.5 }}>{h.effect}</Text>
+              </View>
+            </View>
+          ))}
+        </View>
       </Section>
 
       <Section title="Mutation (new in 1.0)">

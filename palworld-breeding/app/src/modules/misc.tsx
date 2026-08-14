@@ -3,6 +3,8 @@
  * anything not datamined is labelled with its confidence. */
 import { useState } from 'preact/hooks';
 import { verification } from '../state';
+import { PalIcon } from '../components/shared';
+import { HELPERS } from '../engine/helpers';
 
 function Claims() {
   const claims = verification.value;
@@ -107,6 +109,25 @@ export function ReferencePage() {
           Chikipi and Beegarde on a Ranch cover milk/eggs/honey. Cake in the Breeding
           Farm's chest does not spoil. Cake numbers are community-measured (the game's
           item-effect table has not been published), so treat the percentages as ≈.</p>
+      </Section>
+
+      <Section title="Helper pals worth getting early">
+        <p>Straight from the game's partner-skill data — the Planner recommends these
+          automatically when a plan needs them. Stars = how much they matter.</p>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '9px', marginTop: '10px' }}>
+          {HELPERS.map((h) => (
+            <div key={h.name} style={{ display: 'flex', alignItems: 'center', gap: '9px' }}>
+              <PalIcon name={h.name} size={30} />
+              <div style={{ flex: 1 }}>
+                <b style={{ fontSize: '13px' }}>
+                  {h.name}{' '}
+                  <span class="badge gold">{'★'.repeat(h.score)}</span>
+                </b>
+                <div style={{ color: 'var(--muted)', fontSize: '11.5px' }}>{h.effect}</div>
+              </div>
+            </div>
+          ))}
+        </div>
       </Section>
 
       <Section title="Mutation (new in 1.0)">
