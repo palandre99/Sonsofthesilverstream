@@ -4,7 +4,11 @@
  *                 Settings), swipeable, two snap widths.
  *   BOTTOM BAR  = the current domain's own tabs — and the Paldex sits in
  *                 the CENTER slot of every domain. It is the app's anchor.
+ *   EXCEPTION   = the Map domain is FULLSCREEN (CEO 2026-08-15): no bottom
+ *                 tabs — layer filters live inside the map itself, like any
+ *                 great map app. `tabs: []` encodes that.
  *
+ * Icons are MaterialCommunityIcons names (rendered via ui/Icon).
  * Domains/tabs we aren't building yet ship as designed coming-soon screens
  * so the whole app's shape is real from day one.
  */
@@ -12,7 +16,7 @@
 export interface TabDef {
   id: string;
   label: string;
-  glyph: string;
+  icon: string;
   soon?: boolean;
   blurb?: string;
   planned?: string[];
@@ -21,83 +25,81 @@ export interface TabDef {
 export interface DomainDef {
   id: string;
   title: string;
-  glyph: string;
+  /** fits the panel's compact width; falls back to title */
+  short?: string;
+  icon: string;
   soon?: boolean;
   blurb?: string;
-  /** exactly 5 tabs; index 2 (center) is ALWAYS the Paldex */
+  planned?: string[];
+  /** 5 tabs with the Paldex at index 2 — or [] for a fullscreen domain */
   tabs: TabDef[];
 }
 
-const PALDEX: TabDef = { id: 'paldex', label: 'Paldex', glyph: '📖' };
+const PALDEX: TabDef = { id: 'paldex', label: 'Paldex', icon: 'book-open-variant' };
 
 export const DOMAINS: DomainDef[] = [
   {
     id: 'breeding',
     title: 'Breeding',
-    glyph: '🥚',
+    icon: 'egg-outline',
     tabs: [
-      { id: 'calc', label: 'Calc', glyph: '🧮' },
-      { id: 'plan', label: 'Plan', glyph: '🥚' },
+      { id: 'calc', label: 'Calc', icon: 'calculator-variant-outline' },
+      { id: 'plan', label: 'Plan', icon: 'source-branch' },
       PALDEX,
-      { id: 'odds', label: 'Odds', glyph: '🎲' },
-      { id: 'ref', label: 'Ref', glyph: 'ℹ️' },
+      { id: 'odds', label: 'Odds', icon: 'dice-multiple-outline' },
+      { id: 'ref', label: 'Ref', icon: 'information-outline' },
     ],
   },
   {
     id: 'map',
     title: 'Map',
-    glyph: '🗺️',
+    icon: 'map-outline',
     soon: true,
-    blurb: 'The full game map with filters for everything that matters.',
-    tabs: [
-      {
-        id: 'world', label: 'World', glyph: '🗺️', soon: true,
-        blurb: 'The entire game map — pan, zoom, and filter every layer.',
-        planned: ['Filter by pal spawns', 'Waypoints & fast travel', 'Dungeons', 'Egg locations', 'Your missing pals highlighted'],
-      },
-      {
-        id: 'spawns', label: 'Spawns', glyph: '🐾', soon: true,
-        blurb: 'Spawn areas per species and element — tied to your collection.',
-        planned: ['Per-species spawn layers', 'Day/night spawns', 'Alpha boss pins (91 already in the info cards)'],
-      },
-      PALDEX,
-      {
-        id: 'resources', label: 'Resources', glyph: '⛏️', soon: true,
-        blurb: 'Ores, trees, berries — farming route material.',
-        planned: ['Resource node layers', 'Best farming routes'],
-      },
-      {
-        id: 'dungeons', label: 'Dungeons', glyph: '🕳️', soon: true,
-        blurb: 'Dungeon entrances, respawn timers, loot.',
-        planned: ['Entrance locations', 'Level ranges', 'Loot tables'],
-      },
+    blurb: 'The whole world on one fullscreen map — every layer of the game, '
+      + 'toggled by filters inside the map itself. No tabs down here; the map '
+      + 'IS the screen.',
+    planned: [
+      'Pal spawn areas (day & night), tied to your missing pals',
+      'Alpha & legendary boss pins with levels',
+      'Egg locations by size',
+      'Ore, coal, sulfur, quartz and other material nodes',
+      'Fishing spots',
+      'Hackable towers & consoles',
+      'Dungeons and caves with level ranges',
+      'Fast-travel statues & waypoints',
+      'Supply drops, oil rig, meteorites',
+      'Merchants, villages and chest routes',
+      'Layer filters in a floating control — like the best map apps',
     ],
+    tabs: [],
   },
   {
     id: 'items',
     title: 'Tools & Items',
-    glyph: '⚔️',
+    short: 'Items',
+    icon: 'sword-cross',
     soon: true,
-    blurb: 'Every weapon, armor, tool and schematic — worst to best, and where to get them.',
+    blurb: 'Every weapon, armor, tool, sphere, consumable and schematic — '
+      + 'ranked worst to best, with stats and where to get them.',
     tabs: [
       {
-        id: 'weapons', label: 'Weapons', glyph: '🏹', soon: true,
+        id: 'weapons', label: 'Weapons', icon: 'bow-arrow', soon: true,
         blurb: 'All weapons with stats, ranked worst to best.',
         planned: ['Damage/stats tables', 'Tech unlock levels', 'Where to find schematics'],
       },
       {
-        id: 'armor', label: 'Armor', glyph: '🛡️', soon: true,
+        id: 'armor', label: 'Armor', icon: 'shield-half-full', soon: true,
         blurb: 'Armor and accessories with real stats.',
         planned: ['Defense tables', 'Set comparisons', 'Crafting costs'],
       },
       PALDEX,
       {
-        id: 'schematics', label: 'Schematics', glyph: '📜', soon: true,
+        id: 'schematics', label: 'Schematics', icon: 'script-text-outline', soon: true,
         blurb: 'Every schematic tier and its source.',
         planned: ['Tier lists per item', 'Drop sources', 'Dungeon chest tables'],
       },
       {
-        id: 'spheres', label: 'Spheres', glyph: '🔵', soon: true,
+        id: 'spheres', label: 'Spheres', icon: 'record-circle-outline', soon: true,
         blurb: 'Capture spheres and capture-rate math.',
         planned: ['Capture rate calculator', 'Sphere crafting chains'],
       },
@@ -106,28 +108,29 @@ export const DOMAINS: DomainDef[] = [
   {
     id: 'bosses',
     title: 'Bosses & Raids',
-    glyph: '👑',
+    short: 'Bosses',
+    icon: 'crown-outline',
     soon: true,
-    blurb: 'Tower bosses, alphas and raids — with teams from YOUR pals.',
+    blurb: 'Tower bosses, alphas and raids — with teams built from YOUR pals.',
     tabs: [
       {
-        id: 'tower', label: 'Tower', glyph: '🗼', soon: true,
+        id: 'tower', label: 'Tower', icon: 'chess-rook', soon: true,
         blurb: 'Tower boss guides with element counters.',
         planned: ['Boss stats + counters', 'Team suggestions from your Paldex'],
       },
       {
-        id: 'alphas', label: 'Alphas', glyph: '💢', soon: true,
+        id: 'alphas', label: 'Alphas', icon: 'alert-octagram-outline', soon: true,
         blurb: 'Every alpha boss — locations already live in the info cards.',
         planned: ['Alpha checklist tracking', 'Respawn timers'],
       },
       PALDEX,
       {
-        id: 'raids', label: 'Raids', glyph: '⚡', soon: true,
+        id: 'raids', label: 'Raids', icon: 'lightning-bolt-outline', soon: true,
         blurb: 'Raid bosses and preparation checklists.',
         planned: ['Raid guides', 'Reward tables'],
       },
       {
-        id: 'teams', label: 'Teams', glyph: '🎯', soon: true,
+        id: 'teams', label: 'Teams', icon: 'account-group-outline', soon: true,
         blurb: 'Build combat teams from the pals you own.',
         planned: ['Team builder', 'Element coverage analysis'],
       },
@@ -136,21 +139,21 @@ export const DOMAINS: DomainDef[] = [
   {
     id: 'settings',
     title: 'Settings',
-    glyph: '⚙️',
+    icon: 'cog-outline',
     tabs: [
-      { id: 'profiles', label: 'Profiles', glyph: '💾' },
+      { id: 'profiles', label: 'Profiles', icon: 'content-save-outline' },
       {
-        id: 'worlds', label: 'Worlds', glyph: '🌍', soon: true,
+        id: 'worlds', label: 'Worlds', icon: 'earth', soon: true,
         blurb: 'Attach your world saves — progress, bosses beaten, tech level, all tracked automatically.',
         planned: ['Save-file import (read-only)', 'Auto-filled collection', 'World progress tracking'],
       },
       PALDEX,
       {
-        id: 'appearance', label: 'Look', glyph: '🎨', soon: true,
+        id: 'appearance', label: 'Look', icon: 'palette-outline', soon: true,
         blurb: 'Themes, accent colors, icon packs.',
         planned: ['Light theme', 'Accent choices'],
       },
-      { id: 'about', label: 'About', glyph: '🔵' },
+      { id: 'about', label: 'About', icon: 'information-outline' },
     ],
   },
 ];

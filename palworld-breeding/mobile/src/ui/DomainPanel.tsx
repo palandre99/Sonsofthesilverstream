@@ -2,15 +2,18 @@
  * to open; drag its edge to snap between compact and full width; tap away
  * or swipe left to close. Pure RN Animated + PanResponder. */
 import React, { useEffect, useRef, useState } from 'react';
-import { Animated, Pressable, ScrollView, Text, View } from 'react-native';
+import { Animated, Image, PanResponder, Pressable, ScrollView, Text, View } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { T } from '../theme';
-import { s } from './kit';
+import { Icon } from './Icon';
 import { DOMAINS } from '../nav/domains';
 import { getActiveProfile, useAppVersion } from '../store';
 
-const W_COMPACT = 216;
-const W_FULL = 300;
+const W_COMPACT = 224;
+const W_FULL = 304;
+
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const LOGO = require('../../assets/splash-icon.png');
 
 export function DomainPanel({ open, domain, onSelect, onClose }: {
   open: boolean;
@@ -37,13 +40,13 @@ export function DomainPanel({ open, domain, onSelect, onClose }: {
   // release snaps to the nearest clean width
   const pan = useRef({ startWidth: W_COMPACT });
   const responder = useRef(
-    require('react-native').PanResponder.create({
-      onMoveShouldSetPanResponder: (_e: unknown, g: { dx: number; dy: number }) =>
+    PanResponder.create({
+      onMoveShouldSetPanResponder: (_e, g) =>
         Math.abs(g.dx) > 10 && Math.abs(g.dx) > Math.abs(g.dy),
       onPanResponderGrant: () => {
         pan.current.startWidth = width;
       },
-      onPanResponderRelease: (_e: unknown, g: { dx: number; vx: number }) => {
+      onPanResponderRelease: (_e, g) => {
         if (g.dx < -60 || g.vx < -0.6) {
           onClose();
           return;
@@ -74,13 +77,31 @@ export function DomainPanel({ open, domain, onSelect, onClose }: {
         style={{
           position: 'absolute', top: 0, bottom: 0, left: 0, width,
           backgroundColor: T.bg2, borderRightWidth: 1, borderRightColor: T.line,
-          transform: [{ translateX: x }], paddingTop: 56,
+          transform: [{ translateX: x }], paddingTop: 58,
         }}
       >
-        <View style={[s.row, { paddingHorizontal: 16, marginBottom: 16, gap: 10 }]}>
-          <Text style={{ fontSize: 22 }}>🔵</Text>
-          <Text style={{ color: T.accentInk, fontSize: 20, fontWeight: '800' }}>Palforge</Text>
+        {/* brand */}
+        <View style={{
+          flexDirection: 'row', alignItems: 'center', gap: 10,
+          paddingHorizontal: 18, paddingBottom: 18,
+        }}>
+          <Image source={LOGO} style={{ width: 30, height: 30 }} />
+          <View>
+            <Text style={{
+              color: T.ink, fontSize: 19, fontWeight: '900', letterSpacing: 0.3,
+            }}>Palforge</Text>
+            {full && (
+              <Text style={{ color: T.faint, fontSize: 10.5, marginTop: -1 }}>
+                Palworld companion
+              </Text>
+            )}
+          </View>
         </View>
+
+        <Text style={{
+          color: T.faint, fontSize: 10, fontWeight: '800', letterSpacing: 1.4,
+          paddingHorizontal: 18, marginBottom: 6,
+        }}>SECTIONS</Text>
 
         <ScrollView style={{ flex: 1 }}>
           {DOMAINS.map((d) => {
@@ -95,27 +116,36 @@ export function DomainPanel({ open, domain, onSelect, onClose }: {
                 }}
                 style={({ pressed }) => [{
                   flexDirection: 'row', alignItems: 'center', gap: 12,
-                  paddingVertical: 13, paddingHorizontal: 16,
+                  marginHorizontal: 10, marginBottom: 2, borderRadius: 12,
+                  paddingVertical: 9, paddingHorizontal: 8,
                   backgroundColor: on ? T.accentSoft : pressed ? T.surface : 'transparent',
-                  borderRightWidth: on ? 3 : 0, borderRightColor: T.accent,
                 }]}
               >
-                <Text style={{ fontSize: 20, opacity: d.soon ? 0.55 : 1 }}>{d.glyph}</Text>
+                <View style={{
+                  width: 34, height: 34, borderRadius: 10,
+                  alignItems: 'center', justifyContent: 'center',
+                  backgroundColor: on ? 'transparent' : T.surface,
+                  borderWidth: 1, borderColor: on ? T.accent : T.line,
+                }}>
+                  <Icon name={d.icon} size={19}
+                    color={on ? T.accentInk : d.soon ? T.faint : T.muted} />
+                </View>
                 <View style={{ flex: 1 }}>
                   <Text style={{
-                    color: on ? T.accentInk : d.soon ? T.faint : T.ink,
-                    fontWeight: '800', fontSize: 15,
-                  }}>{d.title}</Text>
+                    color: on ? T.accentInk : d.soon ? T.muted : T.ink,
+                    fontWeight: on ? '800' : '700', fontSize: 14.5,
+                  }} numberOfLines={1}>{full ? d.title : (d.short ?? d.title)}</Text>
                   {full && d.blurb && (
-                    <Text style={{ color: T.faint, fontSize: 11, marginTop: 1 }}
-                      numberOfLines={2}>{d.blurb}</Text>
+                    <Text style={{ color: T.faint, fontSize: 10.5, marginTop: 1 }}
+                      numberOfLines={1}>{d.blurb}</Text>
                   )}
                 </View>
                 {d.soon && (
                   <Text style={{
-                    color: T.goldInk, backgroundColor: T.goldSoft, fontSize: 8.5,
-                    fontWeight: '800', borderRadius: 5, paddingHorizontal: 6,
-                    paddingVertical: 2, overflow: 'hidden', letterSpacing: 0.5,
+                    color: T.goldInk, fontSize: 8, fontWeight: '800',
+                    letterSpacing: 0.8, borderWidth: 1, borderColor: T.line,
+                    borderRadius: 5, paddingHorizontal: 5, paddingVertical: 2,
+                    overflow: 'hidden',
                   }}>SOON</Text>
                 )}
               </Pressable>
@@ -130,14 +160,15 @@ export function DomainPanel({ open, domain, onSelect, onClose }: {
             onClose();
           }}
           style={{
-            borderTopWidth: 1, borderTopColor: T.line, padding: 14,
-            flexDirection: 'row', alignItems: 'center', gap: 8,
+            borderTopWidth: 1, borderTopColor: T.line,
+            paddingVertical: 13, paddingHorizontal: 18,
+            flexDirection: 'row', alignItems: 'center', gap: 9,
           }}
         >
-          <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: T.ok }} />
+          <View style={{ width: 7, height: 7, borderRadius: 4, backgroundColor: T.ok }} />
           <Text style={{ color: T.muted, fontWeight: '700', fontSize: 12.5, flex: 1 }}
             numberOfLines={1}>{active.name}</Text>
-          <Text style={{ color: T.faint, fontSize: 10.5 }}>{full ? 'manage in Settings' : '⚙️'}</Text>
+          <Icon name="cog-outline" size={15} color={T.faint} />
         </Pressable>
       </Animated.View>
     </View>

@@ -4,14 +4,21 @@ import React from 'react';
 import { ScrollView, Text, View } from 'react-native';
 import { T } from '../theme';
 import { Badge, Card, s } from '../ui/kit';
+import { Icon } from '../ui/Icon';
 
-export function ComingSoonScreen({ title, glyph, blurb, planned }: {
-  title: string; glyph: string; blurb: string; planned: string[];
+export function ComingSoonScreen({ title, icon, blurb, planned }: {
+  title: string; icon: string; blurb: string; planned: string[];
 }) {
   return (
     <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
       <View style={{ alignItems: 'center', marginTop: 36, marginBottom: 20 }}>
-        <Text style={{ fontSize: 56 }}>{glyph}</Text>
+        <View style={{
+          width: 84, height: 84, borderRadius: 24, alignItems: 'center',
+          justifyContent: 'center', backgroundColor: T.surface,
+          borderWidth: 1, borderColor: T.line,
+        }}>
+          <Icon name={icon} size={44} color={T.accentInk} />
+        </View>
         <Text style={[s.h1, { marginTop: 10 }]}>{title}</Text>
         <View style={{ marginTop: 8 }}>
           <Badge kind="gold">COMING SOON</Badge>

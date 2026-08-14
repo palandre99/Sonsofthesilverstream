@@ -12,6 +12,7 @@ import { T } from './theme';
 import { getActiveProfile, loadPersisted, useAppVersion } from './store';
 import { DOMAINS } from './nav/domains';
 import { DomainPanel } from './ui/DomainPanel';
+import { Icon } from './ui/Icon';
 import { CalculatorScreen } from './screens/CalculatorScreen';
 import { PlannerScreen } from './screens/PlannerScreen';
 import { OddsScreen } from './screens/OddsScreen';
@@ -96,15 +97,17 @@ function Shell() {
   }
 
   const domain = DOMAINS.find((d) => d.id === domainId) ?? DOMAINS[0];
-  const tab = domain.tabs.find((t) => t.id === tabId) ?? domain.tabs[2];
-  const Live = LIVE_SCREENS[tab.id];
+  // a domain with no tabs is FULLSCREEN (the Map): no bottom bar at all
+  const fullscreen = domain.tabs.length === 0;
+  const tab = fullscreen ? null : (domain.tabs.find((t) => t.id === tabId) ?? domain.tabs[2]);
+  const Live = tab ? LIVE_SCREENS[tab.id] : undefined;
 
   const selectDomain = (id: string) => {
     const d = DOMAINS.find((x) => x.id === id)!;
     setDomainId(id);
     // land on the domain's first live tab, else its first tab
     const first = d.tabs.find((t) => LIVE_SCREENS[t.id] && t.id !== 'paldex') ?? d.tabs[0];
-    setTabId(first.id);
+    setTabId(first ? first.id : '');
   };
 
   return (
@@ -127,7 +130,7 @@ function Shell() {
         </Pressable>
         <Text style={styles.headerTitle}>
           {domain.title}
-          {tab.id !== 'paldex' && tab.label !== domain.title
+          {tab && tab.id !== 'paldex' && tab.label !== domain.title
             ? <Text style={{ color: T.faint }}>  ·  {tab.label}</Text>
             : null}
         </Text>
@@ -137,21 +140,23 @@ function Shell() {
       </View>
 
       <View style={{ flex: 1 }} {...edgePan.panHandlers}>
-        <Boundary key={`${domainId}/${tab.id}`}>
+        <Boundary key={`${domainId}/${tab?.id ?? 'full'}`}>
           {Live ? <Live /> : (
             <ComingSoonScreen
-              title={tab.label === domain.title ? domain.title : `${domain.title} — ${tab.label}`}
-              glyph={tab.glyph}
-              blurb={tab.blurb ?? domain.blurb ?? ''}
-              planned={tab.planned ?? []}
+              title={!tab || tab.label === domain.title
+                ? domain.title : `${domain.title} — ${tab.label}`}
+              icon={tab?.icon ?? domain.icon}
+              blurb={tab?.blurb ?? domain.blurb ?? ''}
+              planned={(tab?.planned?.length ? tab.planned : domain.planned) ?? []}
             />
           )}
         </Boundary>
       </View>
 
+      {!fullscreen && (
       <View style={[styles.tabbar, { paddingBottom: Math.max(insets.bottom, 8) }]}>
         {domain.tabs.map((t, i) => {
-          const on = tab.id === t.id;
+          const on = tab!.id === t.id;
           const center = i === 2;
           return (
             <Pressable
@@ -164,11 +169,9 @@ function Shell() {
               accessibilityRole="tab"
               accessibilityState={{ selected: on }}
             >
-              <View style={center ? [styles.centerTab, on && { borderColor: T.accent }] : undefined}>
-                <Text style={{
-                  fontSize: center ? 21 : 19,
-                  opacity: on ? 1 : t.soon ? 0.4 : 0.55,
-                }}>{t.glyph}</Text>
+              <View style={center ? [styles.centerTab, on && { borderColor: T.accent }] : { height: 24, justifyContent: 'center' }}>
+                <Icon name={t.icon} size={center ? 22 : 21}
+                  color={on ? T.accentInk : t.soon ? T.faint : T.muted} />
               </View>
               <Text style={{
                 fontSize: 10, fontWeight: '700',
@@ -178,6 +181,7 @@ function Shell() {
           );
         })}
       </View>
+      )}
 
       <DomainPanel open={panel} domain={domainId}
         onSelect={selectDomain} onClose={() => setPanel(false)} />
@@ -230,9 +234,9 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: 'transparent',
     borderRadius: 12,
-    paddingHorizontal: 10,
-    paddingVertical: 2,
-    marginTop: -4,
+    paddingHorizontal: 12,
+    paddingVertical: 3,
+    marginTop: -6,
     backgroundColor: T.surface,
   },
 });
