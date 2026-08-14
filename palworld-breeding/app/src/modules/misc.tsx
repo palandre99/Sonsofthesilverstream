@@ -1,24 +1,5 @@
-/** Route Planner placeholder (M4) and the Reference page. */
+/** The Reference page. */
 import { verification } from '../state';
-
-export function PlanPage() {
-  return (
-    <>
-      <div class="pagehead">
-        <h1>Route Planner</h1>
-        <p>Multi-target breeding routes — the shortest shared tree from your box.</p>
-      </div>
-      <div class="card bigcard">
-        <h2>Coming in the next milestone</h2>
-        <p>The planning engine is already built and tested (it reproduces a 48-step
-          reference plan exactly, verified against the game files). This screen will let
-          you pick any set of targets and get a phased plan with ready-states, gender
-          warnings and parallel tracks — like the standalone guide, but for any box and
-          any goals.</p>
-      </div>
-    </>
-  );
-}
 
 export function ReferencePage() {
   const claims = verification.value;

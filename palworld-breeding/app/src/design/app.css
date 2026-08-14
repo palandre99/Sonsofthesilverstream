@@ -216,6 +216,22 @@
 .boxrow .num{color:var(--faint);font-size:11px}
 .boxrow .mid{display:flex;gap:4px;flex-wrap:wrap;flex:1;min-width:0;justify-content:flex-end}
 
+/* ---------- route planner ---------- */
+.planstep{border-left:4px solid var(--line)}
+.planstep.ready{border-left-color:var(--ok)}
+.planstep.done{opacity:.55}
+.planstep.done .names{text-decoration:line-through;
+  text-decoration-color:var(--muted);text-decoration-thickness:1px}
+.planstep .names{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.tick{position:relative;width:24px;height:24px;flex:none}
+.tick input{position:absolute;inset:0;opacity:0;cursor:pointer;margin:0}
+.tick span{position:absolute;inset:0;border:2px solid var(--line2);border-radius:8px;
+  background:var(--surface2);transition:all .15s}
+.tick input:checked+span{background:var(--ok);border-color:var(--ok)}
+.tick input:checked+span::after{content:"✓";position:absolute;inset:0;display:grid;
+  place-items:center;color:#fff;font-size:14px;font-weight:800}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
 /* ---------- plan / reference placeholders ---------- */
 .bigcard{padding:26px 28px}
 .bigcard h2{font-size:21px;margin-bottom:8px}

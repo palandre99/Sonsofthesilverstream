@@ -6,7 +6,8 @@ import { dataReady, loadData, route, theme } from './state';
 import { CalculatorPage } from './modules/calculator';
 import { PaldexPage } from './modules/paldex';
 import { BoxPage } from './modules/box';
-import { PlanPage, ReferencePage } from './modules/misc';
+import { PlanPage } from './modules/plan';
+import { ReferencePage } from './modules/misc';
 
 const Logo = () => (
   <svg viewBox="0 0 32 40" aria-hidden="true">
