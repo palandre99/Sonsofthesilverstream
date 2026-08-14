@@ -21,9 +21,13 @@ The moment the URL is ready it's copied to your clipboard, shown in the
 window, and saved to `CURRENT-DEV-URL.txt` / `.html` in this folder — open
 the HatchLab DEV app on the phone and it connects; every change lands live.
 
-## 3. PUSH-UPDATE.cmd — updates without the PC running
-Pushes the latest code over the air. Reopen HatchLab on the phone and it
-has the update. For JS changes only (which is nearly everything).
+## 3. Updates are AUTOMATIC — you click nothing
+- Connected to the dev server (button 2): changes arrive **live while you
+  use the app**, exactly like Stride.
+- Otherwise: Claude pushes updates from his side after each work block —
+  just close and reopen HatchLab and the newest version is there.
+- `PUSH-UPDATE.cmd` exists only as an emergency backup if Claude is
+  offline and you want to push the latest code yourself.
 
 ---
 The app itself: Calculator, Route Planner, Odds Lab, Paldex, My Box,

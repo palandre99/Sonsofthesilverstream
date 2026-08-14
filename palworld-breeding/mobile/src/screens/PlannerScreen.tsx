@@ -134,6 +134,24 @@ export function PlannerScreen() {
     ? [...stepMeta.entries()].filter(([sid, m]) => m.ready && !checks[sid]).length
     : 0;
 
+  // per-goal progress: how many of the steps each goal depends on are done
+  const goalProgress = useMemo(() => {
+    if (!plan) return [];
+    const byGoal = new Map<string, { total: number; done: number }>();
+    for (const st of plan.steps) {
+      const isDone = !!checks[stepId(st.parents[0], st.parents[1], st.child)];
+      for (const g of st.neededBy) {
+        const cur = byGoal.get(g) ?? { total: 0, done: 0 };
+        cur.total++;
+        if (isDone) cur.done++;
+        byGoal.set(g, cur);
+      }
+    }
+    return [...byGoal.entries()]
+      .map(([name, v]) => ({ name, ...v }))
+      .sort((x, y) => (y.done / y.total) - (x.done / x.total) || x.name.localeCompare(y.name));
+  }, [plan, checks]);
+
   return (
     <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
       <PageHead title="Route Planner"
@@ -212,6 +230,37 @@ export function PlannerScreen() {
               <Text style={[s.body, { color: T.warn }]}>
                 Not reachable from your box: {plan.unreachable.join(', ')}
               </Text>
+            </Card>
+          )}
+
+          {goalProgress.length > 0 && (
+            <Card style={{ marginTop: 12 }}>
+              <Text style={s.h3}>Goal progress</Text>
+              <View style={{ marginTop: 8, gap: 7 }}>
+                {goalProgress.map((g) => {
+                  const complete = g.done === g.total;
+                  return (
+                    <View key={g.name} style={[s.row, { gap: 8 }]}>
+                      <PalIcon name={g.name} size={26} />
+                      <Text style={{
+                        color: T.ink, fontWeight: '700', fontSize: 12.5, width: 118,
+                      }} numberOfLines={1}>{g.name}</Text>
+                      <View style={{
+                        flex: 1, height: 8, borderRadius: 4, backgroundColor: T.surface2,
+                      }}>
+                        <View style={{
+                          width: `${(g.done / g.total) * 100}%`, height: '100%',
+                          borderRadius: 4, backgroundColor: complete ? T.ok : T.accent,
+                        }} />
+                      </View>
+                      <Text style={{
+                        color: T.muted, fontSize: 11.5, fontWeight: '700', width: 38,
+                        textAlign: 'right',
+                      }}>{g.done}/{g.total}</Text>
+                    </View>
+                  );
+                })}
+              </View>
             </Card>
           )}
 

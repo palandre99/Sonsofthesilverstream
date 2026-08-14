@@ -29,8 +29,8 @@
       "edgeToEdgeEnabled": true
     },
     "updates": {
-      "enabled": false,
-      "checkAutomatically": "NEVER",
+      "enabled": true,
+      "checkAutomatically": "ON_LOAD",
       "fallbackToCacheTimeout": 0,
       "url": "https://u.expo.dev/3bb92cd1-1a95-440b-a5bf-1c3f711e71b8"
     },
