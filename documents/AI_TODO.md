@@ -201,3 +201,17 @@ loops all night INSIDE the Breeding + Paldex domain (his explicit scope).
       own Paldex text (274/299 via wiki.gg Palpedia; provenance in
       verification.json). 25 variants have no wiki page yet — re-run
       tools/fetch_paldex_text_missing.py weekly with the upstream check.
+
+## Design-walk findings shipped ~11:15 (fresh-eyes pass, CEO standing order)
+- [x] "tie-break" purged from ALL user copy (Calculator both platforms) —
+      the CEO-banned word survived in 5 strings; badge now reads
+      "close call — higher rank wins"
+- [x] Odds reference table: honest plain labels (Perfect / With extras)
+      with a one-line explainer — caught my own first relabel being WRONG
+      (withJunk is superset-odds, not cumulative) before shipping
+- [x] Web PalPicker quick filters + rarity tints (mobile parity)
+- [x] Profile-switch write race fixed (load-then-atomic-flip + write barrier)
+- [x] Profiles screen: vector pencil (last text glyph in chrome)
+- [ ] Profiles: per-world stats on each card (owned count, plan progress)
+      so switching feels informed — needs per-profile AsyncStorage reads
+- [ ] Calculator empty state could offer recents/preset shortcuts
