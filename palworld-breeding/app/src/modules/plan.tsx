@@ -89,6 +89,16 @@ export function PlanPage() {
   const [plannedAt, setPlannedAt] = useState<string | null>(saved?.planned ?? null);
   const [checks, setChecks] = useState<Record<string, CheckValue>>(loadChecks());
   const [hatching, setHatching] = useState<{ sid: string; child: string } | null>(null);
+  // Escape closes the hatch dialog — click-away already works, the keyboard
+  // path was missing (self-found queue item)
+  useEffect(() => {
+    if (!hatching) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setHatching(null);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [hatching]);
   const [managing, setManaging] = useState<'none' | 'reset' | 'clear'>('none');
   // the box the current plan was computed against — reshapes reuse it so
   // finished steps (and their ticks) survive
