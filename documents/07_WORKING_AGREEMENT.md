@@ -55,7 +55,13 @@ said or done, with dates.*
 1. **WORK** one item from `AI_TODO.md` (top down unless he redirects).
 2. **VERIFY** — gates in `08_TOOLS_AND_COMMANDS.md`. No proof, not done.
 3. **SELF-REVIEW** your own diff like a hostile senior engineer.
-4. **RE-EVALUATE** the whole product; add everything you find to the queue.
+4. **COMMIT, THEN PUBLISH** to both channels — the publish ritual in
+   `CLAUDE.md`. He explicitly wants his full app "almost always completely up
+   to date". **An item that works only on your machine is not finished.**
+   Never publish half-written code, and never publish while another session
+   has uncommitted work in the tree — `eas update` bundles whatever is on
+   disk and would ship their unfinished feature to his daily driver.
+5. **RE-EVALUATE** the whole product; add everything you find to the queue.
    Finding nothing means you didn't look.
 5. **UPDATE** the queue + docs, then take the next item.
 

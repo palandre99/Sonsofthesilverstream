@@ -104,9 +104,61 @@ The CEO ships nothing average, and he judges by looking at it. The bar is
    oracle replay) and `npx tsc --noEmit` in `mobile/` must be green.
    Both verified green 2026-08-15. Full gate list: `08_TOOLS_AND_COMMANDS.md`.
 3. SELF-REVIEW your diff like a hostile senior engineer.
-4. Re-evaluate the whole product, add findings to the queue, take the next
+4. **COMMIT, THEN PUBLISH** — see THE PUBLISH RITUAL below. A finished item
+   that is not on the CEO's phone is not finished.
+5. Re-evaluate the whole product, add findings to the queue, take the next
    item. Stop only for a CEO-only blocker (Apple login, purchases, name
    decisions) — state it in ONE sentence at the top of your reply.
+
+## THE PUBLISH RITUAL (CEO mandate 2026-08-15 — publishing is part of "done")
+
+**The full app must be as close to current as it can possibly be, always.**
+
+The live DEV app updates itself — Metro streams the working tree straight to
+the phone. The **full app does not**: it only ever changes when someone runs
+`eas update`. If nobody publishes, the CEO's everyday app silently rots while
+the DEV app races ahead, and reinstalling does **not** help (the download is a
+fixed binary from build time). He found this the hard way on 2026-08-15 and it
+is on me — the mechanism was documented, the *obligation* was not.
+
+**So: every time a piece of work is FINISHED, publish it. Not at end of
+session, not batched — each completed item.**
+
+```bash
+cd palworld-breeding/mobile
+npx eas-cli update --branch development --message "<what changed, in the CEO's language>"
+npx eas-cli update --branch preview     --message "<same>"
+```
+
+Both branches, every time. `preview` is the full app; `development` keeps the
+dev client's fallback bundle honest.
+
+**Never publish anything half-written.** Publishable means ALL of:
+
+- the feature or fix is COMPLETE — no mid-edit files, no stubs, no TODOs in
+  the path the CEO will touch;
+- gates green (vitest 64/64, mobile `tsc --noEmit` clean);
+- self-reviewed;
+- **committed** — so the published bundle maps to a known commit;
+- **the working tree contains no uncommitted work that is not yours.** Two
+  coders share this repo. `eas update` bundles whatever is on disk, so
+  publishing while someone else is mid-feature ships their unfinished code to
+  the CEO's daily driver. Check `git status` first. If another session has
+  work in flight, coordinate — do not publish over them.
+
+Then confirm it actually landed:
+
+```bash
+npx eas-cli channel:list        # both channels must show your message + a fresh timestamp
+```
+
+Write the message in **plain language about what changed for the user** — he
+reads it on the About screen version stamp, and it is the only place he sees
+what he is getting.
+
+The app shows a "new version ready" banner as soon as the update downloads;
+one tap applies it (`UpdateBanner` in `mobile/src/App.tsx`). So a published
+update reaches him within one launch, not two.
 
 ## HARD RULES (violating these is a fired offense)
 

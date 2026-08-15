@@ -22,6 +22,20 @@ one no longer removes the other.
 I push an update, you reopen the app, done — about two minutes. The 15-minute
 build is only for changes to the icon, the app name, or phone permissions.
 
+**Claude now publishes every finished piece of work automatically**, so the
+full version stays close to current without you asking. When an update has
+downloaded, a **"new version ready"** bar appears in the app — one tap and
+you're on the newest version.
+
+Two things worth knowing, because they surprise people:
+
+- **Reinstalling from the link does NOT get you newer code.** The download is
+  a fixed copy from when the app was last built. New work arrives as an
+  update on top of it, not by downloading again.
+- **Live coding publishes nothing.** While Claude works, changes stream
+  straight to the DEV app only. The full version updates when he finishes a
+  piece and publishes it.
+
 **Lost the link?** Double-click `COPY-INSTALL-LINK.cmd`, or just ask Claude —
 it's saved in `documents/01_LINKS.md`.
 

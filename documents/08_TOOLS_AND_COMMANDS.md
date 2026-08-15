@@ -24,6 +24,15 @@ Get-CimInstance Win32_Process -Filter "Name='node.exe'" | Where-Object { $_.Comm
 #    expect: nothing. If not, stop them before doing anything else.
 ```
 
+```bash
+# 4. IS THE CEO'S FULL APP BEHIND? — the last publish vs. the last mobile commit
+cd palworld-breeding/mobile && npx eas-cli channel:list --non-interactive | grep -A1 "Branch *preview"
+cd ../.. && git log -1 --format='%h %ad %s' --date=short -- palworld-breeding/mobile/src
+#    If the newest mobile work is NOT on the CEO's phone, publishing it is your
+#    first job. His full app going stale is the failure this check exists to
+#    catch — it happened on 2026-08-15 and he noticed before we did.
+```
+
 ## The quality gates — all green before "done"
 
 ```bash
@@ -70,6 +79,19 @@ curl -s -o /dev/null -w "%{http_code}\n" "http://127.0.0.1:8081/index.ts.bundle?
 
 ## Shipping to the phone
 
+**Publishing is mandatory after every finished item** — see the publish ritual
+in `CLAUDE.md`. The full app changes ONLY when someone runs this; reinstalling
+it does nothing, because the download is a fixed binary from build time.
+
+Pre-flight, every time:
+
+```bash
+git status --porcelain          # MUST be free of work that isn't yours —
+                                # eas update bundles whatever is on disk
+cd palworld-breeding/app    && npx vitest run     # 64/64
+cd ../mobile                && npx tsc --noEmit   # clean
+```
+
 ```bash
 cd palworld-breeding/mobile
 
@@ -77,7 +99,7 @@ cd palworld-breeding/mobile
 npx eas-cli update --branch development --message "what changed"
 npx eas-cli update --branch preview     --message "what changed"
 
-# inspect what's actually live
+# CONFIRM it landed — both channels must show your message and a fresh time
 npx eas-cli channel:list        # channel → branch → runtime → last update
 npx eas-cli build:list --limit 5
 

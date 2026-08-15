@@ -113,6 +113,12 @@ eas update  →  Expo's update servers  →  app fetches on next launch
 
 - `PUSH-UPDATE.cmd` publishes to **both** branches, `development` and
   `preview`, because the two installed builds listen on different channels.
+- **This is the ONLY way the full app ever changes.** Live coding publishes
+  nothing — Metro serves the working tree to the dev client and stops there.
+  Reinstalling the full app does not help either: the download is a fixed
+  binary from build time. If nobody publishes, the full app rots.
+  Publishing after every finished item is therefore a standing obligation —
+  the ritual is in `CLAUDE.md`.
 - `app.json` sets `checkAutomatically: ON_LOAD`, so the app looks for an
   update when it starts; the CEO just reopens the app.
 - OTA carries **JavaScript only**. Icons, permissions, native modules and
