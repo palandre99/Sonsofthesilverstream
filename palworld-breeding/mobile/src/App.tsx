@@ -7,6 +7,7 @@ import {
   ActivityIndicator, PanResponder, Pressable, StatusBar, StyleSheet, Text, View,
 } from 'react-native';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import * as Haptics from 'expo-haptics';
 import * as Updates from 'expo-updates';
 import { T } from './theme';
@@ -248,9 +249,15 @@ function Shell() {
 
 export default function App() {
   return (
-    <SafeAreaProvider>
-      <Shell />
-    </SafeAreaProvider>
+    // GestureHandlerRootView must wrap the whole tree or any GestureDetector
+    // below it throws on device. react-native-web does NOT enforce this, so a
+    // browser-only visual pass will happily pass while the phone crashes —
+    // which is exactly how the Map fane's first build reached the CEO.
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaProvider>
+        <Shell />
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 }
 

@@ -27,6 +27,12 @@ TRAPS THIS SCRIPT HANDLES (each one found by cross-checking, not guessed):
   through PAL_ID_OVERRIDES, never through a suffix rule.
 - weight is 1 on every row in this build, so it carries no information. We do
   not ship a "spawn rarity" derived from it.
+- atlas-data does NOT say whether a spawner is open-world or inside a dungeon,
+  and roughly half of some species' points are DUNGEON spawners. Drawing those
+  as open-world areas would send the player to a hillside where the pal is not.
+  pal-atlas filters to Field placements, and the two projects' world coords
+  match exactly, so an exact-coordinate join classifies every point. Foxparks:
+  93 field / 96 dungeon, and the split falls cleanly on its level bands.
 - 115 Pengullet rows carry LvMin 35 > LvMax 34 in the GAME's own spawner table
   (a designer typo, faithfully reproduced upstream). We order the pair and
   count it, so the UI reads "Lv 34-35" instead of nonsense — and so the fix is
@@ -129,21 +135,47 @@ def ts_header(title: str, extra: str = "") -> list[str]:
     ]
 
 
+def field_zone_coords() -> set[tuple[float, float]]:
+    """World coords of every OPEN-WORLD spawner, from pal-atlas.
+
+    pal-atlas keeps only EPalSpawnerPlacementType::Field placements, so the
+    presence of a zone at a coordinate is our field/dungeon discriminator.
+    """
+    zones = json.loads((CACHE / "spawn-zones.json").read_text(encoding="utf-8"))
+    return {(round(z["x"], 1), round(z["y"], 1)) for z in zones}
+
+
 def our_pals() -> set[str]:
     return set(json.loads((ROOT / "data" / "pals_1_0.json").read_text(encoding="utf-8"))["pals"])
 
 
 def build_spawns(known: set[str]) -> tuple[str, dict]:
-    """Per-species spawn points, grouped by level band + day/night."""
+    """Per-species spawn points, grouped by level band + day/night.
+
+    Alpha (fixed boss) spots come out of the same pass into their own table:
+    they carry a real level and belong to a specific map, neither of which the
+    old alphaSpots.g.ts could express — it had no region field at all, so a
+    World Tree boss would have been drawn on the Palpagos map.
+    """
     groups: dict[str, dict[tuple, list]] = defaultdict(lambda: defaultdict(list))
+    alphas: dict[str, list] = {}
+    field = field_zone_coords()
     stats = {"points": 0, "dropped_unknown": 0, "dropped_offmap": 0,
-             "level_swapped": 0, "unknown": set()}
+             "level_swapped": 0, "dungeon": 0, "unknown": set()}
 
     for region, fname in (("palpagos", "palpagos_spawns.json"), ("tree", "tree_spawns.json")):
         data = json.loads((CACHE / fname).read_text(encoding="utf-8"))
         for s in data["spawns"]:
+            if s["kind"] == "alpha":
+                name = PAL_ID_OVERRIDES.get(s["palId"]) or s.get("palName")
+                uv = project(s["worldX"], s["worldY"], region)
+                if name in known and uv is not None:
+                    alphas.setdefault(name, []).append(
+                        (0 if region == "palpagos" else 1, s["maxLevel"], uv)
+                    )
+                continue
             if s["kind"] != "wild":
-                continue  # alphas ride the POI layer, with their own pins
+                continue
             name = PAL_ID_OVERRIDES.get(s["palId"]) or s.get("palName")
             if name not in known:
                 stats["dropped_unknown"] += 1
@@ -157,7 +189,10 @@ def build_spawns(known: set[str]) -> tuple[str, dict]:
             if lo > hi:
                 lo, hi = hi, lo
                 stats["level_swapped"] += 1
-            key = (region, lo, hi, s["availability"])
+            dungeon = (round(s["worldX"], 1), round(s["worldY"], 1)) not in field
+            if dungeon:
+                stats["dungeon"] += 1
+            key = (region, lo, hi, s["availability"], dungeon)
             groups[name][key].append(uv)
             stats["points"] += 1
 
@@ -170,6 +205,9 @@ def build_spawns(known: set[str]) -> tuple[str, dict]:
         "  hi: number;",
         "  /** true when this band only spawns at night */",
         "  night: boolean;",
+        "  /** true when these are DUNGEON spawners, not open-world ones —",
+        "   *  the player will not meet this pal standing on that hillside */",
+        "  dun: boolean;",
         "  n: number;",
         "  /** base64 uint16 pairs: u,v in 0..65535 of the map image */",
         "  pts: string;",
@@ -179,14 +217,39 @@ def build_spawns(known: set[str]) -> tuple[str, dict]:
     ]
     for name in sorted(groups):
         parts = []
-        for (region, lo, hi, avail), pts in sorted(groups[name].items()):
+        for (region, lo, hi, avail, dungeon), pts in sorted(groups[name].items()):
             parts.append(
-                "{ m: %d, lo: %d, hi: %d, night: %s, n: %d, pts: '%s' }"
+                "{ m: %d, lo: %d, hi: %d, night: %s, dun: %s, n: %d, pts: '%s' }"
                 % (0 if region == "palpagos" else 1, lo, hi,
-                   "true" if avail == "night" else "false", len(pts), pack(pts))
+                   "true" if avail == "night" else "false",
+                   "true" if dungeon else "false", len(pts), pack(pts))
             )
         lines.append("  %s: [\n    %s,\n  ]," % (json.dumps(name), ",\n    ".join(parts)))
     lines.append("};")
+
+    lines += [
+        "",
+        "export interface AlphaSpot {",
+        "  /** 0 = Palpagos Islands, 1 = The World Tree */",
+        "  m: 0 | 1;",
+        "  lv: number;",
+        "  u: number;",
+        "  v: number;",
+        "}",
+        "",
+        "/** Fixed boss spots — projected with the verified transform AND tagged",
+        " *  with their map, which the old alphaSpots.g.ts could not express. */",
+        "export const MAP_ALPHAS: Record<string, AlphaSpot[]> = {",
+    ]
+    for name in sorted(alphas):
+        rows = ", ".join(
+            "{ m: %d, lv: %d, u: %.5f, v: %.5f }" % (m, lv, uv[0], uv[1])
+            for m, lv, uv in sorted(alphas[name])
+        )
+        lines.append("  %s: [%s]," % (json.dumps(name), rows))
+    lines.append("};")
+
+    stats["alphas"] = sum(len(v) for v in alphas.values())
     return "\n".join(lines) + "\n", stats
 
 
@@ -306,6 +369,9 @@ def main() -> None:
     print(f"  dropped, unknown pal:  {sstats['dropped_unknown']:,}")
     print(f"  level bands re-ordered: {sstats['level_swapped']:,} "
           f"(upstream LvMin > LvMax)")
+    print(f"  alpha boss spots:      {sstats['alphas']:,}")
+    print(f"  dungeon spawners:      {sstats['dungeon']:,} "
+          f"(kept, but flagged so they are never drawn as open-world areas)")
     for u in sorted(sstats["unknown"]):
         print(f"      {u}")
     print(f"pois:   {pstats['points']:,} points across {len(POI_LAYERS)} layers")

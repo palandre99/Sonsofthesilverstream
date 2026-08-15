@@ -232,7 +232,46 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       it is: `node scripts/qa-shot.js <out> "#map" tap:… type:… shot:…`.
       Paired with a `#domain/tab` hash route on the web build.
 
+### Round 2 — 2026-08-15 ~23:40 (CEO reported a crash; gates 118 green)
+- [x] F18 **CRASH FIXED (CEO report, screenshot).** "GestureDetector must be
+      used as a descendant of GestureHandlerRootView" — the app root was never
+      wrapped. **react-native-web does not enforce it**, so my browser-only
+      visual pass went green while his phone threw. This is the
+      "test the state the CEO will meet" rule failing exactly as documented.
+      `App.tsx` now wraps in `GestureHandlerRootView`, and three tests assert
+      it on every push so it can never regress. His DEV app streams from
+      Metro, so the fix reached him on reload — no publish needed.
+- [x] F19 **BIG ACCURACY CATCH.** ~16% of all spawn points (10,802 of 68,617)
+      are **DUNGEON** spawners, and we were drawing them as open-world areas —
+      the player would stand on an empty hillside. atlas-data does not carry
+      placement type, so I joined it against pal-atlas's Field-only zones on
+      exact world coordinates (they match to 0.1uu). Foxparks: 93 open-world
+      / 96 dungeon, splitting cleanly on its level bands. Dungeon points are
+      kept but flagged (`dun`) and OFF by default; the card now reads
+      "93 spots · Lv 5–7 · plus 96 in dungeons".
+- [x] F20 This also explains the wild-level conflict on the pal card: the
+      stats card said "wild Lv 5 to 18" (palcalc/kb) while the map said 5–13.
+      The surface bands stop at **7**; everything above that is dungeon or
+      variant data. `spawnLevels()` now quotes surface spawns only.
+- [x] F21 Fixed boss spots moved to a region-tagged `MAP_ALPHAS` table
+      (89 spots). The old `alphaSpots.g.ts` had **no region field at all**, so
+      a World Tree boss would have been drawn on the Palpagos map.
+- [x] F22 Pal card map rebuilt (closes the CEO's ~12:25 MAP OVERHAUL item and
+      "Where to find it must be a real MAP"): real spawn points cropped to
+      where the species actually lives, level band, day/night, and a tap
+      through to the Map fane with the species preselected and framed.
+
 ### Open — the map lane's own queue
+- [ ] F23 NEXT: the preview's dense clusters render as an unreadable scribble
+      of overlapping dots. Thin/dedupe points at preview resolution, or draw a
+      soft density blob instead. Visible in the Foxparks card.
+- [ ] F24 Dungeon spawns deserve their own visible layer in the Map fane
+      (data + filter flag already exist, `filters.dungeons`) — a "found in
+      dungeons" toggle, since the information is genuinely useful once it is
+      labelled honestly.
+- [ ] F25 Audit the OTHER wild-level numbers on the pal card against the
+      surface bands — palcalc's minWild/maxWild disagree with the game's
+      spawner table for at least Foxparks, so probably many more.
 - [ ] F10 WEB PARITY: the shared math + data are already in `app/src/map/` and
       `app/src/data/` (byte-parity gated), but the website has no map UI yet.
 - [ ] F11 Rebuild `ui/PalMap.tsx` + `ui/MapViewer.tsx` on the new engine and

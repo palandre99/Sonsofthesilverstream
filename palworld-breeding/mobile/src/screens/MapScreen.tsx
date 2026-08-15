@@ -25,6 +25,8 @@ import {
   spawnLevels, spawnPoints, spawnablePals, type LayerGroup, type MapFilters,
 } from '../map/layers';
 import { MAP_REGIONS } from '../data/mapMeta.g';
+import { takeIntentPayload } from '../nav/intent';
+import { regionsFor } from '../map/layers';
 import { ownedAny, pals } from '../store';
 
 type Sheet = null | 'layers' | 'pals';
@@ -40,6 +42,18 @@ export function MapScreen() {
   const [focus, setFocus] = useState<{ label: string; sub: string } | null>(null);
 
   const region = filters.region;
+
+  // A pal card can hand us a species ("show me where this lives"). Take it
+  // once, switch to a map it actually appears on, and frame it — arriving on
+  // an empty world map with a filter silently applied would be worse than not
+  // navigating at all.
+  React.useEffect(() => {
+    const pal = takeIntentPayload('map')?.pal;
+    if (!pal) return;
+    const where = regionsFor(pal);
+    if (!where.length) return;
+    setFilters((f) => ({ ...f, pals: new Set([pal]), region: where[0] }));
+  }, []);
 
   const patch = useCallback((p: Partial<MapFilters>) => {
     setFilters((f) => ({ ...f, ...p }));
@@ -57,7 +71,7 @@ export function MapScreen() {
       }
     }
     for (const pal of filters.pals) {
-      const set = spawnPoints(pal, region, filters.time, filters.level);
+      const set = spawnPoints(pal, region, filters.time, filters.level, filters.dungeons);
       if (set && set.n) {
         out.push({
           key: `pal:${pal}`,
@@ -95,6 +109,22 @@ export function MapScreen() {
     () => active.reduce((n, l) => n + l.set.n, 0),
     [active],
   );
+
+  // Picking a single pal should SHOW you where it is, not leave you to hunt
+  // the world map for teal dots.
+  const focusKey = active.length === 1 && filters.pals.size === 1 ? active[0].key : null;
+  React.useEffect(() => {
+    if (!focusKey) return;
+    const set = active[0].set;
+    let u0 = 1; let v0 = 1; let u1 = 0; let v1 = 0;
+    for (let i = 0; i < set.n; i++) {
+      const u = set.xy[i * 2]; const v = set.xy[i * 2 + 1];
+      if (u < u0) u0 = u; if (u > u1) u1 = u;
+      if (v < v0) v0 = v; if (v > v1) v1 = v;
+    }
+    const span = Math.max(u1 - u0, v1 - v0, 0.08) * 1.25;
+    canvas.current?.focus((u0 + u1) / 2, (v0 + v1) / 2, 1 / span);
+  }, [focusKey]);
 
   /* ------------------------------------------------------------ interaction */
 

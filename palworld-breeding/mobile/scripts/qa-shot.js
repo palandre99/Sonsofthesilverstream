@@ -201,6 +201,18 @@ async function main() {
     const [kind, arg] = [step.slice(0, step.indexOf(':')), step.slice(step.indexOf(':') + 1)];
     if (kind === 'tap') await tap(arg);
     else if (kind === 'type') await type(arg);
+    else if (kind === 'scroll') {
+      // one wheel event per 240px keeps RN-web's scroll view following along
+      const total = Number(arg);
+      for (let done = 0; done < Math.abs(total); done += 240) {
+        await send('Input.dispatchMouseEvent', {
+          type: 'mouseWheel', x: W / 2, y: H / 2, deltaX: 0,
+          deltaY: Math.sign(total) * 240,
+        });
+        await sleep(90);
+      }
+      await sleep(500);
+    }
     else if (kind === 'shot') await shot(arg);
     else if (kind === 'wait') await sleep(Number(arg));
     else if (kind === 'pinch') await pinch(Number(arg));

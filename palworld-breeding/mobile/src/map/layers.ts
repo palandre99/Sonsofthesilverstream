@@ -36,6 +36,9 @@ export interface MapFilters {
   /** pal species names currently switched on */
   pals: Set<string>;
   time: TimeFilter;
+  /** dungeon spawners are OFF by default: they are underground, so drawing
+   *  them as open-world areas sends the player to an empty hillside */
+  dungeons: boolean;
   /** inclusive level window applied to spawn layers */
   level: { lo: number; hi: number };
   region: RegionId;
@@ -48,6 +51,7 @@ export function emptyFilters(): MapFilters {
     poi: new Set(),
     pals: new Set(),
     time: { day: true, night: true },
+    dungeons: false,
     level: { ...ALL_LEVELS },
     region: 'palpagos',
   };
@@ -104,12 +108,15 @@ export function spawnPoints(
   region: RegionId,
   time: TimeFilter,
   level: { lo: number; hi: number },
+  dungeons = false,
 ): PointSet | null {
-  const key = `${pal}|${region}|${time.day ? 'd' : ''}${time.night ? 'n' : ''}|${level.lo}-${level.hi}`;
+  const key = `${pal}|${region}|${time.day ? 'd' : ''}${time.night ? 'n' : ''}`
+    + `|${level.lo}-${level.hi}|${dungeons ? 'D' : ''}`;
   const got = spawnCache.get(key);
   if (got) return got;
 
-  const groups = (MAP_SPAWNS[pal] ?? []).filter((g) => matches(g, region, time, level));
+  const groups = (MAP_SPAWNS[pal] ?? [])
+    .filter((g) => matches(g, region, time, level) && (dungeons || !g.dun));
   if (groups.length === 0) return null;
 
   const parts = groups.map((g) => decodePoints(g.pts));
@@ -138,9 +145,21 @@ function matches(
   return g.hi >= level.lo && g.lo <= level.hi;
 }
 
+/** How many points are open-world vs inside dungeons, stated separately so
+ *  the card never claims a dungeon spawner is a place you can walk to. */
+export function spawnSplit(pal: string, region: RegionId): { field: number; dungeon: number } {
+  let field = 0;
+  let dungeon = 0;
+  for (const g of MAP_SPAWNS[pal] ?? []) {
+    if (REGION_BY_INDEX[g.m] !== region) continue;
+    if (g.dun) dungeon += g.n; else field += g.n;
+  }
+  return { field, dungeon };
+}
+
 /** Level band a pal spawns at in a region, for the UI to state plainly. */
 export function spawnLevels(pal: string, region: RegionId): { lo: number; hi: number } | null {
-  const groups = (MAP_SPAWNS[pal] ?? []).filter((g) => REGION_BY_INDEX[g.m] === region);
+  const groups = (MAP_SPAWNS[pal] ?? []).filter((g) => REGION_BY_INDEX[g.m] === region && !g.dun);
   if (!groups.length) return null;
   return {
     lo: Math.min(...groups.map((g) => g.lo)),
@@ -150,7 +169,8 @@ export function spawnLevels(pal: string, region: RegionId): { lo: number; hi: nu
 
 /** True when every band for this pal in this region is night-only. */
 export function isNightOnly(pal: string, region: RegionId): boolean {
-  const groups = (MAP_SPAWNS[pal] ?? []).filter((g) => REGION_BY_INDEX[g.m] === region);
+  const groups = (MAP_SPAWNS[pal] ?? [])
+    .filter((g) => REGION_BY_INDEX[g.m] === region && !g.dun);
   return groups.length > 0 && groups.every((g) => g.night);
 }
 

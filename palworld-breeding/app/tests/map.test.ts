@@ -16,7 +16,7 @@ import { MAP_SPAWNS } from '../src/data/mapSpawns.g';
 import { MAP_REGIONS } from '../src/data/mapMeta.g';
 import { clusterPoints, decodePoints, pointsInRect } from '../src/map/points';
 import { regionOf, uvToReadout, worldToUv, tileLevelFor } from '../src/map/projection';
-import { isNightOnly, spawnLevels, spawnPoints } from '../src/map/layers';
+import { isNightOnly, spawnLevels, spawnPoints, spawnSplit } from '../src/map/layers';
 
 const palsJson = JSON.parse(
   readFileSync(join(__dirname, '..', '..', 'data', 'pals_1_0.json'), 'utf8'),
@@ -31,6 +31,37 @@ describe('map module copies', () => {
     const a = join(__dirname, '..', 'src', 'map', file);
     const b = join(__dirname, '..', '..', 'mobile', 'src', 'map', file);
     expect(hash(a)).toBe(hash(b));
+  });
+});
+
+describe('gesture root', () => {
+  // Shipped 2026-08-15: the Map fane crashed on the CEO's phone with
+  // "GestureDetector must be used as a descendant of GestureHandlerRootView".
+  // react-native-web does NOT enforce that, so a browser-only visual pass went
+  // green while the device threw. This asserts the wrapper on every push.
+  const appSrc = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'App.tsx'), 'utf8',
+  );
+
+  it('wraps the app tree in GestureHandlerRootView', () => {
+    expect(appSrc).toContain('<GestureHandlerRootView');
+    expect(appSrc).toMatch(/import \{[^}]*GestureHandlerRootView[^}]*\} from 'react-native-gesture-handler'/);
+  });
+
+  it('mounts it outside SafeAreaProvider, so it covers every screen', () => {
+    const root = appSrc.indexOf('<GestureHandlerRootView');
+    const safe = appSrc.indexOf('<SafeAreaProvider>');
+    expect(root).toBeGreaterThan(-1);
+    expect(root).toBeLessThan(safe);
+  });
+
+  it('only uses GestureDetector inside the map, which that root covers', () => {
+    // A GestureDetector added elsewhere is fine, but this pins the assumption
+    // so a future one is a deliberate decision rather than a surprise crash.
+    const mapCanvas = readFileSync(
+      join(__dirname, '..', '..', 'mobile', 'src', 'map', 'MapCanvas.tsx'), 'utf8',
+    );
+    expect(mapCanvas).toContain('<GestureDetector');
   });
 });
 
@@ -96,19 +127,30 @@ describe('spawn data', () => {
     }
   });
 
-  it('reports Foxparks exactly as the game files do', () => {
-    // 189 points on Palpagos in three bands — checked against
-    // palworld-atlas-data build 24575149 by hand.
-    const set = spawnPoints('Foxparks', 'palpagos', { day: true, night: true },
+  it('separates open-world spawns from dungeon spawns', () => {
+    // Foxparks has 189 spawner rows on Palpagos, but only 93 are open-world.
+    // The other 96 are DUNGEON spawners: drawing them as surface areas would
+    // send the player to a hillside where the pal is not. Established by an
+    // exact-coordinate join between palworld-atlas-data and pal-atlas.
+    expect(spawnSplit('Foxparks', 'palpagos')).toEqual({ field: 93, dungeon: 96 });
+
+    const surface = spawnPoints('Foxparks', 'palpagos', { day: true, night: true },
       { lo: 1, hi: 80 });
-    expect(set?.n).toBe(189);
-    expect(spawnLevels('Foxparks', 'palpagos')).toEqual({ lo: 5, hi: 13 });
+    expect(surface?.n).toBe(93);
+
+    const withDungeons = spawnPoints('Foxparks', 'palpagos', { day: true, night: true },
+      { lo: 1, hi: 80 }, true);
+    expect(withDungeons?.n).toBe(189);
+  });
+
+  it('quotes the level range of the surface spawns only', () => {
+    // The dungeon bands run to 13; the open-world ones stop at 7.
+    expect(spawnLevels('Foxparks', 'palpagos')).toEqual({ lo: 5, hi: 7 });
   });
 
   it('keeps variants distinct from their base species', () => {
-    const cryst = spawnPoints('Foxparks Cryst', 'palpagos', { day: true, night: true },
-      { lo: 1, hi: 80 });
-    expect(cryst?.n).toBe(104);
+    const cryst = spawnSplit('Foxparks Cryst', 'palpagos');
+    expect(cryst.field + cryst.dungeon).toBe(104);
   });
 
   it('hides night-only bands when night is switched off', () => {
@@ -120,10 +162,19 @@ describe('spawn data', () => {
   });
 
   it('narrows to the level window it is given', () => {
-    const all = spawnPoints('Foxparks', 'palpagos', { day: true, night: true },
-      { lo: 1, hi: 80 });
-    const low = spawnPoints('Foxparks', 'palpagos', { day: true, night: true },
-      { lo: 1, hi: 7 });
+    // Pick a species that genuinely has more than one open-world level band,
+    // rather than hard-coding one whose bands may change with a patch.
+    const entry = Object.entries(MAP_SPAWNS).find(([, groups]) => {
+      const surface = groups.filter((g) => g.m === 0 && !g.dun);
+      return new Set(surface.map((g) => `${g.lo}-${g.hi}`)).size > 1;
+    });
+    expect(entry, 'expected a pal with several surface level bands').toBeTruthy();
+    const [name, groups] = entry!;
+    const surface = groups.filter((g) => g.m === 0 && !g.dun);
+    const lowest = Math.min(...surface.map((g) => g.hi));
+
+    const all = spawnPoints(name, 'palpagos', { day: true, night: true }, { lo: 1, hi: 80 });
+    const low = spawnPoints(name, 'palpagos', { day: true, night: true }, { lo: 1, hi: lowest });
     expect(low!.n).toBeLessThan(all!.n);
   });
 });
