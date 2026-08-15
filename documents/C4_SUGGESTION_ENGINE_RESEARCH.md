@@ -67,8 +67,17 @@ raise to top-5 collapsed / top-8 expanded — CEO wants MORE than 3).
 ## Status
 - [x] Ledger intake (AI_TODO §C4)
 - [x] Source 1 fetched
-- [ ] Sources 2-3 cross-check
-- [ ] partner_effect miner (tools/ script → data/utilityRoles.g.ts)
+- [x] 2026-08-15 18:05 partner_effect miner SHIPPED —
+      tools/extract_utility_roles.py → utilityRoles.g.ts both platforms:
+      efficiency 9 (Digtoise ore-mining 800-2000%, Fuddler, Gumoss…),
+      weight 8 (Reptyro ore, Turtacle 80-100% ore, Cattiva/Lunaris carry),
+      drops 35, gliders 5, mounts flying 29 / ground 83 / swim 9.
+      All verbatim game text. NOTE: one truncated effect string spotted
+      (Ribbuny Botan ends mid-sentence "…or") — upstream kb truncation;
+      check kb clone before quoting it in UI.
+- [ ] Sources 2-3 cross-check (pindrop.gg + palworldguides.com) for the
+      Fighting / Best-in-game tabs
 - [ ] Stage-aware ranking in engine (shared, mirrored, tested)
-- [ ] SuggestedGoals v2 UI with new tabs
-- [ ] Provenance chips ("game data" vs "community consensus") in the UI
+- [ ] SuggestedGoals v2 UI: Fighting · Best in game · Mounts (fly/ground/
+      glider) · Utility squads · top-5/8 per job — provenance chips
+      ("game data" vs "community consensus") on every tab
