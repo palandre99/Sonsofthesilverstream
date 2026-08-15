@@ -94,9 +94,10 @@ export const HELPER_NAMES: ReadonlySet<string> = new Set(HELPERS.map((h) => h.na
 
 /** Bump when helperAdvice's CONTRACT changes (new fields, new coverage) so
  * persisted plans recompute their advice on next open. v2 = catch-only
- * suggestions for unreachable helpers (the Chikipi fix) — a plan saved
- * before v2 would otherwise keep its Chikipi-less card forever. */
-export const ADVICE_VERSION = 2;
+ * suggestions for unreachable helpers (the Chikipi fix). v3 = honest
+ * late-phase notes: an accelerator bred in the back half of the plan no
+ * longer claims it "helps with everything after". */
+export const ADVICE_VERSION = 3;
 
 export interface HelperAdvice {
   helper: HelperDef;
@@ -154,9 +155,17 @@ export function helperAdvice(
     }
     const wave = planChild.get(h.name);
     if (wave != null) {
+      // an accelerator that arrives in the BACK half of the plan speeds up
+      // almost nothing — telling the player to "do that branch first" is
+      // hollow advice there. Say it straight, and point at the wild route
+      // (hostile-review find, 2026-08-15).
+      const lastWave = Math.max(...plan.steps.map((st) => st.wave));
+      const late = lastWave > 1 && wave > lastWave / 2;
       out.push({
         helper: h, status: 'in-plan', phase: wave, recommended: false,
-        note: `This plan breeds it in Phase ${wave} — do that branch first so it helps with everything after.`,
+        note: late
+          ? `This plan only breeds it in Phase ${wave} of ${lastWave} — most of the route is done by then. If you spot one in the wild, catch it early and it helps the whole way.`
+          : `This plan breeds it in Phase ${wave} — do that branch first so it helps with everything after.`,
       });
       continue;
     }

@@ -529,12 +529,13 @@ below ships on BOTH platforms.*
       Caprity was a goal of the very plan on screen. It now sees
       plan-bred producers: "Berries — Caprity hatches in Phase 2"
       (plain badge, tappable). Mobile-only fix; eye-verified via HMR.
-- [ ] Late-phase helper copy is wrong-headed: an accelerator arriving in
-      the LAST phase ("Braloha PHASE 14 — do that branch first so it
-      helps with everything after") accelerates nothing. When a helper's
-      phase is past ~half the plan, the card should say so honestly and
-      offer the catch route instead (wild data exists). Engine change
-      (helpers.ts advice copy) — mirror both + gates.
+- [x] 2026-08-15 ~23:20 Late-phase helper copy FIXED (both engine copies,
+      ADVICE_VERSION 3 so saved plans recompute): back-half helpers now
+      read "only breeds it in Phase 14 of 14 — most of the route is done
+      by then. If you spot one in the wild, catch it early and it helps
+      the whole way." Front-half helpers keep the pull-forward advice.
+      Unit-tested (helpers-advice.test.ts); eye-verified live on the QA
+      plan (Braloha 14/14, Dynamoff 11/14 honest; Ribbuny Phase 1 kept).
 - [ ] Web parity gap: the cake-ingredient checklist (Eggs/Milk/Honey/
       Berries badges) exists only on mobile — web's "Make it faster" has
       the totals sentence but no checklist. Port when the web pass comes.
