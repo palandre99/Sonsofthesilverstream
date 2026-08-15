@@ -108,7 +108,7 @@ export function PlannerScreen() {
   const [picking, setPicking] = useState(false);
   const [suggesting, setSuggesting] = useState(false);
   const [hatching, setHatching] = useState<{ sid: string; child: string } | null>(null);
-  const [managing, setManaging] = useState<'none' | 'reset' | 'clear'>('none');
+  const [managing, setManaging] = useState<'none' | 'reset' | 'clear' | 'replace'>('none');
   const [bursts, setBursts] = useState<Record<string, number>>({});
   // finished phases fold up; a tap reopens one for review
   const [openPhases, setOpenPhases] = useState<Set<number>>(new Set());
@@ -139,7 +139,20 @@ export function PlannerScreen() {
   const ownedNames = Object.keys(box);
   const plan = saved;
 
+  /** Planning replaces the current plan — when one is mid-flight with real
+   * progress and DIFFERENT goals, ask first (self-found queue item). */
+  const confirmRun = () => {
+    if (plan && plan.steps.length > 0
+      && done < plan.steps.length
+      && [...targets].sort().join() !== [...plan.targets].sort().join()) {
+      setManaging('replace');
+      return;
+    }
+    run();
+  };
+
   const run = () => {
+    setManaging('none');
     setBusy(true);
     setPlanError(null);
     // yield one frame so the spinner paints, then compute on the JS thread
@@ -393,7 +406,7 @@ export function PlannerScreen() {
         label={busy ? 'Planning…'
           : targets.length ? `Plan ${targets.length} target${targets.length > 1 ? 's' : ''}`
           : 'Plan targets'}
-        onPress={run}
+        onPress={confirmRun}
       />
       {busy && <ActivityIndicator color={T.accent} style={{ marginTop: 14 }} />}
 
@@ -753,20 +766,27 @@ export function PlannerScreen() {
           }}>
             <Card style={{ width: '100%', borderColor: managing === 'clear' ? T.bad : T.line }}>
               <Text style={s.h2}>
-                {managing === 'reset' ? 'Start this plan over?' : 'Clear the plan?'}
+                {managing === 'reset' ? 'Start this plan over?'
+                  : managing === 'replace' ? 'Replace the current plan?'
+                  : 'Clear the plan?'}
               </Text>
               <Text style={[s.body, { marginTop: 6 }]}>
                 {managing === 'reset'
                   ? 'Every tick is undone properly — pals that ticks registered are removed from your Paldex again; anything you owned before stays.'
-                  : 'Forgets the plan and its ticks so you can plan fresh. Your collection stays exactly as it is — hatched pals are still yours.'}
+                  : managing === 'replace'
+                    ? `Your current plan still has unfinished steps (${done} of ${plan?.steps.length ?? 0} done). Planning these goals builds a fresh route — finished steps whose pals you hatched stay yours, but the old route is gone.`
+                    : 'Forgets the plan and its ticks so you can plan fresh. Your collection stays exactly as it is — hatched pals are still yours.'}
               </Text>
               <View style={[s.wrap, { marginTop: 14 }]}>
-                <Btn danger={managing === 'clear'} primary={managing === 'reset'}
-                  label={managing === 'reset' ? 'Start over' : 'Clear plan'}
+                <Btn danger={managing === 'clear'}
+                  primary={managing === 'reset' || managing === 'replace'}
+                  label={managing === 'reset' ? 'Start over'
+                    : managing === 'replace' ? 'Plan the new goals'
+                    : 'Clear plan'}
                   onPress={() => {
-                    if (managing === 'reset') resetPlanProgress();
-                    else clearPlan();
-                    setManaging('none');
+                    if (managing === 'reset') { resetPlanProgress(); setManaging('none'); }
+                    else if (managing === 'replace') run();
+                    else { clearPlan(); setManaging('none'); }
                   }} />
                 <Btn label="Cancel" onPress={() => setManaging('none')} />
               </View>
