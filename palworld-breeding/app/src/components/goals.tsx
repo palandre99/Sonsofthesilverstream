@@ -73,6 +73,49 @@ function bestAt(job: string, n = 14): { name: string; lvl: number }[] {
     .slice(0, n);
 }
 
+/** Composite work crews — "best farmer" = Planting+Gathering+Transporting,
+ * scores straight from work levels; formula stated in each blurb. */
+const CREWS = [
+  {
+    id: 'crew-farm', title: 'Farm crew', anchor: 'Planting',
+    jobs: ['Planting', 'Gathering', 'Transporting'],
+    blurb: 'Plants, gathers AND hauls — the whole farm loop in one pal. Ranked by Planting + Gathering + Transporting.',
+  },
+  {
+    id: 'crew-log', title: 'Logging crew', anchor: 'Lumbering',
+    jobs: ['Lumbering', 'Transporting'],
+    blurb: 'Chops and hauls its own wood. Ranked by Lumbering + Transporting.',
+  },
+  {
+    id: 'crew-mine', title: 'Mining crew', anchor: 'Mining',
+    jobs: ['Mining', 'Transporting'],
+    blurb: 'Digs and hauls its own ore. Ranked by Mining + Transporting.',
+  },
+  {
+    id: 'crew-all', title: 'Base all-rounders', anchor: '',
+    jobs: [] as string[],
+    blurb: 'The widest useful pals — ranked by TOTAL work levels across every job they have.',
+  },
+];
+
+function crewRank(crew: { jobs: string[]; anchor: string }, n = 12):
+{ name: string; score: number; parts: string }[] {
+  const p = pals.value;
+  return Object.keys(p)
+    .map((name) => {
+      const w = p[name].work ?? {};
+      if (crew.anchor && !((w[crew.anchor] ?? 0) > 0)) return null;
+      const jobs = crew.jobs.length ? crew.jobs : Object.keys(w);
+      const score = jobs.reduce((s, j) => s + (w[j] ?? 0), 0);
+      const parts = jobs.filter((j) => (w[j] ?? 0) > 0)
+        .map((j) => `${workLabel(j)[0]}${w[j]}`).join('·');
+      return { name, score, parts };
+    })
+    .filter((x): x is { name: string; score: number; parts: string } => !!x && x.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, n);
+}
+
 function bestFighters(n = 12): string[] {
   const p = pals.value;
   return Object.keys(p)
@@ -244,6 +287,18 @@ export function GoalsSheet({ open, onClose, targets, onAdd }: {
         <Section id="u-eff" title="Work efficiency boosters" cap={9}
           blurb="Mining, logging and crafting multipliers from partner skills."
           names={UTILITY_ROLES.efficiency.pals.map((p) => p.name)} />
+
+        {CREWS.map((crew) => {
+          const list = crewRank(crew);
+          if (!list.length) return null;
+          return (
+            <Section key={crew.id} id={crew.id} title={crew.title} cap={6}
+              preserveOrder blurb={crew.blurb}
+              names={list.map((x) => x.name)}
+              lvls={Object.fromEntries(list.map((x) => [x.name, x.score]))}
+              notes={(n) => list.find((x) => x.name === n)?.parts} />
+          );
+        })}
 
         <h3 style={{ margin: '4px 0 0', color: 'var(--faint)', fontSize: '11px', letterSpacing: '1px' }}>
           BEST AT EACH JOB — FROM THE GAME'S OWN NUMBERS

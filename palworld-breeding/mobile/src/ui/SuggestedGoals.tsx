@@ -38,6 +38,50 @@ function bestAt(job: string, n = 14): { name: string; lvl: number }[] {
     .slice(0, n);
 }
 
+/** Composite work crews — the CEO's "best farmer" insight (2026-08-15):
+ * a pal with high Planting AND Gathering AND Transporting runs the whole
+ * farm loop alone. Score = sum of the crew's work levels, from the dump;
+ * the anchor job must be present. Formula stated plainly in each blurb. */
+const CREWS: { id: string; title: string; jobs: string[]; anchor: string; blurb: string }[] = [
+  {
+    id: 'crew-farm', title: 'Farm crew', anchor: 'Planting',
+    jobs: ['Planting', 'Gathering', 'Transporting'],
+    blurb: 'Plants, gathers AND hauls — one pal running the whole farm loop. Ranked by Planting + Gathering + Transporting.',
+  },
+  {
+    id: 'crew-log', title: 'Logging crew', anchor: 'Lumbering',
+    jobs: ['Lumbering', 'Transporting'],
+    blurb: 'Chops and hauls its own wood. Ranked by Lumbering + Transporting.',
+  },
+  {
+    id: 'crew-mine', title: 'Mining crew', anchor: 'Mining',
+    jobs: ['Mining', 'Transporting'],
+    blurb: 'Digs and hauls its own ore. Ranked by Mining + Transporting.',
+  },
+  {
+    id: 'crew-all', title: 'Base all-rounders', anchor: '',
+    jobs: [],
+    blurb: 'The widest useful pals — ranked by TOTAL work levels across every job they have.',
+  },
+];
+
+function crewRank(crew: { jobs: string[]; anchor: string }, n = 12):
+{ name: string; score: number; parts: string }[] {
+  return Object.keys(pals)
+    .map((name) => {
+      const w = pals[name].work ?? {};
+      if (crew.anchor && !(w[crew.anchor] > 0)) return null;
+      const jobs = crew.jobs.length ? crew.jobs : Object.keys(w);
+      const score = jobs.reduce((s, j) => s + (w[j] ?? 0), 0);
+      const parts = jobs.filter((j) => w[j] > 0)
+        .map((j) => `${workLabel(j)[0]}${w[j]}`).join('·');
+      return { name, score, parts };
+    })
+    .filter((x): x is { name: string; score: number; parts: string } => !!x && x.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, n);
+}
+
 /** highest battle stats, straight from the dump — attack weighted double
  * because that's what kills bosses; the label in the UI says exactly this */
 function bestFighters(n = 12): { name: string; score: number }[] {
@@ -423,6 +467,43 @@ export function SuggestedGoals({ visible, onClose, targets, onAdd }: {
           <SquadCard title="Work efficiency boosters"
             blurb="Mining, logging and crafting multipliers from partner skills (Digtoise: ore mining +800–2000%). Tap a pal for the exact numbers."
             names={UTILITY_ROLES.efficiency.pals.map((p) => p.name)} />
+
+          {/* ---- COMPOSITE CREWS (CEO: "best farmer" = high planting+
+               gathering+transporting) — scores straight from work levels ---- */}
+          {CREWS.map((crew) => {
+            const list = crewRank(crew);
+            if (!list.length) return null;
+            const expanded = openJob === crew.id;
+            const shown = expanded ? list : list.slice(0, 6);
+            const missing = shown
+              .filter((x) => !targets.includes(x.name) && !ownedAny(x.name))
+              .map((x) => x.name);
+            return (
+              <View key={crew.id} style={{
+                backgroundColor: T.surface, borderColor: T.line, borderWidth: 1,
+                borderRadius: 14, padding: 12, gap: 8,
+              }}>
+                <Pressable style={[s.row, { gap: 8 }]}
+                  onPress={() => {
+                    void Haptics.selectionAsync();
+                    setOpenJob(expanded ? null : crew.id);
+                  }}>
+                  <Text style={[s.h3, { flex: 1 }]}>{crew.title}</Text>
+                  <Badge kind="plain">{expanded ? 'less −' : `top 6 of ${list.length} +`}</Badge>
+                </Pressable>
+                <Text style={[s.body, { fontSize: 11.5 }]}>{crew.blurb}</Text>
+                <View style={{ flexDirection: 'row', gap: 6, flexWrap: 'wrap' }}>
+                  {shown.map((x) => (
+                    <PalChip key={x.name} name={x.name} lvl={x.score} note={x.parts} />
+                  ))}
+                </View>
+                {missing.length > 1 && (
+                  <Btn small label={`Add all ${missing.length} shown`}
+                    onPress={() => onAdd(missing)} />
+                )}
+              </View>
+            );
+          })}
 
           <Text style={{
             color: T.faint, fontSize: 10.5, fontWeight: '800',
