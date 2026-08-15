@@ -220,6 +220,21 @@ describe('culling and clustering', () => {
     }
   });
 
+  it('gives each bubble a key that survives a pan', () => {
+    // Keying a marker on its cluster COUNT remounts every pin the moment a
+    // cluster gains or loses a member — i.e. exactly while dragging. The cell
+    // key is stable for a given zoom, so panning only adds and removes.
+    const wide = pointsInRect(set, 0, 0, 1, 1);
+    const narrow = pointsInRect(set, 0.1, 0.1, 0.9, 0.9);
+    const cellsOf = (idx: number[]) =>
+      new Set(clusterPoints(set, idx, 2000).map((c) => c.cell));
+    const a = cellsOf(wide);
+    const b = cellsOf(narrow);
+    expect(b.size).toBeGreaterThan(0);
+    // every cell still on screen keeps the identity it had before the pan
+    for (const cell of b) expect(a.has(cell)).toBe(true);
+  });
+
   it('merges harder when zoomed out than when zoomed in', () => {
     const all = pointsInRect(set, 0, 0, 1, 1);
     const far = clusterPoints(set, all, 400).length;

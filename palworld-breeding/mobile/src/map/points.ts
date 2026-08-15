@@ -34,6 +34,13 @@ export interface Cluster {
   count: number;
   /** index of a representative point, for tapping through to detail */
   index: number;
+  /**
+   * Grid cell this bubble came from — stable while the zoom holds, so it makes
+   * a React key that survives a pan. Keying on the count instead unmounts and
+   * remounts every pin the moment a cluster gains or loses a member, which is
+   * exactly when the user is dragging.
+   */
+  cell: string;
 }
 
 /* --------------------------------------------------------------- decoding */
@@ -163,8 +170,14 @@ export function clusterPoints(
     }
   }
   const out: Cluster[] = [];
-  for (const c of cells.values()) {
-    out.push({ u: c.u / c.count, v: c.v / c.count, count: c.count, index: c.index });
+  for (const [key, c] of cells) {
+    out.push({
+      u: c.u / c.count,
+      v: c.v / c.count,
+      count: c.count,
+      index: c.index,
+      cell: key,
+    });
   }
   return out;
 }

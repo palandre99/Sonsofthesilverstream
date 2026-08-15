@@ -268,15 +268,18 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       and spawn dots are solid while boss spots stay ringed. Reads as a
       habitat with the terrain showing through. Eye-verified on the Foxparks
       card (two iterations: rings-at-9px still moired, solid-at-12px is clean).
-- [ ] F26 (own review) `MapCanvas` mirrors its `markers` prop into a `visible`
-      state via useEffect — a pointless second render on every viewport push.
-      Render the prop directly.
-- [ ] F27 (own review) marker keys include the cluster count
-      (`${layer}:${index}:${count}`), so every pin unmounts and remounts when a
-      cluster's size changes mid-pan. Key on the layer + cell instead so pins
-      persist and can be animated.
-- [ ] F28 The pal-card → Map fane auto-framing (`canvas.focus`) is written but
-      NOT yet eye-verified end to end; the tap path needs a QA run of its own.
+- [x] F26 DONE 2026-08-16 ~00:28: dropped the `visible` state mirror in
+      MapCanvas — it cost a second render on every viewport push for nothing.
+- [x] F27 DONE: clusters now carry their grid `cell`, and markers key on
+      layer+cell instead of the count, so panning no longer unmounts and
+      remounts every pin the instant a cluster gains a member. Test-guarded.
+- [x] F28 DONE — and it was worth doing: verifying the hand-off found a REAL
+      BUG. `canvas.focus()` arrives the same frame the Map mounts, before the
+      first layout, so it computed against a size of 0 and scaled the map to
+      ~8 px: **a black screen**. Focus requests made before layout are now
+      held and replayed once the size is known. Eye-verified: tapping a pal
+      card's map now lands zoomed on that species' habitat with the terrain
+      readable.
 - [ ] F24 Dungeon spawns deserve their own visible layer in the Map fane
       (data + filter flag already exist, `filters.dungeons`) — a "found in
       dungeons" toggle, since the information is genuinely useful once it is

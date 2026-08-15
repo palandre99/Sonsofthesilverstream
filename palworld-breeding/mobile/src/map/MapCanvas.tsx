@@ -91,7 +91,9 @@ export function MapCanvas({
   const startTy = useSharedValue(0);
 
   const [win, setWin] = useState<TileWindow>({ z: 0, x0: 0, x1: 0, y0: 0, y1: 0 });
-  const [visible, setVisible] = useState<MapMarker[]>([]);
+
+  /** A focus asked for before we know our size, replayed once we do. */
+  const pending = React.useRef<{ u: number; v: number; zoom: number } | null>(null);
 
   const onLayout = useCallback((e: LayoutChangeEvent) => {
     const { width, height } = e.nativeEvent.layout;
@@ -223,19 +225,35 @@ export function MapCanvas({
     [size.w, size.h, pushWindow, pushViewport],
   );
 
-  // Markers are handed in already culled by the screen; this keeps the mounted
-  // set stable between viewport pushes.
-  React.useEffect(() => setVisible(markers), [markers]);
-
   /* --------------------------------------------------------------- imperative */
+
+  const applyFocus = useCallback((u: number, v: number, zoom: number, animate: boolean) => {
+    const next = Math.min(contain * MAX_ZOOM, Math.max(contain, contain * zoom));
+    const c = clamp(size.w / 2 - u * next, size.h / 2 - v * next, next);
+    const ms = animate ? 320 : 0;
+    k.value = withTiming(next, { duration: ms });
+    tx.value = withTiming(c.x, { duration: ms });
+    ty.value = withTiming(c.y, { duration: ms });
+  }, [clamp, contain, k, size.h, size.w, tx, ty]);
+
+  // A pal card can ask us to frame a species the same frame it mounts us, so
+  // the request routinely arrives BEFORE the first layout. Focusing then would
+  // compute against a size of 0 and scale the whole map down to a few pixels —
+  // a black screen. Hold the request and replay it once we know our size.
+  React.useEffect(() => {
+    if (size.w === 0 || !pending.current) return;
+    const { u, v, zoom } = pending.current;
+    pending.current = null;
+    applyFocus(u, v, zoom, false);
+  }, [applyFocus, size.w]);
 
   React.useImperativeHandle(canvasRef, () => ({
     focus: (u: number, v: number, zoom = 4) => {
-      const next = Math.min(contain * MAX_ZOOM, Math.max(contain, contain * zoom));
-      const c = clamp(size.w / 2 - u * next, size.h / 2 - v * next, next);
-      k.value = withTiming(next, { duration: 320 });
-      tx.value = withTiming(c.x, { duration: 320 });
-      ty.value = withTiming(c.y, { duration: 320 });
+      if (size.w === 0) {
+        pending.current = { u, v, zoom };
+        return;
+      }
+      applyFocus(u, v, zoom, true);
     },
     reset: () => {
       const c = clamp((size.w - contain) / 2, (size.h - contain) / 2, contain);
@@ -243,7 +261,7 @@ export function MapCanvas({
       tx.value = withTiming(c.x, { duration: 320 });
       ty.value = withTiming(c.y, { duration: 320 });
     },
-  }), [clamp, contain, k, size.h, size.w, tx, ty]);
+  }), [applyFocus, clamp, contain, k, size.h, size.w, tx, ty]);
 
   /* ------------------------------------------------------------- rendering */
 
@@ -313,7 +331,7 @@ export function MapCanvas({
               />
             ) : null}
             {tiles}
-            {visible.map((m) => (
+            {markers.map((m) => (
               <Animated.View
                 key={m.key}
                 pointerEvents="box-none"

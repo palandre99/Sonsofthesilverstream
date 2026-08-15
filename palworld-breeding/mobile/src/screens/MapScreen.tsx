@@ -95,7 +95,8 @@ export function MapScreen() {
       const clusters = clusterPoints(layer.set, hits, vp.scale, PIN + 14).slice(0, budget);
       for (const c of clusters) {
         out.push({
-          key: `${layer.key}:${c.index}:${c.count}`,
+          // stable while the zoom holds, so a pan never remounts a pin
+          key: `${layer.key}:${c.cell}`,
           u: c.u,
           v: c.v,
           render: () => <Pin colour={layer.colour} icon={layer.icon} count={c.count} />,
