@@ -23,6 +23,21 @@ import {
   engine,
 } from '../store';
 
+/** "planned just now / today 22:40 / yesterday 09:15 / 12 Aug" — a stamp a
+ * player reads at a glance, not a raw ISO date */
+function plannedWhen(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return '';
+  const now = new Date();
+  const mins = Math.floor((now.getTime() - d.getTime()) / 60000);
+  if (mins >= 0 && mins < 2) return 'planned just now';
+  const hm = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+  if (d.toDateString() === now.toDateString()) return `planned today ${hm}`;
+  const yesterday = new Date(now.getTime() - 86400000);
+  if (d.toDateString() === yesterday.toDateString()) return `planned yesterday ${hm}`;
+  return `planned ${d.getDate()} ${d.toLocaleString(undefined, { month: 'short' })}`;
+}
+
 /** none / partial (one gender hatched) / full (both, or a legacy tick). */
 function tickStateOf(c: unknown): TickState {
   if (!c) return 'none';
@@ -513,7 +528,7 @@ export function PlannerScreen() {
           </View>
           <View style={[s.wrap, { marginTop: 8, alignItems: 'center' }]}>
             <Text style={[s.body, { fontSize: 12 }]}>
-              planned {plan.planned.slice(0, 10)}
+              {plannedWhen(plan.planned)}
             </Text>
             <Btn small label="Start over" onPress={() => setManaging('reset')} />
             <Btn small danger label="Clear plan" onPress={() => setManaging('clear')} />

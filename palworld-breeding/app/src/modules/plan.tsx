@@ -32,6 +32,21 @@ function loadChecks(): Record<string, CheckValue> {
   try { return JSON.parse(storage.get(CHECKS_KEY) || '{}'); } catch { return {}; }
 }
 
+/** "just now / today 22:40 / yesterday 09:15 / 12 Aug" — a stamp a player
+ * reads at a glance, not a raw ISO date */
+function plannedWhen(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return '';
+  const now = new Date();
+  const mins = Math.floor((now.getTime() - d.getTime()) / 60000);
+  if (mins >= 0 && mins < 2) return 'just now';
+  const hm = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+  if (d.toDateString() === now.toDateString()) return `today ${hm}`;
+  const yesterday = new Date(now.getTime() - 86400000);
+  if (d.toDateString() === yesterday.toDateString()) return `yesterday ${hm}`;
+  return `${d.getDate()} ${d.toLocaleString(undefined, { month: 'short' })}`;
+}
+
 /** none / partial (one gender hatched, amber) / full (both, green). */
 export function tickStateOf(c: CheckValue | undefined): 'none' | 'partial' | 'full' {
   if (!c) return 'none';
@@ -456,7 +471,7 @@ export function PlanPage() {
               <div class="tile"><b>{planMs < 1000 ? `${Math.round(planMs)}ms` : `${(planMs / 1000).toFixed(1)}s`}</b><span>planned in</span></div>
             )}
             {plannedAt && (
-              <div class="tile"><b>{plannedAt.slice(0, 10)}</b><span>planned on — re-plan after box changes</span></div>
+              <div class="tile"><b>{plannedWhen(plannedAt)}</b><span>planned — re-plan after box changes</span></div>
             )}
             <span class="bulkbtns" style={{ alignSelf: 'center' }}>
               <button class="btn sm" onClick={() => setManaging('reset')}>Start over</button>

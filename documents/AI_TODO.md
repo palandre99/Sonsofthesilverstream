@@ -539,5 +539,6 @@ below ships on BOTH platforms.*
 - [ ] Web parity gap: the cake-ingredient checklist (Eggs/Milk/Honey/
       Berries badges) exists only on mobile — web's "Make it faster" has
       the totals sentence but no checklist. Port when the web pass comes.
-- [ ] "planned 2026-08-15" stat tile shows a raw date — could read
-      "planned today · 22:40" in the player's language. Micro-polish.
+- [x] 2026-08-15 ~23:30 planned-date polish SHIPPED both platforms:
+      "planned just now / today 22:42 / yesterday 09:15 / 12 Aug" instead
+      of the raw ISO date. Eye-verified on QA.
