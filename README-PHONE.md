@@ -9,7 +9,7 @@ speed, images bundled on the phone, and it still gets every update
 automatically when you reopen it. Install it once from your iPhone:
 
 > open `PALFORGE-FAST-INSTALL.html` (in this folder) on the phone, or go to
-> https://expo.dev/accounts/palandre99/projects/hatchlab/builds/68e1c1de-3a5d-4f8b-9388-74d4733b61b5
+> https://expo.dev/accounts/palandre99/projects/hatchlab/builds/0bd4b937-1112-4df8-8c42-f8b952613a70
 
 Keep both: **Palforge (fast)** for daily testing, **Palforge DEV** for
 live-coding sessions with START-APP.cmd.
