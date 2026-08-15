@@ -17,7 +17,7 @@ function ResultFlags({ ch }: { ch: ChildResult }) {
       {ch.kind === 'unique' && <Badge kind="unique">unique recipe</Badge>}
       {ch.kind === 'gendered' && <Badge kind="warn">gender locked</Badge>}
       {ch.kind === 'self' && <Badge kind="plain">same species</Badge>}
-      {ch.tieBreak && <Badge kind="warn">tie-break</Badge>}
+      {ch.tieBreak && <Badge kind="warn">close call — higher rank wins</Badge>}
     </View>
   );
 }
@@ -215,7 +215,7 @@ export function CalculatorScreen() {
               <Text style={s.h2}>Pick two parents</Text>
               <Text style={[s.body, { marginTop: 6 }]}>
                 You get the child instantly, with the math shown — and a warning whenever
-                a recipe, gender lock or tie-break changes the outcome.
+                a special recipe or gender rule changes the outcome.
               </Text>
             </Card>
           )}

@@ -12,7 +12,7 @@ function ResultFlags({ ch }: { ch: ChildResult }) {
       {ch.kind === 'unique' && <span class="badge unique">unique recipe</span>}
       {ch.kind === 'gendered' && <LockBadge />}
       {ch.kind === 'self' && <span class="badge plain">same species</span>}
-      {ch.tieBreak && <span class="badge warn">tie-break</span>}
+      {ch.tieBreak && <span class="badge warn">close call — higher rank wins</span>}
       {ch.kind === 'generic' && ch.margin !== null && !ch.tieBreak && (
         <span class="badge plain">margin {ch.margin}</span>
       )}
@@ -186,7 +186,7 @@ export function CalculatorPage() {
         <h1>Calculator</h1>
         <p>Every result runs the exact 1.0 formula, verified against all 44,851 outcomes
           from the game files — unique recipes, the gender-locked pair, pool exclusions
-          and the higher-rank tie-break included.</p>
+          and exact ties resolved the way the game resolves them.</p>
       </div>
       <div class="calcmodes" role="group" aria-label="Calculator mode">
         <button aria-pressed={mode === 'pair'} class={mode === 'pair' ? 'on' : ''}
@@ -206,7 +206,7 @@ export function CalculatorPage() {
             <div class="card bigcard">
               <h2>Pick two parents</h2>
               <p>You'll get the child instantly, with the math shown — and a warning
-                whenever a recipe, gender lock or tie-break changes the outcome.</p>
+                whenever a special recipe or gender rule changes the outcome.</p>
             </div>
           )}
         </>
