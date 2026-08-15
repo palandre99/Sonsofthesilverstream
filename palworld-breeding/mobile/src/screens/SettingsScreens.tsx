@@ -6,6 +6,11 @@ import * as Haptics from 'expo-haptics';
 import { T } from '../theme';
 import { Btn, Card, PageHead, s } from '../ui/kit';
 import { Icon } from '../ui/Icon';
+import * as Updates from 'expo-updates';
+import { Image } from 'react-native';
+
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const LOGO = require('../../assets/splash-icon.png');
 import {
   createProfile, deleteProfile, getActiveProfile, getProfiles, profileStats,
   renameProfile, switchProfile, useAppVersion, type ProfileStats,
@@ -177,10 +182,21 @@ export function AboutScreen() {
   return (
     <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
       <View style={{ alignItems: 'center', marginTop: 30, marginBottom: 18 }}>
-        <Text style={{ fontSize: 52 }}>🔵</Text>
+        <Image source={LOGO} style={{ width: 64, height: 64 }} />
         <Text style={[s.h1, { marginTop: 8 }]}>Palforge</Text>
         <Text style={[s.body, { marginTop: 2 }]}>The Palworld companion with receipts</Text>
       </View>
+      <Card style={{ marginBottom: 10 }}>
+        <Text style={s.h3}>This version</Text>
+        <Text style={[s.body, { marginTop: 4 }]}>
+          {Updates.isEmbeddedLaunch
+            ? 'Running the version that shipped with the install — an update will land shortly after opening.'
+            : `Update ${Updates.updateId?.slice(0, 8) ?? '?'} · ${Updates.createdAt ? new Date(Updates.createdAt).toLocaleString() : ''}`}
+        </Text>
+        <Text style={[s.body, { fontSize: 12, color: T.faint, marginTop: 2 }]}>
+          Channel {Updates.channel || 'dev'} · runtime {Updates.runtimeVersion || '—'}
+        </Text>
+      </Card>
       <Card>
         <Text style={s.h3}>Provably correct</Text>
         <Text style={[s.body, { marginTop: 4 }]}>

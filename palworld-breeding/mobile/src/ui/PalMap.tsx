@@ -21,9 +21,12 @@ const MAP = require('../../assets/map2048.jpg');
 /** Dataset region strings can carry level brackets and data notes — clean
  * them before they reach the user (reviewer catch 2026-08-15). */
 function cleanRegion(r: string): string {
-  const base = r.replace(/\s*\[[^\]]*\]\s*$/, '').trim();
-  // long data notes ("X - explanation of where that is") -> just the name
-  return base.length > 40 && base.includes(' - ') ? base.split(' - ')[0].trim() : base;
+  // keep the level range — that is hunting information (research catch:
+  // competitors show it, we were deleting it) — just re-dress the brackets
+  const m = /^(.*?)\s*\[Lv\.?\s*([^\]]+)\]\s*$/.exec(r);
+  const base0 = m ? `${m[1].trim()} (Lv ${m[2].trim()})` : r.trim();
+  return base0.length > 60 && base0.includes(' - ')
+    ? base0.split(' - ')[0].trim() : base0;
 }
 
 export function PalMap({ name }: { name: string }) {

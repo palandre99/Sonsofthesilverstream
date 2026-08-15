@@ -23,7 +23,9 @@ export function MapViewer({ title, pins, onClose }: {
   pins: MapPin[];
   onClose: () => void;
 }) {
-  const side = Dimensions.get('window').width;
+  // render the map at 2x screen width: the 2048px asset keeps its detail
+  // and zoom starts from real pixels, not an upscaled thumbnail
+  const side = Dimensions.get('window').width * 2;
   return (
     <Modal visible animationType="fade" onRequestClose={onClose}>
       <View style={{ flex: 1, backgroundColor: '#04090b' }}>
@@ -44,11 +46,11 @@ export function MapViewer({ title, pins, onClose }: {
 
         <ScrollView
           style={{ flex: 1 }}
-          contentContainerStyle={{
-            flexGrow: 1, alignItems: 'center', justifyContent: 'center',
-          }}
-          maximumZoomScale={5}
-          minimumZoomScale={1}
+          contentContainerStyle={{ }}
+          horizontal={false}
+          maximumZoomScale={4}
+          minimumZoomScale={0.5}
+          zoomScale={0.5}
           showsHorizontalScrollIndicator={false}
           showsVerticalScrollIndicator={false}
           bouncesZoom

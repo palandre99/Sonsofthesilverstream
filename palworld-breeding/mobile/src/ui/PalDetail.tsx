@@ -7,7 +7,7 @@ import { T } from '../theme';
 import { Badge, Btn, Card, ElementChips, GenderToggles, PalIcon, s } from './kit';
 import { Image } from 'react-native';
 import {
-  breeding, engine, pals, selfOnly, useAppVersion, workLabel,
+  breeding, engine, ownedAny, pals, selfOnly, useAppVersion, workLabel,
 } from '../store';
 import { WORK_ICONS } from '../data/workIcons';
 import { PalMap } from './PalMap';
@@ -17,7 +17,23 @@ import { ABOUT } from '../data/about';
 import { Icon } from './Icon';
 import { ALPHA_SPOTS } from '../data/alphaSpots.g';
 
-function StatBar({ label, icon, v }: { label: string; icon?: number; v: number | null }) {
+/** rank of a value among all species for one stat (1 = best) */
+function statRank(stat: 'hp' | 'atk' | 'def', v: number | null): string | null {
+  if (v == null) return null;
+  let better = 0;
+  let total = 0;
+  for (const q of Object.values(pals)) {
+    const qv = q[stat];
+    if (qv == null) continue;
+    total++;
+    if (qv > v) better++;
+  }
+  return `#${better + 1} of ${total}`;
+}
+
+function StatBar({ label, icon, v, rank }: {
+  label: string; icon?: number; v: number | null; rank?: string | null;
+}) {
   return (
     <View style={[s.row, { gap: 8 }]}>
       {icon != null && <Image source={icon} style={{ width: 18, height: 18 }} />}
@@ -28,6 +44,9 @@ function StatBar({ label, icon, v }: { label: string; icon?: number; v: number |
           height: '100%', borderRadius: 4, backgroundColor: T.accent,
         }} />
       </View>
+      {rank != null && (
+        <Text style={{ color: T.faint, fontSize: 10, width: 66, textAlign: 'right' }}>{rank}</Text>
+      )}
       <Text style={{ color: T.ink, width: 32, fontSize: 12, textAlign: 'right' }}>{v ?? '—'}</Text>
     </View>
   );
@@ -126,9 +145,12 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
               )}
             </View>
           </View>
-          <StatBar label="Health" icon={STAT_ICONS.health} v={boost(p.hp)} />
-          <StatBar label="Attack" icon={STAT_ICONS.attack} v={boost(p.atk)} />
-          <StatBar label="Defense" icon={STAT_ICONS.defense} v={boost(p.def)} />
+          <StatBar label="Health" icon={STAT_ICONS.health} v={boost(p.hp)}
+            rank={statRank('hp', p.hp)} />
+          <StatBar label="Attack" icon={STAT_ICONS.attack} v={boost(p.atk)}
+            rank={statRank('atk', p.atk)} />
+          <StatBar label="Defense" icon={STAT_ICONS.defense} v={boost(p.def)}
+            rank={statRank('def', p.def)} />
           {stars > 0 && (
             <Text style={[s.body, { fontSize: 11.5, color: T.goldInk }]}>
               Condensed {stars}★: stats +{stars * 5}% · partner skill level {stars + 1} of 5
@@ -236,13 +258,48 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
                   <Text style={s.body}>{g.father} = {name}</Text>
                 </View>
               ))}
-              {inPool && (
-                <Text style={s.body}>
-                  No fixed recipe — many different parent pairs can breed this pal.
-                  Open the Calculator and search it under Child → parents to see
-                  every pair you can make right now.
-                </Text>
-              )}
+              {inPool && (() => {
+                // show real example pairs INLINE — competitors do, and a
+                // cross-tab homework assignment is not a feature
+                const pairs: [string, string][] = [];
+                const names = Object.keys(pals);
+                outer: for (let i = 0; i < names.length; i++) {
+                  for (let j = i; j < names.length; j++) {
+                    const kids = engine.childrenOf(names[i], names[j]);
+                    if (kids.length === 1 && kids[0].species === name
+                      && kids[0].kind === 'generic') {
+                      const bothOwned = ownedAny(names[i]) && ownedAny(names[j]);
+                      if (bothOwned) pairs.unshift([names[i], names[j]]);
+                      else pairs.push([names[i], names[j]]);
+                      if (pairs.length >= 40) break outer;
+                    }
+                  }
+                }
+                const show = pairs.slice(0, 3);
+                return (
+                  <View style={{ gap: 6 }}>
+                    <Text style={s.body}>
+                      No fixed recipe — many parent pairs work. For example:
+                    </Text>
+                    {show.map(([pa, pb]) => (
+                      <View key={`${pa}+${pb}`}
+                        style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                        <PalIcon name={pa} size={26} />
+                        <Text style={[s.body, { flexShrink: 1 }]} numberOfLines={1}>{pa}</Text>
+                        <Text style={{ color: T.faint, fontWeight: '800' }}>+</Text>
+                        <PalIcon name={pb} size={26} />
+                        <Text style={[s.body, { flexShrink: 1 }]} numberOfLines={1}>{pb}</Text>
+                        {ownedAny(pa) && ownedAny(pb) && (
+                          <Badge kind="ok">you own both</Badge>
+                        )}
+                      </View>
+                    ))}
+                    <Text style={[s.body, { fontSize: 12, color: T.faint }]}>
+                      Full list: Calculator → Child → parents.
+                    </Text>
+                  </View>
+                );
+              })()}
             </>
           )}
         </Card>
