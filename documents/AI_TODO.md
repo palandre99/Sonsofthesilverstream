@@ -268,6 +268,15 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       and spawn dots are solid while boss spots stay ringed. Reads as a
       habitat with the terrain showing through. Eye-verified on the Foxparks
       card (two iterations: rings-at-9px still moired, solid-at-12px is clean).
+- [ ] F26 (own review) `MapCanvas` mirrors its `markers` prop into a `visible`
+      state via useEffect — a pointless second render on every viewport push.
+      Render the prop directly.
+- [ ] F27 (own review) marker keys include the cluster count
+      (`${layer}:${index}:${count}`), so every pin unmounts and remounts when a
+      cluster's size changes mid-pan. Key on the layer + cell instead so pins
+      persist and can be animated.
+- [ ] F28 The pal-card → Map fane auto-framing (`canvas.focus`) is written but
+      NOT yet eye-verified end to end; the tap path needs a QA run of its own.
 - [ ] F24 Dungeon spawns deserve their own visible layer in the Map fane
       (data + filter flag already exist, `filters.dungeons`) — a "found in
       dungeons" toggle, since the information is genuinely useful once it is
