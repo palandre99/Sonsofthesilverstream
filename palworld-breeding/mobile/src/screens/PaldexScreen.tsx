@@ -2,7 +2,7 @@
  * Ownership lives here: ♂/♀ toggles on every row, import, stats — the
  * separate Box tab was folded in (two near-identical lists were confusing). */
 import React, { memo, useMemo, useState } from 'react';
-import { FlatList, Modal, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
+import { FlatList, Modal, Pressable, ScrollView, Share, Text, TextInput, View } from 'react-native';
 import { T } from '../theme';
 import {
   Badge, Btn, Card, ElementChips, GenderToggles, PageHead, PalIcon, SearchInput,
@@ -15,6 +15,7 @@ import {
 } from '../store';
 import { closure } from '../engine/planner';
 import { PalDetail } from '../ui/PalDetail';
+import { rarityTint } from '../data/rarity';
 import * as Haptics from 'expo-haptics';
 import { WORK_ICONS } from '../data/workIcons';
 import { ELEMENT_ICONS } from '../data/statIcons';
@@ -31,6 +32,7 @@ const Row = memo(function Row({ name, onOpen }: { name: string; onOpen: (n: stri
       style={({ pressed }) => [{
         flexDirection: 'row', alignItems: 'center', gap: 8,
         backgroundColor: T.surface, borderColor: T.line, borderWidth: 1,
+        borderLeftWidth: 3, borderLeftColor: rarityTint(p?.rarity, T.line),
         borderRadius: 12, padding: 8, marginBottom: 6, opacity: owned ? 1 : 0.65,
       }, pressed && { borderColor: T.accent }]}
     >
@@ -359,6 +361,16 @@ export function PaldexScreen() {
         ListFooterComponent={
           <View style={[s.wrap, { justifyContent: 'center', paddingVertical: 14 }]}>
             <Btn small label="Import list…" onPress={() => setSheet('import')} />
+            <Btn small disabled={!ownedNames.length} label="Copy my list…"
+              onPress={() => {
+                // gender-suffixed lines — the exact format Import understands,
+                // so a collection moves between installs in two taps
+                const text = ownedNames.sort().map((n) => {
+                  const g = box[n];
+                  return n + (g.m && g.f ? '' : g.m ? ' ♂' : ' ♀');
+                }).join('\n');
+                void Share.share({ message: text });
+              }} />
             <Btn small danger disabled={!ownedNames.length} label="Clear collection…"
               onPress={() => setSheet('clear')} />
           </View>

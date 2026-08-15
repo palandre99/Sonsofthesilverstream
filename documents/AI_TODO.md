@@ -166,3 +166,29 @@ loops all night INSIDE the Breeding + Paldex domain (his explicit scope).
 - [ ] Broncherry alpha-egg details in the pal info card (luck helpers section)
 - [ ] Mobile engine test harness (vitest for mobile copies) — still open
 - [ ] Aug-12 game-update data freshness check (upstream kb + palcalc) — URGENT
+
+
+## CEO FEEDBACK — morning 2026-08-15 (09:25, fast app installed and running)
+
+- [ ] FAST-APP MIGRATION: fresh install starts with an empty collection —
+      give the CEO a one-tap path: "Copy my list" button in mobile Paldex
+      (dev app) -> Import in the fast app. Longer term: real sync (queued).
+- [ ] Plan's pal search (PalPicker) — "must be better and smarter design,
+      looks bad": rebuild with Paldex-grade filters (element/work/ownership),
+      recents, big rows, live count.
+- [ ] Info card "Where to find it" must be a real MAP for every pal, not
+      text chips (alpha pins exist; regular spawn AREAS need data — RESEARCH
+      palcalc/paldb spawn polygons before building; never invent).
+- [ ] Info card "About the pal" bubble — the game's own Paldex flavor text,
+      tappable to expand; plus a longer wiki-style read. RESEARCH: does the
+      kb dump carry the description text? Use only verified text.
+- [ ] Rarity-colored cards: tier tint on pal cards (common/neutral, rare
+      blue/green, epic purple, legendary gold — match the GAME's palette,
+      research exact in-game rarity colors first).
+- [ ] Stars on the pal card (condensation): tappable 0-4 stars that update
+      stats/suitability/partner skill live. RESEARCH FIRST: exactly what
+      each star changes per the game files (partner skill rank? work +1?
+      stat %?) — model only what the data proves.
+- [ ] Standing: brutal AAA design pass, find hundreds of own improvements.
+- [ ] CEO caught the loop idle overnight — wakeups must be re-armed EVERY
+      turn end, no exceptions.

@@ -1,7 +1,7 @@
 /** Shared UI: pal icons, chips, badges, cards, search, pickers, toggles. */
 import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
 import {
-  FlatList, Image, Modal, Pressable, StyleSheet, Text, TextInput, View,
+  FlatList, Image, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { ELEMENT_COLORS, T } from '../theme';
@@ -234,6 +234,12 @@ export function GenderToggles({ name, size = 30 }: { name: string; size?: number
 
 /* ---------------- pal picker (modal) ---------------- */
 
+// PalPicker v2: quick filters + rarity tints
+import { rarityTint } from '../data/rarity';
+import { Icon } from './Icon';
+
+const PICKER_ELEMENTS = ['Neutral', 'Fire', 'Water', 'Grass', 'Electric', 'Ice', 'Ground', 'Dark', 'Dragon'];
+
 export function PalPicker({ visible, onClose, onPick, title, exclude }: {
   visible: boolean;
   onClose: () => void;
@@ -243,25 +249,34 @@ export function PalPicker({ visible, onClose, onPick, title, exclude }: {
   exclude?: Set<string>;
 }) {
   const [q, setQ] = useState('');
+  const [own, setOwn] = useState<'all' | 'owned' | 'missing'>('all');
+  const [el, setEl] = useState<string | null>(null);
   const inputRef = useRef<TextInput>(null);
   useAppVersion();
 
   const names = useMemo(() => {
-    const all = [...Object.keys(pals)].sort(palNumberSort);
-    if (!q) return all;
-    const needle = q.toLowerCase();
-    return all.filter((n) => n.toLowerCase().includes(needle));
-  }, [q]);
+    let list = [...Object.keys(pals)].sort(palNumberSort);
+    if (q) {
+      const needle = q.toLowerCase();
+      list = list.filter((n) => n.toLowerCase().includes(needle));
+    }
+    if (el) list = list.filter((n) => pals[n].elements.includes(el));
+    if (own === 'owned') list = list.filter(ownedAny);
+    if (own === 'missing') list = list.filter((n) => !ownedAny(n));
+    return list;
+  }, [q, el, own]);
 
   useEffect(() => {
     if (visible) {
       setQ('');
+      setOwn('all');
+      setEl(null);
       setTimeout(() => inputRef.current?.focus(), 250);
     }
   }, [visible]);
 
   const recents = getRecentPicks().filter((n) => Object.hasOwn(pals, n));
-  const showRecents = !q && recents.length > 0;
+  const showRecents = !q && !el && own === 'all' && recents.length > 0;
 
   const Row = ({ n }: { n: string }) => {
     const excluded = exclude?.has(n) ?? false;
@@ -280,6 +295,8 @@ export function PalPicker({ visible, onClose, onPick, title, exclude }: {
           paddingVertical: 9, paddingHorizontal: 12, borderRadius: 12,
           backgroundColor: pressed ? T.accentSoft : T.surface,
           borderWidth: 1, borderColor: pressed ? T.accent : T.line,
+          borderLeftWidth: 3,
+          borderLeftColor: pressed ? T.accent : rarityTint(pals[n]?.rarity, T.line),
           marginBottom: 6, opacity: excluded ? 0.45 : 1,
         }]}
       >
@@ -330,6 +347,49 @@ export function PalPicker({ visible, onClose, onPick, title, exclude }: {
               color: T.ink, fontSize: 16.5, fontWeight: '600',
             }}
           />
+          {/* quick filters: ownership + element — one glanceable row */}
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+            {(['all', 'missing', 'owned'] as const).map((o) => (
+              <Pressable key={o}
+                onPress={() => {
+                  void Haptics.selectionAsync();
+                  setOwn(o);
+                }}
+                style={{
+                  backgroundColor: own === o ? T.accentSoft : T.surface,
+                  borderWidth: 1.5, borderColor: own === o ? T.accent : T.line,
+                  borderRadius: 9, paddingHorizontal: 9, paddingVertical: 5,
+                }}>
+                <Text style={{
+                  color: own === o ? T.accentInk : T.muted,
+                  fontWeight: '700', fontSize: 11.5,
+                }}>{o === 'all' ? 'All' : o === 'owned' ? 'Owned' : 'Missing'}</Text>
+              </Pressable>
+            ))}
+            <View style={{ width: 1, height: 18, backgroundColor: T.line }} />
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{ gap: 5, alignItems: 'center' }}>
+              {PICKER_ELEMENTS.map((e) => (
+                <Pressable key={e}
+                  onPress={() => {
+                    void Haptics.selectionAsync();
+                    setEl(el === e ? null : e);
+                  }}
+                  accessibilityLabel={`Filter ${e}`}
+                  style={{
+                    width: 30, height: 30, borderRadius: 9,
+                    alignItems: 'center', justifyContent: 'center',
+                    backgroundColor: el === e ? T.accentSoft : T.surface,
+                    borderWidth: 1.5, borderColor: el === e ? T.accent : T.line,
+                  }}>
+                  <Image source={ELEMENT_ICONS[e]} style={{ width: 19, height: 19 }} />
+                </Pressable>
+              ))}
+            </ScrollView>
+          </View>
+          <Text style={{
+            color: T.faint, fontSize: 11, fontWeight: '700', textAlign: 'right',
+          }}>{names.length} of {Object.keys(pals).length}</Text>
         </View>
         <FlatList
           data={names}
@@ -356,9 +416,13 @@ export function PalPicker({ visible, onClose, onPick, title, exclude }: {
           renderItem={({ item: n }) => <Row n={n} />}
           ListEmptyComponent={
             <View style={{ alignItems: 'center', marginTop: 40, gap: 6 }}>
-              <Text style={{ fontSize: 34 }}>🔍</Text>
-              <Text style={{ color: T.muted, fontWeight: '700' }}>No pal matches “{q}”</Text>
-              <Text style={{ color: T.faint, fontSize: 12.5 }}>Check the spelling — or breed something new.</Text>
+              <Icon name="magnify" size={34} color={T.faint} />
+              <Text style={{ color: T.muted, fontWeight: '700' }}>
+                {q ? `No pal matches “${q}”` : 'Nothing matches those filters'}
+              </Text>
+              <Text style={{ color: T.faint, fontSize: 12.5 }}>
+                {q ? 'Check the spelling — or clear a filter.' : 'Tap a filter again to clear it.'}
+              </Text>
             </View>
           }
         />
