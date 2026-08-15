@@ -119,12 +119,21 @@ update the install-dev page in the same work block.
 | Live website | https://palandre99.github.io/Sonsofthesilverstream/palforge/ |
 | Bundle id | `com.palandre.hatchlab` · Apple team `93VP5ZXDZX` |
 
-Current builds (iOS, runtime 1.0.0):
+Current builds (iOS, **runtime 1.1.0** — the native-toolkit builds,
+2026-08-15 evening; both identities verified by unpacking the `.ipa`s):
 
-- **DEV** `ccefd7d2-8115-47ad-8d97-6ce33bc3a013` — development channel, commit
-  `4bc1d87`, bundle `com.palandre.hatchlab.dev`, fingerprint `c9602f41…`
-- **FAST** `0bd4b937-1112-4df8-8c42-f8b952613a70` — preview channel, commit
-  `ae82595`, bundle `com.palandre.hatchlab`, fingerprint `06b76851…`
+- **DEV** `a6447f7e-ff8d-4f2d-ac19-0051abce7e9b` — development channel,
+  bundle `com.palandre.hatchlab.dev`, "Palforge DEV", scheme `palforge-dev`
+- **FAST** `021773ab-9106-461a-9241-2b874d232794` — preview channel,
+  bundle `com.palandre.hatchlab`, "Palforge", scheme `palforge`
+
+⚠ The 1.0.0 builds (`ccefd7d2` DEV / `0bd4b937` FAST) stopped receiving
+updates when the runtime moved to 1.1.0 — the CEO must install BOTH new
+builds from the hub. New native modules on board: gradients, blur,
+expo-image, svg, lottie, gesture-handler, reanimated+worklets, clipboard,
+file-system, sharing, document-picker, localization, pager-view,
+screen-orientation, view-shot, keep-awake. (expo-notifications is queued —
+it needs an interactive Apple login to add the push entitlement.)
 
 ---
 
