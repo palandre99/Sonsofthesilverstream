@@ -19,6 +19,7 @@ import {
 import { ABOUT } from '../data/about';
 import { Icon } from './Icon';
 import { ALPHA_SPOTS } from '../data/alphaSpots.g';
+import { PALCALC_FACTS } from '../data/palcalcFacts.g';
 
 /** rank of a value among all species for one stat (1 = best) */
 function statRank(stat: 'hp' | 'atk' | 'def', v: number | null): string | null {
@@ -371,6 +372,22 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
                 every job above goes up.
               </Text>
             )}
+          </Card>
+        )}
+
+        {(PALCALC_FACTS[name]?.passives?.length ?? 0) > 0 && (
+          <Card style={{ marginTop: 10 }}>
+            <Text style={s.h3}>Born with</Text>
+            <Text style={[s.body, { marginTop: 4 }]}>
+              Every {name} always carries{' '}
+              {PALCALC_FACTS[name]!.passives!.join(' + ')} — datamined, and
+              breedable into your lines.
+            </Text>
+            <View style={[s.wrap, { marginTop: 8 }]}>
+              {PALCALC_FACTS[name]!.passives!.map((ps) => (
+                <Badge key={ps} kind="gold">{ps}</Badge>
+              ))}
+            </View>
           </Card>
         )}
 

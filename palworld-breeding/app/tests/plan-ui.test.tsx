@@ -37,7 +37,10 @@ beforeEach(() => {
   };
 });
 
-describe('Route Planner', () => {
+// 20s budget for the whole file: these tests mount the full PlanPage with the
+// real engine, and the default 5s flakes under load (dev servers, CI) — the
+// heaviest test here always carried 20s; the rest deserve the same.
+describe('Route Planner', { timeout: 20000 }, () => {
   it('plans through the client (sync fallback) and persists the result', async () => {
     render(<PlanPage />);
     // add a modest reachable target via the picker

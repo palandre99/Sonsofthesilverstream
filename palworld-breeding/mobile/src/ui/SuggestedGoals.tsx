@@ -336,11 +336,12 @@ export function SuggestedGoals({ visible, onClose, targets, onAdd }: {
         <Text style={[s.body, { fontSize: 11.5 }]}>{blurb}</Text>
         <View style={{ flexDirection: 'row', gap: 6, flexWrap: 'wrap' }}>
           {shown.map((n) => (
-            // "saddle available Lv X" (CEO) — real tech levels from paldb;
-            // community speed callouts win the one-line slot when present
+            // the one-line note, best information first: community speed
+            // callout > saddle unlock level > guaranteed passive names
             <PalChip key={n} name={n}
               note={MOUNT_CALLOUTS[n]
-                ?? (SADDLE_LEVELS[n] != null ? `saddle Lv ${SADDLE_LEVELS[n]}` : undefined)} />
+                ?? (SADDLE_LEVELS[n] != null ? `saddle Lv ${SADDLE_LEVELS[n]}` : undefined)
+                ?? PALCALC_FACTS[n]?.passives?.join(' + ')} />
           ))}
         </View>
         {expanded && hidden > 0 && (
@@ -479,6 +480,9 @@ export function SuggestedGoals({ visible, onClose, targets, onAdd }: {
             blurb="Mining, logging and crafting multipliers from partner skills (Digtoise: ore mining +800–2000%). Tap a pal for the exact numbers."
             names={UTILITY_ROLES.efficiency.pals.map((p) => p.name)} />
 
+          <RankedCard id="u-born" title="Born with a passive"
+            blurb="46 species are ALWAYS born carrying a passive (datamined) — catch or breed one and the passive is yours to breed onward. Tap a pal to see which."
+            names={Object.keys(pals).filter((n) => PALCALC_FACTS[n]?.passives?.length)} />
           <RankedCard id="u-loot" title="Loot boosters"
             blurb="More drops from enemies you defeat — element-specific hunting partners, plus Dumud Gild's gold bonus. Tap a pal for its exact effect."
             names={palsWithEffect(LOOT_RE)} />

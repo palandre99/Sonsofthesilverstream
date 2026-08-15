@@ -296,6 +296,10 @@ export function GoalsSheet({ open, onClose, targets, onAdd }: {
           blurb="Mining, logging and crafting multipliers from partner skills."
           names={UTILITY_ROLES.efficiency.pals.map((p) => p.name)} />
 
+        <Section id="u-born" title="Born with a passive" cap={8}
+          blurb="46 species are ALWAYS born carrying a passive (datamined) — catch or breed one and it's yours to breed onward."
+          names={Object.keys(pals.value).filter((n) => PALCALC_FACTS[n]?.passives?.length)}
+          notes={(n) => PALCALC_FACTS[n]?.passives?.join(' + ')} />
         <Section id="u-loot" title="Loot boosters" cap={8}
           blurb="More drops from enemies you defeat — element-specific hunting partners, plus Dumud Gild's gold bonus."
           names={palsWithEffect(LOOT_RE)} />
