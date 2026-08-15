@@ -89,20 +89,21 @@ Add everything you find; finding nothing means you didn't look.*
 - [x] 2026-08-15: Plan management — Start over (reverses tick-registered pals)
       + Clear plan (keeps collection). Both platforms, tested.
 - [x] 2026-08-15: Paldex list taps while keyboard open (keyboardShouldPersistTaps).
-- [ ] Mobile Calculator: no way to clear/swap a picked parent — add long-press
-      to clear + a swap button between the pickers.
+- [x] 2026-08-15 ~19:20 Mobile Calculator: ✕ badge clears a picked parent,
+      middle icon swaps both when set. Shipped + OTA'd both.
 - [ ] Mobile: picker modals should show recently-picked pals first.
 - [ ] Planner: "Plan N targets" silently replaces the current plan — warn when
       an unfinished plan exists (checks > 0).
-- [ ] Planner phases: a phase whose steps are all done should collapse.
-- [ ] Odds Lab mobile: parent panels lose passives when switching tabs — keep
-      state per session (lift state up or persist).
+- [x] 2026-08-15 ~19:15 Planner phases: completed phases fold to one line,
+      tap to reopen. Shipped + OTA'd both.
+- [x] 2026-08-15 ~19:15 Odds Lab: parents/goal/cake survive tab switches
+      (module session cache). Shipped + OTA'd both.
 - [ ] Drawer: gesture to open should work mid-screen swipe (currently edge-only
       32px) — evaluate against scroll conflicts.
 - [ ] Haptics on step-complete uses success notification; add a tiny confetti
       or scale animation on the hero row for the "hatched!" moment.
 - [ ] Paldex row: tapping ♂/♀ needs a subtle scale/opacity animation.
-- [ ] Web hatch dialog: Escape should close it (click-away works today).
+- [x] 2026-08-15 ~19:25 Web hatch dialog: Escape closes it. Shipped.
 - [ ] Coming-soon screens: add a "vote for this" tally later (local count).
 
 ## WEBSITE
