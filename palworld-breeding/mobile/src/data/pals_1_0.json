@@ -10791,7 +10791,7 @@
    "def": 70,
    "combi_rank": 2460,
    "partner_skill": "Ground 'n' Pound",
-   "partner_effect": "While in party, improves player's and Pals' Grass damage to enemy weak points by 25~40%. (Does not stack) Increases efficiency by 200~400% when working at a Weapon Workbench, Weapon Assembly Line, or",
+   "partner_effect": "While in party, improves player's and Pals' Grass damage to enemy weak points by 25~40%. (Does not stack) Increases efficiency by 200~400% when working at a Weapon Workbench, Weapon Assembly Line, or other related facilities.",
    "base_support": {
     "type": "station_efficiency",
     "effect": "+200~400% at weapon workbenches"

@@ -387,8 +387,13 @@ quietly narrowed. Tick only when shipped AND eye-verified.*
 - [x] "Legendary with Handiwork 6 max = data wrong?" → VERIFIED CORRECT
       (paldb + wiki.gg agree; legendaries are combat pals, narrow work)
 - [x] "Should not suggest goals of stuff I have" → HAVE-IT/covered states
-- [ ] OPEN: rarity look still not CEO-approved as AAA — revisit polish after
-      the C4 engine work ("don't mind the color stuff now… come back to it")
+- [x] 2026-08-15 ~18:50 CEO PARKED the rarity visuals: "remove the palettes,
+      keep it vanilla like before, I'll get to it later." Reverted + OTA'd
+      both channels (rows: original thin edge tint; sheet: plain). KEPT:
+      rarity integer in badge, wild ranges, stars, card actions.
+      RarityAtmosphere/rarityGrade dormant in code for the revisit.
+- [ ] PARKED-FOR-LATER: rarity visual design round 2 — only when the CEO
+      reopens it. All v1-v5 attempts + his critiques logged above.
 - [ ] Standing (restated 18:10): every piece of CEO feedback must land in
       this doc — confirmed practice, keep it forever.
 

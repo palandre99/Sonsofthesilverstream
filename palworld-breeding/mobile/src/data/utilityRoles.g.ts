@@ -12,7 +12,7 @@ export const UTILITY_ROLES: Record<string, { label: string; pals: UtilityPal[] }
       { name: "Rushoar", effect: "Can be ridden. While mounted, increases efficiency of destroying Stone by 500~2000%." },
       { name: "Fuddler", effect: "While in party, improves player mining efficiency by 30~60% and reduces Stone weight by 80~100%. (Does not stack)" },
       { name: "Eikthyrdeer", effect: "Can be ridden. Can perform a double jump while mounted and increases lumbering efficiency by 220~500%." },
-      { name: "Ribbuny Botan", effect: "While in party, improves player's and Pals' Grass damage to enemy weak points by 25~40%. (Does not stack) Increases efficiency by 200~400% when working at a Weapon Workbench, Weapon Assembly Line, or" },
+      { name: "Ribbuny Botan", effect: "While in party, improves player's and Pals' Grass damage to enemy weak points by 25~40%. (Does not stack) Increases efficiency by 200~400% when working at a Weapon Workbench, Weapon Assembly Line, or other related facilities." },
       { name: "Mammorest", effect: "Can be ridden. While mounted, increases logging efficiency by 220~500% and mining efficiency by 500~2000%." },
       { name: "Mammorest Cryst", effect: "Can be ridden. While mounted, increases logging efficiency by 220~500% and mining efficiency by 500~2000%." },
       { name: "Digtoise", effect: "When activated, enters the Shell Spin state. Follows the player while spinning, increasing ore mining efficiency by 800~2000%." },

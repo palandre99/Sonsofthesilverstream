@@ -254,6 +254,14 @@
    "claim": "Five mutation-exclusive passives exist (Immortality, Idiosyncratic, Babysitter, Heavily Armored, Skymarcher); once obtained they are inheritable like normal passives",
    "verdict": "confirmed",
    "evidence": "paldb.cc/en/Mutation lists all five with inheritability; cross-checked against beliarance/palworld-kb passives dataset (mutation_exclusive flags)."
+  },
+  {
+   "claim": "Ribbuny Botan partner_effect completed: kb dump truncates after 'Weapon Assembly Line, or'; full sentence ends 'or other related facilities.'",
+   "verdict": "confirmed",
+   "evidence": "kb extraction truncated mid-sentence; full text fetched from paldb.cc/en/Ribbuny_Botan 2026-08-15 and patched into both dataset copies.",
+   "sources": [
+    "paldb.cc/en/Ribbuny_Botan"
+   ]
   }
  ]
 }
