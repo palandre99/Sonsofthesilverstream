@@ -45,8 +45,7 @@
     "owner": "palandre99",
     "jsEngine": "hermes",
     "plugins": [
-      "expo-localization",
-      "expo-notifications"
+      "expo-localization"
     ]
   }
 }

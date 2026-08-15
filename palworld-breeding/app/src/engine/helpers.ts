@@ -99,6 +99,10 @@ export interface HelperAdvice {
   phase?: number;
   /** for suggest: exact extra steps if added (0 = free byproduct) */
   addSteps?: number;
+  /** breeding can't reach it from this box — catching is the ONLY path.
+   * Skipping these silently is the bug that hid Chikipi, the game's egg
+   * pal, from a player with no eggs (CEO 2026-08-15). */
+  catchOnly?: boolean;
   recommended: boolean;
   /** one plain sentence tailored to the situation */
   note: string;
@@ -151,10 +155,24 @@ export function helperAdvice(
       continue;
     }
     const res = planFor(engine, roster, [...plan.targets, h.name], derivs);
-    if (res.unreachable.includes(h.name)) continue; // don't tease the impossible
+    if (res.unreachable.includes(h.name)) {
+      // Breeding can't reach it — but a player would just go CATCH one.
+      // Staying silent here is how Chikipi (8 eggs per cake!) went
+      // unmentioned to a player who owned none.
+      out.push({
+        helper: h, status: 'suggest', catchOnly: true,
+        recommended: h.score >= 4,
+        note: `Can't be bred from your box — catch one instead. ${h.why}`,
+      });
+      continue;
+    }
     const addSteps = Math.max(0, res.steps.length - base);
+    // Ranch pals feed EVERY cake, so they matter from the first step of a
+    // real plan; the old nSteps>=6 gate let short plans starve. Speed/luck
+    // helpers still need a long plan to pay for themselves.
     const recommended = addSteps === 0
-      || (h.role === 'ranch' ? nSteps >= 6 && addSteps <= 3
+      || (h.role === 'ranch'
+        ? (h.score >= 5 ? nSteps >= 3 : nSteps >= 6) && addSteps <= 3
         : h.score >= 3 && nSteps >= 10 && addSteps <= 3);
     const note = addSteps === 0
       ? `Free — your route already breeds it on the way. ${h.why}`

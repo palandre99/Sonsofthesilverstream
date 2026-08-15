@@ -11,6 +11,7 @@ import {
   BackToCardChip, Badge, Btn, Card, PageHead, PalIcon, WorkChips, s,
 } from '../ui/kit';
 import { onNavIntent, takeIntentPayload } from '../nav/intent';
+import { wildLevelRange } from '../data/rarity';
 import { PalPicker } from '../ui/PalPicker';
 import {
   clearPlan, completeStep, getBox, getChecks, getPlan, hasGender, ownedAny,
@@ -318,9 +319,33 @@ export function PlannerScreen() {
   // ownership is checked LIVE at render so a freshly hatched helper flips to
   // covered instantly without paying the planner again
   const covered = advice.filter((a) => a.status === 'covered' || ownedAny(a.helper.name));
-  const activeAdvice = advice
-    .filter((a) => a.status !== 'covered' && !ownedAny(a.helper.name))
-    .slice(0, 5);
+  // every RECOMMENDED helper always shows — a hard slice once hid the egg
+  // pal entirely (CEO 2026-08-15); only the "your call" tail is capped
+  const uncovered = advice.filter((a) => a.status !== 'covered' && !ownedAny(a.helper.name));
+  const activeAdvice = [
+    ...uncovered.filter((a) => a.recommended || a.status === 'in-plan'),
+    ...uncovered.filter((a) => !a.recommended && a.status !== 'in-plan').slice(0, 2),
+  ];
+
+  // cake supply checklist — every cake is 5 flour + 8 berries + 7 milk +
+  // 8 eggs + 2 honey (verified recipe); the hands-free sources are ranch
+  // pals, so "which ingredients does my box already produce?" is the first
+  // question a player actually asks. Data-true: scans ranch_produce.
+  const cakeSupply = useMemo(() => {
+    const wants: { item: string; label: string }[] = [
+      { item: 'Egg', label: 'Eggs' },
+      { item: 'Milk', label: 'Milk' },
+      { item: 'Honey', label: 'Honey' },
+      { item: 'Red Berries', label: 'Berries' },
+    ];
+    return wants.map(({ item, label }) => {
+      const producers = Object.keys(pals)
+        .filter((n) => (pals[n].ranch_produce ?? []).includes(item));
+      const ownedProducer = producers.find(ownedAny);
+      return { label, ownedProducer, best: producers[0] };
+    });
+    // box changes flow through useAppVersion re-renders
+  }, [box]);
 
   return (
     <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
@@ -472,6 +497,20 @@ export function PlannerScreen() {
                 {' '}~{needs.flour} flour · {needs.berries} berries · {needs.milk} milk
                 · {needs.eggs} eggs · {needs.honey} honey.
               </Text>
+              {/* the first question a player asks: which of those can my
+                  ranch already make? */}
+              <View style={[s.wrap]}>
+                {cakeSupply.map((c) => (
+                  <Pressable key={c.label} disabled={!!c.ownedProducer}
+                    onPress={() => c.best && setViewing(c.best)}>
+                    <Badge kind={c.ownedProducer ? 'ok' : 'warn'}>
+                      {c.ownedProducer
+                        ? `${c.label} ✓ ${c.ownedProducer}`
+                        : `${c.label}: need ${c.best ?? '?'}`}
+                    </Badge>
+                  </Pressable>
+                ))}
+              </View>
               {covered.length > 0 && (
                 <View style={[s.wrap]}>
                   {covered.map((a) => (
@@ -506,15 +545,18 @@ export function PlannerScreen() {
                       </View>
                     </Pressable>
                     <Text style={[s.body, { fontSize: 12 }]}>{a.note}</Text>
-                    {a.status === 'suggest' && (a.addSteps ?? 0) >= 4
+                    {a.status === 'suggest' && (a.catchOnly || (a.addSteps ?? 0) >= 4)
                       && pals[h.name]?.wild && pals[h.name].regions.length > 0 && (
                       <Text style={[s.body, { fontSize: 12, color: T.accentInk }]}>
-                        Faster to catch one: {pals[h.name].regions.slice(0, 2).join(' · ')}
-                        {pals[h.name].max_wild_level
-                          ? ` (found up to Lv ${pals[h.name].max_wild_level})` : ''}
+                        {a.catchOnly ? 'Where to catch it: ' : 'Faster to catch one: '}
+                        {pals[h.name].regions.slice(0, 2).join(' · ')}
+                        {wildLevelRange(h.name)
+                          ? ` (${wildLevelRange(h.name)})`
+                          : pals[h.name].max_wild_level
+                            ? ` (up to Lv ${pals[h.name].max_wild_level})` : ''}
                       </Text>
                     )}
-                    {a.status === 'suggest' && !isTarget && (
+                    {a.status === 'suggest' && !a.catchOnly && !isTarget && (
                       <View style={[s.wrap]}>
                         <Btn small primary={a.recommended}
                           disabled={helperBusy != null}
