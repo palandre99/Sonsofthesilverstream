@@ -13,6 +13,7 @@ import {
 import { onNavIntent, takeIntentPayload } from '../nav/intent';
 import { wildLevelRange } from '../data/rarity';
 import { PalPicker } from '../ui/PalPicker';
+import { SuggestedGoals } from '../ui/SuggestedGoals';
 import {
   clearPlan, completeStep, getBox, getChecks, getPlan, hasGender, ownedAny,
   addPlanTarget, pals, removePlanTarget, resetPlanProgress, savePlan, selfOnly,
@@ -37,25 +38,8 @@ import { derivations, planFor, stepId } from '../engine/planner';
 import { parseGenderNote } from '../engine/formula';
 import type { PlanStep } from '../engine/types';
 
-const PRESETS: Record<string, { label: string; targets: string[] }> = {
-  workers: {
-    label: 'Best workers',
-    targets: ['Solenne', 'Celesdir Noct', 'Renjishi', 'Knocklem', 'Starryon Primo',
-      'Ophydia', 'Anubis', 'Astegon', 'Blazamut', 'Sibelyx Primo', 'Venusa', 'Mycora',
-      'Univolt Cryst', 'Whalaska Ignis', 'Solmora Lux'],
-  },
-  aura: {
-    label: 'All aura pals',
-    targets: ['Ribbuny', 'Cinnamoth', 'Clovee', 'Petallia', 'Tetroise', 'Wumpo',
-      'Amione', 'Eikthyrdeer Terra', 'Katress Ignis', 'Mycora', 'Puffolt', 'Smokie Cryst'],
-  },
-  support: {
-    label: 'Breeding support',
-    targets: ['Braloha', 'Dynamoff', 'Lullu', 'Prunelia', 'Sekhmet'],
-  },
-};
-
-// (tick rendering lives in ui/celebrate.tsx — AnimatedCheck)
+// Preset squads live in ui/SuggestedGoals.tsx now — computed from game data,
+// not hand-picked lists. (Tick rendering lives in ui/celebrate.tsx.)
 
 /** "Hatched it! Which genders do you have?" — one tick registers the pal in
  * the Paldex too, so nothing is entered twice. */
@@ -122,6 +106,7 @@ export function PlannerScreen() {
   const [busy, setBusy] = useState(false);
   const [planError, setPlanError] = useState<string | null>(null);
   const [picking, setPicking] = useState(false);
+  const [suggesting, setSuggesting] = useState(false);
   const [hatching, setHatching] = useState<{ sid: string; child: string } | null>(null);
   const [managing, setManaging] = useState<'none' | 'reset' | 'clear'>('none');
   const [bursts, setBursts] = useState<Record<string, number>>({});
@@ -367,10 +352,7 @@ export function PlannerScreen() {
       )}
 
       <View style={[s.wrap, { marginBottom: 10 }]}>
-        {Object.entries(PRESETS).map(([key, p]) => (
-          <Btn key={key} small label={`+ ${p.label}`}
-            onPress={() => setTargets([...new Set([...targets, ...p.targets])])} />
-        ))}
+        <Btn small primary label="Suggested goals…" onPress={() => setSuggesting(true)} />
         <Btn small label="+ Add target…" onPress={() => setPicking(true)} />
       </View>
 
@@ -759,6 +741,15 @@ export function PlannerScreen() {
         exclude={new Set(targets)}
         onPick={(n) => {
           if (!targets.includes(n)) setTargets([...targets, n]);
+        }}
+      />
+      <SuggestedGoals
+        visible={suggesting}
+        onClose={() => setSuggesting(false)}
+        targets={targets}
+        onAdd={(names) => {
+          void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+          setTargets((prev) => [...new Set([...prev, ...names])]);
         }}
       />
     </ScrollView>
