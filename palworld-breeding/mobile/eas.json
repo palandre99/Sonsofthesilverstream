@@ -10,17 +10,20 @@
       "ios": {
         "simulator": false
       },
-      "channel": "development"
+      "channel": "development",
+      "env": { "EAS_BUILD_PROFILE": "development" }
     },
     "preview": {
       "distribution": "internal",
       "ios": {
         "simulator": false
       },
-      "channel": "preview"
+      "channel": "preview",
+      "env": { "EAS_BUILD_PROFILE": "preview" }
     },
     "production": {
-      "autoIncrement": true
+      "autoIncrement": true,
+      "env": { "EAS_BUILD_PROFILE": "production" }
     }
   },
   "submit": {
