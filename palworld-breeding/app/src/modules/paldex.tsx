@@ -264,6 +264,9 @@ function Drawer({ name, onClose }: { name: string; onClose: () => void }) {
 
   if (!p) return null;
 
+  // condensation preview (wiki-verified 1.0): +5% stats/star, skill level 1-5
+  const [stars, setStars] = useState(0);
+  useEffect(() => setStars(0), [name]);
   const asChild = raw.unique_combos.filter((c) => c.child === name);
   const asParent = raw.unique_combos.filter((c) => c.parents.includes(name));
   const gendered = raw.gendered_combos.filter(
@@ -300,7 +303,25 @@ function Drawer({ name, onClose }: { name: string; onClose: () => void }) {
 
         <section>
           <h4>Stats</h4>
-          <StatBars p={p} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '6px' }}>
+            {[1, 2, 3, 4].map((n) => (
+              <button key={n} class="starbtn" aria-label={`${n} star${n === 1 ? '' : 's'} condensed`}
+                style={{
+                  background: 'none', border: 'none', cursor: 'pointer', padding: '2px',
+                  color: stars >= n ? '#E3B341' : 'var(--faint)', fontSize: '17px', lineHeight: 1,
+                }}
+                onClick={() => setStars(stars === n ? 0 : n)}>
+                {stars >= n ? '★' : '☆'}
+              </button>
+            ))}
+            {stars > 0 && (
+              <span style={{ color: '#E3B341', fontSize: '12px', fontWeight: 800 }}>
+                +{stars * 5}% · partner skill level {stars + 1} of 5
+                {stars === 4 ? ' · all work +1' : ''}
+              </span>
+            )}
+          </div>
+          <StatBars p={p} boost={stars * 0.05} />
         </section>
 
         {Object.keys(p.work ?? {}).length > 0 && (

@@ -83,8 +83,9 @@ export function WorkChips({ name, top = 3, all = false }: {
   );
 }
 
-export function StatBars({ p }: { p: PalInfo }) {
-  const rows: [string, number | null][] = [['HP', p.hp], ['ATK', p.atk], ['DEF', p.def]];
+export function StatBars({ p, boost = 0 }: { p: PalInfo; boost?: number }) {
+  const up = (v: number | null) => (v == null ? v : Math.round(v * (1 + boost)));
+  const rows: [string, number | null][] = [['HP', up(p.hp)], ['ATK', up(p.atk)], ['DEF', up(p.def)]];
   return (
     <div class="stats">
       {rows.map(([label, v]) => (
