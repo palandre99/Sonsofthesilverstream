@@ -64,6 +64,28 @@ forgotten.
 
 ---
 
+## "The website is just a black screen"
+
+The HTML loads but no JavaScript runs. Almost always a **base-path** problem:
+the site lives at `/Sonsofthesilverstream/palforge/`, so an absolute base
+makes `index.html` request `/assets/index-*.js` at the **domain root**, which
+404s. Nothing renders, no error is visible to the user.
+
+**Check** — the paths must start with `./`:
+
+```bash
+curl -s https://palandre99.github.io/Sonsofthesilverstream/palforge/ | grep -oE '(src|href)="[^"]*"'
+```
+
+**Cause seen 2026-08-15:** `vite.config.ts` defaulted `base` to `'/'` and the
+deploy never set `VITE_BASE`. Fixed by defaulting to `'./'`, which is correct
+at any path — safe because routing is hash-based, so deep links never shift
+the directory assets resolve against. If someone sets an absolute `VITE_BASE`
+again, it must exactly match the deploy folder.
+
+After redeploying, confirm the app really boots, not just that assets 200:
+the `<title>` becomes `Calculator · Palforge` once the JS runs.
+
 ## "Connect to PC does nothing / 'Kunne ikke åpne appen'"
 
 iOS is saying **no installed app claims that URL scheme**. Pasting the plain

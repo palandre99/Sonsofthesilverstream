@@ -49,6 +49,17 @@ reaches the phone, which had been silently broken.
   display name "Palforge DEV", scheme `palforge-dev`, fingerprint `c9602f41`
   vs the full app's `06b76851`. Install page, warnings and legacy links
   updated; Pages redeployed and re-fetched to confirm.
+- **Website black screen FIXED.** `vite.config.ts` defaulted `base` to `'/'`
+  while the site is served from `/Sonsofthesilverstream/palforge/`, so
+  `index.html` requested `/assets/index-*.js` at the domain root → 404 → no JS,
+  blank page. Now defaults to `'./'` (safe: routing is hash-based). Rebuilt and
+  redeployed; verified the app boots, renders the Calculator, navigates to
+  `#/paldex`, and logs no console errors.
+- **Connect-to-PC deep link FIXED.** It used `exp+<scheme>://`, which nothing
+  registers — the build registers the bare scheme (`palforge-dev`), the bundle
+  id, and `exp+<slug>` (`exp+hatchlab`). Broken since it was first written;
+  hidden because pasting the https address works. CEO confirmed the button now
+  opens the app.
 - **Clarified for the CEO** (he pushed back, rightly): a 15-minute build is
   NOT how updates work. JS/UI/logic ships by OTA in ~2 min; builds are only
   for icon, name, permissions and native modules.
