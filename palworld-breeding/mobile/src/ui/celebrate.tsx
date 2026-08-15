@@ -15,11 +15,13 @@ import { T } from '../theme';
 
 export type TickState = 'none' | 'partial' | 'full';
 
-export function AnimatedCheck({ state, glyph, onPress }: {
+export function AnimatedCheck({ state, glyph, onPress, label }: {
   state: TickState;
   /** shown when partial: the gender you already have (♂ or ♀) */
   glyph?: string;
   onPress: () => void;
+  /** screen-reader name for this step */
+  label?: string;
 }) {
   const scale = useRef(new Animated.Value(1)).current;
   const prev = useRef(state);
@@ -40,7 +42,10 @@ export function AnimatedCheck({ state, glyph, onPress }: {
   const border = state === 'full' ? T.ok : state === 'partial' ? T.warn : T.line2;
 
   return (
-    <Pressable onPress={onPress} hitSlop={8}>
+    <Pressable onPress={onPress} hitSlop={8}
+      accessibilityRole="checkbox"
+      accessibilityState={{ checked: state === 'full' ? true : state === 'partial' ? 'mixed' : false }}
+      accessibilityLabel={label ?? 'step done'}>
       <Animated.View style={{
         width: 27, height: 27, borderRadius: 9, borderWidth: 2,
         borderColor: border, backgroundColor: bg,

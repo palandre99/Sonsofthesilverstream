@@ -569,6 +569,7 @@ export function PlannerScreen() {
                           of wrapping (CEO callout 2026-08-15) */}
                       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
                         <AnimatedCheck state={tick} glyph={partialGlyph(checks[sid])}
+                          label={`Done: ${st.parents[0]} + ${st.parents[1]} = ${st.child}`}
                           onPress={() => {
                             void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                             if (tick === 'full') uncheckStep(sid, st.child);
