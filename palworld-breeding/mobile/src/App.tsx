@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
+import * as Updates from 'expo-updates';
 import { T } from './theme';
 import { getActiveProfile, loadPersisted, useAppVersion } from './store';
 import { DOMAINS } from './nav/domains';
@@ -63,6 +64,35 @@ const LIVE_SCREENS: Record<string, () => React.JSX.Element> = {
   profiles: ProfilesScreen,
   about: AboutScreen,
 };
+
+/** "New version ready — restart" banner. The app launches from cache for
+ * instant startup; when the background download lands, one tap applies it —
+ * no more close-twice ritual (CEO 2026-08-15). */
+function UpdateBanner() {
+  const { isUpdatePending } = Updates.useUpdates();
+  if (!isUpdatePending) return null;
+  return (
+    <Pressable
+      onPress={() => {
+        void Updates.reloadAsync();
+      }}
+      accessibilityRole="button"
+      style={({ pressed }) => [{
+        position: 'absolute', left: 14, right: 14, bottom: 96, zIndex: 60,
+        backgroundColor: pressed ? T.accent : T.accentSoft,
+        borderWidth: 1.5, borderColor: T.accent, borderRadius: 14,
+        paddingVertical: 11, paddingHorizontal: 14,
+        flexDirection: 'row', alignItems: 'center', gap: 9,
+        shadowColor: '#000', shadowOpacity: 0.4, shadowRadius: 8,
+      }]}
+    >
+      <ActivityIndicator size="small" color={T.accentInk} />
+      <Text style={{ color: T.accentInk, fontWeight: '800', fontSize: 13.5, flex: 1 }}>
+        New version ready — tap to restart
+      </Text>
+    </Pressable>
+  );
+}
 
 function Shell() {
   useAppVersion();
@@ -185,6 +215,7 @@ function Shell() {
 
       <DomainPanel open={panel} domain={domainId}
         onSelect={selectDomain} onClose={() => setPanel(false)} />
+      <UpdateBanner />
     </View>
   );
 }
