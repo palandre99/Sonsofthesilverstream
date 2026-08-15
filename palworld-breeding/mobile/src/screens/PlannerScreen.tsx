@@ -35,7 +35,8 @@ function partialGlyph(c: unknown): string | undefined {
   const sc = c as { m: boolean; f: boolean };
   return sc.m ? '♂' : sc.f ? '♀' : undefined;
 }
-import { derivations, planFor, stepId } from '../engine/planner';
+import { planFor, stepId } from '../engine/planner';
+import { cachedDerivations } from '../logic/recommend';
 import { parseGenderNote } from '../engine/formula';
 import type { PlanStep } from '../engine/types';
 
@@ -157,8 +158,9 @@ export function PlannerScreen() {
     setTimeout(() => {
       try {
         // one shared derivations pass: plan AND its recommendations arrive
-        // together — the card must never pop in after the steps (CEO)
-        const derivs = derivations(engine, new Set(ownedNames));
+        // together — and it's the same cached pass the suggestions sheet
+        // already paid for, so planning after browsing is near-instant
+        const derivs = cachedDerivations(engine, ownedNames);
         const { steps, unreachable } = planFor(engine, ownedNames, targets, derivs);
         const advice = helperAdvice(
           engine, ownedNames, ownedAny,

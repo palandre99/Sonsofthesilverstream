@@ -8,7 +8,10 @@ import {
   box, engine, breedingRaw, ownedAny, pals, playerLevel, setPlayerLevel,
 } from '../state';
 import { PalIcon } from './shared';
-import { derivations } from '../engine/planner';
+import {
+  attainLabel, attainScore, boxKeyOf, cachedDerivations, derivationsReady,
+  getAttainContext, type Attain,
+} from '../logic/recommend';
 import { HELPERS } from '../engine/helpers';
 import { PALCALC_FACTS } from '../data/palcalcFacts.g';
 import { BEST_OVERALL, COMBAT_COMMUNITY, MOUNT_CALLOUTS } from '../data/meta';
@@ -34,48 +37,9 @@ function palsWithEffect(re: RegExp): string[] {
 const LOOT_RE = /defeated|dropped by enemies/i;
 const RANCH_RE = /assigned to Ranch/i;
 
-type Attain =
-  | { kind: 'have' }
-  | { kind: 'breed'; steps: number }
-  | { kind: 'catch'; lv: number }
-  | { kind: 'later'; unlock?: string };
-
-function attainFactory(): (n: string) => Attain {
-  const owned = Object.keys(box.value);
-  const e = engine;
-  const derivs = e && owned.length
-    ? derivations(e, new Set(owned)) : new Map<string, Set<string>>();
-  // the player's real level wins when they've set it; otherwise read the
-  // box (highest wild level among owned pals) with slack
-  const explicit = playerLevel.value;
-  const stage = explicit
-    ?? Math.max(15, ...owned.map((n) => PALCALC_FACTS[n]?.maxWild ?? 0));
-  const slack = explicit != null ? 0 : 10;
-  const catchable = (n: string): boolean => {
-    const f = PALCALC_FACTS[n];
-    return !!pals.value[n]?.wild && f?.minWild != null && f.minWild <= stage + slack;
-  };
-  return (n: string): Attain => {
-    if (ownedAny(n)) return { kind: 'have' };
-    const d = derivs.get(n);
-    if (d) return { kind: 'breed', steps: Math.max(1, d.size) };
-    if (catchable(n)) return { kind: 'catch', lv: PALCALC_FACTS[n]!.minWild! };
-    for (const c of breedingRaw.value?.unique_combos ?? []) {
-      if (c.child !== n) continue;
-      const [pa, pb] = c.parents;
-      if ((derivs.has(pa) || ownedAny(pa)) && catchable(pb)) return { kind: 'later', unlock: pb };
-      if ((derivs.has(pb) || ownedAny(pb)) && catchable(pa)) return { kind: 'later', unlock: pa };
-    }
-    return { kind: 'later' };
-  };
-}
-
-function attainScore(a: Attain): number {
-  if (a.kind === 'breed') return Math.min(a.steps, 9);
-  if (a.kind === 'catch') return 10;
-  if (a.kind === 'later') return a.unlock ? 20 : 30;
-  return 40;
-}
+// The attainability + scoring brain lives in ../logic/recommend.ts — one
+// file, byte-identical on web and mobile (logic-parity gate), so the two
+// apps can never disagree about what a pal's status means.
 
 function bestAt(job: string, n = 14): { name: string; lvl: number }[] {
   const p = pals.value;
@@ -152,19 +116,53 @@ export function GoalsSheet({ open, onClose, targets, onAdd, onRemove }: {
 }) {
   const [expanded, setExpanded] = useState<string | null>(null);
   const lvl = playerLevel.value;
-  const attain = useMemo(attainFactory, [open, lvl]);
+  const e = engine;
+  const owned = Object.keys(box.value);
+  const bKey = boxKeyOf(owned);
+  const dataOk = !!e && !!breedingRaw.value;
+  // the reachability pass is the one expensive computation — pay it once
+  // per box change, a beat after opening; reopening is instant (cached)
+  const ready = dataOk && derivationsReady(owned);
+  const [, bump] = useState(0);
+  useEffect(() => {
+    if (!open || ready || !e) return;
+    const t = setTimeout(() => {
+      cachedDerivations(e, owned);
+      bump((x) => x + 1);
+    }, 30);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, bKey, ready]);
+  const attain = useMemo<(n: string) => Attain>(
+    () => (ready && e && breedingRaw.value
+      ? getAttainContext(e, pals.value, breedingRaw.value, owned, lvl, ownedAny).attain
+      : () => ({ kind: 'later' })),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [ready, bKey, lvl],
+  );
   const fighters = useMemo(() => bestFighters(), [open]);
   const best = useMemo(
     () => Object.fromEntries(WORK_KEYS.map((w) => [w, bestAt(w)])), [open]);
   useEffect(() => {
     if (!open) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+    const onKey = (ev: KeyboardEvent) => {
+      if (ev.key === 'Escape') onClose();
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [open, onClose]);
   if (!open) return null;
+  if (!ready) {
+    return (
+      <div class="hatchback" onClick={onClose}>
+        <div class="card bigcard" role="dialog" aria-modal="true" aria-label="Suggested goals"
+          onClick={(ev) => ev.stopPropagation()}
+          style={{ maxWidth: '680px', padding: '32px', textAlign: 'center' }}>
+          Reading your save…
+        </div>
+      </div>
+    );
+  }
 
   const byAttain = (names: string[]) =>
     [...new Set(names)].sort((a, b) => attainScore(attain(a)) - attainScore(attain(b)));
@@ -175,11 +173,8 @@ export function GoalsSheet({ open, onClose, targets, onAdd, onRemove }: {
     const added = targets.includes(name);
     const owned = ownedAny(name);
     const a = attain(name);
-    const status = added ? 'IN PLAN'
-      : a.kind === 'have' ? 'HAVE IT'
-        : a.kind === 'breed' ? `BREED · ${a.steps} STEP${a.steps === 1 ? '' : 'S'}`
-          : a.kind === 'catch' ? `CATCH LV ${a.lv}`
-            : a.unlock ? `CATCH ${a.unlock.toUpperCase()} TO UNLOCK` : 'ENDGAME';
+    // one label brain for every surface (logic/recommend.ts)
+    const status = added ? 'IN PLAN' : attainLabel(a).short;
     const color = added || a.kind === 'have' ? 'var(--ok)'
       : a.kind === 'breed' ? 'var(--accent-ink, var(--accent))'
         : a.kind === 'catch' ? 'var(--warn)'
@@ -338,6 +333,9 @@ export function GoalsSheet({ open, onClose, targets, onAdd, onRemove }: {
         <Section id="u-eff" title="Work efficiency boosters" cap={9}
           blurb="Mining, logging and crafting multipliers from partner skills."
           names={UTILITY_ROLES.efficiency.pals.map((p) => p.name)} />
+        <Section id="u-catch" title="Catching helpers" cap={6}
+          blurb="Better catches from the game's own partner skills — capture-rate boosts and slower capture-gauge drain."
+          names={UTILITY_ROLES.capture.pals.map((p) => p.name)} />
 
         <Section id="u-born" title="Born with a passive" cap={8}
           blurb="46 species are ALWAYS born carrying a passive (datamined) — catch or breed one and it's yours to breed onward."

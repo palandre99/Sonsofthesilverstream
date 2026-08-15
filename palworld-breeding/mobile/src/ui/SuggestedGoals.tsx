@@ -23,7 +23,10 @@ import {
 } from '../store';
 import { WORK_KEYS } from './palFilters';
 import { HELPERS } from '../engine/helpers';
-import { derivations } from '../engine/planner';
+import {
+  attainLabel, attainScore, boxKeyOf, cachedDerivations, derivationsReady,
+  getAttainContext,
+} from '../logic/recommend';
 import { onNavIntent } from '../nav/intent';
 import { PALCALC_FACTS } from '../data/palcalcFacts.g';
 import { BEST_OVERALL, COMBAT_COMMUNITY, MOUNT_CALLOUTS } from '../data/meta';
@@ -103,58 +106,9 @@ function bestFighters(n = 12): { name: string; score: number }[] {
  *   breed — reachable from the box by breeding alone
  *   catch — spawns wild at a level near where the player already operates
  *   later — an endgame goal for now */
-export type Attain =
-  | { kind: 'have' }
-  | { kind: 'breed'; steps: number }
-  | { kind: 'catch'; lv: number }
-  | { kind: 'later'; unlock?: string };
-
-function attainFactory(): (n: string) => Attain {
-  const box = Object.keys(getBox());
-  // ONE derivations pass gives the exact minimal breeding-step count to
-  // every reachable species — the sheet reacts to the world save for real
-  // (CEO 2026-08-15: "it's not dynamic and reacting to the paldex")
-  const derivs = box.length ? derivations(engine, new Set(box)) : new Map<string, Set<string>>();
-  // the player's real level wins when they've set it on the profile
-  // (CEO 2026-08-15: "setting player level in the world save"); otherwise
-  // fall back to reading the box — the highest wild level their pals
-  // occupy, with slack because a box always lags the player
-  const explicit = getPlayerLevel();
-  const stage = explicit
-    ?? Math.max(15, ...box.map((n) => PALCALC_FACTS[n]?.maxWild ?? 0));
-  const slack = explicit != null ? 0 : 10;
-  const catchable = (n: string): boolean => {
-    const f = PALCALC_FACTS[n];
-    return !!pals[n]?.wild && f?.minWild != null && f.minWild <= stage + slack;
-  };
-  return (n: string): Attain => {
-    if (ownedAny(n)) return { kind: 'have' };
-    const d = derivs.get(n);
-    if (d) return { kind: 'breed', steps: Math.max(1, d.size) };
-    if (catchable(n)) return { kind: 'catch', lv: PALCALC_FACTS[n]!.minWild! };
-    // "catch X to unlock the breeding route": one producing pair where one
-    // parent is already breedable and the other is a stage-appropriate
-    // catch. Bounded: first hit wins, gendered pairs included via combos.
-    for (const c of breeding.unique_combos) {
-      if (c.child !== n) continue;
-      const [pa, pb] = c.parents;
-      if ((derivs.has(pa) || ownedAny(pa)) && catchable(pb)) return { kind: 'later', unlock: pb };
-      if ((derivs.has(pb) || ownedAny(pb)) && catchable(pa)) return { kind: 'later', unlock: pa };
-    }
-    return { kind: 'later' };
-  };
-}
-
-const ATTAIN_ORDER: Record<Attain['kind'], number> = {
-  have: 3, breed: 0, catch: 1, later: 2,
-};
-/** breed-distance beats kind alone: 1-step breeds first, then cheap catches */
-function attainScore(a: Attain): number {
-  if (a.kind === 'breed') return Math.min(a.steps, 9);
-  if (a.kind === 'catch') return 10;
-  if (a.kind === 'later') return a.unlock ? 20 : 30;
-  return 40;
-}
+// The attainability + scoring brain lives in ../logic/recommend.ts — one
+// file, byte-identical on web and mobile (logic-parity gate), so the two
+// apps can never disagree about what a pal's status means.
 
 const AURA_SQUAD = ['Ribbuny', 'Cinnamoth', 'Clovee', 'Petallia', 'Tetroise', 'Wumpo',
   'Amione', 'Eikthyrdeer Terra', 'Katress Ignis', 'Mycora', 'Puffolt', 'Smokie Cryst'];
@@ -170,8 +124,7 @@ const LOOT_RE = /defeated|dropped by enemies/i;
 /** the full ranch roster — every "assigned to Ranch" producer */
 const RANCH_RE = /assigned to Ranch/i;
 
-export function SuggestedGoals({ visible, onClose, targets, onAdd, onRemove }: {
-  visible: boolean;
+interface SheetProps {
   onClose: () => void;
   /** current goal list — added pals show as such */
   targets: string[];
@@ -179,20 +132,52 @@ export function SuggestedGoals({ visible, onClose, targets, onAdd, onRemove }: {
   /** un-add — every added pal must be removable right here (CEO 2026-08-15:
    * "I can't un-add them") */
   onRemove: (names: string[]) => void;
-}) {
+}
+
+export function SuggestedGoals({ visible, ...rest }: SheetProps & { visible: boolean }) {
+  // A closed sheet computes NOTHING: the body only exists while visible,
+  // so store writes elsewhere in the app no longer pay for crew rankings
+  // and regex sweeps behind an invisible modal (perf trap, self-found).
+  return (
+    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet"
+      onRequestClose={rest.onClose}>
+      {visible ? <SheetBody {...rest} /> : null}
+    </Modal>
+  );
+}
+
+function SheetBody({ onClose, targets, onAdd, onRemove }: SheetProps) {
   const [viewing, setViewing] = useState<string | null>(null);
   const [openJob, setOpenJob] = useState<string | null>(null);
   const [levelDialog, setLevelDialog] = useState(false);
   const [levelInput, setLevelInput] = useState('');
   const playerLevel = getPlayerLevel();
+  const box = Object.keys(getBox());
+  const boxKey = boxKeyOf(box);
+  // the reachability pass is the one expensive computation — pay it once
+  // per box change, a beat after opening so the sheet slides in smoothly,
+  // behind a one-line "reading" state. Reopening is instant (cached).
+  const ready = derivationsReady(box);
+  const [, bump] = useState(0);
+  useEffect(() => {
+    if (ready) return;
+    const t = setTimeout(() => {
+      cachedDerivations(engine, box);
+      bump((x) => x + 1);
+    }, 30);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [boxKey, ready]);
+  const attain = useMemo(
+    () => getAttainContext(engine, pals, breeding, box, playerLevel, ownedAny).attain,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [boxKey, playerLevel, ready],
+  );
   const best = useMemo(
     () => Object.fromEntries(WORK_KEYS.map((w) => [w, bestAt(w)])),
     [],
   );
   const fighters = useMemo(() => bestFighters(), []);
-  // recomputed each time the sheet opens — the box may have grown — and
-  // whenever the player (re)tells us their level
-  const attain = useMemo(attainFactory, [visible, playerLevel]);
   /** stage-aware ordering: 1-step breeds, then cheap catches, then unlocks */
   const byAttain = (names: string[]) =>
     [...names].sort((a, b) => attainScore(attain(a)) - attainScore(attain(b)));
@@ -215,13 +200,9 @@ export function SuggestedGoals({ visible, onClose, targets, onAdd, onRemove }: {
     const owned = ownedAny(name);
     const a = attain(name);
     // an owned pal is NOT a suggestion — quiet proof of coverage. Everything
-    // else says exactly how you'd GET it from your world save: real step
-    // counts, catch levels, or the pal that unlocks the breeding route.
-    const status = added ? 'IN PLAN'
-      : a.kind === 'have' ? 'HAVE IT'
-        : a.kind === 'breed' ? (a.steps === 1 ? 'BREED · 1 STEP' : `BREED · ${a.steps} STEPS`)
-          : a.kind === 'catch' ? `CATCH LV ${a.lv}`
-            : a.unlock ? `CATCH ${a.unlock.toUpperCase()} TO UNLOCK` : 'ENDGAME';
+    // else says exactly how you'd GET it from your world save — one label
+    // brain for every surface (logic/recommend.ts).
+    const status = added ? 'IN PLAN' : attainLabel(a).short;
     const statusColor = added || a.kind === 'have' ? T.ok
       : a.kind === 'breed' ? T.accentInk
         : a.kind === 'catch' ? T.warn
@@ -289,8 +270,9 @@ export function SuggestedGoals({ visible, onClose, targets, onAdd, onRemove }: {
             color: T.goldInk, fontSize: 8, fontWeight: '700', maxWidth: 70,
           }}>{note}</Text>
         ) : null}
-        <Text numberOfLines={1} style={{
+        <Text numberOfLines={2} style={{
           color: statusColor, fontSize: 8, fontWeight: '800', maxWidth: 70,
+          textAlign: 'center',
         }}>{status}</Text>
       </Pressable>
     );
@@ -396,9 +378,20 @@ export function SuggestedGoals({ visible, onClose, targets, onAdd, onRemove }: {
     );
   };
 
+  if (!ready) {
+    // one quiet beat on first open per box change — never a frozen thread
+    return (
+      <View style={{
+        flex: 1, backgroundColor: T.bg2,
+        alignItems: 'center', justifyContent: 'center', gap: 8,
+      }}>
+        <Text style={[s.body, { fontWeight: '700' }]}>Reading your save…</Text>
+      </View>
+    );
+  }
+
   return (
-    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet"
-      onRequestClose={onClose}>
+    <>
       <View style={{ flex: 1, backgroundColor: T.bg2 }}>
         <View style={{
           padding: 16, paddingBottom: 10, gap: 6,
@@ -487,11 +480,9 @@ export function SuggestedGoals({ visible, onClose, targets, onAdd, onRemove }: {
                       <Text style={{ color: T.ink, fontWeight: '800', fontSize: 13.5 }}>{n}</Text>
                       <Text style={{ color: T.muted, fontSize: 11 }} numberOfLines={2}>{m.why}</Text>
                     </View>
-                    <Badge kind={added ? 'ok' : a.kind === 'have' ? 'ok'
-                      : a.kind === 'breed' ? 'plain' : a.kind === 'catch' ? 'warn' : 'plain'}>
-                      {added ? 'in plan' : a.kind === 'have' ? 'have it'
-                        : a.kind === 'breed' ? 'breed now'
-                        : a.kind === 'catch' ? `catch Lv ${a.lv}` : 'endgame goal'}
+                    <Badge kind={added || a.kind === 'have' ? 'ok'
+                      : a.kind === 'catch' ? 'warn' : 'plain'}>
+                      {added ? 'in plan' : attainLabel(a).short}
                     </Badge>
                     {/* one pal at a time — the whole-table button must never
                         be the only way in (CEO, "big bug") */}
@@ -574,6 +565,9 @@ export function SuggestedGoals({ visible, onClose, targets, onAdd, onRemove }: {
           <SquadCard title="Work efficiency boosters"
             blurb="Mining, logging and crafting multipliers from partner skills (Digtoise: ore mining +800–2000%). Tap a pal for the exact numbers."
             names={UTILITY_ROLES.efficiency.pals.map((p) => p.name)} />
+          <SquadCard title="Catching helpers"
+            blurb="Better catches from the game's own partner skills — capture-rate boosts and slower capture-gauge drain. Tap a pal for its exact effect."
+            names={UTILITY_ROLES.capture.pals.map((p) => p.name)} />
 
           <RankedCard id="u-born" title="Born with a passive"
             blurb="46 species are ALWAYS born carrying a passive (datamined) — catch or breed one and the passive is yours to breed onward. Tap a pal to see which."
@@ -728,6 +722,6 @@ export function SuggestedGoals({ visible, onClose, targets, onAdd, onRemove }: {
           </View>
         </Modal>
       )}
-    </Modal>
+    </>
   );
 }

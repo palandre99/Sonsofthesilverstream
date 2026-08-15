@@ -5,6 +5,17 @@
 export interface UtilityPal { name: string; effect: string }
 
 export const UTILITY_ROLES: Record<string, { label: string; pals: UtilityPal[] }> = {
+  capture: {
+    label: "Catching helpers",
+    pals: [
+      { name: "Gloopie", effect: "While in party, the capture gauge decreases 12~35% more slowly while the bars are not overlapping during the fishing minigame. (Does not stack)" },
+      { name: "Wispaw", effect: "While in party, increases the capture rate when awarded a back bonus. (Does not stack)" },
+      { name: "Muffly", effect: "While in party, increases the capture rate of Pals afflicted with Freeze. (Does not stack)" },
+      { name: "Whalaska", effect: "Can be ridden. While in party, fishing minigames start with the capture gauge increased by 5~14%. Additionally, while the bars overlap, capture progress increases by 5~14%. (Does not stack)" },
+      { name: "Whalaska Ignis", effect: "Can be ridden. While in party, fishing minigame begins with the capture gauge 7~17% higher than usual, and capture progress increases by 7~17% while the bars overlap. (Does not stack)" },
+      { name: "Souffline", effect: "While in party, increases the capture rate of Pals afflicted with Ivy-Covered. (Does not stack)" },
+    ],
+  },
   efficiency: {
     label: "Work efficiency boosters",
     pals: [

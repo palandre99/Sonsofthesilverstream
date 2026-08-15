@@ -28,7 +28,14 @@ OUT = [
 # ordered: first match wins, so a mining-efficiency pal that also reduces
 # stone weight files under efficiency (the stronger claim), with the full
 # quote preserved either way
+#
+# NOTE a "player movement speed" role was researched and does NOT exist in
+# the data — every Movement Speed effect is the pal's own (mount/self), so
+# suggesting "faster running" pals would be invented. Capture help is real:
+# 6 pals raise capture rates / slow the capture gauge.
 ROLES: list[tuple[str, str, re.Pattern]] = [
+    ("capture", "Catching helpers",
+     re.compile(r"captur", re.I)),
     ("efficiency", "Work efficiency boosters",
      re.compile(r"efficiency", re.I)),
     ("weight", "Weight & carrying helpers",
