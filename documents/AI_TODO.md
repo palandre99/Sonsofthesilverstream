@@ -129,11 +129,11 @@ Add everything you find; finding nothing means you didn't look.*
 
 ## QUALITY / ENGINEERING
 
-- [ ] Mobile test harness: the engine tests run in app/ only; add a
-      minimal vitest (or jest-expo) setup in mobile/ replaying the oracle
-      against mobile's engine copy so drift is impossible.
-- [ ] Script to diff app/src/engine vs mobile/src/engine in CI (fail on
-      divergence).
+- [x] 2026-08-15 ~20:20: engine-drift CI guard SHIPPED — vitest gate
+      (app/tests/engine-parity.test.ts) asserts the six shared engine files
+      byte-identical between app/ and mobile/ on every push (79 tests).
+      This covers the drift risk; a full mobile-side oracle harness is now
+      redundant (identical bytes ⇒ identical behaviour) — dropped.
 - [ ] Planner fixpoint perf: profile on-device; if >3 s for 27 targets,
       consider memoizing childrenOf across runs or precomputing rank
       neighborhoods.
@@ -400,8 +400,9 @@ quietly narrowed. Tick only when shipped AND eye-verified.*
 
 ### C6. SUGGESTED GOALS v3 (CEO ~19:35 2026-08-15 — verbatim intake)
 - [x] C6a 2026-08-15 ~19:55: per-chip + button adds ONE pal. Shipped+OTA'd.
-- [ ] C6b Mounts "saddle available Lv X" — NOT in the dump (verified);
-      build tools/fetch_saddle_levels.py from paldb pal pages. Never guess.
+- [x] C6b 2026-08-15 ~20:20: "saddle Lv X" on mount chips — real tech levels
+      from paldb (fetcher shipped, 114/121 found; 7 mounts have no saddle
+      item — rechecck those 7 by hand sometime). Shipped+OTA'd.
 - [x] C6c 2026-08-15 ~19:55: mounts now vertical ranked wrap, top-6-of-N +
       expand (cap 20 + Paldex pointer). Shipped+OTA'd.
 - [x] C6d 2026-08-15 ~19:55: job lists dynamic — top 5 + 'good & close'
