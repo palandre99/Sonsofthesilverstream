@@ -158,10 +158,15 @@ export function helperAdvice(
     if (res.unreachable.includes(h.name)) {
       // Breeding can't reach it — but a player would just go CATCH one.
       // Staying silent here is how Chikipi (8 eggs per cake!) went
-      // unmentioned to a player who owned none.
+      // unmentioned to a player who owned none. Recommendation follows the
+      // SAME economy rules as breedable helpers (a catch costs ~a detour,
+      // not zero): ranch essentials early, speed/luck only on long plans.
+      const rec = h.role === 'ranch'
+        ? (h.score >= 5 ? nSteps >= 3 : nSteps >= 6)
+        : h.score >= 3 && nSteps >= 10;
       out.push({
         helper: h, status: 'suggest', catchOnly: true,
-        recommended: h.score >= 4,
+        recommended: rec,
         note: `Can't be bred from your box — catch one instead. ${h.why}`,
       });
       continue;

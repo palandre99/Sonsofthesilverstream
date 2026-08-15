@@ -9,7 +9,7 @@
  *   - Cake supply / breeding support / aura squads come from the verified
  *     helper registry and the aura claim in verification.json.
  */
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Image, Modal, Pressable, ScrollView, Text, View } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { T } from '../theme';
@@ -19,6 +19,7 @@ import { WORK_ICONS } from '../data/workIcons';
 import { pals, ownedAny, workLabel } from '../store';
 import { WORK_KEYS } from './palFilters';
 import { HELPERS } from '../engine/helpers';
+import { onNavIntent } from '../nav/intent';
 
 /** top pals for one job — suitability level first, stat total second */
 function bestAt(job: string, n = 5): { name: string; lvl: number }[] {
@@ -47,6 +48,13 @@ export function SuggestedGoals({ visible, onClose, targets, onAdd }: {
     () => Object.fromEntries(WORK_KEYS.map((w) => [w, bestAt(w)])),
     [],
   );
+  // a pal card opened from here can navigate ("Plan how to get it") — if the
+  // destination is the tab underneath us, nothing would remount, and the tap
+  // would look dead behind this sheet. Any cross-screen jump closes it.
+  useEffect(() => onNavIntent(() => {
+    setViewing(null);
+    onClose();
+  }), [onClose]);
 
   const PalChip = ({ name, lvl }: { name: string; lvl?: number }) => {
     const added = targets.includes(name);
@@ -78,7 +86,8 @@ export function SuggestedGoals({ visible, onClose, targets, onAdd }: {
   const SquadCard = ({ title, blurb, names, lvls }: {
     title: string; blurb: string; names: string[]; lvls?: Record<string, number>;
   }) => {
-    const missing = names.filter((n) => !targets.includes(n));
+    // owned pals need no plan — never count them into "Add N"
+    const missing = names.filter((n) => !targets.includes(n) && !ownedAny(n));
     return (
       <View style={{
         backgroundColor: T.surface, borderColor: T.line, borderWidth: 1,
@@ -122,7 +131,7 @@ export function SuggestedGoals({ visible, onClose, targets, onAdd }: {
               .map((h) => h.name)} />
 
           <SquadCard title="Aura squad"
-            blurb="Each gives +1 work suitability to every other pal in your base. All twelve, verified."
+            blurb="Each gives +1 work suitability to every other pal in its base (auras don't stack — spread them across bases). All twelve, verified."
             names={AURA_SQUAD} />
 
           <Text style={{
@@ -135,7 +144,9 @@ export function SuggestedGoals({ visible, onClose, targets, onAdd }: {
             if (!list.length) return null;
             const expanded = openJob === w;
             const shown = expanded ? list : list.slice(0, 3);
-            const missing = shown.filter((x) => !targets.includes(x.name)).map((x) => x.name);
+            const missing = shown
+              .filter((x) => !targets.includes(x.name) && !ownedAny(x.name))
+              .map((x) => x.name);
             return (
               <View key={w} style={{
                 backgroundColor: T.surface, borderColor: T.line, borderWidth: 1,
@@ -156,7 +167,7 @@ export function SuggestedGoals({ visible, onClose, targets, onAdd }: {
                   {shown.map((x) => <PalChip key={x.name} name={x.name} lvl={x.lvl} />)}
                 </View>
                 <Btn small primary={missing.length > 0} disabled={!missing.length}
-                  label={missing.length ? `Add these ${missing.length}` : 'All added ✓'}
+                  label={missing.length ? `Add these ${missing.length}` : 'All added or owned ✓'}
                   onPress={() => onAdd(missing)} />
               </View>
             );

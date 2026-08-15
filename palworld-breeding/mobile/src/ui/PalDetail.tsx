@@ -1,20 +1,20 @@
 /** The pal info card — stats, work, partner skill, every breeding recipe.
  * Shared: opened from the Paldex grid AND from any pal icon in the Plan. */
-import React, { useEffect, useState } from 'react';
-import { Modal, Pressable, ScrollView, Text, View } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { Animated, Easing, Modal, Pressable, ScrollView, Text, View } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { T } from '../theme';
 import { Badge, Btn, Card, ElementChips, GenderToggles, PalIcon, s } from './kit';
 import { Image } from 'react-native';
 import {
-  addPlanTarget, breeding, engine, ownedAny, pals, selfOnly, useAppVersion, workLabel,
+  addPlanTarget, breeding, engine, getPlan, ownedAny, pals, selfOnly, useAppVersion, workLabel,
 } from '../store';
 import { navigateTo } from '../nav/intent';
 import { WORK_ICONS } from '../data/workIcons';
 import { PalMap } from './PalMap';
 import { STAT_ICONS } from '../data/statIcons';
 import {
-  rarityIntensity, rarityNumber, rarityStyle, wildLevelRange, type RarityStyle,
+  rarityGrade, rarityNumber, wildLevelRange, type RarityStyle,
 } from '../data/rarity';
 import { ABOUT } from '../data/about';
 import { Icon } from './Icon';
@@ -48,32 +48,53 @@ const SPARKS: { t: number; l: `${number}%`; s: number; o: number }[] = [
   { t: 62, l: '52%', s: 6, o: 0.28 },
 ];
 
-/** The holo-card atmosphere behind the sheet's hero zone: soft aurora glows,
- * two diagonal shine streaks, and a sparkle field. Pure static Views — no
- * animation loops, no native modules, nothing for the JS thread to pay. */
+/** The holo-card atmosphere behind the sheet's hero zone: aurora glows and a
+ * sparkle field graded by the pal's own rarity integer, plus ONE slow
+ * light-sweep. The sweep is a single native-driver transform loop that lives
+ * only while this modal is open — the GPU pays, the JS thread does not
+ * (docs/PERFORMANCE_RULES-compatible: bounded, single, modal-scoped). */
 function RarityAtmosphere({ r, intensity }: { r: RarityStyle; intensity: number }) {
+  const sweep = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    if (r.weight === 0) return;
+    const loop = Animated.loop(Animated.sequence([
+      Animated.timing(sweep, {
+        toValue: 1, duration: 3800, easing: Easing.inOut(Easing.quad),
+        useNativeDriver: true,
+      }),
+      Animated.delay(2600),
+      Animated.timing(sweep, { toValue: 0, duration: 0, useNativeDriver: true }),
+    ]));
+    loop.start();
+    return () => loop.stop();
+  }, [r, sweep]);
   if (r.weight === 0) return null;
   const sparkCount = Math.round(4 + intensity * 3 + r.weight * 2); // 5..9
+  const auraBoost = 0.7 + 0.3 * intensity; // rarity 10 glows harder than 8
   return (
     <View pointerEvents="none"
       style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 240, overflow: 'hidden' }}>
       {/* aurora — layered soft glows, brightest top-left where the name sits */}
       <View style={{
         position: 'absolute', top: -110, left: -70, width: 300, height: 300,
-        borderRadius: 150, backgroundColor: r.aura,
+        borderRadius: 150, backgroundColor: r.aura, opacity: auraBoost,
       }} />
       <View style={{
         position: 'absolute', top: -60, right: -90, width: 320, height: 320,
-        borderRadius: 160, backgroundColor: r.aura2,
+        borderRadius: 160, backgroundColor: r.aura2, opacity: auraBoost,
       }} />
       <View style={{
         position: 'absolute', top: 70, left: '26%', width: 240, height: 240,
-        borderRadius: 120, backgroundColor: r.aura2, opacity: 0.7,
+        borderRadius: 120, backgroundColor: r.aura2, opacity: 0.7 * auraBoost,
       }} />
-      {/* holo shine — two static diagonal streaks */}
-      <View style={{
-        position: 'absolute', top: -40, left: '16%', width: 44, height: 340,
-        backgroundColor: r.shine, transform: [{ rotate: '24deg' }],
+      {/* the living part: one soft light band sweeping the hero diagonally */}
+      <Animated.View style={{
+        position: 'absolute', top: -60, left: -120, width: 90, height: 380,
+        backgroundColor: r.shine,
+        transform: [
+          { translateX: sweep.interpolate({ inputRange: [0, 1], outputRange: [0, 560] }) },
+          { rotate: '24deg' },
+        ],
       }} />
       <View style={{
         position: 'absolute', top: -40, left: '35%', width: 16, height: 340,
@@ -115,14 +136,14 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
   // every existing work suitability +1 at 4 stars (1.0, wiki-verified)
   const [stars, setStars] = useState(0);
   const [aboutOpen, setAboutOpen] = useState(false);
-  const [planned, setPlanned] = useState(false);
   useEffect(() => {
     setStars(0);
     setAboutOpen(false);
-    setPlanned(false);
   }, [name]);
   const p = pals[name];
   if (!p) return null;
+  // derived live: reopening the card of an already-planned pal must say so
+  const planned = getPlan()?.targets.includes(name) ?? false;
   const boost = (v: number | null) => (v == null ? v : Math.round(v * (1 + 0.05 * stars)));
   const asChild = breeding.unique_combos.filter((c) => c.child === name);
   const asParent = breeding.unique_combos.filter((c) => c.parents.includes(name));
@@ -130,20 +151,24 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
     (g) => g.child === name || g.mother === name || g.father === name,
   );
   const inPool = !breeding.excluded_from_generic_pool.includes(name);
-  // THE INFO CARD wears the rarity (CEO 2026-08-15) — but as atmosphere, not
-  // a flat dye: dark tier-tinted sheet, aurora + holo shine + sparkles behind
-  // the hero, tier ring on the portrait. Rarer pal, cooler card.
-  const r = rarityStyle(p.rarity);
+  // THE INFO CARD wears the rarity (CEO 2026-08-15) — as atmosphere, not a
+  // flat dye: tier-tinted sheet, animated light sweep + aurora + sparkles in
+  // the hero, tier ring on the portrait, and every inner card washed with
+  // the tier. All of it graded by the pal's own rarity integer.
+  const r = rarityGrade(name, p.rarity);
   const loud = r.weight > 0;
+  // inner cards pick up the tier — "the cards within are tinted somehow
+  // also" (CEO). Low alpha so text contrast never suffers.
+  const tint = loud ? { backgroundColor: r.cardTint, borderColor: r.cardLine } : null;
 
   return (
     <Modal visible animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
       <ScrollView style={{ flex: 1, backgroundColor: r.sheet }}
         contentContainerStyle={{ padding: 18, paddingBottom: 50 }}>
-        <RarityAtmosphere r={r} intensity={rarityIntensity(name)} />
+        <RarityAtmosphere r={r} intensity={r.t} />
         <View style={[s.row, { gap: 14 }]}>
           <View style={loud ? {
-            borderWidth: 2, borderColor: r.line, borderRadius: 42, padding: 3,
+            borderWidth: 2, borderColor: r.ring ?? r.line, borderRadius: 42, padding: 3,
           } : undefined}>
             <PalIcon name={name} size={72} />
           </View>
@@ -185,12 +210,12 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
           </Pressable>
         )}
 
-        <Card style={{ marginTop: 10, flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+        <Card style={[tint, { marginTop: 10, flexDirection: 'row', alignItems: 'center', gap: 10 }]}>
           <Text style={{ color: T.ink, fontWeight: '700', flex: 1 }}>In my box</Text>
           <GenderToggles name={name} />
         </Card>
 
-        <Card style={{ marginTop: 10, gap: 7 }}>
+        <Card style={[tint, { marginTop: 10, gap: 7 }]}>
           <View style={[s.row, { gap: 8 }]}>
             <Text style={[s.h3, { flex: 1 }]}>Base stats</Text>
             <View style={{ flexDirection: 'row', gap: 3, alignItems: 'center' }}>
@@ -246,12 +271,12 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
             {p.rarity && (
               <View style={{
                 borderWidth: 1.5,
-                borderColor: rarityStyle(p.rarity).line,
-                backgroundColor: rarityStyle(p.rarity).soft,
+                borderColor: r.line,
+                backgroundColor: r.soft,
                 borderRadius: 7, paddingHorizontal: 7, paddingVertical: 2,
               }}>
                 <Text style={{
-                  color: rarityStyle(p.rarity).ink, fontSize: 10.5,
+                  color: r.ink, fontSize: 10.5,
                   fontWeight: '800', letterSpacing: 0.6, textTransform: 'uppercase',
                 }}>
                   {p.rarity}
@@ -259,7 +284,7 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
                       the four bucket words, and something no other companion
                       app puts in front of you */}
                   {rarityNumber(name) != null && (
-                    <Text style={{ color: rarityStyle(p.rarity).ink, opacity: 0.7 }}>
+                    <Text style={{ color: r.ink, opacity: 0.7 }}>
                       {'  '}rarity {rarityNumber(name)}
                     </Text>
                   )}
@@ -280,7 +305,7 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
         </Card>
 
         {(p.drops?.length > 0 || (p.ranch_produce?.length ?? 0) > 0) && (
-          <Card style={{ marginTop: 10 }}>
+          <Card style={[tint, { marginTop: 10 }]}>
             <Text style={s.h3}>Drops</Text>
             <View style={[s.wrap, { marginTop: 8 }]}>
               {p.drops.map((d) => <Badge key={d} kind="plain">{d}</Badge>)}
@@ -292,7 +317,7 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
         )}
 
         {Object.keys(p.work ?? {}).length > 0 && (
-          <Card style={{ marginTop: 10 }}>
+          <Card style={[tint, { marginTop: 10 }]}>
             <View style={[s.row, { gap: 8 }]}>
               <Text style={[s.h3, { flex: 1 }]}>Work suitability</Text>
               {stars === 4 && (
@@ -345,7 +370,7 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
         )}
 
         {p.partner_skill && (
-          <Card style={{ marginTop: 10 }}>
+          <Card style={[tint, { marginTop: 10 }]}>
             <View style={[s.row, { gap: 8 }]}>
               <Text style={[s.h3, { flex: 1 }]}>Partner skill — {p.partner_skill}</Text>
               <View style={{
@@ -362,7 +387,7 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
           </Card>
         )}
 
-        <Card style={{ marginTop: 10, gap: 8 }}>
+        <Card style={[tint, { marginTop: 10, gap: 8 }]}>
           <Text style={s.h3}>How to breed it</Text>
           {selfOnly.has(name) ? (
             <View style={[s.wrap]}>
@@ -442,23 +467,29 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
                 });
               }} />
             {!ownedAny(name) && (
-              <Btn small label={planned ? 'Already a goal ✓' : 'Plan how to get it'}
+              <Btn small disabled={planned}
+                label={planned ? 'Already a goal ✓' : 'Plan how to get it'}
                 onPress={() => {
-                  void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-                  addPlanTarget(name);
-                  setPlanned(true);
+                  void Haptics.selectionAsync();
                   onClose();
                   navigateTo({
                     domain: 'breeding', tab: 'plan',
                     payload: { fromCard: name },
                   });
+                  // the replan is planner-grade work — let the navigation
+                  // paint first instead of freezing the tap (the 4437 ms
+                  // helperAdvice lesson applies to THIS thread too)
+                  setTimeout(() => {
+                    addPlanTarget(name);
+                    void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+                  }, 60);
                 }} />
             )}
           </View>
         </Card>
 
         {(asParent.length > 0 || gendered.some((g) => g.child !== name)) && (
-          <Card style={{ marginTop: 10, gap: 8 }}>
+          <Card style={[tint, { marginTop: 10, gap: 8 }]}>
             <Text style={s.h3}>Special recipes as a parent</Text>
             {asParent.map((c) => {
               const other = c.parents[0] === name ? c.parents[1] : c.parents[0];
@@ -484,7 +515,7 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
           </Card>
         )}
 
-        <Card style={{ marginTop: 10, gap: 8 }}>
+        <Card style={[tint, { marginTop: 10, gap: 8 }]}>
           <Text style={s.h3}>Where to find it</Text>
           <PalMap name={name} />
           <View style={[s.wrap]}>

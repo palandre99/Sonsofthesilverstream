@@ -14,8 +14,10 @@ import {
 
 /* ---------------- pal icon ---------------- */
 
-export const PalIcon = memo(function PalIcon({ name, size = 44, gender }: {
+export const PalIcon = memo(function PalIcon({ name, size = 44, gender, ring }: {
   name: string; size?: number; gender?: 'm' | 'f';
+  /** rarity ring colour — the portrait circle wears the tier (CEO 2026-08-15) */
+  ring?: string | null;
 }) {
   const src = PAL_ICONS[name];
   const el = (pals[name]?.elements?.[0] ?? 'Neutral').toLowerCase();
@@ -23,7 +25,8 @@ export const PalIcon = memo(function PalIcon({ name, size = 44, gender }: {
   const icon = src ? (
     <Image source={src} style={{
       width: size, height: size, borderRadius: size / 2,
-      borderWidth: 1.5, borderColor: T.line2, backgroundColor: T.surface2,
+      borderWidth: ring ? 2 : 1.5, borderColor: ring ?? T.line2,
+      backgroundColor: T.surface2,
     }} />
   ) : (
     <View style={{

@@ -15,7 +15,7 @@ import {
 } from '../store';
 import { closure } from '../engine/planner';
 import { PalDetail } from '../ui/PalDetail';
-import { rarityStyle } from '../data/rarity';
+import { rarityGrade } from '../data/rarity';
 import * as Haptics from 'expo-haptics';
 import { WORK_ICONS } from '../data/workIcons';
 import { ELEMENT_ICONS } from '../data/statIcons';
@@ -33,20 +33,20 @@ const Row = memo(function Row({ name, onOpen, focus }: {
   const p = pals[name];
   const owned = ownedAny(name);
   // List rows stay calm (CEO 2026-08-15: NOT coloured cards here) — rarity
-  // shows as a thin edge tint only; the dyed experience lives on the info
-  // card you open.
-  const r = rarityStyle(p?.rarity);
+  // lives on the PORTRAIT RING + a thin edge tint, graded by the pal's own
+  // rarity integer; the full dyed experience is the info card you open.
+  const g = rarityGrade(name, p?.rarity);
   return (
     <Pressable
       onPress={() => onOpen(name)}
       style={({ pressed }) => [{
         flexDirection: 'row', alignItems: 'center', gap: 8,
         backgroundColor: T.surface, borderColor: T.line, borderWidth: 1,
-        borderLeftWidth: 3, borderLeftColor: r.weight > 0 ? r.line : T.line,
+        borderLeftWidth: 3, borderLeftColor: g.weight > 0 ? g.line : T.line,
         borderRadius: 12, padding: 8, marginBottom: 6, opacity: owned ? 1 : 0.65,
       }, pressed && { borderColor: T.accent }]}
     >
-      <PalIcon name={name} size={40} />
+      <PalIcon name={name} size={40} ring={g.ring} />
       <View style={{ flex: 1 }}>
         <Text style={{ color: T.ink, fontWeight: '800', fontSize: 14 }}>
           {name} <Text style={{ color: T.faint, fontSize: 10.5 }}>#{p.number || '—'}</Text>

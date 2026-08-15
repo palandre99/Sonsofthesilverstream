@@ -8,7 +8,7 @@ import * as Haptics from 'expo-haptics';
 import { T } from '../theme';
 import { Badge, Btn, ElementChips, getRecentPicks, PalIcon, rememberPick, s } from './kit';
 import { Icon } from './Icon';
-import { rarityStyle } from '../data/rarity';
+import { rarityGrade } from '../data/rarity';
 import { ELEMENTS as PICKER_ELEMENTS } from '../data/elements';
 import { ELEMENT_ICONS } from '../data/statIcons';
 import { ownedAny, pals, useAppVersion } from '../store';
@@ -60,9 +60,9 @@ export function PalPicker({ visible, onClose, onPick, title, exclude }: {
   const Row = ({ n }: { n: string }) => {
     const excluded = exclude?.has(n) ?? false;
     const owned = ownedAny(n);
-    // rows stay calm — rarity is a thin edge tint; the dyed look belongs to
-    // the info card only (CEO 2026-08-15)
-    const r = rarityStyle(pals[n]?.rarity);
+    // rows stay calm — rarity is the portrait ring + a thin edge tint; the
+    // dyed look belongs to the info card only (CEO 2026-08-15)
+    const g = rarityGrade(n, pals[n]?.rarity);
     return (
       <Pressable
         disabled={excluded}
@@ -78,11 +78,11 @@ export function PalPicker({ visible, onClose, onPick, title, exclude }: {
           backgroundColor: pressed ? T.accentSoft : T.surface,
           borderWidth: 1, borderColor: pressed ? T.accent : T.line,
           borderLeftWidth: 3,
-          borderLeftColor: pressed ? T.accent : r.weight > 0 ? r.line : T.line,
+          borderLeftColor: pressed ? T.accent : g.weight > 0 ? g.line : T.line,
           marginBottom: 6, opacity: excluded ? 0.45 : 1,
         }]}
       >
-        <PalIcon name={n} size={46} />
+        <PalIcon name={n} size={46} ring={g.ring} />
         <View style={{ flex: 1, gap: 3 }}>
           <Text style={{ color: T.ink, fontWeight: '800', fontSize: 16 }}>
             {n} <Text style={{ color: T.faint, fontSize: 11, fontWeight: '700' }}>#{pals[n]?.number || '—'}</Text>

@@ -118,13 +118,19 @@ export function PlannerScreen() {
     const apply = () => {
       const p = takeIntentPayload('plan');
       if (p?.fromCard) setFromCard(p.fromCard);
-      // a card's "Plan how to get it" may have grown the plan while this
-      // screen was already open — keep the local goal chips in sync
-      const t = getPlan()?.targets;
-      if (t) setTargets((prev) => (prev.join() === t.join() ? prev : t));
+      // a card's "Plan how to get it" grows the plan a beat after the
+      // intent — sync the goal chips once that write lands. NEVER on
+      // intents addressed elsewhere: that once wiped staged targets when
+      // the user merely opened the Calculator.
+      setTimeout(() => {
+        const t = getPlan()?.targets;
+        if (t) setTargets((prev) => (prev.join() === t.join() ? prev : t));
+      }, 160);
     };
     apply();
-    return onNavIntent(apply);
+    return onNavIntent((i) => {
+      if (i.tab === 'plan') apply();
+    });
   }, []);
 
   const box = getBox();
@@ -460,7 +466,7 @@ export function PlannerScreen() {
             </Card>
           )}
 
-          {plan!.steps.length === 0 && (
+          {plan!.steps.length === 0 && plan!.unreachable.length === 0 && (
             <Card style={{ marginTop: 12 }}>
               <Text style={s.h3}>Nothing left to breed</Text>
               <Text style={[s.body, { marginTop: 4 }]}>

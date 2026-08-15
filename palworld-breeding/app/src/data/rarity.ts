@@ -77,6 +77,92 @@ export function rarityIntensity(name: string): number {
   return (r - 1) / 3;
 }
 
+/** hex + alpha → rgba() — for tier tints layered over dark surfaces */
+export function withAlpha(hex: string, alpha: number): string {
+  const n = parseInt(hex.slice(1), 16);
+  return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${alpha})`;
+}
+
+/** linear hex blend, t=0 → a, t=1 → b */
+function mix(a: string, b: string, t: number): string {
+  const pa = parseInt(a.slice(1), 16);
+  const pb = parseInt(b.slice(1), 16);
+  const ch = (sh: number) => Math.round(
+    ((pa >> sh) & 255) + (((pb >> sh) & 255) - ((pa >> sh) & 255)) * t);
+  return `#${((ch(16) << 16) | (ch(8) << 8) | ch(0)).toString(16).padStart(6, '0')}`;
+}
+const lighten = (hex: string, t: number) => mix(hex, '#FFFFFF', t);
+
+/** THE RARITY RAMP — proper math over the game's own integer (CEO
+ * 2026-08-15: a rarity-7 pal painted "starter blue" is wrong; the colour
+ * must track quality continuously, not in four coarse buckets).
+ *
+ * Anchors follow the loot ladder every gamer reads instinctively:
+ *   1 grey → 3 green → 5 blue → 7 indigo → 8 purple → 10 magenta.
+ * Values between anchors interpolate linearly. 20 (the legendaries) is its
+ * own colour — gold — never interpolated across the 10..20 gap.
+ * The integer itself is game data; this ramp is only its presentation. */
+const RAMP: [number, string][] = [
+  [1, '#6F7E85'], [3, '#58B368'], [5, '#3E86C7'],
+  [7, '#6E6BE8'], [8, '#8A5CD6'], [10, '#C24FE0'],
+];
+export function rarityColor(n: number): string {
+  if (n >= 12) return '#E3B341';
+  if (n <= RAMP[0][0]) return RAMP[0][1];
+  for (let i = 1; i < RAMP.length; i++) {
+    const [x0, c0] = RAMP[i - 1];
+    const [x1, c1] = RAMP[i];
+    if (n <= x1) return mix(c0, c1, (n - x0) / (x1 - x0));
+  }
+  return RAMP[RAMP.length - 1][1];
+}
+
+/** The full graded look for one pal, every shade derived from the ramp. */
+export interface RarityGrade extends RarityStyle {
+  /** 0..1 across the whole ladder (20 ⇒ 1) */
+  t: number;
+  /** the pal's game rarity integer (bucket-midpoint fallback if unknown) */
+  n: number;
+  /** portrait ring colour (null = quiet commons) */
+  ring: string | null;
+  /** subtle wash for INNER cards on the detail sheet */
+  cardTint: string;
+  /** border for inner cards on the detail sheet */
+  cardLine: string;
+}
+
+/** bucket word → midpoint, for the one pal palcalc lacks */
+const WORD_FALLBACK: Record<string, number> = {
+  Common: 2, Rare: 6, Epic: 9, Legendary: 20,
+};
+
+export function rarityGrade(name: string, rarity: string | null | undefined): RarityGrade {
+  const n = PALCALC_FACTS[name]?.rarity
+    ?? WORD_FALLBACK[rarity ?? ''] ?? 2;
+  const t = n >= 20 ? 1 : (n - 1) / 10;
+  const base = rarityColor(n);
+  // quiet below 3 — a level-1 starter should not glow
+  const weight = n >= 20 ? 1 : n >= 3 ? 0.25 + 0.75 * ((Math.min(n, 10) - 3) / 7) : 0;
+  const loud = weight > 0;
+  return {
+    card: withAlpha(base, 0.16),
+    line: base,
+    ink: lighten(base, 0.45),
+    soft: withAlpha(base, 0.14),
+    weight,
+    sheet: loud ? mix(base, '#0D1418', 0.9) : '#101D20',
+    aura: withAlpha(base, 0.30),
+    aura2: withAlpha(base, 0.14),
+    shine: n >= 20 ? 'rgba(255,255,255,0.07)' : 'rgba(255,255,255,0.05)',
+    sparkle: lighten(base, 0.55),
+    t,
+    n,
+    ring: loud ? withAlpha(base, 0.6 + 0.4 * t) : null,
+    cardTint: loud ? withAlpha(base, 0.05 + 0.06 * t) : 'transparent',
+    cardLine: loud ? withAlpha(base, 0.25 + 0.25 * t) : 'transparent',
+  };
+}
+
 /** legacy single-colour accessor — border tint, falling back to a neutral */
 export const RARITY_COLORS: Record<string, string> = {
   Rare: RARITY_STYLES.Rare.line,

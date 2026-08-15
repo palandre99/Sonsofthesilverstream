@@ -89,8 +89,12 @@ export function FilterSheet({ filters, sort, onApply, onClose }: {
           <Btn small label="Reset" onPress={() => { setF(NO_FILTERS); setSk('number'); }} />
         </View>
         <ScrollView contentContainerStyle={{ padding: 16, gap: 18, paddingBottom: 30 }}>
-          <Section title="Work — shows only pals that can do it, best first"
-            hint={f.work ? `Showing ${workLabel(f.work)} pals, highest level first.` : undefined}>
+          <Section title="Work — shows only pals that can do it"
+            hint={f.work
+              ? sk === `work:${f.work}`
+                ? `Showing ${workLabel(f.work)} pals, highest level first.`
+                : `Showing only ${workLabel(f.work)} pals.`
+              : undefined}>
             {WORK_KEYS.map((w) => (
               <Chip key={w} on={f.work === w} icon={WORK_ICONS[w]} label={workLabel(w)}
                 onPress={() => pickWork(w)} />
@@ -114,6 +118,11 @@ export function FilterSheet({ filters, sort, onApply, onClose }: {
             <Chip on={f.own === 'onegender'} label="One gender" onPress={() => pickOwn('onegender')} />
           </Section>
           <Section title="Order">
+            {sk.startsWith('work:') && (
+              <Chip on icon={WORK_ICONS[sk.slice(5)]}
+                label={`Best ${workLabel(sk.slice(5))}`}
+                onPress={() => setSk('number')} />
+            )}
             <Chip on={sk === 'number'} label="Paldex number" onPress={() => setSk('number')} />
             <Chip on={sk === 'name'} label="A–Z" onPress={() => pickSort('name')} />
             <Chip on={sk === 'rarity_desc'} label="Rarest first" onPress={() => pickSort('rarity_desc')} />
