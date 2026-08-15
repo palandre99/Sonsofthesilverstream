@@ -6,6 +6,7 @@
 import { useEffect, useMemo, useState } from 'preact/hooks';
 import { box, hasGender, nav, ownedAny, pals, selfOnly, setOwnedGender, storage } from '../state';
 import { GenderToggles, LockBadge, PalIcon, PalPicker, WorkChips } from '../components/shared';
+import { GoalsSheet } from '../components/goals';
 import { stepId } from '../engine/planner';
 import { parseGenderNote } from '../engine/formula';
 import { requestPlan } from '../engine/planClient';
@@ -13,24 +14,6 @@ import { cakeNeeds } from '../engine/boosters';
 import { ADVICE_VERSION, HELPER_NAMES, type HelperAdvice } from '../engine/helpers';
 import { wildLevelRange } from '../data/rarity';
 import type { PlanStep } from '../engine/types';
-
-const PRESETS: Record<string, { label: string; targets: string[] }> = {
-  workers: {
-    label: 'Best workers',
-    targets: ['Solenne', 'Celesdir Noct', 'Renjishi', 'Knocklem', 'Starryon Primo',
-      'Ophydia', 'Anubis', 'Astegon', 'Blazamut', 'Sibelyx Primo', 'Venusa', 'Mycora',
-      'Univolt Cryst', 'Whalaska Ignis', 'Solmora Lux'],
-  },
-  aura: {
-    label: 'All aura pals',
-    targets: ['Ribbuny', 'Cinnamoth', 'Clovee', 'Petallia', 'Tetroise', 'Wumpo',
-      'Amione', 'Eikthyrdeer Terra', 'Katress Ignis', 'Mycora', 'Puffolt', 'Smokie Cryst'],
-  },
-  support: {
-    label: 'Breeding support',
-    targets: ['Braloha', 'Dynamoff', 'Lullu', 'Prunelia', 'Sekhmet'],
-  },
-};
 
 const CHECKS_KEY = 'hatchlab-plan-checks-v1';
 const PLAN_KEY = 'hatchlab-plan-v1';
@@ -89,6 +72,7 @@ export function PlanPage() {
   const [plannedAt, setPlannedAt] = useState<string | null>(saved?.planned ?? null);
   const [checks, setChecks] = useState<Record<string, CheckValue>>(loadChecks());
   const [hatching, setHatching] = useState<{ sid: string; child: string } | null>(null);
+  const [goalsOpen, setGoalsOpen] = useState(false);
   // Escape closes the hatch dialog — click-away already works, the keyboard
   // path was missing (self-found queue item)
   useEffect(() => {
@@ -108,10 +92,6 @@ export function PlanPage() {
 
   const addTarget = (n: string) => {
     if (!targets.includes(n)) setTargets([...targets, n]);
-  };
-  const addPreset = (key: string) => {
-    const merged = new Set([...targets, ...PRESETS[key].targets]);
-    setTargets([...merged]);
   };
 
   const run = (list: string[] = targets, roster: string[] = ownedNames) => {
@@ -376,9 +356,9 @@ export function PlanPage() {
 
       <div class="card bigcard" style={{ marginBottom: '18px' }}>
         <div class="searchbar" style={{ marginBottom: '10px' }}>
-          {Object.entries(PRESETS).map(([key, p]) => (
-            <button class="btn" onClick={() => addPreset(key)}>+ {p.label}</button>
-          ))}
+          <button class="btn primary" onClick={() => setGoalsOpen(true)}>
+            Suggested goals…
+          </button>
           <PalPicker value={null} onPick={addTarget} placeholder="Add a target…" />
         </div>
         {targets.length > 0 && (
@@ -693,6 +673,9 @@ export function PlanPage() {
           </p>
         </div>
       )}
+      <GoalsSheet open={goalsOpen} onClose={() => setGoalsOpen(false)}
+        targets={targets}
+        onAdd={(names) => setTargets((prev) => [...new Set([...prev, ...names])])} />
     </>
   );
 }
