@@ -3,6 +3,30 @@
 *Updated 2026-08-15 afternoon. Update this file whenever a work block lands;
 date every entry.*
 
+## 2026-08-15 late — hostile doc audit, workspace handover-ready
+
+Audited every markdown file in the repo against reality. Seven real defects,
+all fixed (details in commit `35b21a7`): a second competing master plan under
+the dead "HatchLab" name; a code README with the old name, wrong test count
+(60→64) and wrong claim count (23→29); three docs still asserting "one app
+slot" after coexistence shipped; `CLAUDE.md` naming the wrong deploy path;
+stale AI_TODO items; and a phone README telling the CEO to run a build he had
+already run. One data contradiction (1 vs 2 gender-locked combos) was settled
+**from the data**: one pair, two directional entries.
+
+`CLAUDE.md` now carries the three things that were only ever in chat: **SCOPE**
+(breeding is phase one, don't widen while it's imperfect, Dododex as the model),
+**THE QUALITY BAR** (what 10/10 means here), and **METHOD** (verify with your
+own eyes; test the state the CEO will meet; diagnose before blaming code; never
+guess a value you can read).
+
+Verified: 64/64 vitest, mobile tsc clean, all cross-references resolve, website
++ hub + both manifests 200, old saved link still forwards.
+
+Known-unverified, deliberately left in the queue rather than claimed: the PWA
+offline pass on the CEO's phone, and the data refresh for the Aug 12 game patch
+(our extraction is from July 20) — that one gates all data-related work.
+
 ## 2026-08-15 afternoon — delivery pipeline repaired, workspace documented
 
 **No app features changed. Zero app code touched.** This block fixed how code
