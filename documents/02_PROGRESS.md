@@ -27,6 +27,35 @@ every store write) that the round will fix.
 Baseline gates at HEAD `fdb4789` re-run at intake — see next entry for
 results.
 
+## 2026-08-15 evening/night — handover marathon (new coder), all shipped
+
+Every block: gates green (vitest 64→79 incl. the new ENGINE-PARITY CI gate
++ Chikipi/meta regression tests; mobile tsc 0; bundle 200), committed,
+pushed to PR #1, OTA'd BOTH channels, ledgered.
+
+- **Toolkit builds (runtime 1.1.0)**: 16 native modules in both apps;
+  eas.json pins EAS_BUILD_PROFILE per profile (preview builds were broken
+  since the identity split — CLI/worker mismatch, found + fixed); hub
+  manifests updated; both `.ipa` identities verified by unpacking.
+  expo-notifications deferred (needs CEO Apple login for the entitlement).
+- **Planner brain**: catch-only advice for unreachable helpers (the
+  Chikipi bug — reproduced, fixed, regression-locked), cake-supply
+  checklist, advice versioning for stale saved plans, replace-plan
+  confirm, folding completed phases, Odds Lab session cache, Calculator
+  clear/swap, back-to-card navigation (nav/intent.ts).
+- **Suggested Goals v1→v3, mobile + web (web deployed live)**: squads,
+  best-in-game + fighting (community-labelled meta.ts with provenance and
+  a rejected-source note), mounts with real saddle levels (paldb fetcher,
+  114/121), weight/efficiency/loot/ranch squads, born-with passives (46
+  datamined, also on pal cards), composite crews, dynamic per-job lists —
+  chips say BREED·N STEPS / CATCH LV X / CATCH X TO UNLOCK, per-chip add.
+- **Data**: About 299/299; palcalcFacts.g.ts (game rarity integer, wild
+  ranges, guaranteed passives; maxWild 285/285 cross-validated); Ribbuny
+  Botan truncation completed (claim #30); helper skills recorded (#31);
+  Bellanoir work data 2-source verified after a CEO challenge.
+- **Rarity visuals**: five iterations under live CEO feedback, then PARKED
+  at his order — vanilla restored; the integer + wild ranges stay.
+
 ## 2026-08-15 late — hostile doc audit, workspace handover-ready
 
 Audited every markdown file in the repo against reality. Seven real defects,
