@@ -189,14 +189,50 @@ export async function deleteProfile(id: string): Promise<void> {
   await loadProfileData();
 }
 
+/** Switch worlds without a write race: the new profile's data is loaded
+ * FIRST, then pointer + state flip atomically (no await between them), so
+ * a write landing mid-switch can never save one world's data under the
+ * other world's keys (reviewer catch 2026-08-15). */
 export async function switchProfile(id: string): Promise<void> {
-  if (!profiles.some((p) => p.id === id)) return;
-  activeProfile = id;
+  if (!profiles.some((p) => p.id === id) || id === activeProfile) return;
+  switching = true;
+  try {
+    const k = keysFor(id);
+    let nextBox: Record<string, OwnedGenders> = {};
+    let nextChecks: Record<string, true | StepCheckShape> = {};
+    let nextPlan: SavedPlan | null = null;
+    try {
+      const [b, c, pl] = await AsyncStorage.multiGet([k.box, k.checks, k.plan]);
+      if (b[1]) {
+        const saved = JSON.parse(b[1]) as Record<string, OwnedGenders>;
+        nextBox = Object.fromEntries(
+          Object.entries(saved).filter(([n]) => Object.hasOwn(pals, n)),
+        );
+      }
+      if (c[1]) nextChecks = JSON.parse(c[1]) as Record<string, true | StepCheckShape>;
+      if (pl[1]) {
+        const plan = JSON.parse(pl[1]) as SavedPlan;
+        if (Array.isArray(plan.targets) && Array.isArray(plan.steps)) nextPlan = plan;
+      }
+    } catch { /* unreadable profile data — start it empty */ }
+    // atomic flip — no awaits between these lines
+    activeProfile = id;
+    state.box = nextBox;
+    state.checks = nextChecks;
+    state.plan = nextPlan;
+    emit();
+  } finally {
+    switching = false;
+  }
   await persistProfiles();
-  await loadProfileData();
 }
 
+/** true while switchProfile is mid-flight — writes are dropped rather than
+ * risk landing under the wrong profile's keys */
+let switching = false;
+
 async function persist(key: 'box' | 'checks' | 'plan'): Promise<void> {
+  if (switching) return;
   try {
     await AsyncStorage.setItem(keysFor(activeProfile)[key], JSON.stringify(state[key]));
   } catch { /* persistence unavailable — keep running in-memory */ }
