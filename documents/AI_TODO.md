@@ -222,3 +222,9 @@ loops all night INSIDE the Breeding + Paldex domain (his explicit scope).
       RITUAL: whenever a new FAST build finishes, update INSTALL-LINK.txt +
       PALFORGE-FAST-INSTALL.html + README-PHONE.md in the same commit.
 - [x] Step-tick a11y (checkbox role/state/label) shipped both channels.
+
+- [x] NO-LOGIN INSTALL (CEO hit the expo.dev login wall ~12:15): our own
+      site now hosts /palforge/install/ (itms-services + manifest.plist ->
+      public signed .ipa). RITUAL UPDATE: each new FAST build must update
+      app/public/install/manifest.plist (ipa URL + version) AND INSTALL-LINK
+      pointers, then redeploy Pages.
