@@ -1,10 +1,9 @@
 /** Calculator — pair→child and child→parents, same engine as the web app. */
 import React, { useMemo, useState } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { ScrollView, Text, View, Pressable } from 'react-native';
+import * as Haptics from 'expo-haptics';
 import { T } from '../theme';
-import {
-  Badge, Btn, Card, ElementChips, PageHead, PalIcon, PalPicker, WorkChips, s,
-} from '../ui/kit';
+import { Badge, Btn, Card, ElementChips, PageHead, PalIcon, PalPicker, WorkChips, s, getRecentPicks } from '../ui/kit';
 import {
   canPairNow, engine, ownedAny, pals, selfOnly, useAppVersion,
 } from '../store';
@@ -217,6 +216,33 @@ export function CalculatorScreen() {
                 You get the child instantly, with the math shown — and a warning whenever
                 a special recipe or gender rule changes the outcome.
               </Text>
+              {getRecentPicks().filter((n) => Object.hasOwn(pals, n)).length > 0 && (
+                <>
+                  <Text style={{
+                    color: T.faint, fontSize: 10.5, fontWeight: '800',
+                    letterSpacing: 1, marginTop: 12, marginBottom: 6,
+                  }}>QUICK START — RECENT PALS</Text>
+                  <View style={[s.wrap]}>
+                    {getRecentPicks().filter((n) => Object.hasOwn(pals, n)).slice(0, 6).map((n) => (
+                      <Pressable key={n}
+                        onPress={() => {
+                          void Haptics.selectionAsync();
+                          if (!a) setA(n);
+                          else if (!b) setB(n);
+                        }}
+                        style={({ pressed }) => [{
+                          flexDirection: 'row', alignItems: 'center', gap: 6,
+                          backgroundColor: pressed ? T.accentSoft : T.surface2,
+                          borderWidth: 1, borderColor: pressed ? T.accent : T.line,
+                          borderRadius: 10, paddingVertical: 5, paddingHorizontal: 9,
+                        }]}>
+                        <PalIcon name={n} size={26} />
+                        <Text style={{ color: T.ink, fontWeight: '700', fontSize: 12.5 }}>{n}</Text>
+                      </Pressable>
+                    ))}
+                  </View>
+                </>
+              )}
             </Card>
           )}
         </>
