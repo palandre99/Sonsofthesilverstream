@@ -173,9 +173,9 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
   // the tier. All of it graded by the pal's own rarity integer.
   const r = rarityGrade(name, p.rarity);
   const loud = r.weight > 0;
-  // inner cards pick up the tier — "the cards within are tinted somehow
-  // also" (CEO). Low alpha so text contrast never suffers.
-  const tint = loud ? { backgroundColor: r.cardTint, borderColor: r.cardLine } : null;
+  // inner cards pick up the tier on loud pals — but cardTint/cardLine are
+  // ALWAYS solid surface colours, so the bubbles exist on every tier
+  const tint = { backgroundColor: r.cardTint, borderColor: r.cardLine };
 
   return (
     <Modal visible animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>

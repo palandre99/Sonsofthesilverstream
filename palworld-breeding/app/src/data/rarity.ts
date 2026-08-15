@@ -196,8 +196,11 @@ export function rarityGrade(name: string, rarity: string | null | undefined): Ra
     line2: second,
     sparkle2: lighten(second, 0.5),
     ring: tier === 'none' ? null : withAlpha(base, 0.6 + 0.4 * t),
-    cardTint: loudCards ? withAlpha(base, 0.05 + 0.06 * t) : 'transparent',
-    cardLine: loudCards ? withAlpha(base, 0.25 + 0.25 * t) : 'transparent',
+    // SOLID colours, never transparent: these REPLACE the card surface, so a
+    // transparent value deletes the bubble entirely (shipped once, CEO caught
+    // it in minutes — every section floated naked on the sheet)
+    cardTint: loudCards ? mix('#152528', base, 0.06 + 0.08 * t) : '#152528',
+    cardLine: loudCards ? mix('#27424A', base, 0.35) : '#27424A',
     agrees,
   };
 }
