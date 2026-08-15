@@ -5,6 +5,7 @@ import { Modal, Pressable, ScrollView, Text, TextInput, View } from 'react-nativ
 import * as Haptics from 'expo-haptics';
 import { T } from '../theme';
 import { Btn, Card, PageHead, s } from '../ui/kit';
+import { Icon } from '../ui/Icon';
 import {
   createProfile, deleteProfile, getActiveProfile, getProfiles, renameProfile,
   switchProfile, useAppVersion,
@@ -65,7 +66,7 @@ export function ProfilesScreen() {
                   backgroundColor: pressed ? T.surface : 'transparent',
                 }]}
               >
-                <Text style={{ color: T.muted, fontWeight: '800', fontSize: 16 }}>✎</Text>
+                <Icon name="pencil-outline" size={17} color={T.muted} />
               </Pressable>
             </View>
           );
