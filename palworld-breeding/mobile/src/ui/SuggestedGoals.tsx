@@ -25,6 +25,7 @@ import { onNavIntent } from '../nav/intent';
 import { PALCALC_FACTS } from '../data/palcalcFacts.g';
 import { BEST_OVERALL, COMBAT_COMMUNITY, MOUNT_CALLOUTS } from '../data/meta';
 import { MOUNTS, UTILITY_ROLES } from '../data/utilityRoles.g';
+import { SADDLE_LEVELS } from '../data/saddleLevels.g';
 
 /** top pals for one job — suitability level first, stat total second */
 function bestAt(job: string, n = 14): { name: string; lvl: number }[] {
@@ -280,7 +281,11 @@ export function SuggestedGoals({ visible, onClose, targets, onAdd }: {
         <Text style={[s.body, { fontSize: 11.5 }]}>{blurb}</Text>
         <View style={{ flexDirection: 'row', gap: 6, flexWrap: 'wrap' }}>
           {shown.map((n) => (
-            <PalChip key={n} name={n} note={MOUNT_CALLOUTS[n]} />
+            // "saddle available Lv X" (CEO) — real tech levels from paldb;
+            // community speed callouts win the one-line slot when present
+            <PalChip key={n} name={n}
+              note={MOUNT_CALLOUTS[n]
+                ?? (SADDLE_LEVELS[n] != null ? `saddle Lv ${SADDLE_LEVELS[n]}` : undefined)} />
           ))}
         </View>
         {expanded && hidden > 0 && (
