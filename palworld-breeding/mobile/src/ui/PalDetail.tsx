@@ -13,7 +13,9 @@ import { navigateTo } from '../nav/intent';
 import { WORK_ICONS } from '../data/workIcons';
 import { PalMap } from './PalMap';
 import { STAT_ICONS } from '../data/statIcons';
-import { rarityNumber, rarityStyle, wildLevelRange } from '../data/rarity';
+import {
+  rarityIntensity, rarityNumber, rarityStyle, wildLevelRange, type RarityStyle,
+} from '../data/rarity';
 import { ABOUT } from '../data/about';
 import { Icon } from './Icon';
 import { ALPHA_SPOTS } from '../data/alphaSpots.g';
@@ -30,6 +32,60 @@ function statRank(stat: 'hp' | 'atk' | 'def', v: number | null): string | null {
     if (qv > v) better++;
   }
   return `#${better + 1} of ${total}`;
+}
+
+/** Deterministic sparkle field — positions fixed so nothing shifts between
+ * renders, density scales with the pal's own rarity integer. */
+const SPARKS: { t: number; l: `${number}%`; s: number; o: number }[] = [
+  { t: 26, l: '64%', s: 15, o: 0.6 },
+  { t: 74, l: '88%', s: 11, o: 0.5 },
+  { t: 128, l: '7%', s: 12, o: 0.45 },
+  { t: 44, l: '22%', s: 9, o: 0.4 },
+  { t: 156, l: '72%', s: 10, o: 0.5 },
+  { t: 100, l: '44%', s: 8, o: 0.35 },
+  { t: 12, l: '38%', s: 7, o: 0.3 },
+  { t: 170, l: '30%', s: 8, o: 0.35 },
+  { t: 62, l: '52%', s: 6, o: 0.28 },
+];
+
+/** The holo-card atmosphere behind the sheet's hero zone: soft aurora glows,
+ * two diagonal shine streaks, and a sparkle field. Pure static Views — no
+ * animation loops, no native modules, nothing for the JS thread to pay. */
+function RarityAtmosphere({ r, intensity }: { r: RarityStyle; intensity: number }) {
+  if (r.weight === 0) return null;
+  const sparkCount = Math.round(4 + intensity * 3 + r.weight * 2); // 5..9
+  return (
+    <View pointerEvents="none"
+      style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 240, overflow: 'hidden' }}>
+      {/* aurora — layered soft glows, brightest top-left where the name sits */}
+      <View style={{
+        position: 'absolute', top: -110, left: -70, width: 300, height: 300,
+        borderRadius: 150, backgroundColor: r.aura,
+      }} />
+      <View style={{
+        position: 'absolute', top: -60, right: -90, width: 320, height: 320,
+        borderRadius: 160, backgroundColor: r.aura2,
+      }} />
+      <View style={{
+        position: 'absolute', top: 70, left: '26%', width: 240, height: 240,
+        borderRadius: 120, backgroundColor: r.aura2, opacity: 0.7,
+      }} />
+      {/* holo shine — two static diagonal streaks */}
+      <View style={{
+        position: 'absolute', top: -40, left: '16%', width: 44, height: 340,
+        backgroundColor: r.shine, transform: [{ rotate: '24deg' }],
+      }} />
+      <View style={{
+        position: 'absolute', top: -40, left: '35%', width: 16, height: 340,
+        backgroundColor: r.shine, transform: [{ rotate: '24deg' }],
+      }} />
+      {SPARKS.slice(0, sparkCount).map((sp, i) => (
+        <View key={i} style={{ position: 'absolute', top: sp.t, left: sp.l, opacity: sp.o }}>
+          <Icon name="star-four-points" size={sp.s} color={r.sparkle} />
+        </View>
+      ))}
+    </View>
+  );
 }
 
 function StatBar({ label, icon, v, rank }: {
@@ -74,18 +130,23 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
     (g) => g.child === name || g.mother === name || g.father === name,
   );
   const inPool = !breeding.excluded_from_generic_pool.includes(name);
-  // THE INFO CARD wears the rarity (CEO 2026-08-15): the whole sheet is dyed
-  // the tier's colour — Epic opens purple, Legendary opens gold — and the
-  // name ink matches. List rows stay calm; this is where the drama lives.
+  // THE INFO CARD wears the rarity (CEO 2026-08-15) — but as atmosphere, not
+  // a flat dye: dark tier-tinted sheet, aurora + holo shine + sparkles behind
+  // the hero, tier ring on the portrait. Rarer pal, cooler card.
   const r = rarityStyle(p.rarity);
   const loud = r.weight > 0;
 
   return (
     <Modal visible animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
-      <ScrollView style={{ flex: 1, backgroundColor: loud ? r.card : T.bg2 }}
+      <ScrollView style={{ flex: 1, backgroundColor: r.sheet }}
         contentContainerStyle={{ padding: 18, paddingBottom: 50 }}>
+        <RarityAtmosphere r={r} intensity={rarityIntensity(name)} />
         <View style={[s.row, { gap: 14 }]}>
-          <PalIcon name={name} size={72} />
+          <View style={loud ? {
+            borderWidth: 2, borderColor: r.line, borderRadius: 42, padding: 3,
+          } : undefined}>
+            <PalIcon name={name} size={72} />
+          </View>
           <View style={{ flex: 1 }}>
             <Text style={[s.h1, loud && { color: r.ink }]}>{name}</Text>
             <View style={[s.wrap, { marginTop: 5 }]}>

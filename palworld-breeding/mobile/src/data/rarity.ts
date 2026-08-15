@@ -16,36 +16,66 @@
 import { PALCALC_FACTS } from './palcalcFacts.g';
 
 export interface RarityStyle {
-  /** full card surface */
+  /** full card surface (row/badge use) */
   card: string;
-  /** full card border */
+  /** border / accent line */
   line: string;
   /** bright accent ink (name, tier label) */
   ink: string;
   /** soft wash for badges on neutral surfaces */
   soft: string;
-  /** 0..1 — how loud the tier is (drives border width) */
+  /** 0..1 — how loud the tier is */
   weight: number;
+  /** info-sheet background: DARK with a whisper of the tier, never a flat
+   * dye (CEO 2026-08-15: the flat purple sheet was "garbage") */
+  sheet: string;
+  /** aurora glow blobs for the sheet's hero zone */
+  aura: string;
+  aura2: string;
+  /** diagonal shine streak (holo-card feel) */
+  shine: string;
+  /** sparkle glyph colour */
+  sparkle: string;
 }
 
 export const RARITY_STYLES: Record<string, RarityStyle> = {
   Common: {
     card: '#152528', line: '#27424A', ink: '#A9BDC2',
     soft: 'rgba(122,150,158,0.10)', weight: 0,
+    sheet: '#101D20', aura: 'transparent', aura2: 'transparent',
+    shine: 'transparent', sparkle: 'transparent',
   },
   Rare: {
     card: '#122A40', line: '#3E86C7', ink: '#8FC8F2',
     soft: 'rgba(79,163,227,0.16)', weight: 0.45,
+    sheet: '#0E1E2C', aura: 'rgba(62,134,199,0.28)', aura2: 'rgba(62,134,199,0.13)',
+    shine: 'rgba(255,255,255,0.045)', sparkle: '#9ED2F5',
   },
   Epic: {
     card: '#261A42', line: '#8A5CD6', ink: '#C9A4F7',
     soft: 'rgba(169,108,240,0.18)', weight: 0.72,
+    sheet: '#150F26', aura: 'rgba(138,92,214,0.30)', aura2: 'rgba(138,92,214,0.14)',
+    shine: 'rgba(255,255,255,0.05)', sparkle: '#D3B4FA',
   },
   Legendary: {
     card: '#33270C', line: '#D9A93C', ink: '#F2D384',
     soft: 'rgba(227,179,65,0.20)', weight: 1,
+    sheet: '#1C1405', aura: 'rgba(217,169,60,0.30)', aura2: 'rgba(217,169,60,0.15)',
+    shine: 'rgba(255,255,255,0.06)', sparkle: '#F7DE9B',
   },
 };
+
+/** 0..1 — where this pal sits INSIDE its tier band (Common 1-4, Rare 5-7,
+ * Epic 8-10, Legendary always 1). Presentation only: a rarity-7 pal gets a
+ * denser sparkle field than a rarity-5, from the game's own integer. */
+export function rarityIntensity(name: string): number {
+  const r = PALCALC_FACTS[name]?.rarity;
+  if (r == null) return 0.5;
+  if (r >= 20) return 1;
+  if (r >= 8) return (r - 8) / 2;
+  if (r >= 5) return (r - 5) / 2;
+  return (r - 1) / 3;
+}
 
 /** legacy single-colour accessor — border tint, falling back to a neutral */
 export const RARITY_COLORS: Record<string, string> = {

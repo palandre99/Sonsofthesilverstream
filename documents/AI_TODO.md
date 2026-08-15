@@ -309,21 +309,22 @@ loops all night INSIDE the Breeding + Paldex domain (his explicit scope).
 quietly narrowed. Tick only when shipped AND eye-verified.*
 
 ### A. Paldex — reported bugs (he used it and it misbehaved)
-- [ ] A1 Keyboard stays up when you scroll the results — it covers the list.
-      (`keyboardDismissMode` missing on the Paldex + picker lists.)
-- [ ] A2 "Filter kindling, scroll down, pals without kindling appear."
-      ROOT CAUSE FOUND: the sheet has TWO near-identical work-icon rows —
-      *Sort by work suitability* (sorts only) and *Must have work suitability*
-      (filters). He tapped the sort row. It is a design failure, not his error.
-- [ ] A3 A ticked box can't be unticked by tapping it again — true for every
-      chip in "Sort by" and "Sort by work suitability" (no toggle-off path
-      except Reset). "Far from good enough and polished. Many bugs."
-- [ ] A4 Rarity-coloured cards — he has asked for this "long ago". Epic
-      purple, Legendary yellow, Uncommon green etc. RESEARCH the game's real
-      rarity palette first; our dataset has 4 buckets (Common 121 / Rare 105 /
-      Epic 65 / Legendary 8) — decide honestly how "uncommon" maps.
-- [ ] A5 Row must show the stat you filtered/sorted by (it shows top-1 work
-      today, which is why a Kindling-filtered list looks wrong).
+- [x] A1 2026-08-15 ~16:45: keyboardDismissMode="on-drag" on Paldex + picker.
+- [x] A2 2026-08-15 ~16:45: sheet rebuilt — ONE work row that filters AND
+      sorts best-first; the sort/filter twin rows are gone.
+- [x] A3 2026-08-15 ~16:45: every chip toggles off on second tap (radio
+      groups fall back to neutral).
+- [x] A4 2026-08-15 ~17:00 v3: list rows stay calm (thin edge tint — CEO
+      rejected coloured rows); the INFO CARD carries the tier as atmosphere:
+      dark tinted sheet + aurora glows + holo shine streaks + sparkle field
+      (density scales with the game's rarity integer) + tier ring on the
+      portrait. v1 (thin edge) and v2 (flat dye) both rejected by eye.
+      OPEN RESEARCH: tier-word boundaries are community, not game —
+      palworld.gg says 7=Epic, paldb-family says 5-7=Rare. We show the
+      integer (game truth) beside the word. Find whether the GAME's UI
+      (expeditions/vending) implies official bands before renaming tiers.
+- [x] A5 2026-08-15 ~16:45: rows show the filtered/sorted job highlighted
+      first, not just top-1 work.
 
 ### B. Pal info card
 - [ ] B1 "About the pal" — he says it reads invented. Text IS real wiki.gg
