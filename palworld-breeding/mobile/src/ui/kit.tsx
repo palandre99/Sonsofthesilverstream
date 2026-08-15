@@ -236,9 +236,8 @@ export function GenderToggles({ name, size = 30 }: { name: string; size?: number
 
 // PalPicker v2: quick filters + rarity tints
 import { rarityTint } from '../data/rarity';
+import { ELEMENTS as PICKER_ELEMENTS } from '../data/elements';
 import { Icon } from './Icon';
-
-const PICKER_ELEMENTS = ['Neutral', 'Fire', 'Water', 'Grass', 'Electric', 'Ice', 'Ground', 'Dark', 'Dragon'];
 
 export function PalPicker({ visible, onClose, onPick, title, exclude }: {
   visible: boolean;
@@ -252,7 +251,7 @@ export function PalPicker({ visible, onClose, onPick, title, exclude }: {
   const [own, setOwn] = useState<'all' | 'owned' | 'missing'>('all');
   const [el, setEl] = useState<string | null>(null);
   const inputRef = useRef<TextInput>(null);
-  useAppVersion();
+  const version = useAppVersion();
 
   const names = useMemo(() => {
     let list = [...Object.keys(pals)].sort(palNumberSort);
@@ -264,7 +263,8 @@ export function PalPicker({ visible, onClose, onPick, title, exclude }: {
     if (own === 'owned') list = list.filter(ownedAny);
     if (own === 'missing') list = list.filter((n) => !ownedAny(n));
     return list;
-  }, [q, el, own]);
+    // version: ownership filters must see box changes while the picker is open
+  }, [q, el, own, version]);
 
   useEffect(() => {
     if (visible) {
@@ -336,7 +336,7 @@ export function PalPicker({ visible, onClose, onPick, title, exclude }: {
             ref={inputRef}
             value={q}
             onChangeText={setQ}
-            placeholder="Search 299 pals…"
+            placeholder={`Search ${Object.keys(pals).length} pals…`}
             placeholderTextColor={T.faint}
             autoCorrect={false}
             autoCapitalize="none"
@@ -431,7 +431,7 @@ export function PalPicker({ visible, onClose, onPick, title, exclude }: {
   );
 }
 
-/* recently picked pals (session + persisted lightweight) */
+/* recently picked pals (session-only (not persisted)) */
 let recentPicks: string[] = [];
 export const getRecentPicks = () => recentPicks;
 export function rememberPick(n: string): void {

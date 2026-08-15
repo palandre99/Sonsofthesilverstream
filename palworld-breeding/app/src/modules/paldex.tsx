@@ -21,6 +21,11 @@ import { ElementChips, GenderToggles, LockBadge, PalIcon, StatBars, WorkChips } 
  * (gold). Real coordinates only, projected with the game's own transforms —
  * see tools/extract_region_spots.py. Hidden when the map asset is absent
  * (single-file build). */
+function cleanRegion(r: string): string {
+  const base = r.replace(/\s*\[[^\]]*\]\s*$/, '').trim();
+  return base.length > 40 && base.includes(' - ') ? base.split(' - ')[0].trim() : base;
+}
+
 function PalMapWeb({ name }: { name: string }) {
   const [imgOk, setImgOk] = useState(true);
   const info = pals.value[name];
@@ -28,8 +33,10 @@ function PalMapWeb({ name }: { name: string }) {
   const onMap = spots.filter((sp) => !sp.off);
   const offMap = spots.filter((sp) => sp.off);
   const regions = (info?.regions ?? []).filter((r) => REGION_SPOTS[r]);
-  const unknown = (info?.regions ?? []).filter((r) => !REGION_SPOTS[r]);
-  if (!spots.length && !regions.length && !unknown.length) return null;
+  const cleaned = (info?.regions ?? []).filter((r) => !REGION_SPOTS[r]).map(cleanRegion);
+  const beyond = [...new Set(cleaned.filter((r) => /world tree/i.test(r)))];
+  const unknown = [...new Set(cleaned.filter((r) => !/world tree/i.test(r)))];
+  if (!spots.length && !regions.length && !unknown.length && !beyond.length) return null;
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
       {imgOk && (onMap.length > 0 || regions.length > 0) && (
@@ -70,6 +77,9 @@ function PalMapWeb({ name }: { name: string }) {
       {unknown.length > 0 && (
         <div class="dim small">Also roams: {unknown.join(' · ')}</div>
       )}
+      {beyond.map((r) => (
+        <div key={`b-${r}`} class="dim small">{r} — beyond the base map</div>
+      ))}
       {offMap.map((sp, i) => (
         <div key={`o${i}`} class="dim small">
           {sp.place}{sp.lv != null ? ` (Lv ${sp.lv})` : ''} — beyond the base map

@@ -133,7 +133,6 @@ def render(size, egg_scale, opaque_bg, out):
             n = ss * ss
             a = acc[3] // n
             if a > 0:
-                r, g, b = acc[0] // n, acc[1] // n, acc[2] // n
                 # un-premultiply against the samples that actually hit
                 hits = acc[3] / 255
                 r, g, b = int(acc[0] / hits), int(acc[1] / hits), int(acc[2] / hits)

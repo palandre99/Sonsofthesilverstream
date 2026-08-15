@@ -17,14 +17,28 @@ import { pals } from '../store';
 /* eslint-disable @typescript-eslint/no-require-imports */
 const MAP = require('../../assets/map2048.jpg');
 
+/** Dataset region strings can carry level brackets and data notes — clean
+ * them before they reach the user (reviewer catch 2026-08-15). */
+function cleanRegion(r: string): string {
+  const base = r.replace(/\s*\[[^\]]*\]\s*$/, '').trim();
+  // long data notes ("X - explanation of where that is") -> just the name
+  return base.length > 40 && base.includes(' - ') ? base.split(' - ')[0].trim() : base;
+}
+
 export function PalMap({ name }: { name: string }) {
   const spots = ALPHA_SPOTS[name] ?? [];
   const onMap = spots.filter((sp) => !sp.off);
   const offMap = spots.filter((sp) => sp.off);
-  const regions = (pals[name]?.regions ?? []).filter((r) => REGION_SPOTS[r]);
-  const unknownRegions = (pals[name]?.regions ?? []).filter((r) => !REGION_SPOTS[r]);
+  const rawRegions = pals[name]?.regions ?? [];
+  const regions = rawRegions.filter((r) => REGION_SPOTS[r]);
+  const cleaned = rawRegions
+    .filter((r) => !REGION_SPOTS[r])
+    .map(cleanRegion);
+  // areas beyond the base map get the labeled-row treatment, like alphas
+  const beyond = [...new Set(cleaned.filter((r) => /world tree/i.test(r)))];
+  const unknownRegions = [...new Set(cleaned.filter((r) => !/world tree/i.test(r)))];
 
-  if (!spots.length && !regions.length && !unknownRegions.length) return null;
+  if (!spots.length && !regions.length && !unknownRegions.length && !beyond.length) return null;
 
   return (
     <View style={{ gap: 8 }}>
@@ -106,6 +120,14 @@ export function PalMap({ name }: { name: string }) {
           Also roams: {unknownRegions.join(' · ')}
         </Text>
       )}
+      {beyond.map((r) => (
+        <View key={`b-${r}`} style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+          <Icon name="star-four-points-outline" size={14} color={T.goldInk} />
+          <Text style={[s.body, { fontSize: 12.5, color: T.goldInk, flex: 1 }]}>
+            {r} — beyond the base map
+          </Text>
+        </View>
+      ))}
       {offMap.map((sp, i) => (
         <View key={`o${i}`} style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
           <Icon name="star-four-points-outline" size={14} color={T.goldInk} />

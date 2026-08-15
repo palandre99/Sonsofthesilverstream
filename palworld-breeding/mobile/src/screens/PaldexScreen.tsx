@@ -21,7 +21,7 @@ import { WORK_ICONS } from '../data/workIcons';
 import { ELEMENT_ICONS } from '../data/statIcons';
 import { Image } from 'react-native';
 
-const ELEMENTS = ['Neutral', 'Fire', 'Water', 'Grass', 'Electric', 'Ice', 'Ground', 'Dark', 'Dragon'];
+import { ELEMENTS } from '../data/elements';
 
 const Row = memo(function Row({ name, onOpen }: { name: string; onOpen: (n: string) => void }) {
   const p = pals[name];

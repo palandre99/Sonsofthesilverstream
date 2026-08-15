@@ -12,6 +12,7 @@ import {
 import { WORK_ICONS } from '../data/workIcons';
 import { PalMap } from './PalMap';
 import { STAT_ICONS } from '../data/statIcons';
+import { rarityTint } from '../data/rarity';
 import { Icon } from './Icon';
 import { ALPHA_SPOTS } from '../data/alphaSpots.g';
 
@@ -118,9 +119,16 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
           <View style={[s.wrap, { marginTop: 4 }]}>
             {p.size && <Badge kind="plain">size {p.size}</Badge>}
             {p.rarity && (
-              <Badge kind={p.rarity === 'Legendary' ? 'gold'
-                : p.rarity === 'Epic' ? 'unique'
-                : p.rarity === 'Rare' ? 'ok' : 'plain'}>{p.rarity}</Badge>
+              <View style={{
+                borderWidth: 1.5,
+                borderColor: rarityTint(p.rarity, T.line),
+                borderRadius: 7, paddingHorizontal: 7, paddingVertical: 2,
+              }}>
+                <Text style={{
+                  color: rarityTint(p.rarity, T.muted), fontSize: 10.5,
+                  fontWeight: '800', letterSpacing: 0.6, textTransform: 'uppercase',
+                }}>{p.rarity}</Text>
+              </View>
             )}
             {p.craft_speed != null && <Badge kind="plain">work speed {p.craft_speed}</Badge>}
             {p.max_wild_level != null && <Badge kind="plain">wild up to Lv {p.max_wild_level}</Badge>}
