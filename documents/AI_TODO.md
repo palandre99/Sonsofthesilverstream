@@ -215,3 +215,10 @@ loops all night INSIDE the Breeding + Paldex domain (his explicit scope).
 - [ ] Profiles: per-world stats on each card (owned count, plan progress)
       so switching feels informed — needs per-profile AsyncStorage reads
 - [ ] Calculator empty state could offer recents/preset shortcuts
+
+- [x] CEO feedback ~12:05: install link must be copyable from chat AND
+      one-click — COPY-INSTALL-LINK.cmd shipped (reads INSTALL-LINK.txt,
+      which every new build must update); clipboard mechanics verified.
+      RITUAL: whenever a new FAST build finishes, update INSTALL-LINK.txt +
+      PALFORGE-FAST-INSTALL.html + README-PHONE.md in the same commit.
+- [x] Step-tick a11y (checkbox role/state/label) shipped both channels.
