@@ -11,6 +11,7 @@ import {
 import { parseGenderNote } from '../engine/formula';
 import { onNavIntent, takeIntentPayload } from '../nav/intent';
 import { PalDetail } from '../ui/PalDetail';
+import { Icon } from '../ui/Icon';
 import type { ChildResult } from '../engine/types';
 
 function ResultFlags({ ch }: { ch: ChildResult }) {
@@ -226,13 +227,50 @@ export function CalculatorScreen() {
 
       {mode === 'pair' ? (
         <>
-          <View style={[s.row, { gap: 10 }]}>
+          <View style={[s.row, { gap: 8 }]}>
             <View style={{ flex: 1 }}>
               <Btn label={a ?? 'Parent 1…'} onPress={() => setPicking('a')} />
+              {a && (
+                <Pressable hitSlop={8} onPress={() => setA(null)}
+                  accessibilityLabel="Clear parent 1"
+                  style={{ position: 'absolute', right: -6, top: -6 }}>
+                  <View style={{
+                    width: 20, height: 20, borderRadius: 10, backgroundColor: T.surface2,
+                    borderWidth: 1, borderColor: T.line2,
+                    alignItems: 'center', justifyContent: 'center',
+                  }}>
+                    <Icon name="close" size={12} color={T.muted} />
+                  </View>
+                </Pressable>
+              )}
             </View>
-            <Text style={{ color: T.faint, fontWeight: '800' }}>+</Text>
+            {/* both picked? one tap swaps them — cheaper than re-picking when
+                you meant the other order (self-found queue item) */}
+            <Pressable hitSlop={6} disabled={!a || !b}
+              accessibilityLabel="Swap parents"
+              onPress={() => {
+                void Haptics.selectionAsync();
+                setA(b);
+                setB(a);
+              }}>
+              <Icon name={a && b ? 'swap-horizontal' : 'plus'} size={20}
+                color={a && b ? T.accentInk : T.faint} />
+            </Pressable>
             <View style={{ flex: 1 }}>
               <Btn label={b ?? 'Parent 2…'} onPress={() => setPicking('b')} />
+              {b && (
+                <Pressable hitSlop={8} onPress={() => setB(null)}
+                  accessibilityLabel="Clear parent 2"
+                  style={{ position: 'absolute', right: -6, top: -6 }}>
+                  <View style={{
+                    width: 20, height: 20, borderRadius: 10, backgroundColor: T.surface2,
+                    borderWidth: 1, borderColor: T.line2,
+                    alignItems: 'center', justifyContent: 'center',
+                  }}>
+                    <Icon name="close" size={12} color={T.muted} />
+                  </View>
+                </Pressable>
+              )}
             </View>
           </View>
           {a && b ? <PairResult a={a} b={b} /> : (
