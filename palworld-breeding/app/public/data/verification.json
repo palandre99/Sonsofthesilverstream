@@ -294,6 +294,17 @@
       "sources": [
         "game files via palworld-kb dataset (pals_1_0.json)"
       ]
+    },
+    {
+      "claim": "Condensation: +5% HP/ATK/DEF per star (max +20%), partner skill level 1-5, every existing work suitability +1 at 4 stars",
+      "verdict": "confirmed",
+      "evidence": "Cross-checked 2026-08-15 across palworld.wiki.gg Pal_Condensation, Fandom Pal Essence Condenser/Work Suitability, game8 and Nodecraft 1.0 condensation notes; all agree on the 1.0 numbers. Not yet datamined locally - wiki-verified, not game-dump-verified.",
+      "sources": [
+        "palworld.wiki.gg/wiki/Pal_Condensation",
+        "palworld.fandom.com/wiki/Pal_Essence_Condenser",
+        "game8.co/games/Palworld/archives/440237",
+        "nodecraft.com palworld 1.0 condensation article"
+      ]
     }
   ]
 }
