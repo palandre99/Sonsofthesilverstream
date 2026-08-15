@@ -377,9 +377,14 @@ quietly narrowed. Tick only when shipped AND eye-verified.*
 - [x] 2026-08-15 ~21:00 composite crews SHIPPED both platforms + OTA'd:
       Farm/Logging/Mining/All-rounders, summed work levels with per-job
       breakdown on chips (Dandilord farm 16 / all-round 28, Knocklem mine 14).
-- [ ] C4-NEXT remaining: drop-booster sub-classification (35 pals, ranch vs
-      combat), passives-on-pals research (guaranteed passive lines),
-      CEO eye-verdict on the whole Suggested Goals surface.
+- [x] 2026-08-15 ~21:20: loot boosters (15, defeated-drops + Dumud Gild
+      gold) + full ranch-producer roster sections SHIPPED both platforms.
+- [x] 2026-08-15 ~21:35: BORN-WITH PASSIVES shipped — 46 species'
+      guaranteed passives datamined into palcalcFacts; gold card section on
+      the pal card + sheet section with passive names on chips. OTA'd both.
+- [ ] C4-NEXT remaining: CEO eye-verdict on the whole Suggested Goals
+      surface; 7 saddle-less mounts to verify by hand; web deploy of the
+      goals/crews/passives round (batched — needs a main push).
 
 ### C5. CEO FEEDBACK — evening 2026-08-15 (rarity design iterations)
 - [x] "Rarity colours terrible, not even the card coloured" → v2 dyed rows
