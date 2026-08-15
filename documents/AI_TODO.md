@@ -442,16 +442,22 @@ quietly narrowed. Tick only when shipped AND eye-verified.*
 perfected… perfection 10/10 masterpiece triple-AAA quality." Every item
 below ships on BOTH platforms.*
 
-- [ ] E1 (BUG) Pals added from a Suggested Goals section can't be un-added/
-      unticked. → Phase 1: staged targets move into the store
-      (draftTargets), +/− toggle on every chip, Remove-N bulk buttons.
+- [x] E1 SHIPPED 2026-08-15 ~22:20 (62df595, OTA'd both channels): goal
+      list lives in the store/signal now; − on every added chip, bulk
+      Remove-N, per-pal add/remove on Best-pals rows, list survives tab
+      switches (regression-tested, 80/80). Eye-walked on the QA instance:
+      add → un-add → remount → chip-row remove all behave.
 - [ ] E2 No way back: Paldex → pal card → calc/plan strands you; the Paldex
       returns blank (search/filters/sort/scroll/open card all lost). →
-      Phase 2: paldexSession cache + origin-stamped intents + "Back to
-      {pal} in the Paldex" chip + Android hardware back.
-- [ ] E3 Player-level setting on the world save "is not possible" — add it.
-      → Phase 3: optional playerLevel per save profile, edited on the
-      Profiles screen; suggestions use it instead of the wild-level proxy.
+      paldexSession cache + origin-stamped intents + "Back to {pal} in the
+      Paldex" chip + Android hardware back. DEFERRED ~22:25 by CEO
+      directive: "we work in one tab at a time" — the PLAN tab only until
+      he confirms it. Resume this the moment the Plan tab is signed off.
+- [x] E3 SHIPPED 2026-08-15 ~22:35 (c73cc1f, OTA'd both): playerLevel on
+      each save profile — editable on the Profiles screen AND via the
+      "Tuned to…" line at the top of Suggested goals. Set = hard cutoff
+      (eye-verified: level 12 cut catch suggestions 57→31, max CATCH LV
+      12); unset = the box proxy as before. Web parity (localStorage).
 - [ ] E4 Engine "not smart enough… must be dynamic and adapting to the
       world save / paldex / player level". → Phase 4: shared scored
       recommendation brain (src/logic/recommend.ts, parity-gated).
@@ -483,3 +489,12 @@ below ships on BOTH platforms.*
 - [ ] E12 Docs first: plan/progress/todo updated before building (this
       entry + 02_PROGRESS note = done at intake), then continuous work —
       the loop never idles.
+- [ ] E13 CEO DIRECTIVE ~22:25 (verbatim intake): "ONLY WHEN U THINK THE
+      BREED fane called PLAN tab is perfected is when u stop. then i will
+      test it properly. we work in one tab at a time... u should never
+      really be done improving this tab — design, quality of life, polish,
+      down to the smallest detail, smarter engines. im guessing u have
+      hundreds of hrs before i actually confirm the tab." → The PLAN tab
+      is the ONLY lane until his sign-off: E1 ✓, E3–E11 in order, then
+      endless polish passes (deep-eval with the previewer, micro-QoL,
+      smarter engine iterations). E2 and all other tabs wait.
