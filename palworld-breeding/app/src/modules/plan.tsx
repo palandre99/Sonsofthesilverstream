@@ -4,7 +4,7 @@
  * so they count as both — that's what the keep-both-genders warnings are for).
  * Planning runs in a Web Worker; targets, results and check-offs persist. */
 import { useEffect, useMemo, useState } from 'preact/hooks';
-import { box, engine, hasGender, nav, ownedAny, selfOnly, setOwnedGender, storage } from '../state';
+import { box, hasGender, nav, ownedAny, selfOnly, setOwnedGender, storage } from '../state';
 import { GenderToggles, LockBadge, PalIcon, PalPicker, WorkChips } from '../components/shared';
 import { stepId } from '../engine/planner';
 import { parseGenderNote } from '../engine/formula';
