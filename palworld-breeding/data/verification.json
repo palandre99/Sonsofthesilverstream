@@ -1,5 +1,5 @@
 {
- "checked": "2026-08-14",
+ "checked": "2026-08-15",
  "claims": [
   {
    "claim": "Species formula: the child is the species with CombiRank closest to ⌊(rankA+rankB+1)/2⌋",
@@ -269,6 +269,53 @@
    "evidence": "All ten effects quoted near-verbatim from partner_effect in pals_1_0.json (beliarance/palworld-kb dump of the game files, 2026-07-20 extraction, revalidated against patch 1.0.3 notes). Registry: engine/helpers.ts, recorded 2026-08-15.",
    "sources": [
     "pals_1_0.json partner_effect (game dump via palworld-kb)"
+   ]
+  },
+  {
+   "claim": "Map projection: world coordinates are placed on the game's map texture with the game's own DT_WorldMapUIData bounds (Palpagos X -1099400..349400, Y -724400..724400; World Tree X 347351.5..689148.5, Y -818197..-476400), NOT palcalc's WorldToImageMatrix",
+   "verdict": "confirmed",
+   "evidence": "tools/verify_map_projection.py, reproducible. (1) Both regions are EXACTLY square (1,448,800 and 341,797 uu) matching square textures and mapping to [0,1] exactly, while palcalc's fitted matrix implies a region 8,711 uu out of square. (2) It wins a land-fit test over 58,504 datamined non-Water spawn points (86.86% vs 86.85%). (3) Residual bounded at 6 px of 4096 = 1.5 px at display size. (4) Cross-checked on a SECOND upstream's land-locked layers: 96.1% of fast-travel statues, 98.1% of dungeons and 100% of merchants land within 6 px of land. (5) All 79,714 points from both upstreams project inside [0,1] with zero exceptions.",
+   "sources": [
+    "Awy64/palworld-atlas-data build 24575149 (official dedicated-server package, 2026-08-12)",
+    "Nifrendil/pal-atlas src/lib/coords.ts (DT_WorldMapUIData via palworld-save-pal)",
+    "tools/verify_map_projection.py"
+   ]
+  },
+  {
+   "claim": "Map spawn data: 68,617 wild spawn points across 250 species, each with a level band and whether that band is night-only",
+   "verdict": "confirmed",
+   "evidence": "Extracted from DT_PalSpawnerPlacement + DT_PalWildSpawner via Awy64/palworld-atlas-data build 24575149 (a CI runner that downloads the OFFICIAL anonymous Palworld dedicated-server package, schema-validates and publishes; never commits game assets). Count matches its manifest exactly. 272 of 273 upstream pal names match our 299-pal Paldex verbatim. Guarded by app/tests/map.test.ts (114-test suite).",
+   "sources": [
+    "Awy64/palworld-atlas-data published/v1/builds/24575149/maps/*/spawns.json",
+    "manifest.json counts.wildSpawns = 68617"
+   ]
+  },
+  {
+   "claim": "The in-game map coordinate READOUT is translX 123930, translY 157935, scale 458.52 — so the numbers the app shows match the numbers on the player's screen",
+   "verdict": "confirmed",
+   "evidence": "Three independent projects agree: palcalc's WorldToMapMatrix, pal-atlas's GAME_READOUT, and palworld-atlas-data's own mapX/mapY column. Worked example locked in a unit test: alpha Anubis at world (-167230, 96430) -> readout (-134, -94) under all three.",
+   "sources": [
+    "palcalc GameConstants",
+    "Nifrendil/pal-atlas src/lib/coords.ts",
+    "palworld-atlas-data spawns.json mapX/mapY"
+   ]
+  },
+  {
+   "claim": "NOT datamined truth: 115 Pengullet spawn rows carry LvMin 35 > LvMax 34 in the game's own spawner table; we re-order the pair so the UI reads 'Lv 34-35'",
+   "verdict": "upstream defect, normalised",
+   "evidence": "Found by app/tests/map.test.ts asserting ordered level bands, traced to the source rows in palworld-atlas-data build 24575149. tools/extract_map_data.py swaps the pair and prints the count on every run, so the correction is never silent.",
+   "sources": [
+    "Awy64/palworld-atlas-data palpagos spawns.json (Pengullet rows)"
+   ]
+  },
+  {
+   "claim": "NOT the game's English name: palworld-atlas-data calls ElecSnail_Ground 'Snock Terra' (synthesised from the id suffix). The 1.0 game name is 'Snock Lux'",
+   "verdict": "upstream defect, overridden",
+   "evidence": "paldb.cc, game8 and the Palworld wiki all give 'Snock Lux' for the Electric/Ground World Tree variant, despite the suffix convention implying Terra. tools/extract_map_data.py maps it by palId through PAL_ID_OVERRIDES rather than trusting the upstream display name.",
+   "sources": [
+    "paldb.cc/en/Snock_Lux",
+    "game8.co Snock Lux",
+    "palworld.fandom.com"
    ]
   }
  ]

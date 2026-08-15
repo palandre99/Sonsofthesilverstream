@@ -179,6 +179,77 @@ Add everything you find; finding nothing means you didn't look.*
   publish ritual — it would ship their unfinished Plan work to the CEO).
 
 
+## F. CEO DIRECTIVE ~22:45 2026-08-15 — THE MAP FANE (second worker)
+## (verbatim intake: "the map needs to look exactly like the map when i open
+## the map in game, interactable, zoomable, amazing filter quality etc… the
+## info and data must be spot on accurate, No ROOM FOR ERROR on locations…
+## research competitors… u must expand massively… masterpiece perfection only")
+
+*Plan of record: .claude plan "MAP FANE". The Breeding lane is another
+session's; this worker touches only the map area (see AREA LOCKS).*
+
+### Shipped 2026-08-15 ~23:20 (gates green: 114 vitest, mobile tsc 0)
+- [x] F1 THE MAP FANE EXISTS. `map` is no longer a coming-soon screen — it is
+      a real fullscreen domain (CEO-final architecture kept: no bottom tabs,
+      filters inside the map). `screens/MapScreen.tsx` + `src/map/`.
+- [x] F2 The asset complaint diagnosed properly: `map2048.jpg` was ALREADY the
+      game's own `T_WorldMap` texture — but the native texture is 8192² and we
+      shipped a 2048² downscale rendered at ~300 px. Now a bundled z0–z3 tile
+      pyramid at 4096 (134 WebP tiles, 2.75 MB, ocean tiles skipped), both
+      Palpagos AND the World Tree. Offline, so it works on 5G in the field.
+- [x] F3 Real spawn areas replace the fake ones. `regionSpots.g.ts` held ONE
+      dot per named region (76 labels) — a label, not a location. Now 68,617
+      datamined spawn points across 250 species, each with its level band and
+      whether it is night-only.
+- [x] F4 23 POI layers, 11,097 markers: statues, towers, dungeons, sealed
+      realms, merchants, NPCs, alphas, bounties, eggs, chests, effigies, skill
+      fruit, notes, ore, paldium, coal, sulfur, quartz, soralite, oil, berries,
+      mushrooms. Each with its OWN colour (a tower must never read as a statue).
+- [x] F5 60fps engine with no new native module — gesture-handler + reanimated
+      + expo-image only, so the whole fane ships OTA with no reinstall. Pan and
+      pinch never touch the JS thread; React re-renders only when the visible
+      tile window changes; markers are viewport-culled and clustered so the
+      mounted view count is bounded whatever is switched on.
+- [x] F6 PROJECTION PROVED, not assumed. Found two candidate transforms
+      disagreeing by ~20 px at 4096. Settled on the game's own
+      DT_WorldMapUIData in `tools/verify_map_projection.py`: both regions are
+      exactly square, it wins a 58,504-point land-fit test, residual bounded at
+      6 px of 4096 (1.5 px at display size), and cross-checked on a second
+      upstream (96–100% of land-locked POIs within 6 px of land). All 79,714
+      points project inside bounds with zero exceptions. 5 claims recorded in
+      verification.json (now 36).
+- [x] F7 Two upstream data defects found by cross-checking and handled openly:
+      115 Pengullet rows have LvMin > LvMax in the GAME's files (re-ordered,
+      counted on every extractor run); "Snock Terra" is a synthesised name —
+      the 1.0 game name is "Snock Lux" (overridden by palId).
+- [x] F8 `app/tests/map.test.ts` — 22 tests guarding the accuracy claims:
+      every point inside bounds, every species known to the Paldex, layer
+      counts, the readout worked example, clustering conserves points, and a
+      byte-parity gate over the three shared map modules.
+- [x] F9 `scripts/qa-shot.js` — CDP visual-QA driver. The RN-web QA build had
+      no way to reach a screen or press a button from outside, so "look at it
+      with your own eyes" was not actually possible for a second worker. Now
+      it is: `node scripts/qa-shot.js <out> "#map" tap:… type:… shot:…`.
+      Paired with a `#domain/tab` hash route on the web build.
+
+### Open — the map lane's own queue
+- [ ] F10 WEB PARITY: the shared math + data are already in `app/src/map/` and
+      `app/src/data/` (byte-parity gated), but the website has no map UI yet.
+- [ ] F11 Rebuild `ui/PalMap.tsx` + `ui/MapViewer.tsx` on the new engine and
+      DELETE the region-label dots — this closes the CEO's ~12:25 "MAP
+      OVERHAUL" item and the "Where to find it must be a real MAP" item.
+      Tap a pal card's map -> opens the Map fane with that species preselected.
+- [ ] F12 Marker detail: tapping a pin should open a card (which pal, what
+      level, day/night, distance) rather than only showing the coordinate.
+- [ ] F13 Found/not-found tracking per marker, persisted per save profile —
+      every competitor has it; ours should key off the box where it can.
+- [ ] F14 In-game feel: region name labels on the map, and a legend.
+- [ ] F15 Fishing spots + hackable towers are in the CEO's scope list but are
+      NOT in either upstream's layer set — research whether the tables exist
+      before promising them.
+- [ ] F16 On-device pass: tile memory and pinch feel on the CEO's iPhone.
+- [ ] F17 Reference tab: credit both upstreams (MIT) + the texture's origin.
+
 ## CEO FEEDBACK LEDGER — night of 2026-08-15 (NOTHING here may be forgotten)
 
 CEO mandate: every piece of feedback lands here the moment it arrives; tick it

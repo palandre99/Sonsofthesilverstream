@@ -1,7 +1,54 @@
 # PROGRESS — audited state, no invented percentages
 
-*Updated 2026-08-15 ~22:00. Update this file whenever a work block lands;
+*Updated 2026-08-15 ~23:25. Update this file whenever a work block lands;
 date every entry.*
+
+## 2026-08-15 ~23:25 — THE MAP FANE IS REAL (second worker, map lane)
+
+The Map domain stopped being a coming-soon screen. It is now a fullscreen,
+pannable, pinchable map built on the game's own map texture, with 23 layers of
+points of interest and every species' real spawn area.
+
+**What the CEO gets:** the whole world at 4× the resolution we had, statues /
+towers / dungeons / chests / ore / eggs / alphas each in their own colour,
+and a pal search that can be narrowed to *only the pals he is missing*. Level
+band and day/night come with every species. It ships **over the air** — no new
+native module, so no reinstall.
+
+**The numbers, all checked:** 68,617 wild spawn points across 250 species and
+11,097 points of interest, from `Awy64/palworld-atlas-data` build `24575149`
+(a CI runner that extracts the OFFICIAL dedicated-server package — and is
+*newer* than our kb/palcalc clones, being past the Aug-12 1.0.3 patch) plus
+`Nifrendil/pal-atlas` POI layers. Both MIT.
+
+**The projection was a real trap, and it was proved rather than assumed.** Two
+candidate world→image transforms disagreed by up to ~20 px at 4096 — the
+difference between a pin on a beach and a pin in the sea. `tools/
+verify_map_projection.py` settles it on the game's own `DT_WorldMapUIData`:
+both world regions are *exactly* square (matching square textures) where
+palcalc's fitted matrix is 8,711 uu out of square; it wins a 58,504-point
+land-fit test; the residual is bounded at 6 px of 4096 (1.5 px at display
+size); and a second upstream's land-locked layers land 96–100% within 6 px of
+land. All 79,714 points project inside bounds with zero exceptions.
+
+**Two upstream defects found by cross-checking**, both handled in the open:
+115 Pengullet rows carry `LvMin 35 > LvMax 34` in the *game's own* spawner
+table (re-ordered, and counted on every extractor run), and "Snock Terra" is a
+name synthesised from an id suffix — the 1.0 game name is "Snock Lux".
+
+Also shipped: `scripts/qa-shot.js`, a CDP visual-QA driver, plus a
+`#domain/tab` hash route on the web build. The standing order is to look at
+every change with your own eyes, and until now the RN-web QA build had no way
+to reach a screen or press a button from outside.
+
+Gates at this block: **114 vitest** (22 new map tests incl. a byte-parity gate
+over the three shared map modules) and mobile `tsc --noEmit` clean. QA server
+stopped. **Not yet published** — the Breeding session has uncommitted work in
+the tree, and `eas update` bundles whatever is on disk.
+
+Still open in the map lane (ledgered as F10–F17): web map UI, rebuilding the
+pal-card map on this engine, marker detail cards, found-tracking, region
+labels, and an on-device pass.
 
 ## 2026-08-15 ~22:00 — CEO feedback round intake: breeding fane perfection
 

@@ -256,66 +256,6 @@
    "evidence": "paldb.cc/en/Mutation lists all five with inheritability; cross-checked against beliarance/palworld-kb passives dataset (mutation_exclusive flags)."
   },
   {
-   "claim": "Braloha's partner skill raises Breeding Farm egg production speed by 20-50%",
-   "verdict": "confirmed",
-   "evidence": "Game dump partner_effect for Braloha ('Balmy Weather'): 'While in your base, increases the egg production speed of Pals assigned to Breeding Farm by 20~50%. (Does not stack)'. Read directly from pals_1_0.json 2026-08-15.",
-   "sources": [
-    "game files via palworld-kb dataset (pals_1_0.json)"
-   ]
-  },
-  {
-   "claim": "Dynamoff's partner skill shortens egg incubation time by 20-40%",
-   "verdict": "confirmed",
-   "evidence": "Game dump partner_effect for Dynamoff ('Electro-Massage Incubation'): 'While at a base, shortens the time it takes to incubate eggs by 20~40%. (Does not stack)'.",
-   "sources": [
-    "game files via palworld-kb dataset (pals_1_0.json)"
-   ]
-  },
-  {
-   "claim": "Grintale gives a 50-75% chance of an extra egg when picking one up",
-   "verdict": "confirmed",
-   "evidence": "Game dump partner_effect for Grintale (\"Glaring Cat's Eye\"): 'While in party, picking up a Pal Egg has a 50~75% chance of receiving one extra. (Does not stack)'. CEO's community claim verified against game data 2026-08-15.",
-   "sources": [
-    "game files via palworld-kb dataset (pals_1_0.json)"
-   ]
-  },
-  {
-   "claim": "Broncherry and Broncherry Aqua make picked-up eggs become Alpha Pal Eggs (35-45% / 45-55%)",
-   "verdict": "confirmed",
-   "evidence": "Game dump partner_effects: Broncherry \"Love's First Blossom\" 35~45%, Broncherry Aqua \"Purity's Full Bloom\" 45~55% chance for picked-up Pal Eggs to become Alpha Pal Eggs (do not stack). These are the CEO's 'two dinosaurs'.",
-   "sources": [
-    "game files via palworld-kb dataset (pals_1_0.json)"
-   ]
-  },
-  {
-   "claim": "Cake ingredients come from Ranch pals: Chikipi (Egg), Mozzarina (Milk), Beegarde (Honey), Caprity (Red Berries)",
-   "verdict": "confirmed",
-   "evidence": "ranch_produce fields in the game dump list exactly these products for these pals; they are the only Ranch sources of the four farmable cake ingredients.",
-   "sources": [
-    "game files via palworld-kb dataset (pals_1_0.json)"
-   ]
-  },
-  {
-   "claim": "Condensation: +5% HP/ATK/DEF per star (max +20%), partner skill level 1-5, every existing work suitability +1 at 4 stars",
-   "verdict": "confirmed",
-   "evidence": "Cross-checked 2026-08-15 across palworld.wiki.gg Pal_Condensation, Fandom Pal Essence Condenser/Work Suitability, game8 and Nodecraft 1.0 condensation notes; all agree on the 1.0 numbers. Not yet datamined locally - wiki-verified, not game-dump-verified. Display note: the app rounds boosted stats to the nearest whole number; whether the game floors or rounds its own display is unverified, so a 1-point display difference is possible.",
-   "sources": [
-    "palworld.wiki.gg/wiki/Pal_Condensation",
-    "palworld.fandom.com/wiki/Pal_Essence_Condenser",
-    "game8.co/games/Palworld/archives/440237",
-    "nodecraft.com palworld 1.0 condensation article"
-   ]
-  },
-  {
-   "claim": "Per-pal About texts are the game's own Paldex descriptions",
-   "verdict": "confirmed",
-   "evidence": "272/299 fetched from palworld.wiki.gg Palpedia templates (the wiki mirrors the in-game Paldex text). Honesty note: the first fetch shipped 3 entries with wiki markup (nested-template truncation) — caught by adversarial review 2026-08-15 same day; the fetcher now does balanced-brace extraction, strips comments/nowiki/inline templates, and REJECTS any text still containing markup. 27 pals have no clean wiki text (25 variant pages absent, 2 placeholder-only) — they show no About bubble rather than junk. Re-run the fetchers weekly.",
-   "sources": [
-    "palworld.wiki.gg per-pal pages (Palpedia template)",
-    "tools/fetch_paldex_text.py"
-   ]
-  },
-  {
    "claim": "Ribbuny Botan partner_effect completed: kb dump truncates after 'Weapon Assembly Line, or'; full sentence ends 'or other related facilities.'",
    "verdict": "confirmed",
    "evidence": "kb extraction truncated mid-sentence; full text fetched from paldb.cc/en/Ribbuny_Botan 2026-08-15 and patched into both dataset copies.",
@@ -329,6 +269,53 @@
    "evidence": "All ten effects quoted near-verbatim from partner_effect in pals_1_0.json (beliarance/palworld-kb dump of the game files, 2026-07-20 extraction, revalidated against patch 1.0.3 notes). Registry: engine/helpers.ts, recorded 2026-08-15.",
    "sources": [
     "pals_1_0.json partner_effect (game dump via palworld-kb)"
+   ]
+  },
+  {
+   "claim": "Map projection: world coordinates are placed on the game's map texture with the game's own DT_WorldMapUIData bounds (Palpagos X -1099400..349400, Y -724400..724400; World Tree X 347351.5..689148.5, Y -818197..-476400), NOT palcalc's WorldToImageMatrix",
+   "verdict": "confirmed",
+   "evidence": "tools/verify_map_projection.py, reproducible. (1) Both regions are EXACTLY square (1,448,800 and 341,797 uu) matching square textures and mapping to [0,1] exactly, while palcalc's fitted matrix implies a region 8,711 uu out of square. (2) It wins a land-fit test over 58,504 datamined non-Water spawn points (86.86% vs 86.85%). (3) Residual bounded at 6 px of 4096 = 1.5 px at display size. (4) Cross-checked on a SECOND upstream's land-locked layers: 96.1% of fast-travel statues, 98.1% of dungeons and 100% of merchants land within 6 px of land. (5) All 79,714 points from both upstreams project inside [0,1] with zero exceptions.",
+   "sources": [
+    "Awy64/palworld-atlas-data build 24575149 (official dedicated-server package, 2026-08-12)",
+    "Nifrendil/pal-atlas src/lib/coords.ts (DT_WorldMapUIData via palworld-save-pal)",
+    "tools/verify_map_projection.py"
+   ]
+  },
+  {
+   "claim": "Map spawn data: 68,617 wild spawn points across 250 species, each with a level band and whether that band is night-only",
+   "verdict": "confirmed",
+   "evidence": "Extracted from DT_PalSpawnerPlacement + DT_PalWildSpawner via Awy64/palworld-atlas-data build 24575149 (a CI runner that downloads the OFFICIAL anonymous Palworld dedicated-server package, schema-validates and publishes; never commits game assets). Count matches its manifest exactly. 272 of 273 upstream pal names match our 299-pal Paldex verbatim. Guarded by app/tests/map.test.ts (114-test suite).",
+   "sources": [
+    "Awy64/palworld-atlas-data published/v1/builds/24575149/maps/*/spawns.json",
+    "manifest.json counts.wildSpawns = 68617"
+   ]
+  },
+  {
+   "claim": "The in-game map coordinate READOUT is translX 123930, translY 157935, scale 458.52 — so the numbers the app shows match the numbers on the player's screen",
+   "verdict": "confirmed",
+   "evidence": "Three independent projects agree: palcalc's WorldToMapMatrix, pal-atlas's GAME_READOUT, and palworld-atlas-data's own mapX/mapY column. Worked example locked in a unit test: alpha Anubis at world (-167230, 96430) -> readout (-134, -94) under all three.",
+   "sources": [
+    "palcalc GameConstants",
+    "Nifrendil/pal-atlas src/lib/coords.ts",
+    "palworld-atlas-data spawns.json mapX/mapY"
+   ]
+  },
+  {
+   "claim": "NOT datamined truth: 115 Pengullet spawn rows carry LvMin 35 > LvMax 34 in the game's own spawner table; we re-order the pair so the UI reads 'Lv 34-35'",
+   "verdict": "upstream defect, normalised",
+   "evidence": "Found by app/tests/map.test.ts asserting ordered level bands, traced to the source rows in palworld-atlas-data build 24575149. tools/extract_map_data.py swaps the pair and prints the count on every run, so the correction is never silent.",
+   "sources": [
+    "Awy64/palworld-atlas-data palpagos spawns.json (Pengullet rows)"
+   ]
+  },
+  {
+   "claim": "NOT the game's English name: palworld-atlas-data calls ElecSnail_Ground 'Snock Terra' (synthesised from the id suffix). The 1.0 game name is 'Snock Lux'",
+   "verdict": "upstream defect, overridden",
+   "evidence": "paldb.cc, game8 and the Palworld wiki all give 'Snock Lux' for the Electric/Ground World Tree variant, despite the suffix convention implying Terra. tools/extract_map_data.py maps it by palId through PAL_ID_OVERRIDES rather than trusting the upstream display name.",
+   "sources": [
+    "paldb.cc/en/Snock_Lux",
+    "game8.co Snock Lux",
+    "palworld.fandom.com"
    ]
   }
  ]

@@ -2,7 +2,7 @@
  * side panel = main domains; bottom bar = the current domain's tabs with the
  * Paldex anchored in the center slot everywhere; coming-soon sections are
  * real screens so the finished app's shape is visible today. */
-import React, { Component, useEffect, useRef, useState, type ReactNode } from 'react';
+import React, { Component, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import {
   ActivityIndicator, PanResponder, Pressable, StatusBar, StyleSheet, Text, View,
 } from 'react-native';
@@ -21,6 +21,7 @@ import { OddsScreen } from './screens/OddsScreen';
 import { PaldexScreen } from './screens/PaldexScreen';
 import { ReferenceScreen } from './screens/ReferenceScreen';
 import { ComingSoonScreen } from './screens/ComingSoonScreen';
+import { MapScreen } from './screens/MapScreen';
 import { AboutScreen, ProfilesScreen } from './screens/SettingsScreens';
 
 class Boundary extends Component<{ children: ReactNode }, { err: Error | null }> {
@@ -57,6 +58,7 @@ class Boundary extends Component<{ children: ReactNode }, { err: Error | null }>
 }
 
 const LIVE_SCREENS: Record<string, () => React.JSX.Element> = {
+  map: MapScreen,   // fullscreen domain: keyed by domain id, not a tab id
   calc: CalculatorScreen,
   plan: PlannerScreen,
   paldex: PaldexScreen,
@@ -95,11 +97,25 @@ function UpdateBanner() {
   );
 }
 
+/** On the web QA build, `#map` or `#breeding/plan` opens straight to a screen.
+ *  Native has no location, so this is a no-op there. Standing order is to look
+ *  at every change with our own eyes — that needs a way to reach the screen. */
+function initialRoute(): { domain: string; tab: string } {
+  const fallback = { domain: 'breeding', tab: 'calc' };
+  const hash = typeof window !== 'undefined' ? window.location?.hash ?? '' : '';
+  const [domain, tab] = hash.replace(/^#\/?/, '').split('/');
+  const found = DOMAINS.find((d) => d.id === domain);
+  if (!found) return fallback;
+  const wanted = found.tabs.find((t) => t.id === tab);
+  return { domain: found.id, tab: wanted?.id ?? found.tabs[0]?.id ?? '' };
+}
+
 function Shell() {
   useAppVersion();
   const insets = useSafeAreaInsets();
-  const [domainId, setDomainId] = useState('breeding');
-  const [tabId, setTabId] = useState('calc');
+  const start = useMemo(initialRoute, []);
+  const [domainId, setDomainId] = useState(start.domain);
+  const [tabId, setTabId] = useState(start.tab);
   const [panel, setPanel] = useState(false);
   const [ready, setReady] = useState(false);
 
@@ -139,7 +155,8 @@ function Shell() {
   // a domain with no tabs is FULLSCREEN (the Map): no bottom bar at all
   const fullscreen = domain.tabs.length === 0;
   const tab = fullscreen ? null : (domain.tabs.find((t) => t.id === tabId) ?? domain.tabs[2]);
-  const Live = tab ? LIVE_SCREENS[tab.id] : undefined;
+  // fullscreen domains own the whole area, so they register under the DOMAIN id
+  const Live = fullscreen ? LIVE_SCREENS[domain.id] : (tab ? LIVE_SCREENS[tab.id] : undefined);
 
   const selectDomain = (id: string) => {
     const d = DOMAINS.find((x) => x.id === id)!;

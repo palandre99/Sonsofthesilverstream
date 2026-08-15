@@ -54,23 +54,9 @@ export const DOMAINS: DomainDef[] = [
     id: 'map',
     title: 'Map',
     icon: 'map-outline',
-    soon: true,
     blurb: 'The whole world on one fullscreen map — every layer of the game, '
       + 'toggled by filters inside the map itself. No tabs down here; the map '
       + 'IS the screen.',
-    planned: [
-      'Pal spawn areas (day & night), tied to your missing pals',
-      'Alpha & legendary boss pins with levels',
-      'Egg locations by size',
-      'Ore, coal, sulfur, quartz and other material nodes',
-      'Fishing spots',
-      'Hackable towers & consoles',
-      'Dungeons and caves with level ranges',
-      'Fast-travel statues & waypoints',
-      'Supply drops, oil rig, meteorites',
-      'Merchants, villages and chest routes',
-      'Layer filters in a floating control — like the best map apps',
-    ],
     tabs: [],
   },
   {

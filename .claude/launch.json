@@ -13,6 +13,13 @@
       "runtimeArgs": ["/c", "cd", "palworld-breeding\\mobile", "&&", "npx", "expo", "start", "--web", "--port", "8085"],
       "port": 8085,
       "autoPort": false
+    },
+    {
+      "name": "palforge-mobile-qa-b",
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": ["/c", "cd", "palworld-breeding\\mobile", "&&", "npx", "expo", "start", "--web", "--port", "8086"],
+      "port": 8086,
+      "autoPort": false
     }
   ]
 }
