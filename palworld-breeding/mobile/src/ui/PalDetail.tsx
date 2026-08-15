@@ -13,6 +13,7 @@ import { WORK_ICONS } from '../data/workIcons';
 import { PalMap } from './PalMap';
 import { STAT_ICONS } from '../data/statIcons';
 import { rarityTint } from '../data/rarity';
+import { ABOUT } from '../data/about';
 import { Icon } from './Icon';
 import { ALPHA_SPOTS } from '../data/alphaSpots.g';
 
@@ -37,7 +38,11 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
   // condensation preview: +5% HP/ATK/DEF per star, partner skill level 1-5,
   // every existing work suitability +1 at 4 stars (1.0, wiki-verified)
   const [stars, setStars] = useState(0);
-  useEffect(() => setStars(0), [name]);
+  const [aboutOpen, setAboutOpen] = useState(false);
+  useEffect(() => {
+    setStars(0);
+    setAboutOpen(false);
+  }, [name]);
   const p = pals[name];
   if (!p) return null;
   const boost = (v: number | null) => (v == null ? v : Math.round(v * (1 + 0.05 * stars)));
@@ -65,7 +70,31 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
           <Btn label="✕" onPress={onClose} small />
         </View>
 
-        <Card style={{ marginTop: 14, flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+        {ABOUT[name] && (
+          <Pressable onPress={() => setAboutOpen(!aboutOpen)} style={({ pressed }) => [{
+            marginTop: 14, backgroundColor: T.surface, borderWidth: 1,
+            borderColor: pressed ? T.accent : T.line, borderRadius: 14,
+            padding: 12, gap: 4,
+          }]}>
+            <View style={[s.row, { gap: 6 }]}>
+              <Icon name="book-open-variant" size={14} color={T.accentInk} />
+              <Text style={{
+                color: T.faint, fontSize: 10, fontWeight: '800', letterSpacing: 1.2,
+              }}>ABOUT {name.toUpperCase()}</Text>
+            </View>
+            <Text style={[s.body, { fontStyle: 'italic' }]}
+              numberOfLines={aboutOpen ? undefined : 2}>
+              {ABOUT[name]}
+            </Text>
+            {!aboutOpen && (
+              <Text style={{ color: T.accentInk, fontSize: 11, fontWeight: '700' }}>
+                tap to read more
+              </Text>
+            )}
+          </Pressable>
+        )}
+
+        <Card style={{ marginTop: 10, flexDirection: 'row', alignItems: 'center', gap: 10 }}>
           <Text style={{ color: T.ink, fontWeight: '700', flex: 1 }}>In my box</Text>
           <GenderToggles name={name} />
         </Card>

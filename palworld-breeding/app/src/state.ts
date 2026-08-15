@@ -141,6 +141,8 @@ export const pairReadyCount = computed(
 );
 
 export const verification = signal<{ claim: string; verdict: string; evidence: string }[]>([]);
+/** the game's own Paldex text (tools/fetch_paldex_text.py) */
+export const aboutText = signal<Record<string, string>>({});
 
 export async function loadData(): Promise<void> {
   const emb = (window as unknown as { __HATCHLAB_EMBED?: {
@@ -164,6 +166,12 @@ export async function loadData(): Promise<void> {
   breedingRaw.value = breeding;
   selfOnly.value = new Set(breeding.self_breed_only);
   pals.value = palsJson.pals;
+  // non-blocking: the About texts are decoration, never gate the app
+  void fetch('data/about_1_0.json').then((r) => r.json())
+    .then((a) => {
+      aboutText.value = (a as { about?: Record<string, string> })?.about ?? {};
+    })
+    .catch(() => undefined);
   iconFiles.value = icons.files;
   try {
     // Object.hasOwn (not `in`): a saved key like "constructor" must not pass

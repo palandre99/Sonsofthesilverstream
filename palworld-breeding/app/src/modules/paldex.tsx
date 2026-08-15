@@ -12,6 +12,7 @@ import {
   type OwnedGenders,
 } from '../state';
 import { closure } from '../engine/planner';
+import { aboutText } from '../state';
 import { ALPHA_SPOTS } from '../data/alphaSpots.g';
 import { REGION_SPOTS } from '../data/regionSpots.g';
 import { rarityTint } from '../data/rarity';
@@ -290,6 +291,21 @@ function Drawer({ name, onClose }: { name: string; onClose: () => void }) {
             </div>
           </div>
         </header>
+
+        {aboutText.value[name] && (
+          <details style={{
+            background: 'var(--surface)', border: '1px solid var(--line)',
+            borderRadius: '12px', padding: '10px 12px', margin: '10px 0 0',
+          }}>
+            <summary style={{ cursor: 'pointer', fontSize: '11px', fontWeight: 800,
+              letterSpacing: '1px', color: 'var(--faint)' }}>
+              ABOUT {name.toUpperCase()}
+            </summary>
+            <p style={{ fontStyle: 'italic', fontSize: '13px', margin: '6px 0 0' }}>
+              {aboutText.value[name]}
+            </p>
+          </details>
+        )}
 
         <div class="ownrow">
           <PalIcon name={name} size={28} />

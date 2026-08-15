@@ -305,6 +305,15 @@
         "game8.co/games/Palworld/archives/440237",
         "nodecraft.com palworld 1.0 condensation article"
       ]
+    },
+    {
+      "claim": "Per-pal About texts are the game's own Paldex descriptions",
+      "verdict": "confirmed",
+      "evidence": "Fetched 274/299 from palworld.wiki.gg Palpedia templates (the wiki mirrors the in-game Paldex text verbatim); wiki markup stripped, nothing paraphrased. 25 variant pages pending a second name-mapping pass — those pals simply show no About bubble until then.",
+      "sources": [
+        "palworld.wiki.gg per-pal pages (Palpedia template)",
+        "tools/fetch_paldex_text.py"
+      ]
     }
   ]
 }
