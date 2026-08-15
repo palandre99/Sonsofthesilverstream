@@ -1,7 +1,8 @@
 /** The pal info card — stats, work, partner skill, every breeding recipe.
  * Shared: opened from the Paldex grid AND from any pal icon in the Plan. */
-import React from 'react';
-import { Modal, ScrollView, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Modal, Pressable, ScrollView, Text, View } from 'react-native';
+import * as Haptics from 'expo-haptics';
 import { T } from '../theme';
 import { Badge, Btn, Card, ElementChips, GenderToggles, PalIcon, s } from './kit';
 import { Image } from 'react-native';
@@ -11,6 +12,7 @@ import {
 import { WORK_ICONS } from '../data/workIcons';
 import { PalMap } from './PalMap';
 import { STAT_ICONS } from '../data/statIcons';
+import { Icon } from './Icon';
 import { ALPHA_SPOTS } from '../data/alphaSpots.g';
 
 function StatBar({ label, icon, v }: { label: string; icon?: number; v: number | null }) {
@@ -31,8 +33,13 @@ function StatBar({ label, icon, v }: { label: string; icon?: number; v: number |
 
 export function PalDetail({ name, onClose }: { name: string; onClose: () => void }) {
   useAppVersion();
+  // condensation preview: +5% HP/ATK/DEF per star, partner skill level 1-5,
+  // every existing work suitability +1 at 4 stars (1.0, wiki-verified)
+  const [stars, setStars] = useState(0);
+  useEffect(() => setStars(0), [name]);
   const p = pals[name];
   if (!p) return null;
+  const boost = (v: number | null) => (v == null ? v : Math.round(v * (1 + 0.05 * stars)));
   const asChild = breeding.unique_combos.filter((c) => c.child === name);
   const asParent = breeding.unique_combos.filter((c) => c.parents.includes(name));
   const gendered = breeding.gendered_combos.filter(
@@ -63,10 +70,36 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
         </Card>
 
         <Card style={{ marginTop: 10, gap: 7 }}>
-          <Text style={s.h3}>Base stats</Text>
-          <StatBar label="Health" icon={STAT_ICONS.health} v={p.hp} />
-          <StatBar label="Attack" icon={STAT_ICONS.attack} v={p.atk} />
-          <StatBar label="Defense" icon={STAT_ICONS.defense} v={p.def} />
+          <View style={[s.row, { gap: 8 }]}>
+            <Text style={[s.h3, { flex: 1 }]}>Base stats</Text>
+            <View style={{ flexDirection: 'row', gap: 3, alignItems: 'center' }}>
+              {[1, 2, 3, 4].map((n) => (
+                <Pressable key={n} hitSlop={6}
+                  onPress={() => {
+                    void Haptics.selectionAsync();
+                    setStars(stars === n ? 0 : n);
+                  }}
+                  accessibilityLabel={`${n} star${n === 1 ? '' : 's'} condensed`}>
+                  <Icon name={stars >= n ? 'star' : 'star-outline'} size={20}
+                    color={stars >= n ? T.gold : T.faint} />
+                </Pressable>
+              ))}
+              {stars > 0 && (
+                <Text style={{ color: T.goldInk, fontSize: 11, fontWeight: '800' }}>
+                  {' '}+{stars * 5}%
+                </Text>
+              )}
+            </View>
+          </View>
+          <StatBar label="Health" icon={STAT_ICONS.health} v={boost(p.hp)} />
+          <StatBar label="Attack" icon={STAT_ICONS.attack} v={boost(p.atk)} />
+          <StatBar label="Defense" icon={STAT_ICONS.defense} v={boost(p.def)} />
+          {stars > 0 && (
+            <Text style={[s.body, { fontSize: 11.5, color: T.goldInk }]}>
+              Condensed {stars}★: stats +{stars * 5}% · partner skill level {stars + 1} of 5
+              {stars === 4 ? ' · every work suitability below +1' : ''}
+            </Text>
+          )}
           {p.food != null && (
             <View style={[s.row, { gap: 8, marginTop: 2 }]}>
               <Image source={STAT_ICONS.food_on} style={{ width: 18, height: 18 }} />
