@@ -8,8 +8,9 @@ import { cakeNeeds } from '../engine/boosters';
 import { HELPER_NAMES, helperAdvice, type HelperAdvice } from '../engine/helpers';
 import { T } from '../theme';
 import {
-  Badge, Btn, Card, PageHead, PalIcon, PalPicker, WorkChips, s,
+  Badge, Btn, Card, PageHead, PalIcon, WorkChips, s,
 } from '../ui/kit';
+import { PalPicker } from '../ui/PalPicker';
 import {
   clearPlan, completeStep, getBox, getChecks, getPlan, hasGender, ownedAny,
   addPlanTarget, pals, removePlanTarget, resetPlanProgress, savePlan, selfOnly,

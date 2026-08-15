@@ -3,7 +3,8 @@ import React, { useMemo, useState } from 'react';
 import { ScrollView, Text, View, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { T } from '../theme';
-import { Badge, Btn, Card, ElementChips, PageHead, PalIcon, PalPicker, WorkChips, s, getRecentPicks } from '../ui/kit';
+import { Badge, Btn, Card, ElementChips, PageHead, PalIcon, WorkChips, s, getRecentPicks } from '../ui/kit';
+import { PalPicker } from '../ui/PalPicker';
 import {
   canPairNow, engine, ownedAny, pals, selfOnly, useAppVersion,
 } from '../store';

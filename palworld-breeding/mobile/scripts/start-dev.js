@@ -12,15 +12,34 @@
 //   3. When the tunnel URL appears: copy to clipboard, write
 //      CURRENT-DEV-URL.{txt,html} at the workspace root, banner it here.
 
-const { spawn } = require('child_process');
+const { spawn, spawnSync } = require('child_process');
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
 // mobile/scripts -> mobile -> palworld-breeding -> palworld (workspace root)
 const WORKSPACE_ROOT = path.resolve(__dirname, '..', '..', '..');
+const MOBILE_DIR = path.resolve(__dirname, '..');
 const URL_FILE_TXT = path.join(WORKSPACE_ROOT, 'CURRENT-DEV-URL.txt');
 const URL_FILE_HTML = path.join(WORKSPACE_ROOT, 'CURRENT-DEV-URL.html');
+
+// The deep-link scheme comes from app.json so the launcher can never drift
+// out of sync with the installed app (a wrong scheme = a link that opens
+// nothing at all on the phone).
+const APP_SCHEME = (() => {
+  try {
+    const cfg = JSON.parse(fs.readFileSync(path.join(MOBILE_DIR, 'app.json'), 'utf8'));
+    return (cfg.expo && cfg.expo.scheme) || 'palforge';
+  } catch {
+    return 'palforge';
+  }
+})();
+
+// Ownership lock. Exactly one launcher may own this project's dev server.
+// Without it two launchers preflight-kill each other's Metro forever (found
+// 2026-08-15 by launching START-APP.cmd twice). The newest launcher wins;
+// the older one is stopped outright rather than left to fight.
+const LOCK_FILE = path.join(MOBILE_DIR, '.dev-server.pid');
 
 const RETRY_DELAY_MS = 8000;
 const POLL_INTERVAL_MS = 2500;
@@ -62,8 +81,13 @@ function extractDeepLink(rawManifest) {
   if (!rawManifest) return null;
   let manifest;
   try { manifest = JSON.parse(rawManifest); } catch { return null; }
+  const expoClient = (manifest.extra && manifest.extra.expoClient) || {};
+  // Make sure this Metro is OURS. Stride and Fjelltur run Expo servers too;
+  // if one of them owns the port we must not hand the CEO a link that opens
+  // the wrong app.
+  if (expoClient.scheme && expoClient.scheme !== APP_SCHEME) return null;
   const hostUri =
-    (manifest.extra && manifest.extra.expoClient && manifest.extra.expoClient.hostUri) ||
+    expoClient.hostUri ||
     (manifest.extra && manifest.extra.hostUri) ||
     manifest.hostUri ||
     null;
@@ -76,13 +100,15 @@ function extractDeepLink(rawManifest) {
   const httpsHost = hostUri.startsWith('http')
     ? hostUri
     : 'https://' + hostUri.replace(/:\d+$/, '');
-  return 'exp+palforge://expo-development-client/?url=' + encodeURIComponent(httpsHost);
+  return 'exp+' + APP_SCHEME + '://expo-development-client/?url=' + encodeURIComponent(httpsHost);
 }
 
 async function pollForUrl() {
   if (urlFound) return;
   pollCount += 1;
-  for (const port of [8081, 19000, 19001]) {
+  // 8082/8083: if anything still holds 8081, Expo quietly moves up a port.
+  // Without these the launcher would poll forever and never show a URL.
+  for (const port of [8081, 8082, 8083, 19000, 19001]) {
     const raw = await tryFetchManifest(port);
     const deepLink = extractDeepLink(raw);
     if (deepLink) {
@@ -141,8 +167,92 @@ function writeOutputs(url) {
   console.log(line + '\n');
 }
 
+// Take over from any older launcher for THIS project.
+//
+// The PID is verified to still be a start-dev.js process before anything is
+// killed — a recycled PID must never take an unrelated program down with it.
+function takeOwnership() {
+  let prev = 0;
+  try {
+    if (fs.existsSync(LOCK_FILE)) {
+      prev = parseInt(String(fs.readFileSync(LOCK_FILE, 'utf8')).trim(), 10) || 0;
+    }
+  } catch { /* ignore */ }
+
+  if (prev && prev !== process.pid && process.platform === 'win32') {
+    const ps = [
+      '$prev = ' + prev + ';',
+      '$p = Get-CimInstance Win32_Process -Filter "ProcessId=$prev";',
+      "if ($p -and $p.CommandLine -like '*start-dev.js*') {",
+      '  Write-Output "OWNED";',
+      '  taskkill /PID $prev /T /F 2>&1 | Out-Null',
+      '}',
+    ].join(' ');
+    const res = spawnSync('powershell', ['-NoProfile', '-NonInteractive', '-Command', ps], {
+      encoding: 'utf8',
+      timeout: 20000,
+    });
+    if (String((res && res.stdout) || '').includes('OWNED')) {
+      console.log('[start-dev] An older Palforge launcher (PID ' + prev + ') was still running — took over from it.');
+    }
+  }
+
+  try { fs.writeFileSync(LOCK_FILE, String(process.pid), 'utf8'); } catch { /* ignore */ }
+}
+
+function releaseOwnership() {
+  try {
+    if (!fs.existsSync(LOCK_FILE)) return;
+    const cur = parseInt(String(fs.readFileSync(LOCK_FILE, 'utf8')).trim(), 10) || 0;
+    if (cur === process.pid) fs.unlinkSync(LOCK_FILE);
+  } catch { /* ignore */ }
+}
+
+// PREFLIGHT — kill dev servers this project left behind.
+//
+// 2026-08-15: three orphaned Expo servers (two tunnels + one --web) had been
+// running since the night before, each pinned at ~2.5 CPU cores — together
+// they saturated ~7.5 cores, thrashed Metro, and made the phone's dev client
+// unusable. A second START-APP.cmd could not take port 8081, so this script
+// captured the STALE server's tunnel URL and handed the CEO a dead link.
+//
+// The match is scoped to THIS project's directory on purpose: the CEO also
+// runs Expo servers for Stride and Fjelltur, and those must survive.
+function killStaleServers() {
+  if (process.platform !== 'win32') return;
+  const ps = [
+    "$dir = '" + MOBILE_DIR.replace(/'/g, "''") + "';",
+    "$me = " + process.pid + ';',
+    "Get-CimInstance Win32_Process -Filter \"Name='node.exe'\" |",
+    '  Where-Object { $_.ProcessId -ne $me -and $_.CommandLine -and',
+    '                 $_.CommandLine -like "*$dir*" -and',
+    '                 $_.CommandLine -like "*expo*" -and',
+    '                 $_.CommandLine -notlike "*start-dev.js*" } |',
+    '  ForEach-Object {',
+    '    Write-Output $_.ProcessId;',
+    '    taskkill /PID $($_.ProcessId) /T /F 2>&1 | Out-Null',
+    '  }',
+  ].join(' ');
+
+  console.log('[start-dev] Preflight: clearing any dev server left running from before...');
+  const res = spawnSync(
+    'powershell',
+    ['-NoProfile', '-NonInteractive', '-Command', ps],
+    { encoding: 'utf8', timeout: 30000 }
+  );
+  const killed = String((res && res.stdout) || '').trim().split(/\s+/).filter(Boolean);
+  if (killed.length) {
+    console.log('[start-dev] Stopped ' + killed.length + ' stale dev-server process(es): ' + killed.join(', '));
+    console.log('[start-dev] (That pileup is what made the phone app feel broken and the PC run hot.)');
+  } else {
+    console.log('[start-dev] Nothing stale running. Clean start.');
+  }
+}
+
 function launchExpo() {
   if (pollTimer) clearTimeout(pollTimer);
+  // Runs on retries too: a crashed Expo can leave ngrok/Metro holding 8081.
+  killStaleServers();
   pollCount = 0;
   urlFound = false;
   tunnelAttempt += 1;
@@ -200,11 +310,15 @@ function launchExpo() {
 }
 
 const forwardSignal = (sig) => {
+  releaseOwnership();
   if (currentExpo && !currentExpo.killed) {
     try { currentExpo.kill(sig); } catch { /* ignore */ }
   }
 };
 process.on('SIGINT', forwardSignal);
 process.on('SIGTERM', forwardSignal);
+// Closing the window must not leave a lock behind that fakes a live server.
+process.on('exit', releaseOwnership);
 
+takeOwnership();
 launchExpo();
