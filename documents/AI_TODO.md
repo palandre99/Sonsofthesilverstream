@@ -196,3 +196,8 @@ loops all night INSIDE the Breeding + Paldex domain (his explicit scope).
 - [ ] Standing: brutal AAA design pass, find hundreds of own improvements.
 - [ ] CEO caught the loop idle overnight — wakeups must be re-armed EVERY
       turn end, no exceptions.
+
+- [x] "About the pal" SHIPPED 2026-08-15 ~10:35 both platforms: the game's
+      own Paldex text (274/299 via wiki.gg Palpedia; provenance in
+      verification.json). 25 variants have no wiki page yet — re-run
+      tools/fetch_paldex_text_missing.py weekly with the upstream check.
