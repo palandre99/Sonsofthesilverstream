@@ -14,7 +14,7 @@ import { WORK_ICONS } from '../data/workIcons';
 import { PalMap } from './PalMap';
 import { STAT_ICONS } from '../data/statIcons';
 import {
-  rarityGrade, rarityNumber, wildLevelRange, type RarityStyle,
+  rarityGrade, wildLevelRange, type RarityGrade,
 } from '../data/rarity';
 import { ABOUT } from '../data/about';
 import { Icon } from './Icon';
@@ -48,61 +48,77 @@ const SPARKS: { t: number; l: `${number}%`; s: number; o: number }[] = [
   { t: 62, l: '52%', s: 6, o: 0.28 },
 ];
 
-/** The holo-card atmosphere behind the sheet's hero zone: aurora glows and a
- * sparkle field graded by the pal's own rarity integer, plus ONE slow
- * light-sweep. The sweep is a single native-driver transform loop that lives
- * only while this modal is open — the GPU pays, the JS thread does not
- * (docs/PERFORMANCE_RULES-compatible: bounded, single, modal-scoped). */
-function RarityAtmosphere({ r, intensity }: { r: RarityStyle; intensity: number }) {
+/** The atmosphere behind the sheet's hero zone — drama scales with the tier
+ * (CEO 2026-08-15: commons show NOTHING; a legendary must obviously outclass
+ * an epic, and nothing may look like one flat colour):
+ *   soft   → one aura + 3 sparkles, still
+ *   full   → two-tone aurora, sparkle field, one light sweep
+ *   legend → layered two-tone aurora, dense two-colour sparkles, DOUBLE sweep
+ * The sweep is one native-driver transform loop, alive only while this modal
+ * is open — the GPU pays, the JS thread does not. */
+function RarityAtmosphere({ r }: { r: RarityGrade }) {
   const sweep = useRef(new Animated.Value(0)).current;
+  const animated = r.tier === 'full' || r.tier === 'legend';
   useEffect(() => {
-    if (r.weight === 0) return;
+    if (!animated) return;
     const loop = Animated.loop(Animated.sequence([
       Animated.timing(sweep, {
         toValue: 1, duration: 3800, easing: Easing.inOut(Easing.quad),
         useNativeDriver: true,
       }),
-      Animated.delay(2600),
+      Animated.delay(r.tier === 'legend' ? 1800 : 2600),
       Animated.timing(sweep, { toValue: 0, duration: 0, useNativeDriver: true }),
     ]));
     loop.start();
     return () => loop.stop();
-  }, [r, sweep]);
-  if (r.weight === 0) return null;
-  const sparkCount = Math.round(4 + intensity * 3 + r.weight * 2); // 5..9
-  const auraBoost = 0.7 + 0.3 * intensity; // rarity 10 glows harder than 8
+  }, [animated, r.tier, sweep]);
+  if (r.tier === 'none') return null;
+
+  const sparkCount = r.tier === 'soft' ? 3 : r.tier === 'full' ? 6 : 9;
+  const sweepX = sweep.interpolate({ inputRange: [0, 1], outputRange: [0, 560] });
+  // the echo trails the main band using the same clock — no second timer
+  const echoX = sweep.interpolate({ inputRange: [0, 1], outputRange: [-90, 470] });
   return (
     <View pointerEvents="none"
       style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 240, overflow: 'hidden' }}>
-      {/* aurora — layered soft glows, brightest top-left where the name sits */}
+      {/* aurora — primary hue top-left under the name, second hue answering
+          from the right so the zone never reads as one flat colour */}
       <View style={{
         position: 'absolute', top: -110, left: -70, width: 300, height: 300,
-        borderRadius: 150, backgroundColor: r.aura, opacity: auraBoost,
+        borderRadius: 150, backgroundColor: r.aura,
       }} />
-      <View style={{
-        position: 'absolute', top: -60, right: -90, width: 320, height: 320,
-        borderRadius: 160, backgroundColor: r.aura2, opacity: auraBoost,
-      }} />
-      <View style={{
-        position: 'absolute', top: 70, left: '26%', width: 240, height: 240,
-        borderRadius: 120, backgroundColor: r.aura2, opacity: 0.7 * auraBoost,
-      }} />
-      {/* the living part: one soft light band sweeping the hero diagonally */}
-      <Animated.View style={{
-        position: 'absolute', top: -60, left: -120, width: 90, height: 380,
-        backgroundColor: r.shine,
-        transform: [
-          { translateX: sweep.interpolate({ inputRange: [0, 1], outputRange: [0, 560] }) },
-          { rotate: '24deg' },
-        ],
-      }} />
-      <View style={{
-        position: 'absolute', top: -40, left: '35%', width: 16, height: 340,
-        backgroundColor: r.shine, transform: [{ rotate: '24deg' }],
-      }} />
+      {r.tier !== 'soft' && (
+        <View style={{
+          position: 'absolute', top: -60, right: -90, width: 320, height: 320,
+          borderRadius: 160, backgroundColor: r.aura2,
+        }} />
+      )}
+      {r.tier === 'legend' && (
+        <View style={{
+          position: 'absolute', top: 60, left: '30%', width: 220, height: 220,
+          borderRadius: 110, backgroundColor: r.aura2, opacity: 0.8,
+        }} />
+      )}
+      {animated && (
+        <>
+          <Animated.View style={{
+            position: 'absolute', top: -60, left: -120, width: 90, height: 380,
+            backgroundColor: r.shine,
+            transform: [{ translateX: sweepX }, { rotate: '24deg' }],
+          }} />
+          {r.tier === 'legend' && (
+            <Animated.View style={{
+              position: 'absolute', top: -60, left: -120, width: 28, height: 380,
+              backgroundColor: r.shine,
+              transform: [{ translateX: echoX }, { rotate: '24deg' }],
+            }} />
+          )}
+        </>
+      )}
       {SPARKS.slice(0, sparkCount).map((sp, i) => (
         <View key={i} style={{ position: 'absolute', top: sp.t, left: sp.l, opacity: sp.o }}>
-          <Icon name="star-four-points" size={sp.s} color={r.sparkle} />
+          <Icon name="star-four-points" size={sp.s}
+            color={i % 2 ? r.sparkle2 : r.sparkle} />
         </View>
       ))}
     </View>
@@ -165,7 +181,7 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
     <Modal visible animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
       <ScrollView style={{ flex: 1, backgroundColor: r.sheet }}
         contentContainerStyle={{ padding: 18, paddingBottom: 50 }}>
-        <RarityAtmosphere r={r} intensity={r.t} />
+        <RarityAtmosphere r={r} />
         <View style={[s.row, { gap: 14 }]}>
           <View style={loud ? {
             borderWidth: 2, borderColor: r.ring ?? r.line, borderRadius: 42, padding: 3,
@@ -283,9 +299,9 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
                   {/* the game's own rarity integer — the real measure behind
                       the four bucket words, and something no other companion
                       app puts in front of you */}
-                  {rarityNumber(name) != null && (
+                  {r.agrees && (
                     <Text style={{ color: r.ink, opacity: 0.7 }}>
-                      {'  '}rarity {rarityNumber(name)}
+                      {'  '}rarity {r.n}
                     </Text>
                   )}
                 </Text>

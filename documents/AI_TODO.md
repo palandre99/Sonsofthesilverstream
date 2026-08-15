@@ -354,6 +354,24 @@ quietly narrowed. Tick only when shipped AND eye-verified.*
       Fighting, Lumbering, Mining… — every work type. Smart filter to get
       better suggestions. Search must be better here too.
 
+### C4. SUGGESTION ENGINE v2 (CEO ~17:50 2026-08-15 — verbatim intake)
+- [ ] C4a Suggested-goals needs a **Fighting** tab (best combat pals) and a
+      **"Best pals in the game"** tab — the consensus best, incl. composite
+      workers ("insane high gathering+planting+transporting = best farmer").
+      DEEP RESEARCH required: community tier lists + game data; never guess.
+- [ ] C4b MORE recommendations per tab — not just top 3/5.
+- [ ] C4c STAGE-AWARE brain: the engine must look at MY box and progression —
+      2 pals owned → recommend strong EARLY pals reachable now, not endgame;
+      100 pals but missing one very good pal that's close/easy to breed →
+      surface it. "Calculate my stage and what is smart to get for efficient
+      progress as well as the late end game goals."
+- [ ] C4d Cover the axes players actually care about: flying mounts (speed),
+      ground/glide mounts, combat (attack/partner dmg), composite work roles,
+      transport/logistics, and PASSIVES-of-note pals (ore weight reduction,
+      faster gathering, better yield…). All researched with sources.
+- [ ] C4e Everything data-backed: game dump for stats/work/partner skills;
+      tier/meta claims labelled community-sourced with provenance.
+
 ### D. Standing orders (restated by him at handover)
 - [ ] D1 Own deep internet research on EVERY competitor — including other
       games' companions — learn and beat them. AAA studio 10/10.

@@ -58,13 +58,17 @@ export function SuggestedGoals({ visible, onClose, targets, onAdd }: {
 
   const PalChip = ({ name, lvl }: { name: string; lvl?: number }) => {
     const added = targets.includes(name);
+    const owned = ownedAny(name);
+    // an owned pal is NOT a suggestion — it reads as quiet proof of
+    // coverage, visually stepped back (CEO 2026-08-15)
     return (
       <Pressable onPress={() => setViewing(name)}
         style={({ pressed }) => [{
           alignItems: 'center', gap: 3, width: 64, paddingVertical: 6,
           borderRadius: 12, borderWidth: 1,
-          borderColor: pressed ? T.accent : added ? T.ok : T.line,
+          borderColor: pressed ? T.accent : added ? T.ok : owned ? T.okSoft : T.line,
           backgroundColor: added ? T.okSoft : T.surface,
+          opacity: owned && !added ? 0.55 : 1,
         }]}
       >
         <PalIcon name={name} size={40} />
@@ -76,8 +80,8 @@ export function SuggestedGoals({ visible, onClose, targets, onAdd }: {
         )}
         {added
           ? <Text style={{ color: T.ok, fontSize: 8.5, fontWeight: '800' }}>IN PLAN</Text>
-          : ownedAny(name)
-            ? <Text style={{ color: T.faint, fontSize: 8.5, fontWeight: '800' }}>OWNED</Text>
+          : owned
+            ? <Text style={{ color: T.ok, fontSize: 8.5, fontWeight: '800' }}>HAVE IT</Text>
             : null}
       </Pressable>
     );
@@ -88,21 +92,39 @@ export function SuggestedGoals({ visible, onClose, targets, onAdd }: {
   }) => {
     // owned pals need no plan — never count them into "Add N"
     const missing = names.filter((n) => !targets.includes(n) && !ownedAny(n));
+    const ownedCount = names.filter(ownedAny).length;
+    const covered = missing.length === 0;
+    // a fully covered squad stops selling and starts confirming: compact,
+    // quiet, nothing to do here (CEO: don't suggest what I already have)
     return (
       <View style={{
-        backgroundColor: T.surface, borderColor: T.line, borderWidth: 1,
-        borderRadius: 14, padding: 12, gap: 8,
+        backgroundColor: T.surface,
+        borderColor: covered ? T.okSoft : T.line, borderWidth: 1,
+        borderRadius: 14, padding: 12, gap: 8, opacity: covered ? 0.8 : 1,
       }}>
         <View style={[s.row, { gap: 8 }]}>
           <Text style={[s.h3, { flex: 1 }]}>{title}</Text>
-          <Btn small primary={missing.length > 0} disabled={missing.length === 0}
-            label={missing.length ? `Add ${missing.length}` : 'All added ✓'}
-            onPress={() => onAdd(missing)} />
+          {covered ? (
+            <Text style={{ color: T.ok, fontSize: 11.5, fontWeight: '800' }}>
+              covered{ownedCount < names.length ? ' or planned' : ''}
+            </Text>
+          ) : (
+            <Btn small primary label={`Add ${missing.length}`}
+              onPress={() => onAdd(missing)} />
+          )}
         </View>
-        <Text style={[s.body, { fontSize: 12 }]}>{blurb}</Text>
+        {!covered && (
+          <Text style={[s.body, { fontSize: 12 }]}>
+            {blurb}{ownedCount > 0 ? `  You have ${ownedCount} of ${names.length}.` : ''}
+          </Text>
+        )}
         <ScrollView horizontal showsHorizontalScrollIndicator={false}
           contentContainerStyle={{ gap: 6 }}>
-          {names.map((n) => <PalChip key={n} name={n} lvl={lvls?.[n]} />)}
+          {/* the pals you still NEED come first; owned proof trails behind */}
+          {(covered ? names : [...names].sort((a, b) =>
+            Number(ownedAny(a)) - Number(ownedAny(b)))).map((n) => (
+            <PalChip key={n} name={n} lvl={lvls?.[n]} />
+          ))}
         </ScrollView>
       </View>
     );
@@ -166,9 +188,14 @@ export function SuggestedGoals({ visible, onClose, targets, onAdd }: {
                 <View style={{ flexDirection: 'row', gap: 6, flexWrap: 'wrap' }}>
                   {shown.map((x) => <PalChip key={x.name} name={x.name} lvl={x.lvl} />)}
                 </View>
-                <Btn small primary={missing.length > 0} disabled={!missing.length}
-                  label={missing.length ? `Add these ${missing.length}` : 'All added or owned ✓'}
-                  onPress={() => onAdd(missing)} />
+                {missing.length ? (
+                  <Btn small primary label={`Add these ${missing.length}`}
+                    onPress={() => onAdd(missing)} />
+                ) : (
+                  <Text style={{ color: T.ok, fontSize: 11.5, fontWeight: '800' }}>
+                    You already have the best — nothing to add
+                  </Text>
+                )}
               </View>
             );
           })}

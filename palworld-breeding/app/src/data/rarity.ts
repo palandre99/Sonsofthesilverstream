@@ -117,49 +117,88 @@ export function rarityColor(n: number): string {
   return RAMP[RAMP.length - 1][1];
 }
 
+/** Drama tiers — the design law of v5 (CEO 2026-08-15: commons must be
+ * QUIET; "a legendary card looks way cooler than an uncommon one"):
+ *   none   (n ≤ 4)  — no ring, no glow, no tint. A starter is a plain card.
+ *   soft   (5–7)    — ring + one soft aura + a few sparkles. No sweep.
+ *   full   (8–10)   — two-tone aurora, sparkle field, light sweep, tints.
+ *   legend (20)     — the show: layered two-tone aurora, dense sparkles,
+ *                     double light sweep, gold ring.
+ */
+export type DramaTier = 'none' | 'soft' | 'full' | 'legend';
+
 /** The full graded look for one pal, every shade derived from the ramp. */
 export interface RarityGrade extends RarityStyle {
   /** 0..1 across the whole ladder (20 ⇒ 1) */
   t: number;
-  /** the pal's game rarity integer (bucket-midpoint fallback if unknown) */
+  /** the pal's game rarity integer, band-clamped for presentation */
   n: number;
+  tier: DramaTier;
+  /** complementary second hue — kills the flat one-colour look */
+  line2: string;
+  sparkle2: string;
   /** portrait ring colour (null = quiet commons) */
   ring: string | null;
   /** subtle wash for INNER cards on the detail sheet */
   cardTint: string;
   /** border for inner cards on the detail sheet */
   cardLine: string;
+  /** the raw integer agrees with the bucket word (false only for Gumoss) */
+  agrees: boolean;
 }
 
 /** bucket word → midpoint, for the one pal palcalc lacks */
 const WORD_FALLBACK: Record<string, number> = {
   Common: 2, Rare: 6, Epic: 9, Legendary: 20,
 };
+/** bucket word → the integer band it corresponds to */
+const WORD_BAND: Record<string, [number, number]> = {
+  Common: [1, 4], Rare: [5, 7], Epic: [8, 10], Legendary: [20, 20],
+};
+/** two-tone partners per drama tier */
+const SECOND_HUE: Record<DramaTier, string> = {
+  none: '#27424A', soft: '#4FD8E8', full: '#E86BD8', legend: '#FF9D3D',
+};
 
 export function rarityGrade(name: string, rarity: string | null | undefined): RarityGrade {
-  const n = PALCALC_FACTS[name]?.rarity
-    ?? WORD_FALLBACK[rarity ?? ''] ?? 2;
+  const raw = PALCALC_FACTS[name]?.rarity ?? WORD_FALLBACK[rarity ?? ''] ?? 2;
+  // presentation trusts the SIGNAL BOTH SOURCES agree on: the integer is
+  // clamped into its bucket word's band. This exists for exactly one pal —
+  // Gumoss, Common in kb but 10 in the game table — which must not glow
+  // like an Anubis (CEO caught it on sight).
+  const band = WORD_BAND[rarity ?? ''];
+  const n = band ? Math.min(Math.max(raw, band[0]), band[1]) : raw;
+  const agrees = n === raw;
+  const tier: DramaTier = n >= 20 ? 'legend' : n >= 8 ? 'full' : n >= 5 ? 'soft' : 'none';
   const t = n >= 20 ? 1 : (n - 1) / 10;
   const base = rarityColor(n);
-  // quiet below 3 — a level-1 starter should not glow
-  const weight = n >= 20 ? 1 : n >= 3 ? 0.25 + 0.75 * ((Math.min(n, 10) - 3) / 7) : 0;
-  const loud = weight > 0;
+  const second = mix(base, SECOND_HUE[tier], 0.55);
+  const weight = tier === 'none' ? 0
+    : tier === 'soft' ? 0.3 + 0.2 * ((n - 5) / 2)
+      : tier === 'full' ? 0.6 + 0.2 * ((n - 8) / 2) : 1;
+  const loudCards = tier === 'full' || tier === 'legend';
   return {
     card: withAlpha(base, 0.16),
     line: base,
     ink: lighten(base, 0.45),
     soft: withAlpha(base, 0.14),
     weight,
-    sheet: loud ? mix(base, '#0D1418', 0.9) : '#101D20',
-    aura: withAlpha(base, 0.30),
-    aura2: withAlpha(base, 0.14),
-    shine: n >= 20 ? 'rgba(255,255,255,0.07)' : 'rgba(255,255,255,0.05)',
+    sheet: tier === 'none' ? '#101D20'
+      : tier === 'soft' ? mix(base, '#0E181B', 0.93)
+        : mix(base, '#0D1418', tier === 'legend' ? 0.87 : 0.9),
+    aura: withAlpha(base, tier === 'legend' ? 0.34 : 0.28),
+    aura2: withAlpha(second, tier === 'legend' ? 0.20 : 0.14),
+    shine: tier === 'legend' ? 'rgba(255,246,220,0.09)' : 'rgba(255,255,255,0.05)',
     sparkle: lighten(base, 0.55),
     t,
     n,
-    ring: loud ? withAlpha(base, 0.6 + 0.4 * t) : null,
-    cardTint: loud ? withAlpha(base, 0.05 + 0.06 * t) : 'transparent',
-    cardLine: loud ? withAlpha(base, 0.25 + 0.25 * t) : 'transparent',
+    tier,
+    line2: second,
+    sparkle2: lighten(second, 0.5),
+    ring: tier === 'none' ? null : withAlpha(base, 0.6 + 0.4 * t),
+    cardTint: loudCards ? withAlpha(base, 0.05 + 0.06 * t) : 'transparent',
+    cardLine: loudCards ? withAlpha(base, 0.25 + 0.25 * t) : 'transparent',
+    agrees,
   };
 }
 
