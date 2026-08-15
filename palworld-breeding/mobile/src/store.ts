@@ -7,7 +7,7 @@
 import { useSyncExternalStore } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BreedingEngine } from './engine/formula';
-import { derivations, planFor } from './engine/planner';
+import { derivations, planFor, stepId } from './engine/planner';
 import { helperAdvice, type HelperAdvice } from './engine/helpers';
 import type { BreedingData, PlanStep } from './engine/types';
 import breedingJson from './data/breeding_1_0.json';
@@ -187,6 +187,41 @@ export async function deleteProfile(id: string): Promise<void> {
   if (activeProfile === id) activeProfile = profiles[0].id;
   await persistProfiles();
   await loadProfileData();
+}
+
+/** Lightweight per-profile stats for the Profiles screen — active profile
+ * reads live state; others read storage. */
+export interface ProfileStats { owned: number; planDone: number; planTotal: number }
+
+function doneCount(
+  steps: PlanStep[], checks: Record<string, true | StepCheckShape>,
+): number {
+  return steps.filter((st) => {
+    const c = checks[stepId(st.parents[0], st.parents[1], st.child)];
+    return c === true || (typeof c === 'object' && c !== null && c.m && c.f);
+  }).length;
+}
+
+export async function profileStats(id: string): Promise<ProfileStats> {
+  if (id === activeProfile) {
+    return {
+      owned: Object.keys(state.box).length,
+      planDone: state.plan ? doneCount(state.plan.steps, state.checks) : 0,
+      planTotal: state.plan?.steps.length ?? 0,
+    };
+  }
+  try {
+    const k = keysFor(id);
+    const [b, c, pl] = await AsyncStorage.multiGet([k.box, k.checks, k.plan]);
+    const owned = b[1] ? Object.keys(JSON.parse(b[1]) as object).length : 0;
+    const checks = c[1]
+      ? (JSON.parse(c[1]) as Record<string, true | StepCheckShape>) : {};
+    const plan = pl[1] ? (JSON.parse(pl[1]) as SavedPlan) : null;
+    const steps = plan && Array.isArray(plan.steps) ? plan.steps : [];
+    return { owned, planDone: doneCount(steps, checks), planTotal: steps.length };
+  } catch {
+    return { owned: 0, planDone: 0, planTotal: 0 };
+  }
 }
 
 /** Switch worlds without a write race: the new profile's data is loaded

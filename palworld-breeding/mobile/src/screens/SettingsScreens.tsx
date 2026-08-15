@@ -1,18 +1,30 @@
 /** Settings domain: Profiles (live) and About (live).
  * Worlds/Look are coming-soon tabs defined in nav/domains.ts. */
-import React, { useState } from 'react';
+import React, { useState , useEffect } from 'react';
 import { Modal, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { T } from '../theme';
 import { Btn, Card, PageHead, s } from '../ui/kit';
 import { Icon } from '../ui/Icon';
 import {
-  createProfile, deleteProfile, getActiveProfile, getProfiles, renameProfile,
-  switchProfile, useAppVersion,
+  createProfile, deleteProfile, getActiveProfile, getProfiles, profileStats,
+  renameProfile, switchProfile, useAppVersion, type ProfileStats,
 } from '../store';
 
 export function ProfilesScreen() {
-  useAppVersion();
+  const version = useAppVersion();
+  const [stats, setStats] = useState<Record<string, ProfileStats>>({});
+  useEffect(() => {
+    let dead = false;
+    void Promise.all(
+      getProfiles().map(async (p) => [p.id, await profileStats(p.id)] as const),
+    ).then((rows) => {
+      if (!dead) setStats(Object.fromEntries(rows));
+    });
+    return () => {
+      dead = true;
+    };
+  }, [version]);
   const [naming, setNaming] = useState(false);
   const [newName, setNewName] = useState('');
   const [managing, setManaging] = useState<{ id: string; name: string } | null>(null);
@@ -48,9 +60,21 @@ export function ProfilesScreen() {
                   width: 8, height: 8, borderRadius: 4,
                   backgroundColor: on ? T.ok : T.line2,
                 }} />
-                <Text style={{
-                  color: on ? T.accentInk : T.muted, fontWeight: '700', fontSize: 14,
-                }}>{p.name}</Text>
+                <View style={{ flex: 1 }}>
+                  <Text style={{
+                    color: on ? T.accentInk : T.muted, fontWeight: '700', fontSize: 14,
+                  }}>{p.name}</Text>
+                  {stats[p.id] && (
+                    <Text style={{ color: T.faint, fontSize: 11 }}>
+                      {stats[p.id].owned
+                        ? `${stats[p.id].owned} pals`
+                        : 'empty'}
+                      {stats[p.id].planTotal > 0
+                        ? ` · plan ${stats[p.id].planDone}/${stats[p.id].planTotal}`
+                        : ''}
+                    </Text>
+                  )}
+                </View>
               </Pressable>
               <Pressable
                 onPress={() => {
