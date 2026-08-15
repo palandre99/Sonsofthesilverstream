@@ -75,31 +75,47 @@ export function ElementChips({ name }: { name: string }) {
   );
 }
 
-export function WorkChips({ name, top = 2, all = false }: {
+export function WorkChips({ name, top = 2, all = false, focus }: {
   name: string; top?: number; all?: boolean;
+  /** the job the list is filtered/sorted by — always shown, and shown first,
+   * so a Kindling-filtered list visibly stays a Kindling list (CEO 2026-08-15:
+   * rows showed only the pal's best job, which read as a broken filter). */
+  focus?: string | null;
 }) {
   const p = pals[name];
   if (!p) return null;
-  const jobs = all
+  let jobs = all
     ? (Object.entries(p.work ?? {}).sort((a, b) => b[1] - a[1]) as [string, number][])
     : topWork(p, top);
+  if (focus && !all) {
+    const lvl = (p.work ?? {})[focus];
+    if (lvl != null) {
+      const rest = jobs.filter(([j]) => j !== focus);
+      jobs = ([[focus, lvl], ...rest] as [string, number][]).slice(0, Math.max(1, top));
+    }
+  }
   return (
     <>
-      {jobs.map(([job, lvl]) => (
-        <View key={job}
-          accessible accessibilityLabel={`${workLabel(job)} ${lvl}`}
-          style={[s.chip, {
-            backgroundColor: T.surface2, flexDirection: 'row',
-            alignItems: 'center', gap: 5, paddingHorizontal: 8, paddingVertical: 4,
-          }]}>
-          {WORK_ICONS[job] ? (
-            <Image source={WORK_ICONS[job]} style={{ width: 20, height: 20 }} />
-          ) : (
-            <Text style={[s.chipText, { color: T.ink }]}>{workLabel(job)}</Text>
-          )}
-          <Text style={[s.chipText, { color: T.accentInk }]}>{lvl}</Text>
-        </View>
-      ))}
+      {jobs.map(([job, lvl]) => {
+        const on = focus === job;
+        return (
+          <View key={job}
+            accessible accessibilityLabel={`${workLabel(job)} ${lvl}`}
+            style={[s.chip, {
+              backgroundColor: on ? T.accentSoft : T.surface2,
+              borderWidth: on ? 1 : 0, borderColor: on ? T.accent : 'transparent',
+              flexDirection: 'row',
+              alignItems: 'center', gap: 5, paddingHorizontal: 8, paddingVertical: 4,
+            }]}>
+            {WORK_ICONS[job] ? (
+              <Image source={WORK_ICONS[job]} style={{ width: 20, height: 20 }} />
+            ) : (
+              <Text style={[s.chipText, { color: T.ink }]}>{workLabel(job)}</Text>
+            )}
+            <Text style={[s.chipText, { color: T.accentInk }]}>{lvl}</Text>
+          </View>
+        );
+      })}
     </>
   );
 }
@@ -194,6 +210,40 @@ export function SearchInput({ value, onChange, placeholder }: {
       clearButtonMode="while-editing"
       style={s.search}
     />
+  );
+}
+
+/* ---------------- "back to the pal card" chip ---------------- */
+
+/** Shown by a screen the player reached FROM a pal's info card — one tap
+ * reopens that exact card instead of making them re-scroll the Paldex for it
+ * (CEO 2026-08-15). Dismisses with the ✕ so it never becomes clutter. */
+export function BackToCardChip({ name, onOpen, onDismiss }: {
+  name: string; onOpen: () => void; onDismiss: () => void;
+}) {
+  return (
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 10 }}>
+      <Pressable
+        onPress={() => {
+          void Haptics.selectionAsync();
+          onOpen();
+        }}
+        style={({ pressed }) => [{
+          flexDirection: 'row', alignItems: 'center', gap: 7,
+          backgroundColor: pressed ? T.accentSoft : T.surface,
+          borderWidth: 1.5, borderColor: T.accent, borderRadius: 20,
+          paddingVertical: 5, paddingLeft: 6, paddingRight: 12,
+        }]}
+      >
+        <PalIcon name={name} size={26} />
+        <Text style={{ color: T.accentInk, fontWeight: '700', fontSize: 12.5 }}>
+          ‹ Back to {name}
+        </Text>
+      </Pressable>
+      <Pressable hitSlop={8} onPress={onDismiss} accessibilityLabel="Dismiss">
+        <Text style={{ color: T.faint, fontWeight: '800', fontSize: 13 }}>✕</Text>
+      </Pressable>
+    </View>
   );
 }
 

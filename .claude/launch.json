@@ -6,6 +6,12 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["--prefix", "palworld-breeding/app", "run", "dev", "--", "--port", "5183", "--strictPort"],
       "port": 5183
+    },
+    {
+      "name": "palforge-mobile-qa",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["--prefix", "palworld-breeding/mobile", "expo", "start", "--web", "--port", "8085"],
+      "port": 8085
     }
   ]
 }

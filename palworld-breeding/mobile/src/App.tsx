@@ -12,6 +12,7 @@ import * as Updates from 'expo-updates';
 import { T } from './theme';
 import { getActiveProfile, loadPersisted, useAppVersion } from './store';
 import { DOMAINS } from './nav/domains';
+import { onNavIntent } from './nav/intent';
 import { DomainPanel } from './ui/DomainPanel';
 import { Icon } from './ui/Icon';
 import { CalculatorScreen } from './screens/CalculatorScreen';
@@ -105,6 +106,14 @@ function Shell() {
   useEffect(() => {
     void loadPersisted().then(() => setReady(true));
   }, []);
+
+  // cards can hand the player straight to another screen ("open this in the
+  // Calculator") instead of printing directions for them to follow
+  useEffect(() => onNavIntent((i) => {
+    setDomainId(i.domain);
+    setTabId(i.tab);
+    setPanel(false);
+  }), []);
 
   const edgePan = useRef(PanResponder.create({
     onMoveShouldSetPanResponder: (e, g) =>

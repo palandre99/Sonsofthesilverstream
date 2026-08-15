@@ -301,3 +301,62 @@ loops all night INSIDE the Breeding + Paldex domain (his explicit scope).
       update 03_MARKET_RESEARCH + 04_PRODUCT_BLUEPRINT + plan docs.
 - [ ] CEO's installed build predates today's OTAs on first open — verify
       his app pulls the newest update on next reopen (channel preview).
+
+
+## CEO FEEDBACK ~16:05 2026-08-15 — HANDOVER TO NEW CODER (verbatim intake)
+
+*He handed the project over with this list. Nothing here may be forgotten or
+quietly narrowed. Tick only when shipped AND eye-verified.*
+
+### A. Paldex — reported bugs (he used it and it misbehaved)
+- [ ] A1 Keyboard stays up when you scroll the results — it covers the list.
+      (`keyboardDismissMode` missing on the Paldex + picker lists.)
+- [ ] A2 "Filter kindling, scroll down, pals without kindling appear."
+      ROOT CAUSE FOUND: the sheet has TWO near-identical work-icon rows —
+      *Sort by work suitability* (sorts only) and *Must have work suitability*
+      (filters). He tapped the sort row. It is a design failure, not his error.
+- [ ] A3 A ticked box can't be unticked by tapping it again — true for every
+      chip in "Sort by" and "Sort by work suitability" (no toggle-off path
+      except Reset). "Far from good enough and polished. Many bugs."
+- [ ] A4 Rarity-coloured cards — he has asked for this "long ago". Epic
+      purple, Legendary yellow, Uncommon green etc. RESEARCH the game's real
+      rarity palette first; our dataset has 4 buckets (Common 121 / Rare 105 /
+      Epic 65 / Legendary 8) — decide honestly how "uncommon" maps.
+- [ ] A5 Row must show the stat you filtered/sorted by (it shows top-1 work
+      today, which is why a Kindling-filtered list looks wrong).
+
+### B. Pal info card
+- [ ] B1 "About the pal" — he says it reads invented. Text IS real wiki.gg
+      Paldex text for 272/299, but **27 pals have none at all** (Xenolord,
+      Bellanoir, Sibelyx, the Cryst/Primo/Lux variants…). Fill all 299 from
+      verified sources, show provenance, never fabricate.
+- [ ] B2 "How to breed it" card must be TAPPABLE → open the combinations;
+      offer "open in Calculator" (normal use) or "make a plan to get it".
+- [ ] B3 Stars 0–4 only move HP/ATK/DEF. Work suitability, partner-skill
+      level and everything else must update too (4★ = +1 to every existing
+      work suitability). "MANDATORY that all info is correct — NEVER GUESS."
+- [ ] B4 "wild up to level 13" → "found in wild from level X to Y" so the
+      floor is visible too. Need min-level data (obtain_notes carry ranges).
+
+### C. Plan / Route Planner
+- [ ] C1 Recommendations are not smart enough. Concrete case: **he does not
+      own Chikipi and it was never recommended** — every cake needs 8 eggs.
+      The engine "must think about everything… efficient and very smart".
+      Suspects: `activeAdvice.slice(0,5)` hides low-ranked helpers; catch-vs-
+      breed only fires at addSteps>=4; no cake-ingredient coverage checklist.
+- [ ] C2 Plan search + filter is "very bad, not the same as the Paldex" —
+      re-check what he actually meets on screen (picker was unified 13:05,
+      so this is either the "Add targets" row or a regression).
+- [ ] C3 Presets ("Best workers" / "All aura pals" / "Breeding support") are
+      "smart but can be much better and better designed": recommended pals
+      must be a **proper pop-up card**, plus presets for best Kindling,
+      Fighting, Lumbering, Mining… — every work type. Smart filter to get
+      better suggestions. Search must be better here too.
+
+### D. Standing orders (restated by him at handover)
+- [ ] D1 Own deep internet research on EVERY competitor — including other
+      games' companions — learn and beat them. AAA studio 10/10.
+- [ ] D2 Look with your own eyes at every design change. Flawless or redo.
+- [ ] D3 Work one thing at a time to perfection; brutal self-evaluation.
+- [ ] D4 The pending work in the plan/progress/feedback docs is still owed —
+      "HEAPS of work pending". Nothing above deletes anything below.

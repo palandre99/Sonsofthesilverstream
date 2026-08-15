@@ -448,16 +448,18 @@ export function clearPlan(): void {
 /** Add a goal to the saved plan and reshape it. Checks are keyed by step
  * id, so every step that survives the reshape keeps its tick. */
 export function addPlanTarget(name: string): void {
-  if (!state.plan || state.plan.targets.includes(name)) return;
-  const targets = [...state.plan.targets, name];
-  const roster = state.plan.roster ?? Object.keys(state.box);
+  if (state.plan?.targets.includes(name)) return;
+  // no plan yet? "Plan how to get it" on a pal card must still work — it
+  // starts a fresh one-goal plan instead of silently doing nothing
+  const targets = [...(state.plan?.targets ?? []), name];
+  const roster = state.plan?.roster ?? Object.keys(state.box);
   try {
     const derivs = derivations(engine, new Set(roster));
     const { steps, unreachable } = planFor(engine, roster, targets, derivs);
     const advice = helperAdvice(
       engine, Object.keys(state.box), ownedAny, { targets, steps, roster }, derivs);
     state.plan = {
-      ...state.plan, targets, steps, unreachable, advice,
+      ...(state.plan ?? {}), targets, steps, unreachable, advice,
       planned: new Date().toISOString(), roster,
     };
   } catch (e) {

@@ -1,14 +1,16 @@
 /** Calculator — pair→child and child→parents, same engine as the web app. */
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ScrollView, Text, View, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { T } from '../theme';
-import { Badge, Btn, Card, ElementChips, PageHead, PalIcon, WorkChips, s, getRecentPicks } from '../ui/kit';
+import { BackToCardChip, Badge, Btn, Card, ElementChips, PageHead, PalIcon, WorkChips, s, getRecentPicks } from '../ui/kit';
 import { PalPicker } from '../ui/PalPicker';
 import {
   canPairNow, engine, ownedAny, pals, selfOnly, useAppVersion,
 } from '../store';
 import { parseGenderNote } from '../engine/formula';
+import { onNavIntent, takeIntentPayload } from '../nav/intent';
+import { PalDetail } from '../ui/PalDetail';
 import type { ChildResult } from '../engine/types';
 
 function ResultFlags({ ch }: { ch: ChildResult }) {
@@ -176,10 +178,33 @@ export function CalculatorScreen() {
   const [target, setTarget] = useState<string | null>(null);
   const [picking, setPicking] = useState<'a' | 'b' | 'target' | null>(null);
 
+  // arriving from a pal card's "show me every pair" — land with the answer
+  // already on screen, and keep a one-tap way BACK to that card
+  const [fromCard, setFromCard] = useState<string | null>(null);
+  const [viewing, setViewing] = useState<string | null>(null);
+  useEffect(() => {
+    const apply = () => {
+      const p = takeIntentPayload('calc');
+      if (!p?.pal) return;
+      setMode(p.mode ?? 'reverse');
+      if ((p.mode ?? 'reverse') === 'reverse') setTarget(p.pal);
+      else setA(p.pal);
+      if (p.fromCard) setFromCard(p.fromCard);
+    };
+    apply(); // payload waiting from before this screen mounted
+    return onNavIntent(apply); // ...or arriving while it's already open
+  }, []);
+
   return (
     <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
       <PageHead title="Calculator"
         sub="The exact 1.0 formula, verified against all 44,851 outcomes from the game files." />
+
+      {fromCard && (
+        <BackToCardChip name={fromCard}
+          onOpen={() => setViewing(fromCard)}
+          onDismiss={() => setFromCard(null)} />
+      )}
 
       <View style={{
         flexDirection: 'row', backgroundColor: T.surface2, borderRadius: 12,
@@ -272,6 +297,7 @@ export function CalculatorScreen() {
           else if (picking === 'target') setTarget(n);
         }}
       />
+      {viewing && <PalDetail name={viewing} onClose={() => setViewing(null)} />}
     </ScrollView>
   );
 }

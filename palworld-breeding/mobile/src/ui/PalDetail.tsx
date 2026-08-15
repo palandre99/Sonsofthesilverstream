@@ -7,12 +7,13 @@ import { T } from '../theme';
 import { Badge, Btn, Card, ElementChips, GenderToggles, PalIcon, s } from './kit';
 import { Image } from 'react-native';
 import {
-  breeding, engine, ownedAny, pals, selfOnly, useAppVersion, workLabel,
+  addPlanTarget, breeding, engine, ownedAny, pals, selfOnly, useAppVersion, workLabel,
 } from '../store';
+import { navigateTo } from '../nav/intent';
 import { WORK_ICONS } from '../data/workIcons';
 import { PalMap } from './PalMap';
 import { STAT_ICONS } from '../data/statIcons';
-import { rarityTint } from '../data/rarity';
+import { rarityNumber, rarityStyle, wildLevelRange } from '../data/rarity';
 import { ABOUT } from '../data/about';
 import { Icon } from './Icon';
 import { ALPHA_SPOTS } from '../data/alphaSpots.g';
@@ -58,9 +59,11 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
   // every existing work suitability +1 at 4 stars (1.0, wiki-verified)
   const [stars, setStars] = useState(0);
   const [aboutOpen, setAboutOpen] = useState(false);
+  const [planned, setPlanned] = useState(false);
   useEffect(() => {
     setStars(0);
     setAboutOpen(false);
+    setPlanned(false);
   }, [name]);
   const p = pals[name];
   if (!p) return null;
@@ -71,15 +74,20 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
     (g) => g.child === name || g.mother === name || g.father === name,
   );
   const inPool = !breeding.excluded_from_generic_pool.includes(name);
+  // THE INFO CARD wears the rarity (CEO 2026-08-15): the whole sheet is dyed
+  // the tier's colour — Epic opens purple, Legendary opens gold — and the
+  // name ink matches. List rows stay calm; this is where the drama lives.
+  const r = rarityStyle(p.rarity);
+  const loud = r.weight > 0;
 
   return (
     <Modal visible animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
-      <ScrollView style={{ flex: 1, backgroundColor: T.bg2 }}
+      <ScrollView style={{ flex: 1, backgroundColor: loud ? r.card : T.bg2 }}
         contentContainerStyle={{ padding: 18, paddingBottom: 50 }}>
         <View style={[s.row, { gap: 14 }]}>
           <PalIcon name={name} size={72} />
           <View style={{ flex: 1 }}>
-            <Text style={s.h1}>{name}</Text>
+            <Text style={[s.h1, loud && { color: r.ink }]}>{name}</Text>
             <View style={[s.wrap, { marginTop: 5 }]}>
               <Badge kind="plain">#{p.number || '—'}</Badge>
               <ElementChips name={name} />
@@ -177,17 +185,36 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
             {p.rarity && (
               <View style={{
                 borderWidth: 1.5,
-                borderColor: rarityTint(p.rarity, T.line),
+                borderColor: rarityStyle(p.rarity).line,
+                backgroundColor: rarityStyle(p.rarity).soft,
                 borderRadius: 7, paddingHorizontal: 7, paddingVertical: 2,
               }}>
                 <Text style={{
-                  color: rarityTint(p.rarity, T.muted), fontSize: 10.5,
+                  color: rarityStyle(p.rarity).ink, fontSize: 10.5,
                   fontWeight: '800', letterSpacing: 0.6, textTransform: 'uppercase',
-                }}>{p.rarity}</Text>
+                }}>
+                  {p.rarity}
+                  {/* the game's own rarity integer — the real measure behind
+                      the four bucket words, and something no other companion
+                      app puts in front of you */}
+                  {rarityNumber(name) != null && (
+                    <Text style={{ color: rarityStyle(p.rarity).ink, opacity: 0.7 }}>
+                      {'  '}rarity {rarityNumber(name)}
+                    </Text>
+                  )}
+                </Text>
               </View>
             )}
             {p.craft_speed != null && <Badge kind="plain">work speed {p.craft_speed}</Badge>}
-            {p.max_wild_level != null && <Badge kind="plain">wild up to Lv {p.max_wild_level}</Badge>}
+            {/* the FLOOR matters as much as the ceiling — "up to Lv 13" never
+                told you it also spawns at 6 (CEO 2026-08-15). Range comes from
+                the game table via palcalc; falls back to the old ceiling-only
+                line for the one pal palcalc doesn't carry. */}
+            {wildLevelRange(name)
+              ? <Badge kind="plain">found in wild {wildLevelRange(name)}</Badge>
+              : p.max_wild_level != null
+                ? <Badge kind="plain">found in wild up to Lv {p.max_wild_level}</Badge>
+                : null}
           </View>
         </Card>
 
@@ -205,28 +232,71 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
 
         {Object.keys(p.work ?? {}).length > 0 && (
           <Card style={{ marginTop: 10 }}>
-            <Text style={s.h3}>Work suitability</Text>
-            <View style={[s.wrap, { marginTop: 8 }]}>
-              {Object.entries(p.work).sort((x, y) => y[1] - x[1]).map(([job, lvl]) => (
-                <View key={job} style={[s.chip, {
-                  backgroundColor: T.surface2, flexDirection: 'row',
-                  alignItems: 'center', gap: 5, paddingHorizontal: 8, paddingVertical: 3,
-                }]}>
-                  {WORK_ICONS[job] && (
-                    <Image source={WORK_ICONS[job]} style={{ width: 20, height: 20 }} />
-                  )}
-                  <Text style={[s.chipText, { color: T.ink }]}>
-                    {workLabel(job)} <Text style={{ color: T.accentInk }}>{lvl}</Text>
-                  </Text>
-                </View>
-              ))}
+            <View style={[s.row, { gap: 8 }]}>
+              <Text style={[s.h3, { flex: 1 }]}>Work suitability</Text>
+              {stars === 4 && (
+                <Text style={{ color: T.goldInk, fontSize: 11, fontWeight: '800' }}>
+                  4★ — every job +1
+                </Text>
+              )}
             </View>
+            <View style={[s.wrap, { marginTop: 8 }]}>
+              {Object.entries(p.work).sort((x, y) => y[1] - x[1]).map(([job, lvl]) => {
+                // 4★ raises EVERY existing suitability by 1 (wiki-verified).
+                // At 1-3★ the game raises ONE job and does not say which, so
+                // we refuse to guess a number here — see the note below.
+                const boosted = stars === 4 ? lvl + 1 : lvl;
+                return (
+                  <View key={job} style={[s.chip, {
+                    backgroundColor: boosted > lvl ? T.goldSoft : T.surface2,
+                    borderWidth: boosted > lvl ? 1 : 0,
+                    borderColor: boosted > lvl ? T.gold : 'transparent',
+                    flexDirection: 'row',
+                    alignItems: 'center', gap: 5, paddingHorizontal: 8, paddingVertical: 3,
+                  }]}>
+                    {WORK_ICONS[job] && (
+                      <Image source={WORK_ICONS[job]} style={{ width: 20, height: 20 }} />
+                    )}
+                    <Text style={[s.chipText, { color: T.ink }]}>
+                      {workLabel(job)}{' '}
+                      {boosted > lvl ? (
+                        <Text style={{ color: T.goldInk }}>
+                          <Text style={{
+                            color: T.faint, textDecorationLine: 'line-through',
+                          }}>{lvl}</Text> {boosted}
+                        </Text>
+                      ) : (
+                        <Text style={{ color: T.accentInk }}>{lvl}</Text>
+                      )}
+                    </Text>
+                  </View>
+                );
+              })}
+            </View>
+            {stars > 0 && stars < 4 && (
+              <Text style={[s.body, { fontSize: 11.5, marginTop: 8, color: T.goldInk }]}>
+                At {stars}★ the game raises one of its work suitabilities by +1 — it
+                never says which one, so we don't put a made-up number on it. At 4★
+                every job above goes up.
+              </Text>
+            )}
           </Card>
         )}
 
         {p.partner_skill && (
           <Card style={{ marginTop: 10 }}>
-            <Text style={s.h3}>Partner skill — {p.partner_skill}</Text>
+            <View style={[s.row, { gap: 8 }]}>
+              <Text style={[s.h3, { flex: 1 }]}>Partner skill — {p.partner_skill}</Text>
+              <View style={{
+                borderWidth: 1, borderColor: stars > 0 ? T.gold : T.line,
+                backgroundColor: stars > 0 ? T.goldSoft : T.surface2,
+                borderRadius: 7, paddingHorizontal: 7, paddingVertical: 2,
+              }}>
+                <Text style={{
+                  color: stars > 0 ? T.goldInk : T.muted, fontSize: 10.5, fontWeight: '800',
+                }}>LEVEL {stars + 1} OF 5</Text>
+              </View>
+            </View>
             <Text style={[s.body, { marginTop: 4 }]}>{p.partner_effect}</Text>
           </Card>
         )}
@@ -294,14 +364,36 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
                         )}
                       </View>
                     ))}
-                    <Text style={[s.body, { fontSize: 12, color: T.faint }]}>
-                      Full list: Calculator → Child → parents.
-                    </Text>
                   </View>
                 );
               })()}
             </>
           )}
+          {/* the card DOES something now — it used to end by telling the
+              player to go navigate somewhere themselves (CEO 2026-08-15) */}
+          <View style={[s.wrap, { marginTop: 2 }]}>
+            <Btn small primary label="Show me every pair"
+              onPress={() => {
+                onClose();
+                navigateTo({
+                  domain: 'breeding', tab: 'calc',
+                  payload: { pal: name, mode: 'reverse', fromCard: name },
+                });
+              }} />
+            {!ownedAny(name) && (
+              <Btn small label={planned ? 'Already a goal ✓' : 'Plan how to get it'}
+                onPress={() => {
+                  void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+                  addPlanTarget(name);
+                  setPlanned(true);
+                  onClose();
+                  navigateTo({
+                    domain: 'breeding', tab: 'plan',
+                    payload: { fromCard: name },
+                  });
+                }} />
+            )}
+          </View>
         </Card>
 
         {(asParent.length > 0 || gendered.some((g) => g.child !== name)) && (

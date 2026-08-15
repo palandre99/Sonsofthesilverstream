@@ -15,7 +15,7 @@ import {
 } from '../store';
 import { closure } from '../engine/planner';
 import { PalDetail } from '../ui/PalDetail';
-import { rarityTint } from '../data/rarity';
+import { rarityStyle } from '../data/rarity';
 import * as Haptics from 'expo-haptics';
 import { WORK_ICONS } from '../data/workIcons';
 import { ELEMENT_ICONS } from '../data/statIcons';
@@ -27,16 +27,22 @@ import {
   applyFilters, NO_FILTERS, sortedPals, type Filters, type SortKey,
 } from '../ui/palFilters';
 
-const Row = memo(function Row({ name, onOpen }: { name: string; onOpen: (n: string) => void }) {
+const Row = memo(function Row({ name, onOpen, focus }: {
+  name: string; onOpen: (n: string) => void; focus?: string | null;
+}) {
   const p = pals[name];
   const owned = ownedAny(name);
+  // List rows stay calm (CEO 2026-08-15: NOT coloured cards here) — rarity
+  // shows as a thin edge tint only; the dyed experience lives on the info
+  // card you open.
+  const r = rarityStyle(p?.rarity);
   return (
     <Pressable
       onPress={() => onOpen(name)}
       style={({ pressed }) => [{
         flexDirection: 'row', alignItems: 'center', gap: 8,
         backgroundColor: T.surface, borderColor: T.line, borderWidth: 1,
-        borderLeftWidth: 3, borderLeftColor: rarityTint(p?.rarity, T.line),
+        borderLeftWidth: 3, borderLeftColor: r.weight > 0 ? r.line : T.line,
         borderRadius: 12, padding: 8, marginBottom: 6, opacity: owned ? 1 : 0.65,
       }, pressed && { borderColor: T.accent }]}
     >
@@ -47,7 +53,7 @@ const Row = memo(function Row({ name, onOpen }: { name: string; onOpen: (n: stri
         </Text>
         <View style={[s.wrap, { marginTop: 2 }]}>
           <ElementChips name={name} />
-          <WorkChips name={name} top={1} />
+          <WorkChips name={name} top={focus ? 2 : 1} focus={focus} />
         </View>
       </View>
       <GenderToggles name={name} size={28} />
@@ -143,6 +149,10 @@ export function PaldexScreen() {
     return sortedPals(list, sort);
   }, [q, filters, sort, box]);
 
+  // the job the list is currently about — highlighted on every row so a
+  // filtered list is visibly still that filter as you scroll
+  const focusJob = filters.work ?? (sort.startsWith('work:') ? sort.slice(5) : null);
+
   const OWN_LABELS: Record<Filters['own'], string> = {
     all: 'All', owned: 'Owned', missing: 'Missing',
     pairready: 'Have ♂+♀', onegender: 'One gender',
@@ -150,14 +160,14 @@ export function PaldexScreen() {
   const activeBits: string[] = [];
   if (filters.own !== 'all') activeBits.push(OWN_LABELS[filters.own]);
   if (filters.elements.length) activeBits.push(filters.elements.join('/'));
-  if (filters.work) activeBits.push(workLabel(filters.work));
-  if (sort !== 'number') {
+  if (filters.work) activeBits.push(`${workLabel(filters.work)} pals`);
+  if (sort !== 'number' && !(filters.work && sort === `work:${filters.work}`)) {
     const sortNames: Record<string, string> = {
       name: 'A–Z', rarity_desc: 'Rarest first', rarity_asc: 'Common first',
-      hp: 'by HP', atk: 'by Attack', def: 'by Defense',
+      hp: 'by Health', atk: 'by Attack', def: 'by Defense',
     };
     activeBits.push(sort.startsWith('work:')
-      ? `by ${workLabel(sort.slice(5))}` : sortNames[sort] ?? sort);
+      ? `best ${workLabel(sort.slice(5))} first` : sortNames[sort] ?? sort);
   }
 
   return (
@@ -189,11 +199,14 @@ export function PaldexScreen() {
       )}
       <FlatList
         keyboardShouldPersistTaps="handled"
+        // the keyboard used to sit on top of the results the moment you
+        // scrolled to read them (CEO 2026-08-15)
+        keyboardDismissMode="on-drag"
         data={names}
         keyExtractor={(n) => n}
         initialNumToRender={12}
         windowSize={7}
-        renderItem={({ item }) => <Row name={item} onOpen={setOpen} />}
+        renderItem={({ item }) => <Row name={item} onOpen={setOpen} focus={focusJob} />}
         ListEmptyComponent={<Text style={[s.body, { textAlign: 'center', marginTop: 30 }]}>Nothing matches those filters.</Text>}
         ListFooterComponent={
           <View style={[s.wrap, { justifyContent: 'center', paddingVertical: 14 }]}>

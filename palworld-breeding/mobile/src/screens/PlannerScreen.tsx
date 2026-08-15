@@ -8,8 +8,9 @@ import { cakeNeeds } from '../engine/boosters';
 import { HELPER_NAMES, helperAdvice, type HelperAdvice } from '../engine/helpers';
 import { T } from '../theme';
 import {
-  Badge, Btn, Card, PageHead, PalIcon, WorkChips, s,
+  BackToCardChip, Badge, Btn, Card, PageHead, PalIcon, WorkChips, s,
 } from '../ui/kit';
+import { onNavIntent, takeIntentPayload } from '../nav/intent';
 import { PalPicker } from '../ui/PalPicker';
 import {
   clearPlan, completeStep, getBox, getChecks, getPlan, hasGender, ownedAny,
@@ -124,6 +125,21 @@ export function PlannerScreen() {
   const [managing, setManaging] = useState<'none' | 'reset' | 'clear'>('none');
   const [bursts, setBursts] = useState<Record<string, number>>({});
   const [viewing, setViewing] = useState<string | null>(null);
+  // "Plan how to get it" on a pal card lands here — keep a one-tap way back
+  // to that exact card so the player never re-scrolls the Paldex for it
+  const [fromCard, setFromCard] = useState<string | null>(null);
+  useEffect(() => {
+    const apply = () => {
+      const p = takeIntentPayload('plan');
+      if (p?.fromCard) setFromCard(p.fromCard);
+      // a card's "Plan how to get it" may have grown the plan while this
+      // screen was already open — keep the local goal chips in sync
+      const t = getPlan()?.targets;
+      if (t) setTargets((prev) => (prev.join() === t.join() ? prev : t));
+    };
+    apply();
+    return onNavIntent(apply);
+  }, []);
 
   const box = getBox();
   const ownedNames = Object.keys(box);
@@ -310,6 +326,12 @@ export function PlannerScreen() {
     <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
       <PageHead title="Route Planner"
         sub="Shortest shared breeding tree from your box — shared intermediates counted once, phases run in parallel, gender-aware ready-states." />
+
+      {fromCard && (
+        <BackToCardChip name={fromCard}
+          onOpen={() => setViewing(fromCard)}
+          onDismiss={() => setFromCard(null)} />
+      )}
 
       {ownedNames.length === 0 && (
         <Card style={{ backgroundColor: T.warnSoft, borderColor: T.warn, marginBottom: 12 }}>

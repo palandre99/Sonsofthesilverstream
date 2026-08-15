@@ -21,6 +21,26 @@ export function FilterSheet({ filters, sort, onApply, onClose }: {
   const [f, setF] = useState<Filters>(filters);
   const [sk, setSk] = useState<SortKey>(sort);
 
+  /** Every chip in this sheet turns OFF when you tap it again — the CEO hit a
+   * sort chip he could not un-choose (2026-08-15). Radio-style groups fall
+   * back to their neutral value rather than staying stuck. */
+  const pickSort = (k: SortKey) => setSk(sk === k ? 'number' : k);
+  const pickOwn = (o: Filters['own']) =>
+    setF({ ...f, own: f.own === o ? 'all' : o });
+
+  /** One tap on a job means what a player means: "only pals that can do this,
+   * best first." Two controls that looked identical — one sorting, one
+   * filtering — is what made a Kindling filter look broken as you scrolled. */
+  const pickWork = (w: string) => {
+    if (f.work === w) {
+      setF({ ...f, work: null });
+      if (sk === `work:${w}`) setSk('number');
+    } else {
+      setF({ ...f, work: w });
+      setSk(`work:${w}` as SortKey);
+    }
+  };
+
   const Chip = ({ on, label, icon, onPress }: {
     on: boolean; label: string; icon?: number; onPress: () => void;
   }) => (
@@ -43,13 +63,18 @@ export function FilterSheet({ filters, sort, onApply, onClose }: {
     </Pressable>
   );
 
-  const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
+  const Section = ({ title, hint, children }: {
+    title: string; hint?: string; children: React.ReactNode;
+  }) => (
     <View style={{ gap: 7 }}>
       <Text style={{
         color: T.faint, fontSize: 10.5, fontWeight: '800',
         letterSpacing: 1, textTransform: 'uppercase',
       }}>{title}</Text>
       <View style={[s.wrap]}>{children}</View>
+      {hint ? (
+        <Text style={{ color: T.accentInk, fontSize: 11.5, fontWeight: '600' }}>{hint}</Text>
+      ) : null}
     </View>
   );
 
@@ -64,27 +89,12 @@ export function FilterSheet({ filters, sort, onApply, onClose }: {
           <Btn small label="Reset" onPress={() => { setF(NO_FILTERS); setSk('number'); }} />
         </View>
         <ScrollView contentContainerStyle={{ padding: 16, gap: 18, paddingBottom: 30 }}>
-          <Section title="Sort by">
-            <Chip on={sk === 'number'} label="Number" onPress={() => setSk('number')} />
-            <Chip on={sk === 'name'} label="Name" onPress={() => setSk('name')} />
-            <Chip on={sk === 'rarity_desc'} label="Rarest first" onPress={() => setSk('rarity_desc')} />
-            <Chip on={sk === 'rarity_asc'} label="Common first" onPress={() => setSk('rarity_asc')} />
-            <Chip on={sk === 'hp'} label="HP" onPress={() => setSk('hp')} />
-            <Chip on={sk === 'atk'} label="Attack" onPress={() => setSk('atk')} />
-            <Chip on={sk === 'def'} label="Defense" onPress={() => setSk('def')} />
-          </Section>
-          <Section title="Sort by work suitability">
+          <Section title="Work — shows only pals that can do it, best first"
+            hint={f.work ? `Showing ${workLabel(f.work)} pals, highest level first.` : undefined}>
             {WORK_KEYS.map((w) => (
-              <Chip key={w} on={sk === `work:${w}`} icon={WORK_ICONS[w]}
-                label={workLabel(w)} onPress={() => setSk(`work:${w}` as SortKey)} />
+              <Chip key={w} on={f.work === w} icon={WORK_ICONS[w]} label={workLabel(w)}
+                onPress={() => pickWork(w)} />
             ))}
-          </Section>
-          <Section title="Ownership">
-            <Chip on={f.own === 'all'} label="All" onPress={() => setF({ ...f, own: 'all' })} />
-            <Chip on={f.own === 'owned'} label="Owned" onPress={() => setF({ ...f, own: 'owned' })} />
-            <Chip on={f.own === 'missing'} label="Missing" onPress={() => setF({ ...f, own: 'missing' })} />
-            <Chip on={f.own === 'pairready'} label="Have ♂ + ♀" onPress={() => setF({ ...f, own: 'pairready' })} />
-            <Chip on={f.own === 'onegender'} label="One gender" onPress={() => setF({ ...f, own: 'onegender' })} />
           </Section>
           <Section title="Element">
             {ELEMENTS.map((e) => (
@@ -97,11 +107,20 @@ export function FilterSheet({ filters, sort, onApply, onClose }: {
                 })} />
             ))}
           </Section>
-          <Section title="Must have work suitability">
-            {WORK_KEYS.map((w) => (
-              <Chip key={w} on={f.work === w} icon={WORK_ICONS[w]} label={workLabel(w)}
-                onPress={() => setF({ ...f, work: f.work === w ? null : w })} />
-            ))}
+          <Section title="Ownership">
+            <Chip on={f.own === 'owned'} label="Owned" onPress={() => pickOwn('owned')} />
+            <Chip on={f.own === 'missing'} label="Missing" onPress={() => pickOwn('missing')} />
+            <Chip on={f.own === 'pairready'} label="Have ♂ + ♀" onPress={() => pickOwn('pairready')} />
+            <Chip on={f.own === 'onegender'} label="One gender" onPress={() => pickOwn('onegender')} />
+          </Section>
+          <Section title="Order">
+            <Chip on={sk === 'number'} label="Paldex number" onPress={() => setSk('number')} />
+            <Chip on={sk === 'name'} label="A–Z" onPress={() => pickSort('name')} />
+            <Chip on={sk === 'rarity_desc'} label="Rarest first" onPress={() => pickSort('rarity_desc')} />
+            <Chip on={sk === 'rarity_asc'} label="Common first" onPress={() => pickSort('rarity_asc')} />
+            <Chip on={sk === 'hp'} label="Health" onPress={() => pickSort('hp')} />
+            <Chip on={sk === 'atk'} label="Attack" onPress={() => pickSort('atk')} />
+            <Chip on={sk === 'def'} label="Defense" onPress={() => pickSort('def')} />
           </Section>
         </ScrollView>
         <View style={{

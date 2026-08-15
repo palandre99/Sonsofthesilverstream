@@ -8,7 +8,7 @@ import * as Haptics from 'expo-haptics';
 import { T } from '../theme';
 import { Badge, Btn, ElementChips, getRecentPicks, PalIcon, rememberPick, s } from './kit';
 import { Icon } from './Icon';
-import { rarityTint } from '../data/rarity';
+import { rarityStyle } from '../data/rarity';
 import { ELEMENTS as PICKER_ELEMENTS } from '../data/elements';
 import { ELEMENT_ICONS } from '../data/statIcons';
 import { ownedAny, pals, useAppVersion } from '../store';
@@ -60,6 +60,9 @@ export function PalPicker({ visible, onClose, onPick, title, exclude }: {
   const Row = ({ n }: { n: string }) => {
     const excluded = exclude?.has(n) ?? false;
     const owned = ownedAny(n);
+    // rows stay calm — rarity is a thin edge tint; the dyed look belongs to
+    // the info card only (CEO 2026-08-15)
+    const r = rarityStyle(pals[n]?.rarity);
     return (
       <Pressable
         disabled={excluded}
@@ -75,7 +78,7 @@ export function PalPicker({ visible, onClose, onPick, title, exclude }: {
           backgroundColor: pressed ? T.accentSoft : T.surface,
           borderWidth: 1, borderColor: pressed ? T.accent : T.line,
           borderLeftWidth: 3,
-          borderLeftColor: pressed ? T.accent : rarityTint(pals[n]?.rarity, T.line),
+          borderLeftColor: pressed ? T.accent : r.weight > 0 ? r.line : T.line,
           marginBottom: 6, opacity: excluded ? 0.45 : 1,
         }]}
       >
@@ -200,6 +203,7 @@ export function PalPicker({ visible, onClose, onPick, title, exclude }: {
           data={names}
           keyExtractor={(n) => n}
           keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="on-drag"
           initialNumToRender={12}
           windowSize={7}
           contentContainerStyle={{ padding: 12, paddingBottom: 40 }}
