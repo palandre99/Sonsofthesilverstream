@@ -186,9 +186,12 @@ loops all night INSIDE the Breeding + Paldex domain (his explicit scope).
       blue/green, epic purple, legendary gold — match the GAME's palette,
       research exact in-game rarity colors first).
 - [ ] Stars on the pal card (condensation): tappable 0-4 stars that update
-      stats/suitability/partner skill live. RESEARCH FIRST: exactly what
-      each star changes per the game files (partner skill rank? work +1?
-      stat %?) — model only what the data proves.
+      stats/suitability/partner skill live. RESEARCH FIRST — progress
+      2026-08-15: palcalc db has Rank + WorkSuitabilityAddRank_* keys (those
+      are partner-skill work bonuses, NOT per-star scaling); per-star
+      stat/partner-skill scaling table not yet located. Next: grep palcalc db
+      for Upgrade/rank-up tables; else paldb research. Model ONLY what the
+      data proves.
 - [ ] Standing: brutal AAA design pass, find hundreds of own improvements.
 - [ ] CEO caught the loop idle overnight — wakeups must be re-armed EVERY
       turn end, no exceptions.

@@ -12,7 +12,72 @@ import {
   type OwnedGenders,
 } from '../state';
 import { closure } from '../engine/planner';
+import { ALPHA_SPOTS } from '../data/alphaSpots.g';
+import { REGION_SPOTS } from '../data/regionSpots.g';
+import { rarityTint } from '../data/rarity';
 import { ElementChips, GenderToggles, LockBadge, PalIcon, StatBars, WorkChips } from '../components/shared';
+
+/** The game map with this pal's spawn regions (teal) and fixed alpha spots
+ * (gold). Real coordinates only, projected with the game's own transforms —
+ * see tools/extract_region_spots.py. Hidden when the map asset is absent
+ * (single-file build). */
+function PalMapWeb({ name }: { name: string }) {
+  const [imgOk, setImgOk] = useState(true);
+  const info = pals.value[name];
+  const spots = ALPHA_SPOTS[name] ?? [];
+  const onMap = spots.filter((sp) => !sp.off);
+  const offMap = spots.filter((sp) => sp.off);
+  const regions = (info?.regions ?? []).filter((r) => REGION_SPOTS[r]);
+  const unknown = (info?.regions ?? []).filter((r) => !REGION_SPOTS[r]);
+  if (!spots.length && !regions.length && !unknown.length) return null;
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
+      {imgOk && (onMap.length > 0 || regions.length > 0) && (
+        <div style={{
+          position: 'relative', borderRadius: '10px', overflow: 'hidden',
+          border: '1px solid var(--line)', aspectRatio: '1',
+        }}>
+          <img src={`${import.meta.env.BASE_URL}map2048.jpg`} alt={`Map: where ${name} appears`}
+            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+            onError={() => setImgOk(false)} />
+          {regions.map((r) => (
+            <span key={r} style={{
+              position: 'absolute',
+              left: `${REGION_SPOTS[r].x * 100}%`, top: `${REGION_SPOTS[r].y * 100}%`,
+              width: '14px', height: '14px', borderRadius: '50%',
+              border: '2.5px solid var(--accent)', background: 'rgba(63,193,201,0.3)',
+              transform: 'translate(-50%, -50%)',
+            }} />
+          ))}
+          {onMap.map((sp, i) => (
+            <span key={i} style={{
+              position: 'absolute', left: `${sp.x * 100}%`, top: `${sp.y * 100}%`,
+              width: '18px', height: '18px', borderRadius: '50%',
+              border: '3px solid #E3B341', background: 'rgba(240,180,65,0.28)',
+              transform: 'translate(-50%, -50%)',
+            }} />
+          ))}
+        </div>
+      )}
+      {onMap.map((sp, i) => (
+        <div key={`l${i}`} class="dim small">
+          Fixed boss{sp.lv != null ? ` (Lv ${sp.lv})` : ''} — {sp.place}
+        </div>
+      ))}
+      {regions.length > 0 && (
+        <div class="dim small">Spawns: {regions.join(' · ')}</div>
+      )}
+      {unknown.length > 0 && (
+        <div class="dim small">Also roams: {unknown.join(' · ')}</div>
+      )}
+      {offMap.map((sp, i) => (
+        <div key={`o${i}`} class="dim small">
+          {sp.place}{sp.lv != null ? ` (Lv ${sp.lv})` : ''} — beyond the base map
+        </div>
+      ))}
+    </div>
+  );
+}
 
 const ELEMENTS = ['Neutral', 'Fire', 'Water', 'Grass', 'Electric', 'Ice', 'Ground', 'Dark', 'Dragon'];
 const WORKS = ['Kindling', 'Watering', 'Planting', 'Generating_Electricity', 'Handiwork',
@@ -319,12 +384,13 @@ function Drawer({ name, onClose }: { name: string; onClose: () => void }) {
         )}
 
         <section>
-          <h4>In the wild</h4>
-          <div class="kv">
-            {p.wild
-              ? p.regions.map((r) => <span key={r} class="chip">{r}</span>)
-              : <span class="badge plain">no regular wild spawn</span>}
-            {p.egg_types.map((e) => <span key={e} class="chip">🥚 {e}</span>)}
+          <h4>Where to find it</h4>
+          <PalMapWeb name={name} />
+          <div class="kv" style={{ marginTop: '8px' }}>
+            {!p.wild && !ALPHA_SPOTS[name] && (
+              <span class="badge plain">no regular wild spawn — breed it</span>
+            )}
+            {p.egg_types.map((e) => <span key={e} class="chip">Egg: {e}</span>)}
           </div>
         </section>
       </aside>
@@ -488,7 +554,8 @@ export function PaldexPage() {
         {names.map((n) => {
           const has = ownedAny(n);
           return (
-            <div key={n} class={`boxrow${has ? '' : ' off'}`}>
+            <div key={n} class={`boxrow${has ? '' : ' off'}`}
+              style={{ borderLeft: `3px solid ${rarityTint(pals.value[n].rarity, 'var(--line)')}` }}>
               <button class="rowmain" onClick={() => nav(`paldex/${encodeURIComponent(n)}`)}
                 aria-label={`Open ${n}`}>
                 <PalIcon name={n} size={38} />
