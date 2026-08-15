@@ -108,6 +108,10 @@ Add everything you find; finding nothing means you didn't look.*
 
 ## WEBSITE
 
+- [x] 2026-08-15 ~20:45: Web parity for SUGGESTED GOALS shipped + DEPLOYED
+      live — components/goals.tsx (same brain: stage-aware chips, per-chip
+      add, saddle levels, community-labelled lists); PRESETS deleted.
+      Eye-verified on 5183, bundle index-eqOTRsOg.js confirmed live.
 - [ ] Web parity for the domain architecture (side panel domains + per-domain
       tabs, Paldex center) — mobile shipped 2026-08-15, web still has the flat
       sidebar.
