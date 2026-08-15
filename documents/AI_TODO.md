@@ -228,3 +228,21 @@ loops all night INSIDE the Breeding + Paldex domain (his explicit scope).
       public signed .ipa). RITUAL UPDATE: each new FAST build must update
       app/public/install/manifest.plist (ipa URL + version) AND INSTALL-LINK
       pointers, then redeploy Pages.
+
+## CEO FEEDBACK ~12:25 (fast app installed and in his hands)
+- [ ] MAP OVERHAUL in the info card: (a) asset "looks terrible, not like
+      the game" — find the real in-game-style world map art (research
+      wiki/paldb sources; credit; NOT the stylized biome image); (b) "way
+      too small, just an image" — tap to open FULLSCREEN with pan + pinch
+      zoom, pins preserved (this pal's spawns only). This is the seed of
+      the future Map fane.
+- [ ] Plan target search: "still terrible, part of one of those auto
+      bubbles" — unify with Paldex: full-screen picker with the SAME
+      Filter & Sort sheet (share FilterSheet between Paldex and PalPicker).
+- [ ] "Add targets" UX: smarter/cleaner/expanded — preset cards with
+      descriptions, suggested goals, better visual hierarchy.
+- [ ] Deep competitor research round 2 (agent launched): breeding planners,
+      Dododex-class companions, interactive map apps — mine UX patterns;
+      update 03_MARKET_RESEARCH + 04_PRODUCT_BLUEPRINT + plan docs.
+- [ ] CEO's installed build predates today's OTAs on first open — verify
+      his app pulls the newest update on next reopen (channel preview).
