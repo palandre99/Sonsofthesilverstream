@@ -19,6 +19,8 @@ export interface PalInfo {
   nocturnal: boolean | null;
   wild: boolean;
   regions: string[];
+  /** absent in older data exports */
+  max_wild_level?: number | null;
   egg_types: string[];
 }
 

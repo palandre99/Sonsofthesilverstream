@@ -4,7 +4,7 @@
  * so they count as both — that's what the keep-both-genders warnings are for).
  * Planning runs in a Web Worker; targets, results and check-offs persist. */
 import { useEffect, useMemo, useState } from 'preact/hooks';
-import { box, hasGender, nav, ownedAny, selfOnly, setOwnedGender, storage } from '../state';
+import { box, hasGender, nav, ownedAny, pals, selfOnly, setOwnedGender, storage } from '../state';
 import { GenderToggles, LockBadge, PalIcon, PalPicker, WorkChips } from '../components/shared';
 import { stepId } from '../engine/planner';
 import { parseGenderNote } from '../engine/formula';
@@ -472,6 +472,14 @@ export function PlanPage() {
                         </div>
                       </div>
                       <p style={{ fontSize: '12.5px', margin: '6px 0' }}>{a.note}</p>
+                      {a.status === 'suggest' && (a.addSteps ?? 0) >= 4
+                        && pals.value[h.name]?.wild && pals.value[h.name].regions.length > 0 && (
+                        <p style={{ fontSize: '12px', margin: '0 0 6px', color: 'var(--accent-ink, var(--accent))' }}>
+                          Faster to catch one: {pals.value[h.name].regions.slice(0, 2).join(' · ')}
+                          {pals.value[h.name].max_wild_level
+                            ? ` (found up to Lv ${pals.value[h.name].max_wild_level})` : ''}
+                        </p>
+                      )}
                       {a.status === 'suggest' && !isTarget && (
                         <button class={`btn sm${a.recommended ? ' primary' : ''}`} disabled={busy}
                           onClick={() => addHelper(h.name)}>

@@ -483,6 +483,14 @@ export function PlannerScreen() {
                       </View>
                     </Pressable>
                     <Text style={[s.body, { fontSize: 12 }]}>{a.note}</Text>
+                    {a.status === 'suggest' && (a.addSteps ?? 0) >= 4
+                      && pals[h.name]?.wild && pals[h.name].regions.length > 0 && (
+                      <Text style={[s.body, { fontSize: 12, color: T.accentInk }]}>
+                        Faster to catch one: {pals[h.name].regions.slice(0, 2).join(' · ')}
+                        {pals[h.name].max_wild_level
+                          ? ` (found up to Lv ${pals[h.name].max_wild_level})` : ''}
+                      </Text>
+                    )}
                     {a.status === 'suggest' && !isTarget && (
                       <View style={[s.wrap]}>
                         <Btn small primary={a.recommended}
