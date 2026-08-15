@@ -374,11 +374,12 @@ quietly narrowed. Tick only when shipped AND eye-verified.*
       combat-drop vs ranch split first.
 - [x] C4e: meta.ts is the only subjective file, carries sources + rejection
       note (skycoach = dated); vitest guards all meta names (72 tests).
-- [ ] C4-NEXT: composite-worker roles ("best farmer" = gathering+planting+
-      transporting mix), drop-booster sub-classification, breed-distance
-      costing (addSteps) for near-miss goods ("close to breed" beyond
-      reachable-set), passives-on-pals research (guaranteed passive lines),
-      CEO eye-verdict on the v2 sheet.
+- [x] 2026-08-15 ~21:00 composite crews SHIPPED both platforms + OTA'd:
+      Farm/Logging/Mining/All-rounders, summed work levels with per-job
+      breakdown on chips (Dandilord farm 16 / all-round 28, Knocklem mine 14).
+- [ ] C4-NEXT remaining: drop-booster sub-classification (35 pals, ranch vs
+      combat), passives-on-pals research (guaranteed passive lines),
+      CEO eye-verdict on the whole Suggested Goals surface.
 
 ### C5. CEO FEEDBACK — evening 2026-08-15 (rarity design iterations)
 - [x] "Rarity colours terrible, not even the card coloured" → v2 dyed rows
