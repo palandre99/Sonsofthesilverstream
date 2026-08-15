@@ -130,13 +130,27 @@ loops all night INSIDE the Breeding + Paldex domain (his explicit scope).
 - [x] Grammar: no "1 steps"/"1 cakes"; empty plan shows "Nothing left to
       breed" instead of zero-math
 
+### Landed after the ledger was written (all verified + shipped)
+- [x] Readiness pills eye-verified + OTA'd
+- [x] Web parity: helpers card (worker-computed), readiness pills, empty-plan
+      state, roster-preserving reshapes (domains nav + filter sheet still open)
+- [x] FREEZE HOTFIX (CEO report + brutal-reviewer CONFIRMED, measured):
+      helperAdvice 4437ms -> 335ms via shared derivations; no recompute on
+      tick; negative "+-4 steps" fixed via plan-roster math; reshapes keep
+      ticks (roster snapshot); panel-drag stale closure; jargon labels;
+      faithful "Sometimes drops" game text; dead code pruned
+- [x] CEO UX round 2: advice computed WITH the plan (same frame, persisted,
+      worker-side on web), Add/Remove busy labels ("Adding..."), legacy-plan
+      backfill; EAS preview build fired for a fast near-release app
+      (build 68e1c1de, watcher armed)
+
 ### Open — do these before anything else
-- [ ] EYE-VERIFY readiness pills + empty-plan card on 8085, then OTA
-- [ ] Web parity for ALL of tonight (domains nav, filter sheet, helpers card,
-      parents-row fix, readiness pills, vector-icon chrome) — web tests must
-      stay green, engine copies identical
-- [ ] Advice row right after Add: note text lags one recompute — make the
-      in-plan note appear immediately (recompute synchronously on add)
+- [ ] Preview build 68e1c1de: when FINISHED give CEO the install link; then
+      keep pushing every OTA to BOTH branches (development + preview) and
+      add the preview branch to PUSH-UPDATE.cmd
+- [ ] Web parity still missing: domains side-panel nav + Paldex filter sheet
+- [ ] Profile-switch write race (reviewer #8): guard persist ordering in
+      switchProfile before any more store writers land
 - [ ] Smart catch-vs-breed advice: when addSteps is huge (Braloha +19),
       recommend CATCHING it instead — wild spawn regions are in the dataset;
       show "or catch one: <region>" in the advice row

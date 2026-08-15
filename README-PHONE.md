@@ -2,6 +2,18 @@
 
 Same system as Stride. Double-click, that's it.
 
+## ⚡ NEW (2026-08-15): the FAST app — install this one
+The dev app runs debug code through an internet tunnel, which is why images
+and screens feel slow. The **FAST version** is a near-release build: full
+speed, images bundled on the phone, and it still gets every update
+automatically when you reopen it. Install it once from your iPhone:
+
+> open `PALFORGE-FAST-INSTALL.html` (in this folder) on the phone, or go to
+> https://expo.dev/accounts/palandre99/projects/hatchlab/builds/68e1c1de-3a5d-4f8b-9388-74d4733b61b5
+
+Keep both: **Palforge (fast)** for daily testing, **Palforge DEV** for
+live-coding sessions with START-APP.cmd.
+
 ## 1. BUILD-DEV.cmd — run ONCE (~15 min)
 Builds the **Palforge DEV** app for your phone in Expo's cloud.
 - It asks *"Do you want to log in to your Apple account?"* → type `y`
