@@ -339,6 +339,7 @@ export function PaldexPage() {
   const [el, setEl] = useState('');
   const [work, setWork] = useState('');
   const [ownFilter, setOwnFilter] = useState<OwnFilter>('all');
+  const [sort, setSort] = useState('number');
   const [panel, setPanel] = useState<'none' | 'import' | 'clear'>('none');
   const [copied, setCopied] = useState<'' | 'list' | 'json'>('');
   const [armUnown, setArmUnown] = useState(false);
@@ -361,14 +362,29 @@ export function PaldexPage() {
         .sort((a, b) => (pals.value[b].work[work] ?? 0) - (pals.value[a].work[work] ?? 0));
     }
     switch (ownFilter) {
-      case 'owned': return list.filter(ownedAny);
-      case 'missing': return list.filter((n) => !ownedAny(n));
-      case 'pairready': return list.filter((n) => hasGender(n, 'm') && hasGender(n, 'f'));
+      case 'owned': list = list.filter(ownedAny); break;
+      case 'missing': list = list.filter((n) => !ownedAny(n)); break;
+      case 'pairready': list = list.filter((n) => hasGender(n, 'm') && hasGender(n, 'f')); break;
       case 'onegender':
-        return list.filter((n) => ownedAny(n) && !(hasGender(n, 'm') && hasGender(n, 'f')));
-      default: return list;
+        list = list.filter((n) => ownedAny(n) && !(hasGender(n, 'm') && hasGender(n, 'f')));
+        break;
+      default: break;
     }
-  }, [q, el, work, ownFilter, box.value, pals.value]);
+    // an explicit sort beats the default number / work-level ordering
+    const RANK: Record<string, number> = { Legendary: 3, Epic: 2, Rare: 1, Common: 0 };
+    const p = pals.value;
+    const by: Record<string, (a: string, b: string) => number> = {
+      name: (a, b) => a.localeCompare(b),
+      rarity_desc: (a, b) =>
+        (RANK[p[b].rarity ?? ''] ?? -1) - (RANK[p[a].rarity ?? ''] ?? -1) || palNumberSort(a, b),
+      rarity_asc: (a, b) =>
+        (RANK[p[a].rarity ?? ''] ?? -1) - (RANK[p[b].rarity ?? ''] ?? -1) || palNumberSort(a, b),
+      hp: (a, b) => (p[b].hp ?? 0) - (p[a].hp ?? 0),
+      atk: (a, b) => (p[b].atk ?? 0) - (p[a].atk ?? 0),
+      def: (a, b) => (p[b].def ?? 0) - (p[a].def ?? 0),
+    };
+    return sort !== 'number' && by[sort] ? [...list].sort(by[sort]) : list;
+  }, [q, el, work, ownFilter, sort, box.value, pals.value]);
 
   // a different filter/search shows a different set — disarm the bulk delete
   useEffect(() => setArmUnown(false), [q, el, work, ownFilter]);
@@ -435,6 +451,15 @@ export function PaldexPage() {
         <select value={work} onChange={(e) => setWork(e.currentTarget.value)} aria-label="Work">
           <option value="">Any work</option>
           {WORKS.map((x) => <option key={x} value={x}>{workLabel(x)}</option>)}
+        </select>
+        <select value={sort} onChange={(e) => setSort(e.currentTarget.value)} aria-label="Sort">
+          <option value="number">Sort: number</option>
+          <option value="name">Sort: name A–Z</option>
+          <option value="rarity_desc">Rarest first</option>
+          <option value="rarity_asc">Common first</option>
+          <option value="hp">Highest HP</option>
+          <option value="atk">Highest Attack</option>
+          <option value="def">Highest Defense</option>
         </select>
       </div>
       <div class="filterrow" role="group" aria-label="Ownership filter">
