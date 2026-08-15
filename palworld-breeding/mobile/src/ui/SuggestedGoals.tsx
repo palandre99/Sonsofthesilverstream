@@ -1,19 +1,24 @@
 /** Suggested goals — the preset buttons grown into a real surface (CEO
  * 2026-08-15: "recommended pals should be a proper pop-up card… a suggestion
- * for all the best kindling, fighting, woodcutting etc").
+ * for all the best kindling, fighting, woodcutting etc" and "tap and open
+ * the full card so it's bigger, cleaner and smoother").
  *
- * Everything here is computed from game data, never hand-picked:
- *   - "Best at <job>" = the top pals by that suitability level in the
- *     dataset, ties broken by base-stat total. Tap a pal for its card;
- *     add the whole squad or one at a time.
- *   - Cake supply / breeding support / aura squads come from the verified
- *     helper registry and the aura claim in verification.json.
+ * ONE card system: every category renders through SectionCard (collapsed
+ * top-6 preview) and CategoryBrowser (full screen: search, big readable
+ * rows, add/remove on every pal, RECOMMENDED tags where a real quality
+ * gradient exists). Zero horizontal scrolling anywhere.
+ *
+ * Everything is computed from game data, never hand-picked; community
+ * numbers are labelled. The attainability + scoring brain lives in
+ * ../logic/recommend.ts — byte-identical on web and mobile.
  */
 import React, { useEffect, useMemo, useState } from 'react';
-import { Image, Modal, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
+import {
+  FlatList, Image, Modal, Pressable, ScrollView, Text, TextInput, View,
+} from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { T } from '../theme';
-import { Badge, Btn, Card, PalIcon, s } from './kit';
+import { Btn, Card, PalIcon, SearchInput, s } from './kit';
 import { Icon } from './Icon';
 import { PalDetail } from './PalDetail';
 import { WORK_ICONS } from '../data/workIcons';
@@ -25,7 +30,7 @@ import { WORK_KEYS } from './palFilters';
 import { HELPERS } from '../engine/helpers';
 import {
   attainLabel, attainScore, boxKeyOf, cachedDerivations, derivationsReady,
-  getAttainContext,
+  getAttainContext, recommendedSet, saddleGap, scoreOf, type Attain,
 } from '../logic/recommend';
 import { onNavIntent } from '../nav/intent';
 import { PALCALC_FACTS } from '../data/palcalcFacts.g';
@@ -33,21 +38,61 @@ import { BEST_OVERALL, COMBAT_COMMUNITY, MOUNT_CALLOUTS } from '../data/meta';
 import { MOUNTS, UTILITY_ROLES } from '../data/utilityRoles.g';
 import { SADDLE_LEVELS } from '../data/saddleLevels.g';
 
-/** top pals for one job — suitability level first, stat total second */
-function bestAt(job: string, n = 14): { name: string; lvl: number }[] {
-  return Object.keys(pals)
+/* ---------------- section data ---------------- */
+
+/** one pal inside a category, with everything its row can show */
+interface GoalItem {
+  name: string;
+  /** a real level (job suitability) — shown as "Lv N" only when true level */
+  lvl?: number;
+  /** per-job breakdown — rendered as work ICONS with numbers, never letter
+   * codes (CEO: "m7 t7 is terrible design") */
+  jobs?: [string, number][];
+  /** verbatim game partner-skill text */
+  effect?: string;
+  /** community why-line (labelled) */
+  why?: string;
+  /** community speed/quality callout (labelled) */
+  note?: string;
+  /** community favourite marker */
+  star?: boolean;
+  /** 0..1 within-section quality, for the scoring model */
+  value?: number;
+}
+
+interface SectionDef {
+  id: string;
+  title: string;
+  /** MaterialCommunityIcons name */
+  icon?: string;
+  /** WORK_ICONS key for job sections */
+  workIcon?: string;
+  gold?: boolean;
+  blurb: string;
+  items: GoalItem[];
+  /** true = the section has a real quality gradient → scored ordering and
+   * RECOMMENDED tags; false = membership list → actionable-first ordering */
+  scored?: boolean;
+}
+
+/** every pal that can do a job, best first — full depth for the browser */
+function bestAt(job: string): GoalItem[] {
+  const list = Object.keys(pals)
     .map((name) => ({ name, lvl: (pals[name].work ?? {})[job] ?? 0 }))
     .filter((x) => x.lvl > 0)
     .sort((a, b) => b.lvl - a.lvl
       || ((pals[b.name].hp ?? 0) + (pals[b.name].atk ?? 0) + (pals[b.name].def ?? 0))
-      - ((pals[a.name].hp ?? 0) + (pals[a.name].atk ?? 0) + (pals[a.name].def ?? 0)))
-    .slice(0, n);
+      - ((pals[a.name].hp ?? 0) + (pals[a.name].atk ?? 0) + (pals[a.name].def ?? 0)));
+  const top = list[0]?.lvl ?? 1;
+  return list.map((x) => ({
+    name: x.name, lvl: x.lvl, jobs: [[job, x.lvl]], value: x.lvl / top,
+  }));
 }
 
 /** Composite work crews — the CEO's "best farmer" insight (2026-08-15):
  * a pal with high Planting AND Gathering AND Transporting runs the whole
  * farm loop alone. Score = sum of the crew's work levels, from the dump;
- * the anchor job must be present. Formula stated plainly in each blurb. */
+ * the formula is stated plainly in each blurb. */
 const CREWS: { id: string; title: string; jobs: string[]; anchor: string; blurb: string }[] = [
   {
     id: 'crew-farm', title: 'Farm crew', anchor: 'Planting',
@@ -71,58 +116,475 @@ const CREWS: { id: string; title: string; jobs: string[]; anchor: string; blurb:
   },
 ];
 
-function crewRank(crew: { jobs: string[]; anchor: string }, n = 12):
-{ name: string; score: number; parts: string }[] {
-  return Object.keys(pals)
+function crewItems(crew: { jobs: string[]; anchor: string }): GoalItem[] {
+  const rows = Object.keys(pals)
     .map((name) => {
       const w = pals[name].work ?? {};
       if (crew.anchor && !(w[crew.anchor] > 0)) return null;
       const jobs = crew.jobs.length ? crew.jobs : Object.keys(w);
-      const score = jobs.reduce((s, j) => s + (w[j] ?? 0), 0);
+      const score = jobs.reduce((sum, j) => sum + (w[j] ?? 0), 0);
       const parts = jobs.filter((j) => w[j] > 0)
-        .map((j) => `${workLabel(j)[0]}${w[j]}`).join('·');
+        .map((j) => [j, w[j]] as [string, number]);
       return { name, score, parts };
     })
-    .filter((x): x is { name: string; score: number; parts: string } => !!x && x.score > 0)
+    .filter((x): x is { name: string; score: number; parts: [string, number][] } =>
+      !!x && x.score > 0)
     .sort((a, b) => b.score - a.score)
-    .slice(0, n);
+    .slice(0, 40);
+  const top = rows[0]?.score ?? 1;
+  return rows.map((x) => ({ name: x.name, jobs: x.parts, value: x.score / top }));
 }
 
 /** highest battle stats, straight from the dump — attack weighted double
- * because that's what kills bosses; the label in the UI says exactly this */
-function bestFighters(n = 12): { name: string; score: number }[] {
-  return Object.keys(pals)
+ * because that's what kills bosses; the blurb says exactly this */
+function fighterItems(): GoalItem[] {
+  const rows = Object.keys(pals)
     .map((name) => ({
       name,
       score: (pals[name].atk ?? 0) * 2 + (pals[name].hp ?? 0) + (pals[name].def ?? 0),
     }))
     .sort((a, b) => b.score - a.score)
-    .slice(0, n);
+    .slice(0, 20);
+  const top = rows[0]?.score ?? 1;
+  return rows.map((x) => ({
+    name: x.name, star: COMBAT_COMMUNITY.includes(x.name), value: x.score / top,
+  }));
 }
-
-/** How attainable is this pal for THIS box, right now? (CEO: the engine must
- * think about what I have — early players get early picks, not endgame grind)
- *   have  — already in the Paldex
- *   breed — reachable from the box by breeding alone
- *   catch — spawns wild at a level near where the player already operates
- *   later — an endgame goal for now */
-// The attainability + scoring brain lives in ../logic/recommend.ts — one
-// file, byte-identical on web and mobile (logic-parity gate), so the two
-// apps can never disagree about what a pal's status means.
 
 const AURA_SQUAD = ['Ribbuny', 'Cinnamoth', 'Clovee', 'Petallia', 'Tetroise', 'Wumpo',
   'Amione', 'Eikthyrdeer Terra', 'Katress Ignis', 'Mycora', 'Puffolt', 'Smokie Cryst'];
 
 /** pals whose partner-skill text matches — the honest way to build effect
- * squads without hand-picking (paldex order; text is the game's own) */
-function palsWithEffect(re: RegExp): string[] {
-  return Object.keys(pals).filter((n) => re.test(pals[n].partner_effect ?? ''));
+ * squads without hand-picking (text shown verbatim on the rows) */
+function effectItems(re: RegExp): GoalItem[] {
+  return Object.keys(pals)
+    .filter((n) => re.test(pals[n].partner_effect ?? ''))
+    .map((n) => ({ name: n, effect: pals[n].partner_effect ?? undefined }));
 }
-/** combat loot: more drops from defeated enemies (Blazehowl-class + Dumud
- * Gild's gold bonus) */
 const LOOT_RE = /defeated|dropped by enemies/i;
-/** the full ranch roster — every "assigned to Ranch" producer */
 const RANCH_RE = /assigned to Ranch/i;
+
+function helperItems(roles: string[]): GoalItem[] {
+  return HELPERS.filter((h) => roles.includes(h.role))
+    .map((h) => ({ name: h.name, effect: pals[h.name]?.partner_effect ?? undefined }));
+}
+
+function utilityItems(role: keyof typeof UTILITY_ROLES): GoalItem[] {
+  return UTILITY_ROLES[role].pals.map((p) => ({ name: p.name, effect: p.effect }));
+}
+
+function mountItems(names: string[]): GoalItem[] {
+  return names.map((n) => ({
+    name: n,
+    note: MOUNT_CALLOUTS[n],
+    effect: pals[n]?.partner_effect ?? undefined,
+  }));
+}
+
+/** all the categories, one shape — the whole sheet is data-driven */
+function buildSections(): SectionDef[] {
+  return [
+    {
+      id: 'cake', title: 'Cake supply', icon: 'cake-variant-outline',
+      blurb: 'The four ranch pals that feed every cake — eggs, milk, honey, berries. The breeding farm stops without them.',
+      items: helperItems(['ranch']),
+    },
+    {
+      id: 'speed', title: 'Breeding speed & luck', icon: 'clock-fast',
+      blurb: 'Faster egg production, faster hatching, extra eggs — all verified partner skills.',
+      items: helperItems(['speed', 'luck']),
+    },
+    {
+      id: 'aura', title: 'Aura squad', icon: 'creation',
+      blurb: 'Each gives +1 work suitability to every other pal in its base (auras don\'t stack — spread them across bases). All twelve, verified.',
+      items: AURA_SQUAD.map((n) => ({ name: n, effect: pals[n]?.partner_effect ?? undefined })),
+    },
+    {
+      id: 'bestof', title: 'The best pals in the game', icon: 'crown-outline', gold: true,
+      blurb: 'What players rate highest across everything — community consensus (game8 + pindrop, Aug 2026). Ordered by what YOU can act on now.',
+      items: BEST_OVERALL.map((m) => ({
+        name: m.name, why: m.why, star: COMBAT_COMMUNITY.includes(m.name),
+      })),
+    },
+    {
+      id: 'fight', title: 'Fighting', icon: 'sword-cross', scored: true,
+      blurb: 'Highest battle stats in the game data (attack counted double). A gold spark marks community-favourite fighters.',
+      items: fighterItems(),
+    },
+    {
+      id: 'm-fly', title: 'Flying mounts', icon: 'bird',
+      blurb: 'Every flyable pal in the game data, closest-to-yours first. Speed callouts are community-measured; saddle levels from paldb.',
+      items: mountItems(MOUNTS.flying),
+    },
+    {
+      id: 'm-ground', title: 'Ground mounts', icon: 'horse-variant',
+      blurb: 'Every ground mount, closest-to-yours first — the called-out ones are the community\'s elite.',
+      items: mountItems(MOUNTS.ground),
+    },
+    {
+      id: 'm-glide', title: 'Gliders & swimmers', icon: 'weather-windy',
+      blurb: 'Glider partner skills from the game data, plus the swimmers.',
+      items: [
+        ...utilityItems('glider'),
+        ...mountItems(MOUNTS.swim),
+      ],
+    },
+    {
+      id: 'u-catch', title: 'Catching helpers', icon: 'circle-double',
+      blurb: 'Better catches from the game\'s own partner skills — capture-rate boosts and slower capture-gauge drain.',
+      items: utilityItems('capture'),
+    },
+    {
+      id: 'u-weight', title: 'Weight & carrying helpers', icon: 'weight',
+      blurb: 'Ore, stone, wood and food weight cuts plus carry capacity — the game\'s own partner skills.',
+      items: utilityItems('weight'),
+    },
+    {
+      id: 'u-eff', title: 'Work efficiency boosters', icon: 'lightning-bolt-outline',
+      blurb: 'Mining, logging and crafting multipliers from partner skills (Digtoise: ore mining +800–2000%).',
+      items: utilityItems('efficiency'),
+    },
+    {
+      id: 'u-born', title: 'Born with a passive', icon: 'dna',
+      blurb: '46 species are ALWAYS born carrying a passive (datamined) — catch or breed one and the passive is yours to breed onward.',
+      items: Object.keys(pals)
+        .filter((n) => PALCALC_FACTS[n]?.passives?.length)
+        .map((n) => ({ name: n, effect: `Born with: ${PALCALC_FACTS[n]!.passives!.join(' + ')}` })),
+    },
+    {
+      id: 'u-loot', title: 'Loot boosters', icon: 'treasure-chest',
+      blurb: 'More drops from enemies you defeat — element-specific hunting partners, plus Dumud Gild\'s gold bonus.',
+      items: effectItems(LOOT_RE),
+    },
+    {
+      id: 'u-ranch', title: 'Ranch producers', icon: 'barn',
+      blurb: 'Every pal that makes something at the Ranch — eggs, milk, berries, wool, mushrooms, ice organs and more.',
+      items: effectItems(RANCH_RE),
+    },
+    ...CREWS.map((crew) => ({
+      id: crew.id, title: crew.title, icon: 'account-group-outline',
+      blurb: crew.blurb, items: crewItems(crew), scored: true,
+    })),
+    ...WORK_KEYS.map((w) => ({
+      id: `job-${w}`, title: workLabel(w), workIcon: w,
+      blurb: `Every pal that can do ${workLabel(w)}, the best first — levels straight from the game data.`,
+      items: bestAt(w), scored: true,
+    })),
+  ];
+}
+
+/* ---------------- shared row/chip context ---------------- */
+
+/** everything the module-level pieces need — passed down so components keep
+ * a stable identity (state like the browser's search must survive parent
+ * re-renders, e.g. when a pal is added) */
+interface BrowseCtx {
+  attain: (n: string) => Attain;
+  stage: number;
+  targets: string[];
+  onAdd: (names: string[]) => void;
+  onRemove: (names: string[]) => void;
+  onView: (n: string) => void;
+}
+
+function orderItems(sec: SectionDef, attain: (n: string) => Attain): GoalItem[] {
+  const items = [...sec.items];
+  if (sec.scored) {
+    // the scoring model: quality vs closeness — a level-6 worker one breed
+    // away outranks a level-7 worker 83 breeds away
+    return items.sort((a, b) =>
+      scoreOf(b.value ?? 1, attain(b.name)) - scoreOf(a.value ?? 1, attain(a.name)));
+  }
+  return items.sort((a, b) => attainScore(attain(a.name)) - attainScore(attain(b.name)));
+}
+
+function statusColor(a: Attain, added: boolean): string {
+  return added || a.kind === 'have' ? T.ok
+    : a.kind === 'breed' ? T.accentInk
+      : a.kind === 'catch' ? T.warn
+        : a.unlock ? T.goldInk : T.faint;
+}
+
+function SectionHeadIcon({ sec, size }: { sec: SectionDef; size: number }) {
+  if (sec.workIcon && WORK_ICONS[sec.workIcon]) {
+    return <Image source={WORK_ICONS[sec.workIcon]} style={{ width: size + 2, height: size + 2 }} />;
+  }
+  if (sec.icon) {
+    return <Icon name={sec.icon} size={size} color={sec.gold ? T.goldInk : T.accentInk} />;
+  }
+  return null;
+}
+
+/* ---------------- the small chip (collapsed cards) ---------------- */
+
+function PalChip({ name, lvl, star, bctx }: {
+  name: string; lvl?: number; star?: boolean; bctx: BrowseCtx;
+}) {
+  const added = bctx.targets.includes(name);
+  const owned = ownedAny(name);
+  const a = bctx.attain(name);
+  const status = added ? 'IN PLAN' : attainLabel(a).short;
+  const addable = !added && !owned;
+  return (
+    <Pressable onPress={() => bctx.onView(name)}
+      style={({ pressed }) => [{
+        alignItems: 'center', gap: 3, width: 84, paddingVertical: 6,
+        borderRadius: 12, borderWidth: 1,
+        borderColor: pressed ? T.accent : added ? T.ok : owned ? T.okSoft : T.line,
+        backgroundColor: added ? T.okSoft : T.surface,
+        opacity: owned && !added ? 0.55 : 1,
+      }]}
+    >
+      <View>
+        <PalIcon name={name} size={44} />
+        {star && (
+          <View style={{ position: 'absolute', right: -3, top: -3 }}>
+            <Icon name="star-four-points" size={12} color={T.gold} />
+          </View>
+        )}
+        {addable && (
+          <Pressable hitSlop={6}
+            accessibilityLabel={`Add ${name} to the plan`}
+            onPress={() => {
+              void Haptics.selectionAsync();
+              bctx.onAdd([name]);
+            }}
+            style={{ position: 'absolute', left: -7, top: -5 }}>
+            <View style={{
+              width: 19, height: 19, borderRadius: 10, backgroundColor: T.accent,
+              alignItems: 'center', justifyContent: 'center',
+            }}>
+              <Icon name="plus" size={14} color="#08191B" />
+            </View>
+          </Pressable>
+        )}
+        {added && (
+          <Pressable hitSlop={6}
+            accessibilityLabel={`Remove ${name} from the plan`}
+            onPress={() => bctx.onRemove([name])}
+            style={{ position: 'absolute', left: -7, top: -5 }}>
+            <View style={{
+              width: 19, height: 19, borderRadius: 10, backgroundColor: T.surface2,
+              borderWidth: 1, borderColor: T.line,
+              alignItems: 'center', justifyContent: 'center',
+            }}>
+              <Icon name="minus" size={14} color={T.ink} />
+            </View>
+          </Pressable>
+        )}
+      </View>
+      <Text numberOfLines={1} style={{
+        color: T.ink, fontSize: 10, fontWeight: '700', maxWidth: 78,
+      }}>{name}</Text>
+      {lvl != null && (
+        <Text style={{ color: T.accentInk, fontSize: 10, fontWeight: '800' }}>Lv {lvl}</Text>
+      )}
+      <Text numberOfLines={2} style={{
+        color: statusColor(a, added), fontSize: 8.5, fontWeight: '800',
+        maxWidth: 78, textAlign: 'center',
+      }}>{status}</Text>
+    </Pressable>
+  );
+}
+
+/* ---------------- one collapsed card per category ---------------- */
+
+function SectionCard({ sec, bctx, onBrowse }: {
+  sec: SectionDef; bctx: BrowseCtx; onBrowse: (id: string) => void;
+}) {
+  const shown = orderItems(sec, bctx.attain).slice(0, 6);
+  const missing = shown
+    .filter((x) => !bctx.targets.includes(x.name) && !ownedAny(x.name))
+    .map((x) => x.name);
+  const inPlanHere = shown.filter((x) => bctx.targets.includes(x.name)).map((x) => x.name);
+  return (
+    <View style={{
+      backgroundColor: T.surface, borderWidth: 1, borderRadius: 14,
+      borderColor: sec.gold ? T.goldSoft : T.line, padding: 12, gap: 8,
+    }}>
+      <Pressable style={[s.row, { gap: 8 }]}
+        accessibilityLabel={`Browse all ${sec.title}`}
+        onPress={() => {
+          void Haptics.selectionAsync();
+          onBrowse(sec.id);
+        }}>
+        <SectionHeadIcon sec={sec} size={18} />
+        <Text style={[s.h3, { flex: 1 }]}>{sec.title}</Text>
+        <Text style={{ color: T.accentInk, fontSize: 11.5, fontWeight: '800' }}>
+          All {sec.items.length} ›
+        </Text>
+      </Pressable>
+      <Text style={[s.body, { fontSize: 11.5 }]}>{sec.blurb}</Text>
+      <View style={{ flexDirection: 'row', gap: 6, flexWrap: 'wrap' }}>
+        {shown.map((x) => (
+          <PalChip key={x.name} name={x.name} lvl={x.lvl} star={x.star} bctx={bctx} />
+        ))}
+      </View>
+      {missing.length > 1 ? (
+        <Btn small label={`Add these ${missing.length}`} onPress={() => bctx.onAdd(missing)} />
+      ) : inPlanHere.length > 1 ? (
+        <Btn small label={`Remove these ${inPlanHere.length}`}
+          onPress={() => bctx.onRemove(inPlanHere)} />
+      ) : null}
+    </View>
+  );
+}
+
+/* ---------------- the full-screen category browser ---------------- */
+
+function BrowserRow({ item, recommended, bctx }: {
+  item: GoalItem; recommended: boolean; bctx: BrowseCtx;
+}) {
+  const added = bctx.targets.includes(item.name);
+  const owned = ownedAny(item.name);
+  const a = bctx.attain(item.name);
+  const saddle = SADDLE_LEVELS[item.name] != null
+    ? saddleGap(item.name, bctx.stage) ?? `saddle at Lv ${SADDLE_LEVELS[item.name]}`
+    : null;
+  return (
+    <Pressable onPress={() => bctx.onView(item.name)}
+      style={({ pressed }) => [{
+        flexDirection: 'row', alignItems: 'center', gap: 10,
+        backgroundColor: pressed ? T.accentSoft : T.surface,
+        borderWidth: 1, borderColor: added ? T.ok : T.line,
+        borderRadius: 12, padding: 10, marginBottom: 6,
+        opacity: owned && !added ? 0.6 : 1,
+      }]}
+    >
+      <PalIcon name={item.name} size={44} />
+      <View style={{ flex: 1, gap: 2 }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+          <Text style={{ color: T.ink, fontWeight: '800', fontSize: 14, flexShrink: 1 }}
+            numberOfLines={1}>
+            {item.name}
+          </Text>
+          {item.star && <Icon name="star-four-points" size={12} color={T.gold} />}
+          {recommended && (
+            <View style={{
+              backgroundColor: T.goldSoft, borderRadius: 7,
+              paddingHorizontal: 6, paddingVertical: 1,
+            }}>
+              <Text style={{ color: T.goldInk, fontSize: 8.5, fontWeight: '800' }}>
+                RECOMMENDED
+              </Text>
+            </View>
+          )}
+        </View>
+        {item.jobs && item.jobs.length > 0 && (
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, alignItems: 'center' }}>
+            {item.jobs.map(([j, lv]) => (
+              <View key={j} style={{ flexDirection: 'row', alignItems: 'center', gap: 2 }}>
+                {WORK_ICONS[j] && (
+                  <Image source={WORK_ICONS[j]} style={{ width: 15, height: 15 }} />
+                )}
+                <Text style={{ color: T.muted, fontSize: 11, fontWeight: '800' }}>{lv}</Text>
+              </View>
+            ))}
+            {item.jobs.length > 1 && (
+              <Text style={{ color: T.faint, fontSize: 10.5 }}>
+                · total {item.jobs.reduce((sum, [, lv]) => sum + lv, 0)}
+              </Text>
+            )}
+          </View>
+        )}
+        {item.why ? (
+          <Text style={{ color: T.muted, fontSize: 11 }} numberOfLines={2}>{item.why}</Text>
+        ) : item.effect ? (
+          <Text style={{ color: T.muted, fontSize: 11 }} numberOfLines={2}>{item.effect}</Text>
+        ) : null}
+        <Text style={{ color: statusColor(a, added), fontSize: 11, fontWeight: '700' }}
+          numberOfLines={2}>
+          {added ? 'In your plan — tap the circle to remove it.' : attainLabel(a).long}
+          {item.note ? `  ·  ${item.note}` : saddle ? `  ·  ${saddle}` : ''}
+        </Text>
+      </View>
+      {a.kind !== 'have' ? (
+        <Pressable hitSlop={8}
+          accessibilityLabel={added
+            ? `Remove ${item.name} from the plan` : `Add ${item.name} to the plan`}
+          onPress={() => {
+            void Haptics.selectionAsync();
+            if (added) bctx.onRemove([item.name]); else bctx.onAdd([item.name]);
+          }}>
+          <View style={{
+            width: 30, height: 30, borderRadius: 15,
+            backgroundColor: added ? T.surface2 : T.accent,
+            borderWidth: added ? 1 : 0, borderColor: T.line,
+            alignItems: 'center', justifyContent: 'center',
+          }}>
+            <Icon name={added ? 'minus' : 'plus'} size={18}
+              color={added ? T.ink : '#08191B'} />
+          </View>
+        </Pressable>
+      ) : (
+        <Text style={{ color: T.ok, fontSize: 10, fontWeight: '800', width: 52 }}
+          numberOfLines={2}>In your Paldex</Text>
+      )}
+    </Pressable>
+  );
+}
+
+function CategoryBrowser({ sec, bctx, onClose }: {
+  sec: SectionDef; bctx: BrowseCtx; onClose: () => void;
+}) {
+  const [q, setQ] = useState('');
+  const ranked = orderItems(sec, bctx.attain);
+  const rec = sec.scored
+    ? recommendedSet(ranked.map((x) => ({ name: x.name, value: x.value ?? 0 })), bctx.attain)
+    : new Set<string>();
+  const rows = q
+    ? ranked.filter((x) => x.name.toLowerCase().includes(q.toLowerCase()))
+    : ranked;
+  const missing = rows
+    .filter((x) => !bctx.targets.includes(x.name) && !ownedAny(x.name))
+    .map((x) => x.name);
+  return (
+    <Modal visible animationType="slide" presentationStyle="pageSheet"
+      onRequestClose={onClose}>
+      <View style={{ flex: 1, backgroundColor: T.bg2 }}>
+        <View style={{
+          padding: 16, paddingBottom: 10, gap: 8,
+          borderBottomWidth: 1, borderBottomColor: T.line,
+        }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            <SectionHeadIcon sec={sec} size={20} />
+            <Text style={[s.h2, { flex: 1 }]}>{sec.title}</Text>
+            <Btn small label="Done" onPress={onClose} />
+          </View>
+          <Text style={[s.body, { fontSize: 11.5 }]}>{sec.blurb}</Text>
+          <View style={{ flexDirection: 'row', gap: 8, alignItems: 'center' }}>
+            <View style={{ flex: 1 }}>
+              <SearchInput value={q} onChange={setQ}
+                placeholder={`Search ${sec.items.length} pals…`} />
+            </View>
+            {missing.length > 1 && (
+              <Btn small label={`Add ${missing.length}`} onPress={() => bctx.onAdd(missing)} />
+            )}
+          </View>
+        </View>
+        <FlatList
+          data={rows}
+          keyExtractor={(x) => x.name}
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="on-drag"
+          initialNumToRender={10}
+          windowSize={7}
+          contentContainerStyle={{ padding: 14, paddingBottom: 40 }}
+          renderItem={({ item }) => (
+            <BrowserRow item={item} recommended={rec.has(item.name)} bctx={bctx} />
+          )}
+          ListEmptyComponent={
+            <Text style={[s.body, { textAlign: 'center', marginTop: 30 }]}>
+              No pal here matches that search.
+            </Text>
+          }
+        />
+      </View>
+    </Modal>
+  );
+}
+
+/* ---------------- the sheet ---------------- */
 
 interface SheetProps {
   onClose: () => void;
@@ -148,7 +610,7 @@ export function SuggestedGoals({ visible, ...rest }: SheetProps & { visible: boo
 
 function SheetBody({ onClose, targets, onAdd, onRemove }: SheetProps) {
   const [viewing, setViewing] = useState<string | null>(null);
-  const [openJob, setOpenJob] = useState<string | null>(null);
+  const [browsing, setBrowsing] = useState<string | null>(null);
   const [levelDialog, setLevelDialog] = useState(false);
   const [levelInput, setLevelInput] = useState('');
   const playerLevel = getPlayerLevel();
@@ -168,215 +630,26 @@ function SheetBody({ onClose, targets, onAdd, onRemove }: SheetProps) {
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [boxKey, ready]);
-  const attain = useMemo(
-    () => getAttainContext(engine, pals, breeding, box, playerLevel, ownedAny).attain,
+  const ctx = useMemo(
+    () => getAttainContext(engine, pals, breeding, box, playerLevel, ownedAny),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [boxKey, playerLevel, ready],
   );
-  const best = useMemo(
-    () => Object.fromEntries(WORK_KEYS.map((w) => [w, bestAt(w)])),
-    [],
-  );
-  const fighters = useMemo(() => bestFighters(), []);
-  /** stage-aware ordering: 1-step breeds, then cheap catches, then unlocks */
-  const byAttain = (names: string[]) =>
-    [...names].sort((a, b) => attainScore(attain(a)) - attainScore(attain(b)));
+  const sections = useMemo(buildSections, []);
   // a pal card opened from here can navigate ("Plan how to get it") — if the
   // destination is the tab underneath us, nothing would remount, and the tap
   // would look dead behind this sheet. Any cross-screen jump closes it.
   useEffect(() => onNavIntent(() => {
     setViewing(null);
+    setBrowsing(null);
     onClose();
   }), [onClose]);
 
-  const PalChip = ({ name, lvl, note, star }: {
-    name: string; lvl?: number;
-    /** short label under the name (e.g. a mount callout) */
-    note?: string;
-    /** community-favourite marker */
-    star?: boolean;
-  }) => {
-    const added = targets.includes(name);
-    const owned = ownedAny(name);
-    const a = attain(name);
-    // an owned pal is NOT a suggestion — quiet proof of coverage. Everything
-    // else says exactly how you'd GET it from your world save — one label
-    // brain for every surface (logic/recommend.ts).
-    const status = added ? 'IN PLAN' : attainLabel(a).short;
-    const statusColor = added || a.kind === 'have' ? T.ok
-      : a.kind === 'breed' ? T.accentInk
-        : a.kind === 'catch' ? T.warn
-          : a.kind === 'later' && a.unlock ? T.goldInk : T.faint;
-    const addable = !added && !owned;
-    return (
-      <Pressable onPress={() => setViewing(name)}
-        style={({ pressed }) => [{
-          alignItems: 'center', gap: 3, width: 74, paddingVertical: 6,
-          borderRadius: 12, borderWidth: 1,
-          borderColor: pressed ? T.accent : added ? T.ok : owned ? T.okSoft : T.line,
-          backgroundColor: added ? T.okSoft : T.surface,
-          opacity: owned && !added ? 0.55 : 1,
-        }]}
-      >
-        <View>
-          <PalIcon name={name} size={40} />
-          {star && (
-            <View style={{ position: 'absolute', right: -3, top: -3 }}>
-              <Icon name="star-four-points" size={12} color={T.gold} />
-            </View>
-          )}
-          {/* add JUST this one — the whole-table button was the only way in
-              (CEO 2026-08-15) */}
-          {addable && (
-            <Pressable hitSlop={6}
-              accessibilityLabel={`Add ${name} to the plan`}
-              onPress={() => {
-                void Haptics.selectionAsync();
-                onAdd([name]);
-              }}
-              style={{ position: 'absolute', left: -7, top: -5 }}>
-              <View style={{
-                width: 18, height: 18, borderRadius: 9, backgroundColor: T.accent,
-                alignItems: 'center', justifyContent: 'center',
-              }}>
-                <Icon name="plus" size={13} color="#08191B" />
-              </View>
-            </Pressable>
-          )}
-          {/* un-add it right here — adding must never be one-way (CEO) */}
-          {added && (
-            <Pressable hitSlop={6}
-              accessibilityLabel={`Remove ${name} from the plan`}
-              onPress={() => onRemove([name])}
-              style={{ position: 'absolute', left: -7, top: -5 }}>
-              <View style={{
-                width: 18, height: 18, borderRadius: 9, backgroundColor: T.surface2,
-                borderWidth: 1, borderColor: T.line,
-                alignItems: 'center', justifyContent: 'center',
-              }}>
-                <Icon name="minus" size={13} color={T.ink} />
-              </View>
-            </Pressable>
-          )}
-        </View>
-        <Text numberOfLines={1} style={{
-          color: T.ink, fontSize: 9.5, fontWeight: '700', maxWidth: 68,
-        }}>{name}</Text>
-        {lvl != null && (
-          <Text style={{ color: T.accentInk, fontSize: 10, fontWeight: '800' }}>Lv {lvl}</Text>
-        )}
-        {note ? (
-          <Text numberOfLines={1} style={{
-            color: T.goldInk, fontSize: 8, fontWeight: '700', maxWidth: 70,
-          }}>{note}</Text>
-        ) : null}
-        <Text numberOfLines={2} style={{
-          color: statusColor, fontSize: 8, fontWeight: '800', maxWidth: 70,
-          textAlign: 'center',
-        }}>{status}</Text>
-      </Pressable>
-    );
+  const bctx: BrowseCtx = {
+    attain: ctx.attain, stage: ctx.stage, targets, onAdd, onRemove,
+    onView: setViewing,
   };
-
-  const SquadCard = ({ title, blurb, names, lvls }: {
-    title: string; blurb: string; names: string[]; lvls?: Record<string, number>;
-  }) => {
-    // owned pals need no plan — never count them into "Add N"
-    const missing = names.filter((n) => !targets.includes(n) && !ownedAny(n));
-    const inPlan = names.filter((n) => targets.includes(n));
-    const ownedCount = names.filter(ownedAny).length;
-    const covered = missing.length === 0;
-    // a fully covered squad stops selling and starts confirming: compact,
-    // quiet, nothing to do here (CEO: don't suggest what I already have) —
-    // but anything ADDED stays removable, adding is never one-way
-    return (
-      <View style={{
-        backgroundColor: T.surface,
-        borderColor: covered ? T.okSoft : T.line, borderWidth: 1,
-        borderRadius: 14, padding: 12, gap: 8, opacity: covered ? 0.8 : 1,
-      }}>
-        <View style={[s.row, { gap: 8 }]}>
-          <Text style={[s.h3, { flex: 1 }]}>{title}</Text>
-          {covered && inPlan.length === 0 ? (
-            <Text style={{ color: T.ok, fontSize: 11.5, fontWeight: '800' }}>
-              covered
-            </Text>
-          ) : covered ? (
-            <Btn small label={`Remove ${inPlan.length}`}
-              onPress={() => onRemove(inPlan)} />
-          ) : (
-            <Btn small primary label={`Add ${missing.length}`}
-              onPress={() => onAdd(missing)} />
-          )}
-        </View>
-        {!covered && (
-          <Text style={[s.body, { fontSize: 12 }]}>
-            {blurb}{ownedCount > 0 ? `  You have ${ownedCount} of ${names.length}.` : ''}
-          </Text>
-        )}
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ gap: 6 }}>
-          {/* stage-aware: what you can act on NOW first, owned proof last */}
-          {(covered ? names : byAttain(names)).map((n) => (
-            <PalChip key={n} name={n} lvl={lvls?.[n]} note={MOUNT_CALLOUTS[n]} />
-          ))}
-        </ScrollView>
-      </View>
-    );
-  };
-
-  /** Big lists, done cleanly: vertical wrap, ranked by attainability with
-   * community callouts first among equals, capped with expand. */
-  const RankedCard = ({ id, title, blurb, names }: {
-    id: string; title: string; blurb: string; names: string[];
-  }) => {
-    const ranked = [...new Set(names)].sort((a, b) =>
-      attainScore(attain(a)) - attainScore(attain(b))
-      || Number(!!MOUNT_CALLOUTS[b]) - Number(!!MOUNT_CALLOUTS[a]));
-    const expanded = openJob === id;
-    const shown = expanded ? ranked.slice(0, 20) : ranked.slice(0, 6);
-    const hidden = ranked.length - shown.length;
-    const missing = shown.filter((n) => !targets.includes(n) && !ownedAny(n));
-    const inPlanHere = shown.filter((n) => targets.includes(n));
-    return (
-      <View style={{
-        backgroundColor: T.surface, borderColor: T.line, borderWidth: 1,
-        borderRadius: 14, padding: 12, gap: 8,
-      }}>
-        <Pressable style={[s.row, { gap: 8 }]}
-          onPress={() => {
-            void Haptics.selectionAsync();
-            setOpenJob(expanded ? null : id);
-          }}>
-          <Text style={[s.h3, { flex: 1 }]}>{title}</Text>
-          <Badge kind="plain">{expanded ? 'less −' : `top 6 of ${ranked.length} +`}</Badge>
-        </Pressable>
-        <Text style={[s.body, { fontSize: 11.5 }]}>{blurb}</Text>
-        <View style={{ flexDirection: 'row', gap: 6, flexWrap: 'wrap' }}>
-          {shown.map((n) => (
-            // the one-line note, best information first: community speed
-            // callout > saddle unlock level > guaranteed passive names
-            <PalChip key={n} name={n}
-              note={MOUNT_CALLOUTS[n]
-                ?? (SADDLE_LEVELS[n] != null ? `saddle Lv ${SADDLE_LEVELS[n]}` : undefined)
-                ?? PALCALC_FACTS[n]?.passives?.join(' + ')} />
-          ))}
-        </View>
-        {expanded && hidden > 0 && (
-          <Text style={[s.body, { fontSize: 11, color: T.faint }]}>
-            +{hidden} more — the Paldex filter finds them all.
-          </Text>
-        )}
-        {missing.length > 1 ? (
-          <Btn small label={`Add all ${missing.length} shown`}
-            onPress={() => onAdd(missing)} />
-        ) : inPlanHere.length > 1 ? (
-          <Btn small label={`Remove all ${inPlanHere.length}`}
-            onPress={() => onRemove(inPlanHere)} />
-        ) : null}
-      </View>
-    );
-  };
+  const browsingSec = browsing ? sections.find((x) => x.id === browsing) : null;
 
   if (!ready) {
     // one quiet beat on first open per box change — never a frozen thread
@@ -422,268 +695,14 @@ function SheetBody({ onClose, targets, onAdd, onRemove }: SheetProps) {
           </Pressable>
         </View>
         <ScrollView contentContainerStyle={{ padding: 14, gap: 12, paddingBottom: 40 }}>
-
-          <SquadCard title="Cake supply"
-            blurb="The four ranch pals that feed every cake — eggs, milk, honey, berries. The breeding farm stops without them."
-            names={HELPERS.filter((h) => h.role === 'ranch').map((h) => h.name)} />
-
-          <SquadCard title="Breeding speed & luck"
-            blurb="Faster egg production, faster hatching, extra eggs — all verified partner skills."
-            names={HELPERS.filter((h) => h.role === 'speed' || h.role === 'luck')
-              .map((h) => h.name)} />
-
-          <SquadCard title="Aura squad"
-            blurb="Each gives +1 work suitability to every other pal in its base (auras don't stack — spread them across bases). All twelve, verified."
-            names={AURA_SQUAD} />
-
-          {/* ---- THE BEST IN THE GAME (community consensus, labelled) ---- */}
-          <View style={{
-            backgroundColor: T.surface, borderColor: T.goldSoft, borderWidth: 1,
-            borderRadius: 14, padding: 12, gap: 8,
-          }}>
-            <View style={[s.row, { gap: 8 }]}>
-              <Icon name="crown-outline" size={18} color={T.goldInk} />
-              <Text style={[s.h3, { flex: 1 }]}>The best pals in the game</Text>
-              {BEST_OVERALL.some((m) => attain(m.name).kind !== 'have'
-                && !targets.includes(m.name)) ? (
-                <Btn small primary
-                  label={`Add ${BEST_OVERALL.filter((m) => attain(m.name).kind !== 'have'
-                    && !targets.includes(m.name)).length}`}
-                  onPress={() => onAdd(BEST_OVERALL
-                    .filter((m) => attain(m.name).kind !== 'have' && !targets.includes(m.name))
-                    .map((m) => m.name))} />
-              ) : BEST_OVERALL.some((m) => targets.includes(m.name)) ? (
-                <Btn small
-                  label={`Remove ${BEST_OVERALL.filter((m) => targets.includes(m.name)).length}`}
-                  onPress={() => onRemove(BEST_OVERALL
-                    .filter((m) => targets.includes(m.name)).map((m) => m.name))} />
-              ) : null}
-            </View>
-            <Text style={[s.body, { fontSize: 11.5 }]}>
-              What players rate highest across everything — community consensus
-              (game8 + pindrop, Aug 2026). Ordered by what YOU can act on now.
-            </Text>
-            <View style={{ gap: 6 }}>
-              {byAttain(BEST_OVERALL.map((m) => m.name)).map((n) => {
-                const m = BEST_OVERALL.find((x) => x.name === n)!;
-                const a = attain(n);
-                const added = targets.includes(n);
-                return (
-                  <Pressable key={n} onPress={() => setViewing(n)}
-                    style={({ pressed }) => [s.row, {
-                      gap: 10, paddingVertical: 4, borderRadius: 10,
-                      opacity: a.kind === 'have' ? 0.55 : 1,
-                      backgroundColor: pressed ? T.accentSoft : 'transparent',
-                    }]}>
-                    <PalIcon name={n} size={40} />
-                    <View style={{ flex: 1 }}>
-                      <Text style={{ color: T.ink, fontWeight: '800', fontSize: 13.5 }}>{n}</Text>
-                      <Text style={{ color: T.muted, fontSize: 11 }} numberOfLines={2}>{m.why}</Text>
-                    </View>
-                    <Badge kind={added || a.kind === 'have' ? 'ok'
-                      : a.kind === 'catch' ? 'warn' : 'plain'}>
-                      {added ? 'in plan' : attainLabel(a).short}
-                    </Badge>
-                    {/* one pal at a time — the whole-table button must never
-                        be the only way in (CEO, "big bug") */}
-                    {a.kind !== 'have' && (
-                      <Pressable hitSlop={8}
-                        accessibilityLabel={added
-                          ? `Remove ${n} from the plan` : `Add ${n} to the plan`}
-                        onPress={() => {
-                          void Haptics.selectionAsync();
-                          if (added) onRemove([n]); else onAdd([n]);
-                        }}>
-                        <View style={{
-                          width: 26, height: 26, borderRadius: 13,
-                          backgroundColor: added ? T.surface2 : T.accent,
-                          borderWidth: added ? 1 : 0, borderColor: T.line,
-                          alignItems: 'center', justifyContent: 'center',
-                        }}>
-                          <Icon name={added ? 'minus' : 'plus'} size={16}
-                            color={added ? T.ink : '#08191B'} />
-                        </View>
-                      </Pressable>
-                    )}
-                  </Pressable>
-                );
-              })}
-            </View>
-          </View>
-
-          {/* ---- FIGHTING (dump stats + community stars) ---- */}
-          <View style={{
-            backgroundColor: T.surface, borderColor: T.line, borderWidth: 1,
-            borderRadius: 14, padding: 12, gap: 8,
-          }}>
-            <View style={[s.row, { gap: 8 }]}>
-              <Icon name="sword-cross" size={18} color={T.accentInk} />
-              <Text style={[s.h3, { flex: 1 }]}>Fighting</Text>
-              {fighters.some((f) => attain(f.name).kind !== 'have'
-                && !targets.includes(f.name)) ? (
-                <Btn small primary
-                  label={`Add ${fighters.filter((f) => attain(f.name).kind !== 'have'
-                    && !targets.includes(f.name)).length}`}
-                  onPress={() => onAdd(fighters
-                    .filter((f) => attain(f.name).kind !== 'have' && !targets.includes(f.name))
-                    .map((f) => f.name))} />
-              ) : fighters.some((f) => targets.includes(f.name)) ? (
-                <Btn small
-                  label={`Remove ${fighters.filter((f) => targets.includes(f.name)).length}`}
-                  onPress={() => onRemove(fighters
-                    .filter((f) => targets.includes(f.name)).map((f) => f.name))} />
-              ) : null}
-            </View>
-            <Text style={[s.body, { fontSize: 11.5 }]}>
-              Highest battle stats in the game data (attack counted double).
-              A gold spark marks community-favourite fighters.
-            </Text>
-            <View style={{ flexDirection: 'row', gap: 6, flexWrap: 'wrap' }}>
-              {byAttain(fighters.map((f) => f.name)).map((n) => (
-                <PalChip key={n} name={n} star={COMBAT_COMMUNITY.includes(n)} />
-              ))}
-            </View>
-          </View>
-
-          {/* ---- MOUNTS (dump typing + labelled community speed) ----
-               Vertical, ranked, capped — 83 pals in a thumb-wide horizontal
-               scroll was rightly called bad design (CEO 2026-08-15). */}
-          <RankedCard id="m-fly" title="Flying mounts"
-            blurb="Every flyable pal in the game data, closest-to-yours first. Speed callouts are community-measured."
-            names={MOUNTS.flying} />
-          <RankedCard id="m-ground" title="Ground mounts"
-            blurb="Every ground mount, closest-to-yours first — the called-out ones are the community's elite."
-            names={MOUNTS.ground} />
-          <RankedCard id="m-glide" title="Gliders & swimmers"
-            blurb="Glider partner skills from the game data, plus the swimmers."
-            names={[...UTILITY_ROLES.glider.pals.map((p) => p.name), ...MOUNTS.swim]} />
-
-          {/* ---- UTILITY PARTNER SKILLS (pure game data) ---- */}
-          <SquadCard title="Weight & carrying helpers"
-            blurb="Ore, stone, wood and food weight cuts plus carry capacity — the game's own partner skills (Turtacle cuts ore weight 80–100%)."
-            names={UTILITY_ROLES.weight.pals.map((p) => p.name)} />
-          <SquadCard title="Work efficiency boosters"
-            blurb="Mining, logging and crafting multipliers from partner skills (Digtoise: ore mining +800–2000%). Tap a pal for the exact numbers."
-            names={UTILITY_ROLES.efficiency.pals.map((p) => p.name)} />
-          <SquadCard title="Catching helpers"
-            blurb="Better catches from the game's own partner skills — capture-rate boosts and slower capture-gauge drain. Tap a pal for its exact effect."
-            names={UTILITY_ROLES.capture.pals.map((p) => p.name)} />
-
-          <RankedCard id="u-born" title="Born with a passive"
-            blurb="46 species are ALWAYS born carrying a passive (datamined) — catch or breed one and the passive is yours to breed onward. Tap a pal to see which."
-            names={Object.keys(pals).filter((n) => PALCALC_FACTS[n]?.passives?.length)} />
-          <RankedCard id="u-loot" title="Loot boosters"
-            blurb="More drops from enemies you defeat — element-specific hunting partners, plus Dumud Gild's gold bonus. Tap a pal for its exact effect."
-            names={palsWithEffect(LOOT_RE)} />
-          <RankedCard id="u-ranch" title="Ranch producers"
-            blurb="Every pal that makes something at the Ranch — eggs, milk, berries, wool, mushrooms, ice organs and more."
-            names={palsWithEffect(RANCH_RE)} />
-
-          {/* ---- COMPOSITE CREWS (CEO: "best farmer" = high planting+
-               gathering+transporting) — scores straight from work levels ---- */}
-          {CREWS.map((crew) => {
-            const list = crewRank(crew);
-            if (!list.length) return null;
-            const expanded = openJob === crew.id;
-            const shown = expanded ? list : list.slice(0, 6);
-            const missing = shown
-              .filter((x) => !targets.includes(x.name) && !ownedAny(x.name))
-              .map((x) => x.name);
-            const inPlanHere = shown
-              .filter((x) => targets.includes(x.name)).map((x) => x.name);
-            return (
-              <View key={crew.id} style={{
-                backgroundColor: T.surface, borderColor: T.line, borderWidth: 1,
-                borderRadius: 14, padding: 12, gap: 8,
-              }}>
-                <Pressable style={[s.row, { gap: 8 }]}
-                  onPress={() => {
-                    void Haptics.selectionAsync();
-                    setOpenJob(expanded ? null : crew.id);
-                  }}>
-                  <Text style={[s.h3, { flex: 1 }]}>{crew.title}</Text>
-                  <Badge kind="plain">{expanded ? 'less −' : `top 6 of ${list.length} +`}</Badge>
-                </Pressable>
-                <Text style={[s.body, { fontSize: 11.5 }]}>{crew.blurb}</Text>
-                <View style={{ flexDirection: 'row', gap: 6, flexWrap: 'wrap' }}>
-                  {shown.map((x) => (
-                    <PalChip key={x.name} name={x.name} lvl={x.score} note={x.parts} />
-                  ))}
-                </View>
-                {missing.length > 1 ? (
-                  <Btn small label={`Add all ${missing.length} shown`}
-                    onPress={() => onAdd(missing)} />
-                ) : inPlanHere.length > 1 ? (
-                  <Btn small label={`Remove all ${inPlanHere.length}`}
-                    onPress={() => onRemove(inPlanHere)} />
-                ) : null}
-              </View>
-            );
-          })}
-
-          <Text style={{
-            color: T.faint, fontSize: 10.5, fontWeight: '800',
-            letterSpacing: 1, textTransform: 'uppercase', marginTop: 4,
-          }}>Best at each job — from the game's own numbers</Text>
-
-          {WORK_KEYS.map((w) => {
-            const list = best[w];
-            if (!list.length) return null;
-            const expanded = openJob === w;
-            // DYNAMIC (CEO 2026-08-15): the collapsed view is the absolute
-            // top 5 PLUS anything nearly as good that your save can reach
-            // cheaply — a Lv-7 worker two breeding steps away beats a Lv-8
-            // endgame wall for most players. Those extras say why they're up.
-            const topLvl = list[0].lvl;
-            const closeGood = list.slice(5).filter((x) =>
-              x.lvl >= topLvl - 2 && attainScore(attain(x.name)) <= 4);
-            const shown = expanded
-              ? list
-              : [...list.slice(0, 5), ...closeGood].slice(0, 9);
-            const isCloseGood = new Set(closeGood.map((x) => x.name));
-            const missing = shown
-              .filter((x) => !targets.includes(x.name) && !ownedAny(x.name))
-              .map((x) => x.name);
-            const inPlanHere = shown
-              .filter((x) => targets.includes(x.name)).map((x) => x.name);
-            return (
-              <View key={w} style={{
-                backgroundColor: T.surface, borderColor: T.line, borderWidth: 1,
-                borderRadius: 14, padding: 12, gap: 8,
-              }}>
-                <Pressable style={[s.row, { gap: 8 }]}
-                  onPress={() => {
-                    void Haptics.selectionAsync();
-                    setOpenJob(expanded ? null : w);
-                  }}>
-                  {WORK_ICONS[w] && (
-                    <Image source={WORK_ICONS[w]} style={{ width: 22, height: 22 }} />
-                  )}
-                  <Text style={[s.h3, { flex: 1 }]}>{workLabel(w)}</Text>
-                  <Badge kind="plain">{expanded ? 'less −' : `top ${shown.length} of ${list.length} +`}</Badge>
-                </Pressable>
-                <View style={{ flexDirection: 'row', gap: 6, flexWrap: 'wrap' }}>
-                  {shown.map((x) => (
-                    <PalChip key={x.name} name={x.name} lvl={x.lvl}
-                      note={isCloseGood.has(x.name) ? 'good & close' : undefined} />
-                  ))}
-                </View>
-                {missing.length ? (
-                  <Btn small primary label={`Add these ${missing.length}`}
-                    onPress={() => onAdd(missing)} />
-                ) : inPlanHere.length ? (
-                  <Btn small label={`Remove these ${inPlanHere.length}`}
-                    onPress={() => onRemove(inPlanHere)} />
-                ) : (
-                  <Text style={{ color: T.ok, fontSize: 11.5, fontWeight: '800' }}>
-                    You already have the best — nothing to add
-                  </Text>
-                )}
-              </View>
-            );
-          })}
+          {sections.map((sec) => (
+            <SectionCard key={sec.id} sec={sec} bctx={bctx} onBrowse={setBrowsing} />
+          ))}
         </ScrollView>
       </View>
+      {browsingSec && (
+        <CategoryBrowser sec={browsingSec} bctx={bctx} onClose={() => setBrowsing(null)} />
+      )}
       {viewing && <PalDetail name={viewing} onClose={() => setViewing(null)} />}
       {levelDialog && (
         <Modal visible transparent animationType="fade"

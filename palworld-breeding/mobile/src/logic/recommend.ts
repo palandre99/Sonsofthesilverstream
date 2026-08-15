@@ -167,8 +167,10 @@ export function scoreOf(value: number, a: Attain): number {
 }
 
 /** Which pals earn the RECOMMENDED tag in a section: nearly the best
- * (≥80% of the section's top value), genuinely close (≤3 actions), and
- * not something the player already has. Deterministic and explainable. */
+ * (≥75% of the section's top value — one suitability level below the top
+ * on the game's 1–4 job scale still counts as "nearly"), genuinely close
+ * (≤3 actions), and not something the player already has. Deterministic
+ * and explainable. */
 export function recommendedSet(
   items: { name: string; value: number }[],
   attain: (n: string) => Attain,
@@ -179,7 +181,7 @@ export function recommendedSet(
   for (const x of items) {
     const a = attain(x.name);
     if (a.kind === 'have') continue;
-    if (x.value >= 0.8 * best && effortSteps(a) <= 3) out.add(x.name);
+    if (x.value >= 0.75 * best && effortSteps(a) <= 3) out.add(x.name);
   }
   return out;
 }
