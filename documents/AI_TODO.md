@@ -148,12 +148,13 @@ loops all night INSIDE the Breeding + Paldex domain (his explicit scope).
 - [ ] Preview build 68e1c1de: when FINISHED give CEO the install link; then
       keep pushing every OTA to BOTH branches (development + preview) and
       add the preview branch to PUSH-UPDATE.cmd
-- [ ] Web parity still missing: domains side-panel nav + Paldex filter sheet
+- [ ] Web parity still missing: domains side-panel nav (Paldex SORTING
+      shipped on web 02:50 — rarity/name/HP/ATK/DEF select)
 - [ ] Profile-switch write race (reviewer #8): guard persist ordering in
       switchProfile before any more store writers land
-- [ ] Smart catch-vs-breed advice: when addSteps is huge (Braloha +19),
-      recommend CATCHING it instead — wild spawn regions are in the dataset;
-      show "or catch one: <region>" in the advice row
+- [x] Smart catch-vs-breed advice SHIPPED (both platforms): suggests with
+      addSteps >= 4 show "Faster to catch one: <regions> (found up to Lv N)"
+      from real wild data
 - [ ] Paldex header collapse-on-scroll polish (CEO floated it; compact default
       shipped — evaluate if still worth it)
 - [ ] Jargon audit across every screen (CEO: "if it's not easy to understand
