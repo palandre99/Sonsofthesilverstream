@@ -5,14 +5,15 @@
  * invented positions, ever. Off-map spots (e.g. The World Tree) get a
  * labeled row instead of a fake pin.
  */
-import React from 'react';
-import { Image, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { Image, Pressable, Text, View } from 'react-native';
 import { T } from '../theme';
 import { s } from './kit';
 import { Icon } from './Icon';
 import { ALPHA_SPOTS } from '../data/alphaSpots.g';
 import { REGION_SPOTS } from '../data/regionSpots.g';
 import { pals } from '../store';
+import { MapViewer, type MapPin } from './MapViewer';
 
 /* eslint-disable @typescript-eslint/no-require-imports */
 const MAP = require('../../assets/map2048.jpg');
@@ -26,6 +27,7 @@ function cleanRegion(r: string): string {
 }
 
 export function PalMap({ name }: { name: string }) {
+  const [expanded, setExpanded] = useState(false);
   const spots = ALPHA_SPOTS[name] ?? [];
   const onMap = spots.filter((sp) => !sp.off);
   const offMap = spots.filter((sp) => sp.off);
@@ -43,9 +45,15 @@ export function PalMap({ name }: { name: string }) {
   return (
     <View style={{ gap: 8 }}>
       {(onMap.length > 0 || regions.length > 0) && (
-        <View style={{
-          borderRadius: 12, overflow: 'hidden', borderWidth: 1, borderColor: T.line,
-        }}>
+        <Pressable
+          onPress={() => setExpanded(true)}
+          accessibilityRole="button"
+          accessibilityLabel="Open the map fullscreen"
+          style={({ pressed }) => [{
+            borderRadius: 12, overflow: 'hidden', borderWidth: 1,
+            borderColor: pressed ? T.accent : T.line,
+          }]}
+        >
           <View style={{ width: '100%', aspectRatio: 1 }}>
             <Image source={MAP} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
             {regions.map((r) => (
@@ -95,8 +103,34 @@ export function PalMap({ name }: { name: string }) {
                 )}
               </View>
             ))}
+            {/* expand affordance — the map is a real screen, not a picture */}
+            <View style={{
+              position: 'absolute', top: 8, right: 8,
+              backgroundColor: 'rgba(12,22,24,0.8)', borderRadius: 8,
+              paddingHorizontal: 7, paddingVertical: 4,
+              flexDirection: 'row', alignItems: 'center', gap: 4,
+            }}>
+              <Icon name="arrow-expand-all" size={13} color={T.accentInk} />
+              <Text style={{ color: T.accentInk, fontSize: 10.5, fontWeight: '800' }}>
+                Tap to zoom
+              </Text>
+            </View>
           </View>
-        </View>
+        </Pressable>
+      )}
+      {expanded && (
+        <MapViewer
+          title={`${name} — where to find it`}
+          onClose={() => setExpanded(false)}
+          pins={[
+            ...regions.map((r): MapPin => ({
+              x: REGION_SPOTS[r].x, y: REGION_SPOTS[r].y, kind: 'region',
+            })),
+            ...onMap.map((sp): MapPin => ({
+              x: sp.x, y: sp.y, kind: 'alpha', lv: sp.lv,
+            })),
+          ]}
+        />
       )}
       {/* legend + labels — vector icons, never emoji */}
       {onMap.map((sp, i) => (
