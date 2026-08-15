@@ -21,6 +21,7 @@ const palsJson = JSON.parse(
 beforeEach(() => {
   cleanup();
   localStorage.clear();
+  state.clearDraftTargets(); // module-level draft must not leak across tests
   // happy-dom has no real Worker with module URLs — force the sync path,
   // which is exactly what the single-file build uses
   (window as unknown as { __HATCHLAB_EMBED?: unknown }).__HATCHLAB_EMBED = undefined;
@@ -140,6 +141,24 @@ describe('Route Planner', { timeout: 20000 }, () => {
     expect(document.querySelector('.tick')).toBeNull();
     expect(document.body.textContent).not.toContain('Goal progress');
     expect(state.box.value['Lamball']).toEqual({ m: true, f: true });
+  });
+
+  it('un-adding a goal sticks — even after leaving the page and returning', () => {
+    // the CEO's bug: goals added from the suggestions sheet could not be
+    // un-added, and removals were resurrected by a page remount
+    state.addDraftTargets(['Fuack', 'Hoocrates']);
+    const first = render(<PlanPage />);
+    expect(screen.getByRole('button', { name: 'Remove Fuack' })).toBeTruthy();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Remove Fuack' }));
+    expect(screen.queryByRole('button', { name: 'Remove Fuack' })).toBeNull();
+
+    // leave the Plan page and come back — the removal must stick and the
+    // remaining goal must survive
+    first.unmount();
+    render(<PlanPage />);
+    expect(screen.queryByRole('button', { name: 'Remove Fuack' })).toBeNull();
+    expect(screen.getByRole('button', { name: 'Remove Hoocrates' })).toBeTruthy();
   });
 
   it('untick removes exactly what the tick added', () => {

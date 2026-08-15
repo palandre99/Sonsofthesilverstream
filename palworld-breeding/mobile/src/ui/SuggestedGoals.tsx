@@ -162,12 +162,15 @@ const LOOT_RE = /defeated|dropped by enemies/i;
 /** the full ranch roster — every "assigned to Ranch" producer */
 const RANCH_RE = /assigned to Ranch/i;
 
-export function SuggestedGoals({ visible, onClose, targets, onAdd }: {
+export function SuggestedGoals({ visible, onClose, targets, onAdd, onRemove }: {
   visible: boolean;
   onClose: () => void;
   /** current goal list — added pals show as such */
   targets: string[];
   onAdd: (names: string[]) => void;
+  /** un-add — every added pal must be removable right here (CEO 2026-08-15:
+   * "I can't un-add them") */
+  onRemove: (names: string[]) => void;
 }) {
   const [viewing, setViewing] = useState<string | null>(null);
   const [openJob, setOpenJob] = useState<string | null>(null);
@@ -247,6 +250,21 @@ export function SuggestedGoals({ visible, onClose, targets, onAdd }: {
               </View>
             </Pressable>
           )}
+          {/* un-add it right here — adding must never be one-way (CEO) */}
+          {added && (
+            <Pressable hitSlop={6}
+              accessibilityLabel={`Remove ${name} from the plan`}
+              onPress={() => onRemove([name])}
+              style={{ position: 'absolute', left: -7, top: -5 }}>
+              <View style={{
+                width: 18, height: 18, borderRadius: 9, backgroundColor: T.surface2,
+                borderWidth: 1, borderColor: T.line,
+                alignItems: 'center', justifyContent: 'center',
+              }}>
+                <Icon name="minus" size={13} color={T.ink} />
+              </View>
+            </Pressable>
+          )}
         </View>
         <Text numberOfLines={1} style={{
           color: T.ink, fontSize: 9.5, fontWeight: '700', maxWidth: 68,
@@ -271,10 +289,12 @@ export function SuggestedGoals({ visible, onClose, targets, onAdd }: {
   }) => {
     // owned pals need no plan — never count them into "Add N"
     const missing = names.filter((n) => !targets.includes(n) && !ownedAny(n));
+    const inPlan = names.filter((n) => targets.includes(n));
     const ownedCount = names.filter(ownedAny).length;
     const covered = missing.length === 0;
     // a fully covered squad stops selling and starts confirming: compact,
-    // quiet, nothing to do here (CEO: don't suggest what I already have)
+    // quiet, nothing to do here (CEO: don't suggest what I already have) —
+    // but anything ADDED stays removable, adding is never one-way
     return (
       <View style={{
         backgroundColor: T.surface,
@@ -283,10 +303,13 @@ export function SuggestedGoals({ visible, onClose, targets, onAdd }: {
       }}>
         <View style={[s.row, { gap: 8 }]}>
           <Text style={[s.h3, { flex: 1 }]}>{title}</Text>
-          {covered ? (
+          {covered && inPlan.length === 0 ? (
             <Text style={{ color: T.ok, fontSize: 11.5, fontWeight: '800' }}>
-              covered{ownedCount < names.length ? ' or planned' : ''}
+              covered
             </Text>
+          ) : covered ? (
+            <Btn small label={`Remove ${inPlan.length}`}
+              onPress={() => onRemove(inPlan)} />
           ) : (
             <Btn small primary label={`Add ${missing.length}`}
               onPress={() => onAdd(missing)} />
@@ -320,6 +343,7 @@ export function SuggestedGoals({ visible, onClose, targets, onAdd }: {
     const shown = expanded ? ranked.slice(0, 20) : ranked.slice(0, 6);
     const hidden = ranked.length - shown.length;
     const missing = shown.filter((n) => !targets.includes(n) && !ownedAny(n));
+    const inPlanHere = shown.filter((n) => targets.includes(n));
     return (
       <View style={{
         backgroundColor: T.surface, borderColor: T.line, borderWidth: 1,
@@ -349,10 +373,13 @@ export function SuggestedGoals({ visible, onClose, targets, onAdd }: {
             +{hidden} more — the Paldex filter finds them all.
           </Text>
         )}
-        {missing.length > 1 && (
+        {missing.length > 1 ? (
           <Btn small label={`Add all ${missing.length} shown`}
             onPress={() => onAdd(missing)} />
-        )}
+        ) : inPlanHere.length > 1 ? (
+          <Btn small label={`Remove all ${inPlanHere.length}`}
+            onPress={() => onRemove(inPlanHere)} />
+        ) : null}
       </View>
     );
   };
@@ -391,14 +418,20 @@ export function SuggestedGoals({ visible, onClose, targets, onAdd }: {
             <View style={[s.row, { gap: 8 }]}>
               <Icon name="crown-outline" size={18} color={T.goldInk} />
               <Text style={[s.h3, { flex: 1 }]}>The best pals in the game</Text>
-              <Btn small primary
-                disabled={!BEST_OVERALL.some((m) => attain(m.name).kind !== 'have'
-                  && !targets.includes(m.name))}
-                label={`Add ${BEST_OVERALL.filter((m) => attain(m.name).kind !== 'have'
-                  && !targets.includes(m.name)).length}`}
-                onPress={() => onAdd(BEST_OVERALL
-                  .filter((m) => attain(m.name).kind !== 'have' && !targets.includes(m.name))
-                  .map((m) => m.name))} />
+              {BEST_OVERALL.some((m) => attain(m.name).kind !== 'have'
+                && !targets.includes(m.name)) ? (
+                <Btn small primary
+                  label={`Add ${BEST_OVERALL.filter((m) => attain(m.name).kind !== 'have'
+                    && !targets.includes(m.name)).length}`}
+                  onPress={() => onAdd(BEST_OVERALL
+                    .filter((m) => attain(m.name).kind !== 'have' && !targets.includes(m.name))
+                    .map((m) => m.name))} />
+              ) : BEST_OVERALL.some((m) => targets.includes(m.name)) ? (
+                <Btn small
+                  label={`Remove ${BEST_OVERALL.filter((m) => targets.includes(m.name)).length}`}
+                  onPress={() => onRemove(BEST_OVERALL
+                    .filter((m) => targets.includes(m.name)).map((m) => m.name))} />
+              ) : null}
             </View>
             <Text style={[s.body, { fontSize: 11.5 }]}>
               What players rate highest across everything — community consensus
@@ -408,6 +441,7 @@ export function SuggestedGoals({ visible, onClose, targets, onAdd }: {
               {byAttain(BEST_OVERALL.map((m) => m.name)).map((n) => {
                 const m = BEST_OVERALL.find((x) => x.name === n)!;
                 const a = attain(n);
+                const added = targets.includes(n);
                 return (
                   <Pressable key={n} onPress={() => setViewing(n)}
                     style={({ pressed }) => [s.row, {
@@ -420,11 +454,33 @@ export function SuggestedGoals({ visible, onClose, targets, onAdd }: {
                       <Text style={{ color: T.ink, fontWeight: '800', fontSize: 13.5 }}>{n}</Text>
                       <Text style={{ color: T.muted, fontSize: 11 }} numberOfLines={2}>{m.why}</Text>
                     </View>
-                    <Badge kind={a.kind === 'have' ? 'ok'
+                    <Badge kind={added ? 'ok' : a.kind === 'have' ? 'ok'
                       : a.kind === 'breed' ? 'plain' : a.kind === 'catch' ? 'warn' : 'plain'}>
-                      {a.kind === 'have' ? 'have it' : a.kind === 'breed' ? 'breed now'
+                      {added ? 'in plan' : a.kind === 'have' ? 'have it'
+                        : a.kind === 'breed' ? 'breed now'
                         : a.kind === 'catch' ? `catch Lv ${a.lv}` : 'endgame goal'}
                     </Badge>
+                    {/* one pal at a time — the whole-table button must never
+                        be the only way in (CEO, "big bug") */}
+                    {a.kind !== 'have' && (
+                      <Pressable hitSlop={8}
+                        accessibilityLabel={added
+                          ? `Remove ${n} from the plan` : `Add ${n} to the plan`}
+                        onPress={() => {
+                          void Haptics.selectionAsync();
+                          if (added) onRemove([n]); else onAdd([n]);
+                        }}>
+                        <View style={{
+                          width: 26, height: 26, borderRadius: 13,
+                          backgroundColor: added ? T.surface2 : T.accent,
+                          borderWidth: added ? 1 : 0, borderColor: T.line,
+                          alignItems: 'center', justifyContent: 'center',
+                        }}>
+                          <Icon name={added ? 'minus' : 'plus'} size={16}
+                            color={added ? T.ink : '#08191B'} />
+                        </View>
+                      </Pressable>
+                    )}
                   </Pressable>
                 );
               })}
@@ -439,14 +495,20 @@ export function SuggestedGoals({ visible, onClose, targets, onAdd }: {
             <View style={[s.row, { gap: 8 }]}>
               <Icon name="sword-cross" size={18} color={T.accentInk} />
               <Text style={[s.h3, { flex: 1 }]}>Fighting</Text>
-              <Btn small primary
-                disabled={!fighters.some((f) => attain(f.name).kind !== 'have'
-                  && !targets.includes(f.name))}
-                label={`Add ${fighters.filter((f) => attain(f.name).kind !== 'have'
-                  && !targets.includes(f.name)).length}`}
-                onPress={() => onAdd(fighters
-                  .filter((f) => attain(f.name).kind !== 'have' && !targets.includes(f.name))
-                  .map((f) => f.name))} />
+              {fighters.some((f) => attain(f.name).kind !== 'have'
+                && !targets.includes(f.name)) ? (
+                <Btn small primary
+                  label={`Add ${fighters.filter((f) => attain(f.name).kind !== 'have'
+                    && !targets.includes(f.name)).length}`}
+                  onPress={() => onAdd(fighters
+                    .filter((f) => attain(f.name).kind !== 'have' && !targets.includes(f.name))
+                    .map((f) => f.name))} />
+              ) : fighters.some((f) => targets.includes(f.name)) ? (
+                <Btn small
+                  label={`Remove ${fighters.filter((f) => targets.includes(f.name)).length}`}
+                  onPress={() => onRemove(fighters
+                    .filter((f) => targets.includes(f.name)).map((f) => f.name))} />
+              ) : null}
             </View>
             <Text style={[s.body, { fontSize: 11.5 }]}>
               Highest battle stats in the game data (attack counted double).
@@ -500,6 +562,8 @@ export function SuggestedGoals({ visible, onClose, targets, onAdd }: {
             const missing = shown
               .filter((x) => !targets.includes(x.name) && !ownedAny(x.name))
               .map((x) => x.name);
+            const inPlanHere = shown
+              .filter((x) => targets.includes(x.name)).map((x) => x.name);
             return (
               <View key={crew.id} style={{
                 backgroundColor: T.surface, borderColor: T.line, borderWidth: 1,
@@ -519,10 +583,13 @@ export function SuggestedGoals({ visible, onClose, targets, onAdd }: {
                     <PalChip key={x.name} name={x.name} lvl={x.score} note={x.parts} />
                   ))}
                 </View>
-                {missing.length > 1 && (
+                {missing.length > 1 ? (
                   <Btn small label={`Add all ${missing.length} shown`}
                     onPress={() => onAdd(missing)} />
-                )}
+                ) : inPlanHere.length > 1 ? (
+                  <Btn small label={`Remove all ${inPlanHere.length}`}
+                    onPress={() => onRemove(inPlanHere)} />
+                ) : null}
               </View>
             );
           })}
@@ -550,6 +617,8 @@ export function SuggestedGoals({ visible, onClose, targets, onAdd }: {
             const missing = shown
               .filter((x) => !targets.includes(x.name) && !ownedAny(x.name))
               .map((x) => x.name);
+            const inPlanHere = shown
+              .filter((x) => targets.includes(x.name)).map((x) => x.name);
             return (
               <View key={w} style={{
                 backgroundColor: T.surface, borderColor: T.line, borderWidth: 1,
@@ -575,6 +644,9 @@ export function SuggestedGoals({ visible, onClose, targets, onAdd }: {
                 {missing.length ? (
                   <Btn small primary label={`Add these ${missing.length}`}
                     onPress={() => onAdd(missing)} />
+                ) : inPlanHere.length ? (
+                  <Btn small label={`Remove these ${inPlanHere.length}`}
+                    onPress={() => onRemove(inPlanHere)} />
                 ) : (
                   <Text style={{ color: T.ok, fontSize: 11.5, fontWeight: '800' }}>
                     You already have the best — nothing to add

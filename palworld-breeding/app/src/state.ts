@@ -117,6 +117,30 @@ export function ownedAny(name: string): boolean {
   return !!(o && (o.m || o.f));
 }
 
+/* ---------------- draft goal list ----------------
+ * The goal chips the player is composing on the Plan page. Lives here (not
+ * in page state) so leaving the page and coming back — or editing from the
+ * suggestions sheet — always works on the same list, and un-adding is
+ * never lost to a remount (CEO 2026-08-15). Seeded from the saved plan at
+ * page-module load; not persisted on its own. */
+export const draftTargets = signal<string[]>([]);
+
+export function addDraftTargets(names: string[]): void {
+  const next = [...draftTargets.value];
+  for (const n of names) if (!next.includes(n)) next.push(n);
+  if (next.length !== draftTargets.value.length) draftTargets.value = next;
+}
+
+export function removeDraftTargets(names: string[]): void {
+  const drop = new Set(names);
+  const next = draftTargets.value.filter((t) => !drop.has(t));
+  if (next.length !== draftTargets.value.length) draftTargets.value = next;
+}
+
+export function clearDraftTargets(): void {
+  if (draftTargets.value.length) draftTargets.value = [];
+}
+
 export function hasGender(name: string, g: 'm' | 'f'): boolean {
   return !!box.value[name]?.[g];
 }

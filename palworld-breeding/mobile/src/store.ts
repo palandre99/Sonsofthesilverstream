@@ -258,6 +258,7 @@ export async function switchProfile(id: string): Promise<void> {
     state.box = nextBox;
     state.checks = nextChecks;
     state.plan = nextPlan;
+    draftTargets = nextPlan?.targets ?? [];
     emit();
   } finally {
     switching = false;
@@ -295,6 +296,7 @@ async function loadProfileData(): Promise<void> {
       if (Array.isArray(plan.targets) && Array.isArray(plan.steps)) state.plan = plan;
     }
   } catch { /* fresh start */ }
+  draftTargets = state.plan?.targets ?? [];
   emit();
 }
 
@@ -374,6 +376,40 @@ export function canPairNow(a: string, b: string, genderNote?: string | null): bo
   return (oa.m && ob.f) || (oa.f && ob.m);
 }
 
+/* ---------------- draft goal list ----------------
+ * The goal chips the player is composing on the Planner live HERE, not in
+ * screen state: tab switches remount every screen (App.tsx Boundary key),
+ * and the suggestions sheet, the picker, the chips row and the advice card
+ * all edit the same list — screen-local copies is how the "can't un-add"
+ * bug happened (CEO 2026-08-15). Deliberately not persisted on its own: a
+ * fresh launch starts from the saved plan's goals. */
+
+let draftTargets: string[] = [];
+
+export const getDraftTargets = (): string[] => draftTargets;
+
+export function addDraftTargets(names: string[]): void {
+  const next = [...draftTargets];
+  for (const n of names) if (!next.includes(n)) next.push(n);
+  if (next.length === draftTargets.length) return;
+  draftTargets = next;
+  emit();
+}
+
+export function removeDraftTargets(names: string[]): void {
+  const drop = new Set(names);
+  const next = draftTargets.filter((t) => !drop.has(t));
+  if (next.length === draftTargets.length) return;
+  draftTargets = next;
+  emit();
+}
+
+export function clearDraftTargets(): void {
+  if (!draftTargets.length) return;
+  draftTargets = [];
+  emit();
+}
+
 /* ---------------- plan + checks ---------------- */
 
 export const getPlan = () => state.plan;
@@ -381,6 +417,7 @@ export const getChecks = () => state.checks;
 
 export function savePlan(plan: SavedPlan): void {
   state.plan = plan;
+  draftTargets = plan.targets;
   void persist('plan');
   emit();
 }
@@ -443,6 +480,7 @@ export function resetPlanProgress(): void {
 export function clearPlan(): void {
   state.plan = null;
   state.checks = {};
+  draftTargets = [];
   void persist('plan');
   void persist('checks');
   emit();
@@ -470,6 +508,9 @@ export function addPlanTarget(name: string): void {
     console.error('addPlanTarget failed:', e);
     return;
   }
+  // the new goal joins the draft; goals the player staged but has not
+  // planned yet are kept, never silently dropped
+  if (!draftTargets.includes(name)) draftTargets = [...draftTargets, name];
   void persist('plan');
   emit();
 }
@@ -495,6 +536,7 @@ export function removePlanTarget(name: string): void {
     console.error('removePlanTarget failed:', e);
     return;
   }
+  draftTargets = draftTargets.filter((t) => t !== name);
   void persist('plan');
   emit();
 }

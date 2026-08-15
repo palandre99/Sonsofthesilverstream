@@ -18,6 +18,7 @@ import {
   clearPlan, completeStep, getBox, getChecks, getPlan, hasGender, ownedAny,
   addPlanTarget, pals, removePlanTarget, resetPlanProgress, savePlan, selfOnly,
   uncheckStep, useAppVersion,
+  addDraftTargets, getDraftTargets, removeDraftTargets,
   engine,
 } from '../store';
 
@@ -102,7 +103,9 @@ export function PlannerScreen() {
   useAppVersion();
   const saved = getPlan();
   const checks = getChecks();
-  const [targets, setTargets] = useState<string[]>(saved?.targets ?? []);
+  // the goal list lives in the store (draftTargets) — screens remount on
+  // every tab switch, and the sheet/picker/chips/advice all edit this list
+  const targets = getDraftTargets();
   const [busy, setBusy] = useState(false);
   const [planError, setPlanError] = useState<string | null>(null);
   const [picking, setPicking] = useState(false);
@@ -120,14 +123,9 @@ export function PlannerScreen() {
     const apply = () => {
       const p = takeIntentPayload('plan');
       if (p?.fromCard) setFromCard(p.fromCard);
-      // a card's "Plan how to get it" grows the plan a beat after the
-      // intent — sync the goal chips once that write lands. NEVER on
-      // intents addressed elsewhere: that once wiped staged targets when
-      // the user merely opened the Calculator.
-      setTimeout(() => {
-        const t = getPlan()?.targets;
-        if (t) setTargets((prev) => (prev.join() === t.join() ? prev : t));
-      }, 160);
+      // no target syncing here: the goal list lives in the store now, so a
+      // card's "Plan how to get it" lands in the chips through the same
+      // draft the screen reads — no timing hacks, nothing to overwrite
     };
     apply();
     return onNavIntent((i) => {
@@ -387,7 +385,7 @@ export function PlannerScreen() {
           {targets.map((t) => (
             <Text
               key={t}
-              onPress={() => setTargets(targets.filter((x) => x !== t))}
+              onPress={() => removeDraftTargets([t])}
               style={{
                 color: ownedAny(t) ? T.ok : T.ink, backgroundColor: T.surface2,
                 borderRadius: 16, paddingHorizontal: 11, paddingVertical: 5,
@@ -579,9 +577,7 @@ export function PlannerScreen() {
                             void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
                             setHelperBusy(h.name);
                             setTimeout(() => {
-                              addPlanTarget(h.name);
-                              setTargets((prev) =>
-                                prev.includes(h.name) ? prev : [...prev, h.name]);
+                              addPlanTarget(h.name); // draft syncs in the store
                               setHelperBusy(null);
                             }, 30);
                           }} />
@@ -595,9 +591,7 @@ export function PlannerScreen() {
                             void Haptics.selectionAsync();
                             setHelperBusy(h.name);
                             setTimeout(() => {
-                              removePlanTarget(h.name);
-                              setTargets((prev) =>
-                                prev.length > 1 ? prev.filter((t) => t !== h.name) : prev);
+                              removePlanTarget(h.name); // draft syncs in the store
                               setHelperBusy(null);
                             }, 30);
                           }} />
@@ -800,9 +794,7 @@ export function PlannerScreen() {
         onClose={() => setPicking(false)}
         title="Add a target"
         exclude={new Set(targets)}
-        onPick={(n) => {
-          if (!targets.includes(n)) setTargets([...targets, n]);
-        }}
+        onPick={(n) => addDraftTargets([n])}
       />
       <SuggestedGoals
         visible={suggesting}
@@ -810,7 +802,11 @@ export function PlannerScreen() {
         targets={targets}
         onAdd={(names) => {
           void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-          setTargets((prev) => [...new Set([...prev, ...names])]);
+          addDraftTargets(names);
+        }}
+        onRemove={(names) => {
+          void Haptics.selectionAsync();
+          removeDraftTargets(names);
         }}
       />
     </ScrollView>

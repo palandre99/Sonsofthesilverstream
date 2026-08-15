@@ -4,7 +4,10 @@
  * so they count as both — that's what the keep-both-genders warnings are for).
  * Planning runs in a Web Worker; targets, results and check-offs persist. */
 import { useEffect, useMemo, useState } from 'preact/hooks';
-import { box, hasGender, nav, ownedAny, pals, selfOnly, setOwnedGender, storage } from '../state';
+import {
+  addDraftTargets, box, clearDraftTargets, draftTargets, hasGender, nav,
+  ownedAny, pals, removeDraftTargets, selfOnly, setOwnedGender, storage,
+} from '../state';
 import { GenderToggles, LockBadge, PalIcon, PalPicker, WorkChips } from '../components/shared';
 import { GoalsSheet } from '../components/goals';
 import { stepId } from '../engine/planner';
@@ -60,9 +63,15 @@ function loadSaved(): SavedPlan | null {
   } catch { return null; }
 }
 
+// seed the shared goal list from the saved plan ONCE per session — page
+// remounts must never resurrect goals the player removed
+draftTargets.value = loadSaved()?.targets ?? [];
+
 export function PlanPage() {
   const saved = useMemo(loadSaved, []);
-  const [targets, setTargets] = useState<string[]>(saved?.targets ?? []);
+  // the goal list is shared state (state.ts draftTargets) — the sheet, the
+  // picker, the chips and the advice card all edit the same list
+  const targets = draftTargets.value;
   const [plan, setPlan] = useState<{ steps: PlanStep[]; unreachable: string[] } | null>(
     saved ? { steps: saved.steps, unreachable: saved.unreachable } : null,
   );
@@ -90,9 +99,7 @@ export function PlanPage() {
 
   const ownedNames = Object.keys(box.value);
 
-  const addTarget = (n: string) => {
-    if (!targets.includes(n)) setTargets([...targets, n]);
-  };
+  const addTarget = (n: string) => addDraftTargets([n]);
 
   const run = (list: string[] = targets, roster: string[] = ownedNames) => {
     setBusy(true);
@@ -104,6 +111,7 @@ export function PlanPage() {
         setPlanMs(r.ms);
         setPlannedAt(new Date().toISOString());
         setPlanRoster(roster);
+        draftTargets.value = list; // the planned goals ARE the draft now
         // best-effort persist — a quota failure must not read as a plan failure
         storage.set(PLAN_KEY, JSON.stringify({
           targets: list, steps: r.steps, unreachable: r.unreachable,
@@ -125,14 +133,14 @@ export function PlanPage() {
     if (targets.includes(n)) return;
     setHelperBusy(n);
     const next = [...targets, n];
-    setTargets(next);
+    addDraftTargets([n]);
     run(next, planRoster ?? ownedNames);
   };
   const removeHelper = (n: string) => {
     const next = targets.filter((t) => t !== n);
     if (!next.length) return;
     setHelperBusy(n);
-    setTargets(next);
+    removeDraftTargets([n]);
     run(next, planRoster ?? ownedNames);
   };
 
@@ -170,7 +178,7 @@ export function PlanPage() {
     setPlan(null);
     setPlanMs(null);
     setPlannedAt(null);
-    setTargets([]);
+    clearDraftTargets();
     setChecks({});
     storage.set(CHECKS_KEY, JSON.stringify({}));
     storage.set(PLAN_KEY, '');
@@ -372,7 +380,7 @@ export function PlanPage() {
                 <button style={{ border: 'none', background: 'none', color: 'var(--faint)',
                   cursor: 'pointer', padding: 0, fontWeight: 800 }}
                   aria-label={`Remove ${t}`}
-                  onClick={() => setTargets(targets.filter((x) => x !== t))}>✕</button>
+                  onClick={() => removeDraftTargets([t])}>✕</button>
               </span>
             ))}
           </div>
@@ -675,7 +683,8 @@ export function PlanPage() {
       )}
       <GoalsSheet open={goalsOpen} onClose={() => setGoalsOpen(false)}
         targets={targets}
-        onAdd={(names) => setTargets((prev) => [...new Set([...prev, ...names])])} />
+        onAdd={addDraftTargets}
+        onRemove={removeDraftTargets} />
     </>
   );
 }

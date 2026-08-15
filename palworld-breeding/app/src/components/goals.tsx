@@ -135,11 +135,13 @@ function bestFighters(n = 12): string[] {
     .map((x) => x.name);
 }
 
-export function GoalsSheet({ open, onClose, targets, onAdd }: {
+export function GoalsSheet({ open, onClose, targets, onAdd, onRemove }: {
   open: boolean;
   onClose: () => void;
   targets: string[];
   onAdd: (names: string[]) => void;
+  /** un-add — every added pal must be removable right here (CEO 2026-08-15) */
+  onRemove: (names: string[]) => void;
 }) {
   const [expanded, setExpanded] = useState<string | null>(null);
   const attain = useMemo(attainFactory, [open]);
@@ -190,6 +192,15 @@ export function GoalsSheet({ open, onClose, targets, onAdd }: {
               color: '#08191B', fontWeight: 800, cursor: 'pointer', lineHeight: 1,
             }}>+</button>
         )}
+        {added && (
+          <button aria-label={`Remove ${name} from the plan`}
+            onClick={() => onRemove([name])}
+            style={{
+              position: 'absolute', left: '-6px', top: '-6px', width: '20px', height: '20px',
+              borderRadius: '10px', border: '1px solid var(--line)', background: 'var(--surface)',
+              color: 'var(--ink, inherit)', fontWeight: 800, cursor: 'pointer', lineHeight: 1,
+            }}>−</button>
+        )}
         <PalIcon name={name} size={40} />
         {star && <span style={{ position: 'absolute', right: '4px', top: '2px' }}>✦</span>}
         <div style={{
@@ -226,6 +237,7 @@ export function GoalsSheet({ open, onClose, targets, onAdd }: {
     const isOpen = expanded === id;
     const shown = isOpen ? ranked.slice(0, 20) : ranked.slice(0, cap);
     const missing = shown.filter((n) => !targets.includes(n) && !ownedAny(n));
+    const inPlanHere = shown.filter((n) => targets.includes(n));
     return (
       <div class="card" style={{ padding: '12px', display: 'grid', gap: '8px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -235,11 +247,15 @@ export function GoalsSheet({ open, onClose, targets, onAdd }: {
               {isOpen ? 'less −' : `top ${Math.min(cap, ranked.length)} of ${ranked.length} +`}
             </button>
           )}
-          {missing.length > 1 && (
+          {missing.length > 1 ? (
             <button class="btn sm primary" onClick={() => onAdd(missing)}>
               Add {missing.length}
             </button>
-          )}
+          ) : inPlanHere.length > 1 ? (
+            <button class="btn sm" onClick={() => onRemove(inPlanHere)}>
+              Remove {inPlanHere.length}
+            </button>
+          ) : null}
         </div>
         <p style={{ margin: 0, color: 'var(--muted)', fontSize: '12px' }}>{blurb}</p>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
