@@ -8,7 +8,7 @@ import { useSyncExternalStore } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BreedingEngine } from './engine/formula';
 import { derivations, planFor, stepId } from './engine/planner';
-import { helperAdvice, type HelperAdvice } from './engine/helpers';
+import { ADVICE_VERSION, helperAdvice, type HelperAdvice } from './engine/helpers';
 import type { BreedingData, PlanStep } from './engine/types';
 import breedingJson from './data/breeding_1_0.json';
 import palsJson from './data/pals_1_0.json';
@@ -101,6 +101,9 @@ export interface SavedPlan {
   /** helper recommendations, computed in the same pass as the plan so the
    * card renders together with the steps — never pops in later */
   advice?: HelperAdvice[];
+  /** contract version of `advice` — a mismatch triggers a recompute so old
+   * plans pick up smarter advice (e.g. the catch-only Chikipi fix) */
+  adviceVersion?: number;
 }
 
 interface State {
@@ -460,6 +463,7 @@ export function addPlanTarget(name: string): void {
       engine, Object.keys(state.box), ownedAny, { targets, steps, roster }, derivs);
     state.plan = {
       ...(state.plan ?? {}), targets, steps, unreachable, advice,
+      adviceVersion: ADVICE_VERSION,
       planned: new Date().toISOString(), roster,
     };
   } catch (e) {
@@ -484,6 +488,7 @@ export function removePlanTarget(name: string): void {
       engine, Object.keys(state.box), ownedAny, { targets, steps, roster }, derivs);
     state.plan = {
       ...state.plan, targets, steps, unreachable, advice,
+      adviceVersion: ADVICE_VERSION,
       planned: new Date().toISOString(), roster,
     };
   } catch (e) {

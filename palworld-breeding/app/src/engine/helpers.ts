@@ -92,6 +92,12 @@ export const HELPERS: HelperDef[] = [
 
 export const HELPER_NAMES: ReadonlySet<string> = new Set(HELPERS.map((h) => h.name));
 
+/** Bump when helperAdvice's CONTRACT changes (new fields, new coverage) so
+ * persisted plans recompute their advice on next open. v2 = catch-only
+ * suggestions for unreachable helpers (the Chikipi fix) — a plan saved
+ * before v2 would otherwise keep its Chikipi-less card forever. */
+export const ADVICE_VERSION = 2;
+
 export interface HelperAdvice {
   helper: HelperDef;
   status: 'covered' | 'in-plan' | 'suggest';

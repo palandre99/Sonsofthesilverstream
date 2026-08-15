@@ -355,22 +355,25 @@ quietly narrowed. Tick only when shipped AND eye-verified.*
       better suggestions. Search must be better here too.
 
 ### C4. SUGGESTION ENGINE v2 (CEO ~17:50 2026-08-15 — verbatim intake)
-- [ ] C4a Suggested-goals needs a **Fighting** tab (best combat pals) and a
-      **"Best pals in the game"** tab — the consensus best, incl. composite
-      workers ("insane high gathering+planting+transporting = best farmer").
-      DEEP RESEARCH required: community tier lists + game data; never guess.
-- [ ] C4b MORE recommendations per tab — not just top 3/5.
-- [ ] C4c STAGE-AWARE brain: the engine must look at MY box and progression —
-      2 pals owned → recommend strong EARLY pals reachable now, not endgame;
-      100 pals but missing one very good pal that's close/easy to breed →
-      surface it. "Calculate my stage and what is smart to get for efficient
-      progress as well as the late end game goals."
-- [ ] C4d Cover the axes players actually care about: flying mounts (speed),
-      ground/glide mounts, combat (attack/partner dmg), composite work roles,
-      transport/logistics, and PASSIVES-of-note pals (ore weight reduction,
-      faster gathering, better yield…). All researched with sources.
-- [ ] C4e Everything data-backed: game dump for stats/work/partner skills;
-      tier/meta claims labelled community-sourced with provenance.
+- [x] C4a v1 SHIPPED ~18:25: Fighting section (dump battle stats + community
+      stars) + "Best pals in the game" (12 consensus picks, why-lines,
+      provenance-labelled). Composite-worker research ("best farmer") still
+      open below.
+- [x] C4b per-job rows now 5/8 (was 3/5); fighting 12; best-in-game 12.
+- [x] C4c v1: stage-aware chips everywhere — HAVE IT / BREED NOW (closure
+      from box) / CATCH LV X (minWild vs stage proxy = highest wild level
+      among owned) / LATER; sections order actionable-first.
+- [x] C4d v1: mounts flying/ground/swim from dump + labelled speed callouts;
+      weight/carry + efficiency squads from partner-skill text (gliders in
+      mounts card). Drop-boosters (35 pals) mined but NOT yet in UI — needs
+      combat-drop vs ranch split first.
+- [x] C4e: meta.ts is the only subjective file, carries sources + rejection
+      note (skycoach = dated); vitest guards all meta names (72 tests).
+- [ ] C4-NEXT: composite-worker roles ("best farmer" = gathering+planting+
+      transporting mix), drop-booster sub-classification, breed-distance
+      costing (addSteps) for near-miss goods ("close to breed" beyond
+      reachable-set), passives-on-pals research (guaranteed passive lines),
+      CEO eye-verdict on the v2 sheet.
 
 ### C5. CEO FEEDBACK — evening 2026-08-15 (rarity design iterations)
 - [x] "Rarity colours terrible, not even the card coloured" → v2 dyed rows

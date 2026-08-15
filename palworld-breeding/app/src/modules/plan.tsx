@@ -10,7 +10,7 @@ import { stepId } from '../engine/planner';
 import { parseGenderNote } from '../engine/formula';
 import { requestPlan } from '../engine/planClient';
 import { cakeNeeds } from '../engine/boosters';
-import { HELPER_NAMES, type HelperAdvice } from '../engine/helpers';
+import { ADVICE_VERSION, HELPER_NAMES, type HelperAdvice } from '../engine/helpers';
 import { wildLevelRange } from '../data/rarity';
 import type { PlanStep } from '../engine/types';
 
@@ -64,6 +64,8 @@ interface SavedPlan {
   /** helper recommendations, computed with the plan so the card renders
    * together with the steps */
   advice?: HelperAdvice[];
+  /** contract version of `advice` — mismatch triggers a recompute */
+  adviceVersion?: number;
 }
 
 function loadSaved(): SavedPlan | null {
@@ -116,6 +118,7 @@ export function PlanPage() {
         storage.set(PLAN_KEY, JSON.stringify({
           targets: list, steps: r.steps, unreachable: r.unreachable,
           planned: new Date().toISOString(), roster, advice: r.advice,
+          adviceVersion: ADVICE_VERSION,
         } satisfies SavedPlan));
       })
       .catch((e) => setPlanError(String(e instanceof Error ? e.message : e)))
@@ -202,7 +205,8 @@ export function PlanPage() {
   // only backfills plans saved before advice existed.
   const [advice, setAdvice] = useState<HelperAdvice[]>(saved?.advice ?? []);
   useEffect(() => {
-    if (!plan || plan.steps.length === 0 || advice.length > 0 || !targets.length) return;
+    if (!plan || plan.steps.length === 0 || !targets.length
+      || (advice.length > 0 && saved?.adviceVersion === ADVICE_VERSION)) return;
     let dead = false;
     requestPlan(planRoster ?? ownedNames, targets, ownedNames)
       .then((r) => {

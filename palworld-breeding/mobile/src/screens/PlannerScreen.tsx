@@ -5,7 +5,7 @@ import * as Haptics from 'expo-haptics';
 import { AnimatedCheck, HatchBurst, type Rarity, type TickState } from '../ui/celebrate';
 import { PalDetail } from '../ui/PalDetail';
 import { cakeNeeds } from '../engine/boosters';
-import { HELPER_NAMES, helperAdvice, type HelperAdvice } from '../engine/helpers';
+import { ADVICE_VERSION, HELPER_NAMES, helperAdvice, type HelperAdvice } from '../engine/helpers';
 import { T } from '../theme';
 import {
   BackToCardChip, Badge, Btn, Card, PageHead, PalIcon, WorkChips, s,
@@ -151,7 +151,7 @@ export function PlannerScreen() {
           engine, ownedNames, ownedAny,
           { targets, steps, roster: ownedNames }, derivs);
         savePlan({
-          targets, steps, unreachable, advice,
+          targets, steps, unreachable, advice, adviceVersion: ADVICE_VERSION,
           planned: new Date().toISOString(), roster: ownedNames,
         });
         void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
@@ -292,12 +292,17 @@ export function PlannerScreen() {
   // before advice existed, once, off the first paint.
   const advice = plan?.advice ?? [];
   useEffect(() => {
-    if (!plan || plan.advice || plan.steps.length === 0) return;
+    // recompute for plans with no advice at all AND for plans whose advice
+    // predates the current contract — a pre-v2 plan would otherwise keep a
+    // Chikipi-less card forever (found on the 8085 QA pass, 2026-08-15)
+    if (!plan || plan.steps.length === 0
+      || (plan.advice && plan.adviceVersion === ADVICE_VERSION)) return;
     const t = setTimeout(() => {
       try {
         savePlan({
           ...plan,
           advice: helperAdvice(engine, Object.keys(getBox()), ownedAny, plan),
+          adviceVersion: ADVICE_VERSION,
         });
       } catch (e) {
         console.error('advice backfill failed:', e);
