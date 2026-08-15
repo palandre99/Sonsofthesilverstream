@@ -11,6 +11,7 @@ import { parseGenderNote } from '../engine/formula';
 import { requestPlan } from '../engine/planClient';
 import { cakeNeeds } from '../engine/boosters';
 import { HELPER_NAMES, type HelperAdvice } from '../engine/helpers';
+import { wildLevelRange } from '../data/rarity';
 import type { PlanStep } from '../engine/types';
 
 const PRESETS: Record<string, { label: string; targets: string[] }> = {
@@ -216,9 +217,13 @@ export function PlanPage() {
   // ownership is checked LIVE at render so a freshly hatched helper flips to
   // covered instantly without paying the planner again
   const covered = advice.filter((a) => a.status === 'covered' || ownedAny(a.helper.name));
-  const activeAdvice = advice
-    .filter((a) => a.status !== 'covered' && !ownedAny(a.helper.name))
-    .slice(0, 5);
+  // every RECOMMENDED helper always shows — a hard slice once hid the egg
+  // pal entirely (CEO 2026-08-15); only the "your call" tail is capped
+  const uncovered = advice.filter((a) => a.status !== 'covered' && !ownedAny(a.helper.name));
+  const activeAdvice = [
+    ...uncovered.filter((a) => a.recommended || a.status === 'in-plan'),
+    ...uncovered.filter((a) => !a.recommended && a.status !== 'in-plan').slice(0, 2),
+  ];
 
   // ready-state: bred intermediates count as either gender (you can rebreed),
   // owned-only species use the real gender toggles from My Box.
@@ -472,15 +477,18 @@ export function PlanPage() {
                         </div>
                       </div>
                       <p style={{ fontSize: '12.5px', margin: '6px 0' }}>{a.note}</p>
-                      {a.status === 'suggest' && (a.addSteps ?? 0) >= 4
+                      {a.status === 'suggest' && (a.catchOnly || (a.addSteps ?? 0) >= 4)
                         && pals.value[h.name]?.wild && pals.value[h.name].regions.length > 0 && (
                         <p style={{ fontSize: '12px', margin: '0 0 6px', color: 'var(--accent-ink, var(--accent))' }}>
-                          Faster to catch one: {pals.value[h.name].regions.slice(0, 2).join(' · ')}
-                          {pals.value[h.name].max_wild_level
-                            ? ` (found up to Lv ${pals.value[h.name].max_wild_level})` : ''}
+                          {a.catchOnly ? 'Where to catch it: ' : 'Faster to catch one: '}
+                          {pals.value[h.name].regions.slice(0, 2).join(' · ')}
+                          {wildLevelRange(h.name)
+                            ? ` (${wildLevelRange(h.name)})`
+                            : pals.value[h.name].max_wild_level
+                              ? ` (up to Lv ${pals.value[h.name].max_wild_level})` : ''}
                         </p>
                       )}
-                      {a.status === 'suggest' && !isTarget && (
+                      {a.status === 'suggest' && !a.catchOnly && !isTarget && (
                         <button class={`btn sm${a.recommended ? ' primary' : ''}`} disabled={busy}
                           onClick={() => addHelper(h.name)}>
                           {helperBusy === h.name ? 'Adding…'
