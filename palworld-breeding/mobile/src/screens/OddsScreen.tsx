@@ -234,17 +234,23 @@ function PassivesTab() {
       )}
 
       <Card style={{ marginTop: 12 }}>
-        <Text style={s.h2}>The clean-pair reference</Text>
+        <Text style={s.h2}>If parents carry only what you want</Text>
         <Text style={[s.body, { marginTop: 4 }]}>
-          Both parents carrying only what you want, per egg — computed from the game's
-          inheritance weights, matching the community's measured table.
+          Per-egg chances from the game's own inheritance weights. "Perfect" =
+          the egg carries your passives and nothing else. "With extras" = all
+          your passives, possibly plus random ones you'd breed out later.
         </Text>
         <View style={{ marginTop: 10, gap: 4 }}>
+          <View style={[s.row, { gap: 10 }]}>
+            <Text style={{ width: 90 }} />
+            <Text style={{ color: T.faint, width: 60, fontSize: 10.5, fontWeight: '800', letterSpacing: 0.5 }}>PERFECT</Text>
+            <Text style={{ color: T.faint, fontSize: 10.5, fontWeight: '800', letterSpacing: 0.5 }}>WITH EXTRAS</Text>
+          </View>
           {oddsTable().map((r) => (
             <View key={r.skills} style={[s.row, { gap: 10 }]}>
               <Text style={{ color: T.muted, width: 90, fontSize: 13 }}>{r.skills} passive{r.skills > 1 ? 's' : ''}</Text>
               <Text style={{ color: T.accentInk, fontWeight: '800', width: 60, fontSize: 13 }}>{pct(r.clean)}</Text>
-              <Text style={{ color: T.muted, fontSize: 12.5 }}>at least: {pct(r.withJunk)}</Text>
+              <Text style={{ color: T.muted, fontSize: 12.5 }}>{pct(r.withJunk)}</Text>
             </View>
           ))}
         </View>
