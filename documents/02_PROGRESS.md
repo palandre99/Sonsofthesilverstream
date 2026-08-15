@@ -1,7 +1,42 @@
 # PROGRESS — audited state, no invented percentages
 
-*Updated 2026-08-14 late evening. Update this file whenever a work block
-lands; date every entry.*
+*Updated 2026-08-15 ~11:15. Update this file whenever a work block lands;
+date every entry.*
+
+## 2026-08-15 — overnight + morning marathon (all shipped, on-device)
+
+Two installable apps now exist: **Palforge (fast, preview channel — the
+CEO's daily driver, build 0bd4b937)** and **Palforge DEV (tunnel,
+development channel, build 654fe7fb)**. Both carry the new game-accurate
+Pal Sphere icon (blue glass + gold swirl + pole caps — CEO rejected two
+pokeball-shaped attempts first; reference screenshot drove v3).
+
+Landed since the 08-14 entry (each block: tsc clean, web 64/64 tests,
+bundle compile 200, eye-verified on RN-web, committed, OTA'd to BOTH
+channels, web deployed):
+
+- CEO-final navigation: side-panel domains, per-domain bottom tabs, Paldex
+  center anchor; Map domain is FULLSCREEN by CEO decree (tabs: []).
+- Vector-icon chrome everywhere — zero emoji in UI.
+- Paldex: compact header, Filter & Sort sheet (rarity/work/stat sorts,
+  element+ownership filters), rarity-tinted rows, "Copy my list…" export.
+- Smart planning: game-data helper registry (10 pals, partner skills
+  verified from the dump — CEO's Grintale + Broncherry claims confirmed),
+  Add/Remove-to-plan with exact +N-step costs, catch-instead hints with
+  real wild regions, readiness pills with precise gender hints.
+- PERF POST-MORTEM: helperAdvice froze the JS thread (measured 4437ms →
+  335ms via shared derivations; no recompute on tick). Advice now computes
+  WITH the plan (worker-side on web) and persists with it. Negative
+  "+-4 steps" fixed via plan-roster snapshots; reshapes keep ticks.
+- Info cards: real spawn map (79 regions projected with the game's own
+  transforms) + alpha pins; tappable condensation stars (+5%/star,
+  wiki-verified); plain-language "how to breed it" copy.
+- Aug-12 patch check: 1.0.3 is progression/resources/World Tree — no
+  breeding changes; upstream dumps predate it; re-check weekly.
+
+Open (see AI_TODO ledger): web parity for stars/picker-v2/side-panel nav,
+"About the pal" flavor text (needs a verified source), rarity colors from
+the game palette research, profile-switch write race, mobile test harness.
 
 ## iPhone app (`mobile/`) — the priority
 
