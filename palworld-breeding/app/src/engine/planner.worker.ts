@@ -8,7 +8,8 @@
  * responses to requests by id and simply ignores ones it no longer wants.
  */
 import { BreedingEngine } from './formula';
-import { planFor } from './planner';
+import { derivations, planFor } from './planner';
+import { helperAdvice, type HelperAdvice } from './helpers';
 import type { BreedingData, PlanStep } from './types';
 
 export interface PlanRequest {
@@ -16,6 +17,8 @@ export interface PlanRequest {
   id: number;
   roster: string[];
   targets: string[];
+  /** the CURRENT box (may be richer than roster) — used for helper advice */
+  ownedNames?: string[];
 }
 
 export interface InitMessage {
@@ -28,6 +31,7 @@ export interface PlanResponse {
   id: number;
   steps: PlanStep[];
   unreachable: string[];
+  advice: HelperAdvice[];
   ms: number;
 }
 
@@ -52,8 +56,18 @@ self.onmessage = (ev: MessageEvent<InitMessage | PlanRequest>) => {
     }
     const t0 = performance.now();
     try {
-      const { steps, unreachable } = planFor(engine, msg.roster, msg.targets);
-      post({ type: 'result', id: msg.id, steps, unreachable, ms: performance.now() - t0 });
+      // one derivations pass serves the plan AND the helper advice, so the
+      // UI can render steps and recommendations in the same frame
+      const derivs = derivations(engine, new Set(msg.roster));
+      const { steps, unreachable } = planFor(engine, msg.roster, msg.targets, derivs);
+      const owned = msg.ownedNames ?? msg.roster;
+      const ownedSet = new Set(owned);
+      const advice = helperAdvice(engine, owned, (n) => ownedSet.has(n),
+        { targets: msg.targets, steps, roster: msg.roster }, derivs);
+      post({
+        type: 'result', id: msg.id, steps, unreachable, advice,
+        ms: performance.now() - t0,
+      });
     } catch (e) {
       post({ type: 'error', id: msg.id, message: String(e) });
     }

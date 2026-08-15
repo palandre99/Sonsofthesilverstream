@@ -7,7 +7,8 @@
 import { useSyncExternalStore } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BreedingEngine } from './engine/formula';
-import { planFor } from './engine/planner';
+import { derivations, planFor } from './engine/planner';
+import { helperAdvice, type HelperAdvice } from './engine/helpers';
 import type { BreedingData, PlanStep } from './engine/types';
 import breedingJson from './data/breeding_1_0.json';
 import palsJson from './data/pals_1_0.json';
@@ -97,6 +98,9 @@ export interface SavedPlan {
   /** the box at plan time — reshapes re-plan against THIS so finished
    * steps (and their ticks) survive; absent on old saves */
   roster?: string[];
+  /** helper recommendations, computed in the same pass as the plan so the
+   * card renders together with the steps — never pops in later */
+  advice?: HelperAdvice[];
 }
 
 interface State {
@@ -377,9 +381,12 @@ export function addPlanTarget(name: string): void {
   const targets = [...state.plan.targets, name];
   const roster = state.plan.roster ?? Object.keys(state.box);
   try {
-    const { steps, unreachable } = planFor(engine, roster, targets);
+    const derivs = derivations(engine, new Set(roster));
+    const { steps, unreachable } = planFor(engine, roster, targets, derivs);
+    const advice = helperAdvice(
+      engine, Object.keys(state.box), ownedAny, { targets, steps, roster }, derivs);
     state.plan = {
-      ...state.plan, targets, steps, unreachable,
+      ...state.plan, targets, steps, unreachable, advice,
       planned: new Date().toISOString(), roster,
     };
   } catch (e) {
@@ -398,9 +405,12 @@ export function removePlanTarget(name: string): void {
   if (!targets.length) return;
   const roster = state.plan.roster ?? Object.keys(state.box);
   try {
-    const { steps, unreachable } = planFor(engine, roster, targets);
+    const derivs = derivations(engine, new Set(roster));
+    const { steps, unreachable } = planFor(engine, roster, targets, derivs);
+    const advice = helperAdvice(
+      engine, Object.keys(state.box), ownedAny, { targets, steps, roster }, derivs);
     state.plan = {
-      ...state.plan, targets, steps, unreachable,
+      ...state.plan, targets, steps, unreachable, advice,
       planned: new Date().toISOString(), roster,
     };
   } catch (e) {

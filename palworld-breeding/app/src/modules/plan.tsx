@@ -60,6 +60,9 @@ interface SavedPlan {
   /** the box at plan time — reshapes re-plan against THIS so finished
    * steps (and their ticks) survive; absent on old saves */
   roster?: string[];
+  /** helper recommendations, computed with the plan so the card renders
+   * together with the steps */
+  advice?: HelperAdvice[];
 }
 
 function loadSaved(): SavedPlan | null {
@@ -101,26 +104,32 @@ export function PlanPage() {
   const run = (list: string[] = targets, roster: string[] = ownedNames) => {
     setBusy(true);
     setPlanError(null);
-    requestPlan(roster, list)
+    requestPlan(roster, list, ownedNames)
       .then((r) => {
         setPlan({ steps: r.steps, unreachable: r.unreachable });
+        setAdvice(r.advice);
         setPlanMs(r.ms);
         setPlannedAt(new Date().toISOString());
         setPlanRoster(roster);
         // best-effort persist — a quota failure must not read as a plan failure
         storage.set(PLAN_KEY, JSON.stringify({
           targets: list, steps: r.steps, unreachable: r.unreachable,
-          planned: new Date().toISOString(), roster,
+          planned: new Date().toISOString(), roster, advice: r.advice,
         } satisfies SavedPlan));
       })
       .catch((e) => setPlanError(String(e instanceof Error ? e.message : e)))
-      .finally(() => setBusy(false));
+      .finally(() => {
+        setBusy(false);
+        setHelperBusy(null);
+      });
   };
 
   /** One tap from the advice card: add/remove a helper goal and re-plan
    * AGAINST THE PLAN'S ORIGINAL ROSTER — finished steps keep their ticks. */
+  const [helperBusy, setHelperBusy] = useState<string | null>(null);
   const addHelper = (n: string) => {
     if (targets.includes(n)) return;
+    setHelperBusy(n);
     const next = [...targets, n];
     setTargets(next);
     run(next, planRoster ?? ownedNames);
@@ -128,6 +137,7 @@ export function PlanPage() {
   const removeHelper = (n: string) => {
     const next = targets.filter((t) => t !== n);
     if (!next.length) return;
+    setHelperBusy(n);
     setTargets(next);
     run(next, planRoster ?? ownedNames);
   };
@@ -186,25 +196,22 @@ export function PlanPage() {
     storage.set(CHECKS_KEY, JSON.stringify(next));
   };
 
-  // helper advice re-plans per missing helper. One shared derivations pass
-  // inside helperAdvice keeps it ~one planFor's cost, and it recomputes only
-  // when the PLAN changes — ticking pals must never freeze the thread.
-  const [advice, setAdvice] = useState<HelperAdvice[]>([]);
+  // advice arrives WITH the plan (computed in the worker) and persists with
+  // it — the card renders in the same frame as the steps. The effect below
+  // only backfills plans saved before advice existed.
+  const [advice, setAdvice] = useState<HelperAdvice[]>(saved?.advice ?? []);
   useEffect(() => {
-    if (!plan || plan.steps.length === 0 || !engine || !targets.length) {
-      setAdvice([]);
-      return;
-    }
-    const t = setTimeout(() => {
-      try {
-        setAdvice(helperAdvice(engine!, Object.keys(box.value), ownedAny,
-          { targets, steps: plan.steps, roster: planRoster }));
-      } catch (e) {
-        console.error('helperAdvice failed:', e);
-        setAdvice([]);
-      }
-    }, 60);
-    return () => clearTimeout(t);
+    if (!plan || plan.steps.length === 0 || advice.length > 0 || !targets.length) return;
+    let dead = false;
+    requestPlan(planRoster ?? ownedNames, targets, ownedNames)
+      .then((r) => {
+        if (!dead) setAdvice(r.advice);
+      })
+      .catch(() => undefined);
+    return () => {
+      dead = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [plan]);
   // ownership is checked LIVE at render so a freshly hatched helper flips to
   // covered instantly without paying the planner again
@@ -468,14 +475,15 @@ export function PlanPage() {
                       {a.status === 'suggest' && !isTarget && (
                         <button class={`btn sm${a.recommended ? ' primary' : ''}`} disabled={busy}
                           onClick={() => addHelper(h.name)}>
-                          {a.addSteps === 0
-                            ? 'Add to plan · free'
-                            : `Add to plan · +${a.addSteps} step${a.addSteps === 1 ? '' : 's'}`}
+                          {helperBusy === h.name ? 'Adding…'
+                            : a.addSteps === 0
+                              ? 'Add to plan · free'
+                              : `Add to plan · +${a.addSteps} step${a.addSteps === 1 ? '' : 's'}`}
                         </button>
                       )}
                       {isTarget && (
                         <button class="btn sm" disabled={busy} onClick={() => removeHelper(h.name)}>
-                          Remove from plan
+                          {helperBusy === h.name ? 'Removing…' : 'Remove from plan'}
                         </button>
                       )}
                     </div>

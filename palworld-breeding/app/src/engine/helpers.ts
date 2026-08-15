@@ -112,6 +112,9 @@ export function helperAdvice(
   ownedNames: string[],
   ownedAny: (n: string) => boolean,
   plan: { targets: string[]; steps: PlanStep[]; roster?: string[] },
+  /** optional derivations(engine, roster) — callers that just planned with
+   * the same roster can hand theirs over and skip the expensive pass */
+  precomputed?: ReturnType<typeof derivations>,
 ): HelperAdvice[] {
   // Cost math runs against the plan's ORIGINAL roster (falling back to the
   // current box for old saves): ticking steps grows the box, and mixing a
@@ -120,7 +123,7 @@ export function helperAdvice(
   // derivations depends only on the roster — pay the expensive pass ONCE
   // and reuse it for the base plan and every candidate (was: once per
   // candidate, a measured multi-second JS-thread freeze).
-  const derivs = derivations(engine, new Set(roster));
+  const derivs = precomputed ?? derivations(engine, new Set(roster));
   const base = planFor(engine, roster, plan.targets, derivs).steps.length;
   // earliest phase that breeds each child (a child can appear via two steps)
   const planChild = new Map<string, number>();

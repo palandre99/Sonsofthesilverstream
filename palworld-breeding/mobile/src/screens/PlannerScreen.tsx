@@ -30,7 +30,7 @@ function partialGlyph(c: unknown): string | undefined {
   const sc = c as { m: boolean; f: boolean };
   return sc.m ? '♂' : sc.f ? '♀' : undefined;
 }
-import { planFor, stepId } from '../engine/planner';
+import { derivations, planFor, stepId } from '../engine/planner';
 import { parseGenderNote } from '../engine/formula';
 import type { PlanStep } from '../engine/types';
 
@@ -134,9 +134,15 @@ export function PlannerScreen() {
     // yield one frame so the spinner paints, then compute on the JS thread
     setTimeout(() => {
       try {
-        const { steps, unreachable } = planFor(engine, ownedNames, targets);
+        // one shared derivations pass: plan AND its recommendations arrive
+        // together — the card must never pop in after the steps (CEO)
+        const derivs = derivations(engine, new Set(ownedNames));
+        const { steps, unreachable } = planFor(engine, ownedNames, targets, derivs);
+        const advice = helperAdvice(
+          engine, ownedNames, ownedAny,
+          { targets, steps, roster: ownedNames }, derivs);
         savePlan({
-          targets, steps, unreachable,
+          targets, steps, unreachable, advice,
           planned: new Date().toISOString(), roster: ownedNames,
         });
         void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
@@ -272,25 +278,26 @@ export function PlannerScreen() {
   }, [plan, checks]);
 
   const needs = plan ? cakeNeeds(plan.steps.length) : null;
-  // helper advice re-plans per candidate. One shared derivations pass keeps
-  // it ~one planFor's cost, and it recomputes only when the PLAN changes —
-  // ticking pals must never freeze the thread (post-mortem 2026-08-15).
-  const [advice, setAdvice] = useState<HelperAdvice[]>([]);
+  // advice is computed WITH the plan and stored on it — the card renders in
+  // the same frame as the steps. This effect only backfills plans saved
+  // before advice existed, once, off the first paint.
+  const advice = plan?.advice ?? [];
   useEffect(() => {
-    if (!plan || plan.steps.length === 0) {
-      setAdvice([]);
-      return;
-    }
+    if (!plan || plan.advice || plan.steps.length === 0) return;
     const t = setTimeout(() => {
       try {
-        setAdvice(helperAdvice(engine, Object.keys(getBox()), ownedAny, plan));
+        savePlan({
+          ...plan,
+          advice: helperAdvice(engine, Object.keys(getBox()), ownedAny, plan),
+        });
       } catch (e) {
-        console.error('helperAdvice failed:', e);
-        setAdvice([]);
+        console.error('advice backfill failed:', e);
       }
     }, 60);
     return () => clearTimeout(t);
   }, [plan]);
+  // one-tap add/remove needs visible feedback the instant the thumb lands
+  const [helperBusy, setHelperBusy] = useState<string | null>(null);
   // ownership is checked LIVE at render so a freshly hatched helper flips to
   // covered instantly without paying the planner again
   const covered = advice.filter((a) => a.status === 'covered' || ownedAny(a.helper.name));
@@ -479,25 +486,39 @@ export function PlannerScreen() {
                     {a.status === 'suggest' && !isTarget && (
                       <View style={[s.wrap]}>
                         <Btn small primary={a.recommended}
-                          label={a.addSteps === 0
-                            ? 'Add to plan · free'
-                            : `Add to plan · +${a.addSteps} step${a.addSteps === 1 ? '' : 's'}`}
+                          disabled={helperBusy != null}
+                          label={helperBusy === h.name
+                            ? 'Adding…'
+                            : a.addSteps === 0
+                              ? 'Add to plan · free'
+                              : `Add to plan · +${a.addSteps} step${a.addSteps === 1 ? '' : 's'}`}
                           onPress={() => {
+                            // react NOW, compute a beat later so the busy
+                            // label paints before the planner runs
                             void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-                            addPlanTarget(h.name);
-                            setTargets((prev) =>
-                              prev.includes(h.name) ? prev : [...prev, h.name]);
+                            setHelperBusy(h.name);
+                            setTimeout(() => {
+                              addPlanTarget(h.name);
+                              setTargets((prev) =>
+                                prev.includes(h.name) ? prev : [...prev, h.name]);
+                              setHelperBusy(null);
+                            }, 30);
                           }} />
                       </View>
                     )}
                     {isTarget && plan!.targets.length > 1 && (
                       <View style={[s.wrap]}>
-                        <Btn small label="Remove from plan"
+                        <Btn small disabled={helperBusy != null}
+                          label={helperBusy === h.name ? 'Removing…' : 'Remove from plan'}
                           onPress={() => {
                             void Haptics.selectionAsync();
-                            removePlanTarget(h.name);
-                            setTargets((prev) =>
-                              prev.length > 1 ? prev.filter((t) => t !== h.name) : prev);
+                            setHelperBusy(h.name);
+                            setTimeout(() => {
+                              removePlanTarget(h.name);
+                              setTargets((prev) =>
+                                prev.length > 1 ? prev.filter((t) => t !== h.name) : prev);
+                              setHelperBusy(null);
+                            }, 30);
                           }} />
                       </View>
                     )}

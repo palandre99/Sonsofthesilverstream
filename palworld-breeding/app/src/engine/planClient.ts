@@ -6,13 +6,15 @@
  * still cancel-safe via request ids.
  */
 import { BreedingEngine } from './formula';
-import { planFor } from './planner';
+import { derivations, planFor } from './planner';
+import { helperAdvice, type HelperAdvice } from './helpers';
 import type { BreedingData, PlanStep } from './types';
 import type { PlanError, PlanResponse } from './planner.worker';
 
 export interface PlanOutcome {
   steps: PlanStep[];
   unreachable: string[];
+  advice: HelperAdvice[];
   ms: number;
 }
 
@@ -46,7 +48,10 @@ function getWorker(): Worker | null {
       if (!p) return;
       pending.delete(msg.id);
       if (msg.type === 'result') {
-        p.resolve({ steps: msg.steps, unreachable: msg.unreachable, ms: msg.ms });
+        p.resolve({
+          steps: msg.steps, unreachable: msg.unreachable,
+          advice: msg.advice, ms: msg.ms,
+        });
       } else {
         p.reject(new Error(msg.message));
       }
@@ -76,23 +81,28 @@ export function initPlanner(data: BreedingData): void {
   inited = true;
 }
 
-function planSync(roster: string[], targets: string[]): PlanOutcome {
+function planSync(roster: string[], targets: string[], ownedNames?: string[]): PlanOutcome {
   if (!fallbackEngine) {
     if (!fallbackData) throw new Error('planner not initialised');
     fallbackEngine = new BreedingEngine(fallbackData);
   }
   const t0 = performance.now();
-  const { steps, unreachable } = planFor(fallbackEngine, roster, targets);
-  return { steps, unreachable, ms: performance.now() - t0 };
+  const derivs = derivations(fallbackEngine, new Set(roster));
+  const { steps, unreachable } = planFor(fallbackEngine, roster, targets, derivs);
+  const owned = ownedNames ?? roster;
+  const ownedSet = new Set(owned);
+  const advice = helperAdvice(fallbackEngine, owned, (n) => ownedSet.has(n),
+    { targets, steps, roster }, derivs);
+  return { steps, unreachable, advice, ms: performance.now() - t0 };
 }
 
 /** Sync compute after one macrotask (lets the busy state paint), never hangs:
  * planSync errors reject rather than dying inside the timer callback. */
-function planSoon(roster: string[], targets: string[]): Promise<PlanOutcome> {
+function planSoon(roster: string[], targets: string[], ownedNames?: string[]): Promise<PlanOutcome> {
   return new Promise<PlanOutcome>((resolve, reject) => {
     setTimeout(() => {
       try {
-        resolve(planSync(roster, targets));
+        resolve(planSync(roster, targets, ownedNames));
       } catch (e) {
         reject(e instanceof Error ? e : new Error(String(e)));
       }
@@ -104,7 +114,11 @@ function planSoon(roster: string[], targets: string[]): Promise<PlanOutcome> {
 const WORKER_TIMEOUT_MS = 120_000;
 
 /** Plan in the worker when possible, otherwise synchronously after a yield. */
-export function requestPlan(roster: string[], targets: string[]): Promise<PlanOutcome> {
+export function requestPlan(
+  roster: string[],
+  targets: string[],
+  ownedNames?: string[],
+): Promise<PlanOutcome> {
   if (!inited) return Promise.reject(new Error('planner not initialised'));
   const id = nextId++;
   const w = getWorker();
@@ -123,13 +137,13 @@ export function requestPlan(roster: string[], targets: string[]): Promise<PlanOu
           reject(e);
         },
       });
-      w.postMessage({ type: 'plan', id, roster, targets });
+      w.postMessage({ type: 'plan', id, roster, targets, ownedNames });
     }).catch((e) => {
       // worker died mid-request — recompute synchronously so the user still
       // gets their plan
-      if (workerBroken) return planSoon(roster, targets);
+      if (workerBroken) return planSoon(roster, targets, ownedNames);
       throw e;
     });
   }
-  return planSoon(roster, targets);
+  return planSoon(roster, targets, ownedNames);
 }
