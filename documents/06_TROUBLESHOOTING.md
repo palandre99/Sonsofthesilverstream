@@ -64,6 +64,35 @@ forgotten.
 
 ---
 
+## "Connect to PC does nothing / 'Kunne ikke åpne appen'"
+
+iOS is saying **no installed app claims that URL scheme**. Pasting the plain
+`https://…exp.direct` address into the dev client still works, which is
+exactly why this hid for so long — the CEO simply worked around it and never
+reported a bug.
+
+**Cause seen 2026-08-15:** the link used `exp+<scheme>://`. The build actually
+registers the **bare scheme** (`palforge-dev`), the bundle id, and
+`exp+<slug>` (`exp+hatchlab`) — the `exp+` prefix pairs with the SLUG, never
+the scheme. `exp+palforge-dev://` matched nothing.
+
+**Fix:** link to `palforge-dev://expo-development-client/?url=<encoded https>`.
+Never guess the scheme — read it out of the built `.ipa`:
+
+```bash
+python -c "import zipfile,plistlib,re; z=zipfile.ZipFile('dev.ipa'); \
+i=[n for n in z.namelist() if re.match(r'Payload/[^/]+\.app/Info\.plist$',n)][0]; \
+print([t.get('CFBundleURLSchemes') for t in plistlib.loads(z.read(i))['CFBundleURLTypes']])"
+```
+
+Also check the *running* server agrees — if START-APP was launched before an
+`app.config.js` change it still serves the old scheme and the fresh link will
+not match the newly installed app:
+
+```bash
+curl -s -H "Expo-Platform: ios" http://127.0.0.1:8081/ | grep -o '"scheme":"[^"]*"'
+```
+
 ## "START-APP shows a link but the phone won't connect"
 
 - **A stale server owns port 8081.** A second launcher cannot bind it, so the

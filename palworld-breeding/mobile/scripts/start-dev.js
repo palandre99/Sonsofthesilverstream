@@ -106,8 +106,16 @@ function extractDeepLink(rawManifest) {
     : 'https://' + hostUri.replace(/:\d+$/, '');
   // Scheme comes from the running server's resolved config, so the link always
   // matches whichever dev client this server is actually serving.
+  //
+  // Use the scheme BARE — not "exp+<scheme>". The build registers the app's own
+  // scheme (palforge-dev) plus "exp+<slug>" (exp+hatchlab, from the slug, NOT
+  // the scheme). "exp+palforge-dev" is registered by neither, so iOS answered
+  // the CEO with "Kunne ikke åpne appen" every time he tapped Connect — a bug
+  // that shipped unnoticed from the start because pasting the plain https
+  // address into the dev client works and hid it. Verified 2026-08-15 by
+  // unpacking the .ipa and reading CFBundleURLTypes.
   const scheme = expoClient.scheme || 'palforge-dev';
-  return 'exp+' + scheme + '://expo-development-client/?url=' + encodeURIComponent(httpsHost);
+  return scheme + '://expo-development-client/?url=' + encodeURIComponent(httpsHost);
 }
 
 async function pollForUrl() {

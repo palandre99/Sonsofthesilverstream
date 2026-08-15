@@ -86,7 +86,19 @@ https://opqgrdy-palandre99-8081.exp.direct
 Deep link (what the button fires):
 
 ```
-exp+palforge://expo-development-client/?url=https%3A%2F%2Fopqgrdy-palandre99-8081.exp.direct
+palforge-dev://expo-development-client/?url=https%3A%2F%2Fopqgrdy-palandre99-8081.exp.direct
+```
+
+⚠️ **Use the BARE scheme.** The build registers `palforge-dev`,
+`com.palandre.hatchlab.dev` and `exp+hatchlab` — note the `exp+` prefix pairs
+with the **slug**, not the scheme. `exp+palforge-dev://` is registered by
+nothing and iOS answers "could not open the app". Confirm against the real
+build whenever the scheme changes:
+
+```bash
+python -c "import zipfile,plistlib,re; z=zipfile.ZipFile('dev.ipa'); \
+i=[n for n in z.namelist() if re.match(r'Payload/[^/]+\.app/Info\.plist$',n)][0]; \
+print([t.get('CFBundleURLSchemes') for t in plistlib.loads(z.read(i))['CFBundleURLTypes']])"
 ```
 
 It is also written to `CURRENT-DEV-URL.txt` / `.html` at the workspace root
