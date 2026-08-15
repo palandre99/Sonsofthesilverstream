@@ -24,8 +24,43 @@ perf traps in the sheet (a derivations fixpoint paid on Plan-tab mount even
 with the sheet closed, and closed-modal JSX recomputing crew rankings on
 every store write) that the round will fix.
 
-Baseline gates at HEAD `fdb4789` re-run at intake — see next entry for
-results.
+Baseline gates at HEAD `fdb4789` re-run at intake: 79/79 vitest, mobile
+tsc clean.
+
+## 2026-08-15 ~23:00 — E-round SHIPPED: the Plan tab's feedback round, end to end
+
+All twelve E-items landed the same evening, each committed, gated and
+OTA'd to both channels on its own (62df595, c73cc1f, 3ba2783, 32bebc9,
+93d4135). What the CEO gets:
+
+- **Un-add works everywhere** — the goal list lives in the store; − on
+  every added chip, bulk Remove-N, per-row add/remove, and the list
+  survives tab switches (regression test locks the old resurrect bug).
+- **Player level per save profile** — Profiles screen or the "Tuned
+  to…" line in Suggested goals; eye-verified hard cutoff (level 12 cut
+  catch suggestions 57→31, max CATCH LV exactly 12).
+- **One recommendation brain** (src/logic/recommend.ts, byte-identical
+  both platforms, own CI parity gate): every label explains itself
+  (bare ENDGAME is dead), long breeding routes yield to in-reach
+  catches, the kindling quality-vs-closeness example is a literal unit
+  test, and the expensive reachability pass is cached and shared with
+  the planner — the whole vitest suite got 5× faster as a side effect.
+- **Suggested goals v4** — all 30 categories through one card system;
+  tap any category for a full-screen browser (big rows, real work
+  icons — the m7/t7 codes are dead — verbatim game effects, plain-words
+  how-to-get-it lines, RECOMMENDED tags, search, add/remove per row).
+  Zero horizontal scrolling, grep-proven. New Catching helpers section
+  (6 capture pals, mined verbatim; a "player movement speed" role was
+  researched and honestly rejected — it does not exist in the data).
+- **Goal tray v2** — pal cards with icons and real remove targets,
+  Remove-all behind a confirm, folds to one line once the plan runs.
+
+Gates at close: 91/91 vitest (12 new tests incl. logic-parity), mobile
+tsc clean, web build clean; every UI change eye-walked on the QA
+instance (killed after each pass). Deferred by CEO directive (E13, one
+tab at a time): E2 return-navigation — it is Paldex-tab work. The Plan
+tab lane continues: polish passes, micro-QoL, smarter engine iterations
+until his sign-off.
 
 ## 2026-08-15 evening/night — handover marathon (new coder), all shipped
 

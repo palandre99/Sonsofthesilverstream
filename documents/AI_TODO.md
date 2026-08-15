@@ -157,11 +157,22 @@ Add everything you find; finding nothing means you didn't look.*
 
 *Claim an area with a dated line before multi-file work; release when done.*
 
-- 2026-08-15 ~21:55 CLAIMED (feedback-round session): mobile
-  SuggestedGoals.tsx / PlannerScreen.tsx / PaldexScreen.tsx / store.ts /
-  nav (intent.ts, App.tsx) / kit.tsx / SettingsScreens.tsx + web goals.tsx /
-  plan.tsx / state.ts + tools/extract_utility_roles.py + new src/logic/ —
-  the E-round below. Released when E is closed out.
+- 2026-08-15 ~21:55 CLAIMED, ~23:00 NARROWED (Plan-tab session): the
+  E-round core (E1–E12) is shipped; per E13 this session continues to
+  hold the PLAN-TAB surface — mobile SuggestedGoals.tsx /
+  PlannerScreen.tsx / store.ts / src/logic/ + web goals.tsx / plan.tsx /
+  state.ts — for the ongoing perfection lane. PaldexScreen / nav /
+  kit / SettingsScreens are RELEASED.
+
+- 2026-08-15 ~22:50 CLAIMED (MAP-FANE session, second worker): the whole
+  map lane — new `mobile/src/map/` + `app/src/map/`, new `tools/`
+  map extractors, new `data/map*` datasets, `mobile/src/ui/PalMap.tsx`,
+  `mobile/src/ui/MapViewer.tsx`, `mobile/src/nav/domains.ts` (the `map`
+  entry only), and the map tile assets. I stay OUT of the Plan-tab
+  surface above, and deliberately do NOT use `src/logic/` (their lock) —
+  shared map math lives in `src/map/` and gets its own byte-parity gate.
+  NOTE: I will not run `eas update` while their tree is dirty (the
+  publish ritual — it would ship their unfinished Plan work to the CEO).
 
 
 ## CEO FEEDBACK LEDGER — night of 2026-08-15 (NOTHING here may be forgotten)
@@ -458,37 +469,46 @@ below ships on BOTH platforms.*
       "Tuned to…" line at the top of Suggested goals. Set = hard cutoff
       (eye-verified: level 12 cut catch suggestions 57→31, max CATCH LV
       12); unset = the box proxy as before. Web parity (localStorage).
-- [ ] E4 Engine "not smart enough… must be dynamic and adapting to the
-      world save / paldex / player level". → Phase 4: shared scored
-      recommendation brain (src/logic/recommend.ts, parity-gated).
-- [ ] E5 Recommendations must balance quality vs availability with proper
-      math — "6 kindling one breed away beats 7 kindling 83 breeds away".
-      → Phase 4 scoring (score = value / (1 + effortSteps/3)); the example
-      is a literal unit test. RECOMMENDED badge when near-best AND close.
-- [ ] E6 "ENDGAME GOAL" is opaque — is it unbreedable? catch-only? missing
-      a pal? → Phase 4/5: one attainLabel with the reason and next action;
-      bare "ENDGAME" dies everywhere.
-- [ ] E7 (BUG) "Best pals in the game" has no per-pal add on mobile (web
-      has it). → Phase 5: renders through the same row system as
-      everything else.
-- [ ] E8 Horizontal scrolling in a small window is bad design (83 ground
-      mounts!); recommendations need a tappable FULL card — bigger,
-      cleaner, smoother. → Phase 5: zero horizontal ScrollViews; every
-      section opens a full-screen category browser with big rows + search.
-- [ ] E9 "m7"/"t7" text under pals is terrible; cards too small to read. →
-      Phase 5: work-type icons with real levels; crew score never renders
-      as "Lv N"; chip text sizes up.
-- [ ] E10 New category: recommended pal bonuses that help the PLAYER
-      (catch rate, gliding, movement…), ranked most→least recommended. →
-      Phase 4 data (capture + movement roles mined verbatim from
-      partner_effect) + Phase 5 "Helps you in the field" section.
-- [ ] E11 Plan targets area ("Plan 7 targets" chips) is tiny text with an
-      ✕ — no remove-all, wastes the screen, should fold away when the plan
-      is running. → Phase 6: TargetTray card grid + remove-all confirm +
-      fold-to-one-line.
-- [ ] E12 Docs first: plan/progress/todo updated before building (this
-      entry + 02_PROGRESS note = done at intake), then continuous work —
-      the loop never idles.
+- [x] E4 SHIPPED 2026-08-15 ~22:45 (3ba2783, OTA'd both): src/logic/
+      recommend.ts — ONE brain, byte-identical both platforms with its own
+      CI parity gate. Judges every pal from the box + player level via the
+      cached reachability pass; long breeding routes (≥4 steps) yield to
+      in-reach catches (planner-advice threshold). Closed sheet computes
+      NOTHING (perf trap dead); planning reuses the sheet's cached pass.
+- [x] E5 SHIPPED same commit: scoring model scoreOf(value, attain) =
+      value / (1 + effortSteps/3); the CEO's kindling example is a literal
+      unit test (91/91). RECOMMENDED badge criteria implemented in the
+      brain; badge UI lands with the E8 browser redesign.
+- [x] E6 SHIPPED same commit: one attainLabel for every surface — bare
+      "ENDGAME" is dead (grep + eye-verified zero occurrences); "LONG-TERM
+      GOAL" short + explanatory long copy ("needs pals you can't catch or
+      breed yet"); "CATCH X FIRST" for unlock routes. Long copy surfaces
+      on the big rows with the E8 browser.
+- [x] E7 SHIPPED 2026-08-15 ~22:40 (32bebc9, OTA'd both): Best-pals rows
+      render through the unified row system — per-pal add/remove circle on
+      every row (first landed as row buttons in 62df595, now systemic).
+- [x] E8 SHIPPED same commit: zero horizontal ScrollViews (grep-proven);
+      every one of the 30 categories opens a FULL-SCREEN browser — big
+      rows (icon 44, name 14pt), search inside the category, bulk add,
+      add/remove circle per row. Eye-walked the 83-ground-mount browser.
+- [x] E9 SHIPPED same commit: job/crew rows show real work ICONS with
+      levels (letter codes dead — Mining/Medicine can't collide again);
+      crew totals read "total 21" in words, never "Lv 21"; chip text
+      bigger (84px cells, 2-line status).
+- [x] E10 SHIPPED 2026-08-15 ~22:45 (3ba2783 data + 32bebc9 presentation):
+      "Catching helpers" section (6 capture pals, verbatim game text) plus
+      glider/weight/efficiency squads, all with the ranked full-screen
+      browser, RECOMMENDED tags and per-row effects. RESEARCHED AND
+      REJECTED: a "player movement speed" role — every Movement Speed
+      effect in the dump is the pal's own mount/self speed; suggesting
+      "faster running" pals would be invented (noted in the extractor).
+- [x] E11 SHIPPED 2026-08-15 ~22:55 (93d4135, OTA'd both): goal tray v2 —
+      pal cards with icons, owned check / can't-breed warning, real ✕ per
+      card, "Remove all…" behind a confirm (plan + progress stay), and the
+      tray folds to one line with mini icons once the plan matches the
+      goals. Eye-walked the full cycle. Web parity included.
+- [x] E12 DONE at intake and maintained: plan of record, ledger E-entries,
+      02_PROGRESS entries, ticks with commits + timestamps throughout.
 - [ ] E13 CEO DIRECTIVE ~22:25 (verbatim intake): "ONLY WHEN U THINK THE
       BREED fane called PLAN tab is perfected is when u stop. then i will
       test it properly. we work in one tab at a time... u should never
