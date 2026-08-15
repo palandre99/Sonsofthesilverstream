@@ -15,13 +15,86 @@ import zlib
 from pathlib import Path
 
 BG = (12, 22, 24)         # #0C1618
-TEAL = (63, 193, 201)     # #3FC1C9 upper shell
-LOW = (30, 116, 124)      # deeper teal lower shell
-DARK = (12, 22, 24)       # thin band + button ring
-CORE = (230, 240, 241)    # button core
-GLINT = (169, 236, 240)   # upper-shell highlight arc
+
+# blue glass (from the in-game sphere: icy translucent blue)
+BLUE_XL = (168, 226, 248)  # highlight ice
+BLUE_L = (105, 196, 238)
+BLUE_M = (52, 154, 214)
+BLUE_D = (24, 96, 156)     # depth / rim
+
+# gold ornament (filigree band + pole caps)
+GOLD_L = (240, 205, 105)
+GOLD_M = (216, 168, 62)
+GOLD_D = (150, 108, 34)
 
 OUT = Path(__file__).resolve().parent.parent / "assets"
+
+import math
+
+R = 36.0  # sphere radius in the 100x100 box; caps extend past the poles
+
+
+def _cap(dx, dy):
+    """Gold cone caps at the poles, like the game's sphere. Returns a color
+    or None. Top cap is taller with a knob tip; bottom is a short cone."""
+    # top: from above the sphere down onto its crown
+    if -R - 9 <= dy <= -R + 8:
+        h = dy - (-R - 9)              # 0 at the very tip
+        half = 1.5 + h * 0.75          # widening cone
+        if abs(dx) <= half:
+            return GOLD_L if dx < -half * 0.2 else (GOLD_M if dx < half * 0.5 else GOLD_D)
+    # bottom: shorter cone
+    if R - 7 <= dy <= R + 8:
+        h = (R + 8) - dy
+        half = 1.2 + h * 0.62
+        if abs(dx) <= half:
+            return GOLD_M if dx < half * 0.3 else GOLD_D
+    return None
+
+
+def sphere_color(x, y):
+    """Palforge mark at (x, y) in a 100x100 box, or None outside.
+
+    The GAME's Pal Sphere: blue glass orb, gold swirl wrapped diagonally
+    around it, gold cone caps at the poles. Deliberately NOT pokeball
+    grammar — no horizontal band, no center button.
+    """
+    dx, dy = x - 50.0, y - 50.0
+
+    cap = _cap(dx, dy)
+    if cap is not None:
+        return cap
+
+    r2 = dx * dx + dy * dy
+    if r2 > R * R:
+        return None
+    r = math.sqrt(r2)
+
+    # diagonal gold swirl: rotate ~35deg, then an S-curved band
+    c, sn = 0.819, 0.574
+    u = dx * c + dy * sn
+    v = -dx * sn + dy * c
+    t = v - 7.0 * math.sin(u / 16.0)
+    if abs(t) <= 5.0:
+        if t < -1.8:
+            return GOLD_L
+        if t < 2.6:
+            return GOLD_M
+        return GOLD_D
+
+    # rim depth
+    if r >= R - 2.0:
+        return BLUE_D
+    # glass shading: ice highlight up-left, smoothly deeper away from it
+    hx, hy = dx + 13.0, dy + 15.0
+    hd = math.sqrt(hx * hx + hy * hy)
+    if hd < 8.5:
+        return BLUE_XL
+    if hd < 19.0:
+        return BLUE_L
+    if hd > 44.0:
+        return BLUE_D
+    return BLUE_M
 
 
 def png_bytes(width, height, rgba):
@@ -36,36 +109,6 @@ def png_bytes(width, height, rgba):
             + chunk(b"IHDR", struct.pack(">IIBBBBB", width, height, 8, 6, 0, 0, 0))
             + chunk(b"IDAT", zlib.compress(raw, 9))
             + chunk(b"IEND", b""))
-
-
-def sphere_color(x, y):
-    """Color of the mark at (x, y) in a 100x100 box, or None outside.
-
-    Pal-sphere look (NOT a pokeball): two-tone hemispheres, THIN band,
-    small button without the big ring, highlight arc on the upper shell.
-    Geometry: orb center (50,50) R=40; band half-height 3.2; button r6/3.8.
-    """
-    dx, dy = x - 50.0, y - 50.0
-    r2 = dx * dx + dy * dy
-    if r2 > 40.0 * 40.0:
-        return None
-    # small button: dark ring, light core
-    if r2 <= 3.8 * 3.8:
-        return CORE
-    if r2 <= 6.0 * 6.0:
-        return DARK
-    # thin equator band
-    if abs(dy) <= 3.2:
-        return DARK
-    if dy < 0:
-        # upper shell: teal with a highlight arc
-        import math
-        r = math.sqrt(r2)
-        if 27.0 <= r <= 33.0 and dy < -8 and dx < 10:
-            return GLINT
-        return TEAL
-    # lower shell: deeper tone
-    return LOW
 
 
 def render(size, egg_scale, opaque_bg, out):

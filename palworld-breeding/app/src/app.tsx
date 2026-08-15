@@ -10,19 +10,39 @@ import { PlanPage } from './modules/plan';
 import { OddsPage } from './modules/odds';
 import { ReferencePage } from './modules/misc';
 
+/* The game's Pal Sphere: blue glass orb, gold swirl, gold pole caps —
+ * NOT pokeball grammar (no horizontal band, no center button). */
 const Logo = () => (
   <svg viewBox="0 0 100 100" aria-hidden="true">
-    <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" stroke-width="7" />
-    <path d="M12 50h30m16 0h30" stroke="currentColor" stroke-width="5" />
-    <circle cx="50" cy="50" r="6.5" fill="none" stroke="currentColor" stroke-width="5" />
-    <path d="M27 37 A27 27 0 0 1 56 23" stroke="currentColor" stroke-width="5" fill="none" stroke-linecap="round" opacity="0.55" />
+    <defs>
+      <radialGradient id="pfglass" cx="0.38" cy="0.32" r="0.9">
+        <stop offset="0" stop-color="#A8E2F8" />
+        <stop offset="0.35" stop-color="#69C4EE" />
+        <stop offset="0.75" stop-color="#349AD6" />
+        <stop offset="1" stop-color="#1860A0" />
+      </radialGradient>
+      <clipPath id="pforb"><circle cx="50" cy="50" r="36" /></clipPath>
+    </defs>
+    <circle cx="50" cy="50" r="36" fill="url(#pfglass)" stroke="#1860A0" stroke-width="2" />
+    <g clip-path="url(#pforb)">
+      <path d="M8 40 C 30 22, 46 58, 66 62 S 92 58, 98 50"
+        fill="none" stroke="#966C22" stroke-width="11" />
+      <path d="M8 38 C 30 20, 46 56, 66 60 S 92 56, 98 48"
+        fill="none" stroke="#D8A83E" stroke-width="8" />
+      <path d="M8 36.5 C 30 18.5, 46 54.5, 66 58.5"
+        fill="none" stroke="#F0CD69" stroke-width="3.5" />
+    </g>
+    <path d="M50 4 L61 21 H39 Z" fill="#D8A83E" />
+    <path d="M50 4 L61 21 H50 Z" fill="#966C22" />
+    <path d="M50 96 L59 81 H41 Z" fill="#D8A83E" />
+    <path d="M50 96 L59 81 H50 Z" fill="#966C22" />
   </svg>
 );
 
 const icons = {
   calc: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="3" width="16" height="18" rx="3" /><path d="M8 8h8M8 12h3m5 0h0M8 16h3m5 0h0" stroke-linecap="round" /></svg>,
   plan: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 4v6a4 4 0 0 0 4 4h4" stroke-linecap="round" /><circle cx="6" cy="4" r="2" /><circle cx="18" cy="14" r="2" /><path d="M18 16v1a4 4 0 0 1-4 4H9" stroke-linecap="round" /><circle cx="7" cy="21" r="2" /></svg>,
-  paldex: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9" /><path d="M3 12h6m6 0h6" /><circle cx="12" cy="12" r="3" /></svg>,
+  paldex: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8" /><path d="M4.5 9 C 9 5, 12 14, 19.5 13" stroke-linecap="round" /><path d="M12 1.5l2.2 3.4h-4.4Z" fill="currentColor" stroke="none" /><path d="M12 22.5l2-3h-4Z" fill="currentColor" stroke="none" /></svg>,
   box: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 8l8-4 8 4v8l-8 4-8-4Z" stroke-linejoin="round" /><path d="M4 8l8 4 8-4M12 12v8" /></svg>,
   ref: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H5Z" stroke-linejoin="round" /><path d="M19 4h-5a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h6Z" stroke-linejoin="round" /></svg>,
   odds: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10m5 10V4m5 16v-7m5 7V8" stroke-linecap="round" /></svg>,
