@@ -165,7 +165,11 @@ loops all night INSIDE the Breeding + Paldex domain (his explicit scope).
       (Braloha/Dynamoff/Grintale/Broncherry/Caprity berries) 2026-08-15
 - [ ] Broncherry alpha-egg details in the pal info card (luck helpers section)
 - [ ] Mobile engine test harness (vitest for mobile copies) — still open
-- [ ] Aug-12 game-update data freshness check (upstream kb + palcalc) — URGENT
+- [x] Aug-12 data freshness RESOLVED 2026-08-15: patch 1.0.3 (Aug 12) is
+      progression/resources/World Tree + fixes — no breeding-mechanics
+      changes per patch notes (game8 1.0.3, palworldgame.wiki). Both upstream
+      clones (kb, palcalc) are at origin HEAD and predate the patch; engine
+      data remains valid. RE-CHECK upstreams weekly for refreshed dumps.
 
 
 ## CEO FEEDBACK — morning 2026-08-15 (09:25, fast app installed and running)

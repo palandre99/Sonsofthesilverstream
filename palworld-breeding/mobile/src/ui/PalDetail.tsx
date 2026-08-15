@@ -163,8 +163,9 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
               ))}
               {inPool && (
                 <Text style={s.body}>
-                  Generic pool · rank {engine.ranks.get(name)} — any pair whose rank target
-                  lands on {engine.ranks.get(name)}. Use the Calculator's Child → parents.
+                  No fixed recipe — many different parent pairs can breed this pal.
+                  Open the Calculator and search it under Child → parents to see
+                  every pair you can make right now.
                 </Text>
               )}
             </>

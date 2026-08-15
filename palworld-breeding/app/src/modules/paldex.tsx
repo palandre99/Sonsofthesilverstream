@@ -342,8 +342,8 @@ function Drawer({ name, onClose }: { name: string; onClose: () => void }) {
               ))}
               {inPool && (
                 <div class="recipe-line">
-                  <span class="badge plain">generic · rank {engine!.ranks.get(name)}</span>
-                  any pair whose rank target lands on {engine!.ranks.get(name)}
+                  No fixed recipe — many different parent pairs can breed this pal.
+                  The button below lists every pair you can make right now.
                 </div>
               )}
               <button class="btn" style={{ alignSelf: 'flex-start', marginTop: '4px' }}
