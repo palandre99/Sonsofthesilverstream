@@ -236,9 +236,11 @@ loops all night INSIDE the Breeding + Paldex domain (his explicit scope).
       too small, just an image" — tap to open FULLSCREEN with pan + pinch
       zoom, pins preserved (this pal's spawns only). This is the seed of
       the future Map fane.
-- [ ] Plan target search: "still terrible, part of one of those auto
-      bubbles" — unify with Paldex: full-screen picker with the SAME
-      Filter & Sort sheet (share FilterSheet between Paldex and PalPicker).
+- [x] Plan target search UNIFIED ~13:05: shared ui/palFilters.tsx (logic) +
+      ui/FilterSheet.tsx (sheet) + ui/PalPicker.tsx; the picker now opens
+      the SAME Filter & Sort sheet as the Paldex (eye-verified, OTA'd both).
+      NOTE: eas update exports intermittently race the local Metros — retry
+      solo on "Export failed"; direct expo export always proves the code.
 - [ ] "Add targets" UX: smarter/cleaner/expanded — preset cards with
       descriptions, suggested goals, better visual hierarchy.
 - [ ] Deep competitor research round 2 (agent launched): breeding planners,
