@@ -16,7 +16,9 @@ import { MAP_SPAWNS } from '../src/data/mapSpawns.g';
 import { MAP_REGIONS } from '../src/data/mapMeta.g';
 import { clusterPoints, decodePoints, pointsInRect } from '../src/map/points';
 import { regionOf, uvToReadout, worldToUv, tileLevelFor } from '../src/map/projection';
-import { isNightOnly, spawnLevels, spawnPoints, spawnSplit } from '../src/map/layers';
+import {
+  isNightOnly, spawnLevels, spawnPoints, spawnSplit, wildBands,
+} from '../src/map/layers';
 
 const palsJson = JSON.parse(
   readFileSync(join(__dirname, '..', '..', 'data', 'pals_1_0.json'), 'utf8'),
@@ -151,6 +153,23 @@ describe('spawn data', () => {
   it('keeps variants distinct from their base species', () => {
     const cryst = spawnSplit('Foxparks Cryst', 'palpagos');
     expect(cryst.field + cryst.dungeon).toBe(104);
+  });
+
+  it('states open-world and dungeon levels apart on the pal card', () => {
+    // palcalc quotes ONE range that unions open-world, dungeon and boss
+    // spawns, which is why the card read "wild Lv 5 to 18" for Foxparks while
+    // the map on the same card said 5-7. 167 of 260 species disagreed that way.
+    const bands = wildBands('Foxparks');
+    expect(bands.surface).toEqual({ lo: 5, hi: 7 });
+    expect(bands.dungeon).toEqual({ lo: 6, hi: 13 });
+  });
+
+  it('leaves boss-only species to the palcalc fallback', () => {
+    // ~25 species have no wild spawner at all; the card must not claim a range
+    // of its own for them.
+    const bands = wildBands('Bellanoir');
+    expect(bands.surface).toBeNull();
+    expect(bands.dungeon).toBeNull();
   });
 
   it('hides night-only bands when night is switched off', () => {

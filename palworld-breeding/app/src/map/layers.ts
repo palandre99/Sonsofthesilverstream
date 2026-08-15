@@ -157,6 +157,30 @@ export function spawnSplit(pal: string, region: RegionId): { field: number; dung
   return { field, dungeon };
 }
 
+/**
+ * The levels a pal is actually found at, split by where you'd meet it.
+ *
+ * The pal card used to quote one range from palcalc, which is the union of
+ * open-world, dungeon and boss spawns — so Foxparks read "wild Lv 5 to 18"
+ * while the map said 5-7, and 167 of 260 species disagreed the same way. A
+ * player reading "found in wild" expects to walk out and meet one, so the two
+ * cases are stated separately rather than blurred into one number.
+ */
+export function wildBands(pal: string): {
+  surface: { lo: number; hi: number } | null;
+  dungeon: { lo: number; hi: number } | null;
+} {
+  const pick = (dun: boolean) => {
+    const groups = (MAP_SPAWNS[pal] ?? []).filter((g) => g.dun === dun);
+    if (!groups.length) return null;
+    return {
+      lo: Math.min(...groups.map((g) => g.lo)),
+      hi: Math.max(...groups.map((g) => g.hi)),
+    };
+  };
+  return { surface: pick(false), dungeon: pick(true) };
+}
+
 /** Level band a pal spawns at in a region, for the UI to state plainly. */
 export function spawnLevels(pal: string, region: RegionId): { lo: number; hi: number } | null {
   const groups = (MAP_SPAWNS[pal] ?? []).filter((g) => REGION_BY_INDEX[g.m] === region && !g.dun);

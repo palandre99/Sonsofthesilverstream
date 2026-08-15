@@ -284,9 +284,16 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       (data + filter flag already exist, `filters.dungeons`) — a "found in
       dungeons" toggle, since the information is genuinely useful once it is
       labelled honestly.
-- [ ] F25 Audit the OTHER wild-level numbers on the pal card against the
-      surface bands — palcalc's minWild/maxWild disagree with the game's
-      spawner table for at least Foxparks, so probably many more.
+- [x] F25 DONE 2026-08-16 ~00:55 — and it was far bigger than Foxparks.
+      **167 of 260 species** showed a wild range on the card that the game's
+      own spawner table disagrees with. Cause: palcalc's minWild/maxWild is
+      the UNION of open-world, dungeon and boss spawns, so "found in wild
+      Lv 5 to 18" was really "5-7 outside, 6-13 in dungeons, boss at 18".
+      The card now states them apart from the game table (`wildBands()`),
+      with palcalc's union kept as the fallback for the ~25 species that have
+      no wild spawner at all. `wildLevelRange()` is UNCHANGED because the
+      Planner (other session's lane) uses it — no cross-lane behaviour change.
+      Eye-verified: "FOUND IN WILD LV 5 TO 7" + "IN DUNGEONS LV 6 TO 13".
 - [ ] F10 WEB PARITY: the shared math + data are already in `app/src/map/` and
       `app/src/data/` (byte-parity gated), but the website has no map UI yet.
 - [ ] F11 Rebuild `ui/PalMap.tsx` + `ui/MapViewer.tsx` on the new engine and

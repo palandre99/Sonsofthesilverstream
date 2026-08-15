@@ -10,6 +10,7 @@ import {
   addPlanTarget, breeding, engine, getPlan, ownedAny, pals, selfOnly, useAppVersion, workLabel,
 } from '../store';
 import { navigateTo } from '../nav/intent';
+import { wildBands } from '../map/layers';
 import { WORK_ICONS } from '../data/workIcons';
 import { PalMap } from './PalMap';
 import { STAT_ICONS } from '../data/statIcons';
@@ -298,15 +299,43 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
               </View>
             )}
             {p.craft_speed != null && <Badge kind="plain">work speed {p.craft_speed}</Badge>}
-            {/* the FLOOR matters as much as the ceiling — "up to Lv 13" never
-                told you it also spawns at 6 (CEO 2026-08-15). Range comes from
-                the game table via palcalc; falls back to the old ceiling-only
-                line for the one pal palcalc doesn't carry. */}
-            {wildLevelRange(name)
-              ? <Badge kind="plain">found in wild {wildLevelRange(name)}</Badge>
-              : p.max_wild_level != null
-                ? <Badge kind="plain">found in wild up to Lv {p.max_wild_level}</Badge>
-                : null}
+            {/* The FLOOR matters as much as the ceiling — "up to Lv 13" never
+                told you it also spawns at 6 (CEO 2026-08-15).
+                WHERE you meet it matters just as much: the old single range
+                came from palcalc, which unions open-world, dungeon and boss
+                spawns, so this badge said "wild Lv 5 to 18" for Foxparks while
+                the map on the same card said 5-7. 167 of 260 species disagreed
+                that way. Open-world and dungeon levels are now stated apart,
+                straight from the game's spawner table; palcalc's union is the
+                fallback for the ~25 species with no wild spawners at all. */}
+            {(() => {
+              const bands = wildBands(name);
+              if (!bands.surface && !bands.dungeon) {
+                return wildLevelRange(name)
+                  ? <Badge kind="plain">found in wild {wildLevelRange(name)}</Badge>
+                  : p.max_wild_level != null
+                    ? <Badge kind="plain">found in wild up to Lv {p.max_wild_level}</Badge>
+                    : null;
+              }
+              return (
+                <>
+                  {bands.surface && (
+                    <Badge kind="plain">
+                      found in wild {bands.surface.lo === bands.surface.hi
+                        ? `Lv ${bands.surface.lo}`
+                        : `Lv ${bands.surface.lo} to ${bands.surface.hi}`}
+                    </Badge>
+                  )}
+                  {bands.dungeon && (
+                    <Badge kind="plain">
+                      in dungeons {bands.dungeon.lo === bands.dungeon.hi
+                        ? `Lv ${bands.dungeon.lo}`
+                        : `Lv ${bands.dungeon.lo} to ${bands.dungeon.hi}`}
+                    </Badge>
+                  )}
+                </>
+              );
+            })()}
           </View>
         </Card>
 
