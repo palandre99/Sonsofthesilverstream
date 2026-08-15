@@ -21,7 +21,7 @@ import { MapCanvas, type MapCanvasHandle, type MapMarker } from '../map/MapCanva
 import { clusterPoints, pointsInRect, type PointSet } from '../map/points';
 import { uvToReadout, regionOf, type RegionId } from '../map/projection';
 import {
-  GROUP_LABEL, emptyFilters, isNightOnly, poiLayer, poiLayers, poiPoints,
+  GROUP_LABEL, dungeonPoints, emptyFilters, isNightOnly, poiLayer, poiLayers, poiPoints,
   spawnLevels, spawnPoints, spawnablePals, type LayerGroup, type MapFilters,
 } from '../map/layers';
 import { MAP_REGIONS } from '../data/mapMeta.g';
@@ -71,19 +71,34 @@ export function MapScreen() {
       }
     }
     for (const pal of filters.pals) {
-      const set = spawnPoints(pal, region, filters.time, filters.level, filters.dungeons);
-      if (set && set.n) {
+      const surface = spawnPoints(pal, region, filters.time, filters.level);
+      if (surface && surface.n) {
         out.push({
           key: `pal:${pal}`,
-          set,
+          set: surface,
           colour: isNightOnly(pal, region) ? '#9B8CFF' : T.accent,
           icon: 'paw',
           label: pal,
         });
       }
+      // Dungeon spawners are a DIFFERENT instruction to the player — "go
+      // inside" rather than "walk here" — so they get their own colour and a
+      // door icon instead of being blended into the open-world cloud.
+      if (filters.dungeons) {
+        const inside = dungeonPoints(pal, region, filters.time, filters.level);
+        if (inside && inside.n) {
+          out.push({
+            key: `dun:${pal}`,
+            set: inside,
+            colour: '#8AA6FF',
+            icon: 'door',
+            label: `${pal} (dungeons)`,
+          });
+        }
+      }
     }
     return out;
-  }, [filters.level, filters.pals, filters.poi, filters.time, region]);
+  }, [filters.dungeons, filters.level, filters.pals, filters.poi, filters.time, region]);
 
   const markers = useMemo<MapMarker[]>(() => {
     const out: MapMarker[] = [];
@@ -269,6 +284,7 @@ export function MapScreen() {
           filters={filters}
           region={region}
           onToggle={togglePal}
+          onToggleDungeons={() => patch({ dungeons: !filters.dungeons })}
           onClear={() => patch({ pals: new Set() })}
           onClose={() => setSheet(null)}
         />
@@ -406,9 +422,10 @@ function LayerSheet({ filters, onToggle, onClear, onClose }: {
   );
 }
 
-function PalSheet({ filters, region, onToggle, onClear, onClose }: {
+function PalSheet({ filters, region, onToggle, onToggleDungeons, onClear, onClose }: {
   filters: MapFilters; region: RegionId;
-  onToggle: (name: string) => void; onClear: () => void; onClose: () => void;
+  onToggle: (name: string) => void; onToggleDungeons: () => void;
+  onClear: () => void; onClose: () => void;
 }) {
   const [q, setQ] = useState('');
   const [missingOnly, setMissingOnly] = useState(false);
@@ -426,6 +443,26 @@ function PalSheet({ filters, region, onToggle, onClear, onClose }: {
     <SheetShell title="Find a pal" onClear={onClear} onClose={onClose}>
       <View style={{ paddingHorizontal: 14, paddingTop: 12, gap: 10 }}>
         <SearchInput value={q} onChange={setQ} placeholder="Search pals…" />
+        <Pressable
+          onPress={onToggleDungeons}
+          accessibilityRole="checkbox"
+          accessibilityState={{ checked: filters.dungeons }}
+          style={{
+            flexDirection: 'row', alignItems: 'center', gap: 8, alignSelf: 'flex-start',
+            paddingHorizontal: 11, paddingVertical: 9, borderRadius: 11, borderWidth: 1,
+            borderColor: filters.dungeons ? '#8AA6FF' : T.line,
+            backgroundColor: filters.dungeons ? T.surface2 : T.surface,
+          }}
+        >
+          <Icon
+            name={filters.dungeons ? 'checkbox-marked-outline' : 'checkbox-blank-outline'}
+            size={16}
+            color={filters.dungeons ? '#8AA6FF' : T.muted}
+          />
+          <Text style={{ color: T.ink, fontWeight: '700', fontSize: 12.5 }}>
+            Also show dungeon spawns
+          </Text>
+        </Pressable>
         <Pressable
           onPress={() => setMissingOnly((m) => !m)}
           accessibilityRole="checkbox"

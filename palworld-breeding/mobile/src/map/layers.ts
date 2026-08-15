@@ -132,6 +132,39 @@ export function spawnPoints(
   return set;
 }
 
+/**
+ * Only the DUNGEON spawners for a pal, so they can be drawn as their own
+ * layer rather than blended into the open-world one. Same information, but a
+ * player can tell at a glance which pins mean "go inside".
+ */
+export function dungeonPoints(
+  pal: string,
+  region: RegionId,
+  time: TimeFilter,
+  level: { lo: number; hi: number },
+): PointSet | null {
+  const key = `${pal}|${region}|${time.day ? 'd' : ''}${time.night ? 'n' : ''}`
+    + `|${level.lo}-${level.hi}|dungeon-only`;
+  const got = spawnCache.get(key);
+  if (got) return got;
+
+  const groups = (MAP_SPAWNS[pal] ?? [])
+    .filter((g) => g.dun && matches(g, region, time, level));
+  if (groups.length === 0) return null;
+
+  const parts = groups.map((g) => decodePoints(g.pts));
+  const total = parts.reduce((n, p) => n + p.n, 0);
+  const xy = new Float32Array(total * 2);
+  let at = 0;
+  for (const p of parts) {
+    xy.set(p.xy, at * 2);
+    at += p.n;
+  }
+  const set = decodeFromXY(xy, total);
+  spawnCache.set(key, set);
+  return set;
+}
+
 function matches(
   g: SpawnGroup,
   region: RegionId,

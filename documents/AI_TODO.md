@@ -280,10 +280,15 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       held and replayed once the size is known. Eye-verified: tapping a pal
       card's map now lands zoomed on that species' habitat with the terrain
       readable.
-- [ ] F24 Dungeon spawns deserve their own visible layer in the Map fane
-      (data + filter flag already exist, `filters.dungeons`) — a "found in
-      dungeons" toggle, since the information is genuinely useful once it is
-      labelled honestly.
+- [x] F24 DONE 2026-08-16 ~01:20: "Also show dungeon spawns" in the pal
+      sheet. Dungeon spawners render as their OWN layer (periwinkle + door
+      icon) rather than blending into the open-world cloud, because they are a
+      different instruction — "go inside" not "walk here". Foxparks: 93 -> 189
+      spots with it on. Caught a bug doing it: `filters.dungeons` was missing
+      from the layer memo's deps, so the toggle did nothing until fixed.
+- [ ] F29 (own review) the surface teal and dungeon periwinkle are
+      distinguishable but close. The legend (F14) should carry the key, and
+      the dungeon hue may want more separation once it exists.
 - [x] F25 DONE 2026-08-16 ~00:55 — and it was far bigger than Foxparks.
       **167 of 260 species** showed a wild range on the card that the game's
       own spawner table disagrees with. Cause: palcalc's minWild/maxWild is
