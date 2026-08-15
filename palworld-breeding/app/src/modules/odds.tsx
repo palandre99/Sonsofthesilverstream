@@ -323,13 +323,14 @@ function PassivesTab() {
       )}
 
       <div class="card bigcard" style={{ marginTop: '14px' }}>
-        <h2>The clean-pair reference</h2>
-        <p>If both parents carry only the passives you want, these are your odds
-          per egg. This table is not hard-coded — it is computed from the game's
-          inheritance weights, and it matches the numbers the community measured.</p>
+        <h2>If parents carry only what you want</h2>
+        <p>Your odds per egg. "Perfect" = the egg carries your passives and
+          nothing else; "with extras" = all your passives, possibly plus random
+          ones you'd breed out later. Computed from the game's inheritance
+          weights — matches the community's measured numbers.</p>
         <table class="otable">
           <thead>
-            <tr><th>Wanted passives</th><th>Exactly those</th><th>At least those</th></tr>
+            <tr><th>Wanted passives</th><th>Perfect</th><th>With extras</th></tr>
           </thead>
           <tbody>
             {oddsTable().map((r) => (
