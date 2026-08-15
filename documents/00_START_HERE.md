@@ -4,6 +4,30 @@
 take the top item in `AI_TODO.md`. The workspace law in the root
 `CLAUDE.md` binds every session.*
 
+## The document set — what to read, in order
+
+| File | What it is | Read when |
+|---|---|---|
+| `00_START_HERE.md` | this file — the constitution | first, always |
+| `01_LINKS.md` | **every link the CEO asks for** + the launchers | he asks for the app, or a build finishes |
+| `02_PROGRESS.md` | audited state, dated entries | before planning work |
+| `03_MARKET_RESEARCH.md` | competitor landscape | product decisions |
+| `04_PRODUCT_BLUEPRINT.md` | the master plan / vision | product decisions |
+| `05_ARCHITECTURE.md` | how it's built + how code reaches the phone | before touching build/delivery |
+| `06_TROUBLESHOOTING.md` | symptom → cause → fix, with post-mortems | the moment anything "is broken" |
+| `07_WORKING_AGREEMENT.md` | how the CEO works, his mandates, reporting style | before your first reply to him |
+| `08_TOOLS_AND_COMMANDS.md` | every command, gate, script, deploy step | session start, and before shipping |
+| `AI_TODO.md` | the live queue + CEO feedback ledger | every work block |
+
+**New here? The 10-minute onboarding is:** `00` (this file) → `07` (how he
+works) → `08` § "Session start" (run the checks) → `02` (where the project
+is) → `AI_TODO.md` (take the top item). `01`, `05` and `06` are references
+you open when the moment calls for them.
+
+**If the CEO reports a problem, open `06_TROUBLESHOOTING.md` before reading
+any app code.** Every incident so far turned out to be environment or
+delivery, never the app itself.
+
 ## The product in one paragraph
 
 Palforge answers the only questions a Palworld breeder actually has: *what
@@ -50,14 +74,25 @@ CI (`.github/workflows/ci.yml`) runs the app gates on every push.
 
 ## How the CEO uses this project
 
-Three double-click launchers at the root (`README-PHONE.md` explains them
-in his language): `BUILD-DEV.cmd` (one-time EAS build), `START-APP.cmd`
-(tunnel dev server — must work on 5G), `PUSH-UPDATE.cmd` (OTA update).
-He reads progress reports in plain language and clicks things. He never
-runs terminals by hand beyond these.
+Double-click launchers at the root (`README-PHONE.md` explains them in his
+language, `01_LINKS.md` in ours): `BUILD-DEV.cmd` (EAS build),
+`START-APP.cmd` (tunnel dev server — must work on 5G), `PUSH-UPDATE.cmd`
+(OTA update), `COPY-INSTALL-LINK.cmd` (install URL to clipboard). He reads
+progress reports in plain language and clicks things. He never runs
+terminals by hand beyond these.
+
+**He owns the app on his phone, and there is only ONE app slot.** The DEV
+build (live reload) and the FAST build (standalone) share a bundle id, so
+installing one deletes the other. Never send him an install link without
+saying which app it replaces — see `01_LINKS.md`.
 
 ## History you should not re-litigate
 
+- 2026-08-15: "the app is broken, no metro stuff" was **never the app**. It
+  was three orphaned Expo servers eating ~7.5 CPU cores plus a FAST install
+  that overwrote the DEV client. `START-APP.cmd` now self-cleans and takes
+  over safely. Full post-mortem in `06_TROUBLESHOOTING.md` — read it before
+  diagnosing any "broken app" report.
 - 2026-08-14: M0–M6 shipped for the web app; adversarial review found 2
   criticals (deep-link boot crash, SW partial-content hashing) — all fixed
   same day, commit 656ac8b. Don't reintroduce.

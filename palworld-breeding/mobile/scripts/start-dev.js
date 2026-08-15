@@ -200,6 +200,20 @@ function takeOwnership() {
   try { fs.writeFileSync(LOCK_FILE, String(process.pid), 'utf8'); } catch { /* ignore */ }
 }
 
+// True while this process is still the registered owner. A launcher that has
+// been superseded must bow out instead of restarting Metro — otherwise the two
+// supervisors kill each other's server on every retry, forever, and the phone
+// never gets a stable dev server.
+function stillOwner() {
+  try {
+    if (!fs.existsSync(LOCK_FILE)) return true;
+    const cur = parseInt(String(fs.readFileSync(LOCK_FILE, 'utf8')).trim(), 10) || 0;
+    return cur === 0 || cur === process.pid;
+  } catch {
+    return true;
+  }
+}
+
 function releaseOwnership() {
   try {
     if (!fs.existsSync(LOCK_FILE)) return;
@@ -251,6 +265,12 @@ function killStaleServers() {
 
 function launchExpo() {
   if (pollTimer) clearTimeout(pollTimer);
+  if (!stillOwner()) {
+    console.log('\n[start-dev] A newer Palforge launcher has taken over. Closing this one.');
+    console.log('[start-dev] (Use the newest window — its URL is the live one.)\n');
+    process.exit(0);
+    return;
+  }
   // Runs on retries too: a crashed Expo can leave ngrok/Metro holding 8081.
   killStaleServers();
   pollCount = 0;

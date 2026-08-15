@@ -1,13 +1,44 @@
 # PROGRESS — audited state, no invented percentages
 
-*Updated 2026-08-15 ~11:15. Update this file whenever a work block lands;
+*Updated 2026-08-15 afternoon. Update this file whenever a work block lands;
 date every entry.*
+
+## 2026-08-15 afternoon — delivery pipeline repaired, workspace documented
+
+**No app features changed. Zero app code touched.** This block fixed how code
+reaches the phone, which had been silently broken.
+
+- **Root cause of "the app is broken":** three orphaned Expo dev servers
+  (8081 tunnel, 8090 `--go`, 8085 `--web`) left running since 01:20 the night
+  before, each pinning ~2.5 CPU cores — ~7.5 cores saturated for 11+ hours.
+  They held port 8081, so a fresh `START-APP.cmd` captured the *stale*
+  server's URL and handed the CEO a dead link.
+- **Second, self-inflicted fault:** the FAST install link was sent to him
+  mid-diagnosis and **overwrote his DEV client** — both builds share one iOS
+  app slot. That removed Metro/shake and made the symptom look worse.
+- **Shipped** in `mobile/scripts/start-dev.js`: stale-server preflight
+  (scoped to this project so Stride/Fjelltur servers survive), a PID lock so
+  the newest launcher takes over instead of two fighting, manifest scheme
+  validation, extra poll ports. Double-clicking START-APP twice is now safe.
+- **Shipped** `/palforge/install-dev/` — login-free DEV install page with a
+  one-tap "Connect to PC" button (the tunnel hostname is stable across
+  restarts). Published to `main`, verified live.
+- **Verified:** tunnel manifest 200, iOS bundle 6.5 MB through the public
+  tunnel in ~7 s, double-launch leaves exactly one supervisor/server/ngrok,
+  CPU back to 6%. **CEO confirmed the DEV build working on his phone.**
+- **Docs:** added `01_LINKS.md`, `05_ARCHITECTURE.md`,
+  `06_TROUBLESHOOTING.md`; corrected the two-apps claim below.
+
+Correction to the entry below: the claim that two installable apps coexist
+was **wrong**. Both builds use bundle id `com.palandre.hatchlab` with
+identical EAS fingerprints, so iOS treats them as one app — only one can be
+installed at a time. Coexistence needs a per-profile bundle id + a rebuild.
 
 ## 2026-08-15 — overnight + morning marathon (all shipped, on-device)
 
-Two installable apps now exist: **Palforge (fast, preview channel — the
-CEO's daily driver, build 0bd4b937)** and **Palforge DEV (tunnel,
-development channel, build 654fe7fb)**. Both carry the new game-accurate
+Two builds exist (one installable at a time — see the correction above):
+**Palforge FAST (preview channel, build 0bd4b937)** and **Palforge DEV
+(tunnel, development channel, build 654fe7fb)**. Both carry the new game-accurate
 Pal Sphere icon (blue glass + gold swirl + pole caps — CEO rejected two
 pokeball-shaped attempts first; reference screenshot drove v3).
 
@@ -75,7 +106,9 @@ green incl. exact 44,851-row oracle replay + symmetry sweep; CI on every
 push; installable PWA with full-content-hashed service worker; single-file
 build (6.4 MB) published as artifact
 (claude.ai/code/artifact/0f571216-dd99-4210-83c7-0a222e2e5756).
-Public deploy: `hatchlab/` on main (GitHub Pages) — in progress 2026-08-14.
+Public deploy: **live** at `/palforge/` on main (GitHub Pages), verified
+2026-08-15 — plus `/palforge/install/` (FAST) and `/palforge/install-dev/`
+(DEV) install pages. Deploys are manual pushes to `main`; no CI does it.
 
 ## Data & engine
 

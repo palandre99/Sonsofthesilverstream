@@ -3,6 +3,36 @@
 *Take from the top unless the CEO redirects. Tick with a date when done.
 Add everything you find; finding nothing means you didn't look.*
 
+## DELIVERY / INFRA (2026-08-15 afternoon — pipeline repair)
+
+- [x] 2026-08-15: START-APP.cmd made self-healing — stale-server preflight
+      (project-scoped so Stride/Fjelltur survive), PID lock so the newest
+      launcher takes over, `stillOwner()` guard so superseded launchers exit
+      instead of ping-ponging, manifest scheme validation, ports 8082/8083.
+      Verified by launching twice: one supervisor, one server, one ngrok.
+- [x] 2026-08-15: `/palforge/install-dev/` login-free DEV install page with a
+      one-tap Connect button. CEO confirmed the DEV build working.
+- [x] 2026-08-15: docs `01_LINKS.md`, `05_ARCHITECTURE.md`,
+      `06_TROUBLESHOOTING.md`; 00/02 corrected (the "two apps coexist" claim
+      was false).
+- [ ] **TWO APPS SIDE BY SIDE** (CEO-blocked, needs his Apple login once):
+      dynamic `app.config.js` giving the `development` profile its own bundle
+      id (`com.palandre.hatchlab.dev`) + name "Palforge DEV", then a fresh EAS
+      build. Until this lands, installing either app deletes the other and
+      every install link must say so. This is the single highest-value infra
+      item — it removes a whole class of "the app is broken" reports.
+- [ ] Add the install-page ritual to a pre-commit or CI check: a new build
+      must update BOTH manifests + INSTALL-LINK.txt + 01_LINKS.md build ids
+      in the same commit, or the links serve a dead `.ipa`.
+- [ ] The DEV install page hardcodes the tunnel hostname
+      (`opqgrdy-palandre99-8081.exp.direct`). It has been stable across every
+      restart, but if ngrok ever reassigns it the Connect button breaks
+      silently. Consider having START-APP.cmd verify the published page still
+      matches the live URL, and warn in the window if not.
+- [ ] Kill-switch discipline: the 8085 RN-web QA instance is the usual source
+      of orphaned servers. Consider a `STOP-ALL.cmd` for the CEO, and always
+      stop 8085 at the end of a visual pass.
+
 ## NOW (app-first)
 
 - [ ] **URGENT — data refresh**: research (03_MARKET_RESEARCH.md) found the game

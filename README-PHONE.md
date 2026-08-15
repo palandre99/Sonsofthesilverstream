@@ -2,20 +2,22 @@
 
 Same system as Stride. Double-click, that's it.
 
-## ⚡ NEW (2026-08-15): the FAST app — install this one
-The dev app runs debug code through an internet tunnel, which is why images
-and screens feel slow. The **FAST version** is a near-release build: full
-speed, images bundled on the phone, and it still gets every update
-automatically when you reopen it. Install it once from your iPhone:
+## 📲 The two versions — you can only have ONE at a time
 
-> open `PALFORGE-FAST-INSTALL.html` (in this folder) on the phone, or go to
-> https://palandre99.github.io/Sonsofthesilverstream/palforge/install/
+Your iPhone treats them as the same app, so **installing one deletes the
+other**. That is why the app "lost its Metro" on 2026-08-15 — the fast link
+overwrote the live one. Always check which link you're tapping.
 
-Keep both: **Palforge (fast)** for daily testing, **Palforge DEV** for
-live-coding sessions with START-APP.cmd.
+| Version | Link (open in **Safari** on the iPhone) | What it's for |
+|---|---|---|
+| **DEV — live updates** ⭐ *what you use now* | https://palandre99.github.io/Sonsofthesilverstream/palforge/install-dev/ | Changes appear while you use it. Shake to refresh. Needs START-APP.cmd running. |
+| **FAST — standalone** | https://palandre99.github.io/Sonsofthesilverstream/palforge/install/ | Full speed, no PC needed. Updates when you reopen it. |
 
-**Lost the link?** Double-click `COPY-INSTALL-LINK.cmd` — the install URL
-lands straight in your clipboard (kept pointing at the newest build).
+The DEV page is a 3-step page: install, then tap **Connect to PC**. Nothing
+to type. After the first connect the app remembers your PC.
+
+**Lost the link?** Double-click `COPY-INSTALL-LINK.cmd` (fast version), or ask
+Claude — both links are stored in `documents/01_LINKS.md`.
 
 ## 1. BUILD-DEV.cmd — run ONCE (~15 min)
 Builds the **Palforge DEV** app for your phone in Expo's cloud.
@@ -35,6 +37,12 @@ Starts the dev server in **tunnel mode: works on WiFi AND 5G**, anywhere.
 The moment the URL is ready it's copied to your clipboard, shown in the
 window, and saved to `CURRENT-DEV-URL.txt` / `.html` in this folder — open
 the Palforge DEV app on the phone and it connects; every change lands live.
+
+**Safe to double-click twice.** If you run START-APP.cmd again (or it was
+already running from earlier), the new window takes over and shuts the old
+server down by itself. Fixed 2026-08-15: leftover dev servers used to pile up,
+hog the PC, and hand you a dead link — the launcher now cleans up on start.
+Always use the **newest** window; its URL is the live one.
 
 ## 3. Updates are AUTOMATIC — you click nothing
 - Connected to the dev server (button 2): changes arrive **live while you

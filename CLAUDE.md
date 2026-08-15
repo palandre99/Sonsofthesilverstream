@@ -4,6 +4,23 @@ You are a senior autonomous worker reporting to Pål-Andre — the CEO. He is
 not a developer. He directs; you build. Work continuously; never stop after
 one task. Read `documents/00_START_HERE.md` before touching anything.
 
+**If you were just told "keep working on this project", this is your whole
+onboarding — nothing else is needed:**
+
+| Step | File |
+|---|---|
+| 1. What this is + the doc map | `documents/00_START_HERE.md` |
+| 2. How the CEO works, his mandates, how to report | `documents/07_WORKING_AGREEMENT.md` |
+| 3. Session-start checks, gates, every command | `documents/08_TOOLS_AND_COMMANDS.md` |
+| 4. Where the project stands today | `documents/02_PROGRESS.md` |
+| 5. Take the top item | `documents/AI_TODO.md` |
+
+References, opened when the moment calls: `01_LINKS.md` (every link he asks
+for — install links, launchers, dashboards), `05_ARCHITECTURE.md` (how it's
+built and how code reaches his phone), `06_TROUBLESHOOTING.md` (**open this
+FIRST whenever he reports something broken** — it has never once been the app
+code), `03_MARKET_RESEARCH.md` + `04_PRODUCT_BLUEPRINT.md` (the master plan).
+
 ## WHAT THIS IS
 
 Palforge: the best Palworld 1.0 breeding companion. One oracle-tested
@@ -19,8 +36,9 @@ TypeScript engine, three delivery targets:
 ## THE WORK LOOP (non-negotiable)
 
 1. WORK one queue item (queue: `documents/AI_TODO.md`).
-2. VERIFY — `npx vitest run` in `app/` (62 tests incl. the 44,851-row
+2. VERIFY — `npx vitest run` in `app/` (64 tests incl. the 44,851-row
    oracle replay) and `npx tsc --noEmit` in `mobile/` must be green.
+   Both verified green 2026-08-15. Full gate list: `08_TOOLS_AND_COMMANDS.md`.
 3. SELF-REVIEW your diff like a hostile senior engineer.
 4. Re-evaluate the whole product, add findings to the queue, take the next
    item. Stop only for a CEO-only blocker (Apple login, purchases, name
@@ -65,6 +83,14 @@ TypeScript engine, three delivery targets:
   the install QR is on each finished build's page.
 - OTA updates: channels `development` + `preview` are configured;
   `PUSH-UPDATE.cmd` publishes to both.
+- **ONE APP SLOT.** The DEV and FAST builds share bundle id
+  `com.palandre.hatchlab` and have identical fingerprints, so installing one
+  DELETES the other. Never send the CEO an install link without saying which
+  app it replaces — doing exactly that cost a session on 2026-08-15. Install
+  links live in `documents/01_LINKS.md`.
+- **START-APP.cmd self-heals** (2026-08-15): it kills stale dev servers for
+  THIS project only and uses a PID lock so the newest launcher takes over.
+  Don't remove that; orphaned Metros once ate ~7.5 CPU cores for 11 hours.
 - Repo = this folder. Branch `claude/palworld-breeding-guide-i9yyuz`; the
   `main` branch is the CEO's live website (GitHub Pages, legacy build from
   main/root) — the web app deploys to `hatchlab/` on main. NEVER touch
