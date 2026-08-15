@@ -10,6 +10,7 @@ import { T } from '../theme';
 import {
   BackToCardChip, Badge, Btn, Card, PageHead, PalIcon, WorkChips, s,
 } from '../ui/kit';
+import { Icon } from '../ui/Icon';
 import { onNavIntent, takeIntentPayload } from '../nav/intent';
 import { wildLevelRange } from '../data/rarity';
 import { PalPicker } from '../ui/PalPicker';
@@ -18,7 +19,7 @@ import {
   clearPlan, completeStep, getBox, getChecks, getPlan, hasGender, ownedAny,
   addPlanTarget, pals, removePlanTarget, resetPlanProgress, savePlan, selfOnly,
   uncheckStep, useAppVersion,
-  addDraftTargets, getDraftTargets, removeDraftTargets,
+  addDraftTargets, clearDraftTargets, getDraftTargets, removeDraftTargets,
   engine,
 } from '../store';
 
@@ -112,7 +113,9 @@ export function PlannerScreen() {
   const [picking, setPicking] = useState(false);
   const [suggesting, setSuggesting] = useState(false);
   const [hatching, setHatching] = useState<{ sid: string; child: string } | null>(null);
-  const [managing, setManaging] = useState<'none' | 'reset' | 'clear' | 'replace'>('none');
+  const [managing, setManaging] = useState<'none' | 'reset' | 'clear' | 'replace' | 'removeall'>('none');
+  // the goal tray folds to one line once the plan matches the goals
+  const [trayOpen, setTrayOpen] = useState(false);
   const [bursts, setBursts] = useState<Record<string, number>>({});
   // finished phases fold up; a tap reopens one for review
   const [openPhases, setOpenPhases] = useState<Set<number>>(new Set());
@@ -382,23 +385,82 @@ export function PlannerScreen() {
         <Btn small label="+ Add target…" onPress={() => setPicking(true)} />
       </View>
 
-      {targets.length > 0 && (
-        <View style={[s.wrap, { marginBottom: 12 }]}>
-          {targets.map((t) => (
-            <Text
-              key={t}
-              onPress={() => removeDraftTargets([t])}
-              style={{
-                color: ownedAny(t) ? T.ok : T.ink, backgroundColor: T.surface2,
-                borderRadius: 16, paddingHorizontal: 11, paddingVertical: 5,
-                fontSize: 12.5, fontWeight: '700', overflow: 'hidden',
-              }}
+      {/* the goal tray — proper cards with icons and a real remove target,
+          folding to one quiet line once the plan matches the goals (CEO:
+          "why is it just small text… it should look good and fold away") */}
+      {targets.length > 0 && (() => {
+        const planned = plan
+          && [...targets].sort().join() === [...plan.targets].sort().join();
+        if (planned && !trayOpen) {
+          return (
+            <Pressable
+              accessibilityLabel="Show the goals in this plan"
+              onPress={() => setTrayOpen(true)}
+              style={({ pressed }) => [{
+                flexDirection: 'row', alignItems: 'center', gap: 10,
+                backgroundColor: T.surface, borderWidth: 1,
+                borderColor: pressed ? T.accent : T.line,
+                borderRadius: 12, padding: 8, marginBottom: 12,
+              }]}
             >
-              {t}{ownedAny(t) ? ' ✓' : ''}{selfOnly.has(t) && !ownedAny(t) ? ' ⛔' : ''}  ✕
-            </Text>
-          ))}
-        </View>
-      )}
+              <View style={{ flexDirection: 'row' }}>
+                {targets.slice(0, 5).map((t, i) => (
+                  <View key={t} style={{ marginLeft: i ? -10 : 0 }}>
+                    <PalIcon name={t} size={26} />
+                  </View>
+                ))}
+              </View>
+              <Text style={{ color: T.muted, fontSize: 12.5, fontWeight: '700', flex: 1 }}>
+                {targets.length === 1
+                  ? '1 goal in this plan — tap to edit'
+                  : `${targets.length} goals in this plan — tap to edit`}
+              </Text>
+              <Icon name="chevron-down" size={16} color={T.faint} />
+            </Pressable>
+          );
+        }
+        return (
+          <View style={{ gap: 8, marginBottom: 12 }}>
+            <View style={s.wrap}>
+              {targets.map((t) => {
+                const owned = ownedAny(t);
+                return (
+                  <View key={t} style={{
+                    flexDirection: 'row', alignItems: 'center', gap: 6,
+                    backgroundColor: T.surface2, borderWidth: 1,
+                    borderColor: owned ? T.okSoft : T.line,
+                    borderRadius: 12, paddingVertical: 5,
+                    paddingLeft: 6, paddingRight: 4,
+                  }}>
+                    <PalIcon name={t} size={28} />
+                    <Text style={{
+                      color: owned ? T.ok : T.ink, fontSize: 12.5, fontWeight: '700',
+                    }}>{t}</Text>
+                    {owned && <Icon name="check" size={13} color={T.ok} />}
+                    {selfOnly.has(t) && !owned && (
+                      <Icon name="alert-outline" size={13} color={T.warn} />
+                    )}
+                    <Pressable hitSlop={8}
+                      accessibilityLabel={`Remove ${t} from the goals`}
+                      onPress={() => removeDraftTargets([t])}
+                      style={{ padding: 2 }}>
+                      <Icon name="close" size={14} color={T.faint} />
+                    </Pressable>
+                  </View>
+                );
+              })}
+            </View>
+            <View style={s.wrap}>
+              {targets.length > 1 && (
+                <Btn small label="Remove all…" onPress={() => setManaging('removeall')} />
+              )}
+              {planned && trayOpen && (
+                <Btn small label="Fold away" onPress={() => setTrayOpen(false)} />
+              )}
+            </View>
+          </View>
+        );
+      })()}
 
       <Btn
         primary
@@ -764,6 +826,7 @@ export function PlannerScreen() {
               <Text style={s.h2}>
                 {managing === 'reset' ? 'Start this plan over?'
                   : managing === 'replace' ? 'Replace the current plan?'
+                  : managing === 'removeall' ? 'Remove all goals?'
                   : 'Clear the plan?'}
               </Text>
               <Text style={[s.body, { marginTop: 6 }]}>
@@ -771,17 +834,21 @@ export function PlannerScreen() {
                   ? 'Every tick is undone properly — pals that ticks registered are removed from your Paldex again; anything you owned before stays.'
                   : managing === 'replace'
                     ? `Your current plan still has unfinished steps (${done} of ${plan?.steps.length ?? 0} done). Planning these goals builds a fresh route — finished steps whose pals you hatched stay yours, but the old route is gone.`
-                    : 'Forgets the plan and its ticks so you can plan fresh. Your collection stays exactly as it is — hatched pals are still yours.'}
+                    : managing === 'removeall'
+                      ? 'Empties your goal list so you can pick fresh. Your current plan and its progress stay until you press Plan again.'
+                      : 'Forgets the plan and its ticks so you can plan fresh. Your collection stays exactly as it is — hatched pals are still yours.'}
               </Text>
               <View style={[s.wrap, { marginTop: 14 }]}>
                 <Btn danger={managing === 'clear'}
                   primary={managing === 'reset' || managing === 'replace'}
                   label={managing === 'reset' ? 'Start over'
                     : managing === 'replace' ? 'Plan the new goals'
+                    : managing === 'removeall' ? 'Remove all goals'
                     : 'Clear plan'}
                   onPress={() => {
                     if (managing === 'reset') { resetPlanProgress(); setManaging('none'); }
                     else if (managing === 'replace') run();
+                    else if (managing === 'removeall') { clearDraftTargets(); setManaging('none'); }
                     else { clearPlan(); setManaging('none'); }
                   }} />
                 <Btn label="Cancel" onPress={() => setManaging('none')} />

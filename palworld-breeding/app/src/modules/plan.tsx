@@ -92,7 +92,11 @@ export function PlanPage() {
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [hatching]);
-  const [managing, setManaging] = useState<'none' | 'reset' | 'clear'>('none');
+  const [managing, setManaging] = useState<'none' | 'reset' | 'clear' | 'removeall'>('none');
+  // the goal tray folds to one line once the plan matches the goals
+  const [trayOpen, setTrayOpen] = useState(false);
+  // the goals the current plan was computed for (draft may drift from it)
+  const [planTargets, setPlanTargets] = useState<string[]>(saved?.targets ?? []);
   // the box the current plan was computed against — reshapes reuse it so
   // finished steps (and their ticks) survive
   const [planRoster, setPlanRoster] = useState<string[] | undefined>(saved?.roster);
@@ -111,6 +115,7 @@ export function PlanPage() {
         setPlanMs(r.ms);
         setPlannedAt(new Date().toISOString());
         setPlanRoster(roster);
+        setPlanTargets(list);
         draftTargets.value = list; // the planned goals ARE the draft now
         // best-effort persist — a quota failure must not read as a plan failure
         storage.set(PLAN_KEY, JSON.stringify({
@@ -178,6 +183,7 @@ export function PlanPage() {
     setPlan(null);
     setPlanMs(null);
     setPlannedAt(null);
+    setPlanTargets([]);
     clearDraftTargets();
     setChecks({});
     storage.set(CHECKS_KEY, JSON.stringify({}));
@@ -369,22 +375,65 @@ export function PlanPage() {
           </button>
           <PalPicker value={null} onPick={addTarget} placeholder="Add a target…" />
         </div>
-        {targets.length > 0 && (
-          <div class="kv" style={{ marginBottom: '12px' }}>
-            {targets.map((t) => (
-              <span key={t} class="chip" style={{ gap: '6px' }}>
-                <PalIcon name={t} size={20} />
-                {t}
-                {ownedAny(t) && ' ✓'}
-                {selfOnly.value.has(t) && !ownedAny(t) && ' ⛔'}
-                <button style={{ border: 'none', background: 'none', color: 'var(--faint)',
-                  cursor: 'pointer', padding: 0, fontWeight: 800 }}
-                  aria-label={`Remove ${t}`}
-                  onClick={() => removeDraftTargets([t])}>✕</button>
-              </span>
-            ))}
-          </div>
-        )}
+        {targets.length > 0 && (() => {
+          const isPlanned = !!plan
+            && [...targets].sort().join() === [...planTargets].sort().join();
+          if (isPlanned && !trayOpen) {
+            return (
+              <button
+                aria-label="Show the goals in this plan"
+                onClick={() => setTrayOpen(true)}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: '10px', width: '100%',
+                  background: 'var(--surface)', border: '1px solid var(--line)',
+                  borderRadius: '12px', padding: '8px', marginBottom: '12px',
+                  cursor: 'pointer', color: 'inherit', textAlign: 'left',
+                }}>
+                <span style={{ display: 'flex' }}>
+                  {targets.slice(0, 5).map((t, i) => (
+                    <span key={t} style={{ marginLeft: i ? '-10px' : 0, display: 'inline-flex' }}>
+                      <PalIcon name={t} size={26} />
+                    </span>
+                  ))}
+                </span>
+                <span style={{ color: 'var(--muted)', fontSize: '12.5px', fontWeight: 700, flex: 1 }}>
+                  {targets.length === 1
+                    ? '1 goal in this plan — tap to edit'
+                    : `${targets.length} goals in this plan — tap to edit`}
+                </span>
+                <span style={{ color: 'var(--faint)' }}>▾</span>
+              </button>
+            );
+          }
+          return (
+            <div style={{ display: 'grid', gap: '8px', marginBottom: '12px' }}>
+              <div class="kv">
+                {targets.map((t) => (
+                  <span key={t} class="chip" style={{ gap: '6px' }}>
+                    <PalIcon name={t} size={24} />
+                    {t}
+                    {ownedAny(t) && ' ✓'}
+                    {selfOnly.value.has(t) && !ownedAny(t) && ' ⚠'}
+                    <button style={{ border: 'none', background: 'none', color: 'var(--faint)',
+                      cursor: 'pointer', padding: 0, fontWeight: 800 }}
+                      aria-label={`Remove ${t}`}
+                      onClick={() => removeDraftTargets([t])}>✕</button>
+                  </span>
+                ))}
+              </div>
+              <div class="kv">
+                {targets.length > 1 && (
+                  <button class="btn sm" onClick={() => setManaging('removeall')}>
+                    Remove all…
+                  </button>
+                )}
+                {isPlanned && trayOpen && (
+                  <button class="btn sm" onClick={() => setTrayOpen(false)}>Fold away</button>
+                )}
+              </div>
+            </div>
+          );
+        })()}
         <button class="btn primary" disabled={!targets.length || !ownedNames.length || busy}
           onClick={() => run()}>
           {busy ? 'Planning…' : `Plan ${targets.length || ''} targets`}
@@ -608,16 +657,26 @@ export function PlanPage() {
         <div class="hatchback" onClick={() => setManaging('none')}>
           <div class="card bigcard hatchcard" role="dialog" aria-modal="true"
             onClick={(e) => e.stopPropagation()}>
-            <h2>{managing === 'reset' ? 'Start this plan over?' : 'Clear the plan?'}</h2>
+            <h2>{managing === 'reset' ? 'Start this plan over?'
+              : managing === 'removeall' ? 'Remove all goals?'
+              : 'Clear the plan?'}</h2>
             <p style={{ color: 'var(--muted)', fontSize: '13.5px' }}>
               {managing === 'reset'
                 ? 'Every tick is undone properly — pals that ticks registered are removed from your Paldex again; anything you owned before stays.'
-                : 'Forgets the plan and its ticks so you can plan fresh. Your collection stays exactly as it is — hatched pals are still yours.'}
+                : managing === 'removeall'
+                  ? 'Empties your goal list so you can pick fresh. Your current plan and its progress stay until you press Plan again.'
+                  : 'Forgets the plan and its ticks so you can plan fresh. Your collection stays exactly as it is — hatched pals are still yours.'}
             </p>
             <div class="importbtns">
               <button class={managing === 'clear' ? 'btn danger' : 'btn primary'}
-                onClick={() => (managing === 'reset' ? resetProgress() : clearPlan())}>
-                {managing === 'reset' ? 'Start over' : 'Clear plan'}
+                onClick={() => {
+                  if (managing === 'reset') resetProgress();
+                  else if (managing === 'removeall') { clearDraftTargets(); setManaging('none'); }
+                  else clearPlan();
+                }}>
+                {managing === 'reset' ? 'Start over'
+                  : managing === 'removeall' ? 'Remove all goals'
+                  : 'Clear plan'}
               </button>
               <button class="btn" onClick={() => setManaging('none')}>Cancel</button>
             </div>
