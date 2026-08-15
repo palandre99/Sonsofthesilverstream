@@ -322,6 +322,14 @@
    "sources": [
     "paldb.cc/en/Ribbuny_Botan"
    ]
+  },
+  {
+   "claim": "Helper-pal partner skills (planner recommendations) are game text: Chikipi egg / Mozzarina milk / Beegarde honey / Caprity berries ranch drops; Braloha breeding-farm speed; Dynamoff incubation cut; Grintale extra egg on pickup; Broncherry + Broncherry Aqua alpha-egg chance; Ribbuny base handiwork aura",
+   "verdict": "confirmed",
+   "evidence": "All ten effects quoted near-verbatim from partner_effect in pals_1_0.json (beliarance/palworld-kb dump of the game files, 2026-07-20 extraction, revalidated against patch 1.0.3 notes). Registry: engine/helpers.ts, recorded 2026-08-15.",
+   "sources": [
+    "pals_1_0.json partner_effect (game dump via palworld-kb)"
+   ]
   }
  ]
 }

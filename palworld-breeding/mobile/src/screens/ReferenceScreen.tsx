@@ -131,7 +131,7 @@ export function ReferenceScreen() {
         palcalc's 44,851 game-file results (zero mismatches) and the raw
         DT_PalCombiUnique table. Inheritance weights from GameSettings via palcalc.
         Icons: game-dump via dbgoodm/PalDex.</P>
-        <P>HatchLab is a fan project — not affiliated with Pocketpair. No ads, no
+        <P>Palforge is a fan project — not affiliated with Pocketpair. No ads, no
         tracking, no accounts; your box lives on this device only.</P>
       </Card>
     </ScrollView>
