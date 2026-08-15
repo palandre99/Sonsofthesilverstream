@@ -14,7 +14,7 @@ import { WORK_ICONS } from '../data/workIcons';
 import { PalMap } from './PalMap';
 import { STAT_ICONS } from '../data/statIcons';
 import {
-  rarityGrade, wildLevelRange, type RarityGrade,
+  rarityGrade, rarityTint, wildLevelRange, type RarityGrade,
 } from '../data/rarity';
 import { ABOUT } from '../data/about';
 import { Icon } from './Icon';
@@ -167,29 +167,20 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
     (g) => g.child === name || g.mother === name || g.father === name,
   );
   const inPool = !breeding.excluded_from_generic_pool.includes(name);
-  // THE INFO CARD wears the rarity (CEO 2026-08-15) — as atmosphere, not a
-  // flat dye: tier-tinted sheet, animated light sweep + aurora + sparkles in
-  // the hero, tier ring on the portrait, and every inner card washed with
-  // the tier. All of it graded by the pal's own rarity integer.
+  // VANILLA look (CEO 2026-08-15 evening): the rarity colour experiments are
+  // PARKED — plain sheet, plain cards, no atmosphere, no ring. The grade
+  // still feeds the badge's integer + RarityAtmosphere stays in the file for
+  // when the CEO returns to the design.
   const r = rarityGrade(name, p.rarity);
-  const loud = r.weight > 0;
-  // inner cards pick up the tier on loud pals — but cardTint/cardLine are
-  // ALWAYS solid surface colours, so the bubbles exist on every tier
-  const tint = { backgroundColor: r.cardTint, borderColor: r.cardLine };
 
   return (
     <Modal visible animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
-      <ScrollView style={{ flex: 1, backgroundColor: r.sheet }}
+      <ScrollView style={{ flex: 1, backgroundColor: T.bg2 }}
         contentContainerStyle={{ padding: 18, paddingBottom: 50 }}>
-        <RarityAtmosphere r={r} />
         <View style={[s.row, { gap: 14 }]}>
-          <View style={loud ? {
-            borderWidth: 2, borderColor: r.ring ?? r.line, borderRadius: 42, padding: 3,
-          } : undefined}>
-            <PalIcon name={name} size={72} />
-          </View>
+          <PalIcon name={name} size={72} />
           <View style={{ flex: 1 }}>
-            <Text style={[s.h1, loud && { color: r.ink }]}>{name}</Text>
+            <Text style={s.h1}>{name}</Text>
             <View style={[s.wrap, { marginTop: 5 }]}>
               <Badge kind="plain">#{p.number || '—'}</Badge>
               <ElementChips name={name} />
@@ -226,12 +217,12 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
           </Pressable>
         )}
 
-        <Card style={[tint, { marginTop: 10, flexDirection: 'row', alignItems: 'center', gap: 10 }]}>
+        <Card style={{ marginTop: 10, flexDirection: 'row', alignItems: 'center', gap: 10 }}>
           <Text style={{ color: T.ink, fontWeight: '700', flex: 1 }}>In my box</Text>
           <GenderToggles name={name} />
         </Card>
 
-        <Card style={[tint, { marginTop: 10, gap: 7 }]}>
+        <Card style={{ marginTop: 10, gap: 7 }}>
           <View style={[s.row, { gap: 8 }]}>
             <Text style={[s.h3, { flex: 1 }]}>Base stats</Text>
             <View style={{ flexDirection: 'row', gap: 3, alignItems: 'center' }}>
@@ -287,20 +278,18 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
             {p.rarity && (
               <View style={{
                 borderWidth: 1.5,
-                borderColor: r.line,
-                backgroundColor: r.soft,
+                borderColor: rarityTint(p.rarity, T.line),
                 borderRadius: 7, paddingHorizontal: 7, paddingVertical: 2,
               }}>
                 <Text style={{
-                  color: r.ink, fontSize: 10.5,
+                  color: rarityTint(p.rarity, T.muted), fontSize: 10.5,
                   fontWeight: '800', letterSpacing: 0.6, textTransform: 'uppercase',
                 }}>
                   {p.rarity}
                   {/* the game's own rarity integer — the real measure behind
-                      the four bucket words, and something no other companion
-                      app puts in front of you */}
+                      the four bucket words; kept, it's data not paint */}
                   {r.agrees && (
-                    <Text style={{ color: r.ink, opacity: 0.7 }}>
+                    <Text style={{ opacity: 0.7 }}>
                       {'  '}rarity {r.n}
                     </Text>
                   )}
@@ -321,7 +310,7 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
         </Card>
 
         {(p.drops?.length > 0 || (p.ranch_produce?.length ?? 0) > 0) && (
-          <Card style={[tint, { marginTop: 10 }]}>
+          <Card style={{ marginTop: 10 }}>
             <Text style={s.h3}>Drops</Text>
             <View style={[s.wrap, { marginTop: 8 }]}>
               {p.drops.map((d) => <Badge key={d} kind="plain">{d}</Badge>)}
@@ -333,7 +322,7 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
         )}
 
         {Object.keys(p.work ?? {}).length > 0 && (
-          <Card style={[tint, { marginTop: 10 }]}>
+          <Card style={{ marginTop: 10 }}>
             <View style={[s.row, { gap: 8 }]}>
               <Text style={[s.h3, { flex: 1 }]}>Work suitability</Text>
               {stars === 4 && (
@@ -386,7 +375,7 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
         )}
 
         {p.partner_skill && (
-          <Card style={[tint, { marginTop: 10 }]}>
+          <Card style={{ marginTop: 10 }}>
             <View style={[s.row, { gap: 8 }]}>
               <Text style={[s.h3, { flex: 1 }]}>Partner skill — {p.partner_skill}</Text>
               <View style={{
@@ -403,7 +392,7 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
           </Card>
         )}
 
-        <Card style={[tint, { marginTop: 10, gap: 8 }]}>
+        <Card style={{ marginTop: 10, gap: 8 }}>
           <Text style={s.h3}>How to breed it</Text>
           {selfOnly.has(name) ? (
             <View style={[s.wrap]}>
@@ -505,7 +494,7 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
         </Card>
 
         {(asParent.length > 0 || gendered.some((g) => g.child !== name)) && (
-          <Card style={[tint, { marginTop: 10, gap: 8 }]}>
+          <Card style={{ marginTop: 10, gap: 8 }}>
             <Text style={s.h3}>Special recipes as a parent</Text>
             {asParent.map((c) => {
               const other = c.parents[0] === name ? c.parents[1] : c.parents[0];
@@ -531,7 +520,7 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
           </Card>
         )}
 
-        <Card style={[tint, { marginTop: 10, gap: 8 }]}>
+        <Card style={{ marginTop: 10, gap: 8 }}>
           <Text style={s.h3}>Where to find it</Text>
           <PalMap name={name} />
           <View style={[s.wrap]}>
