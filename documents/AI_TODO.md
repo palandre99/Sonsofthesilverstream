@@ -398,6 +398,25 @@ quietly narrowed. Tick only when shipped AND eye-verified.*
 - [ ] Standing (restated 18:10): every piece of CEO feedback must land in
       this doc — confirmed practice, keep it forever.
 
+### C6. SUGGESTED GOALS v3 (CEO ~19:35 2026-08-15 — verbatim intake)
+- [ ] C6a Add ONE pal, not the whole table — per-chip add affordance on
+      every squad/job/mount card (today only "Add N" for the set exists).
+- [ ] C6b Mounts must say "saddle available Lv X" — needs saddle tech-level
+      data. RESEARCH: check kb dump for saddle tech; else build
+      tools/fetch_saddle_levels.py from paldb pal pages. Never guess.
+- [ ] C6c Mounts design is bad: 83 ground mounts in one small horizontal
+      scroll. Redesign: vertical capped lists (top N + expand), ranked,
+      attainable-first, clean organization.
+- [ ] C6d Per-job lists must be DYNAMIC, reacting to the paldex/world save —
+      not a fixed 5: more suggestions, "RECOMMENDED" marks for pals that are
+      good AND close (few steps / easy catch), counts that adapt to what the
+      player owns.
+- [ ] C6e "Catch X to unlock the breeding route": for a LATER pal, find the
+      single catchable pal that opens the path (one side of a producing pair
+      reachable, other side catchable) and say so explicitly.
+- [ ] C6f General: "so much can be better" — treat the whole sheet as v3
+      redesign surface; CEO wants it reactive to his world save.
+
 ### D. Standing orders (restated by him at handover)
 - [ ] D1 Own deep internet research on EVERY competitor — including other
       games' companions — learn and beat them. AAA studio 10/10.

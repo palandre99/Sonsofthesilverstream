@@ -17,17 +17,17 @@ import { Badge, Btn, PalIcon, s } from './kit';
 import { Icon } from './Icon';
 import { PalDetail } from './PalDetail';
 import { WORK_ICONS } from '../data/workIcons';
-import { engine, getBox, pals, ownedAny, workLabel } from '../store';
+import { breeding, engine, getBox, pals, ownedAny, workLabel } from '../store';
 import { WORK_KEYS } from './palFilters';
 import { HELPERS } from '../engine/helpers';
-import { closure } from '../engine/planner';
+import { derivations } from '../engine/planner';
 import { onNavIntent } from '../nav/intent';
 import { PALCALC_FACTS } from '../data/palcalcFacts.g';
 import { BEST_OVERALL, COMBAT_COMMUNITY, MOUNT_CALLOUTS } from '../data/meta';
 import { MOUNTS, UTILITY_ROLES } from '../data/utilityRoles.g';
 
 /** top pals for one job — suitability level first, stat total second */
-function bestAt(job: string, n = 8): { name: string; lvl: number }[] {
+function bestAt(job: string, n = 14): { name: string; lvl: number }[] {
   return Object.keys(pals)
     .map((name) => ({ name, lvl: (pals[name].work ?? {})[job] ?? 0 }))
     .filter((x) => x.lvl > 0)
@@ -57,30 +57,51 @@ function bestFighters(n = 12): { name: string; score: number }[] {
  *   later — an endgame goal for now */
 export type Attain =
   | { kind: 'have' }
-  | { kind: 'breed' }
+  | { kind: 'breed'; steps: number }
   | { kind: 'catch'; lv: number }
-  | { kind: 'later' };
+  | { kind: 'later'; unlock?: string };
 
 function attainFactory(): (n: string) => Attain {
   const box = Object.keys(getBox());
-  const reach = box.length ? closure(engine, box) : new Set<string>();
+  // ONE derivations pass gives the exact minimal breeding-step count to
+  // every reachable species — the sheet reacts to the world save for real
+  // (CEO 2026-08-15: "it's not dynamic and reacting to the paldex")
+  const derivs = box.length ? derivations(engine, new Set(box)) : new Map<string, Set<string>>();
   // stage proxy: the highest wild level the player's own pals occupy —
   // a box of Lv-40 spawns implies the player survives Lv ~50 zones
   const stage = Math.max(15, ...box.map((n) => PALCALC_FACTS[n]?.maxWild ?? 0));
+  const catchable = (n: string): boolean => {
+    const f = PALCALC_FACTS[n];
+    return !!pals[n]?.wild && f?.minWild != null && f.minWild <= stage + 10;
+  };
   return (n: string): Attain => {
     if (ownedAny(n)) return { kind: 'have' };
-    if (reach.has(n)) return { kind: 'breed' };
-    const f = PALCALC_FACTS[n];
-    if (pals[n]?.wild && f?.minWild != null && f.minWild <= stage + 10) {
-      return { kind: 'catch', lv: f.minWild };
+    const d = derivs.get(n);
+    if (d) return { kind: 'breed', steps: Math.max(1, d.size) };
+    if (catchable(n)) return { kind: 'catch', lv: PALCALC_FACTS[n]!.minWild! };
+    // "catch X to unlock the breeding route": one producing pair where one
+    // parent is already breedable and the other is a stage-appropriate
+    // catch. Bounded: first hit wins, gendered pairs included via combos.
+    for (const c of breeding.unique_combos) {
+      if (c.child !== n) continue;
+      const [pa, pb] = c.parents;
+      if ((derivs.has(pa) || ownedAny(pa)) && catchable(pb)) return { kind: 'later', unlock: pb };
+      if ((derivs.has(pb) || ownedAny(pb)) && catchable(pa)) return { kind: 'later', unlock: pa };
     }
     return { kind: 'later' };
   };
 }
 
 const ATTAIN_ORDER: Record<Attain['kind'], number> = {
-  breed: 0, catch: 1, later: 2, have: 3,
+  have: 3, breed: 0, catch: 1, later: 2,
 };
+/** breed-distance beats kind alone: 1-step breeds first, then cheap catches */
+function attainScore(a: Attain): number {
+  if (a.kind === 'breed') return Math.min(a.steps, 9);
+  if (a.kind === 'catch') return 10;
+  if (a.kind === 'later') return a.unlock ? 20 : 30;
+  return 40;
+}
 
 const AURA_SQUAD = ['Ribbuny', 'Cinnamoth', 'Clovee', 'Petallia', 'Tetroise', 'Wumpo',
   'Amione', 'Eikthyrdeer Terra', 'Katress Ignis', 'Mycora', 'Puffolt', 'Smokie Cryst'];
@@ -101,9 +122,9 @@ export function SuggestedGoals({ visible, onClose, targets, onAdd }: {
   const fighters = useMemo(() => bestFighters(), []);
   // recomputed each time the sheet opens — the box may have grown
   const attain = useMemo(attainFactory, [visible]);
-  /** stage-aware ordering: what you can act on NOW comes first */
+  /** stage-aware ordering: 1-step breeds, then cheap catches, then unlocks */
   const byAttain = (names: string[]) =>
-    [...names].sort((a, b) => ATTAIN_ORDER[attain(a).kind] - ATTAIN_ORDER[attain(b).kind]);
+    [...names].sort((a, b) => attainScore(attain(a)) - attainScore(attain(b)));
   // a pal card opened from here can navigate ("Plan how to get it") — if the
   // destination is the tab underneath us, nothing would remount, and the tap
   // would look dead behind this sheet. Any cross-screen jump closes it.
@@ -122,20 +143,23 @@ export function SuggestedGoals({ visible, onClose, targets, onAdd }: {
     const added = targets.includes(name);
     const owned = ownedAny(name);
     const a = attain(name);
-    // an owned pal is NOT a suggestion — it reads as quiet proof of
-    // coverage, visually stepped back (CEO 2026-08-15). Everything else
-    // says how you'd GET it, from your actual box.
+    // an owned pal is NOT a suggestion — quiet proof of coverage. Everything
+    // else says exactly how you'd GET it from your world save: real step
+    // counts, catch levels, or the pal that unlocks the breeding route.
     const status = added ? 'IN PLAN'
       : a.kind === 'have' ? 'HAVE IT'
-        : a.kind === 'breed' ? 'BREED NOW'
-          : a.kind === 'catch' ? `CATCH LV ${a.lv}` : 'LATER';
+        : a.kind === 'breed' ? (a.steps === 1 ? 'BREED · 1 STEP' : `BREED · ${a.steps} STEPS`)
+          : a.kind === 'catch' ? `CATCH LV ${a.lv}`
+            : a.unlock ? `CATCH ${a.unlock.toUpperCase()} TO UNLOCK` : 'ENDGAME';
     const statusColor = added || a.kind === 'have' ? T.ok
       : a.kind === 'breed' ? T.accentInk
-        : a.kind === 'catch' ? T.warn : T.faint;
+        : a.kind === 'catch' ? T.warn
+          : a.kind === 'later' && a.unlock ? T.goldInk : T.faint;
+    const addable = !added && !owned;
     return (
       <Pressable onPress={() => setViewing(name)}
         style={({ pressed }) => [{
-          alignItems: 'center', gap: 3, width: 70, paddingVertical: 6,
+          alignItems: 'center', gap: 3, width: 74, paddingVertical: 6,
           borderRadius: 12, borderWidth: 1,
           borderColor: pressed ? T.accent : added ? T.ok : owned ? T.okSoft : T.line,
           backgroundColor: added ? T.okSoft : T.surface,
@@ -149,19 +173,39 @@ export function SuggestedGoals({ visible, onClose, targets, onAdd }: {
               <Icon name="star-four-points" size={12} color={T.gold} />
             </View>
           )}
+          {/* add JUST this one — the whole-table button was the only way in
+              (CEO 2026-08-15) */}
+          {addable && (
+            <Pressable hitSlop={6}
+              accessibilityLabel={`Add ${name} to the plan`}
+              onPress={() => {
+                void Haptics.selectionAsync();
+                onAdd([name]);
+              }}
+              style={{ position: 'absolute', left: -7, top: -5 }}>
+              <View style={{
+                width: 18, height: 18, borderRadius: 9, backgroundColor: T.accent,
+                alignItems: 'center', justifyContent: 'center',
+              }}>
+                <Icon name="plus" size={13} color="#08191B" />
+              </View>
+            </Pressable>
+          )}
         </View>
         <Text numberOfLines={1} style={{
-          color: T.ink, fontSize: 9.5, fontWeight: '700', maxWidth: 64,
+          color: T.ink, fontSize: 9.5, fontWeight: '700', maxWidth: 68,
         }}>{name}</Text>
         {lvl != null && (
           <Text style={{ color: T.accentInk, fontSize: 10, fontWeight: '800' }}>Lv {lvl}</Text>
         )}
         {note ? (
           <Text numberOfLines={1} style={{
-            color: T.goldInk, fontSize: 8, fontWeight: '700', maxWidth: 66,
+            color: T.goldInk, fontSize: 8, fontWeight: '700', maxWidth: 70,
           }}>{note}</Text>
         ) : null}
-        <Text style={{ color: statusColor, fontSize: 8.5, fontWeight: '800' }}>{status}</Text>
+        <Text numberOfLines={1} style={{
+          color: statusColor, fontSize: 8, fontWeight: '800', maxWidth: 70,
+        }}>{status}</Text>
       </Pressable>
     );
   };
@@ -204,6 +248,50 @@ export function SuggestedGoals({ visible, onClose, targets, onAdd }: {
             <PalChip key={n} name={n} lvl={lvls?.[n]} note={MOUNT_CALLOUTS[n]} />
           ))}
         </ScrollView>
+      </View>
+    );
+  };
+
+  /** Big lists, done cleanly: vertical wrap, ranked by attainability with
+   * community callouts first among equals, capped with expand. */
+  const RankedCard = ({ id, title, blurb, names }: {
+    id: string; title: string; blurb: string; names: string[];
+  }) => {
+    const ranked = [...new Set(names)].sort((a, b) =>
+      attainScore(attain(a)) - attainScore(attain(b))
+      || Number(!!MOUNT_CALLOUTS[b]) - Number(!!MOUNT_CALLOUTS[a]));
+    const expanded = openJob === id;
+    const shown = expanded ? ranked.slice(0, 20) : ranked.slice(0, 6);
+    const hidden = ranked.length - shown.length;
+    const missing = shown.filter((n) => !targets.includes(n) && !ownedAny(n));
+    return (
+      <View style={{
+        backgroundColor: T.surface, borderColor: T.line, borderWidth: 1,
+        borderRadius: 14, padding: 12, gap: 8,
+      }}>
+        <Pressable style={[s.row, { gap: 8 }]}
+          onPress={() => {
+            void Haptics.selectionAsync();
+            setOpenJob(expanded ? null : id);
+          }}>
+          <Text style={[s.h3, { flex: 1 }]}>{title}</Text>
+          <Badge kind="plain">{expanded ? 'less −' : `top 6 of ${ranked.length} +`}</Badge>
+        </Pressable>
+        <Text style={[s.body, { fontSize: 11.5 }]}>{blurb}</Text>
+        <View style={{ flexDirection: 'row', gap: 6, flexWrap: 'wrap' }}>
+          {shown.map((n) => (
+            <PalChip key={n} name={n} note={MOUNT_CALLOUTS[n]} />
+          ))}
+        </View>
+        {expanded && hidden > 0 && (
+          <Text style={[s.body, { fontSize: 11, color: T.faint }]}>
+            +{hidden} more — the Paldex filter finds them all.
+          </Text>
+        )}
+        {missing.length > 1 && (
+          <Btn small label={`Add all ${missing.length} shown`}
+            onPress={() => onAdd(missing)} />
+        )}
       </View>
     );
   };
@@ -310,20 +398,18 @@ export function SuggestedGoals({ visible, onClose, targets, onAdd }: {
             </View>
           </View>
 
-          {/* ---- MOUNTS (dump typing + labelled community speed) ---- */}
-          <SquadCard title="Flying mounts"
-            blurb="Every flyable pal in the game data. Speed callouts are community-measured."
-            names={[...MOUNTS.flying].sort((a, b) =>
-              Number(!!MOUNT_CALLOUTS[b]) - Number(!!MOUNT_CALLOUTS[a]))} />
-          <SquadCard title="Ground mounts"
-            blurb="Every ground mount in the game data — the called-out ones are the community's elite."
-            names={[...MOUNTS.ground].sort((a, b) =>
-              Number(!!MOUNT_CALLOUTS[b]) - Number(!!MOUNT_CALLOUTS[a]))} />
-          <SquadCard title="Gliders & swimmers"
+          {/* ---- MOUNTS (dump typing + labelled community speed) ----
+               Vertical, ranked, capped — 83 pals in a thumb-wide horizontal
+               scroll was rightly called bad design (CEO 2026-08-15). */}
+          <RankedCard id="m-fly" title="Flying mounts"
+            blurb="Every flyable pal in the game data, closest-to-yours first. Speed callouts are community-measured."
+            names={MOUNTS.flying} />
+          <RankedCard id="m-ground" title="Ground mounts"
+            blurb="Every ground mount, closest-to-yours first — the called-out ones are the community's elite."
+            names={MOUNTS.ground} />
+          <RankedCard id="m-glide" title="Gliders & swimmers"
             blurb="Glider partner skills from the game data, plus the swimmers."
-            names={[...UTILITY_ROLES.glider.pals.map((p) => p.name),
-              ...MOUNTS.swim].sort((a, b) =>
-              Number(!!MOUNT_CALLOUTS[b]) - Number(!!MOUNT_CALLOUTS[a]))} />
+            names={[...UTILITY_ROLES.glider.pals.map((p) => p.name), ...MOUNTS.swim]} />
 
           {/* ---- UTILITY PARTNER SKILLS (pure game data) ---- */}
           <SquadCard title="Weight & carrying helpers"
@@ -342,7 +428,17 @@ export function SuggestedGoals({ visible, onClose, targets, onAdd }: {
             const list = best[w];
             if (!list.length) return null;
             const expanded = openJob === w;
-            const shown = expanded ? list : list.slice(0, 5);
+            // DYNAMIC (CEO 2026-08-15): the collapsed view is the absolute
+            // top 5 PLUS anything nearly as good that your save can reach
+            // cheaply — a Lv-7 worker two breeding steps away beats a Lv-8
+            // endgame wall for most players. Those extras say why they're up.
+            const topLvl = list[0].lvl;
+            const closeGood = list.slice(5).filter((x) =>
+              x.lvl >= topLvl - 2 && attainScore(attain(x.name)) <= 4);
+            const shown = expanded
+              ? list
+              : [...list.slice(0, 5), ...closeGood].slice(0, 9);
+            const isCloseGood = new Set(closeGood.map((x) => x.name));
             const missing = shown
               .filter((x) => !targets.includes(x.name) && !ownedAny(x.name))
               .map((x) => x.name);
@@ -360,10 +456,13 @@ export function SuggestedGoals({ visible, onClose, targets, onAdd }: {
                     <Image source={WORK_ICONS[w]} style={{ width: 22, height: 22 }} />
                   )}
                   <Text style={[s.h3, { flex: 1 }]}>{workLabel(w)}</Text>
-                  <Badge kind="plain">{expanded ? 'top 8 −' : 'top 5 +'}</Badge>
+                  <Badge kind="plain">{expanded ? 'less −' : `top ${shown.length} of ${list.length} +`}</Badge>
                 </Pressable>
                 <View style={{ flexDirection: 'row', gap: 6, flexWrap: 'wrap' }}>
-                  {shown.map((x) => <PalChip key={x.name} name={x.name} lvl={x.lvl} />)}
+                  {shown.map((x) => (
+                    <PalChip key={x.name} name={x.name} lvl={x.lvl}
+                      note={isCloseGood.has(x.name) ? 'good & close' : undefined} />
+                  ))}
                 </View>
                 {missing.length ? (
                   <Btn small primary label={`Add these ${missing.length}`}
