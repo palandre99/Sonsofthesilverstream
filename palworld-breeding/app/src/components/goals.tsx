@@ -24,6 +24,14 @@ const workLabel = (j: string): string => {
 const AURA_SQUAD = ['Ribbuny', 'Cinnamoth', 'Clovee', 'Petallia', 'Tetroise', 'Wumpo',
   'Amione', 'Eikthyrdeer Terra', 'Katress Ignis', 'Mycora', 'Puffolt', 'Smokie Cryst'];
 
+/** effect squads built from the game's own partner-skill text */
+function palsWithEffect(re: RegExp): string[] {
+  const p = pals.value;
+  return Object.keys(p).filter((n) => re.test(p[n].partner_effect ?? ''));
+}
+const LOOT_RE = /defeated|dropped by enemies/i;
+const RANCH_RE = /assigned to Ranch/i;
+
 type Attain =
   | { kind: 'have' }
   | { kind: 'breed'; steps: number }
@@ -287,6 +295,13 @@ export function GoalsSheet({ open, onClose, targets, onAdd }: {
         <Section id="u-eff" title="Work efficiency boosters" cap={9}
           blurb="Mining, logging and crafting multipliers from partner skills."
           names={UTILITY_ROLES.efficiency.pals.map((p) => p.name)} />
+
+        <Section id="u-loot" title="Loot boosters" cap={8}
+          blurb="More drops from enemies you defeat — element-specific hunting partners, plus Dumud Gild's gold bonus."
+          names={palsWithEffect(LOOT_RE)} />
+        <Section id="u-ranch" title="Ranch producers" cap={8}
+          blurb="Every pal that makes something at the Ranch — eggs, milk, berries, wool, mushrooms and more."
+          names={palsWithEffect(RANCH_RE)} />
 
         {CREWS.map((crew) => {
           const list = crewRank(crew);

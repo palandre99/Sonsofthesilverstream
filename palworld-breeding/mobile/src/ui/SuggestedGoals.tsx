@@ -151,6 +151,17 @@ function attainScore(a: Attain): number {
 const AURA_SQUAD = ['Ribbuny', 'Cinnamoth', 'Clovee', 'Petallia', 'Tetroise', 'Wumpo',
   'Amione', 'Eikthyrdeer Terra', 'Katress Ignis', 'Mycora', 'Puffolt', 'Smokie Cryst'];
 
+/** pals whose partner-skill text matches — the honest way to build effect
+ * squads without hand-picking (paldex order; text is the game's own) */
+function palsWithEffect(re: RegExp): string[] {
+  return Object.keys(pals).filter((n) => re.test(pals[n].partner_effect ?? ''));
+}
+/** combat loot: more drops from defeated enemies (Blazehowl-class + Dumud
+ * Gild's gold bonus) */
+const LOOT_RE = /defeated|dropped by enemies/i;
+/** the full ranch roster — every "assigned to Ranch" producer */
+const RANCH_RE = /assigned to Ranch/i;
+
 export function SuggestedGoals({ visible, onClose, targets, onAdd }: {
   visible: boolean;
   onClose: () => void;
@@ -467,6 +478,13 @@ export function SuggestedGoals({ visible, onClose, targets, onAdd }: {
           <SquadCard title="Work efficiency boosters"
             blurb="Mining, logging and crafting multipliers from partner skills (Digtoise: ore mining +800–2000%). Tap a pal for the exact numbers."
             names={UTILITY_ROLES.efficiency.pals.map((p) => p.name)} />
+
+          <RankedCard id="u-loot" title="Loot boosters"
+            blurb="More drops from enemies you defeat — element-specific hunting partners, plus Dumud Gild's gold bonus. Tap a pal for its exact effect."
+            names={palsWithEffect(LOOT_RE)} />
+          <RankedCard id="u-ranch" title="Ranch producers"
+            blurb="Every pal that makes something at the Ranch — eggs, milk, berries, wool, mushrooms, ice organs and more."
+            names={palsWithEffect(RANCH_RE)} />
 
           {/* ---- COMPOSITE CREWS (CEO: "best farmer" = high planting+
                gathering+transporting) — scores straight from work levels ---- */}
