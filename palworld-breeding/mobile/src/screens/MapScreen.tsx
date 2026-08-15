@@ -18,11 +18,11 @@ import { T } from '../theme';
 import { Icon } from '../ui/Icon';
 import { SearchInput, s } from '../ui/kit';
 import { MapCanvas, type MapCanvasHandle, type MapMarker } from '../map/MapCanvas';
-import { clusterPoints, pointsInRect, type PointSet } from '../map/points';
+import { clusterPoints, nearestPoint, pointsInRect, type PointSet } from '../map/points';
 import { uvToReadout, regionOf, type RegionId } from '../map/projection';
 import {
   GROUP_LABEL, dungeonPoints, emptyFilters, isNightOnly, poiLayer, poiLayers, poiPoints,
-  spawnLevels, spawnPoints, spawnablePals, type LayerGroup, type MapFilters,
+  spawnLevels, spawnPoints, spawnablePals, wildBands, type LayerGroup, type MapFilters,
 } from '../map/layers';
 import { MAP_REGIONS } from '../data/mapMeta.g';
 import { takeIntentPayload } from '../nav/intent';
@@ -39,7 +39,9 @@ export function MapScreen() {
   const [filters, setFilters] = useState<MapFilters>(() => emptyFilters());
   const [sheet, setSheet] = useState<Sheet>(null);
   const [vp, setVp] = useState<Viewport>({ scale: 1, u0: 0, v0: 0, u1: 1, v1: 1 });
-  const [focus, setFocus] = useState<{ label: string; sub: string } | null>(null);
+  const [focus, setFocus] = useState<{
+    title: string; lines: string[]; at: string; colour: string; icon: string;
+  } | null>(null);
 
   const region = filters.region;
 
@@ -144,11 +146,51 @@ export function MapScreen() {
 
   /* ------------------------------------------------------------ interaction */
 
+  /**
+   * Tapping should answer "what IS that?" — the pin's layer, and for a pal its
+   * level band and whether it only comes out at night. Showing only a
+   * coordinate was the map talking to itself.
+   *
+   * The hit radius is in screen pixels converted to map units, so it stays a
+   * thumb-sized target at every zoom rather than shrinking as you zoom in.
+   */
   const onPress = useCallback((u: number, v: number) => {
-    if (!active.length) return;
+    const reach = 26 / Math.max(1, vp.scale);
+    let best: { layer: typeof active[number]; d: number } | null = null;
+    for (const layer of active) {
+      const p = nearestPoint(layer.set, u, v, reach);
+      if (p == null) continue;
+      const du = layer.set.xy[p * 2] - u;
+      const dv = layer.set.xy[p * 2 + 1] - v;
+      const d = du * du + dv * dv;
+      if (!best || d < best.d) best = { layer, d };
+    }
     const r = uvToReadout({ u, v }, regionOf(region));
-    setFocus({ label: `${r.x}, ${r.y}`, sub: 'map position' });
-  }, [active.length, region]);
+    const at = `${r.x}, ${r.y}`;
+    if (!best) {
+      setFocus(active.length
+        ? null
+        : { title: 'Nothing switched on yet', lines: ['Pick a layer or a pal below.'], at, colour: T.muted, icon: 'map-marker-question-outline' });
+      return;
+    }
+
+    const { layer } = best;
+    const lines: string[] = [];
+    const palName = layer.key.startsWith('pal:') || layer.key.startsWith('dun:')
+      ? layer.key.slice(4) : null;
+    if (palName) {
+      const lv = layer.key.startsWith('dun:')
+        ? wildBands(palName).dungeon : spawnLevels(palName, region);
+      if (lv) lines.push(lv.lo === lv.hi ? `Level ${lv.lo}` : `Level ${lv.lo}–${lv.hi}`);
+      if (isNightOnly(palName, region)) lines.push('Only comes out at night');
+      if (layer.key.startsWith('dun:')) lines.push('Inside a dungeon, not on the surface');
+      if (ownedAny(palName)) lines.push('Already in your box');
+      // no "N spots on the map" here — the pill at the bottom already says it
+    } else {
+      lines.push(`${layer.set.n} on this map`);
+    }
+    setFocus({ title: layer.label, lines, at, colour: layer.colour, icon: layer.icon });
+  }, [active, region, vp.scale]);
 
   const togglePoi = useCallback((id: string) => {
     void Haptics.selectionAsync();
@@ -221,13 +263,30 @@ export function MapScreen() {
 
       {/* the readout, in the game's own numbers */}
       {focus && (
-        <View style={{
-          position: 'absolute', top: 56, alignSelf: 'center',
-          backgroundColor: 'rgba(12,22,24,0.9)', borderRadius: 10,
-          borderWidth: 1, borderColor: T.line, paddingHorizontal: 11, paddingVertical: 6,
-        }}>
-          <Text style={{ color: T.ink, fontWeight: '800', fontSize: 13 }}>{focus.label}</Text>
-        </View>
+        <Pressable
+          onPress={() => setFocus(null)}
+          accessibilityRole="button"
+          accessibilityLabel={`${focus.title}. Tap to dismiss.`}
+          style={{
+            position: 'absolute', top: 54, left: 12, right: 12,
+            backgroundColor: 'rgba(12,22,24,0.94)', borderRadius: 13,
+            borderWidth: 1, borderColor: focus.colour,
+            paddingHorizontal: 12, paddingVertical: 10, gap: 4,
+          }}
+        >
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            <Icon name={focus.icon} size={16} color={focus.colour} />
+            <Text style={{ color: T.ink, fontWeight: '800', fontSize: 14, flex: 1 }}>
+              {focus.title}
+            </Text>
+            <Text style={{ color: T.faint, fontSize: 11, fontWeight: '700' }}>{focus.at}</Text>
+          </View>
+          {focus.lines.map((line) => (
+            <Text key={line} style={{ color: T.muted, fontSize: 12, fontWeight: '600' }}>
+              {line}
+            </Text>
+          ))}
+        </Pressable>
       )}
 
       {/* bottom controls */}

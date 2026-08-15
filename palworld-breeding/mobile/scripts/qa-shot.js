@@ -12,6 +12,7 @@
  *   tap:<text>       press the first element whose text contains <text>
  *   wait:<ms>        let animations and tile loads settle
  *   shot:<name>      capture <outDir>/<name>.png
+ *   click:<x>,<y>    press at exact viewport coordinates
  *   pinch:<factor>   zoom about the screen centre by <factor>
  *   drag:<dx>,<dy>   pan by that many pixels
  *
@@ -201,6 +202,16 @@ async function main() {
     const [kind, arg] = [step.slice(0, step.indexOf(':')), step.slice(step.indexOf(':') + 1)];
     if (kind === 'tap') await tap(arg);
     else if (kind === 'type') await type(arg);
+    else if (kind === 'click') {
+      const [cx, cy] = arg.split(',').map(Number);
+      for (const type of ['mousePressed', 'mouseReleased']) {
+        await send('Input.dispatchMouseEvent', {
+          type, x: cx, y: cy, button: 'left', clickCount: 1,
+        });
+      }
+      console.log(`  click ${cx},${cy}`);
+      await sleep(700);
+    }
     else if (kind === 'scroll') {
       // one wheel event per 240px keeps RN-web's scroll view following along
       const total = Number(arg);

@@ -305,8 +305,13 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       DELETE the region-label dots — this closes the CEO's ~12:25 "MAP
       OVERHAUL" item and the "Where to find it must be a real MAP" item.
       Tap a pal card's map -> opens the Map fane with that species preselected.
-- [ ] F12 Marker detail: tapping a pin should open a card (which pal, what
-      level, day/night, distance) rather than only showing the coordinate.
+- [x] F12 DONE 2026-08-16 ~01:42: tapping a pin opens a real card — which
+      layer, which pal, its level band, "only comes out at night", "inside a
+      dungeon, not on the surface", "already in your box", and the game's own
+      coordinate. Hit radius is 26 SCREEN px converted to map units, so the
+      target stays thumb-sized at every zoom instead of shrinking as you zoom
+      in. Tap the card to dismiss. Also added a `click:x,y` step to the QA
+      driver, since tapping a map pin cannot be done by text.
 - [ ] F13 Found/not-found tracking per marker, persisted per save profile —
       every competitor has it; ours should key off the box where it can.
 - [ ] F14 In-game feel: region name labels on the map, and a legend.
