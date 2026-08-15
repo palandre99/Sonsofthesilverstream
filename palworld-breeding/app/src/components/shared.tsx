@@ -1,6 +1,7 @@
 /** Shared presentational components. */
 import { useEffect, useRef, useState } from 'preact/hooks';
-import { hasGender, iconFiles, pals, setOwnedGender, topWork, workLabel, type PalInfo } from '../state';
+import { hasGender, iconFiles, ownedAny, pals, setOwnedGender, topWork, workLabel, type PalInfo } from '../state';
+import { rarityTint } from '../data/rarity';
 import iKindling from '../assets/work/Kindling.png';
 import iWatering from '../assets/work/Watering.png';
 import iPlanting from '../assets/work/Planting.png';
@@ -121,14 +122,19 @@ export function PalPicker({ value, onPick, placeholder = 'Choose a pal…', filt
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState('');
   const [hi, setHi] = useState(0);
+  const [own, setOwn] = useState<'all' | 'owned' | 'missing'>('all');
+  const [el, setEl] = useState<string | null>(null);
   const rootRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const all = Object.keys(pals.value).sort();
   const usable = filter ? all.filter(filter) : all;
-  const matches = q
+  let matches = q
     ? usable.filter((n) => n.toLowerCase().includes(q.toLowerCase()))
     : usable;
+  if (el) matches = matches.filter((n) => pals.value[n].elements.includes(el));
+  if (own === 'owned') matches = matches.filter(ownedAny);
+  if (own === 'missing') matches = matches.filter((n) => !ownedAny(n));
 
   useEffect(() => {
     if (!open) return;
@@ -169,9 +175,28 @@ export function PalPicker({ value, onPick, placeholder = 'Choose a pal…', filt
               else if (e.key === 'Enter' && matches[hi]) pick(matches[hi]);
               else if (e.key === 'Escape') setOpen(false);
             }} />
+          <div style={{ display: 'flex', gap: '4px', alignItems: 'center', flexWrap: 'wrap', padding: '6px 6px 2px' }}>
+            {(['all', 'missing', 'owned'] as const).map((o) => (
+              <button type="button" key={o} class={`fbtn${own === o ? ' on' : ''}`}
+                style={{ fontSize: '11px', padding: '3px 8px' }}
+                onClick={() => { setOwn(o); setHi(0); }}>
+                {o === 'all' ? 'All' : o === 'owned' ? 'Owned' : 'Missing'}
+              </button>
+            ))}
+            {['Neutral', 'Fire', 'Water', 'Grass', 'Electric', 'Ice', 'Ground', 'Dark', 'Dragon'].map((e) => (
+              <button type="button" key={e} class={`fbtn${el === e ? ' on' : ''}`}
+                aria-label={`Filter ${e}`} title={e}
+                style={{ fontSize: '11px', padding: '3px 6px' }}
+                onClick={() => { setEl(el === e ? null : e); setHi(0); }}>
+                {e.slice(0, 3)}
+              </button>
+            ))}
+            <span class="dim small" style={{ marginLeft: 'auto' }}>{matches.length}</span>
+          </div>
           <div class="list" role="listbox">
             {matches.slice(0, 120).map((n, i) => (
               <button type="button" class={i === hi ? 'hi' : ''} role="option"
+                style={{ borderLeft: `3px solid ${rarityTint(pals.value[n]?.rarity, 'transparent')}` }}
                 onClick={() => pick(n)}>
                 <PalIcon name={n} size={28} />
                 {n}
