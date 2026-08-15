@@ -14,6 +14,9 @@ automatically when you reopen it. Install it once from your iPhone:
 Keep both: **Palforge (fast)** for daily testing, **Palforge DEV** for
 live-coding sessions with START-APP.cmd.
 
+**Lost the link?** Double-click `COPY-INSTALL-LINK.cmd` — the install URL
+lands straight in your clipboard (kept pointing at the newest build).
+
 ## 1. BUILD-DEV.cmd — run ONCE (~15 min)
 Builds the **Palforge DEV** app for your phone in Expo's cloud.
 - It asks *"Do you want to log in to your Apple account?"* → type `y`
