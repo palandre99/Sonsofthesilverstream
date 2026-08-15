@@ -10,7 +10,7 @@ import { stepId } from '../engine/planner';
 import { parseGenderNote } from '../engine/formula';
 import { requestPlan } from '../engine/planClient';
 import { cakeNeeds } from '../engine/boosters';
-import { HELPER_NAMES, helperAdvice, type HelperAdvice } from '../engine/helpers';
+import { HELPER_NAMES, type HelperAdvice } from '../engine/helpers';
 import type { PlanStep } from '../engine/types';
 
 const PRESETS: Record<string, { label: string; targets: string[] }> = {
