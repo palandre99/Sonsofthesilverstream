@@ -262,9 +262,12 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       through to the Map fane with the species preselected and framed.
 
 ### Open — the map lane's own queue
-- [ ] F23 NEXT: the preview's dense clusters render as an unreadable scribble
-      of overlapping dots. Thin/dedupe points at preview resolution, or draw a
-      soft density blob instead. Visible in the Foxparks card.
+- [x] F23 DONE 2026-08-16 ~00:02: the preview's dense clusters were an
+      unreadable scribble — 93 overlapping rings in one bay. Now thinned to one
+      dot per ~12 screen px with opacity carrying how many collapsed into it,
+      and spawn dots are solid while boss spots stay ringed. Reads as a
+      habitat with the terrain showing through. Eye-verified on the Foxparks
+      card (two iterations: rings-at-9px still moired, solid-at-12px is clean).
 - [ ] F24 Dungeon spawns deserve their own visible layer in the Map fane
       (data + filter flag already exist, `filters.dungeons`) — a "found in
       dungeons" toggle, since the information is genuinely useful once it is

@@ -49,6 +49,31 @@ export function boundsOf(points: PreviewPoint[], pad = 0.055): {
   };
 }
 
+/**
+ * Collapse points that would overlap into one dot per cell.
+ *
+ * A species with 93 spawn points inside one bay drew 93 overlapping circles —
+ * a scribble that said "somewhere in here" in the ugliest possible way. One
+ * dot per cell, with weight carried in its opacity, reads as a habitat: dense
+ * where the pal is common, sparse at the edges.
+ */
+function thin(points: PreviewPoint[], cell: number): (PreviewPoint & { weight: number })[] {
+  const cells = new Map<string, PreviewPoint & { weight: number }>();
+  const out: (PreviewPoint & { weight: number })[] = [];
+  for (const p of points) {
+    // fixed boss spots are individually meaningful — never merge them away
+    if (p.alpha) {
+      out.push({ ...p, weight: 1 });
+      continue;
+    }
+    const key = `${Math.floor(p.u / cell)}:${Math.floor(p.v / cell)}`;
+    const got = cells.get(key);
+    if (got) got.weight += 1;
+    else cells.set(key, { ...p, weight: 1 });
+  }
+  return [...cells.values(), ...out];
+}
+
 export function MapPreview({ region, points, side, children }: {
   region: RegionId;
   points: PreviewPoint[];
@@ -96,6 +121,10 @@ export function MapPreview({ region, points, side, children }: {
 
   const base = have['0_0_0'];
 
+  // one dot per ~12 px of screen: spaced so dots never touch, which is what
+  // turned the dense middle into a moire of overlapping rings
+  const dots = useMemo(() => thin(points, 12 / scale), [points, scale]);
+
   return (
     <View style={{ width: side, height: side, overflow: 'hidden', backgroundColor: '#06121a' }}>
       {base ? (
@@ -114,8 +143,11 @@ export function MapPreview({ region, points, side, children }: {
         />
       ) : null}
       {tiles}
-      {points.map((p, i) => {
-        const r = p.alpha ? 9 : 6;
+      {dots.map((p, i) => {
+        const r = p.alpha ? 9 : 4.5;
+        // three points stacked in one cell is as opaque as it gets — beyond
+        // that the eye reads "dense" and extra ink only muddies the terrain
+        const weight = Math.min(1, 0.45 + p.weight * 0.18);
         return (
           <View
             key={i}
@@ -127,9 +159,12 @@ export function MapPreview({ region, points, side, children }: {
               width: r * 2,
               height: r * 2,
               borderRadius: r,
-              borderWidth: p.alpha ? 2.5 : 2,
-              borderColor: p.alpha ? '#F0B441' : '#3FC1C9',
-              backgroundColor: p.alpha ? 'rgba(240,180,65,0.32)' : 'rgba(63,193,201,0.30)',
+              // bosses stay ringed markers; spawn points are solid, so a
+              // cluster reads as one habitat rather than a pile of outlines
+              borderWidth: p.alpha ? 2.5 : 0,
+              borderColor: p.alpha ? '#F0B441' : 'transparent',
+              backgroundColor: p.alpha ? 'rgba(240,180,65,0.32)' : '#5FE3E9',
+              opacity: p.alpha ? 1 : weight,
             }}
           />
         );
