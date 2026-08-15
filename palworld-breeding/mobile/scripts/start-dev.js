@@ -23,15 +23,18 @@ const MOBILE_DIR = path.resolve(__dirname, '..');
 const URL_FILE_TXT = path.join(WORKSPACE_ROOT, 'CURRENT-DEV-URL.txt');
 const URL_FILE_HTML = path.join(WORKSPACE_ROOT, 'CURRENT-DEV-URL.html');
 
-// The deep-link scheme comes from app.json so the launcher can never drift
-// out of sync with the installed app (a wrong scheme = a link that opens
-// nothing at all on the phone).
-const APP_SCHEME = (() => {
+// Identity check. The SCHEME is no longer read from app.json — since
+// app.config.js gives the DEV build its own scheme (palforge-dev), app.json
+// holds the FAST scheme and reading it would produce a link that opens
+// nothing. The live scheme is taken from the running server's own manifest
+// instead. The SLUG is stable across both profiles, so it is what proves a
+// Metro belongs to this project.
+const APP_SLUG = (() => {
   try {
     const cfg = JSON.parse(fs.readFileSync(path.join(MOBILE_DIR, 'app.json'), 'utf8'));
-    return (cfg.expo && cfg.expo.scheme) || 'palforge';
+    return (cfg.expo && cfg.expo.slug) || 'hatchlab';
   } catch {
-    return 'palforge';
+    return 'hatchlab';
   }
 })();
 
@@ -84,8 +87,9 @@ function extractDeepLink(rawManifest) {
   const expoClient = (manifest.extra && manifest.extra.expoClient) || {};
   // Make sure this Metro is OURS. Stride and Fjelltur run Expo servers too;
   // if one of them owns the port we must not hand the CEO a link that opens
-  // the wrong app.
-  if (expoClient.scheme && expoClient.scheme !== APP_SCHEME) return null;
+  // the wrong app. Slug is identical across our build profiles, so it is the
+  // reliable marker.
+  if (expoClient.slug && expoClient.slug !== APP_SLUG) return null;
   const hostUri =
     expoClient.hostUri ||
     (manifest.extra && manifest.extra.hostUri) ||
@@ -100,7 +104,10 @@ function extractDeepLink(rawManifest) {
   const httpsHost = hostUri.startsWith('http')
     ? hostUri
     : 'https://' + hostUri.replace(/:\d+$/, '');
-  return 'exp+' + APP_SCHEME + '://expo-development-client/?url=' + encodeURIComponent(httpsHost);
+  // Scheme comes from the running server's resolved config, so the link always
+  // matches whichever dev client this server is actually serving.
+  const scheme = expoClient.scheme || 'palforge-dev';
+  return 'exp+' + scheme + '://expo-development-client/?url=' + encodeURIComponent(httpsHost);
 }
 
 async function pollForUrl() {

@@ -27,7 +27,21 @@ reaches the phone, which had been silently broken.
   tunnel in ~7 s, double-launch leaves exactly one supervisor/server/ngrok,
   CPU back to 6%. **CEO confirmed the DEV build working on his phone.**
 - **Docs:** added `01_LINKS.md`, `05_ARCHITECTURE.md`,
-  `06_TROUBLESHOOTING.md`; corrected the two-apps claim below.
+  `06_TROUBLESHOOTING.md`, `07_WORKING_AGREEMENT.md`,
+  `08_TOOLS_AND_COMMANDS.md`; corrected the two-apps claim below. `CLAUDE.md`
+  now opens with a 5-step onboarding table, so "keep working on this project"
+  is sufficient briefing for a new coder.
+- **App identity split** (`mobile/app.config.js`): `development` and local
+  `expo start` resolve to Palforge DEV / `com.palandre.hatchlab.dev` /
+  `palforge-dev`; `preview` + `production` keep the FAST identity untouched.
+  Verified with `expo config` on both profiles, mobile tsc clean.
+  **Takes effect only after the CEO runs `BUILD-DEV.cmd`** (new bundle id ⇒
+  new iOS credentials ⇒ his Apple login). Until then the installed pair still
+  shares one icon slot, and the hub carries a legacy connect link for the
+  pre-split dev client.
+- **Single install hub** at `/palforge/install/` (CEO's request — full version
+  + live version + Connect to PC on one page); `/palforge/install-dev/`
+  forwards to it. Live and verified, eye-checked at 375x812.
 
 Correction to the entry below: the claim that two installable apps coexist
 was **wrong**. Both builds use bundle id `com.palandre.hatchlab` with

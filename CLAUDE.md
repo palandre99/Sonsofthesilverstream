@@ -83,11 +83,14 @@ TypeScript engine, three delivery targets:
   the install QR is on each finished build's page.
 - OTA updates: channels `development` + `preview` are configured;
   `PUSH-UPDATE.cmd` publishes to both.
-- **ONE APP SLOT.** The DEV and FAST builds share bundle id
-  `com.palandre.hatchlab` and have identical fingerprints, so installing one
-  DELETES the other. Never send the CEO an install link without saying which
-  app it replaces — doing exactly that cost a session on 2026-08-15. Install
-  links live in `documents/01_LINKS.md`.
+- **ONE APP SLOT — until the next DEV build.** Both builds historically shared
+  bundle id `com.palandre.hatchlab`, so installing one DELETED the other;
+  doing exactly that cost a session on 2026-08-15. `mobile/app.config.js` now
+  splits the identity per profile (DEV = `com.palandre.hatchlab.dev`,
+  scheme `palforge-dev`; preview/production unchanged), but it only takes
+  effect once the CEO runs `BUILD-DEV.cmd`. Until then keep warning him.
+  There is ONE install link — the hub at `/palforge/install/`; see
+  `documents/01_LINKS.md`.
 - **START-APP.cmd self-heals** (2026-08-15): it kills stale dev servers for
   THIS project only and uses a PID lock so the newest launcher takes over.
   Don't remove that; orphaned Metros once ate ~7.5 CPU cores for 11 hours.

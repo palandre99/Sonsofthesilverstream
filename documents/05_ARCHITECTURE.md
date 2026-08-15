@@ -133,8 +133,28 @@ eas update  →  Expo's update servers  →  app fetches on next launch
 | Needs the PC | ✅ | ❌ |
 | Updates via | live reload | OTA on reopen |
 
-**They cannot coexist** — same bundle id, same name, identical fingerprints.
-See `01_LINKS.md`.
+### App identity — `mobile/app.config.js`
+
+Expo reads `app.json` first and passes it to `app.config.js`, which swaps the
+identity per build profile:
+
+| Resolved for | name | bundle id | scheme |
+|---|---|---|---|
+| `preview` / `production` | Palforge | `com.palandre.hatchlab` | `palforge` |
+| `development` **and local `expo start`** | Palforge DEV | `com.palandre.hatchlab.dev` | `palforge-dev` |
+
+Local `expo start` deliberately resolves to the DEV identity: the dev server
+must speak the same scheme as the installed dev client or the connect link
+opens nothing. **Never "tidy" the release branch of that config** — it is what
+keeps the CEO's installed FAST app and its OTA updates working.
+
+Because the scheme is now per-profile, `start-dev.js` no longer reads the
+scheme from `app.json`. It takes the **resolved** scheme from the running
+server's own manifest, and identifies "our" Metro by `slug` (`hatchlab`),
+which is identical across profiles.
+
+**Until the next DEV build is made**, the *installed* dev client still carries
+the old identity, so the two apps still share one icon slot. See `01_LINKS.md`.
 
 ## 5. Builds and deploys
 

@@ -3,28 +3,78 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Install Palforge</title>
+<title>Get Palforge</title>
 <style>
+  :root { color-scheme: dark; }
   body { font-family: -apple-system, "Segoe UI", sans-serif; background: #0c1618; color: #e6f0f1;
-         display: flex; flex-direction: column; align-items: center; justify-content: center;
-         min-height: 100vh; margin: 0; padding: 24px; text-align: center; }
-  a.btn { background: #3fc1c9; color: #0c1618; font-weight: 800; text-decoration: none;
-          padding: 18px 34px; border-radius: 16px; font-size: 20px; margin-top: 20px; display: inline-block; }
-  p { color: #9db4b8; max-width: 420px; line-height: 1.55; font-size: 15px; }
-  h1 { margin: 0 0 4px; }
-  .note { font-size: 12.5px; margin-top: 26px; }
+         margin: 0; padding: 28px 20px 48px; display: flex; flex-direction: column;
+         align-items: center; text-align: center; }
+  h1 { margin: 0 0 4px; font-size: 30px; letter-spacing: -0.5px; }
+  .sub { color: #7f989c; font-size: 14.5px; margin: 0 0 28px; }
+  .card { max-width: 460px; width: 100%; background: #101f22; border: 1px solid #1d3438;
+          border-radius: 20px; padding: 22px 20px; margin-bottom: 18px; box-sizing: border-box; }
+  .card h2 { margin: 0 0 2px; font-size: 20px; }
+  .tag { display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: .8px;
+         text-transform: uppercase; padding: 4px 10px; border-radius: 20px; margin-bottom: 10px; }
+  .tag-full { background: #123c40; color: #6fe0e8; }
+  .tag-dev  { background: #3d2a10; color: #ffb457; }
+  p { color: #9db4b8; font-size: 14.5px; line-height: 1.55; margin: 8px 0 0; }
+  a.btn { display: block; text-decoration: none; font-weight: 800; font-size: 18px;
+          padding: 16px 20px; border-radius: 14px; margin-top: 16px; }
+  a.full { background: #3fc1c9; color: #06181a; }
+  a.dev  { background: #ff9f1c; color: #1a1204; }
+  a.connect { background: #2a4a4f; color: #cfeef1; border: 1px solid #3c666c; }
+  ol { text-align: left; color: #9db4b8; font-size: 14.5px; line-height: 1.6; padding-left: 22px; margin: 12px 0 0; }
+  code { background: #081214; padding: 4px 8px; border-radius: 6px; font-size: 12px;
+         color: #8fd8de; word-break: break-all; }
+  .warn { max-width: 460px; font-size: 13px; color: #ffcf9a; background: #2a1c0c;
+          border: 1px solid #4a3316; border-radius: 14px; padding: 14px 16px; line-height: 1.5; }
+  .foot { color: #5d7478; font-size: 12px; margin-top: 22px; max-width: 460px; line-height: 1.5; }
+  .small { font-size: 12.5px; color: #7f989c; margin-top: 14px; }
+  .small a { color: #8fd8de; }
 </style>
 </head>
 <body>
-  <h1>Palforge</h1>
-  <p>The Palworld companion. Tap the button below <b>in Safari on your iPhone</b> —
-     iOS will ask to install; confirm and the icon appears on your home screen.
-     No accounts, no login.</p>
-  <a class="btn" href="itms-services://?action=download-manifest&amp;url=https%3A%2F%2Fpalandre99.github.io%2FSonsofthesilverstream%2Fpalforge%2Finstall%2Fmanifest.plist">
-    Install Palforge
-  </a>
-  <p class="note">Updates arrive automatically when you reopen the app —
-     you never need this page again unless you delete it.<br>
-     Build 0bd4b937 · 2026-08-15</p>
+  <h1>Get Palforge</h1>
+  <p class="sub">Open this page in <b>Safari</b> on your iPhone.</p>
+
+  <div class="card">
+    <span class="tag tag-full">Full version</span>
+    <h2>Palforge</h2>
+    <p>The complete app at full speed. Works on its own — no PC needed.
+       Gets the newest version automatically each time you reopen it.
+       <b>This is the one to use normally.</b></p>
+    <a class="btn full" href="itms-services://?action=download-manifest&amp;url=https%3A%2F%2Fpalandre99.github.io%2FSonsofthesilverstream%2Fpalforge%2Finstall%2Fmanifest.plist">
+      Install full version
+    </a>
+  </div>
+
+  <div class="card">
+    <span class="tag tag-dev">Live version</span>
+    <h2>Palforge DEV</h2>
+    <p>For working sessions. Changes appear while you use the app, and you can
+       shake the phone to refresh. Needs the PC running.</p>
+    <ol>
+      <li>On the PC, double-click <b>START-APP.cmd</b> and leave it open.</li>
+      <li>Install below.</li>
+      <li>Tap <b>Connect to PC</b>.</li>
+    </ol>
+    <a class="btn dev" href="itms-services://?action=download-manifest&amp;url=https%3A%2F%2Fpalandre99.github.io%2FSonsofthesilverstream%2Fpalforge%2Finstall-dev%2Fmanifest.plist">
+      Install live version
+    </a>
+    <a class="btn connect" href="exp+palforge-dev://expo-development-client/?url=https%3A%2F%2Fopqgrdy-palandre99-8081.exp.direct">
+      Connect to PC
+    </a>
+    <p class="small">Still on the older live app (installed before 15 Aug)?
+      <a href="exp+palforge://expo-development-client/?url=https%3A%2F%2Fopqgrdy-palandre99-8081.exp.direct">Connect with the old app</a>.</p>
+  </div>
+
+  <p class="warn"><b>Right now these two still share one icon slot</b> — installing
+     one replaces the other. That stops as soon as the next live-version build is
+     made on the PC; after that you can keep both side by side.</p>
+
+  <p class="foot">If a button ever does nothing, the address is:<br>
+     <code>https://opqgrdy-palandre99-8081.exp.direct</code><br><br>
+     Full version build 0bd4b937 · live version build 654fe7fb · updated 2026-08-15</p>
 </body>
 </html>

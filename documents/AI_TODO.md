@@ -15,12 +15,25 @@ Add everything you find; finding nothing means you didn't look.*
 - [x] 2026-08-15: docs `01_LINKS.md`, `05_ARCHITECTURE.md`,
       `06_TROUBLESHOOTING.md`; 00/02 corrected (the "two apps coexist" claim
       was false).
-- [ ] **TWO APPS SIDE BY SIDE** (CEO-blocked, needs his Apple login once):
-      dynamic `app.config.js` giving the `development` profile its own bundle
-      id (`com.palandre.hatchlab.dev`) + name "Palforge DEV", then a fresh EAS
-      build. Until this lands, installing either app deletes the other and
-      every install link must say so. This is the single highest-value infra
-      item — it removes a whole class of "the app is broken" reports.
+- [x] 2026-08-15: **TWO APPS SIDE BY SIDE — config half DONE.**
+      `mobile/app.config.js` gives `development` (and local `expo start`) the
+      identity Palforge DEV / `com.palandre.hatchlab.dev` / `palforge-dev`,
+      while `preview` + `production` keep the FAST identity byte-for-byte.
+      Verified with `expo config` on both profiles. `start-dev.js` now takes
+      the scheme from the running server's manifest and identifies our Metro
+      by `slug`, since `app.json`'s scheme is now the FAST one.
+- [ ] **TWO APPS — build half (CEO ACTION):** he runs `BUILD-DEV.cmd` and
+      does the Apple login once. New bundle id ⇒ new iOS credentials, which
+      eas-cli will not create without a real terminal. When that build lands:
+      1. update `app/public/install-dev/manifest.plist` (new `.ipa` URL +
+         `bundle-identifier` `com.palandre.hatchlab.dev`),
+      2. update the build ids in the hub page footer + `01_LINKS.md`,
+      3. **delete the "Connect with the old app" fallback** from the hub —
+         it exists only for the pre-split dev client,
+      4. drop the "share one icon slot" warning from the hub, `README-PHONE.md`
+         and `01_LINKS.md`, and redeploy Pages.
+- [x] 2026-08-15: single install hub at `/palforge/install/` (both versions +
+      Connect to PC, CEO's request); `/palforge/install-dev/` forwards to it.
 - [ ] Add the install-page ritual to a pre-commit or CI check: a new build
       must update BOTH manifests + INSTALL-LINK.txt + 01_LINKS.md build ids
       in the same commit, or the links serve a dead `.ipa`.

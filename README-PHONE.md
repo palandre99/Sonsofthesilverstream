@@ -2,25 +2,31 @@
 
 Same system as Stride. Double-click, that's it.
 
-## 📲 The two versions — you can only have ONE at a time
+## 📲 One link for everything — open it in Safari on the iPhone
 
-Your iPhone treats them as the same app, so **installing one deletes the
-other**. That is why the app "lost its Metro" on 2026-08-15 — the fast link
-overwrote the live one. Always check which link you're tapping.
+> ### https://palandre99.github.io/Sonsofthesilverstream/palforge/install/
 
-| Version | Link (open in **Safari** on the iPhone) | What it's for |
-|---|---|---|
-| **DEV — live updates** ⭐ *what you use now* | https://palandre99.github.io/Sonsofthesilverstream/palforge/install-dev/ | Changes appear while you use it. Shake to refresh. Needs START-APP.cmd running. |
-| **FAST — standalone** | https://palandre99.github.io/Sonsofthesilverstream/palforge/install/ | Full speed, no PC needed. Updates when you reopen it. |
+That page gives you both versions and a **Connect to PC** button:
 
-The DEV page is a 3-step page: install, then tap **Connect to PC**. Nothing
-to type. After the first connect the app remembers your PC.
+- **Full version** — the complete app at full speed, works on its own, updates
+  itself each time you reopen it. This is the one to use normally.
+- **Live version (DEV)** — for working sessions. Changes appear while you use
+  the app, shake to refresh. Needs `START-APP.cmd` running on the PC.
 
-**Lost the link?** Double-click `COPY-INSTALL-LINK.cmd` (fast version), or ask
-Claude — both links are stored in `documents/01_LINKS.md`.
+**Right now they still share one icon slot**, so installing one replaces the
+other. That stops as soon as you run `BUILD-DEV.cmd` once (see below) — after
+that you can keep both.
 
-## 1. BUILD-DEV.cmd — run ONCE (~15 min)
+**Lost the link?** Double-click `COPY-INSTALL-LINK.cmd`, or just ask Claude —
+it's saved in `documents/01_LINKS.md`.
+
+## 1. BUILD-DEV.cmd — run this once now (~15 min)
 Builds the **Palforge DEV** app for your phone in Expo's cloud.
+
+**Why you want to run it now:** it makes the live version a genuinely separate
+app with its own icon, so installing the full version stops deleting it. After
+this build you can keep both on the phone at the same time. Until then, it's
+one or the other.
 - It asks *"Do you want to log in to your Apple account?"* → type `y`
 - Apple ID `palandre99@gmail.com` + your password (+ the 2FA code that pops up on your phone)
 - Every other question: just press **Enter**

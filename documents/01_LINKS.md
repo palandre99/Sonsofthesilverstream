@@ -9,28 +9,43 @@ wastes his time and he has to explain himself again. Last verified
 
 ## 📱 Install the app on the iPhone
 
-Both pages are **login-free** and hosted on our own site. Open them **in
-Safari on the iPhone** — iOS refuses `itms-services` installs from Chrome.
+**There is ONE link. Send him this:**
 
-| Which | Link | What it is |
-|---|---|---|
-| **DEV — live updates** ⭐ | https://palandre99.github.io/Sonsofthesilverstream/palforge/install-dev/ | Connects to the PC. Code changes appear while you use it, shake to refresh. **This is what the CEO runs today.** |
-| **FAST — standalone** | https://palandre99.github.io/Sonsofthesilverstream/palforge/install/ | Full-speed release build. No PC needed. Updates on reopen via OTA. |
+> ## https://palandre99.github.io/Sonsofthesilverstream/palforge/install/
 
-### ⚠️ ONE APP SLOT — read before sending either link
+Login-free, hosted on our own site. It must be opened **in Safari** — iOS
+refuses `itms-services` installs from Chrome. It is a hub offering both
+versions plus a one-tap **Connect to PC**:
 
-Both builds share the bundle id `com.palandre.hatchlab` and the name
-"Palforge", and their EAS fingerprints are **identical**. iOS therefore
-treats them as the same app: **installing one silently deletes the other.**
+| On the page | What it installs |
+|---|---|
+| **Install full version** | Standalone release build. No PC needed, updates on reopen via OTA. His normal app. |
+| **Install live version** + **Connect to PC** | Dev client. Changes appear while he uses it, shake to refresh. Needs `START-APP.cmd` running. |
 
-This is not a bug report, it is the current reality. On 2026-08-15 the FAST
-link was sent to the CEO while he was using DEV; it overwrote his dev client,
-Metro/shake/live-reload vanished, and he reasonably reported the app as
-broken. **Never send an install link without saying which app it replaces.**
+`/palforge/install-dev/` forwards here — that URL was handed to him in chat on
+2026-08-15, so **keep it alive, never delete it**. Its `manifest.plist` is
+still the live DEV manifest and must stay where it is.
 
-Making them coexist requires a dynamic `app.config.js` (per-profile bundle id
-+ name), a fresh EAS build, and the CEO's interactive Apple login once. Not
-done yet — it is in `AI_TODO.md`.
+### ⚠️ ONE APP SLOT — true until the next DEV build is made
+
+Historically both profiles produced the same app (`com.palandre.hatchlab`,
+name "Palforge", identical fingerprints), so **installing one deleted the
+other**. On 2026-08-15 the FAST link was sent to the CEO while he was using
+DEV; it wiped his dev client and he reasonably reported the app as broken.
+
+**Fixed in config, pending a build.** `mobile/app.config.js` now gives the
+`development` profile its own identity — name "Palforge DEV", bundle
+`com.palandre.hatchlab.dev`, scheme `palforge-dev` — while `preview` and
+`production` keep the exact identity the installed FAST app already has.
+
+Until the CEO runs `BUILD-DEV.cmd` (needs his Apple login once), the
+*installed* DEV build is still the old identity, so:
+
+- the two still share one icon slot — keep saying so when sending the link;
+- the dev server now emits `exp+palforge-dev://`, which the OLD dev app
+  cannot open. The hub page therefore carries a **"Connect with the old app"**
+  fallback using the previous `exp+palforge://` scheme. Delete that fallback
+  once he is on the new build.
 
 ---
 
@@ -98,8 +113,10 @@ In the **same commit**:
 
 1. `app/public/install/manifest.plist` — new FAST `.ipa` URL + version
 2. `app/public/install-dev/manifest.plist` — new DEV `.ipa` URL + version
+   (and its `bundle-identifier` becomes `com.palandre.hatchlab.dev` from the
+   next DEV build onward)
 3. `INSTALL-LINK.txt` + `PALFORGE-FAST-INSTALL.html` at the root
-4. Build ids in this file and in `README-PHONE.md`
+4. Build ids in the hub page footer, in this file, and in `README-PHONE.md`
 5. Deploy: copy the changed files into a `main` worktree and push — **there is
    no CI for Pages**, it only updates when someone pushes to `main`.
    Pushing to `main` needs the CEO's explicit go-ahead.
