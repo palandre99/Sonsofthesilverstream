@@ -138,10 +138,15 @@ eas update  →  Expo's update servers  →  app fetches on next launch
 Expo reads `app.json` first and passes it to `app.config.js`, which swaps the
 identity per build profile:
 
-| Resolved for | name | bundle id | scheme |
-|---|---|---|---|
-| `preview` / `production` | Palforge | `com.palandre.hatchlab` | `palforge` |
-| `development` **and local `expo start`** | Palforge DEV | `com.palandre.hatchlab.dev` | `palforge-dev` |
+| Resolved for | name | bundle id | scheme | icon |
+|---|---|---|---|---|
+| `preview` / `production` | Palforge | `com.palandre.hatchlab` | `palforge` | `icon.png` |
+| `development` **and local `expo start`** | Palforge DEV | `com.palandre.hatchlab.dev` | `palforge-dev` | `icon-dev.png` |
+
+The DEV icon is the normal mark with an orange **DEV** band across the bottom
+(full width, so iOS's corner mask never clips the lettering). Regenerate it
+with `python scripts/make-dev-icon.py` after any change to `icon.png`. Icons
+are native — **an OTA update can never change them**, only a rebuild can.
 
 Local `expo start` deliberately resolves to the DEV identity: the dev server
 must speak the same scheme as the installed dev client or the connect link

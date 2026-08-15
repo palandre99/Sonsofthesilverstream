@@ -28,10 +28,15 @@ module.exports = ({ config }) => {
     return config;
   }
 
+  // Its own icon too: with both apps on the home screen, identical artwork
+  // means the only difference is the label underneath — too easy to tap the
+  // wrong one. assets/icon-dev.png carries an orange DEV band.
+  // Regenerate with `python scripts/make-dev-icon.py` after any icon change.
   return {
     ...config,
     name: 'Palforge DEV',
     scheme: 'palforge-dev',
+    icon: './assets/icon-dev.png',
     ios: {
       ...config.ios,
       bundleIdentifier: 'com.palandre.hatchlab.dev',
@@ -39,6 +44,10 @@ module.exports = ({ config }) => {
     android: {
       ...config.android,
       package: 'com.palandre.hatchlab.dev',
+      adaptiveIcon: {
+        ...(config.android && config.android.adaptiveIcon),
+        foregroundImage: './assets/adaptive-icon-dev.png',
+      },
     },
   };
 };
