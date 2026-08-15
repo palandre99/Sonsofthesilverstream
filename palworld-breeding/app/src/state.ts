@@ -117,6 +117,24 @@ export function ownedAny(name: string): boolean {
   return !!(o && (o.m || o.f));
 }
 
+/* ---------------- player level ----------------
+ * Set by hand where suggestions are shown; used to judge which wild
+ * catches are actually within reach. Absent = read the box instead. */
+const PLAYER_LEVEL_KEY = 'palforge-player-level';
+
+export const playerLevel = signal<number | undefined>((() => {
+  const raw = Number(storage.get(PLAYER_LEVEL_KEY));
+  return Number.isFinite(raw) && raw >= 1 ? Math.min(100, Math.round(raw)) : undefined;
+})());
+
+export function setPlayerLevel(level: number | undefined): void {
+  const lv = level == null || Number.isNaN(level)
+    ? undefined
+    : Math.max(1, Math.min(100, Math.round(level)));
+  playerLevel.value = lv;
+  storage.set(PLAYER_LEVEL_KEY, lv != null ? String(lv) : '');
+}
+
 /* ---------------- draft goal list ----------------
  * The goal chips the player is composing on the Plan page. Lives here (not
  * in page state) so leaving the page and coming back — or editing from the

@@ -10,14 +10,17 @@
  *     helper registry and the aura claim in verification.json.
  */
 import React, { useEffect, useMemo, useState } from 'react';
-import { Image, Modal, Pressable, ScrollView, Text, View } from 'react-native';
+import { Image, Modal, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { T } from '../theme';
-import { Badge, Btn, PalIcon, s } from './kit';
+import { Badge, Btn, Card, PalIcon, s } from './kit';
 import { Icon } from './Icon';
 import { PalDetail } from './PalDetail';
 import { WORK_ICONS } from '../data/workIcons';
-import { breeding, engine, getBox, pals, ownedAny, workLabel } from '../store';
+import {
+  breeding, engine, getActiveProfile, getBox, getPlayerLevel, pals, ownedAny,
+  setProfileLevel, workLabel,
+} from '../store';
 import { WORK_KEYS } from './palFilters';
 import { HELPERS } from '../engine/helpers';
 import { derivations } from '../engine/planner';
@@ -112,12 +115,17 @@ function attainFactory(): (n: string) => Attain {
   // every reachable species — the sheet reacts to the world save for real
   // (CEO 2026-08-15: "it's not dynamic and reacting to the paldex")
   const derivs = box.length ? derivations(engine, new Set(box)) : new Map<string, Set<string>>();
-  // stage proxy: the highest wild level the player's own pals occupy —
-  // a box of Lv-40 spawns implies the player survives Lv ~50 zones
-  const stage = Math.max(15, ...box.map((n) => PALCALC_FACTS[n]?.maxWild ?? 0));
+  // the player's real level wins when they've set it on the profile
+  // (CEO 2026-08-15: "setting player level in the world save"); otherwise
+  // fall back to reading the box — the highest wild level their pals
+  // occupy, with slack because a box always lags the player
+  const explicit = getPlayerLevel();
+  const stage = explicit
+    ?? Math.max(15, ...box.map((n) => PALCALC_FACTS[n]?.maxWild ?? 0));
+  const slack = explicit != null ? 0 : 10;
   const catchable = (n: string): boolean => {
     const f = PALCALC_FACTS[n];
-    return !!pals[n]?.wild && f?.minWild != null && f.minWild <= stage + 10;
+    return !!pals[n]?.wild && f?.minWild != null && f.minWild <= stage + slack;
   };
   return (n: string): Attain => {
     if (ownedAny(n)) return { kind: 'have' };
@@ -174,13 +182,17 @@ export function SuggestedGoals({ visible, onClose, targets, onAdd, onRemove }: {
 }) {
   const [viewing, setViewing] = useState<string | null>(null);
   const [openJob, setOpenJob] = useState<string | null>(null);
+  const [levelDialog, setLevelDialog] = useState(false);
+  const [levelInput, setLevelInput] = useState('');
+  const playerLevel = getPlayerLevel();
   const best = useMemo(
     () => Object.fromEntries(WORK_KEYS.map((w) => [w, bestAt(w)])),
     [],
   );
   const fighters = useMemo(() => bestFighters(), []);
-  // recomputed each time the sheet opens — the box may have grown
-  const attain = useMemo(attainFactory, [visible]);
+  // recomputed each time the sheet opens — the box may have grown — and
+  // whenever the player (re)tells us their level
+  const attain = useMemo(attainFactory, [visible, playerLevel]);
   /** stage-aware ordering: 1-step breeds, then cheap catches, then unlocks */
   const byAttain = (names: string[]) =>
     [...names].sort((a, b) => attainScore(attain(a)) - attainScore(attain(b)));
@@ -389,11 +401,32 @@ export function SuggestedGoals({ visible, onClose, targets, onAdd, onRemove }: {
       onRequestClose={onClose}>
       <View style={{ flex: 1, backgroundColor: T.bg2 }}>
         <View style={{
-          flexDirection: 'row', alignItems: 'center', padding: 16,
+          padding: 16, paddingBottom: 10, gap: 6,
           borderBottomWidth: 1, borderBottomColor: T.line,
         }}>
-          <Text style={[s.h2, { flex: 1 }]}>Suggested goals</Text>
-          <Btn small label="Done" onPress={onClose} />
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Text style={[s.h2, { flex: 1 }]}>Suggested goals</Text>
+            <Btn small label="Done" onPress={onClose} />
+          </View>
+          {/* the sheet says what it's tuned to — and the level is settable
+              right where it matters (CEO: player level on the world save) */}
+          <Pressable hitSlop={4}
+            accessibilityLabel="Set your player level"
+            onPress={() => {
+              setLevelInput(playerLevel != null ? String(playerLevel) : '');
+              setLevelDialog(true);
+            }}
+            style={({ pressed }) => [{
+              flexDirection: 'row', alignItems: 'center', gap: 5,
+              alignSelf: 'flex-start', opacity: pressed ? 0.6 : 1,
+            }]}>
+            <Icon name="account-outline" size={14} color={T.accentInk} />
+            <Text style={{ color: T.accentInk, fontSize: 11.5, fontWeight: '700' }}>
+              {playerLevel != null
+                ? `Tuned to your level ${playerLevel} — tap to change`
+                : 'Tuned to your pals — tap to set your level for sharper picks'}
+            </Text>
+          </Pressable>
         </View>
         <ScrollView contentContainerStyle={{ padding: 14, gap: 12, paddingBottom: 40 }}>
 
@@ -658,6 +691,43 @@ export function SuggestedGoals({ visible, onClose, targets, onAdd, onRemove }: {
         </ScrollView>
       </View>
       {viewing && <PalDetail name={viewing} onClose={() => setViewing(null)} />}
+      {levelDialog && (
+        <Modal visible transparent animationType="fade"
+          onRequestClose={() => setLevelDialog(false)}>
+          <View style={{
+            flex: 1, backgroundColor: 'rgba(0,0,0,0.55)',
+            alignItems: 'center', justifyContent: 'center', padding: 28,
+          }}>
+            <Card style={{ width: '100%' }}>
+              <Text style={s.h2}>Your player level</Text>
+              <Text style={[s.body, { marginTop: 6 }]}>
+                Suggestions only recommend catches you can actually make.
+                Leave empty and the app reads your reach from your pals
+                instead. Saved on this world's profile.
+              </Text>
+              <TextInput
+                value={levelInput}
+                onChangeText={(t) => setLevelInput(t.replace(/[^0-9]/g, ''))}
+                placeholder="Level (1–100)"
+                placeholderTextColor={T.faint}
+                keyboardType="number-pad"
+                maxLength={3}
+                autoFocus
+                style={[s.search, { marginTop: 10 }]}
+              />
+              <View style={[s.wrap, { marginTop: 12 }]}>
+                <Btn primary label="Save"
+                  onPress={() => {
+                    void setProfileLevel(getActiveProfile().id,
+                      levelInput ? Number(levelInput) : undefined);
+                    setLevelDialog(false);
+                  }} />
+                <Btn label="Cancel" onPress={() => setLevelDialog(false)} />
+              </View>
+            </Card>
+          </View>
+        </Modal>
+      )}
     </Modal>
   );
 }

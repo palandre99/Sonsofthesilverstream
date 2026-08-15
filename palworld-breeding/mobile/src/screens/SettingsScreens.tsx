@@ -13,7 +13,8 @@ import { Image } from 'react-native';
 const LOGO = require('../../assets/splash-icon.png');
 import {
   createProfile, deleteProfile, getActiveProfile, getProfiles, profileStats,
-  renameProfile, switchProfile, useAppVersion, type ProfileStats,
+  renameProfile, setProfileLevel, switchProfile, useAppVersion,
+  type ProfileStats,
 } from '../store';
 
 export function ProfilesScreen() {
@@ -34,6 +35,7 @@ export function ProfilesScreen() {
   const [newName, setNewName] = useState('');
   const [managing, setManaging] = useState<{ id: string; name: string } | null>(null);
   const [editName, setEditName] = useState('');
+  const [editLevel, setEditLevel] = useState('');
   const [armDelete, setArmDelete] = useState(false);
   const active = getActiveProfile();
 
@@ -71,6 +73,7 @@ export function ProfilesScreen() {
                   }}>{p.name}</Text>
                   {stats[p.id] && (
                     <Text style={{ color: T.faint, fontSize: 11 }}>
+                      {p.playerLevel != null ? `Lv ${p.playerLevel} · ` : ''}
                       {stats[p.id].owned
                         ? `${stats[p.id].owned} pals`
                         : 'empty'}
@@ -85,6 +88,7 @@ export function ProfilesScreen() {
                 onPress={() => {
                   void Haptics.selectionAsync();
                   setEditName(p.name);
+                  setEditLevel(p.playerLevel != null ? String(p.playerLevel) : '');
                   setArmDelete(false);
                   setManaging({ id: p.id, name: p.name });
                 }}
@@ -120,10 +124,26 @@ export function ProfilesScreen() {
                 autoFocus
                 style={[s.search, { marginTop: 12 }]}
               />
+              <Text style={[s.body, { marginTop: 12, fontSize: 12.5 }]}>
+                Your level in this world — suggestions only recommend catches
+                you can actually make. Leave empty and the app reads it from
+                your pals instead.
+              </Text>
+              <TextInput
+                value={editLevel}
+                onChangeText={(t) => setEditLevel(t.replace(/[^0-9]/g, ''))}
+                placeholder="Player level (1–100)"
+                placeholderTextColor={T.faint}
+                keyboardType="number-pad"
+                maxLength={3}
+                style={[s.search, { marginTop: 6 }]}
+              />
               <View style={[s.wrap, { marginTop: 12 }]}>
-                <Btn primary label="Save name"
+                <Btn primary label="Save"
                   onPress={() => {
                     void renameProfile(managing.id, editName);
+                    void setProfileLevel(managing.id,
+                      editLevel ? Number(editLevel) : undefined);
                     setManaging(null);
                   }} />
                 <Btn label="Cancel" onPress={() => setManaging(null)} />

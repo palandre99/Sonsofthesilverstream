@@ -140,7 +140,14 @@ export function useAppVersion(): number {
  * The 'default' profile uses the ORIGINAL storage keys so nobody's data is
  * lost by this feature appearing. */
 
-export interface Profile { id: string; name: string }
+export interface Profile {
+  id: string;
+  name: string;
+  /** the player's level in this world — set by hand on the Profiles screen;
+   * suggestions use it to judge what's actually catchable. Absent = the app
+   * falls back to reading the box (highest wild level among owned pals). */
+  playerLevel?: number;
+}
 
 const PROFILES_KEY = 'palforge-profiles-v1';
 let profiles: Profile[] = [{ id: 'default', name: 'My world' }];
@@ -176,6 +183,18 @@ export async function createProfile(name: string): Promise<void> {
 
 export async function renameProfile(id: string, name: string): Promise<void> {
   profiles = profiles.map((p) => (p.id === id ? { ...p, name: name.trim() || p.name } : p));
+  await persistProfiles();
+  emit();
+}
+
+/** The active profile's player level, if the player has told us. */
+export const getPlayerLevel = (): number | undefined => getActiveProfile().playerLevel;
+
+export async function setProfileLevel(id: string, level: number | undefined): Promise<void> {
+  const lv = level == null || Number.isNaN(level)
+    ? undefined
+    : Math.max(1, Math.min(100, Math.round(level)));
+  profiles = profiles.map((p) => (p.id === id ? { ...p, playerLevel: lv } : p));
   await persistProfiles();
   emit();
 }

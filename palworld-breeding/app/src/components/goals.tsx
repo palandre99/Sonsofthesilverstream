@@ -4,7 +4,9 @@
  * saddle levels, utility squads from partner-skill text, dynamic per-job
  * lists — every chip stage-aware from THIS box via one derivations pass. */
 import { useEffect, useMemo, useState } from 'preact/hooks';
-import { box, engine, breedingRaw, ownedAny, pals } from '../state';
+import {
+  box, engine, breedingRaw, ownedAny, pals, playerLevel, setPlayerLevel,
+} from '../state';
 import { PalIcon } from './shared';
 import { derivations } from '../engine/planner';
 import { HELPERS } from '../engine/helpers';
@@ -43,10 +45,15 @@ function attainFactory(): (n: string) => Attain {
   const e = engine;
   const derivs = e && owned.length
     ? derivations(e, new Set(owned)) : new Map<string, Set<string>>();
-  const stage = Math.max(15, ...owned.map((n) => PALCALC_FACTS[n]?.maxWild ?? 0));
+  // the player's real level wins when they've set it; otherwise read the
+  // box (highest wild level among owned pals) with slack
+  const explicit = playerLevel.value;
+  const stage = explicit
+    ?? Math.max(15, ...owned.map((n) => PALCALC_FACTS[n]?.maxWild ?? 0));
+  const slack = explicit != null ? 0 : 10;
   const catchable = (n: string): boolean => {
     const f = PALCALC_FACTS[n];
-    return !!pals.value[n]?.wild && f?.minWild != null && f.minWild <= stage + 10;
+    return !!pals.value[n]?.wild && f?.minWild != null && f.minWild <= stage + slack;
   };
   return (n: string): Attain => {
     if (ownedAny(n)) return { kind: 'have' };
@@ -144,7 +151,8 @@ export function GoalsSheet({ open, onClose, targets, onAdd, onRemove }: {
   onRemove: (names: string[]) => void;
 }) {
   const [expanded, setExpanded] = useState<string | null>(null);
-  const attain = useMemo(attainFactory, [open]);
+  const lvl = playerLevel.value;
+  const attain = useMemo(attainFactory, [open, lvl]);
   const fighters = useMemo(() => bestFighters(), [open]);
   const best = useMemo(
     () => Object.fromEntries(WORK_KEYS.map((w) => [w, bestAt(w)])), [open]);
@@ -279,6 +287,25 @@ export function GoalsSheet({ open, onClose, targets, onAdd, onRemove }: {
           <h2 style={{ margin: 0, flex: 1 }}>Suggested goals</h2>
           <button class="btn sm" onClick={onClose}>Done</button>
         </div>
+        <label style={{
+          display: 'flex', alignItems: 'center', gap: '6px',
+          color: 'var(--accent-ink, var(--accent))', fontSize: '11.5px', fontWeight: 700,
+        }}>
+          {lvl != null
+            ? `Tuned to your level ${lvl}`
+            : 'Tuned to your pals — set your level for sharper picks:'}
+          <input type="number" min={1} max={100} value={lvl ?? ''}
+            aria-label="Your player level"
+            onChange={(e) => {
+              const v = (e.currentTarget as HTMLInputElement).value;
+              setPlayerLevel(v ? Number(v) : undefined);
+            }}
+            style={{
+              width: '64px', padding: '2px 6px', borderRadius: '8px',
+              border: '1px solid var(--line)', background: 'var(--surface)',
+              color: 'inherit', fontSize: '12px',
+            }} />
+        </label>
 
         <Section id="cake" title="Cake supply" cap={4}
           blurb="The four ranch pals that feed every cake — eggs, milk, honey, berries."
