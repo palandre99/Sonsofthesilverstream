@@ -58,7 +58,9 @@ Add everything you find; finding nothing means you didn't look.*
 - [ ] **On-device verification pass** once the dev build installs: planner
       speed on hardware (the 27-target plan), list scrolling with 298
       icons, haptics, safe areas, OTA round-trip. Fix what's found.
-- [ ] **Mobile: per-goal progress bars** on the Planner (web parity).
+- [x] Mobile per-goal progress bars: ALREADY SHIPPED (verified in code
+      2026-08-15 ~23:05 — PlannerScreen "Goal progress" card renders real
+      bars with done/total). Stale queue item, reconciled.
 - [ ] **Mobile: My Box JSON backup** import/export (web parity) — the CEO
       should be able to move his box between phone and website.
 - [ ] **Mobile: Paldex work-suitability filter** (web parity).
@@ -91,7 +93,9 @@ Add everything you find; finding nothing means you didn't look.*
 - [x] 2026-08-15: Paldex list taps while keyboard open (keyboardShouldPersistTaps).
 - [x] 2026-08-15 ~19:20 Mobile Calculator: ✕ badge clears a picked parent,
       middle icon swaps both when set. Shipped + OTA'd both.
-- [ ] Mobile: picker modals should show recently-picked pals first.
+- [x] Mobile picker recents: ALREADY SHIPPED (verified in code 2026-08-15
+      ~23:05 — PalPicker shows a "Recent" section, session cache in kit).
+      Stale queue item, reconciled.
 - [x] 2026-08-15 ~19:56 Planner asks before replacing an unfinished plan with
       different goals (2128ef3). Shipped + OTA'd both. (Reconciled 21:50.)
 - [x] 2026-08-15 ~19:15 Planner phases: completed phases fold to one line,
@@ -518,3 +522,21 @@ below ships on BOTH platforms.*
       is the ONLY lane until his sign-off: E1 ✓, E3–E11 in order, then
       endless polish passes (deep-eval with the previewer, micro-QoL,
       smarter engine iterations). E2 and all other tabs wait.
+
+### E13 polish-lane findings (hostile deep-eval passes, ongoing)
+- [x] 2026-08-15 ~23:10 CHECKLIST vs PLAN DISAGREEMENT (found + fixed
+      same pass): the cake checklist said "Berries: NEED Caprity" while
+      Caprity was a goal of the very plan on screen. It now sees
+      plan-bred producers: "Berries — Caprity hatches in Phase 2"
+      (plain badge, tappable). Mobile-only fix; eye-verified via HMR.
+- [ ] Late-phase helper copy is wrong-headed: an accelerator arriving in
+      the LAST phase ("Braloha PHASE 14 — do that branch first so it
+      helps with everything after") accelerates nothing. When a helper's
+      phase is past ~half the plan, the card should say so honestly and
+      offer the catch route instead (wild data exists). Engine change
+      (helpers.ts advice copy) — mirror both + gates.
+- [ ] Web parity gap: the cake-ingredient checklist (Eggs/Milk/Honey/
+      Berries badges) exists only on mobile — web's "Make it faster" has
+      the totals sentence but no checklist. Port when the web pass comes.
+- [ ] "planned 2026-08-15" stat tile shows a raw date — could read
+      "planned today · 22:40" in the player's language. Micro-polish.

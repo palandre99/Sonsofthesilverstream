@@ -352,14 +352,26 @@ export function PlannerScreen() {
       { item: 'Honey', label: 'Honey' },
       { item: 'Red Berries', label: 'Berries' },
     ];
+    // a producer this plan already breeds counts as coming supply — the
+    // checklist must never say "need Caprity" while Caprity sits two cards
+    // up as a goal of the same plan (hostile-review find, 2026-08-15)
+    const bredPhase = new Map<string, number>();
+    for (const st of plan?.steps ?? []) {
+      if (!bredPhase.has(st.child)) bredPhase.set(st.child, st.wave);
+    }
     return wants.map(({ item, label }) => {
       const producers = Object.keys(pals)
         .filter((n) => (pals[n].ranch_produce ?? []).includes(item));
       const ownedProducer = producers.find(ownedAny);
-      return { label, ownedProducer, best: producers[0] };
+      const planned = producers.find((n) => bredPhase.has(n));
+      return {
+        label, ownedProducer, best: producers[0],
+        planned,
+        plannedPhase: planned ? bredPhase.get(planned) : undefined,
+      };
     });
     // box changes flow through useAppVersion re-renders
-  }, [box]);
+  }, [box, plan]);
 
   return (
     <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
@@ -572,11 +584,16 @@ export function PlannerScreen() {
               <View style={[s.wrap]}>
                 {cakeSupply.map((c) => (
                   <Pressable key={c.label} disabled={!!c.ownedProducer}
-                    onPress={() => c.best && setViewing(c.best)}>
-                    <Badge kind={c.ownedProducer ? 'ok' : 'warn'}>
+                    onPress={() => {
+                      const show = c.ownedProducer ?? c.planned ?? c.best;
+                      if (show) setViewing(show);
+                    }}>
+                    <Badge kind={c.ownedProducer ? 'ok' : c.planned ? 'plain' : 'warn'}>
                       {c.ownedProducer
                         ? `${c.label} ✓ ${c.ownedProducer}`
-                        : `${c.label}: need ${c.best ?? '?'}`}
+                        : c.planned
+                          ? `${c.label} — ${c.planned} hatches in Phase ${c.plannedPhase}`
+                          : `${c.label}: need ${c.best ?? '?'}`}
                     </Badge>
                   </Pressable>
                 ))}
