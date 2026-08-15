@@ -12,16 +12,19 @@ completely fine.
 
 ## "It just snap opens like a normal app — no shake, no bundling"
 
-**Cause:** the FAST (preview) build is installed. It is a Release build: no
-Metro, no dev menu, no shake-to-refresh, by design. Almost always this means a
-FAST install link was opened while the DEV app was in use — **installing one
-deletes the other** (same bundle id, identical fingerprints, one iOS app slot).
+**Cause:** he opened the FULL app, not the live one. The full build is a
+Release build — no Metro, no dev menu, no shake-to-refresh, by design. Check
+the icon: the live one carries an orange **DEV** band.
 
-**Fix:** reinstall the DEV app from the install-dev link in `01_LINKS.md`,
-with `START-APP.cmd` already running. Then tap **Connect to PC**.
+**Fix:** open **Palforge DEV** with `START-APP.cmd` running, or reinstall it
+from the hub in `01_LINKS.md` and tap **Connect to PC**.
 
-**Prevention:** never send an install link without stating which app it
-replaces. This exact mistake cost a full session on 2026-08-15.
+**Historical cause (fixed 2026-08-15):** the two builds once shared a bundle
+id, so installing the full app silently **deleted** the dev client — which is
+exactly how this was first reported. They have separate ids now
+(`mobile/app.config.js`). If this symptom ever returns with the DEV app
+*missing entirely*, suspect that split has regressed and verify the bundle id
+against the built `.ipa` — the check is in `01_LINKS.md`.
 
 ---
 

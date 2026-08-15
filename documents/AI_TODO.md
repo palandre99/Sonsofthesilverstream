@@ -113,11 +113,18 @@ Add everything you find; finding nothing means you didn't look.*
 - [ ] Web parity for the in-game-style info card (stats icons, food
       drumsticks, drops, boss map panel).
 
-- [ ] Verify the Pages deploy at /Sonsofthesilverstream/hatchlab/ (SW scope,
-      icons, fonts, offline) once DNS/CDN settles; add the link to the
-      repo README + root README-PHONE.
-- [ ] Decide the final product name with the CEO before any promotion
-      ("HatchLab" is a working title; check collisions then).
+- [x] 2026-08-15: Pages deploy verified live at **/Sonsofthesilverstream/palforge/**
+      (not `/hatchlab/` — that path was never used). Boots, renders, navigates,
+      no console errors; assets 200. Linked from README-PHONE + the install hub.
+      Root cause of the blank screen it shipped with: absolute Vite base — see
+      `06_TROUBLESHOOTING.md`.
+- [x] Name decided by the CEO 2026-08-15: **Palforge**. "HatchLab" is dead as a
+      product name — it survives only as the EAS slug/bundle id
+      (`@palandre99/hatchlab`, `com.palandre.hatchlab`), which cannot change
+      without orphaning the installed apps. Do not "fix" those to match.
+- [ ] Offline/PWA pass on the live deploy: service-worker scope, icons, fonts,
+      second-visit offline load. The SW is regenerated per build with a content
+      hash; nobody has yet confirmed offline behaviour on the CEO's phone.
 
 ## QUALITY / ENGINEERING
 

@@ -44,7 +44,7 @@ box, and nothing is verified to this standard.
 | Target | Folder | Stack | Status |
 |---|---|---|---|
 | iPhone app (**priority**) | `palworld-breeding/mobile/` | Expo SDK 54, RN 0.81, TS | All 6 modules built; first dev build 2026-08-14 |
-| Website / PWA | `palworld-breeding/app/` | Vite, Preact, TS | Complete; 62 tests; offline-capable |
+| Website / PWA | `palworld-breeding/app/` | Vite, Preact, TS | Complete; 64 tests; offline-capable |
 | Reference + pipeline | `palworld-breeding/` (py, tools, guide) | Python 3 stdlib | Frozen as oracle + data refresh path |
 
 One engine, copied verbatim between `app/src/engine/` and
@@ -53,8 +53,10 @@ change one copy you change both and re-run the oracle suite.
 
 ## The data (all versioned, all sourced)
 
-`palworld-breeding/data/`: `breeding_1_0.json` (CombiRanks, 134 unique +
-1 gender-locked combo, pool exclusions), `pals_1_0.json` (stats, work,
+`palworld-breeding/data/`: `breeding_1_0.json` (CombiRanks, 134 unique combos,
+pool exclusions, and the single gender-locked pair — Katress×Wixen — stored as
+**2 directional entries**, since each direction yields a different child:
+Katress♀×Wixen♂ → Katress Ignis, Wixen♀×Katress♂ → Wixen Noct), `pals_1_0.json` (stats, work,
 spawns), `passives_1_0.json` (114 passives with tiers/exclusivity),
 `oracle_pairs.json.gz` (the 44,851-row test oracle), `verification.json`
 (29 sourced claims). Regenerate after a game patch with
@@ -65,7 +67,7 @@ any mechanic change.
 ## Quality gates (all must be green before "done")
 
 ```
-cd palworld-breeding/app    && npx vitest run     # 62 tests, oracle replay exact
+cd palworld-breeding/app    && npx vitest run     # 64 tests, oracle replay exact
 cd palworld-breeding/app    && npm run build      # typecheck + PWA + sw.js
 cd palworld-breeding/mobile && npx tsc --noEmit   # native app typecheck
 ```
@@ -81,10 +83,12 @@ language, `01_LINKS.md` in ours): `BUILD-DEV.cmd` (EAS build),
 progress reports in plain language and clicks things. He never runs
 terminals by hand beyond these.
 
-**He owns the app on his phone, and there is only ONE app slot.** The DEV
-build (live reload) and the FAST build (standalone) share a bundle id, so
-installing one deletes the other. Never send him an install link without
-saying which app it replaces — see `01_LINKS.md`.
+**He has BOTH apps on his phone: "Palforge" (full) and "Palforge DEV" (live,
+orange DEV badge).** They have separate bundle ids since 2026-08-15, so
+installing one no longer deletes the other. That separation lives in
+`mobile/app.config.js` — if a change ever collapses it back to one bundle id,
+the app-deleting bug returns. Re-verify on every DEV build; check in
+`01_LINKS.md`.
 
 ## History you should not re-litigate
 

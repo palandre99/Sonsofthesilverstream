@@ -1,8 +1,22 @@
-<title>HatchLab Master Plan</title>
+<title>Palforge — archived v1 build plan</title>
 
-# HatchLab — Master Plan
+# ⚠️ SUPERSEDED — archived v1 build plan
 
-*Working title — final name is Pål-Andre's call. Candidates: HatchLab, EggWorks, BreedPath, Palcubator.*
+**Do not plan from this file.** It is kept only as the historical record of the
+M0–M6 web-app build, which is complete. It predates the iPhone app, the
+Palforge name, and the companion-app strategy.
+
+- **Canonical plan / vision:** `../../documents/04_PRODUCT_BLUEPRINT.md`
+- **Current state:** `../../documents/02_PROGRESS.md`
+- **What to work on:** `../../documents/AI_TODO.md`
+
+The name question below is **settled: the product is Palforge** (CEO,
+2026-08-15). "HatchLab" survives only in identifiers that cannot change
+without orphaning installed apps (EAS slug, bundle id).
+
+---
+
+# HatchLab — Master Plan (historical)
 
 **Mission:** build the best Palworld breeding app on the web — provably correct, genuinely useful, beautiful — then expand into the definitive Palworld companion (map, spawns, and more).
 

@@ -1,4 +1,10 @@
-# HatchLab — Palworld 1.0 breeding, solved
+# Palforge — Palworld 1.0 breeding, solved
+
+*"HatchLab" was the working title. The product is **Palforge** (CEO decision,
+2026-08-15). The old name survives only in identifiers that cannot change
+without orphaning installed apps: the EAS slug `@palandre99/hatchlab`, the
+bundle id `com.palandre.hatchlab`, and `dist/HatchLab-app.html`. Leave those
+alone. Canonical plan: `../documents/04_PRODUCT_BLUEPRINT.md`.*
 
 The best Palworld breeding app on the web: a provably-correct engine, a
 versioned 1.0 dataset, and **the app** (`app/`) — an installable, offline-first
@@ -8,13 +14,15 @@ progress), Odds Lab (passive/IV/mutation probabilities from the game's own
 inheritance weights), Paldex, My Box (gendered ownership, import/export) and a
 Reference handbook with 29 verified claims.
 
-All six milestones (M0–M6) are done — see [`docs/PLAN.md`](docs/PLAN.md).
-Left before public launch: the name decision + a Pages deploy + an on-device pass.
+All six milestones (M0–M6) are done. Shipped since: the iPhone app
+(`mobile/`, Expo SDK 54) as two coexisting builds, and the PWA live at
+https://palandre99.github.io/Sonsofthesilverstream/palforge/ .
+Current state and queue: `../documents/02_PROGRESS.md`, `../documents/AI_TODO.md`.
 
 ```bash
 cd app
 npm install
-npm test           # 60 tests incl. the exact 44,851-row oracle replay
+npm test           # 64 tests incl. the exact 44,851-row oracle replay
 npm run build      # dist/ — static PWA, deployable anywhere
 npm run build:single  # dist/HatchLab-app.html — the whole app as ONE file
 ```
@@ -50,11 +58,11 @@ both are plain text files.
 | `guide/artifact.html` | the same guide as one standalone file (everything embedded) |
 | `guide/icons/` | 298 real game icons (github.com/dbgoodm/PalDex, game dump) |
 | `guide/fonts/` | Baloo 2 + Manrope, subset woff2 (OFL, via google/fonts) |
-| `data/breeding_1_0.json` | CombiRanks, 134 unique + 2 gender-locked combos, pool exclusions |
+| `data/breeding_1_0.json` | CombiRanks, 134 unique combos, pool exclusions, and the single gender-locked pair stored as 2 directional entries (Katress♀×Wixen♂ → Katress Ignis; Wixen♀×Katress♂ → Wixen Noct) |
 | `data/pals_1_0.json` | stats, work suitabilities, partner skills, spawn info per species |
 | `data/oracle_pairs.json.gz` | the oracle: all 44,851 1.0 results (palcalc, generated from game files) |
-| `data/verification.json` | 23 cross-checked claims with status and sources |
-| `docs/PLAN.md` | the master plan for the public app |
+| `data/verification.json` | 29 cross-checked claims with status and sources |
+| `docs/PLAN.md` | **superseded** — the archived v1 build plan. Canonical plan is `../documents/04_PRODUCT_BLUEPRINT.md` |
 | `tools/extract_from_kb.py` | regenerates the data files from beliarance/palworld-kb |
 | `tools/validate_against_palcalc.py` | replays the full oracle against the engine |
 | `tests/` | 10 tests: 31 known pairs + structural properties + full oracle replay |

@@ -25,23 +25,23 @@ build is only for changes to the icon, the app name, or phone permissions.
 **Lost the link?** Double-click `COPY-INSTALL-LINK.cmd`, or just ask Claude —
 it's saved in `documents/01_LINKS.md`.
 
-## 1. BUILD-DEV.cmd — run this once now (~15 min)
-Builds the **Palforge DEV** app for your phone in Expo's cloud.
+## 1. BUILD-DEV.cmd — you already ran this (15 Aug). Rarely needed again.
+Builds the app itself in Expo's cloud (~15 min).
 
-**Why you want to run it now:** it makes the live version a genuinely separate
-app with its own icon, so installing the full version stops deleting it. After
-this build you can keep both on the phone at the same time. Until then, it's
-one or the other.
+**You only need this for the app's icon, its name, or phone permissions.**
+Everything else — new screens, features, fixes — reaches you without a build
+(see §3). If Claude asks you to run it, he should tell you exactly why.
+
 - It asks *"Do you want to log in to your Apple account?"* → type `y`
 - Apple ID `palandre99@gmail.com` + your password (+ the 2FA code that pops up on your phone)
 - Every other question: just press **Enter**
 
-When it's triggered, watch it here — the **QR code** appears on the build page
-when it's done; scan it with your iPhone camera and the app installs:
+Watch progress here (it needs a login, so it's easier to just ask Claude):
 
 > https://expo.dev/accounts/palandre99/projects/hatchlab/builds
 
-After the icon is on your phone you never run this again.
+When it finishes, Claude updates the install page and you reinstall from the
+one link above — no QR codes, no logins.
 
 ## 2. START-APP.cmd — daily driver
 Starts the dev server in **tunnel mode: works on WiFi AND 5G**, anywhere.

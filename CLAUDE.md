@@ -23,15 +23,79 @@ code), `03_MARKET_RESEARCH.md` + `04_PRODUCT_BLUEPRINT.md` (the master plan).
 
 ## WHAT THIS IS
 
-Palforge: the best Palworld 1.0 breeding companion. One oracle-tested
+Palforge: **the definitive Palworld companion app.** One oracle-tested
 TypeScript engine, three delivery targets:
 
 1. **iPhone app** (`palworld-breeding/mobile/`) — Expo SDK 54 / RN. FIRST
-   PRIORITY. Installed on the CEO's phone via EAS dev builds.
+   PRIORITY. Installed on the CEO's phone as two coexisting builds.
 2. **Website / PWA** (`palworld-breeding/app/`) — Vite + Preact. Same
-   features, deployed to GitHub Pages + a claude.ai artifact.
+   features, live at `/Sonsofthesilverstream/palforge/`.
 3. **Reference implementation** (`palworld-breeding/planner.py` + `guide/`)
    — the Python original; data pipeline lives in `palworld-breeding/tools/`.
+
+## SCOPE — breeding is phase one of something much bigger
+
+**The CEO's framing (2026-08-15), and it governs every decision:**
+
+> "Many features will come. We now focus on the breeding part of the app and
+> will perfect it, then make all other stuff. This is just one small part of a
+> massive project."
+
+So:
+
+- **NOW: perfect breeding.** Calculator, Route Planner, Odds Lab, Paldex, My
+  Box, Reference. Depth over breadth. A breeding feature that is 90% good is
+  not done — polish it until it is the best in the world, then move on.
+- **LATER: the full companion.** Map (everything in the game, not just pals),
+  Tools & Items, Bosses & Raids, and more. The navigation already reserves
+  these domains; unbuilt ones ship as designed coming-soon screens.
+- **Do NOT start new domains** unless the CEO redirects. Widening the surface
+  while breeding is imperfect is the failure mode this scope exists to prevent.
+
+**The strategic model is Dododex** (`04_PRODUCT_BLUEPRINT.md` §1, a live
+page-by-page dissection). It launched as an ARK taming calculator in 2016 and
+became a 12M-download companion — **without ever demoting the calculator**.
+Our breeding suite is that calculator: everything else attaches to it as
+context, never the other way around. Read §1 before proposing structural change.
+
+## THE QUALITY BAR — what "10/10" means here
+
+The CEO ships nothing average, and he judges by looking at it. The bar is
+**"best Palworld companion by an insane margin"**, not "works".
+
+1. **Provable over plausible.** Every number is datamined or explicitly
+   labelled community/wiki-measured, with provenance in `verification.json`.
+   The species engine replays all 44,851 game-file outcomes with zero
+   mismatches. That guarantee is the product — never weaken it for a feature.
+2. **AAA polish, not fan-made.** `04_PRODUCT_BLUEPRINT.md` §5 lists 15
+   checkable criteria separating AAA from fan-made. Use it as a checklist on
+   any UI work; it is the concrete definition of the bar.
+3. **A player's words, never a developer's.** No jargon in user-visible copy
+   ("tie-break" was banned by name). Every number carries meaning — rank
+   context, not a raw figure.
+4. **It must feel good on the phone.** No frozen JS thread, no pop-in, no
+   wrapped labels, correct safe areas. Measured, not assumed: a planner
+   fixpoint once froze the thread for 4437 ms and had to be re-architected.
+5. **Nothing half-built is presented as finished.** Unbuilt sections are
+   designed coming-soon screens, not dead taps.
+
+## METHOD — how to actually hit that bar
+
+- **Verify with your own eyes.** Render the app and look at it before claiming
+  a UI change works (`08_TOOLS_AND_COMMANDS.md`). The CEO caught a bug that
+  text-only checking missed and made this a standing order. Kill the QA server
+  afterwards.
+- **Test the thing you just fixed, in the state the CEO will meet it.** Two
+  bugs shipped on 2026-08-15 because existence was confirmed instead of
+  behaviour: a Connect link whose scheme no app registered, and a website
+  built for the wrong path. Both were checkable in seconds.
+- **Diagnose before blaming the code.** Every "the app is broken" report so
+  far was environment or delivery. `06_TROUBLESHOOTING.md` first.
+- **Be your own hostile reviewer.** Re-read your diff looking for what a
+  senior engineer would reject. Findings have been consistently real.
+- **Never guess a value you can read.** Schemes come from the built `.ipa`,
+  test counts from the runner, line counts from the file. Guessing is how
+  wrong facts get into docs and cost the next worker a day.
 
 ## THE WORK LOOP (non-negotiable)
 
@@ -97,8 +161,13 @@ TypeScript engine, three delivery targets:
   Don't remove that; orphaned Metros once ate ~7.5 CPU cores for 11 hours.
 - Repo = this folder. Branch `claude/palworld-breeding-guide-i9yyuz`; the
   `main` branch is the CEO's live website (GitHub Pages, legacy build from
-  main/root) — the web app deploys to `hatchlab/` on main. NEVER touch
-  main's root `index.html`.
+  main/root) — the web app deploys to **`palforge/` on main** (never
+  `hatchlab/`; that path was never used). NEVER touch main's root
+  `index.html`. No CI deploys Pages — it updates only on a push to `main`,
+  and pushing to `main` needs the CEO's explicit go-ahead.
+- **Vite `base` must stay relative (`./`).** The site is served from a
+  subfolder; an absolute `/` base makes it request assets at the domain root
+  and the CEO gets a black screen. Safe because routing is hash-based.
 - CI: `.github/workflows/ci.yml` runs the oracle gate on every push.
 - **babel-preset-expo must stay pinned to the SDK-54 line (54.0.10, exact).**
   Installing "latest" (57.x, a future-SDK preset) ships #private fields and

@@ -34,11 +34,9 @@ reaches the phone, which had been silently broken.
 - **App identity split** (`mobile/app.config.js`): `development` and local
   `expo start` resolve to Palforge DEV / `com.palandre.hatchlab.dev` /
   `palforge-dev`; `preview` + `production` keep the FAST identity untouched.
-  Verified with `expo config` on both profiles, mobile tsc clean.
-  **Takes effect only after the CEO runs `BUILD-DEV.cmd`** (new bundle id ⇒
-  new iOS credentials ⇒ his Apple login). Until then the installed pair still
-  shares one icon slot, and the hub carries a legacy connect link for the
-  pre-split dev client.
+  Verified with `expo config` on both profiles, mobile tsc clean. Required a
+  rebuild to take effect (new bundle id ⇒ new iOS credentials ⇒ the CEO's
+  Apple login) — he ran it the same afternoon; see the coexistence entry below.
 - **Single install hub** at `/palforge/install/` (CEO's request — full version
   + live version + Connect to PC + **the website** on one page);
   `/palforge/install-dev/` forwards to it. Live and verified, eye-checked at
@@ -136,7 +134,7 @@ safe-area on the CEO's phone model, OTA update round-trip.
 ## Website / PWA (`app/`)
 
 Complete and hardened: M0–M6 all shipped 2026-08-14; adversarial review
-(2 criticals, 10 should-fixes, 14 minors) fully fixed; 62 vitest tests
+(2 criticals, 10 should-fixes, 14 minors) fully fixed; 64 vitest tests
 green incl. exact 44,851-row oracle replay + symmetry sweep; CI on every
 push; installable PWA with full-content-hashed service worker; single-file
 build (6.4 MB) published as artifact
