@@ -3,7 +3,7 @@
     "name": "Palforge",
     "slug": "hatchlab",
     "scheme": "palforge",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
@@ -43,6 +43,10 @@
       }
     },
     "owner": "palandre99",
-    "jsEngine": "hermes"
+    "jsEngine": "hermes",
+    "plugins": [
+      "expo-localization",
+      "expo-notifications"
+    ]
   }
 }
