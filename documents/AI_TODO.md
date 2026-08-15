@@ -372,6 +372,23 @@ quietly narrowed. Tick only when shipped AND eye-verified.*
 - [ ] C4e Everything data-backed: game dump for stats/work/partner skills;
       tier/meta claims labelled community-sourced with provenance.
 
+### C5. CEO FEEDBACK — evening 2026-08-15 (rarity design iterations)
+- [x] "Rarity colours terrible, not even the card coloured" → v2 dyed rows
+- [x] "NOT the list rows — the info card background" + "can't get back to
+      the pal card from calc/plan" → v3 atmosphere + Back-to-card chip
+- [x] "Renjishi can't be starter-blue; proper math" → v4 continuous ramp
+      over the game integer
+- [x] "Still temu; animation only on rarer stuff, more of it; not one flat
+      colour; ring on paldex portraits" → v5 drama tiers + two-tone + rings
+- [x] "Bubbles gone, fix it" → solid cardTint fix, OTA'd ~18:05
+- [x] "Legendary with Handiwork 6 max = data wrong?" → VERIFIED CORRECT
+      (paldb + wiki.gg agree; legendaries are combat pals, narrow work)
+- [x] "Should not suggest goals of stuff I have" → HAVE-IT/covered states
+- [ ] OPEN: rarity look still not CEO-approved as AAA — revisit polish after
+      the C4 engine work ("don't mind the color stuff now… come back to it")
+- [ ] Standing (restated 18:10): every piece of CEO feedback must land in
+      this doc — confirmed practice, keep it forever.
+
 ### D. Standing orders (restated by him at handover)
 - [ ] D1 Own deep internet research on EVERY competitor — including other
       games' companions — learn and beat them. AAA studio 10/10.
