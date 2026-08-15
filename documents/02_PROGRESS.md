@@ -34,9 +34,13 @@ channels, web deployed):
 - Aug-12 patch check: 1.0.3 is progression/resources/World Tree — no
   breeding changes; upstream dumps predate it; re-check weekly.
 
-Open (see AI_TODO ledger): web parity for stars/picker-v2/side-panel nav,
-"About the pal" flavor text (needs a verified source), rarity colors from
-the game palette research, profile-switch write race, mobile test harness.
+Later on 08-15 (same marathon): condensation stars AND About-the-pal
+bubbles shipped on BOTH platforms (272/299 game Paldex texts via wiki.gg,
+fetcher hardened after an adversarial review caught 3 markup-junk entries
+same day); web got spawn maps, rarity tints, sorting. Open (AI_TODO
+ledger): web PalPicker quick filters + side-panel nav, rarity colors from
+the game palette research, profile-switch write race, mobile test harness,
+27 pals without wiki About text (re-fetch weekly).
 
 ## iPhone app (`mobile/`) — the priority
 

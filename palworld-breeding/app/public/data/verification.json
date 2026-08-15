@@ -298,7 +298,7 @@
     {
       "claim": "Condensation: +5% HP/ATK/DEF per star (max +20%), partner skill level 1-5, every existing work suitability +1 at 4 stars",
       "verdict": "confirmed",
-      "evidence": "Cross-checked 2026-08-15 across palworld.wiki.gg Pal_Condensation, Fandom Pal Essence Condenser/Work Suitability, game8 and Nodecraft 1.0 condensation notes; all agree on the 1.0 numbers. Not yet datamined locally - wiki-verified, not game-dump-verified.",
+      "evidence": "Cross-checked 2026-08-15 across palworld.wiki.gg Pal_Condensation, Fandom Pal Essence Condenser/Work Suitability, game8 and Nodecraft 1.0 condensation notes; all agree on the 1.0 numbers. Not yet datamined locally - wiki-verified, not game-dump-verified. Display note: the app rounds boosted stats to the nearest whole number; whether the game floors or rounds its own display is unverified, so a 1-point display difference is possible.",
       "sources": [
         "palworld.wiki.gg/wiki/Pal_Condensation",
         "palworld.fandom.com/wiki/Pal_Essence_Condenser",
@@ -309,7 +309,7 @@
     {
       "claim": "Per-pal About texts are the game's own Paldex descriptions",
       "verdict": "confirmed",
-      "evidence": "Fetched 274/299 from palworld.wiki.gg Palpedia templates (the wiki mirrors the in-game Paldex text verbatim); wiki markup stripped, nothing paraphrased. 25 variant pages pending a second name-mapping pass — those pals simply show no About bubble until then.",
+      "evidence": "272/299 fetched from palworld.wiki.gg Palpedia templates (the wiki mirrors the in-game Paldex text). Honesty note: the first fetch shipped 3 entries with wiki markup (nested-template truncation) — caught by adversarial review 2026-08-15 same day; the fetcher now does balanced-brace extraction, strips comments/nowiki/inline templates, and REJECTS any text still containing markup. 27 pals have no clean wiki text (25 variant pages absent, 2 placeholder-only) — they show no About bubble rather than junk. Re-run the fetchers weekly.",
       "sources": [
         "palworld.wiki.gg per-pal pages (Palpedia template)",
         "tools/fetch_paldex_text.py"

@@ -23,7 +23,27 @@ OUT_WEB = ROOT / "app" / "public" / "data" / "about_1_0.json"
 UA = "Palforge-research/1.0 (Palworld companion app; contact palandre.99@gmail.com)"
 API = "https://palworld.wiki.gg/api.php?action=parse&prop=wikitext&format=json&page="
 
-PALPEDIA_RE = re.compile(r"\{\{Palpedia\|(.*?)\}\}", re.S)
+def extract_palpedia(wt: str) -> str | None:
+    """Balanced-brace extraction: nested templates like {{i|X}} must not
+    truncate the capture (they did — reviewer catch 2026-08-15)."""
+    start = wt.find("{{Palpedia|")
+    if start < 0:
+        return None
+    i = start + 2
+    depth = 1
+    while i < len(wt) - 1:
+        pair = wt[i:i + 2]
+        if pair == "{{":
+            depth += 1
+            i += 2
+        elif pair == "}}":
+            depth -= 1
+            if depth == 0:
+                return wt[start + len("{{Palpedia|"):i]
+            i += 2
+        else:
+            i += 1
+    return None
 
 
 def fetch(page: str) -> str | None:
@@ -35,16 +55,22 @@ def fetch(page: str) -> str | None:
     except Exception:
         return None
     wt = d.get("parse", {}).get("wikitext", {}).get("*", "")
-    m = PALPEDIA_RE.search(wt)
-    if not m:
+    text = extract_palpedia(wt)
+    if text is None:
         return None
-    text = m.group(1).strip()
-    # strip wiki markup: [[links|label]] -> label, [[link]] -> link, <br/> -> space
+    text = text.strip()
+    # strip wiki markup completely
+    text = re.sub(r"<!--.*?-->", "", text, flags=re.S)           # editor comments
+    text = re.sub(r"</?nowiki>", "", text)
+    text = re.sub(r"\{\{i\|([^}]*)\}\}", r"\1", text)          # inline template
     text = re.sub(r"\[\[(?:[^\]|]*\|)?([^\]]*)\]\]", r"\1", text)
     text = re.sub(r"<br\s*/?>", " ", text)
     text = re.sub(r"''+", "", text)
     text = re.sub(r"\s+", " ", text).strip()
-    return text or None
+    # junk gate: anything that still smells of markup is NOT user-ready
+    if not text or re.search(r"[{}<>]|\[\[|\]\]", text):
+        return None
+    return text
 
 
 def main() -> None:

@@ -361,7 +361,7 @@ export function PaldexScreen() {
         ListFooterComponent={
           <View style={[s.wrap, { justifyContent: 'center', paddingVertical: 14 }]}>
             <Btn small label="Import list…" onPress={() => setSheet('import')} />
-            <Btn small disabled={!ownedNames.length} label="Copy my list…"
+            <Btn small disabled={!ownedNames.length} label="Share my list…"
               onPress={() => {
                 // gender-suffixed lines — the exact format Import understands,
                 // so a collection moves between installs in two taps

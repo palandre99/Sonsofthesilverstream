@@ -71,7 +71,10 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
         </View>
 
         {ABOUT[name] && (
-          <Pressable onPress={() => setAboutOpen(!aboutOpen)} style={({ pressed }) => [{
+          <Pressable onPress={() => setAboutOpen(!aboutOpen)}
+            accessibilityRole="button"
+            accessibilityState={{ expanded: aboutOpen }}
+            style={({ pressed }) => [{
             marginTop: 14, backgroundColor: T.surface, borderWidth: 1,
             borderColor: pressed ? T.accent : T.line, borderRadius: 14,
             padding: 12, gap: 4,
@@ -86,7 +89,7 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
               numberOfLines={aboutOpen ? undefined : 2}>
               {ABOUT[name]}
             </Text>
-            {!aboutOpen && (
+            {!aboutOpen && ABOUT[name].length > 120 && (
               <Text style={{ color: T.accentInk, fontSize: 11, fontWeight: '700' }}>
                 tap to read more
               </Text>
@@ -109,6 +112,8 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
                     void Haptics.selectionAsync();
                     setStars(stars === n ? 0 : n);
                   }}
+                  accessibilityRole="button"
+                  accessibilityState={{ selected: stars >= n }}
                   accessibilityLabel={`${n} star${n === 1 ? '' : 's'} condensed`}>
                   <Icon name={stars >= n ? 'star' : 'star-outline'} size={20}
                     color={stars >= n ? T.gold : T.faint} />

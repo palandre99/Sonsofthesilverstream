@@ -192,7 +192,7 @@ loops all night INSIDE the Breeding + Paldex domain (his explicit scope).
 - [x] Stars on the pal card SHIPPED 2026-08-15 (~11:00): tappable 0-4 stars,
       stats +5%/star live, partner skill level x of 5, 4-star all-work note.
       Math wiki-verified (4 sources agree), recorded in verification.json,
-      labeled "wiki-verified, not game-dump-verified". Web parity pending.
+      labeled "wiki-verified, not game-dump-verified". Web parity SHIPPED later same day (994cbbc).
 - [ ] Standing: brutal AAA design pass, find hundreds of own improvements.
 - [ ] CEO caught the loop idle overnight — wakeups must be re-armed EVERY
       turn end, no exceptions.

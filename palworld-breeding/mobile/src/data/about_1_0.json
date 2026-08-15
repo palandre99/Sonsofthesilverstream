@@ -97,7 +97,6 @@
   "Gildane": "During the golden age of alchemy on the island, its ever-glowing golden fur was highly prized as a catalyst for transmuting gold. In time, a remarkable revelation was made: the same golden hue could be achieved simply by processing its mane.",
   "Gildra": "The golden, bandage-like organs covering its body are highly elastic. However, they are prone to tearing under extremely dry conditions, so daily moisture checks are absolutely essential.",
   "Gloopie": "Be sure to check your plans for the next day before falling asleep with this Pal. Its suction cups leave marks that look suspiciously like hickeys. One sleepy cuddle session could lead to some truly awkward misunderstandings.",
-  "Gloopie Primo": "<!-- Palpedia entry text Goes here. -->",
   "Gobfin": "Long ago, it was a large and powerful aquatic Pal. As food become scarce, it evolved to live on land. Since walking requires much energy, it gradually became smaller and is now a small and puny Pal.",
   "Gobfin Ignis": "Once upon a time, it was a giant and powerful aquatic Pal. However, with the dwindling availability of food, it ventured onto land. As a consequence of burning many calories to walk, it astonishingly awakened its power to control fire!",
   "Gorirat": "It beats the ground rhythmically to communicate with its comrades. The meaning of each rhythm differs by troop, but the distinction between them is still largely unknown.",
@@ -130,7 +129,7 @@
   "Katress Ignis": "Due to its upbringing, it no longer cares about whether its food is raw enough. This Pal stopped worrying about those details, and just prefers its food to be as spicy as possible. Not on good terms with Wixen Noct.",
   "Kelpsea": "Its personality changes depending on the quality of the water it was born into. Kelpsea born into polluted waters are generally ill-tempered and quickly become delinquents.",
   "Kelpsea Ignis": "Their personalities change depending on the temperature of the water where they were born. Kelpsea born in warm waters generally have a passionate, motivated personality.",
-  "Kikit": "A decade ago, Kikit soccer was popular. However, it quickly fell out of favor due to fierce opposition from the {{i|Free Pal Alliance",
+  "Kikit": "A decade ago, Kikit soccer was popular. However, it quickly fell out of favor due to fierce opposition from the Free Pal Alliance. Nevertheless, the Kikits themselves didn't mind because it helped shed their old carapace.",
   "Killamari": "It wraps itself around an enemy's head, sucking out their insides. Pal mummies are occasionally found, but these are in fact Killamari victims.",
   "Killamari Primo": "It sinks its fangs into the enemy's neck, draining every last drop of blood. When two Killamari Primos latch onto each other, they become locked in a relentless struggle-each trying to suck the other dry until one withers away.",
   "Kingpaca": "Melpaca serve this pal. Contests between Kingpaca offer up their vassals as a wager. Those seen alone are losers of such contests.",
@@ -274,7 +273,6 @@
   "Wumpo": "Researchers once tried to shave off its hair to reveal its true form. In the end, only hair was left, as if that was all there was to begin with.",
   "Wumpo Botan": "Researchers once tried to cut the grass off its body to reveal its true form. In the end, only grass was left, as if that was all there was to begin with.",
   "Xenogard": "Consumes information and turns it into energy. Regularly seems to be sending information to someone. - Hello? What was the message you just sent? I devoured it before checking.",
-  "Xenolord": "<nowiki>-Destination reached. Priority: Locate entity |Supersonic Dragon| -Note: Conquest deadline exceeded by <://Error_Code:126DC> years. -Update: No conquest traces found. Naturalization confirmed. Commence elimination protocol. -Staff Memo: Refrain from forgetting or consuming critical data!</nowiki>",
   "Xenovader": "Can send information and convert it into energy by forgetting it. Regularly seems to be sending information to someone. - Respond. Target located. Proceed to immediate destruction.",
   "Yakumo": "It has a strong sense of justice and despises evil. In the past they were faithful and loving companions to the islanders. Nowadays, Yakumos are hostile to humans wherever they spot them."
  },
@@ -287,6 +285,7 @@
   "Dandilord",
   "Eidrolon Ignis",
   "Elgrove Cryst",
+  "Gloopie Primo",
   "Knocklem Ignis",
   "Moldron Cryst",
   "Nitemary Botan",
@@ -303,6 +302,7 @@
   "Starryon Primo",
   "Tetroise Primo",
   "Univolt Cryst",
-  "Wistella"
+  "Wistella",
+  "Xenolord"
  ]
 }

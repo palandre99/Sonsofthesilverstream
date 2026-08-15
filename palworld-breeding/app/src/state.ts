@@ -149,6 +149,7 @@ export async function loadData(): Promise<void> {
     breeding: BreedingData; pals: { pals: Record<string, PalInfo> };
     icons: Record<string, string>; verification: { claims: never[] };
     passives: { passives: PassiveInfo[] };
+    about?: { about: Record<string, string> };
   } }).__HATCHLAB_EMBED;
   const [breeding, palsJson, icons, verif, passivesJson] = emb
     ? [emb.breeding, emb.pals, { files: emb.icons }, emb.verification, emb.passives]
@@ -167,11 +168,15 @@ export async function loadData(): Promise<void> {
   selfOnly.value = new Set(breeding.self_breed_only);
   pals.value = palsJson.pals;
   // non-blocking: the About texts are decoration, never gate the app
-  void fetch('data/about_1_0.json').then((r) => r.json())
-    .then((a) => {
-      aboutText.value = (a as { about?: Record<string, string> })?.about ?? {};
-    })
-    .catch(() => undefined);
+  if (emb?.about) {
+    aboutText.value = emb.about.about ?? {};
+  } else {
+    void fetch('data/about_1_0.json').then((r) => r.json())
+      .then((a) => {
+        aboutText.value = (a as { about?: Record<string, string> })?.about ?? {};
+      })
+      .catch(() => undefined);
+  }
   iconFiles.value = icons.files;
   try {
     // Object.hasOwn (not `in`): a saved key like "constructor" must not pass

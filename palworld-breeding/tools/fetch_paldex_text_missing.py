@@ -3,6 +3,7 @@
 ask the wiki's own search for the page title, then pull its Palpedia text.
 Merges results into about_1_0.json (both copies). Run after fetch_paldex_text."""
 import json
+import re
 import time
 import urllib.parse
 import urllib.request
@@ -26,7 +27,13 @@ def find_page(name: str) -> str | None:
     except Exception:
         return None
     hits = d.get("query", {}).get("search", [])
-    return hits[0]["title"] if hits else None
+    if not hits:
+        return None
+    title = hits[0]["title"]
+    # only accept a page that is plainly THIS pal — never store another
+    # pal's text under this name (reviewer catch 2026-08-15)
+    norm = lambda x: re.sub(r"[^a-z]", "", x.lower())
+    return title if norm(title) == norm(name) else None
 
 
 def main() -> None:

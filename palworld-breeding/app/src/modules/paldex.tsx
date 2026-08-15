@@ -242,7 +242,7 @@ function Drawer({ name, onClose }: { name: string; onClose: () => void }) {
       }
       if (e.key !== 'Tab' || !drawerRef.current) return;
       const focusables = drawerRef.current.querySelectorAll<HTMLElement>(
-        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+        'button, [href], input, select, textarea, summary, [tabindex]:not([tabindex="-1"])',
       );
       if (!focusables.length) return;
       const first = focusables[0];
@@ -263,11 +263,12 @@ function Drawer({ name, onClose }: { name: string; onClose: () => void }) {
     };
   }, [name, onClose]);
 
-  if (!p) return null;
-
-  // condensation preview (wiki-verified 1.0): +5% stats/star, skill level 1-5
+  // condensation preview (wiki-verified 1.0): +5% stats/star, skill level 1-5.
+  // Hooks BEFORE any conditional return (rules of hooks — reviewer catch).
   const [stars, setStars] = useState(0);
   useEffect(() => setStars(0), [name]);
+  if (!p) return null;
+
   const asChild = raw.unique_combos.filter((c) => c.child === name);
   const asParent = raw.unique_combos.filter((c) => c.parents.includes(name));
   const gendered = raw.gendered_combos.filter(
@@ -324,14 +325,14 @@ function Drawer({ name, onClose }: { name: string; onClose: () => void }) {
               <button key={n} class="starbtn" aria-label={`${n} star${n === 1 ? '' : 's'} condensed`}
                 style={{
                   background: 'none', border: 'none', cursor: 'pointer', padding: '2px',
-                  color: stars >= n ? '#E3B341' : 'var(--faint)', fontSize: '17px', lineHeight: 1,
+                  color: stars >= n ? 'var(--gold-ink)' : 'var(--faint)', fontSize: '17px', lineHeight: 1,
                 }}
                 onClick={() => setStars(stars === n ? 0 : n)}>
                 {stars >= n ? '★' : '☆'}
               </button>
             ))}
             {stars > 0 && (
-              <span style={{ color: '#E3B341', fontSize: '12px', fontWeight: 800 }}>
+              <span style={{ color: 'var(--gold-ink)', fontSize: '12px', fontWeight: 800 }}>
                 +{stars * 5}% · partner skill level {stars + 1} of 5
                 {stars === 4 ? ' · all work +1' : ''}
               </span>
@@ -566,7 +567,7 @@ export function PaldexPage() {
           {WORKS.map((x) => <option key={x} value={x}>{workLabel(x)}</option>)}
         </select>
         <select value={sort} onChange={(e) => setSort(e.currentTarget.value)} aria-label="Sort">
-          <option value="number">Sort: number</option>
+          <option value="number">{work ? 'Sort: work level' : 'Sort: number'}</option>
           <option value="name">Sort: name A–Z</option>
           <option value="rarity_desc">Rarest first</option>
           <option value="rarity_asc">Common first</option>
@@ -625,7 +626,7 @@ export function PaldexPage() {
       </div>
 
       {current && pals.value[current] && (
-        <Drawer name={current} onClose={() => nav('paldex')} />
+        <Drawer key={current}  name={current} onClose={() => nav('paldex')} />
       )}
     </>
   );
