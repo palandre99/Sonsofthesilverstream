@@ -202,12 +202,12 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
           <Text style={s.h3}>Where to find it</Text>
           <PalMap name={name} />
           <View style={[s.wrap]}>
-            {p.wild
-              ? p.regions.map((r) => <Badge key={r} kind="plain">{r}</Badge>)
-              : !ALPHA_SPOTS[name]
-                ? <Badge kind="plain">no regular wild spawn — breed it</Badge>
-                : null}
-            {p.egg_types.map((e) => <Badge key={e} kind="plain">🥚 {e}</Badge>)}
+            {/* the map + its Spawns line carry the regions now — chips here
+                only for what the map can't say */}
+            {!p.wild && !ALPHA_SPOTS[name] && (
+              <Badge kind="plain">no regular wild spawn — breed it</Badge>
+            )}
+            {p.egg_types.map((e) => <Badge key={e} kind="plain">Egg: {e}</Badge>)}
           </View>
         </Card>
       </ScrollView>
