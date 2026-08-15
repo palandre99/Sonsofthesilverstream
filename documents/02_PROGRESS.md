@@ -1,7 +1,31 @@
 # PROGRESS — audited state, no invented percentages
 
-*Updated 2026-08-15 afternoon. Update this file whenever a work block lands;
+*Updated 2026-08-15 ~22:00. Update this file whenever a work block lands;
 date every entry.*
+
+## 2026-08-15 ~22:00 — CEO feedback round intake: breeding fane perfection
+
+The CEO delivered a 12-item feedback round on the breeding fane (verbatim in
+`AI_TODO.md` §E): the un-add bug in Suggested Goals, no way back from
+calc/plan to the Paldex card, a player-level setting on save profiles, a
+genuinely scored recommendation engine ("6 kindling one breed away beats 7
+kindling 83 breeds away"), the opaque ENDGAME label, per-pal add on Best
+pals, killing horizontal scroll in favour of full-screen category browsers,
+the m7/t7 badges, and a proper Plan-targets tray.
+
+Done at intake: plan of record written (phases 0–7, engine files untouched —
+the oracle guarantee is never at risk), all 12 items ledgered as E1–E12,
+shipped-but-unticked ledger items reconciled with verified commit hashes
+(2128ef3, 64539d7, 592dbb6, bbc0cad, 38af923, c4e6bd3, 03d38a4), the two
+ledger contradictions resolved (data refresh: resolved, weekly re-check;
+mobile test harness: dropped, byte-parity gate covers it), area lock
+claimed. Root causes were verified in code before planning — including two
+perf traps in the sheet (a derivations fixpoint paid on Plan-tab mount even
+with the sheet closed, and closed-modal JSX recomputing crew rankings on
+every store write) that the round will fix.
+
+Baseline gates at HEAD `fdb4789` re-run at intake — see next entry for
+results.
 
 ## 2026-08-15 late — hostile doc audit, workspace handover-ready
 

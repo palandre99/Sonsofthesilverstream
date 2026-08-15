@@ -51,10 +51,10 @@ Add everything you find; finding nothing means you didn't look.*
 
 ## NOW (app-first)
 
-- [ ] **URGENT — data refresh**: research (03_MARKET_RESEARCH.md) found the game
-      updated Aug 12 (build 4797106687, Terraria collab content) — NEWER than our
-      July 20 extraction. Re-clone palworld-kb / re-extract, re-run the oracle;
-      roster and combos may have moved. Everything data-related waits on this.
+- [x] 2026-08-15 (reconciled 21:50): data refresh RESOLVED — see the ledger
+      entry below: patch 1.0.3 (Aug 12) has no breeding-mechanics changes;
+      upstream clones predate it but the engine data remains valid.
+      Standing: RE-CHECK upstreams weekly for refreshed dumps.
 - [ ] **On-device verification pass** once the dev build installs: planner
       speed on hardware (the 27-target plan), list scrolling with 298
       icons, haptics, safe areas, OTA round-trip. Fix what's found.
@@ -92,8 +92,8 @@ Add everything you find; finding nothing means you didn't look.*
 - [x] 2026-08-15 ~19:20 Mobile Calculator: ✕ badge clears a picked parent,
       middle icon swaps both when set. Shipped + OTA'd both.
 - [ ] Mobile: picker modals should show recently-picked pals first.
-- [ ] Planner: "Plan N targets" silently replaces the current plan — warn when
-      an unfinished plan exists (checks > 0).
+- [x] 2026-08-15 ~19:56 Planner asks before replacing an unfinished plan with
+      different goals (2128ef3). Shipped + OTA'd both. (Reconciled 21:50.)
 - [x] 2026-08-15 ~19:15 Planner phases: completed phases fold to one line,
       tap to reopen. Shipped + OTA'd both.
 - [x] 2026-08-15 ~19:15 Odds Lab: parents/goal/cake survive tab switches
@@ -157,7 +157,11 @@ Add everything you find; finding nothing means you didn't look.*
 
 *Claim an area with a dated line before multi-file work; release when done.*
 
-- (none active)
+- 2026-08-15 ~21:55 CLAIMED (feedback-round session): mobile
+  SuggestedGoals.tsx / PlannerScreen.tsx / PaldexScreen.tsx / store.ts /
+  nav (intent.ts, App.tsx) / kit.tsx / SettingsScreens.tsx + web goals.tsx /
+  plan.tsx / state.ts + tools/extract_utility_roles.py + new src/logic/ —
+  the E-round below. Released when E is closed out.
 
 
 ## CEO FEEDBACK LEDGER — night of 2026-08-15 (NOTHING here may be forgotten)
@@ -203,13 +207,13 @@ loops all night INSIDE the Breeding + Paldex domain (his explicit scope).
       (build 68e1c1de, watcher armed)
 
 ### Open — do these before anything else
-- [ ] Preview build 68e1c1de: when FINISHED give CEO the install link; then
-      keep pushing every OTA to BOTH branches (development + preview) and
-      add the preview branch to PUSH-UPDATE.cmd
+- [x] SUPERSEDED (reconciled 21:50): current builds are 021773ab (FAST) +
+      a6447f7e (DEV) on runtime 1.1.0, install hub carries them; every OTA
+      goes to BOTH branches and PUSH-UPDATE.cmd already does both.
 - [ ] Web parity still missing: domains side-panel nav (Paldex SORTING
       shipped on web 02:50 — rarity/name/HP/ATK/DEF select)
-- [ ] Profile-switch write race (reviewer #8): guard persist ordering in
-      switchProfile before any more store writers land
+- [x] Profile-switch write race FIXED (design-walk ~11:15: load-then-atomic-
+      flip + write barrier in switchProfile). (Reconciled 21:50.)
 - [x] Smart catch-vs-breed advice SHIPPED (both platforms): suggests with
       addSteps >= 4 show "Faster to catch one: <regions> (found up to Lv N)"
       from real wild data
@@ -222,7 +226,9 @@ loops all night INSIDE the Breeding + Paldex domain (his explicit scope).
 - [ ] verification.json + ENGINE_STATUS: record partner-skill verification
       (Braloha/Dynamoff/Grintale/Broncherry/Caprity berries) 2026-08-15
 - [ ] Broncherry alpha-egg details in the pal info card (luck helpers section)
-- [ ] Mobile engine test harness (vitest for mobile copies) — still open
+- [x] Mobile engine test harness DROPPED (reconciled 21:50): the byte-parity
+      CI gate (engine-parity.test.ts) makes it redundant — identical bytes
+      ⇒ identical behaviour (see QUALITY section).
 - [x] Aug-12 data freshness RESOLVED 2026-08-15: patch 1.0.3 (Aug 12) is
       progression/resources/World Tree + fixes — no breeding-mechanics
       changes per patch notes (game8 1.0.3, palworldgame.wiki). Both upstream
@@ -241,12 +247,10 @@ loops all night INSIDE the Breeding + Paldex domain (his explicit scope).
 - [ ] Info card "Where to find it" must be a real MAP for every pal, not
       text chips (alpha pins exist; regular spawn AREAS need data — RESEARCH
       palcalc/paldb spawn polygons before building; never invent).
-- [ ] Info card "About the pal" bubble — the game's own Paldex flavor text,
-      tappable to expand; plus a longer wiki-style read. RESEARCH: does the
-      kb dump carry the description text? Use only verified text.
-- [ ] Rarity-colored cards: tier tint on pal cards (common/neutral, rare
-      blue/green, epic purple, legendary gold — match the GAME's palette,
-      research exact in-game rarity colors first).
+- [x] Info card "About the pal" bubble SHIPPED (see ~10:35 entry below) and
+      completed to 299/299 via bbc0cad. (Reconciled 21:50.)
+- [x] Rarity-colored cards PARKED BY CEO ~18:50 (see C5) — reopens only on
+      his word. (Reconciled 21:50.)
 - [x] Stars on the pal card SHIPPED 2026-08-15 (~11:00): tappable 0-4 stars,
       stats +5%/star live, partner skill level x of 5, 4-star all-work note.
       Math wiki-verified (4 sources agree), recorded in verification.json,
@@ -270,9 +274,10 @@ loops all night INSIDE the Breeding + Paldex domain (his explicit scope).
 - [x] Web PalPicker quick filters + rarity tints (mobile parity)
 - [x] Profile-switch write race fixed (load-then-atomic-flip + write barrier)
 - [x] Profiles screen: vector pencil (last text glyph in chrome)
-- [ ] Profiles: per-world stats on each card (owned count, plan progress)
-      so switching feels informed — needs per-profile AsyncStorage reads
-- [ ] Calculator empty state could offer recents/preset shortcuts
+- [x] Profiles: per-world stats on every card SHIPPED (64539d7).
+      (Reconciled 21:50.)
+- [x] Calculator empty state quick-start recents SHIPPED (592dbb6).
+      (Reconciled 21:50.)
 
 - [x] CEO feedback ~12:05: install link must be copyable from chat AND
       one-click — COPY-INSTALL-LINK.cmd shipped (reads INSTALL-LINK.txt,
@@ -301,9 +306,9 @@ loops all night INSIDE the Breeding + Paldex domain (his explicit scope).
       solo on "Export failed"; direct expo export always proves the code.
 - [ ] "Add targets" UX: smarter/cleaner/expanded — preset cards with
       descriptions, suggested goals, better visual hierarchy.
-- [ ] Deep competitor research round 2 (agent launched): breeding planners,
-      Dododex-class companions, interactive map apps — mine UX patterns;
-      update 03_MARKET_RESEARCH + 04_PRODUCT_BLUEPRINT + plan docs.
+- [x] Deep competitor research round 2 DELIVERED as 04_PRODUCT_BLUEPRINT.md
+      (Dododex dissection, 15 AAA criteria, feature matrix vs top 10).
+      (Reconciled 21:50.) Standing D1 keeps future rounds owed.
 - [ ] CEO's installed build predates today's OTAs on first open — verify
       his app pulls the newest update on next reopen (channel preview).
 
@@ -332,10 +337,8 @@ quietly narrowed. Tick only when shipped AND eye-verified.*
       first, not just top-1 work.
 
 ### B. Pal info card
-- [ ] B1 "About the pal" — he says it reads invented. Text IS real wiki.gg
-      Paldex text for 272/299, but **27 pals have none at all** (Xenolord,
-      Bellanoir, Sibelyx, the Cryst/Primo/Lux variants…). Fill all 299 from
-      verified sources, show provenance, never fabricate.
+- [x] B1 DONE (bbc0cad): 299/299 — the 27 gaps filled from paldb's Summary
+      card, provenance recorded. (Reconciled 21:50; CEO eye-verdict welcome.)
 - [ ] B2 "How to breed it" card must be TAPPABLE → open the combinations;
       offer "open in Calculator" (normal use) or "make a plan to get it".
 - [ ] B3 Stars 0–4 only move HP/ATK/DEF. Work suitability, partner-skill
@@ -345,11 +348,9 @@ quietly narrowed. Tick only when shipped AND eye-verified.*
       floor is visible too. Need min-level data (obtain_notes carry ranges).
 
 ### C. Plan / Route Planner
-- [ ] C1 Recommendations are not smart enough. Concrete case: **he does not
-      own Chikipi and it was never recommended** — every cake needs 8 eggs.
-      The engine "must think about everything… efficient and very smart".
-      Suspects: `activeAdvice.slice(0,5)` hides low-ranked helpers; catch-vs-
-      breed only fires at addSteps>=4; no cake-ingredient coverage checklist.
+- [x] C1 SHIPPED (38af923 planner brain: Chikipi bug dead, cake supply is a
+      checklist; c4e6bd3 advice versioning recomputes old plans). Reconciled
+      21:50 — CEO eye-verdict still pending on device.
 - [ ] C2 Plan search + filter is "very bad, not the same as the Paldex" —
       re-check what he actually meets on screen (picker was unified 13:05,
       so this is either the "Add targets" row or a regression).
@@ -432,3 +433,53 @@ quietly narrowed. Tick only when shipped AND eye-verified.*
 - [ ] D3 Work one thing at a time to perfection; brutal self-evaluation.
 - [ ] D4 The pending work in the plan/progress/feedback docs is still owed —
       "HEAPS of work pending". Nothing above deletes anything below.
+
+## E. CEO FEEDBACK ~21:45 2026-08-15 — BREEDING FANE PERFECTION ROUND
+## (verbatim intake; plan of record: .claude plan "breeding fane perfection
+## pass" — phases 0–7; work order E1→E11)
+
+*His framing: "NOTHING in the breeding fane is remotely close to being
+perfected… perfection 10/10 masterpiece triple-AAA quality." Every item
+below ships on BOTH platforms.*
+
+- [ ] E1 (BUG) Pals added from a Suggested Goals section can't be un-added/
+      unticked. → Phase 1: staged targets move into the store
+      (draftTargets), +/− toggle on every chip, Remove-N bulk buttons.
+- [ ] E2 No way back: Paldex → pal card → calc/plan strands you; the Paldex
+      returns blank (search/filters/sort/scroll/open card all lost). →
+      Phase 2: paldexSession cache + origin-stamped intents + "Back to
+      {pal} in the Paldex" chip + Android hardware back.
+- [ ] E3 Player-level setting on the world save "is not possible" — add it.
+      → Phase 3: optional playerLevel per save profile, edited on the
+      Profiles screen; suggestions use it instead of the wild-level proxy.
+- [ ] E4 Engine "not smart enough… must be dynamic and adapting to the
+      world save / paldex / player level". → Phase 4: shared scored
+      recommendation brain (src/logic/recommend.ts, parity-gated).
+- [ ] E5 Recommendations must balance quality vs availability with proper
+      math — "6 kindling one breed away beats 7 kindling 83 breeds away".
+      → Phase 4 scoring (score = value / (1 + effortSteps/3)); the example
+      is a literal unit test. RECOMMENDED badge when near-best AND close.
+- [ ] E6 "ENDGAME GOAL" is opaque — is it unbreedable? catch-only? missing
+      a pal? → Phase 4/5: one attainLabel with the reason and next action;
+      bare "ENDGAME" dies everywhere.
+- [ ] E7 (BUG) "Best pals in the game" has no per-pal add on mobile (web
+      has it). → Phase 5: renders through the same row system as
+      everything else.
+- [ ] E8 Horizontal scrolling in a small window is bad design (83 ground
+      mounts!); recommendations need a tappable FULL card — bigger,
+      cleaner, smoother. → Phase 5: zero horizontal ScrollViews; every
+      section opens a full-screen category browser with big rows + search.
+- [ ] E9 "m7"/"t7" text under pals is terrible; cards too small to read. →
+      Phase 5: work-type icons with real levels; crew score never renders
+      as "Lv N"; chip text sizes up.
+- [ ] E10 New category: recommended pal bonuses that help the PLAYER
+      (catch rate, gliding, movement…), ranked most→least recommended. →
+      Phase 4 data (capture + movement roles mined verbatim from
+      partner_effect) + Phase 5 "Helps you in the field" section.
+- [ ] E11 Plan targets area ("Plan 7 targets" chips) is tiny text with an
+      ✕ — no remove-all, wastes the screen, should fold away when the plan
+      is running. → Phase 6: TargetTray card grid + remove-all confirm +
+      fold-to-one-line.
+- [ ] E12 Docs first: plan/progress/todo updated before building (this
+      entry + 02_PROGRESS note = done at intake), then continuous work —
+      the loop never idles.
