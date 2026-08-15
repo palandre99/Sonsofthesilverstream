@@ -75,8 +75,13 @@ raise to top-5 collapsed / top-8 expanded — CEO wants MORE than 3).
       All verbatim game text. NOTE: one truncated effect string spotted
       (Ribbuny Botan ends mid-sentence "…or") — upstream kb truncation;
       check kb clone before quoting it in UI.
-- [ ] Sources 2-3 cross-check (pindrop.gg + palworldguides.com) for the
-      Fighting / Best-in-game tabs
+- [x] 2026-08-15 ~22:15: the 7 saddle-less mounts VERIFIED correct — Panthalus
+      is rideable with no saddle item (paldb partner skill: "Can be ridden as
+      a flying mount", no technology entry), and the 6 Terraria-collab slimes
+      likewise carry no saddle item. nulls are true data, not fetch misses.
+- [x] Sources 2-3 cross-check done (pindrop fetched; palworldguides is
+      JS-rendered/no content; playerauctions 403; skycoach rejected as dated
+      — noted in meta.ts)
 - [ ] Stage-aware ranking in engine (shared, mirrored, tested)
 - [ ] SuggestedGoals v2 UI: Fighting · Best in game · Mounts (fly/ground/
       glider) · Utility squads · top-5/8 per job — provenance chips
