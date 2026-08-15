@@ -1,5 +1,5 @@
 /** Odds Lab — passive/IV/mutation odds from the game's own weights. */
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { FlatList, Modal, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import { T } from '../theme';
 import { Badge, Btn, Card, PageHead, s } from '../ui/kit';
@@ -97,12 +97,26 @@ function OddsCard({ label, big, sub, hero }: {
   );
 }
 
+/** Session cache: switching bottom tabs unmounts this screen, and re-entering
+ * it used to wipe carefully-picked parent passives (self-found 2026-08-15).
+ * Module-level, deliberately not persisted — a fresh app start starts fresh. */
+const oddsSession = {
+  a: [] as string[], b: [] as string[], want: [] as string[],
+  cake: 'cake' as CakeId,
+};
+
 function PassivesTab() {
-  const [a, setA] = useState<string[]>([]);
-  const [b, setB] = useState<string[]>([]);
-  const [want, setWant] = useState<string[]>([]);
-  const [cake, setCake] = useState<CakeId>('cake');
+  const [a, setA] = useState<string[]>(oddsSession.a);
+  const [b, setB] = useState<string[]>(oddsSession.b);
+  const [want, setWant] = useState<string[]>(oddsSession.want);
+  const [cake, setCake] = useState<CakeId>(oddsSession.cake);
   const [picking, setPicking] = useState<'a' | 'b' | null>(null);
+  useEffect(() => {
+    oddsSession.a = a;
+    oddsSession.b = b;
+    oddsSession.want = want;
+    oddsSession.cake = cake;
+  }, [a, b, want, cake]);
 
   const byName = useMemo(() => new Map(passives.map((p) => [p.name, p])), []);
   const pool = useMemo(() => [...new Set([...a, ...b])], [a, b]);

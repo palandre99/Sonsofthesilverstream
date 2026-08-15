@@ -110,6 +110,8 @@ export function PlannerScreen() {
   const [hatching, setHatching] = useState<{ sid: string; child: string } | null>(null);
   const [managing, setManaging] = useState<'none' | 'reset' | 'clear'>('none');
   const [bursts, setBursts] = useState<Record<string, number>>({});
+  // finished phases fold up; a tap reopens one for review
+  const [openPhases, setOpenPhases] = useState<Set<number>>(new Set());
   const [viewing, setViewing] = useState<string | null>(null);
   // "Plan how to get it" on a pal card lands here — keep a one-tap way back
   // to that exact card so the player never re-scrolls the Paldex for it
@@ -598,12 +600,39 @@ export function PlannerScreen() {
             </Card>
           )}
 
-          {waves.map(([wave, steps]) => (
+          {waves.map(([wave, steps]) => {
+            // a finished phase folds into one quiet line — scrolling past
+            // walls of struck-through cards to find the work is busywork
+            const allDone = steps.every((st) =>
+              tickStateOf(checks[stepId(st.parents[0], st.parents[1], st.child)]) === 'full');
+            if (allDone && !openPhases.has(wave)) {
+              return (
+                <Pressable key={wave}
+                  onPress={() => {
+                    void Haptics.selectionAsync();
+                    setOpenPhases((prev) => new Set(prev).add(wave));
+                  }}
+                  style={({ pressed }) => [{
+                    marginTop: 14, flexDirection: 'row', alignItems: 'center', gap: 8,
+                    backgroundColor: T.surface, borderColor: T.okSoft, borderWidth: 1,
+                    borderRadius: 12, padding: 12, opacity: pressed ? 0.8 : 0.75,
+                  }]}
+                >
+                  <Text style={{ color: T.ok, fontWeight: '800', fontSize: 13.5, flex: 1 }}>
+                    Phase {wave} complete
+                  </Text>
+                  <Text style={{ color: T.muted, fontSize: 12, fontWeight: '700' }}>
+                    {steps.length} {steps.length === 1 ? 'step' : 'steps'} · tap to show
+                  </Text>
+                </Pressable>
+              );
+            }
+            return (
             <View key={wave} style={{ marginTop: 18 }}>
               <Text style={[s.h3, { marginBottom: 8 }]}>
                 Phase {wave}{' '}
                 <Text style={{ color: T.muted, fontWeight: '600', fontSize: 12.5 }}>
-                  · everything here can run in parallel
+                  {allDone ? '· complete' : '· everything here can run in parallel'}
                 </Text>
               </Text>
               <View style={{ gap: 8 }}>
@@ -693,7 +722,8 @@ export function PlannerScreen() {
                 })}
               </View>
             </View>
-          ))}
+            );
+          })}
         </>
       )}
 
