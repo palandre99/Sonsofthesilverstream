@@ -17,35 +17,43 @@ Login-free, hosted on our own site. It must be opened **in Safari** — iOS
 refuses `itms-services` installs from Chrome. It is a hub offering both
 versions plus a one-tap **Connect to PC**:
 
-| On the page | What it installs |
+| On the page | What it is |
 |---|---|
 | **Install full version** | Standalone release build. No PC needed, updates on reopen via OTA. His normal app. |
 | **Install live version** + **Connect to PC** | Dev client. Changes appear while he uses it, shake to refresh. Needs `START-APP.cmd` running. |
+| **Open the website** | The PWA at `/palforge/` — same app in a browser, offline-capable, shareable. |
 
 `/palforge/install-dev/` forwards here — that URL was handed to him in chat on
 2026-08-15, so **keep it alive, never delete it**. Its `manifest.plist` is
 still the live DEV manifest and must stay where it is.
 
-### ⚠️ ONE APP SLOT — true until the next DEV build is made
+### ✅ The two apps coexist — RESOLVED 2026-08-15
 
-Historically both profiles produced the same app (`com.palandre.hatchlab`,
-name "Palforge", identical fingerprints), so **installing one deleted the
-other**. On 2026-08-15 the FAST link was sent to the CEO while he was using
-DEV; it wiped his dev client and he reasonably reported the app as broken.
+Both profiles used to produce the same app (`com.palandre.hatchlab`, name
+"Palforge", identical fingerprints), so **installing one deleted the other**.
+The FAST link was sent to the CEO while he was using DEV; it wiped his dev
+client and he reasonably reported the app as broken. That failure mode is now
+gone.
 
-**Fixed in config, pending a build.** `mobile/app.config.js` now gives the
-`development` profile its own identity — name "Palforge DEV", bundle
-`com.palandre.hatchlab.dev`, scheme `palforge-dev` — while `preview` and
-`production` keep the exact identity the installed FAST app already has.
+`mobile/app.config.js` splits the identity per profile, and DEV build
+`ccefd7d2` (2026-08-15 15:11) ships it. Verified by unpacking the `.ipa` and
+reading its `Info.plist`:
 
-Until the CEO runs `BUILD-DEV.cmd` (needs his Apple login once), the
-*installed* DEV build is still the old identity, so:
+| | Full | Live |
+|---|---|---|
+| Bundle id | `com.palandre.hatchlab` | `com.palandre.hatchlab.dev` |
+| Name on phone | Palforge | Palforge DEV |
+| Scheme | `palforge` | `palforge-dev` |
+| Icon | sphere | sphere + orange DEV band |
 
-- the two still share one icon slot — keep saying so when sending the link;
-- the dev server now emits `exp+palforge-dev://`, which the OLD dev app
-  cannot open. The hub page therefore carries a **"Connect with the old app"**
-  fallback using the previous `exp+palforge://` scheme. Delete that fallback
-  once he is on the new build.
+**When making a new DEV build, re-verify the identity** — a config slip that
+reverts the bundle id silently reintroduces the app-deleting bug:
+
+```bash
+python -c "import zipfile,plistlib,re; z=zipfile.ZipFile('dev.ipa'); \
+i=[n for n in z.namelist() if re.match(r'Payload/[^/]+\.app/Info\.plist$',n)][0]; \
+p=plistlib.loads(z.read(i)); print(p['CFBundleIdentifier'], '|', p.get('CFBundleDisplayName'))"
+```
 
 ---
 
@@ -99,10 +107,12 @@ update the install-dev page in the same work block.
 | Live website | https://palandre99.github.io/Sonsofthesilverstream/palforge/ |
 | Bundle id | `com.palandre.hatchlab` · Apple team `93VP5ZXDZX` |
 
-Current builds (iOS, runtime 1.0.0, both from commit `ae82595`):
+Current builds (iOS, runtime 1.0.0):
 
-- **DEV** `654fe7fb-1a2a-4d10-97b8-adcff9a9d945` — development channel
-- **FAST** `0bd4b937-1112-4df8-8c42-f8b952613a70` — preview channel
+- **DEV** `ccefd7d2-8115-47ad-8d97-6ce33bc3a013` — development channel, commit
+  `4bc1d87`, bundle `com.palandre.hatchlab.dev`, fingerprint `c9602f41…`
+- **FAST** `0bd4b937-1112-4df8-8c42-f8b952613a70` — preview channel, commit
+  `ae82595`, bundle `com.palandre.hatchlab`, fingerprint `06b76851…`
 
 ---
 

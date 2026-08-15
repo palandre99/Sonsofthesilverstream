@@ -6,16 +6,21 @@ Same system as Stride. Double-click, that's it.
 
 > ### https://palandre99.github.io/Sonsofthesilverstream/palforge/install/
 
-That page gives you both versions and a **Connect to PC** button:
+That page gives you everything:
 
 - **Full version** — the complete app at full speed, works on its own, updates
   itself each time you reopen it. This is the one to use normally.
 - **Live version (DEV)** — for working sessions. Changes appear while you use
-  the app, shake to refresh. Needs `START-APP.cmd` running on the PC.
+  the app, shake to refresh. Needs `START-APP.cmd` running on the PC. Its icon
+  has an orange **DEV** badge so you can't mix them up.
+- **The website** — same app in a browser, on the PC or anywhere else.
 
-**Right now they still share one icon slot**, so installing one replaces the
-other. That stops as soon as you run `BUILD-DEV.cmd` once (see below) — after
-that you can keep both.
+**Both apps can sit on your phone at the same time** (since 15 Aug). Installing
+one no longer removes the other.
+
+### Updating the full version does NOT need a build
+I push an update, you reopen the app, done — about two minutes. The 15-minute
+build is only for changes to the icon, the app name, or phone permissions.
 
 **Lost the link?** Double-click `COPY-INSTALL-LINK.cmd`, or just ask Claude —
 it's saved in `documents/01_LINKS.md`.

@@ -83,13 +83,14 @@ TypeScript engine, three delivery targets:
   the install QR is on each finished build's page.
 - OTA updates: channels `development` + `preview` are configured;
   `PUSH-UPDATE.cmd` publishes to both.
-- **ONE APP SLOT — until the next DEV build.** Both builds historically shared
-  bundle id `com.palandre.hatchlab`, so installing one DELETED the other;
-  doing exactly that cost a session on 2026-08-15. `mobile/app.config.js` now
-  splits the identity per profile (DEV = `com.palandre.hatchlab.dev`,
-  scheme `palforge-dev`; preview/production unchanged), but it only takes
-  effect once the CEO runs `BUILD-DEV.cmd`. Until then keep warning him.
-  There is ONE install link — the hub at `/palforge/install/`; see
+- **TWO APPS, SEPARATE IDENTITIES (since 2026-08-15).** They used to share
+  bundle id `com.palandre.hatchlab`, so installing one DELETED the other —
+  that cost a whole session. `mobile/app.config.js` now splits per profile
+  (DEV = `com.palandre.hatchlab.dev` / `palforge-dev` / DEV-badged icon;
+  preview + production unchanged), shipped in build `ccefd7d2`. **Never let
+  the release branch of that config drift** and re-verify the bundle id on
+  every new DEV build. There is ONE install link — the hub at
+  `/palforge/install/`, which also carries the website; see
   `documents/01_LINKS.md`.
 - **START-APP.cmd self-heals** (2026-08-15): it kills stale dev servers for
   THIS project only and uses a PID lock so the newest launcher takes over.

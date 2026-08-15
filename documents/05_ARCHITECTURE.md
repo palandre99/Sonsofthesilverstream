@@ -158,8 +158,11 @@ scheme from `app.json`. It takes the **resolved** scheme from the running
 server's own manifest, and identifies "our" Metro by `slug` (`hatchlab`),
 which is identical across profiles.
 
-**Until the next DEV build is made**, the *installed* dev client still carries
-the old identity, so the two apps still share one icon slot. See `01_LINKS.md`.
+Shipped in DEV build `ccefd7d2` (2026-08-15) and verified by unpacking the
+`.ipa`: `CFBundleIdentifier com.palandre.hatchlab.dev`, display name
+"Palforge DEV", scheme `palforge-dev`. **The two apps now coexist on the
+phone.** Re-verify the identity on every new DEV build — the check is in
+`01_LINKS.md`.
 
 ## 5. Builds and deploys
 

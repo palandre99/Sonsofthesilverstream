@@ -18,12 +18,14 @@
          text-transform: uppercase; padding: 4px 10px; border-radius: 20px; margin-bottom: 10px; }
   .tag-full { background: #123c40; color: #6fe0e8; }
   .tag-dev  { background: #3d2a10; color: #ffb457; }
+  .tag-web  { background: #1c2b33; color: #93b8cc; }
   p { color: #9db4b8; font-size: 14.5px; line-height: 1.55; margin: 8px 0 0; }
   a.btn { display: block; text-decoration: none; font-weight: 800; font-size: 18px;
           padding: 16px 20px; border-radius: 14px; margin-top: 16px; }
   a.full { background: #3fc1c9; color: #06181a; }
   a.dev  { background: #ff9f1c; color: #1a1204; }
   a.connect { background: #2a4a4f; color: #cfeef1; border: 1px solid #3c666c; }
+  a.web { background: transparent; color: #9cd4e0; border: 1px solid #35555c; }
   ol { text-align: left; color: #9db4b8; font-size: 14.5px; line-height: 1.6; padding-left: 22px; margin: 12px 0 0; }
   code { background: #081214; padding: 4px 8px; border-radius: 6px; font-size: 12px;
          color: #8fd8de; word-break: break-all; }
@@ -65,16 +67,22 @@
     <a class="btn connect" href="exp+palforge-dev://expo-development-client/?url=https%3A%2F%2Fopqgrdy-palandre99-8081.exp.direct">
       Connect to PC
     </a>
-    <p class="small">Still on the older live app (installed before 15 Aug)?
-      <a href="exp+palforge://expo-development-client/?url=https%3A%2F%2Fopqgrdy-palandre99-8081.exp.direct">Connect with the old app</a>.</p>
   </div>
 
-  <p class="warn"><b>Right now these two still share one icon slot</b> — installing
-     one replaces the other. That stops as soon as the next live-version build is
-     made on the PC; after that you can keep both side by side.</p>
+  <div class="card">
+    <span class="tag tag-web">Website</span>
+    <h2>Palforge on the web</h2>
+    <p>The same app in a browser — PC, iPad, anyone you share it with. Nothing
+       to install and no sign-in. It keeps working offline after the first
+       visit, and on iPhone you can add it to the home screen from Safari's
+       share menu.</p>
+    <a class="btn web" href="../">Open the website</a>
+  </div>
 
-  <p class="foot">If a button ever does nothing, the address is:<br>
+  <p class="foot">Both apps can sit on the home screen at the same time — the live
+     one has an orange <b>DEV</b> badge on its icon.<br><br>
+     If a button ever does nothing, the address is:<br>
      <code>https://opqgrdy-palandre99-8081.exp.direct</code><br><br>
-     Full version build 0bd4b937 · live version build 654fe7fb · updated 2026-08-15</p>
+     Full version build 0bd4b937 · live version build ccefd7d2 · updated 2026-08-15</p>
 </body>
 </html>

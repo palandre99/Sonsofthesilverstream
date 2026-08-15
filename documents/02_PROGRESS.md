@@ -40,8 +40,18 @@ reaches the phone, which had been silently broken.
   shares one icon slot, and the hub carries a legacy connect link for the
   pre-split dev client.
 - **Single install hub** at `/palforge/install/` (CEO's request — full version
-  + live version + Connect to PC on one page); `/palforge/install-dev/`
-  forwards to it. Live and verified, eye-checked at 375x812.
+  + live version + Connect to PC + **the website** on one page);
+  `/palforge/install-dev/` forwards to it. Live and verified, eye-checked at
+  375x812.
+- **TWO APPS NOW COEXIST.** CEO ran `BUILD-DEV.cmd` at 15:08; build
+  `ccefd7d2` finished 15:11 from commit `4bc1d87`. Proven separate by
+  unpacking the `.ipa`: `CFBundleIdentifier com.palandre.hatchlab.dev`,
+  display name "Palforge DEV", scheme `palforge-dev`, fingerprint `c9602f41`
+  vs the full app's `06b76851`. Install page, warnings and legacy links
+  updated; Pages redeployed and re-fetched to confirm.
+- **Clarified for the CEO** (he pushed back, rightly): a 15-minute build is
+  NOT how updates work. JS/UI/logic ships by OTA in ~2 min; builds are only
+  for icon, name, permissions and native modules.
 
 Correction to the entry below: the claim that two installable apps coexist
 was **wrong**. Both builds use bundle id `com.palandre.hatchlab` with
