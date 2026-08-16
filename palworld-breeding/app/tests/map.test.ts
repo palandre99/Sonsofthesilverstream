@@ -1217,3 +1217,35 @@ describe('names printed on the map can be searched', () => {
     }
   });
 });
+
+/* "Bosses etc must be the image of the actual pal it is" (CEO) applied to the
+ * Alpha boss LAYER too, not just a boss reached by picking that pal. The layer
+ * carries all 72 names, so a lone alpha can show its own face; a cluster keeps
+ * the crown, because several bosses cannot wear one. */
+describe('a lone alpha shows the pal it is', () => {
+  const screen = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
+  );
+
+  it('resolves the portrait from the marker name, only for that layer', () => {
+    expect(screen).toMatch(/function alphaPortrait/);
+    expect(screen).toMatch(/if \(layerKey !== 'poi:alpha_pals'\) return undefined;/);
+    expect(screen).toMatch(/\.replace\(\/\^Alpha \/, ''\)/);
+  });
+
+  it('only does it for a single marker, never a cluster', () => {
+    expect(screen).toMatch(/c\.count === 1 \? alphaPortrait\(/);
+  });
+
+  it('every alpha name really is a pal the Paldex knows', () => {
+    // if one did not resolve it would silently fall back to the crown, so this
+    // is what turns "72 of 72" from a hope into a fact
+    const layer = MAP_POIS.find((l) => l.id === 'alpha_pals');
+    expect(layer?.names, 'the alpha layer must carry names').toBeTruthy();
+    const unknown = layer!.names!
+      .map((n) => n.replace(/^Alpha /, ''))
+      .filter((n) => !(n in palsJson.pals));
+    expect(unknown).toEqual([]);
+    expect(layer!.names!.length).toBe(72);
+  });
+});

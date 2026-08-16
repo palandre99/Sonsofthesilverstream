@@ -1226,6 +1226,28 @@ session's; this worker touches only the map area (see AREA LOCKS).*
  escapes
       and broke both scripts; rewriting them whole with the editor was the fix.
       Second time CRLF/escaping has bitten a multi-line patch today.
+- [x] L12 2026-08-16 ~23:35 THE ALPHA BOSS LAYER NOW SHOWS EACH BOSS'S OWN
+      FACE. J5 gave pal portraits to bosses you reach by PICKING that pal, and
+      I missed the case sitting right beside it: switching on the Alpha boss
+      LAYER drew 72 identical crowns. His instruction — "Bosses etc must be the
+      image of the actual pal it is" — applies to both.
+      The layer already carried all 72 names ("Alpha Anubis", ...), so a lone
+      alpha resolves its portrait by stripping the "Alpha " prefix. Verified
+      every one of the 72 resolves to a pal the Paldex knows, so none silently
+      falls back — and a test asserts that, since a fallback would be invisible.
+      Clusters keep the crown with a count: several bosses cannot wear one face.
+      Measured on screen: 43 portraits drawn and 6 generic markers, and those
+      six are exactly the clusters of 2-3.
+- [x] L13 THE LEGEND DOES NOT OVERFLOW, checked rather than assumed. Measured
+      12 rows at 313px (~26px each) growing upward from a fixed bottom, so all
+      23 layers would top out near y=81 — tight under the region buttons but on
+      screen. Extrapolated from the 12-row measurement, not measured at 23.
+      No change made; recording it so nobody "fixes" a non-problem.
+- [x] L14 THE WORLD TREE WITH SIX LAYERS IS CORRECT. Legend showed Chest 38,
+      Egg 30, Effigy 47, Fast travel 15, Skill fruit 12, Tower boss 4 — summing
+      to the 146 the pill reports, and every number matching the source counts
+      measured straight out of pal-atlas. The legend shows the TREE's counts
+      after a region switch, not the Palpagos ones.
 - [ ] K5 "also many other issues" — HE HAS MORE AND HAS NOT LISTED THEM. Ask,
       or keep walking journeys until they surface. Do not guess at what he
       means and do not claim the map is finished.

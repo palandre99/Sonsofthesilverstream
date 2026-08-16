@@ -200,7 +200,14 @@ export function MapScreen() {
           render: () => (
             <Pin colour={layer.colour} icon={layer.icon} count={c.count}
               square={layer.square} art={layer.art}
-              photo={layer.photo} night={layer.night} />
+              // A lone alpha shows the face of the pal it actually is. The
+              // layer knows — it carries all 72 names — and "bosses etc must
+              // be the image of the actual pal it is" (CEO) applies just as
+              // much to the Alpha boss LAYER as it did to a boss you reach by
+              // picking that pal. A cluster keeps the crown, because several
+              // bosses cannot wear one face.
+              photo={layer.photo ?? (c.count === 1 ? alphaPortrait(layer.key, region, c.index) : undefined)}
+              night={layer.night} />
           ),
         });
       }
@@ -803,6 +810,19 @@ function PlaceName({ name }: { name: string }) {
 }
 
 const PIN = 23;
+
+/**
+ * The portrait for a single alpha marker, or undefined.
+ *
+ * The alpha layer's names read "Alpha Anubis"; the Paldex keys are the plain
+ * display names. Anything that does not resolve falls back to the crown rather
+ * than guessing — a wrong face would be worse than a generic one.
+ */
+function alphaPortrait(layerKey: string, region: RegionId, index: number): number | undefined {
+  if (layerKey !== 'poi:alpha_pals') return undefined;
+  const name = poiName('alpha_pals', region, index).replace(/^Alpha /, '');
+  return name ? PAL_ICONS[name] : undefined;
+}
 
 /** the game's level cap — "Any level" is this, so no spawn is ever excluded */
 const ALL_LEVEL_CAP = 80;
