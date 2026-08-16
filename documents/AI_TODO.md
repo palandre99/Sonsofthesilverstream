@@ -4597,3 +4597,41 @@ there (unlike the RN-web build) — that is how 224 -> 249 was measured. But
 NOT reach `identify()`; do not try a third time, prove pin behaviour from data.
 Each `javascript_tool` call shares one scope, so `const x` twice in a session
 throws "already declared" — wrap every snippet in an IIFE.
+
+### L40 — four journeys walked, all CORRECT, nothing changed
+Saying so plainly rather than manufacturing a fix:
+- **Time toggle with a night-only pal.** Loupmoon (1,095 surface spawns, the
+  biggest night-only species) reads 1,095 at Any time; Daytime empties the map
+  and names its own reason — "Nothing out in the daytime / Loupmoon only comes
+  out at night. Tap Daytime again for Night, or once more for Any time." Night
+  restores 1,095, Any time restores 1,095. Full cycle correct.
+- **Layers sheet "Clear" is correctly scoped.** Chest + Loupmoon = 2,667
+  (1,572 + 1,095, both exact). Clear in the Layers sheet leaves 1,095 and drops
+  only the layer; Clear in the Find sheet leaves 1,572 and drops only the pal.
+  Each sheet clears its own thing.
+- **A pal on BOTH maps.** Mimog reads 4,810 on Palpagos and 785 on the World
+  Tree — both exactly the data — and switching regions keeps the pick with no
+  "doesn't live here" banner.
+- (Earlier this session: World Tree with 7 layers = 142 spots, exact.)
+
+### L41 — the extreme edges, pinned in vitest (dd65f2b, test-only)
+The harness cannot pan or pinch, so this journey had no manual route. The
+gesture maths is pure, so it is driven through whole gestures instead: zoom to
+the ceiling about each of the four corners, shove 5000px further, check where
+it lands. Corners pin exactly (tx/ty on 0 and W-k / H-k, no empty space) and —
+the one that actually worried me — NO tap in any corner at maximum zoom
+resolves to a uv outside [0,1], which is where float error would have shown.
+FOUND NO DEFECT. Nothing published; a green run is not a fix.
+One test I wrote WRONG and the code was right: I asserted that zooming out in
+a corner re-centres. It does not and must not — at the floor the map is 852
+wide against a 393 viewport, so both the centred opening view (tx -229.5) and
+the flush-left corner (tx 0) are legal; `clampView` only centres an axis
+SMALLER than the viewport. Re-centring would drag the view out from under his
+thumb the moment he pinched out. The test now states that WITH the reasoning,
+so nobody "fixes" it later.
+
+### REMAINING UNWALKED
+"Only pals I'm missing" with a part-filled box (needs box state seeded — the
+map reads `box` from state.ts, another lane's, so seed via storage not the
+Paldex UI); marking a spot found then clearing it; the website's Find and
+legend at mobile width.
