@@ -346,7 +346,10 @@ export function MapScreen() {
       if (ownedAny(palName)) lines.push('Already in your box');
       // no "N spots on the map" here — the pill at the bottom already says it
     } else {
-      lines.push(`${layer.set.n} on this map`);
+      // formatted: this line sits directly above a pill that says "1,572
+      // spots on the map", and the same number in two formats one line apart
+      // reads as a bug even when it is not
+      lines.push(`${layer.set.n.toLocaleString()} on this map`);
     }
     setFocus({
       title: own || layer.label,
@@ -964,7 +967,7 @@ function LayerSheet({ filters, onToggle, onClear, onClearFound, onClose }: {
                     onPress={() => onToggle(l.id)}
                     accessibilityRole="checkbox"
                     accessibilityState={{ checked: on }}
-                    accessibilityLabel={`${l.label}, ${l.n} on the map`}
+                    accessibilityLabel={`${l.label}, ${l.n.toLocaleString()} on the map`}
                     style={{
                       flexDirection: 'row', alignItems: 'center', gap: 7,
                       paddingHorizontal: 11, paddingVertical: 9, borderRadius: 11,
@@ -976,7 +979,9 @@ function LayerSheet({ filters, onToggle, onClear, onClearFound, onClose }: {
                     <Text style={{ color: on ? T.ink : T.muted, fontWeight: '700', fontSize: 12.5 }}>
                       {l.label}
                     </Text>
-                    <Text style={{ color: T.faint, fontWeight: '700', fontSize: 11 }}>{l.n}</Text>
+                    <Text style={{ color: T.faint, fontWeight: '700', fontSize: 11 }}>
+                      {l.n.toLocaleString()}
+                    </Text>
                   </Pressable>
                 );
               })}

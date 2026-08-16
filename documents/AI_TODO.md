@@ -819,6 +819,21 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       can never do nothing. Retitled "Find anything on the map" with a
       placeholder that names what it searches, because the old title promised
       pals and places and that promise was the bug. Eye-verified end to end.
+- [x] J8 2026-08-16 ~16:50 COUNTS NOW READ THE SAME EVERYWHERE. The marker
+      card printed "1572 on this map" directly above a pill saying "1,572 spots
+      on the map" — the same number, one line apart, in two formats. Also fixed
+      the Layers sheet row and its screen-reader label, which were both raw.
+- [ ] H19 TRAP #9, AND IT NEARLY BECAME A FALSE BUG REPORT. Tapped a chest pin,
+      checked for the detail card by reading the first 300 characters of
+      innerText, saw only place names and concluded tapping a cluster did
+      nothing — which would have pointed the finger at the J6 marker-layer
+      refactor I had just shipped. The card was there the whole time; the
+      snippet was dominated by place-name labels and could not have contained
+      it. Confirmed by re-checking with a regex over the WHOLE text: "Chest |
+      307, 634 | 1,572 on this map | Mark as found". RULE: never conclude a UI
+      element is absent from a TRUNCATED text dump — match the whole document
+      for what you expect. Also confirms tapping still works after J6, on both
+      a POI cluster and a fast-travel marker.
 - [ ] H17 COLOUR CANNOT CARRY 23 IDENTITIES. Three POI layers are near-identical
       greys (npc #A9C0CC, ore #B7C4CC, coal #8E9AA3) and several are near-white
       (note #D7E3E8, quartz #CFE9FF, egg #FFEFC2). I deliberately did NOT

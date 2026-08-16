@@ -613,3 +613,23 @@ describe('the search finds things that are not pals', () => {
     expect(screen).toMatch(/placeholder="Search pals, places, chests, ore…"/);
   });
 });
+
+/* Every count the player reads is formatted the same way. The marker card
+ * printed "1572 on this map" directly above a pill saying "1,572 spots on the
+ * map" — the same number, one line apart, in two formats. */
+describe('counts read the same wherever they appear', () => {
+  const screen = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
+  );
+
+  it('never prints a raw count into user-visible copy', () => {
+    expect(screen).not.toMatch(/\$\{layer\.set\.n\} on this map/);
+    expect(screen).not.toMatch(/\$\{l\.n\} on the map/);
+    expect(screen).toMatch(/\$\{layer\.set\.n\.toLocaleString\(\)\} on this map/);
+  });
+
+  it('formats the layer-sheet row and its screen-reader label alike', () => {
+    // the sighted label and the spoken one drifting apart is its own bug
+    expect(screen).toMatch(/\$\{l\.label\}, \$\{l\.n\.toLocaleString\(\)\} on the map/);
+  });
+});
