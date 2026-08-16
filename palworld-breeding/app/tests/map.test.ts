@@ -1044,3 +1044,42 @@ describe('lifting fingers off a pinch is not a tap', () => {
     expect(canvas).toMatch(/k\.value = withTiming\(next/);
   });
 });
+
+/* Found-marks are per save profile, and that correctness rests on three facts
+ * in three different files. The harness could not drive the profile UI (it is
+ * another session's screen and the button did not respond), so this is
+ * REASONED FROM THE CODE, not measured end to end — pinned here so a future
+ * change to any one of the three cannot break it silently. */
+describe('found-marks follow the save profile', () => {
+  const found = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'map', 'found.ts'), 'utf8',
+  );
+  const screen = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
+  );
+  const app = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'App.tsx'), 'utf8',
+  );
+
+  it('gives every profile its own key, so two saves cannot collide', () => {
+    expect(found).toMatch(/return `palforge-\$\{profileId\}-mapfound`/);
+    expect(found).toMatch(/const id = getActiveProfile\(\)\.id/);
+  });
+
+  it('reloads when the profile changed, and no-ops when it did not', () => {
+    expect(found).toMatch(/if \(loadedFor === id\) return;/);
+    expect(found).toMatch(/loadedFor = id;/);
+  });
+
+  it('reloads on every mount of the map', () => {
+    expect(screen).toMatch(/void loadFound\(\);/);
+  });
+
+  it('mounts only the ACTIVE screen, so returning to the map remounts it', () => {
+    // This is the load-bearing bit: if the shell ever keeps screens mounted
+    // for speed, the map would keep the previous profile's ticks and quietly
+    // show one save's progress on another.
+    expect(app).toMatch(/const Live = fullscreen \? LIVE_SCREENS\[domain\.id\]/);
+    expect(app).toMatch(/<Live \/>/);
+  });
+});

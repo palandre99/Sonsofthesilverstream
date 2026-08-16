@@ -1124,6 +1124,24 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       maths and three tests pin the two together, the tileLevelFor pattern.
       IF HE REPORTS THE SNAP AGAIN: the maths is proven, so look elsewhere —
       gesture composition, RNGH activation order, or the double-tap guard.
+- [x] L6 2026-08-16 ~22:12 FOUND-MARKS ACROSS SAVE PROFILES — verified by
+      code, and pinned, because the harness could not drive it. Ticked a
+      marker and confirmed the write lands under `palforge-default-mapfound`,
+      i.e. keyed to the profile. Then tried to switch profiles through
+      Settings: the "+ New profile" button did not respond to a synthetic
+      click, and that screen belongs to the other session, so I stopped
+      driving it rather than poke at their UI.
+      Established instead from the code, which is where the correctness
+      actually lives, and it spans THREE files:
+        found.ts   keys storage per profile and reloads only when the id changed
+        MapScreen  calls loadFound() on mount
+        App.tsx    renders ONE screen (`const Live = ...`), so navigating away
+                   unmounts the map and coming back remounts it
+      That last one is load-bearing and nothing links it to the map: if the
+      shell ever keeps screens mounted for speed, the map would keep the
+      previous profile's ticks and quietly show one save's progress on
+      another. Four tests now pin the chain so that cannot happen silently.
+      HONEST LIMIT: reasoned from the code, not measured end to end.
 - [ ] K5 "also many other issues" — HE HAS MORE AND HAS NOT LISTED THEM. Ask,
       or keep walking journeys until they surface. Do not guess at what he
       means and do not claim the map is finished.
