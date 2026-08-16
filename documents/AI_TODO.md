@@ -592,6 +592,21 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       A verification tool that fails quietly is worse than no tool: it produces
       confident wrong answers. This one now fails loudly or not at all.
 
+- [x] H13 2026-08-16 ~14:55 FOUND-TRACKING PERSISTENCE VERIFIED across an app
+      restart — and the first attempt wrongly looked like an app bug.
+      Ticked a marker, restarted, and storage came back completely EMPTY. The
+      hardened driver saved me here: it proved the page WAS the app, so I did
+      not dismiss it as a harness miss — but it also was not an app bug. The
+      driver killed Chrome outright, which loses anything the page has not
+      flushed to disk. It closes the browser gracefully now, and the tick
+      survives: `["fast_travel:palpagos:86"]`, still there on a fresh start.
+      HONEST LIMIT: this proves the LOGIC persists on the web build's
+      localStorage. The phone uses AsyncStorage, a different native store, so
+      persistence on the CEO's device is reasoned, not measured.
+- [ ] H14 A fourth harness trap in a day (kill-vs-close). Every one so far has
+      been the tool lying rather than the app failing. Before treating any
+      surprising result as an app bug, reproduce it a second way.
+
 ### Open — the map lane's own queue
 - [x] F23 DONE 2026-08-16 ~00:02: the preview's dense clusters were an
       unreadable scribble — 93 overlapping rings in one bay. Now thinned to one

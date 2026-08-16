@@ -304,8 +304,17 @@ async function main() {
   console.log('  page:', JSON.stringify(counts));
   if (errors.length) console.log('  JS ERRORS:', errors.slice(0, 5));
 
+  // Close the browser GRACEFULLY. Killing it loses anything the page had not
+  // flushed to disk yet — which made cross-restart persistence untestable:
+  // a tick written to storage vanished, and the app looked at fault when the
+  // driver was.
+  try {
+    await send('Browser.close');
+    await sleep(600);
+  } catch {
+    chrome.kill();
+  }
   ws.close();
-  chrome.kill();
 }
 
 main().catch((err) => {
