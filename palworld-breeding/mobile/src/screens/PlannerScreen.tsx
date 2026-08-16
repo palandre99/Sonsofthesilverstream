@@ -363,17 +363,26 @@ export function PlannerScreen() {
     return [...byWave.entries()].sort((x, y) => x[0] - y[0]);
   }, [plan, speedsRest]);
 
-  const done = plan
-    ? plan.steps.filter((st) =>
-        tickStateOf(checks[stepId(st.parents[0], st.parents[1], st.child)]) === 'full').length
-    : 0;
-  const partialCount = plan
-    ? plan.steps.filter((st) =>
-        tickStateOf(checks[stepId(st.parents[0], st.parents[1], st.child)]) === 'partial').length
-    : 0;
-  const readyNow = plan
-    ? [...stepMeta.entries()].filter(([sid, m]) => m.ready && !checks[sid]).length
-    : 0;
+  /** done / half-done / ready, in ONE cached pass.
+   *
+   * These were three separate un-memoized walks of the whole step list, each
+   * rebuilding a step's key string per step — and this screen re-renders on
+   * every store change (a tick, folding the tray, opening a sheet). On a
+   * 165-step plan that was ~500 key builds per render for three numbers.
+   * Found in a hostile re-read, 2026-08-16. */
+  const { done, partialCount, readyNow } = useMemo(() => {
+    if (!plan) return { done: 0, partialCount: 0, readyNow: 0 };
+    let full = 0;
+    let half = 0;
+    for (const st of plan.steps) {
+      const state = tickStateOf(checks[stepId(st.parents[0], st.parents[1], st.child)]);
+      if (state === 'full') full++;
+      else if (state === 'partial') half++;
+    }
+    let ready = 0;
+    for (const [sid, m] of stepMeta) if (m.ready && !checks[sid]) ready++;
+    return { done: full, partialCount: half, readyNow: ready };
+  }, [plan, checks, stepMeta]);
 
   /** The cheapest way into each goal that has no route, ranked easiest
    * first for THIS save and THIS player level. Measured at 185 ms cold /
