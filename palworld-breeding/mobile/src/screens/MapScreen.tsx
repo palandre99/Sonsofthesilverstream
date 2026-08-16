@@ -210,6 +210,13 @@ export function MapScreen() {
   // labels sit UNDER the pins: a place name must never cover a spawn
   const allMarkers = useMemo(() => [...labels, ...markers], [labels, markers]);
 
+  // picks that have no spawns on the map currently shown
+  const elsewhere = useMemo(
+    () => [...filters.pals].filter((n) => spawnLevels(n, region) === null),
+    [filters.pals, region],
+  );
+  const otherRegionName = region === 'palpagos' ? 'The World Tree' : 'Palpagos Islands';
+
   /* ------------------------------------------------------------ interaction */
 
   /**
@@ -353,6 +360,26 @@ export function MapScreen() {
             </Text>
           ))}
         </Pressable>
+      )}
+
+      {/* A pal picked on one map vanishes silently when you switch to the
+          other. Say so, and say where it does live, instead of showing an
+          empty world and letting the player wonder what broke. */}
+      {elsewhere.length > 0 && (
+        <View style={{
+          position: 'absolute', top: 56, left: 12, right: 12,
+          backgroundColor: 'rgba(12,22,24,0.94)', borderRadius: 12,
+          borderWidth: 1, borderColor: T.line, paddingHorizontal: 12, paddingVertical: 9,
+          flexDirection: 'row', alignItems: 'center', gap: 8,
+        }}>
+          <Icon name="information-outline" size={15} color={T.muted} />
+          <Text style={[s.body, { fontSize: 12.5, flex: 1 }]}>
+            {elsewhere.length === 1
+              ? `${elsewhere[0]} doesn't live on this map.`
+              : `${elsewhere.length} of your picks don't live on this map.`}
+            {' '}Try {otherRegionName}.
+          </Text>
+        </View>
       )}
 
       {/* bottom controls */}

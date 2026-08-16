@@ -336,6 +336,13 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       or a static guard before it ships. Treat "eye-verified in the browser"
       as proof of composition and data ONLY.
 
+- [x] F36 DONE 2026-08-16 ~12:30: picking a pal on one map and switching to
+      the other used to empty the map with no explanation. It now says
+      "Foxparks doesn't live on this map. Try Palpagos Islands." Verified by
+      page text — the QA driver's own viewport guard fired on that run
+      (587x1272 instead of 375x812), so the screenshot was not trusted for
+      layout. The guard works.
+
 ### Open — the map lane's own queue
 - [x] F23 DONE 2026-08-16 ~00:02: the preview's dense clusters were an
       unreadable scribble — 93 overlapping rings in one bay. Now thinned to one

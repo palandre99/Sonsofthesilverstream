@@ -425,8 +425,11 @@ export function PlannerScreen() {
 
   return (
     <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
+      {/* the sub used to read "shared intermediates counted once, phases run
+          in parallel, gender-aware ready-states" — three pieces of engine
+          jargon on the first line a player ever reads (CEO 2026-08-16) */}
       <PageHead title="Route Planner"
-        sub="Shortest shared breeding tree from your box — shared intermediates counted once, phases run in parallel, gender-aware ready-states." />
+        sub="The shortest breeding route to the pals you want, from the pals you already own." />
 
       {fromCard && (
         <BackToCardChip name={fromCard}
@@ -443,10 +446,61 @@ export function PlannerScreen() {
         </Card>
       )}
 
-      <View style={[s.wrap, { marginBottom: 10 }]}>
-        <Btn small primary label="Suggested goals…" onPress={() => setSuggesting(true)} />
-        <Btn small label="+ Add target…" onPress={() => setPicking(true)} />
-      </View>
+      {/* BEFORE a plan exists this screen was two small buttons above a
+          screenful of black (CEO 2026-08-16: "very empty and poorly
+          designed… like temu version"). It now opens with a real welcome
+          that says what the tab does and gives one obvious way in. */}
+      {!plan && targets.length === 0 ? (
+        <>
+          <Card style={{ alignItems: 'center', paddingVertical: 24, gap: 10 }}>
+            <View style={{
+              width: 66, height: 66, borderRadius: 33, backgroundColor: T.accentSoft,
+              alignItems: 'center', justifyContent: 'center',
+            }}>
+              <Icon name="egg-outline" size={32} color={T.accentInk} />
+            </View>
+            <Text style={[s.h2, { textAlign: 'center' }]}>What do you want to breed?</Text>
+            <Text style={[s.body, { textAlign: 'center', maxWidth: 320 }]}>
+              Choose your goals and this builds the shortest route from the pals
+              in your Paldex — then you tick each egg off as it hatches.
+            </Text>
+            <View style={{ alignSelf: 'stretch', gap: 8, marginTop: 8 }}>
+              <Btn primary label="Browse suggested goals"
+                onPress={() => setSuggesting(true)} />
+              <Btn label="Pick a pal yourself" onPress={() => setPicking(true)} />
+            </View>
+          </Card>
+
+          <Card style={{ marginTop: 12, gap: 12 }}>
+            {[
+              { n: '1', t: 'Choose your goals',
+                d: 'Any pals you want — suggestions are ranked by how close they already are to your save.' },
+              { n: '2', t: 'Get one shared route',
+                d: 'Pals needed by several goals are bred once, not twice, and steps that can run at the same time are grouped.' },
+              { n: '3', t: 'Tick eggs off as they hatch',
+                d: 'Each tick adds the pal to your Paldex and shows what is ready to breed next.' },
+            ].map((step) => (
+              <View key={step.n} style={{ flexDirection: 'row', gap: 11, alignItems: 'flex-start' }}>
+                <View style={{
+                  width: 24, height: 24, borderRadius: 12, backgroundColor: T.surface2,
+                  alignItems: 'center', justifyContent: 'center', marginTop: 1,
+                }}>
+                  <Text style={{ color: T.accentInk, fontWeight: '800', fontSize: 12 }}>{step.n}</Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: T.ink, fontWeight: '800', fontSize: 13.5 }}>{step.t}</Text>
+                  <Text style={[s.body, { fontSize: 12 }]}>{step.d}</Text>
+                </View>
+              </View>
+            ))}
+          </Card>
+        </>
+      ) : (
+        <View style={[s.wrap, { marginBottom: 10 }]}>
+          <Btn small primary label="Suggested goals…" onPress={() => setSuggesting(true)} />
+          <Btn small label="+ Add target…" onPress={() => setPicking(true)} />
+        </View>
+      )}
 
       {/* the goal tray — proper cards with icons and a real remove target,
           folding to one quiet line once the plan matches the goals (CEO:
@@ -525,14 +579,19 @@ export function PlannerScreen() {
         );
       })()}
 
-      <Btn
-        primary
-        disabled={!targets.length || !ownedNames.length || busy}
-        label={busy ? 'Planning…'
-          : targets.length ? `Plan ${targets.length} target${targets.length > 1 ? 's' : ''}`
-          : 'Plan targets'}
-        onPress={confirmRun}
-      />
+      {/* a big dead "Plan targets" button with nothing to plan was half the
+          reason the empty screen felt broken — the welcome card carries the
+          call to action there instead */}
+      {!(!plan && targets.length === 0) && (
+        <Btn
+          primary
+          disabled={!targets.length || !ownedNames.length || busy}
+          label={busy ? 'Planning…'
+            : targets.length ? `Plan ${targets.length} target${targets.length > 1 ? 's' : ''}`
+            : 'Plan targets'}
+          onPress={confirmRun}
+        />
+      )}
       {busy && <ActivityIndicator color={T.accent} style={{ marginTop: 14 }} />}
 
       {planError && (
