@@ -1517,6 +1517,38 @@ and u are idle and not working again… loop not working"
 => (c) He perceives IDLE TIME. Re-arm at 60s and do MORE per turn; never
    end a turn on one small fix.
 
+## E24. THE LAST UNEXERCISED BEHAVIOUR 2026-08-16 (no CEO prompt — the lane)
+
+- [x] E24a TICK-CLAIM RULE EXTRACTED AND TESTED (commit 305d7f2, PUBLISHED).
+      The E23c fix had been hand-copied into mobile/src/store.ts AND
+      app/src/modules/plan.tsx — two implementations of the rule that decides
+      whether a player's collection is honest, i.e. exactly the arrangement
+      the parity gate exists to prevent. Now `logic/ticks.ts`
+      (`claimFor` + `afterUntick`), mirrored, parity-gated, **14 tests**
+      pinning both the two-halves regression and the must-not-over-remove
+      case. Also closes the long-standing "mobile has no test harness" gap
+      for the one piece of store logic that can corrupt data.
+      Re-verified at RUNTIME after the refactor (no errors, tab renders,
+      collection intact) rather than trusting the tests alone.
+- [x] E24b PHASE HEADERS + FOLDING — VERIFIED, **NO BUGS**. Was deferred
+      twice by hot reloads; done by making ZERO edits first and running the
+      browser work uninterrupted.
+      · Multi-step phases read "Phase N · everything here can run in
+        parallel"; a ONE-step phase correctly omits that line (nothing to
+        run in parallel with).
+      · Ticking all 3 steps of Phase 1: DONE 0/8 → 3/8, the phase folds to
+        "Phase 1 complete · 3 steps · tap to show" (a11y label "Phase 1
+        complete — show its 3 steps", plural correct), and BOTH Phase 2
+        steps flip from "waiting on…" to "✓ ready to breed" as the new pals
+        unlock them. READY NOW = 2.
+      · Tapping the folded phase re-expands it and the subtitle swaps to
+        "Phase 1 · complete".
+      **THE WHOLE PLAN TAB HAS NOW BEEN EXERCISED END TO END.**
+- [ ] E24c STILL OPEN: the REPLACE-PLAN confirm ('replace' in `managing`) —
+      change goals mid-plan with real progress and check the warning fires
+      and what survives. Also consider extracting `planIsCurrent` and the
+      draftTargets rules the way ticks.ts was extracted, so they get tests.
+
 ## E23. SUBSTANCE + THE CORE LOOP 2026-08-16 (no CEO prompt — the lane)
 
 - [x] E23a GOAL PROGRESS NAMES THE NEXT PAIR (commit 8236284, PUBLISHED).
