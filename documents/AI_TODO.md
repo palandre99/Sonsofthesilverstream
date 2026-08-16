@@ -785,6 +785,44 @@ gated + eye-verified); **do NOT start deep work that Fable does better**
 Nothing in the Plan-tab queue is blocked by this — what remains there is
 polish, micro-QoL and copy, which is safe to keep shipping.
 
+### FOR FABLE — derivations() is doing ~98% wasted work (MEASURED)
+Profiled 2026-08-16 ~14:20 with a throwaway instrumented COPY of the
+algorithm (the engine file itself was never touched; probe deleted).
+Roster of 8 pals, the real cost behind the ~1.2 s Suggested-goals wait:
+
+  candidates built ......... 269,678
+  survived the size check ..... 5,029   (2%)
+  actually accepted ............ 550
+  fixpoint sweeps ............... 19
+  tie-counting units ....... 4,813,024   (parseStep + engine.childOf each)
+  key-building units ....... 4,813,024   (sort + join per candidate)
+  → ~4,723,270 tie units (98%) are computed and thrown away
+
+WHY: `better()` compares `steps.size` FIRST and only reads `ties`/`key`
+when the sizes are equal — but the loop builds `ties` and `key` EAGERLY
+for every candidate before calling it. 98% of that work is decided by
+size alone and never read.
+
+PROPOSED (behaviour-preserving; the oracle + byte-parity gates verify):
+ 1. Make `ties` and `key` LAZY on the Derivation — computed on first
+    read and cached. `better()` then only triggers them on the ~2% of
+    comparisons that actually reach those lines.
+    NOTE the subtlety: a stored Derivation may have its ties/key read
+    LATER when something compares against it, so lazy-with-cache is
+    needed, not merely "move the two lines down".
+ 2. Memoize tie-ness per stepId (`parseStep` + `childOf(...).tieBreak`
+    is invariant for a given step id) — kills the repeated parsing.
+Both are pure optimisations: identical outputs, so the 44,851-row oracle
+and the engine parity gate are the proof.
+
+CAVEAT, do not overclaim: measured under Node/vitest, not on device.
+The RATIO of wasted work is platform-independent; the absolute
+milliseconds are not.
+
+DELIBERATELY NOT DONE BY ME: this is engine code and "planner/derivations
+perf re-architecture" is explicitly parked for Fable. Ledgered with hard
+numbers so it is nearly mechanical to execute.
+
 ### E13 polish-lane findings (hostile deep-eval passes, ongoing)
 - [x] 2026-08-16 ~14:00 **PERF BUG in my own Phase-4 work, MEASURED not
       guessed**: opening Suggested goals froze the thread for ~1.2 s and
