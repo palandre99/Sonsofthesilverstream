@@ -38,6 +38,11 @@ const Row = memo(function Row({ name, onOpen, focus }: {
   return (
     <Pressable
       onPress={() => onOpen(name)}
+      // the row opened a pal card but never said it was pressable, and
+      // "you own this" lived only in the row's opacity (self-found while
+      // measuring the job chips, 2026-08-16)
+      accessibilityRole="button"
+      accessibilityLabel={`${name}. ${owned ? 'in your Paldex' : 'not in your Paldex yet'}`}
       style={({ pressed }) => [{
         flexDirection: 'row', alignItems: 'center', gap: 8,
         backgroundColor: T.surface, borderColor: T.line, borderWidth: 1,
@@ -52,7 +57,10 @@ const Row = memo(function Row({ name, onOpen, focus }: {
         </Text>
         <View style={[s.wrap, { marginTop: 2 }]}>
           <ElementChips name={name} />
-          <WorkChips name={name} top={focus ? 2 : 1} focus={focus} />
+          {/* was ONE job unless you had filtered — you could not tell a
+              Mining-3 pal from one that is Mining 3 AND Lumbering 2. Three,
+              matching the pal picker (CEO 2026-08-16). */}
+          <WorkChips name={name} top={3} focus={focus} />
         </View>
       </View>
       <GenderToggles name={name} size={28} />
