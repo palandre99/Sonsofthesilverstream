@@ -121,7 +121,9 @@ function HatchSheet({ child, sid, have, onClose }: {
           <Text style={[s.body, { marginTop: 4, textAlign: 'center' }]}>
             {partial
               ? `You have the ${have!.m ? '♂' : '♀'} — hatch the ${have!.m ? '♀' : '♂'} and the step turns green.`
-              : 'Which genders do you have? It goes straight into your Paldex — no double registration.'}
+              // "no double registration" was database talk on the one screen
+              // a player reaches at their happiest moment
+              : 'Which genders did you get? It goes into your Paldex for you — you do not have to add it yourself.'}
           </Text>
           <View style={[s.wrap, { marginTop: 14, justifyContent: 'center' }]}>
             {partial ? (
@@ -1227,7 +1229,9 @@ export function PlannerScreen() {
                   : managing === 'replace'
                     ? `Your current plan still has unfinished steps (${done} of ${plan?.steps.length ?? 0} done). Planning these goals builds a fresh route — finished steps whose pals you hatched stay yours, but the old route is gone.`
                     : managing === 'removeall'
-                      ? 'Empties your goal list so you can pick fresh. Your current plan and its progress stay until you press Plan again.'
+                      // it used to say "until you press Plan again" — that
+                      // button no longer sits there once a route exists
+                      ? 'Empties your goal list so you can pick fresh. The route you already have, and everything you have ticked off, stays until you build a new one.'
                       : 'Forgets the plan and its ticks so you can plan fresh. Your collection stays exactly as it is — hatched pals are still yours.'}
               </Text>
               <View style={[s.wrap, { marginTop: 14 }]}>

@@ -941,7 +941,7 @@ export function PlanPage() {
               {managing === 'reset'
                 ? 'Every tick is undone properly — pals that ticks registered are removed from your Paldex again; anything you owned before stays.'
                 : managing === 'removeall'
-                  ? 'Empties your goal list so you can pick fresh. Your current plan and its progress stay until you press Plan again.'
+                  ? 'Empties your goal list so you can pick fresh. The route you already have, and everything you have ticked off, stays until you build a new one.'
                   : 'Forgets the plan and its ticks so you can plan fresh. Your collection stays exactly as it is — hatched pals are still yours.'}
             </p>
             <div class="importbtns">
@@ -976,7 +976,7 @@ export function PlanPage() {
                 <p style={{ color: 'var(--muted)', fontSize: '13.5px', textAlign: 'center', margin: 0 }}>
                   {isPartial
                     ? `You have the ${have!.m ? '♂' : '♀'} — hatch the ${have!.m ? '♀' : '♂'} and the step turns green.`
-                    : 'Which genders do you have? It goes straight into your Paldex — no double registration.'}
+                    : 'Which genders did you get? It goes into your Paldex for you — you do not have to add it yourself.'}
                 </p>
                 <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'center', marginTop: '8px' }}>
                   {isPartial ? (
