@@ -70,6 +70,10 @@ export function WorkChips({ name, top = 3, all = false }: {
   const jobs = all
     ? (Object.entries(p.work ?? {}).sort((a, b) => b[1] - a[1]) as [string, number][])
     : topWork(p, top);
+  // 75 of the 299 pals do more jobs than a compact row can show (Beegarde does
+  // seven). Cutting the list and saying nothing read as the whole answer, so
+  // the row now admits what it left out — same rule as the catch hints.
+  const hidden = Object.keys(p.work ?? {}).length - jobs.length;
   return (
     <>
       {jobs.map(([job, lvl]) => (
@@ -80,6 +84,12 @@ export function WorkChips({ name, top = 3, all = false }: {
           <b>{lvl}</b>
         </span>
       ))}
+      {!all && hidden > 0 && (
+        <span class="chip work" style="opacity:.65"
+          title={`and ${hidden} more job${hidden === 1 ? '' : 's'}`}>
+          +{hidden}
+        </span>
+      )}
     </>
   );
 }

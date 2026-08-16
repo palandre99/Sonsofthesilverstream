@@ -93,6 +93,10 @@ export function WorkChips({ name, top = 2, all = false, focus }: {
       jobs = ([[focus, lvl], ...rest] as [string, number][]).slice(0, Math.max(1, top));
     }
   }
+  // 75 of the 299 pals do more jobs than a compact row can show (Beegarde does
+  // seven). Showing three and stopping read as the whole answer, the same way
+  // the catch hints did — so the row now says how many it left out.
+  const hidden = Object.keys(p.work ?? {}).length - jobs.length;
   return (
     <>
       {jobs.map(([job, lvl]) => {
@@ -115,6 +119,14 @@ export function WorkChips({ name, top = 2, all = false, focus }: {
           </View>
         );
       })}
+      {!all && hidden > 0 && (
+        <View accessible accessibilityLabel={`and ${hidden} more job${hidden === 1 ? '' : 's'}`}
+          style={[s.chip, {
+            backgroundColor: T.surface2, paddingHorizontal: 8, paddingVertical: 4,
+          }]}>
+          <Text style={[s.chipText, { color: T.faint }]}>+{hidden}</Text>
+        </View>
+      )}
     </>
   );
 }

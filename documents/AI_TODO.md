@@ -1875,6 +1875,37 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E60. THE FOOD GAUGE HAD A FAKE CEILING TOO, AND THE JOB ROW HID A
+## QUARTER OF THE PALDEX 2026-08-16
+
+Kept testing printed numbers. Two more, both on BOTH platforms where it
+applies.
+
+- [x] **THE FOOD GAUGE DREW TEN SLOTS; THE HUNGRIEST PAL IN THE GAME IS 9.**
+      `Array.from({ length: 10 })` — hard-coded. Food values run 1..9 across
+      all 299 species (39/39/41/32/34/30/29/29/25, one null), so **every pal
+      showed at least one empty pip**, implying an appetite tier that does
+      not exist, and the 25 hungriest pals were drawn as not-quite-maxed.
+      Exactly the E57 stat-bar mistake in a different widget. `FOOD_MAX` is
+      now read from the data. Verified live: Beegarde renders 9 pips, the
+      first 3 FoodOn and the last 6 FoodOff (its food is 3).
+- [x] **THE WORK CHIPS HID JOBS FOR 75 OF 299 PALS.** `WorkChips` shows the
+      top 3 (top 1 on the web's narrower grid card) and said nothing about
+      the rest. Beegarde does SEVEN jobs. Both platforms now end the row with
+      a "+N" chip, labelled "and N more jobs" for a screen reader. Verified:
+      the phone row reads "3 · 3 · 2 · +4", the web reads "+6" beside its
+      single chip, neither wraps and the web row height is unchanged (54px).
+      The `focus` behaviour that keeps a filtered job visible is untouched.
+- **16th BAD CHECK OF MINE:** I first wrote the web chip as
+  `class="chip work dim"`. It rendered — and was not dim at all, because
+  `.chip.work` beats `.dim` on specificity. Measured getComputedStyle rather
+  than trusting the class name; now an explicit opacity. **Second time in two
+  turns that a web class name did nothing. ALWAYS measure the computed
+  style, never assume a class exists or wins.**
+- **CHECKED, NOT A BUG:** the pal card lists ALL work suitabilities and ALL
+  drops on both platforms — no truncation there. `egg_types` is exactly one
+  per pal for 298 of 299. `drops` runs 0..6 and is fully rendered.
+
 ## E59. CEO-FACING: A DEV SERVER HAS BEEN EATING 1.4 CORES FOR 29 HOURS 2026-08-16
 
 Ran the documented session-start process check (08_TOOLS_AND_COMMANDS.md §1)

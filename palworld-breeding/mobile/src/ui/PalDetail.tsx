@@ -37,6 +37,12 @@ const STAT_MAX: Record<'hp' | 'atk' | 'def', number> = (() => {
   return m;
 })();
 
+/** The hungriest pal in the game, read from the data. The gauge below used to
+ * draw a flat ten slots, so even a 9 — the real maximum — showed one empty
+ * pip, implying an appetite tier that does not exist. Same mistake the stat
+ * bars made with their invented ceiling of 150. */
+const FOOD_MAX = Math.max(1, ...Object.values(pals).map((q) => q.food ?? 0));
+
 /** Where a value sits among all species for one stat (1 = best), and how many
  * other species sit on exactly the same spot. The ties here are enormous —
  * 121 pals have exactly 100 attack — so a bare "#132 of 299" read as a precise
@@ -307,7 +313,7 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
               <Image source={STAT_ICONS.food_on} style={{ width: 18, height: 18 }} />
               <Text style={{ color: T.muted, width: 56, fontSize: 11, fontWeight: '800' }}>Food</Text>
               <View style={{ flexDirection: 'row', gap: 2 }}>
-                {Array.from({ length: 10 }, (_, i) => (
+                {Array.from({ length: FOOD_MAX }, (_, i) => (
                   <Image
                     key={i}
                     source={i < (p.food ?? 0) ? STAT_ICONS.food_on : STAT_ICONS.food_off}
