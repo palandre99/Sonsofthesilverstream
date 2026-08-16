@@ -44,7 +44,7 @@ export function ReferenceScreen() {
       </Section>
 
       <Section title="What an egg rolls">
-        <P>• Passives from the parents: the merged, de-duplicated pool; the child draws
+        <P>• Passives from the parents: pooled together, each listed once; the child draws
         1–4 with weights 40/30/20/10.</P>
         <P>• Random passives: an independent roll adds 0–3 new ones (40/30/20/10),
         capped at four slots.</P>

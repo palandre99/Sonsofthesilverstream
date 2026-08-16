@@ -1744,6 +1744,36 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E43. JARGON AUDIT — BOTH PLATFORMS 2026-08-16 (no CEO prompt — the lane)
+
+Every string that reaches the screen in both trees, read as a player who has
+never seen the code. "tie-break" was banned BY NAME; this looked for its
+whole family.
+
+- [x] **"de-duplicated" — a programmer's word, in FOUR places on both
+      platforms**: the Odds pool description (phone AND web), the Reference
+      tab's egg-roll explainer, and the website's mechanics page. Exactly the
+      banned class. All now read "each listed once".
+- [x] "top **composite** stats" in meta.ts (mirrored in both trees), shown on
+      the "best pals in the game" rows → "the best all-round stats".
+- [x] THE REST IS CLEAN. Scanned every prose string literal and every
+      multi-line JSX text node in mobile/src AND app/src against a list of
+      ~40 developer words (node, closure, payload, cache, query, threshold,
+      heuristic, schema, parse, callback, iterate…). After discarding regex
+      false positives on TypeScript generics between `>` and `<`, the two
+      above were the only real hits in the entire app.
+- **DELIBERATELY NOT CHANGED: `verification.json`'s claim text still says
+  "de-duplicated".** That string renders in the Reference tab's verified-
+  claims list — but that list is the "with receipts" screen, and its
+  neighbouring evidence lines say "CombiRank", "DT_PalCombiUnique" and
+  "ignoreCombi-39". Technical precision IS the register there; plain-ing one
+  word would leave it inconsistent with everything around it, and it edits a
+  research record for no reader benefit. The engine's own code comment keeps
+  the word too — not user-visible, and the engine is sacred.
+- Caught my own bad copy in the same pass: my first replacement made the
+  Reference line read "Passives from the parents: both parents' pooled",
+  which is redundant and clumsy. Tightened to "pooled together".
+
 ## E42. SUGGESTED GOALS HOSTILE READ 2026-08-16 (no CEO prompt — the lane)
 
 The last and largest unread component (813 lines). Read against CLAUDE.md's

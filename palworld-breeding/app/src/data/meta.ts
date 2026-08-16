@@ -26,7 +26,7 @@ export const BEST_OVERALL: MetaPick[] = [
   { name: 'Jetragon', why: 'The fastest thing in the sky — and still a monster in a fight.' },
   { name: 'Bellanoir Libero', why: 'Top-rated raid boss for endgame fights.' },
   { name: 'Knocklem Ignis', why: 'Rated the strongest all-round fighter of the 1.0 roster.' },
-  { name: 'Eidrolon Ignis', why: 'Elite fighter with top composite stats in both rankings.' },
+  { name: 'Eidrolon Ignis', why: 'Elite fighter with the best all-round stats in both rankings.' },
   { name: 'Blazamut Ryu', why: 'Devastating attacker among the raid legendaries.' },
   { name: 'Frostallion Noct', why: 'Legendary fighter with one of the best stat lines in the game.' },
   { name: 'Anubis', why: 'The classic: elite fighter AND an SS-tier worker.' },

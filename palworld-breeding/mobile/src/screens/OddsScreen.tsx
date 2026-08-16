@@ -186,7 +186,7 @@ function PassivesTab() {
       <Card style={{ marginTop: 12 }}>
         <Text style={s.h2}>The pool</Text>
         <Text style={[s.body, { marginTop: 4 }]}>
-          Both parents' passives, de-duplicated. Tick what you want — everything else
+          Both parents' passives, each listed once. Tick what you want — everything else
           is junk that dilutes the draw.
         </Text>
         {pool.length === 0 ? (

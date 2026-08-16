@@ -269,7 +269,7 @@ function PassivesTab() {
 
       <div class="card bigcard" style={{ marginTop: '14px' }}>
         <h2>The pool</h2>
-        <p>Both parents' passives, combined and de-duplicated. Tick the ones you
+        <p>Both parents' passives, combined and each listed once. Tick the ones you
           actually want in the child — everything else is junk that dilutes the draw.</p>
         {pool.length === 0 ? (
           <p class="dim" style={{ marginTop: '10px' }}>

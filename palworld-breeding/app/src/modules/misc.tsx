@@ -74,7 +74,7 @@ export function ReferencePage() {
           from the game's own settings table:</p>
         <ul class="reflist">
           <li><b>Passives from the parents</b> — both parents' passives merge into one
-            de-duplicated pool; the child draws 1–4 of them with weights 40/30/20/10.
+            pool with each listed once; the child draws 1–4 of them with weights 40/30/20/10.
             Duplicated passives on both parents never double the odds.</li>
           <li><b>Random passives</b> — a second roll adds 0–3 brand-new passives
             (weights 40/30/20/10), capped at four total slots.</li>
