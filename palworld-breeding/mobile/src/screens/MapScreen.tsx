@@ -842,8 +842,39 @@ function emptyReason(f: MapFilters, region: RegionId): { title: string; body: st
   }
   return {
     title: 'Nothing here on this map',
-    body: 'What you switched on does not appear in this region. Try the other map at the top.',
+    body: `${namedLayers(f, region) ?? 'What you switched on does not appear'} in `
+      + 'this region. Try the other map at the top.',
   };
+}
+
+/**
+ * The layers you switched on, written out, when NONE of them exist here.
+ *
+ * 15 of the 23 layers have no points at all on the World Tree — ore, coal,
+ * sulfur, paldium, quartz, dungeons and more are Palpagos-only. Telling a
+ * player "what you switched on does not appear in this region" makes them go
+ * and check which of the three it was; the app already knows it was all of
+ * them, and naming them is the same courtesy the day/night message gives.
+ * Returns null when only some are missing, because then the map is not empty
+ * and this message is not the one being shown.
+ */
+function namedLayers(f: MapFilters, region: RegionId): string | null {
+  const names: string[] = [];
+  for (const id of f.poi) {
+    if ((poiPoints(id, region)?.n ?? 0) > 0) return null;   // not all missing
+    const label = poiLayer(id)?.label;
+    if (label) names.push(label.toLowerCase());
+  }
+  if (!names.length) return null;
+  // carry the verb with the subject, or a list reads "Ore, sulfur and coal
+  // DOES not appear" — bad grammar in his app is as bad as jargon in it
+  if (names.length === 1) return `${capitalise(names[0])} does not appear`;
+  const last = names.pop()!;
+  return `${capitalise(`${names.join(', ')} and ${last}`)} do not appear`;
+}
+
+function capitalise(t: string): string {
+  return t.charAt(0).toUpperCase() + t.slice(1);
 }
 
 /** which of the three time settings a filter represents */

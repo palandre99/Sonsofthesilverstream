@@ -1145,3 +1145,36 @@ describe('POI layers split correctly between the two maps', () => {
     }
   });
 });
+
+/* 15 of the 23 layers have NO points on the World Tree — ore, coal, sulfur,
+ * paldium, quartz, dungeons and more are Palpagos-only. Switching regions with
+ * those on empties the map, and "what you switched on does not appear here"
+ * made the player go and work out which ones. The app already knew. */
+describe('an empty region names the layers that are missing', () => {
+  const screen = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
+  );
+
+  it('lists them instead of saying "what you switched on"', () => {
+    expect(screen).toMatch(/function namedLayers/);
+    expect(screen).toMatch(/poiLayer\(id\)\?\.label/);
+  });
+
+  it('only names them when ALL of them are missing here', () => {
+    // if even one has points the map is not empty and this is not the message
+    expect(screen).toMatch(/if \(\(poiPoints\(id, region\)\?\.n \?\? 0\) > 0\) return null;/);
+  });
+
+  it('gets the verb right for one layer and for several', () => {
+    // "Ore, sulfur and coal DOES not appear" is as bad as jargon
+    expect(screen).toMatch(/\$\{capitalise\(names\[0\]\)\} does not appear/);
+    expect(screen).toMatch(/do not appear/);
+  });
+
+  it('the data really does leave 15 layers empty on the tree', () => {
+    const empty = MAP_POIS.filter((l) => (poiPoints(l.id, 'tree')?.n ?? 0) === 0);
+    expect(empty.length).toBe(15);
+    // and every one of them has points on Palpagos, or it would not ship
+    for (const l of empty) expect(poiPoints(l.id, 'palpagos')?.n ?? 0).toBeGreaterThan(0);
+  });
+});

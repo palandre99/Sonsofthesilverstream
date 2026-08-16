@@ -1173,6 +1173,21 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       exactly 155 and 15. Generalised it — a test now asserts that for ALL 23
       layers the two regions' counts add up to the layer's total, so a
       regeneration that lost the region flag fails immediately.
+- [x] L8 2026-08-16 ~22:55 AN EMPTY WORLD TREE NOW NAMES WHAT IS MISSING.
+      Measured the split first: 15 of the 23 POI layers have ZERO points on the
+      World Tree — ore, coal, sulfur, paldium, quartz, dungeons, merchants,
+      notes, berries, mushrooms, oil, soralite, sealed realms, bounties and pal
+      merchants are all Palpagos-only. So switching regions with any of them on
+      empties the map, which is a thing a player will hit constantly.
+      The empty panel fired correctly but said "What you switched on does not
+      appear in this region" — making him go and work out WHICH of the three he
+      had picked, when the app already knew it was all of them. It names them
+      now: "Ore, sulfur and coal do not appear in this region. Try the other map
+      at the top." Only when ALL of them are missing, because if even one has
+      points the map is not empty and this message is not the one showing.
+      Grammar carried with the subject after the first attempt read "Ore,
+      sulfur and coal DOES not appear" — bad grammar in his app is as bad as
+      jargon in it. Verified all three cases on screen: one layer, two, three.
 - [ ] K5 "also many other issues" — HE HAS MORE AND HAS NOT LISTED THEM. Ask,
       or keep walking journeys until they surface. Do not guess at what he
       means and do not claim the map is finished.
