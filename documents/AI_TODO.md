@@ -343,6 +343,23 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       (587x1272 instead of 375x812), so the screenshot was not trusted for
       layout. The guard works.
 
+### G. CEO FEEDBACK 2026-08-16 ~12:30 (on device, with screenshots)
+- [x] G1 "lot of black void" — zooming out to CONTAIN left huge black bands
+      above and below the square map on a tall phone. The zoom floor is now
+      COVER: the map always fills the screen, so there is no view with empty
+      space in it. Fit-to-screen resets to cover too.
+- [x] G2 "zooming feature is broken" — at zoom the tile container painted
+      straight OVER the app header, which is why it looked wrong rather than
+      merely zoomed. The canvas and its gesture layer now clip their content
+      (`overflow: 'hidden'`).
+- [ ] G3 "doesn't look like the angle is the same as the in-game version" —
+      OPEN, and NOT guessed at. Confirmed `T_WorldMap` is exactly the texture
+      the game's own Map view uses (palworld.wiki.gg Game Files/Guide), so the
+      ART is right and the difference must be a rotation the game's map widget
+      applies at display time. Need the CEO to say which way it is turned
+      relative to ours before rotating anything — a wrong guess moves every
+      pin and label with it.
+
 ### Open — the map lane's own queue
 - [x] F23 DONE 2026-08-16 ~00:02: the preview's dense clusters were an
       unreadable scribble — 93 overlapping rings in one bay. Now thinned to one

@@ -86,11 +86,11 @@ export function MapCanvas({
   canvasRef?: React.MutableRefObject<MapCanvasHandle | null>;
 }) {
   const [size, setSize] = useState({ w: 0, h: 0 });
-  // The map is square and the screen is not, so "fit" is two different things.
-  // We OPEN at cover (max side — the map fills the screen the way it does in
-  // game) and let the player pinch out to contain (min side), where the whole
-  // world is visible. Contain is therefore the zoom-out floor.
-  const contain = Math.min(size.w, size.h) || 1;
+  // The map is square and the screen is not. Zooming out to "zoomFloor" left
+  // huge black bands above and below the map on a phone (CEO, with a
+  // screenshot), so COVER is the floor: the map always fills the screen, the
+  // way it does in game. There is no view in which you see empty space.
+  const zoomFloor = Math.max(size.w, size.h) || 1;
 
   const tx = useSharedValue(0);
   const ty = useSharedValue(0);
@@ -145,7 +145,7 @@ export function MapCanvas({
       startTy.value = ty.value;
     })
     .onUpdate((e) => {
-      const next = Math.min(contain * MAX_ZOOM, Math.max(contain, startK.value * e.scale));
+      const next = Math.min(zoomFloor * MAX_ZOOM, Math.max(zoomFloor, startK.value * e.scale));
       const ratio = next / startK.value;
       // keep the pinch focal point pinned under the fingers
       const nx = e.focalX - (e.focalX - startTx.value) * ratio;
@@ -154,12 +154,12 @@ export function MapCanvas({
       k.value = next;
       tx.value = c.x;
       ty.value = c.y;
-    }), [clamp, contain, k, startK, startTx, startTy, tx, ty]);
+    }), [clamp, zoomFloor, k, startK, startTx, startTy, tx, ty]);
 
   const doubleTap = useMemo(() => Gesture.Tap()
     .numberOfTaps(2)
     .onEnd((e) => {
-      const next = k.value > contain * 3.5 ? contain : Math.min(contain * MAX_ZOOM, k.value * 2.5);
+      const next = k.value > zoomFloor * 3.5 ? zoomFloor : Math.min(zoomFloor * MAX_ZOOM, k.value * 2.5);
       const ratio = next / k.value;
       const nx = e.x - (e.x - tx.value) * ratio;
       const ny = e.y - (e.y - ty.value) * ratio;
@@ -167,7 +167,7 @@ export function MapCanvas({
       k.value = withTiming(next, { duration: 220 });
       tx.value = withTiming(c.x, { duration: 220 });
       ty.value = withTiming(c.y, { duration: 220 });
-    }), [clamp, contain, k, tx, ty]);
+    }), [clamp, zoomFloor, k, tx, ty]);
 
   const tap = useMemo(() => Gesture.Tap()
     .maxDuration(260)
@@ -256,7 +256,7 @@ export function MapCanvas({
   }, [onViewport, size.h, size.w]);
 
   const applyFocus = useCallback((u: number, v: number, zoom: number, animate: boolean) => {
-    const next = Math.min(contain * MAX_ZOOM, Math.max(contain, contain * zoom));
+    const next = Math.min(zoomFloor * MAX_ZOOM, Math.max(zoomFloor, zoomFloor * zoom));
     const c = clamp(size.w / 2 - u * next, size.h / 2 - v * next, next);
     const ms = animate ? 320 : 0;
     // Push the FINAL rect when the animation lands. The reaction below only
@@ -270,7 +270,7 @@ export function MapCanvas({
     });
     tx.value = withTiming(c.x, { duration: ms });
     ty.value = withTiming(c.y, { duration: ms });
-  }, [clamp, contain, k, settle, size.h, size.w, tx, ty]);
+  }, [clamp, zoomFloor, k, settle, size.h, size.w, tx, ty]);
 
   // A pal card can ask us to frame a species the same frame it mounts us, so
   // the request routinely arrives BEFORE the first layout. Focusing then would
@@ -292,12 +292,12 @@ export function MapCanvas({
       applyFocus(u, v, zoom, true);
     },
     reset: () => {
-      const c = clamp((size.w - contain) / 2, (size.h - contain) / 2, contain);
-      k.value = withTiming(contain, { duration: 320 });
+      const c = clamp((size.w - zoomFloor) / 2, (size.h - zoomFloor) / 2, zoomFloor);
+      k.value = withTiming(zoomFloor, { duration: 320 });
       tx.value = withTiming(c.x, { duration: 320 });
       ty.value = withTiming(c.y, { duration: 320 });
     },
-  }), [applyFocus, clamp, contain, k, size.h, size.w, tx, ty]);
+  }), [applyFocus, clamp, zoomFloor, k, size.h, size.w, tx, ty]);
 
   /* ------------------------------------------------------------- rendering */
 
@@ -348,9 +348,12 @@ export function MapCanvas({
   const base = (MAP_TILES[region] ?? {})['0_0_0'];
 
   return (
-    <View style={StyleSheet.absoluteFill} onLayout={onLayout}>
+    // overflow hidden matters: without it the scaled tile container paints
+    // straight over the app header when you zoom in (CEO screenshot).
+    <View style={[StyleSheet.absoluteFill, { overflow: 'hidden' }]} onLayout={onLayout}>
       <GestureDetector gesture={gesture}>
-        <Animated.View style={StyleSheet.absoluteFill} collapsable={false}>
+        <Animated.View style={[StyleSheet.absoluteFill, { overflow: 'hidden' }]}
+          collapsable={false}>
           <Animated.View
             style={[
               { position: 'absolute', width: BASE, height: BASE, transformOrigin: 'top left' },
