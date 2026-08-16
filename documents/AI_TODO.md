@@ -786,6 +786,25 @@ Nothing in the Plan-tab queue is blocked by this — what remains there is
 polish, micro-QoL and copy, which is safe to keep shipping.
 
 ### E13 polish-lane findings (hostile deep-eval passes, ongoing)
+- [x] 2026-08-16 ~13:30 PROFILE SWITCH MID-PLAN walked on mobile — the
+      riskiest remaining path, because it crosses switchProfile's atomic
+      flip AND the draftTargets sync added in the un-add fix. CLEAN in
+      both directions:
+      * World A (8 pals, 1-goal plan, Lv 42) → create + auto-switch to a
+        second world: new world shows an empty collection, NO plan, NO
+        goal chips. Nothing leaked forward.
+      * staged a goal in the second world, switched BACK to World A:
+        A's plan (2 steps), its 8 pals and its Lv 42 all restored, and
+        the second world's staged goal did NOT appear. Nothing leaked
+        back.
+      * per-profile level confirmed independent (World A Lv 42, the new
+        world has none) and the Profiles row renders it.
+      NOTE the QA instance now has a second profile "Hardcore" — harmless
+      test residue in the browser's storage only, not on any device.
+      METHOD NOTE (cost me two wrong reads this session): after a profile
+      switch or a domain switch, the screen needs a beat AND the bottom
+      tab may not be where you left it — re-query before concluding, and
+      select the tab by LABEL, not by index.
 - [x] 2026-08-16 ~13:00 COLLECTION-INTEGRITY WALK on MOBILE — the highest-
       stakes untested code in the app. store.ts's completeStep /
       uncheckStep / resetPlanProgress are a SEPARATE implementation from
