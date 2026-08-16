@@ -1286,6 +1286,30 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       (red berries at a 97px cell), so the "999+" badge is NOT dead code. The
       biggest badge actually drawn at the opening view is 843, and a 3-digit
       badge renders cleanly — the pill widens, nothing clips.
+- [x] L18 2026-08-17 ~00:05 THE PROJECTION IS CONFIRMED A SECOND TIME, by a
+      different argument, using the half of the data the first proof did not
+      touch. verify_map_projection.py settled the transform on 58,504 SPAWN
+      points; this asks whether the 11,097 POINTS OF INTEREST land on the right
+      KIND of ground.
+      84.4% of the game's map texture is water by the same classifier the tile
+      baker uses, so scattered markers would be ~84% wet. Observed 1.0% to
+      23.3% — every layer far below chance. The ORDER is the actual proof,
+      because a broken transform cannot produce it: red berries 1.0%, mushrooms
+      2.2%, coal 2.5%, ore 6.1% ... while paldium, which sits in and beside
+      water in game, is highest at 22.9%, with effigies 23.3% and coastal
+      things like fast travel at 19.4%. Nothing about a wrong projection knows
+      that berries belong inland and paldium does not.
+      Re-runnable: tools/verify_map_poi_placement.py, which FAILS if any
+      land-only layer rises above 5% in water. Claim added to
+      verification.json. NOTE: I nearly read the raw 10-23% as a fault before
+      computing the 84.4% baseline — the number meant nothing without it.
+- [x] L19 THE DUNGEON TOGGLE IS CORRECT END TO END. Foxparks alone reads 93
+      spots; "Also show dungeon spawns" takes it to 189, and the legend splits
+      it "Foxparks 93" / "Foxparks — in dungeons 96" — matching the datamined
+      93 field / 96 dungeon split exactly. Verified on screen that the shapes
+      really differ: round pins for the open world, rounded-square for
+      dungeons, in BOTH the map pins and the legend swatches, which is what the
+      footer promises.
 - [ ] K5 "also many other issues" — HE HAS MORE AND HAS NOT LISTED THEM. Ask,
       or keep walking journeys until they surface. Do not guess at what he
       means and do not claim the map is finished.

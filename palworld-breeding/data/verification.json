@@ -347,6 +347,16 @@
     "Nifrendil/pal-atlas pois.json alpha_1667 / alpha_983",
     "tools/extract_map_data.py project()"
    ]
+  },
+  {
+   "claim": "The map projection is confirmed a SECOND time, independently, by where the 11,097 points of interest land: on the right kind of ground.",
+   "verdict": "verified",
+   "evidence": "tools/verify_map_projection.py settled the world-to-image transform against 58,504 spawn points. This checks the other half of the dataset and asks a different question - not 'is it inside the image' but 'is it on the right terrain'. 84.4% of the game's map texture is water by the same classifier the tile baker uses, so random placement would put ~84% of markers in water. Observed: 1.0% to 23.3%, every layer far below chance. The ORDER is the real proof, because a broken transform has no way to produce it: things that grow in forests are almost never in water (red berries 1.0%, mushrooms 2.2%, coal 2.5%, ore 6.1%) while paldium, which sits in and beside water in game, is the highest at 22.9%, alongside effigies 23.3% and coastal markers like fast travel 19.4%. Re-runnable as tools/verify_map_poi_placement.py, which fails if any land-only layer rises above 5% in water.",
+   "sources": [
+    "tools/verify_map_poi_placement.py",
+    "mobile/src/data/mapPois.g.ts (11,097 points, Nifrendil/pal-atlas MIT)",
+    "tools/.cache/T_WorldMap_hi.png (game texture, jeankassio/PalMiniMap MIT)"
+   ]
   }
  ]
 }
