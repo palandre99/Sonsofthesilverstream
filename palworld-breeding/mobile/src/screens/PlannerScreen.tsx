@@ -943,7 +943,9 @@ export function PlannerScreen() {
                         ? `${c.label} ✓ ${c.ownedProducer}`
                         : c.planned
                           ? `${c.label} — ${c.planned} hatches in Phase ${c.plannedPhase}`
-                          : `${c.label}: need ${c.best ?? '?'}`}
+                          // showed a literal "?" at the player when we have
+                          // no producer to name; say it in words instead
+                          : `${c.label}: need ${c.best ?? 'a producer'}`}
                     </Badge>
                   </Pressable>
                 ))}
