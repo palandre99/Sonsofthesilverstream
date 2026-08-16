@@ -1744,6 +1744,46 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E49. CALCULATOR + PALDEX RE-EXERCISED 2026-08-16 — NO BUGS FOUND
+
+Both were last exercised before ~15 later fixes landed. Re-run on device.
+
+- [x] CALCULATOR: exactly ONE shortcut heading ("START FROM YOUR PALDEX")
+      with 8 chips — the duplicate row from E37 has not crept back. Mode
+      toggle speaks its state ("Pair → child, showing now"). Reverse lookup
+      on Vanwyrm Cryst returns "All other pairs · 1 → Foxcicle + Vanwyrm"
+      with the FIXED RECIPE badge and the row labelled "Foxcicle plus
+      Vanwyrm".
+- [x] PALDEX: the search box is named "Search pals" (E32/E39), and searching
+      "zzzzz" gives "No pal matches “zzzzz”." — the E35 fix holds, still
+      naming the search rather than phantom filters. The pal card condenses
+      to 4★ showing "+20% · partner skill level 5 of 5 · every work
+      suitability below +1", the E41 provenance line underneath, and stats
+      still carry rank context ("#N of 299").
+- [x] Storage diffed after: **zero drift**, box still 26. Seventh pass.
+- Gates: 248 tests, both trees typecheck, working tree clean.
+
+## THE LANE HAS REACHED THE END OF ITS CHEAP WORK
+
+Stated plainly rather than padded. Since the E13 directive this lane has
+shipped 82 real findings across the Plan, Calculator, Paldex, Odds and
+Reference tabs, Settings/Profiles, every shared component, both platforms'
+copy, and the store. Every screen has had a hostile code read; every tab has
+been exercised end to end and most re-exercised after later changes; the
+engine has had a read-only audit; the mirrors are hash-verified.
+
+**What is left is exactly three things, and none of them is small:**
+1. The Plan tab renders every step row eagerly — a re-architecture, PARKED
+   FOR FABLE by standing decision.
+2. The About screen never shows the update message although the docs say he
+   reads it there — needs one look at a REAL DEVICE BUILD, then either a
+   screen change or a doc correction. CEO-facing.
+3. Two data gaps only the extractor can close (Astralym, Panthalus, and the
+   "SAN dreceases" string) — game text must never be invented.
+
+Further loop turns should re-exercise after changes land, or take direction
+from him. Manufacturing more findings here would be padding, not polish.
+
 ## E48. ENGINE AUDIT (READ-ONLY) 2026-08-16 — NO BUGS FOUND
 
 Read engine/planner.ts against its own comments and against the docs'
