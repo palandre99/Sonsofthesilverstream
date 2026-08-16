@@ -1189,7 +1189,11 @@ export function PlannerScreen() {
                           <Badge kind="plain">helper branch — do this first</Badge>
                         )}
                         {st.kind === 'unique' && <Badge kind="unique">fixed recipe</Badge>}
-                        {st.kind === 'gendered' && <Badge kind="warn">gender locked</Badge>}
+                        {/* "gender locked" named the mechanic, not the consequence. The
+                            parents above already show ♀/♂ — point at them. */}
+                        {st.kind === 'gendered' && (
+                          <Badge kind="warn">only works with the genders shown</Badge>
+                        )}
                         {st.reusedAsParent >= 2 && (
                           <Badge kind="plain">keep ♂+♀ — parent in {st.reusedAsParent} steps</Badge>
                         )}
@@ -1200,7 +1204,12 @@ export function PlannerScreen() {
                           ? <Badge kind="ok">✓ ready to breed</Badge>
                           : m.hint
                             ? <Badge kind="warn">{m.hint}</Badge>
-                            : <Badge kind="plain">waiting on {m.missing.join(' + ')}</Badge>)}
+                            // naming BOTH parents just repeated the recipe
+                            // shown directly above it. Name one when one is
+                            // missing; say it plainly when neither is ready.
+                            : <Badge kind="plain">{m.missing.length >= 2
+                              ? 'neither parent ready yet'
+                              : `waiting on ${m.missing[0]}`}</Badge>)}
                       </View>
                       {/* the result's full work suitabilities — always its own row */}
                       <View style={[s.wrap, { paddingLeft: 36 }]}>
