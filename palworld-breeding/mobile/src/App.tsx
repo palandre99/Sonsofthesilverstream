@@ -81,6 +81,7 @@ function UpdateBanner() {
         void Updates.reloadAsync();
       }}
       accessibilityRole="button"
+      accessibilityLabel="New version ready — tap to restart"
       style={({ pressed }) => [{
         position: 'absolute', left: 14, right: 14, bottom: 96, zIndex: 60,
         backgroundColor: pressed ? T.accent : T.accentSoft,
@@ -225,6 +226,10 @@ function Shell() {
               style={styles.tab}
               accessibilityRole="tab"
               accessibilityState={{ selected: on }}
+              // the visible text is an icon GLYPH followed by the word, so
+              // without this a screen reader reads a private-use character
+              // before the name. Measured: every tab was nameless.
+              accessibilityLabel={t.soon ? `${t.label}, coming soon` : t.label}
             >
               <View style={center ? [styles.centerTab, on && { borderColor: T.accent }] : { height: 24, justifyContent: 'center' }}>
                 <Icon name={t.icon} size={center ? 22 : 21}

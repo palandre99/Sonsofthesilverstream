@@ -73,7 +73,8 @@ export function DomainPanel({ open, domain, onSelect, onClose }: {
         position: 'absolute', inset: 0, backgroundColor: '#000',
         opacity: fade.interpolate({ inputRange: [0, 1], outputRange: [0, 0.55] }),
       }}>
-        <Pressable style={{ flex: 1 }} onPress={onClose} accessibilityLabel="Close menu" />
+        <Pressable style={{ flex: 1 }} onPress={onClose}
+          accessibilityRole="button" accessibilityLabel="Close menu" />
       </Animated.View>
 
       <Animated.View
@@ -118,6 +119,12 @@ export function DomainPanel({ open, domain, onSelect, onClose }: {
                   onSelect(d.id);
                   onClose();
                 }}
+                accessibilityRole="button"
+                accessibilityState={{ selected: on }}
+                // always the FULL title: the narrow panel abbreviates the
+                // visible word ("Items" for "Items & Tech"), and a screen
+                // reader should not be stuck with the abbreviation
+                accessibilityLabel={d.soon ? `${d.title}, coming soon` : d.title}
                 style={({ pressed }) => [{
                   flexDirection: 'row', alignItems: 'center', gap: 12,
                   marginHorizontal: 10, marginBottom: 2, borderRadius: 12,
@@ -163,6 +170,10 @@ export function DomainPanel({ open, domain, onSelect, onClose }: {
             onSelect('settings');
             onClose();
           }}
+          // a dot, a name and a cog say "settings" to the eye and nothing
+          // at all to a screen reader
+          accessibilityRole="button"
+          accessibilityLabel={`Settings. Current world: ${active.name}`}
           style={{
             borderTopWidth: 1, borderTopColor: T.line,
             paddingVertical: 13, paddingHorizontal: 18,
