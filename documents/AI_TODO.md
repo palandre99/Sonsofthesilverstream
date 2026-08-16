@@ -1744,6 +1744,34 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E46. PLAN TAB RE-EXERCISED AFTER THE FIX WAVE 2026-08-16
+
+Re-run because the earlier end-to-end pass predated E35–E44 (~10 changes).
+
+- [x] **NO BUGS FOUND.** The hatch loop's hardest path is exactly right.
+      Ticked "Cattiva + Gumoss = Ribbuny" as ♀ ONLY:
+        · box gained Ribbuny {m:false, f:true}
+        · the claim record wrote {m:false, f:true, addedM:false, addedF:true}
+          — it remembers WE added her, which is the whole point of E23
+        · the DONE tile read "0/35" with "+1 half-done" beneath it
+        · the step row wore "HALF DONE — MISSING THE ♂"
+        · the goal line stayed "Ribbuny 0/1 · Breed now: Cattiva + Gumoss",
+          which is CORRECT — a step is done only when both genders are in
+      Reopening the sheet on that step offered "Got the ♂ — complete it" +
+      "Untick step" and said "You have the ♀ — hatch the ♂ and the step turns
+      green." Unticking removed Ribbuny from the box (because we had added
+      her), cleared the check, dropped the half-done badge, and returned the
+      box to exactly 26.
+- [x] Storage snapshotted and diffed: **zero drift.** Fifth pass running.
+- **TWO MORE BAD CHECKS OF MINE, back to back (now 9 total):** I dumped
+  aria-labels while the hatch sheet was CLOSED and concluded the half-done
+  controls were missing — they only exist when the sheet is reopened on a
+  partial step. Then I searched for "half done" in lowercase when Badges
+  render UPPERCASED — a trap already written in my own notes. The app was
+  right both times.
+- Standing note, unchanged: all 35 step rows render eagerly. Measured, not a
+  bug today, parked for Fable.
+
 ## E45. WEB PARITY BATCH FOR E35–E44 2026-08-16 (the owed batch)
 
 All four verified in the browser at 1100x860, not assumed.
