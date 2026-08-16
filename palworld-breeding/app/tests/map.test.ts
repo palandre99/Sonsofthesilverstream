@@ -698,3 +698,39 @@ describe('switching region re-frames the region', () => {
     expect(screen).toMatch(/prevRegion\.current !== null && prevRegion\.current !== region/);
   });
 });
+
+/* Provenance is a promise this app makes out loud, so the credit on screen has
+ * to match where the bytes actually came from. Adding the 8192 texture and the
+ * bigger symbols silently made the old wording wrong. */
+describe('the map credit matches the real sources', () => {
+  const ref = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'ReferenceScreen.tsx'), 'utf8',
+  );
+  const icons = readFileSync(
+    join(__dirname, '..', '..', 'tools', 'fetch_map_icons.py'), 'utf8',
+  );
+  const tiles = readFileSync(
+    join(__dirname, '..', '..', 'tools', 'build_map_tiles.py'), 'utf8',
+  );
+
+  it('names PalMiniMap, now that the Palpagos texture comes from it', () => {
+    expect(tiles).toMatch(/T_WorldMap_hi\.png/);
+    expect(ref).toMatch(/PalMiniMap \(MIT\)/);
+  });
+
+  it('no longer says the map picture comes from pal-atlas', () => {
+    // true when we shipped one 4096 texture; false the moment Palpagos moved
+    expect(ref).not.toMatch(/as does the map picture itself/);
+  });
+
+  it('still credits pal-atlas, which the World Tree and most icons use', () => {
+    expect(ref).toMatch(/pal-atlas \(MIT\)/);
+    expect(icons).toMatch(/Nifrendil\/pal-atlas/);
+  });
+
+  it('counts the upgraded symbols honestly', () => {
+    const upgraded = (icons.match(/"[a-z_]+": "T_/g) ?? []).length;
+    expect(upgraded).toBe(8);
+    expect(ref).toMatch(/eight of them at full size/);
+  });
+});

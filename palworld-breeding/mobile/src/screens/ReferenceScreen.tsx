@@ -132,8 +132,13 @@ export function ReferenceScreen() {
         night are extracted from the game&apos;s own spawner tables by
         palworld-atlas-data (MIT), which reads the official dedicated-server
         package. The 11,097 chests, ore nodes, statues, dungeons and the rest
-        come from pal-atlas (MIT), as does the map picture itself — the game&apos;s
-        own map texture.</P>
+        come from pal-atlas (MIT).</P>
+        <P>The map picture is the game&apos;s own map texture. Palpagos is drawn
+        from the full-size 8192 version published by PalMiniMap (MIT); the World
+        Tree comes from pal-atlas (MIT) at half that, because no larger copy of
+        it exists anywhere I could find. Most of the map symbols are the game&apos;s
+        own too — eight of them at full size from PalMiniMap, the rest from
+        pal-atlas.</P>
         <P>Positions use the game&apos;s own DT_WorldMapUIData bounds, checked
         against 58,504 spawn points and a second project&apos;s markers; the worst
         error left is about 6 pixels in 4096.</P>

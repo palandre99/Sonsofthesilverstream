@@ -899,6 +899,24 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       fitted view. RULE: the harness can TAP and TYPE. It cannot pan, pinch or
       double-tap. Anything gesture-dependent must be proven from the code or in
       vitest, and said plainly to be reasoned rather than measured.
+- [x] J11 2026-08-16 ~17:27 THE MAP CREDIT WAS WRONG, AND I WROTE IT WRONG.
+      The Reference tab told the player the map picture came from pal-atlas
+      "as does the map picture itself". That stopped being true the moment J2
+      moved Palpagos to the 8192 T_WorldMap from jeankassio/PalMiniMap, and J3
+      took eight symbols from the same place. Provenance is a promise this app
+      makes out loud, so a stale credit is not a typo — it is the app claiming
+      a source it no longer uses.
+      Copy now says exactly what is true: Palpagos from PalMiniMap's full-size
+      8192 (MIT), the World Tree from pal-atlas at half that because no larger
+      copy of it exists anywhere I could find, and eight symbols at full size
+      from PalMiniMap with the rest from pal-atlas. Eye-verified on the Ref tab.
+      Two claims added to data/verification.json with the evidence, including
+      the 1.57/255 image-match check that proved the 8192 file is the same map.
+      A test now pins the credit to the code: it fails if the texture source
+      changes without the wording, and it counts the upgraded symbols (8) so
+      the number in the copy cannot drift.
+      NOTE FOR THE NEXT WORKER: the hash route takes DOMAIN ids, not tab ids —
+      `#ref` lands on the Calculator. Use `#breeding` then tap Ref.
 - [ ] H17 COLOUR CANNOT CARRY 23 IDENTITIES. Three POI layers are near-identical
       greys (npc #A9C0CC, ore #B7C4CC, coal #8E9AA3) and several are near-white
       (note #D7E3E8, quartz #CFE9FF, egg #FFEFC2). I deliberately did NOT

@@ -317,6 +317,26 @@
     "game8.co Snock Lux",
     "palworld.fandom.com"
    ]
+  },
+  {
+   "claim": "Map texture: Palpagos is cut from the game's native 8192x8192 T_WorldMap; the World Tree remains 4096 because no 8192 export of T_TreeMap could be found. Zoom is capped per region at the pixels that actually exist.",
+   "verdict": "verified",
+   "evidence": "jeankassio/PalMiniMap (MIT) publishes T_WorldMap.png at 8192x8192 (23,473,212 bytes), exported from the game PAK with FModel. Confirmed to be the SAME image as the 4096 copy we already trusted before building on it: downscaled to 4096 it differs from pal-atlas's texture by 1.57/255 mean absolute error with 95.4% of pixels within 12/255 - compression noise, not a different image. The pyramid gains z4 (16x16 tiles) for Palpagos only; 180 of 256 z4 tiles are kept and 76 are open ocean. REGION_MAX_Z records the real depth per region and the zoom ceiling is derived from it, so the map can no longer magnify past its own pixels. Reason for the change: on a 3x-density phone a 4096 texture at full zoom was a 3x upscale (CEO: 'it looks like 380 quality.. not crisp 4K').",
+   "sources": [
+    "jeankassio/PalMiniMap PalMiniMap_V2/build/T_WorldMap.png (MIT)",
+    "Nifrendil/pal-atlas public/maps/worldtree.webp (MIT)",
+    "tools/build_map_tiles.py"
+   ]
+  },
+  {
+   "claim": "Map symbols: eight POI layers use the game's own icons at 64-100px; two candidate replacements were REJECTED because the symbol does not correspond.",
+   "verdict": "verified",
+   "evidence": "pal-atlas's icons are 14-46px, which is mush at ~45 device px on a 3x phone (CEO: 'Icons are also garbage'). jeankassio/PalMiniMap exports the same game UI textures larger: fast_travel and syndicate_tower 100px, sealed_realm/bounty_targets/chest 80px, dungeon/egg/note 64px. Every candidate was rendered SIDE BY SIDE against the icon it would replace before being accepted; that check rejected pal_effigy -> T_itemicon_Relic (a green creature, not the effigy statue) and alpha_pals -> T_icon_compass_boss (a horned head, a different glyph). Those two keep pal-atlas art, and a test asserts they stay under 64px so the choice is not silently undone. The remaining 13 layers have no corresponding symbol in that repo and keep their pal-atlas sprites.",
+   "sources": [
+    "jeankassio/PalMiniMap PalMiniMap_V2/icons/ (MIT)",
+    "Nifrendil/pal-atlas public/icons/ (MIT)",
+    "tools/fetch_map_icons.py"
+   ]
   }
  ]
 }
