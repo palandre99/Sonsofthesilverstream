@@ -1744,6 +1744,33 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E50. ODDS + REFERENCE RE-EXERCISED 2026-08-16 — NO BUGS FOUND
+
+The last two tabs not re-tested since their own fixes. **Every tab in the
+app has now been re-exercised AFTER the fix wave.**
+
+- [x] ODDS: three modes announce their state ("Passives, showing now");
+      the pool line reads "Both parents' passives, each listed once" — E43's
+      jargon fix holds; the base table still shows the published weights;
+      the passive picker and pool ticks announce state ("Swift: wanted");
+      the card reads "EGGS FOR 90% OF ALL 1 WANTED" — E33's ambiguity fix
+      holds and counts correctly at ONE wanted; the cake note still says the
+      numbers are community-measured and not read from the game files (E41).
+- [x] REFERENCE: "Passives from the parents: pooled together, each listed
+      once" — E43 holds, including the wording I tightened afterwards. The
+      claims expander opens to exactly **29 confirmed / 4 likely / 1
+      contradicted / 2 upstream defect = 36**, unchanged.
+- [x] Storage diffed: **zero drift**, box still 26. Eighth pass.
+- Gates: 248 tests, both trees typecheck.
+
+**LANE STATUS: MAINTENANCE.** Every screen read, every tab exercised and
+re-exercised, engine audited, mirrors hash-verified, both platforms'
+wording audited. The loop cadence drops from 60s to 1200s — turning over
+every minute to find nothing is waste, and manufacturing findings to fill
+the time would be padding. The three open items (eager Plan render → Fable;
+the About update-message question → one real-device check; two extractor
+data gaps) all need either Fable, his phone, or the pipeline.
+
 ## E49. CALCULATOR + PALDEX RE-EXERCISED 2026-08-16 — NO BUGS FOUND
 
 Both were last exercised before ~15 later fixes landed. Re-run on device.
