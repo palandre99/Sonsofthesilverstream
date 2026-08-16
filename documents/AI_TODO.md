@@ -904,8 +904,26 @@ numbers so it is nearly mechanical to execute.
       chip the sheet's count needs a beat — I read "Show 83 pals" and
       briefly concluded the chip had not applied. Re-query before
       concluding, ALWAYS.
+- [x] E14d 2026-08-16 ~16:10 Filter walk FINISHED — all correct, nothing
+      to fix. Verified by clicking, not reading:
+      * "Add N" respects the filter: Flying mounts (29) narrowed to Ice
+        showed "3 of 29 shown" and the button became "Add 3"; pressing it
+        added exactly Beakon Cryst, Vanwyrm Cryst and Frostallion — the
+        three Ice flyers — and nothing else. It does NOT add the whole
+        category.
+      * Filters RESET when a category is closed and reopened (fresh
+        category, fresh filters) — no hidden state carried between
+        categories. Deliberate and confirmed.
+      * The Add count also excludes goals already added: reopening after
+        those 3 showed "Add 26", not "Add 29".
+      CARE NOTE for whoever reads this: when counting what an action
+      added, measure the DELTA — my first read said "added 4" because a
+      pre-existing goal (Caprity) was in the list. The action was right;
+      my counting was wrong.
 - [ ] E14-NEXT: web parity for the category filters (do it once the Map
       session's app/ work is committed — they hold app/src/state.ts).
+      NOTE the web FilterSheet equivalent may carry the same "1 pals"
+      plural bug — check when doing the web pass.
       NOTE the web FilterSheet equivalent may carry the same "1 pals"
       plural bug — check when doing the web pass.
 
