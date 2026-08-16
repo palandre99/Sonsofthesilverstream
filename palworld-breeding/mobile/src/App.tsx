@@ -194,6 +194,7 @@ function Shell() {
             setPanel(true);
           }}
           hitSlop={10}
+          accessibilityRole="button"
           accessibilityLabel="Open sections"
           style={({ pressed }) => [styles.burger, pressed && { opacity: 0.6 }]}
         >

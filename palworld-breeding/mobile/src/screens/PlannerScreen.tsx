@@ -580,6 +580,7 @@ export function PlannerScreen() {
         if (planned && !trayOpen) {
           return (
             <Pressable
+              accessibilityRole="button"
               accessibilityLabel="Show the goals in this plan"
               onPress={() => setTrayOpen(true)}
               style={({ pressed }) => [{
@@ -857,6 +858,7 @@ export function PlannerScreen() {
                   return (
                     <View key={g.name} style={[s.row, { gap: 8 }]}>
                       <Pressable onPress={() => setViewing(g.name)} hitSlop={4}
+                        accessibilityRole="button"
                         accessibilityLabel={`Open ${g.name}`}>
                         <PalIcon name={g.name} size={26} />
                       </Pressable>
@@ -929,6 +931,10 @@ export function PlannerScreen() {
               <View style={[s.wrap]}>
                 {cakeSupply.map((c) => (
                   <Pressable key={c.label} disabled={!!c.ownedProducer}
+                    accessibilityRole="button"
+                    // a covered ingredient is not tappable — say so rather
+                    // than let it read as an available control
+                    accessibilityState={{ disabled: !!c.ownedProducer }}
                     accessibilityLabel={c.ownedProducer
                       ? `${c.label}: covered by ${c.ownedProducer}`
                       : c.planned
@@ -965,6 +971,7 @@ export function PlannerScreen() {
                     borderTopWidth: 1, borderTopColor: T.line, paddingTop: 9, gap: 6,
                   }}>
                     <Pressable style={[s.row, { gap: 9 }]} onPress={() => setViewing(h.name)}
+                      accessibilityRole="button"
                       accessibilityLabel={`Open ${h.name}`}>
                       <PalIcon name={h.name} size={30} />
                       <View style={{ flex: 1 }}>
@@ -1054,6 +1061,7 @@ export function PlannerScreen() {
             if (allDone && !openPhases.has(wave)) {
               return (
                 <Pressable key={wave}
+                  accessibilityRole="button"
                   accessibilityLabel={`Phase ${wave} complete — show its ${steps.length} ${steps.length === 1 ? 'step' : 'steps'}`}
                   onPress={() => {
                     void Haptics.selectionAsync();
@@ -1113,6 +1121,7 @@ export function PlannerScreen() {
                             else setHatching({ sid, child: st.child });
                           }} />
                         <Pressable onPress={() => setViewing(st.parents[0])} hitSlop={4}
+                          accessibilityRole="button"
                           accessibilityLabel={`Open ${st.parents[0]}`}
                           style={{ flexDirection: 'row', alignItems: 'center', gap: 8, flexShrink: 1 }}>
                           <PalIcon name={st.parents[0]} size={38}
@@ -1125,6 +1134,7 @@ export function PlannerScreen() {
                         </Pressable>
                         <Text style={{ color: T.faint, fontWeight: '800', fontSize: 15 }}>+</Text>
                         <Pressable onPress={() => setViewing(st.parents[1])} hitSlop={4}
+                          accessibilityRole="button"
                           accessibilityLabel={`Open ${st.parents[1]}`}
                           style={{ flexDirection: 'row', alignItems: 'center', gap: 8, flexShrink: 1 }}>
                           <PalIcon name={st.parents[1]} size={38}
@@ -1140,6 +1150,7 @@ export function PlannerScreen() {
                       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingLeft: 36 }}>
                         <Text style={{ color: T.accent, fontWeight: '800', fontSize: 18 }}>→</Text>
                         <Pressable onPress={() => setViewing(st.child)} hitSlop={4}
+                          accessibilityRole="button"
                           accessibilityLabel={`Open ${st.child}`}>
                           {/* the hero pops and bursts on hatch; goals get
                               one tier bigger a moment (self-found QoL) */}
