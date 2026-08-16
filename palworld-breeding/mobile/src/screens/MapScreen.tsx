@@ -680,9 +680,18 @@ export function MapScreen() {
                     </Text>
                   </View>
                 ))}
-                <Text style={{ color: T.faint, fontSize: 10.5 }}>
-                  Round pins are out in the world · square pins are inside dungeons
-                </Text>
+                {/* Only square pins need explaining, and only when some are
+                    actually on screen. This line used to show every time the
+                    key was opened, so the ordinary case — chests and ore on,
+                    no pal picked — taught him to tell apart a shape that was
+                    nowhere on his map. A key describes what is there. */}
+                {active.some((l) => l.square) && (
+                  <Text style={{ color: T.faint, fontSize: 10.5 }}>
+                    {active.some((l) => !l.square)
+                      ? 'Round pins are out in the world · square pins are inside dungeons'
+                      : 'Square pins are inside dungeons — none of these are on the surface'}
+                  </Text>
+                )}
               </View>
             )}
             <Pressable
@@ -1237,8 +1246,12 @@ function PalSheet({
 
   /** every pal that actually spawns on THIS map — the base the filters see */
   const base = useMemo(
-    () => spawnablePals().filter((n) => spawnLevels(n, region) !== null),
-    [region],
+    // With the dungeon box ticked, the list must include the pals that ONLY
+    // live underground — otherwise the checkbox promises spawns it will not
+    // let you ask for. 25 species on Palpagos are dungeon-only, Mau with 174
+    // spawns among them, and every one of them was unsearchable.
+    () => spawnablePals().filter((n) => spawnLevels(n, region, filters.dungeons) !== null),
+    [region, filters.dungeons],
   );
 
   const list = useMemo(() => {
@@ -1440,7 +1453,7 @@ function PalSheet({
         )}
         renderItem={({ item: n }) => {
           const on = filters.pals.has(n);
-          const lv = spawnLevels(n, region);
+          const lv = spawnLevels(n, region, filters.dungeons);
           const night = isNightOnly(n, region);
           return (
             <Pressable

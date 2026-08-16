@@ -239,9 +239,23 @@ export function wildBands(pal: string): {
   return { surface: pick(false), dungeon: pick(true) };
 }
 
-/** Level band a pal spawns at in a region, for the UI to state plainly. */
-export function spawnLevels(pal: string, region: RegionId): { lo: number; hi: number } | null {
-  const groups = (MAP_SPAWNS[pal] ?? []).filter((g) => REGION_BY_INDEX[g.m] === region && !g.dun);
+/**
+ * Level band a pal spawns at in a region, for the UI to state plainly.
+ *
+ * `underground` also counts spawns inside dungeons. It exists because this
+ * function doubles as the test for "does this pal live here at all", and with
+ * surface spawns only that answer was NO for 25 species that the map has real
+ * data for — Mau has 174 dungeon spawns on Palpagos and could not be found in
+ * the search at all, with or without "Also show dungeon spawns" ticked. The
+ * default stays surface-only: a player reading a level band expects to walk
+ * out and meet one.
+ */
+export function spawnLevels(
+  pal: string, region: RegionId, underground = false,
+): { lo: number; hi: number } | null {
+  const groups = (MAP_SPAWNS[pal] ?? []).filter(
+    (g) => REGION_BY_INDEX[g.m] === region && (underground || !g.dun),
+  );
   if (!groups.length) return null;
   return {
     lo: Math.min(...groups.map((g) => g.lo)),

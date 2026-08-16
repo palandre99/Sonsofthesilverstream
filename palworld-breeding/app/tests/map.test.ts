@@ -19,7 +19,8 @@ import { foundKey } from '../src/map/found';
 import { clusterPoints, decodePoints, pointsInRect } from '../src/map/points';
 import { regionOf, uvToReadout, worldToUv, tileLevelFor } from '../src/map/projection';
 import {
-  isNightOnly, poiPoints, searchPlaces, spawnLevels, spawnPoints, spawnSplit, wildBands,
+  isNightOnly, poiPoints, searchPlaces, spawnablePals, spawnLevels, spawnPoints, spawnSplit,
+  wildBands,
 } from '../src/map/layers';
 import { REGION_SPOTS } from '../src/data/regionSpots.g';
 
@@ -468,7 +469,26 @@ describe('the map search is the Paldex search', () => {
     // without `base` the sheet promises "Show 298 pals" and then hands back
     // the ~224 that actually spawn here
     expect(screen).toMatch(/base=\{base\}/);
-    expect(screen).toMatch(/spawnablePals\(\)\.filter\(\(n\) => spawnLevels\(n, region\) !== null\)/);
+    expect(screen).toMatch(
+      /spawnablePals\(\)\.filter\(\(n\) => spawnLevels\(n, region, filters\.dungeons\) !== null\)/);
+  });
+
+  it('and includes the dungeon-only pals once the dungeon box is ticked', () => {
+    // 25 species on Palpagos have no surface spawn at all. spawnLevels() was
+    // the gate AND it filtered !g.dun, so every one of them was unsearchable -
+    // measured in the QA browser: "mau" returned zero rows with the box ON,
+    // while "foxparks" returned two. Mau has 174 dungeon spawns.
+    const dungeonOnly = spawnablePals().filter(
+      (n) => spawnLevels(n, 'palpagos') === null
+        && spawnLevels(n, 'palpagos', true) !== null,
+    );
+    expect(dungeonOnly).toContain('Mau');
+    expect(dungeonOnly.length).toBe(25);
+    expect(spawnLevels('Mau', 'palpagos', true)).not.toBeNull();
+    // and the default stays surface-only, so a level band still means
+    // "walk out and meet one"
+    expect(spawnLevels('Mau', 'palpagos')).toBeNull();
+    expect(screen).toMatch(/\[region, filters\.dungeons\]/);
   });
 
   it('has no second, private "missing" toggle beside the shared one', () => {
@@ -1448,5 +1468,38 @@ describe('the map provenance copy', () => {
     expect(block).toContain('DT_WorldMapUIData');
     expect(block).toContain('58,504');
     expect(block).toContain('11,097');
+  });
+});
+
+describe('the legend key', () => {
+  const screen = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
+  );
+
+  it('only explains square pins when some are on screen', () => {
+    // It used to print "square pins are inside dungeons" every time the key
+    // was opened. Only `dun:` layers are square, and those need a pal picked
+    // AND the dungeon box ticked - so the ordinary case (chests and ore on)
+    // taught him to tell apart a shape that was nowhere on his map.
+    const block = screen.slice(
+      screen.indexOf('Round pins are out in the world') - 700,
+      screen.indexOf('Round pins are out in the world') + 300,
+    );
+    expect(block, 'the legend footnote must still exist').toContain('inside dungeons');
+    expect(block).toMatch(/active\.some\(\(l\) => l\.square\) && \(/);
+  });
+
+  it('drops the round half when every pin is square', () => {
+    expect(screen).toMatch(/none of these are on the surface/);
+    // and that claim is only made when nothing round is showing
+    expect(screen).toMatch(/active\.some\(\(l\) => !l\.square\)/);
+  });
+
+  it('square is still what a dungeon layer is', () => {
+    // the whole guard rests on this, so pin it: only dun: layers set square
+    const built = screen.slice(screen.indexOf('const active'), screen.indexOf('const active') + 2200);
+    expect(built).toContain('square: true');
+    const squareAt = built.indexOf('square: true');
+    expect(built.slice(0, squareAt)).toContain('key: `dun:${pal}`');
   });
 });
