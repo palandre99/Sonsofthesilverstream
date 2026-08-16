@@ -966,6 +966,26 @@ session's; this worker touches only the map area (see AREA LOCKS).*
 - [x] K4 THE HINT COVERED THE MAP. It was a five-line explainer — a third of
       the screen. One line now, with an x, and dismissing it is permanent for
       the session. Eye-verified: two wrapped lines above the buttons.
+- [ ] K6 THE LEVEL FILTER IS DEAD CODE. `filters.level` is initialised to
+      ALL_LEVELS, passed to spawnPoints and dungeonPoints on every render, and
+      referenced by emptyReason — but NOTHING ever sets it. There is no
+      control anywhere, so the range is permanently 1-80 and my "Nothing in
+      that level range" copy is unreachable. The engine has supported it since
+      the pipeline landed; only the UI is missing.
+      WORTH BUILDING: "what can I catch at my level" is a real question and
+      every spawn already carries lo/hi. PLACEMENT: inside the Find sheet next
+      to "Also show dungeon spawns" — NOT a new button on the map, which he
+      has just told us is too cluttered.
+      NOT started: he has unlisted complaints (K5) and building an unrequested
+      feature ahead of his actual list is the wrong order.
+- [ ] K7 ZOOM REACH TRADE, made unilaterally in K1 and he should know. Capping
+      at one texture pixel per device pixel makes the map genuinely sharp but
+      SHORTENS the reach: on a 3x phone max zoom went from 9.6x the opening
+      view to 3.2x (2.9x on a Pro Max; 6.1x on a 2x device like the SE). The
+      old 9.6x was 3x fake upscale, which is exactly what he photographed. If
+      3.2x is too little to pinpoint a chest, the honest middle is allowing a
+      1.5x upscale (4.8x reach, mild softness at the very end) — but that is
+      HIS call, not mine to pick silently.
 - [ ] K5 "also many other issues" — HE HAS MORE AND HAS NOT LISTED THEM. Ask,
       or keep walking journeys until they surface. Do not guess at what he
       means and do not claim the map is finished.
