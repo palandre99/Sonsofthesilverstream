@@ -178,11 +178,10 @@ export function MapScreen() {
     if (region !== 'palpagos' || vp.scale < 760) return [];
     // Keep the label box clear of the screen edge, or names truncate mid-word
     // ("Gobfin's Tu..."), which reads as a bug rather than as a map.
-    // 0.75 of a box, not 0.5: the viewport rect this reads is pushed on a
-    // threshold rather than every frame, so a little slack is what keeps names
-    // from truncating mid-word at the edge. A name lost there costs nothing —
-    // pan slightly and it appears.
-    const inset = (LABEL_W * 0.75) / vp.scale;
+    // No edge inset any more: ScreenPin clamps a wide label back inside the
+    // frame, so a name near the edge slides rather than truncating. Culling
+    // for it only ever threw away names that were perfectly showable.
+    const inset = 0;
     const near = Object.entries(REGION_SPOTS).filter(([, at]) => (
       at.x > vp.u0 + inset && at.x < vp.u1 - inset
       && at.y > vp.v0 && at.y < vp.v1
@@ -210,6 +209,7 @@ export function MapScreen() {
         key: `label:${name}`,
         u: at.x,
         v: at.y,
+        halfWidth: LABEL_W / 2,
         render: () => <PlaceName name={name} />,
       });
     }

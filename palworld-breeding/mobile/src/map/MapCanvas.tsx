@@ -34,20 +34,29 @@ import { type RegionId } from './projection';
 
 /** One screen-space marker: follows the map on the UI thread, never scaled by
  *  it, so whatever it draws stays at its true resolution. */
-function ScreenPin({ u, v, tx, ty, k, children }: {
+function ScreenPin({ u, v, tx, ty, k, halfWidth, width, children }: {
   u: number;
   v: number;
   tx: SharedValue<number>;
   ty: SharedValue<number>;
   k: SharedValue<number>;
+  halfWidth?: number;
+  width: number;
   children: React.ReactNode;
 }) {
-  const style = useAnimatedStyle(() => ({
-    transform: [
-      { translateX: tx.value + u * k.value },
-      { translateY: ty.value + v * k.value },
-    ],
-  }));
+  const style = useAnimatedStyle(() => {
+    let x = tx.value + u * k.value;
+    // Slide a wide marker back inside the frame rather than letting it run off
+    // and truncate mid-word. Culling by the viewport could not do this
+    // reliably — that rectangle is pushed on a threshold and lags the view —
+    // and it is what real map apps do with edge labels anyway.
+    if (halfWidth && width > halfWidth * 2) {
+      x = Math.min(width - halfWidth, Math.max(halfWidth, x));
+    }
+    return {
+      transform: [{ translateX: x }, { translateY: ty.value + v * k.value }],
+    };
+  });
   return (
     <Animated.View pointerEvents="none"
       style={[{ position: 'absolute', left: 0, top: 0 }, style]}>
@@ -94,6 +103,9 @@ export interface ScreenMarker {
   u: number;
   v: number;
   render: () => React.ReactNode;
+  /** half the drawn width; set it and the marker slides to stay on screen
+   *  instead of running off the edge mid-word */
+  halfWidth?: number;
 }
 
 export interface MapMarker {
@@ -464,7 +476,8 @@ export function MapCanvas({
         </Animated.View>
       </GestureDetector>
       {screenMarkers?.map((m) => (
-        <ScreenPin key={m.key} u={m.u} v={m.v} tx={tx} ty={ty} k={k}>
+        <ScreenPin key={m.key} u={m.u} v={m.v} tx={tx} ty={ty} k={k}
+          halfWidth={m.halfWidth} width={size.w}>
           {m.render()}
         </ScreenPin>
       ))}

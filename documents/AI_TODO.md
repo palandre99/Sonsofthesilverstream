@@ -635,10 +635,17 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       viewport and the margin are all right, and the label is rendering
       despite failing its own test. That points at render/staleness in the
       marker list, not at geometry.
-      **DEPRIORITISED.** Four iterations on a cosmetic edge case (2 labels of
-      ~7, only at the right edge, only while zoomed in) is out of proportion
-      while web parity is untouched. Resume with fresh eyes; everything ruled
-      out is written above so the next attempt starts from evidence.
+      **FIXED 2026-08-16 ~13:55, by dropping the approach rather than tuning
+      it.** Every earlier attempt tried to CULL the offending labels; the fix
+      was to stop culling and CLAMP instead. Now that place names live in the
+      screen-space layer (G4), their worklet slides a wide label back inside
+      the frame, so a name near the edge moves rather than truncating — which
+      is what real map apps do with edge labels anyway, and cannot be defeated
+      by a viewport rectangle that lags the view. The edge inset is gone; it
+      only ever threw away names that were perfectly showable.
+      MEASURED at a verified 375 px viewport: zero place names outside the
+      frame (the only off-screen text is the closed side drawer). Four
+      iterations of tuning beaten by one change of approach.
 
 - [x] F31 RESOLVED 2026-08-16 ~03:00 — and my first report of it was WRONG.
       `scripts/qa-shot.js` did ask for 375x812 and get 1500, because a
