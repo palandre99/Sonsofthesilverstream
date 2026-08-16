@@ -30,6 +30,7 @@ import {
 } from '../map/layers';
 import { MAP_REGIONS } from '../data/mapMeta.g';
 import { MAP_ICONS } from '../data/mapIcons.g';
+import { PAL_ICONS } from '../data/icons.g';
 import { REGION_SPOTS } from '../data/regionSpots.g';
 import { takeIntentPayload } from '../nav/intent';
 import { regionsFor } from '../map/layers';
@@ -89,6 +90,8 @@ export function MapScreen() {
     const out: {
       key: string; set: PointSet; colour: string; icon: string; label: string;
       square?: boolean; art?: number;
+      /** a pal's own portrait — drawn instead of a glyph, so a pin IS the pal */
+      photo?: number; night?: boolean;
     }[] = [];
     for (const id of filters.poi) {
       const set = poiPoints(id, region);
@@ -113,8 +116,10 @@ export function MapScreen() {
           key: `pal:${pal}`,
           set: surface,
           colour: hue,
-          icon: isNightOnly(pal, region) ? 'weather-night' : 'paw',
+          icon: 'paw',                       // fallback only, if art is missing
           label: pal,
+          photo: PAL_ICONS[pal],
+          night: isNightOnly(pal, region),
         });
       }
       // Dungeon spawners are a DIFFERENT instruction to the player — "go
@@ -130,6 +135,8 @@ export function MapScreen() {
             icon: 'door',
             label: `${pal} — in dungeons`,
             square: true,
+            photo: PAL_ICONS[pal],
+            night: isNightOnly(pal, region),
           });
         }
       }
@@ -146,7 +153,13 @@ export function MapScreen() {
           key: `boss:${pal}:${i}`,
           u: a.u,
           v: a.v,
-          render: () => <Pin colour={T.gold} icon="crown-outline" count={1} />,
+          // The alpha IS a specific pal, so the pin is that pal's face in a
+          // gold ring with a crown on it — a generic crown told you a boss was
+          // here but not WHICH, which is the only thing you wanted to know.
+          render: () => (
+            <Pin colour={T.gold} icon="crown-outline" count={1}
+              photo={PAL_ICONS[pal]} boss />
+          ),
         });
       }
     }
@@ -172,7 +185,8 @@ export function MapScreen() {
           v: c.v,
           render: () => (
             <Pin colour={layer.colour} icon={layer.icon} count={c.count}
-              square={layer.square} art={layer.art} />
+              square={layer.square} art={layer.art}
+              photo={layer.photo} night={layer.night} />
           ),
         });
       }
@@ -569,10 +583,14 @@ export function MapScreen() {
                       backgroundColor: 'rgba(10,20,24,0.86)',
                       alignItems: 'center', justifyContent: 'center',
                     }}>
-                      {l.art != null
-                        ? <Image source={l.art} style={{ width: 11, height: 11 }}
-                            resizeMode="contain" />
-                        : <Icon name={l.icon} size={10} color={l.colour} />}
+                      {l.photo != null
+                        ? <Image source={l.photo}
+                            style={{ width: 15, height: 15, borderRadius: 7.5 }}
+                            resizeMode="cover" />
+                        : l.art != null
+                          ? <Image source={l.art} style={{ width: 11, height: 11 }}
+                              resizeMode="contain" />
+                          : <Icon name={l.icon} size={10} color={l.colour} />}
                     </View>
                     <Text style={{ color: T.ink, fontSize: 12.5, fontWeight: '700', flex: 1 }}>
                       {l.label}
@@ -743,15 +761,22 @@ const PAL_HUES = [
  * colour-blindness, small sizes and a busy map in a way another shade would
  * not, and it stays readable when two pals sit at adjacent hues.
  */
-function Pin({ colour, icon, count, square, art, done }: {
+function Pin({ colour, icon, count, square, art, done, photo, night, boss }: {
   colour: string; icon: string; count: number; square?: boolean; art?: number;
   done?: boolean;
+  /** the pal's own portrait, drawn filling the pin */
+  photo?: number;
+  night?: boolean;
+  boss?: boolean;
 }) {
   const many = count > 1;
+  // A pal pin is bigger than a resource pin on purpose: it carries a face, and
+  // a face at 23px is a smudge. Bosses are bigger again — there is one of them.
+  const size = boss ? PIN + 9 : photo != null ? PIN + 5 : PIN;
   return (
     <View style={{
-      width: PIN, height: PIN, marginLeft: -PIN / 2, marginTop: -PIN / 2,
-      borderRadius: square ? 6 : PIN / 2, alignItems: 'center', justifyContent: 'center',
+      width: size, height: size, marginLeft: -size / 2, marginTop: -size / 2,
+      borderRadius: square ? 6 : size / 2, alignItems: 'center', justifyContent: 'center',
       backgroundColor: 'rgba(10,20,24,0.86)', borderWidth: 2, borderColor: colour,
       // a found marker fades back so what stands out is what you still need
       opacity: done ? 0.32 : 1,
@@ -761,7 +786,19 @@ function Pin({ colour, icon, count, square, art, done }: {
           almost every pin is a cluster, so a map with chests, ore and NPCs on
           was a field of anonymous numbers. The glyph always shows; the count
           rides in a badge on the corner. */}
-      {art != null ? (
+      {photo != null ? (
+        // the pal itself. "Bosses etc must be the image of the actual pal it
+        // is" (CEO) — and the same is true of a spawn: a paw print tells you
+        // something is here, a face tells you WHAT.
+        <Image
+          source={photo}
+          style={{
+            width: size - 5, height: size - 5,
+            borderRadius: square ? 3 : (size - 5) / 2,
+          }}
+          resizeMode="cover"
+        />
+      ) : art != null ? (
         // the GAME's own symbol — a player already knows what it means
         <Image
           source={art}
@@ -770,6 +807,25 @@ function Pin({ colour, icon, count, square, art, done }: {
         />
       ) : (
         <Icon name={icon} size={many ? 12 : 14} color={colour} />
+      )}
+      {boss && (
+        // the crown sits ON the portrait rather than replacing it
+        <View style={{
+          position: 'absolute', top: -7, alignItems: 'center', justifyContent: 'center',
+        }}>
+          <Icon name="crown" size={13} color={T.gold} />
+        </View>
+      )}
+      {night && (
+        // the night signal survives the portrait taking the middle
+        <View style={{
+          position: 'absolute', left: -4, top: -3,
+          width: 12, height: 12, borderRadius: 6,
+          backgroundColor: 'rgba(8,18,22,0.92)',
+          alignItems: 'center', justifyContent: 'center',
+        }}>
+          <Icon name="weather-night" size={9} color="#B9AEFF" />
+        </View>
       )}
       {many && (
         <View style={{

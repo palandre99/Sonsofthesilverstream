@@ -333,9 +333,12 @@ describe('a pal you picked is tellable from the others', () => {
   });
 
   it('spends hue on identity, not on day/night', () => {
-    // the old code branched the COLOUR on isNightOnly; night is a glyph now
+    // The colour used to branch on isNightOnly, which spent the one channel
+    // that could say WHICH pal on a fact the pin could carry another way.
+    // Night was then the glyph; since the pin took the pal's own portrait it
+    // is a corner badge. What must stay true is that hue never encodes it.
     expect(screen).not.toMatch(/colour:\s*isNightOnly\(/);
-    expect(screen).toMatch(/icon:\s*isNightOnly\([^)]*\)\s*\?\s*'weather-night'/);
+    expect(screen).toMatch(/night: isNightOnly\(/);
   });
 
   it('keeps a dungeon pin the same colour as its pal', () => {
@@ -411,5 +414,35 @@ describe('place names are not dragged in from off screen', () => {
     // halfWidth: LABEL_W / 2 shoved a short name up to 75px off its own spot
     expect(screen).not.toMatch(/halfWidth: LABEL_W \/ 2/);
     expect(screen).toMatch(/halfWidth: Math\.min\(LABEL_W, textWidth\(name\)\) \/ 2/);
+  });
+});
+
+/* CEO, 2026-08-16: "Bosses etc must be the image of the actual pal it is."
+ * A crown said a boss was here but not WHICH, and a paw print said a pal
+ * spawns here but not WHICH. The portraits already ship for the Paldex. */
+describe('a pal on the map looks like that pal', () => {
+  const screen = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
+  );
+
+  it('draws the real portrait on spawn pins and on boss pins', () => {
+    expect(screen).toMatch(/import \{ PAL_ICONS \}/);
+    expect(screen).toMatch(/photo: PAL_ICONS\[pal\]/);          // spawn layers
+    expect(screen).toMatch(/photo=\{PAL_ICONS\[pal\]\} boss/);  // alpha pins
+  });
+
+  it('prefers the portrait over the generic glyph', () => {
+    // photo must be the FIRST branch: falling through to the paw whenever art
+    // happened to be set is how the face would silently disappear
+    const photoAt = screen.indexOf('{photo != null ? (');
+    const artAt = screen.indexOf(') : art != null ? (');
+    expect(photoAt).toBeGreaterThan(-1);
+    expect(artAt).toBeGreaterThan(photoAt);
+  });
+
+  it('keeps the night signal after the face takes the middle', () => {
+    // night used to be the glyph itself; it is a corner badge now
+    expect(screen).toMatch(/night && \(/);
+    expect(screen).toMatch(/night: isNightOnly\(pal, region\)/);
   });
 });

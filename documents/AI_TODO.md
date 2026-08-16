@@ -718,10 +718,27 @@ session's; this worker touches only the map area (see AREA LOCKS).*
 - [ ] J4 FIND-PAL SEARCH should work like the Paldex search and filters —
       element/type filters, the same interaction, the same quality bar. Today
       it is a name box with a level/time filter and nothing else.
-- [ ] J5 BOSS PINS MUST SHOW THE ACTUAL PAL'S PICTURE, not a generic crown.
-      The app already ships pal portraits for the Paldex, so the art exists;
-      this is a rendering change, not a data one. Same for anything else that
-      represents a specific pal on the map.
+- [x] J5 DONE 2026-08-16 ~15:50 — BOSS AND SPAWN PINS ARE NOW THE PAL ITSELF.
+      A crown said a boss was here but not WHICH; a paw print said a pal spawns
+      here but not WHICH. The portraits already shipped for the Paldex (128px,
+      298 of them), so this was rendering, not data. Alpha pins are the pal's
+      face in a gold ring with the crown sitting ON it; spawn pins are the same
+      face in that pal's own colour; the legend swatch is the face too, so the
+      key matches the map at a glance. Pins carrying a face are drawn larger
+      (bosses larger again) because a face at 23px is a smudge. The night
+      signal moved from the glyph to a corner badge, so nothing was lost.
+      Eye-verified: Anubis's face under a gold crown at Twilight Dunes.
+- [ ] J6 A PLACE NAME CAN COVER A PIN. Found while verifying J5 — "Twilight
+      Dunes" printed straight across Anubis's face. Place names are drawn ABOVE
+      the pins because pins live inside the transformed map container (they
+      track the map exactly) while names sit outside it (text inside the
+      transform is rasterised then magnified, and came out jagged on his
+      phone). So the stack is tiles < pins < names, and the fix is to move the
+      pins OUT into the same screen-space layer as the names and draw them
+      after — which would also make the pins crisper for the same reason the
+      names are. That is a real refactor of the marker layer, not a tweak, and
+      it sits next to the gesture code that was just changed. Do it deliberately
+      rather than immediately after a gesture change.
 
 - [ ] H17 COLOUR CANNOT CARRY 23 IDENTITIES. Three POI layers are near-identical
       greys (npc #A9C0CC, ore #B7C4CC, coal #8E9AA3) and several are near-white
