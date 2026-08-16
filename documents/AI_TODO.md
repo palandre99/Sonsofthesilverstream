@@ -2075,6 +2075,30 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E76. THE PLAN'S "PARENT IN N STEPS" COUNT — CHECKED, CORRECT, NOW
+## GUARDED 2026-08-17
+
+Followed E75 downstream to the other numbers the Plan prints.
+
+- **CHECKED, CORRECT:** the badge `keep ♂+♀ — parent in N steps` (shown when
+  `reusedAsParent >= 2`). Recomputed N independently for every step in both
+  test plans — **0 mismatches** in a 14-step plan and a 36-step plan. The
+  advice itself is sound: the pal is not consumed, but each step pairs it with
+  a DIFFERENT partner whose gender is fixed, so holding both genders is what
+  keeps every one of those steps runnable.
+- **CHECKED, DOES NOT OCCUR:** I expected a gap where a step needs the SAME
+  species as both parents (you would need two copies for ONE step, and the
+  badge's `>= 2` threshold would hide it). **Zero identical-parent steps in
+  either plan** — consistent with the confirmed claim that same + same always
+  yields that same species, so such a step would only ever appear to make more
+  of something you already own, which the planner never schedules.
+- [x] **GUARDED** — new assertion in `app/tests/plan-waves.test.ts`
+  recomputes the count from the plan itself. **Mutation-proven:** changed the
+  engine to count only one parent slot and watched it go red naming real
+  pals ("Vanwyrm says 0, is actually 2"), then restored planner.ts —
+  `git status` on it is empty, byte-for-byte.
+- Suite: **324 passed + 1 expected fail** (the E75 defect), 21 files, ~11s.
+
 ## E75. THE PLAN BREEDS SOME PALS TWICE — A REAL DEFECT, FOUND BY ITS OWN
 ## PROMISE 2026-08-17
 

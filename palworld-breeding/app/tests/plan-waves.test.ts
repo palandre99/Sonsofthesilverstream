@@ -105,6 +105,26 @@ describe('a phase never contains a step that waits on that same phase', () => {
     }
   });
 
+  // The Plan prints "keep male+female — parent in N steps" on any step whose
+  // child is a parent in 2 or more others. N is a number the player acts on
+  // (it is why they hold a second copy), so it gets a guard: verified 0
+  // mismatches across both plans when this was written.
+  it('the "parent in N steps" count matches the plan it describes', () => {
+    for (const { name, steps } of PLANS) {
+      const wrong = steps
+        .map((s) => {
+          const actual = steps.filter(
+            (o) => o.parents[0] === s.child || o.parents[1] === s.child,
+          ).length;
+          return actual === s.reusedAsParent
+            ? null
+            : `${name}: ${s.child} says ${s.reusedAsParent}, is actually ${actual}`;
+        })
+        .filter(Boolean);
+      expect(wrong).toEqual([]);
+    }
+  });
+
   it('every phase only uses pals the box or an EARLIER phase already produced', () => {
     for (const { name, box, steps } of PLANS) {
       const have = new Set(box);
