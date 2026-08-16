@@ -1668,3 +1668,36 @@ describe('the website says why a search found nothing', () => {
     }
   });
 });
+
+describe('found marks: what the two copies share and what they do not', () => {
+  const webSrc = readFileSync(
+    join(__dirname, '..', 'src', 'map', 'found.ts'), 'utf8',
+  );
+  const phoneSrc = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'map', 'found.ts'), 'utf8',
+  );
+
+  it('writes the SAME tick string on both, so a sync needs no translation', () => {
+    // found.ts is deliberately NOT under the byte-parity gate — one persists
+    // through AsyncStorage and one through localStorage — so the thing that
+    // must not drift needs its own guard.
+    expect(foundKey('chest', 'palpagos', 41)).toBe('chest:palpagos:41');
+    const body = (src: string) => {
+      const i = src.indexOf('export function foundKey');
+      expect(i, 'foundKey must exist').toBeGreaterThan(-1);
+      return src.slice(i, src.indexOf('}', i) + 1).replace(/\s+/g, ' ');
+    };
+    expect(body(webSrc)).toBe(body(phoneSrc));
+  });
+
+  it('but the STORAGE keys differ on purpose, and the comment says so', () => {
+    // The header used to claim "the KEYS match, so a future box-sync can carry
+    // ticks across without a translation step". The tick FORMAT matches; the
+    // storage key does not — the phone scopes ticks per save profile and the
+    // website has no profiles at all. A sync must pick a profile.
+    expect(phoneSrc).toContain('`palforge-${profileId}-mapfound`');
+    expect(webSrc).toContain("const KEY = 'palforge-mapfound'");
+    expect(webSrc, 'the false claim must not come back').not.toContain('The KEYS match');
+    expect(webSrc).toContain('has to CHOOSE a profile');
+  });
+});

@@ -1,11 +1,22 @@
 /** "I've already got that one", on the website.
  *
- * Same idea and the same key format as the phone's map/found.ts, but a
- * separate file on purpose: the phone persists through AsyncStorage and the
- * browser through localStorage, and pretending one module can be both would
- * mean shimming a storage API into the parity-gated shared folder for no gain.
- * The KEYS match, so a future box-sync can carry ticks across without a
- * translation step.
+ * Same idea as the phone's map/found.ts, but a separate file on purpose: the
+ * phone persists through AsyncStorage and the browser through localStorage,
+ * and pretending one module can be both would mean shimming a storage API
+ * into the parity-gated shared folder for no gain.
+ *
+ * WHAT MATCHES AND WHAT DOES NOT — this used to claim "the KEYS match, so a
+ * future box-sync can carry ticks across without a translation step", and
+ * that was wrong in the half that matters:
+ *
+ *   tick format   `layerId:region:index`   — IDENTICAL, verified by test
+ *   storage key   phone `palforge-<profileId>-mapfound`
+ *                 web   `palforge-mapfound`
+ *
+ * The website has no save profiles at all, so a single flat key is right for
+ * it; the phone scopes ticks to the active save the way it scopes the box.
+ * A sync therefore has to CHOOSE a profile when it moves ticks either way.
+ * The tick strings themselves need no translation.
  */
 import type { RegionId } from './projection';
 
