@@ -1301,6 +1301,37 @@ earlier. He is right and the proof is in his own list: it lumped CHIKIPI
       advice, clicking Chikipi lands on "Chikipi · Paldex · Palforge" with
       the card open, own error recorder saw none. NOT DEPLOYED — pushing
       the website to main needs the CEO's go-ahead.
+## CEO DIRECTIVE 2026-08-16 ~15:30 (verbatim, governs how I work now)
+"U must make all decisions .. but ofc make it same so website is just as
+good and detailed , but don't worry too much about website stuff.. we are
+working on perfecting app, and some times u port the app stuff to website ,
+and u are idle and not working again… loop not working"
+=> (a) NEVER ask him to choose. Decide, state it in one line, move on.
+   (Applied immediately: web step-card pal icons made TAPPABLE like the
+   phone's — commit c7d95f0 — instead of the question I had queued.)
+=> (b) THE APP IS THE PRIORITY. Port to web in occasional BATCHES.
+=> (c) He perceives IDLE TIME. Re-arm at 60s and do MORE per turn; never
+   end a turn on one small fix.
+
+- [x] E20 PLAN-TAB TAPPABLE SWEEP (commit a0dba5c). Audited every Pressable
+      on the screen: **10 tappable things, only 2 declared a role.** The
+      other 8 had names but no role, so a screen reader read the label as
+      plain text with no hint it could be pressed — every pal picture in a
+      breeding step, every Goal progress row, the helper rows, the cake
+      ingredient chips, the phase cards and the goal tray header. Plus
+      "Open sections" in App.tsx.
+      VERIFIED on a real 40-step plan: 138 pal controls + 4 ingredient
+      chips now role=button; the only labelled element left without a role
+      is a WorkChips level label, which names a picture and is correctly
+      not a control. Covered ingredients also now report disabled.
+- [ ] MEASURED, NOT FIXED — FOR THE PARKED PERF WORK: the Plan tab renders
+      EVERY step eagerly, no virtualisation. **2168 DOM nodes for a 40-step
+      plan (~54 per step); the CEO's 165-step save would build ~9000.**
+      Scroll container measured 53,172 px tall at 40 steps. This belongs
+      with the derivations/perf re-architecture already parked for Fable —
+      do not half-fix it. (My own note stands: synthetic scrollTop does not
+      drive RN-web virtualisation, so node count is the honest metric here,
+      not a fake scroll.)
 - [x] E19 WEB PARITY FOR E17 + a plural bug on BOTH platforms (commit
       8daffeb; mobile published, web still awaiting the CEO's main push).
       The website had the same silent staleness: `planIsCurrent` was ALREADY
