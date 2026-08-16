@@ -778,6 +778,28 @@ Nothing in the Plan-tab queue is blocked by this — what remains there is
 polish, micro-QoL and copy, which is safe to keep shipping.
 
 ### E13 polish-lane findings (hostile deep-eval passes, ongoing)
+- [x] 2026-08-16 ~12:05 Audited more of MY OWN recent work by clicking it
+      (the discipline that caught the sheet-destroying backdrop bug).
+      ALL CLEAN this round — recording so nobody re-treads it:
+      * MOBILE stacked modals (sheet → category browser → pal card):
+        closing the card returns to the browser with its search intact;
+        the browser's Done returns to the sheet. NO mobile twin of the
+        web backdrop bug — confirmed by walking it, and the architecture
+        explains why (separate RN Modals, not nested DOM nodes).
+      * LEVEL DIALOG full round-trip: Cancel discards the typed value;
+        reopening does NOT leak the abandoned edit (field is empty, not
+        "42"); Save persists to the profile AND takes effect immediately
+        (set 42 → max CATCH LV became exactly 42).
+      HONEST LIMIT of this method: RN-web cannot verify iOS VoiceOver
+      behaviour or native modal accessibility isolation. Mobile dialog
+      "announced names" therefore stay UNVERIFIED, not passed — they
+      belong to the existing on-device verification pass, not to a
+      browser session. Do not tick them from RN-web evidence.
+- [ ] Still unaudited on the Plan tab (my own work, click them): tray
+      fold/expand after a manual expand + re-plan (does it re-fold, and
+      should it?); add-then-remove-then-replan; "Remove all" while a plan
+      is running (copy says plan+progress survive — verified once, worth
+      re-checking after the draft-store changes).
 - [x] 2026-08-16 ~11:45 WEB SUGGESTED-GOALS BUG (mine, from the v4 port —
       found by auditing my own recent work): the category browser renders
       INSIDE the sheet's backdrop, so clicking the browser's backdrop to
