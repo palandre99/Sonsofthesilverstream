@@ -1133,6 +1133,27 @@ earlier. He is right and the proof is in his own list: it lumped CHIKIPI
       advice, clicking Chikipi lands on "Chikipi · Paldex · Palforge" with
       the card open, own error recorder saw none. NOT DEPLOYED — pushing
       the website to main needs the CEO's go-ahead.
+- [x] E17 WITH-PLAN STATE — looked at it the way the CEO looked at the empty
+      one, and found two things (commit a30e38d, published both channels).
+      **(1) A dead hero button, again.** Measured: "Plan 9 targets" sat at
+      y=249, ABOVE the stat tiles (y=315), as the loudest thing on screen —
+      and it rebuilt the plan you were already reading. Same class of fault
+      he called out on the empty screen. Now shown only when it MEANS
+      something. Results moved 39px up (tiles 315 -> 276).
+      **(2) THE REAL ONE — plans went stale SILENTLY.** Edit your goals after
+      planning and the route below was simply out of date, with NO notice;
+      the only hint was the button's number quietly changing. `planIsCurrent`
+      is now computed once and used both for the replace-warning and for a
+      plain "Your goals have changed — the route below is still the old one"
+      card with a re-plan button. VERIFIED live: removing one goal raised
+      the notice and the button read "Plan these 8 goals".
+      **(3) Found on the way:** the goal-chip ✕ buttons had a label but NO
+      role. `[role="button"]` queries could not even see them — which is how
+      I noticed. Measured 9 chips (NO ROLE) -> button.
+      METHOD NOTE WORTH KEEPING: my QA query returning NOTHING was the clue.
+      If a selector finds zero of something you can see on screen, the
+      element is probably missing a role — that is a finding, not a broken
+      query.
 - [x] E16g "Catch ." — A REAL BUG THE CACHE TEST FLUSHED OUT (commit 79402e2,
       published both channels). Setting out to verify `unlockCache`
       invalidates, I traced what happens when a stuck goal is ALREADY OWNED
