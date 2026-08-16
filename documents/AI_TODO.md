@@ -528,6 +528,12 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       cannot bury everything else, and indexed once per region. The sheet is
       "Find a pal or place" now, since it was already doing both.
 
+- [x] H6 2026-08-16 ~14:25: the website caught up with the phone — boss pins
+      on a picked pal's layer, place search with fly-to, and the empty-state
+      hint. Both platforms now do the same things off the same parity-gated
+      map modules; only the rendering and the storage differ, which is the
+      only difference that should ever exist between them.
+
 ### Open — the map lane's own queue
 - [x] F23 DONE 2026-08-16 ~00:02: the preview's dense clusters were an
       unreadable scribble — 93 overlapping rings in one bay. Now thinned to one

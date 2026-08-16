@@ -13,8 +13,9 @@ import { REGION_SPOTS } from '../data/regionSpots.g';
 import { clusterPoints, nearestPoint, pointsInRect } from '../map/points';
 import { regionOf, tileLevelFor, uvToReadout, type RegionId } from '../map/projection';
 import {
-  dungeonPoints, isNightOnly, poiLayer, poiLayers, poiName, poiPoints,
-  spawnLevels, spawnPoints, spawnablePals, type LayerGroup,
+  alphaSpots, dungeonPoints, isNightOnly, poiLayer, poiLayers, poiName,
+  poiPoints, searchPlaces, spawnLevels, spawnPoints, spawnablePals,
+  type LayerGroup,
 } from '../map/layers';
 import { box } from '../state';
 import { clearFound, foundCount, foundKey, isFound, toggleFound } from '../map/found';
@@ -188,6 +189,27 @@ export function MapPage() {
     return out;
   }, [active, rect, region, ticks, view.k]);
 
+  /** The fixed boss of any picked pal — the one guaranteed place to meet it. */
+  const bossPins = useMemo(() => {
+    const out: { key: string; u: number; v: number }[] = [];
+    for (const pal of palsOn) {
+      alphaSpots(pal, region).forEach((a, i) => {
+        out.push({ key: `boss:${pal}:${i}`, u: a.u, v: a.v });
+      });
+    }
+    return out;
+  }, [palsOn, region]);
+
+  const places = useMemo(() => searchPlaces(q, region), [q, region]);
+
+  const goToPlace = useCallback((u: number, v: number) => {
+    touched.current = true;
+    // fit ~0.07 uv across the shorter edge — a landmark and its surroundings
+    const next = Math.min(contain * MAX_ZOOM,
+      Math.max(contain, Math.min(size.w, size.h) / 0.07));
+    setView(clamp(size.w / 2 - u * next, size.h / 2 - v * next, next));
+  }, [clamp, contain, size.h, size.w]);
+
   const identify = useCallback((u: number, v: number) => {
     const reach = 26 / Math.max(1, view.k);
     let best: Layer | null = null;
@@ -319,6 +341,13 @@ export function MapPage() {
                 transform: `translate(-50%, -50%) scale(${BASE / view.k})`,
               }}>{l.name}</div>
           ))}
+          {bossPins.map((b) => (
+            <div key={b.key} class="mappin boss"
+              style={{
+                left: b.u * BASE, top: b.v * BASE,
+                transform: `translate(-50%, -50%) scale(${BASE / view.k})`,
+              }} />
+          ))}
           {markers.map((m) => (
             <div
               key={m.key}
@@ -364,6 +393,16 @@ export function MapPage() {
             )}
           </div>
         )}
+        {shown === 0 && (
+          <div class="maphint">
+            <b>Nothing on the map yet</b>
+            <em>Search a pal to see everywhere it spawns, or tick “only pals
+            I'm missing” to see what is left to catch. Places are searchable
+            by name too.</em>
+            <em>“What to show” puts chests, ore, statues, dungeons and bosses
+            on it.</em>
+          </div>
+        )}
         {shown > 0 && (
           <div class="maplegend">
             {active.map((l) => (
@@ -378,8 +417,8 @@ export function MapPage() {
       </div>
 
       <aside class="mapside">
-        <h3>Find a pal</h3>
-        <input value={q} placeholder="Search pals…"
+        <h3>Find a pal or place</h3>
+        <input value={q} placeholder="Search pals or places…"
           onInput={(e) => setQ((e.target as HTMLInputElement).value)} />
         <label class="mapchk">
           <input type="checkbox" checked={missingOnly}
@@ -393,6 +432,17 @@ export function MapPage() {
           <input type="checkbox" checked={night}
             onChange={() => setNight((v) => !v)} /> Include night-only spawns
         </label>
+        {places.length > 0 && (
+          <div class="mapplaces">
+            <h3>Places</h3>
+            {places.map((pl) => (
+              <button key={`${pl.layerId}:${pl.name}`} type="button"
+                onClick={() => goToPlace(pl.u, pl.v)}>
+                {pl.name}<i>{pl.label}</i>
+              </button>
+            ))}
+          </div>
+        )}
         <div class="mappals">
           {palList.map((n) => {
             const lv = spawnLevels(n, region);
