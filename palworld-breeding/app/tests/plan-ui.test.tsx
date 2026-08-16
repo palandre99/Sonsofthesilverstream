@@ -52,7 +52,9 @@ describe('Route Planner', { timeout: 20000 }, () => {
       .find((b) => b.textContent!.includes('Fuack'))!;
     fireEvent.click(opt);
 
-    fireEvent.click(screen.getByRole('button', { name: /Plan 1 targets/ }));
+    // "1 target", not "1 targets" — the CEO banned "1 steps"/"1 cakes"
+    // grammar and the web button still had it
+    fireEvent.click(screen.getByRole('button', { name: /Plan 1 target$/ }));
     await waitFor(() => {
       expect(document.querySelector('.boxstats')).toBeTruthy();
     }, { timeout: 8000 });

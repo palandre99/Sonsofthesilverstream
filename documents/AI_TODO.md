@@ -770,6 +770,13 @@ Nothing in the Plan-tab queue is blocked by this — what remains there is
 polish, micro-QoL and copy, which is safe to keep shipping.
 
 ### E13 polish-lane findings (hostile deep-eval passes, ongoing)
+- [x] 2026-08-16 ~10:35 GRAMMAR BUG on web, caught by the deep-eval read:
+      the plan button rendered "Plan 1 targetS" (and "Plan␣␣targets" with
+      none) — the exact "1 steps"/"1 cakes" class of error the CEO banned
+      by name. Mobile was already correct; web now matches it ("Plan
+      targets" / "Plan 1 target" / "Plan 2 targets"). The test that had
+      asserted the buggy string was corrected to an anchored match, so it
+      can't drift back. Eye-verified all three states. Web-only, no OTA.
 - [x] 2026-08-16 ~09:05 FULL-TAB HOSTILE PASS (every state, every line of
       copy): zero new defects — the eight shipped fixes interlock on one
       screen (checklist agrees with the plan and the advice card; late

@@ -502,7 +502,9 @@ export function PlanPage() {
         })()}
         <button class="btn primary" disabled={!targets.length || !ownedNames.length || busy}
           onClick={() => run()}>
-          {busy ? 'Planning…' : `Plan ${targets.length || ''} targets`}
+          {busy ? 'Planning…'
+            : targets.length ? `Plan ${targets.length} target${targets.length > 1 ? 's' : ''}`
+              : 'Plan targets'}
         </button>
       </div>
 
