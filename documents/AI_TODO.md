@@ -1328,12 +1328,23 @@ for a cosmetic gain. BOTH SESSIONS: stage your own paths explicitly
       added, measure the DELTA — my first read said "added 4" because a
       pre-existing goal (Caprity) was in the list. The action was right;
       my counting was wrong.
-- [ ] E14-NEXT: web parity for the category filters (do it once the Map
-      session's app/ work is committed — they hold app/src/state.ts).
-      NOTE the web FilterSheet equivalent may carry the same "1 pals"
-      plural bug — check when doing the web pass.
-      NOTE the web FilterSheet equivalent may carry the same "1 pals"
-      plural bug — check when doing the web pass.
+- [x] E14-NEXT DONE (commit 4deed32) — web category filters shipped.
+      Element / job / ownership chips inside CategoryBrowser, same meanings
+      as the Paldex. The match count is computed from the SAME array that
+      renders the rows, so it cannot promise a number it does not deliver
+      (the bug the mobile sheet had). "Search 1 pals" plural fixed too.
+      VERIFIED on a 148-pal category: Fire -> 24, button "Filters (1)",
+      Owned -> 6 of a 14-pal box, Clear -> back to 148, zero console errors.
+      DESIGN CALL, recorded for whoever revisits: the web has NO shared
+      filter helper — the Paldex filters inline and mobile has its own
+      `ui/palFilters.ts`. I implemented these LOCALLY in goals.tsx with the
+      same semantics rather than refactor a shipped, working mobile module.
+      A shared parity-gated palFilters is the tidier end state but is a
+      refactor of working code, not a feature — worth doing only when
+      something else forces the area open. The parity gate exists for the
+      ENGINE and the recommendation brain, where divergence produces WRONG
+      NUMBERS; filter chips diverging is cosmetic.
+      NOT DEPLOYED — website go-live needs the CEO's push to main.
 
 ### E13 polish-lane findings (hostile deep-eval passes, ongoing)
 - [x] 2026-08-16 ~14:45 "REMOVE ALL" WHILE A PLAN IS RUNNING — walked with
