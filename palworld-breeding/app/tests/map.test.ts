@@ -14,6 +14,7 @@ import { describe, expect, it } from 'vitest';
 import { MAP_POIS } from '../src/data/mapPois.g';
 import { MAP_SPAWNS } from '../src/data/mapSpawns.g';
 import { MAP_REGIONS } from '../src/data/mapMeta.g';
+import { MAP_TILES } from '../src/data/tileIndex.g';
 import { clusterPoints, decodePoints, pointsInRect } from '../src/map/points';
 import { regionOf, uvToReadout, worldToUv, tileLevelFor } from '../src/map/projection';
 import {
@@ -471,5 +472,46 @@ describe('the map search is the Paldex search', () => {
   it('has no second, private "missing" toggle beside the shared one', () => {
     // two controls doing one job is exactly what made the old sheet confusing
     expect(screen).not.toMatch(/missingOnly/);
+  });
+});
+
+/* CEO, 2026-08-16: "it looks like 380 quality.. not crisp 4K". The arithmetic
+ * was exact — a 4096 texture across a 3x-density phone at full zoom is a 3x
+ * upscale. Palpagos now builds from the game's native 8192 T_WorldMap
+ * (jeankassio/PalMiniMap, MIT); the World Tree has no 8192 export anywhere, so
+ * its ceiling is honestly lower and the renderer is told so per region. */
+describe('zoom never asks for pixels that do not exist', () => {
+  const idx = readFileSync(
+    join(__dirname, '..', 'src', 'data', 'tileIndex.g.ts'), 'utf8',
+  );
+  const canvas = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'map', 'MapCanvas.tsx'), 'utf8',
+  );
+
+  it('records how deep each region really goes', () => {
+    expect(idx).toMatch(/REGION_MAX_Z[\s\S]*?palpagos: 4/);
+    expect(idx).toMatch(/REGION_MAX_Z[\s\S]*?tree: 3/);
+  });
+
+  it('actually ships the deeper level for Palpagos and not for the tree', () => {
+    const z4 = [...MAP_TILES.palpagos].filter((k) => k.startsWith('4_'));
+    expect(z4.length).toBeGreaterThan(100);          // 180 kept, 76 open ocean
+    expect([...MAP_TILES.tree].some((k) => k.startsWith('4_'))).toBe(false);
+  });
+
+  it('selects the deepest level once the map is magnified past 4096', () => {
+    // the renderer inlines this maths in a worklet; tileLevelFor is the copy
+    // the test can reach, and another test pins the two together
+    expect(tileLevelFor(4097, 512, 4)).toBe(4);
+    expect(tileLevelFor(4096, 512, 4)).toBe(3);
+    expect(tileLevelFor(9999, 512, 3)).toBe(3);      // tree stops at 3
+  });
+
+  it('derives the zoom ceiling from the pyramid instead of a typed-in number', () => {
+    // a hard 4096 was why the terrain went soft: it let the map magnify past
+    // the pixels it had. It must come from REGION_MAX_Z now.
+    expect(canvas).toMatch(/function maxScaleFor/);
+    expect(canvas).toMatch(/TILE_PX \* \(1 << \(REGION_MAX_Z\[region\]/);
+    expect(canvas).not.toMatch(/const MAX_SCALE = 4096/);
   });
 });

@@ -723,17 +723,32 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       HONEST LIMIT: unverified on device. A browser pass cannot drive a real
       pinch (F35, and the harness pinch does not reach the gesture handler), so
       this is reasoned and type-checked, not measured. Ask him how it feels.
-- [ ] J2 IMAGE QUALITY — CAUSE MEASURED, FIX NEEDS A SOURCE. He is right and
-      the number is exact: our map texture is 4096x4096 (tools/.cache, from
-      pal-atlas). His iPhone is 3x density, so at our maximum zoom the map
-      spans ~12,000 device pixels drawn from 4096 real ones — a 3x upscale.
-      That IS "380 quality". The pyramid is not the problem; it already tops
-      out AT the source. Options: (a) obtain the game's native 8192 T_WorldMap
-      and add a z4 level — doubles linear resolution, the real fix; (b) cap
-      zoom to the pixels that exist (4096/3 = ~1365 css px per uv), which would
-      be crisp but only ~1.7x from the opening view, too little for a companion
-      map. Do (a). NEEDS RESEARCH: pal-atlas ships 4096; the 8192 original
-      lives in the game PAK. Do NOT invent a source.
+- [x] J2 DONE 2026-08-16 ~16:15 — THE MAP IS BUILT FROM 8192 PIXELS NOW.
+      He was right and the arithmetic was exact: our texture was 4096, his
+      phone is 3x density, so at full zoom the map was stretched across ~12,000
+      device pixels drawn from 4,096 real ones. A 3x upscale. That is "380
+      quality".
+      SOURCE FOUND, not fabricated: jeankassio/PalMiniMap (MIT) ships the
+      game's native T_WorldMap.png at 8192x8192 — 23.4 MB, exported from the
+      PAK with FModel. Verified it is the SAME map before building anything on
+      it: downscaled to 4096 it differs from our current texture by 1.57/255
+      mean absolute error with 95.4% of pixels within 12/255, i.e. compression
+      noise, not a different image.
+      Palpagos now builds a z4 level (16x16 tiles = 8192 effective). Cost: the
+      bundled map went 3.0 MB -> 5.7 MB, because 76 of the 256 new tiles are
+      open ocean and get skipped. Double the linear detail for 2.7 MB.
+      THE WORLD TREE STAYS AT 4096. No 8192 export of T_TreeMap exists in any
+      source I could find, so its ceiling is honestly lower rather than
+      pretending. REGION_MAX_Z now records the real depth per region, and the
+      zoom ceiling is DERIVED from the pyramid (TILE_PX << maxZ) instead of the
+      typed-in 4096 that let the map magnify past the pixels it had.
+      HONEST LIMIT ON VERIFICATION: the sharpening at high zoom is NOT
+      eye-verified. The QA harness cannot pinch, and two other routes failed
+      (auto-focus does not zoom far enough; synthetic double-taps do not form a
+      Tap gesture on web). So it is proven by mechanism instead: the source is
+      measured at 8192, 180 z4 tiles are measured present for Palpagos and 0
+      for the tree, and tileLevelFor is asserted to select z4 above scale 4096.
+      Those are tests, not opinions — but they are not his eyes on a phone.
 - [ ] J3 ICONS — CAUSE MEASURED. The sprites are TINY: fast_travel 22x20,
       dungeon 22x21, chest 26x22, egg 14x20, alpha_pals 25x26. Drawn at 13-15
       logical px on a 3x phone that is ~45 device px, so every one is an

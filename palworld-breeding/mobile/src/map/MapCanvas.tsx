@@ -29,7 +29,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { Image } from 'expo-image';
-import { MAP_TILES, MAX_TILE_Z, TILE_SIZE } from '../data/tileIndex.g';
+import { MAP_TILES, MAX_TILE_Z, REGION_MAX_Z, TILE_SIZE } from '../data/tileIndex.g';
 import { type RegionId } from './projection';
 
 /** One screen-space marker: follows the map on the UI thread, never scaled by
@@ -93,12 +93,16 @@ const TILE_MAX_Z = MAX_TILE_Z;
 const MAX_ZOOM = 14;
 
 /**
- * Hard ceiling: the source texture is 4096 px, so magnifying past that only
- * blurs it. Raising the zoom floor to cover doubled every zoom multiple and
- * pushed the auto-framing straight past this — the terrain went soft. Zoom is
- * now bounded by the pixels that actually exist, not by a multiplier.
+ * Zoom is bounded by the pixels that actually EXIST, never by a multiplier —
+ * magnifying past the source only blurs it, which is what the CEO saw as "380
+ * quality". It is per region now: Palpagos builds from the game's native 8192
+ * texture and so allows 8192, while the World Tree has no 8192 export anywhere
+ * and honestly stops at 4096. Derived from the tile pyramid rather than typed
+ * in, so a rebuild at a deeper level raises this by itself.
  */
-const MAX_SCALE = 4096;
+function maxScaleFor(region: RegionId): number {
+  return TILE_PX * (1 << (REGION_MAX_Z[region] ?? MAX_TILE_Z));
+}
 
 /**
  * A thing drawn in SCREEN space, tracking the map without being scaled by it.
@@ -173,6 +177,9 @@ export function MapCanvas({
   // screenshot), so COVER is the floor: the map always fills the screen, the
   // way it does in game. There is no view in which you see empty space.
   const zoomFloor = Math.max(size.w, size.h) || 1;
+  // deepest level this region HAS, and the zoom ceiling that follows from it
+  const maxZ = REGION_MAX_Z[region] ?? MAX_TILE_Z;
+  const MAX_SCALE = maxScaleFor(region);
 
   const tx = useSharedValue(0);
   const ty = useSharedValue(0);
@@ -280,7 +287,7 @@ export function MapCanvas({
     })
     .onEnd(() => {
       gesturing.value = 0;
-    }), [clamp, gesturing, zoomFloor, k, markTouched, pinchFx, pinchFy, pinchTx, pinchTy,
+    }), [MAX_SCALE, clamp, gesturing, zoomFloor, k, markTouched, pinchFx, pinchFy, pinchTx, pinchTy,
     startK, tx, ty]);
 
   const doubleTap = useMemo(() => Gesture.Tap()
@@ -296,7 +303,7 @@ export function MapCanvas({
       k.value = withTiming(next, { duration: 220 });
       tx.value = withTiming(c.x, { duration: 220 });
       ty.value = withTiming(c.y, { duration: 220 });
-    }), [clamp, zoomFloor, k, tx, ty]);
+    }), [MAX_SCALE, clamp, zoomFloor, k, tx, ty]);
 
   const tap = useMemo(() => Gesture.Tap()
     .maxDuration(260)
@@ -333,7 +340,7 @@ export function MapCanvas({
       // app on device — hard, no error boundary. react-native-web runs the
       // same code on the JS thread, so a browser pass cannot catch it. Keep
       // this in step with tileLevelFor() in projection.ts.
-      const z = Math.max(0, Math.min(TILE_MAX_Z,
+      const z = Math.max(0, Math.min(maxZ,
         Math.ceil(Math.log2(Math.max(1, scale) / TILE_PX))));
       const n = 1 << z;
       const u0 = -tx.value / scale;
@@ -390,7 +397,7 @@ export function MapCanvas({
       u1: (-x + size.w) / scale,
       v1: (-y + size.h) / scale,
     });
-  }, [onViewport, size.h, size.w]);
+  }, [maxZ, onViewport, size.h, size.w]);
 
   const applyFocus = useCallback((u: number, v: number, span: number, animate: boolean) => {
     // fit `span` uv units across the SHORTER screen edge, so the whole
@@ -411,7 +418,7 @@ export function MapCanvas({
     });
     tx.value = withTiming(c.x, { duration: ms });
     ty.value = withTiming(c.y, { duration: ms });
-  }, [clamp, zoomFloor, k, settle, size.h, size.w, tx, ty]);
+  }, [MAX_SCALE, clamp, zoomFloor, k, settle, size.h, size.w, tx, ty]);
 
   // A pal card can ask us to frame a species the same frame it mounts us, so
   // the request routinely arrives BEFORE the first layout. Focusing then would
