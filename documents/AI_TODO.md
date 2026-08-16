@@ -576,6 +576,22 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       Third harness trap today. Any probe that finds nothing must be checked
       against the page text before it is believed.
 
+- [x] H12 2026-08-16 ~14:50 QA DRIVER HARDENED against silent failure, after
+      three traps in one day (a viewport that lied, a route that only read at
+      mount, a dead server whose error page read exactly like "the element
+      isn't there").
+      * It now proves the APP is on screen before running any step, and exits
+        3 with a clear message if it is not. Tested with the server down.
+      * "not found" and an empty probe now print WHAT WAS ON SCREEN, so
+        "wrong screen" can never be mistaken for "feature missing".
+      * And the diagnostic itself was lying: my escaping produced /s+/ instead
+        of /\s+/, so the text meant to tell me the truth was silently deleting
+        every letter "s" — "Isle of the Glacial Core" came out "I le of the
+        Glacial Core". Rewritten without regex or escapes so nothing can be
+        lost in transit again.
+      A verification tool that fails quietly is worse than no tool: it produces
+      confident wrong answers. This one now fails loudly or not at all.
+
 ### Open — the map lane's own queue
 - [x] F23 DONE 2026-08-16 ~00:02: the preview's dense clusters were an
       unreadable scribble — 93 overlapping rings in one bay. Now thinned to one

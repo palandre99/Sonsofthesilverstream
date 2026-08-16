@@ -111,6 +111,28 @@ async function main() {
   await send('Page.navigate', { url: `http://localhost:8085/${route}` });
   await sleep(12000);   // Metro's first bundle is slow; tiles then decode
 
+  // Prove the APP is on screen before running a single step. Three separate
+  // times today this driver produced confident-looking results from a page
+  // that was not the app: a dead server's Chrome error screen read exactly
+  // like "the element isn't there". A verification tool that fails quietly is
+  // worse than none, so this exits non-zero instead of reporting nothing.
+  const loaded = await evaluate(`(() => {
+    const t = document.body.innerText || '';
+    return {
+      chromeError: /ERR_|This site can.t be reached|Reload/i.test(t) && t.length < 800,
+      appRoot: !!document.querySelector('#root, [data-reactroot]'),
+      chars: t.length,
+      head: t.slice(0, 80),
+    };
+  })()`);
+  if (loaded.chromeError || loaded.chars < 20) {
+    console.error(`  !! THE APP DID NOT LOAD — the page says: ${JSON.stringify(loaded.head)}`);
+    console.error('  !! Start the QA server first (preview_start palforge-mobile-qa).');
+    ws.close();
+    chrome.kill();
+    process.exit(3);
+  }
+
   // Applied AFTER the load, and verified. Set before navigating it is simply
   // dropped, which left the page laying out at the real window size while
   // screenshots came back phone-shaped — so every viewport-dependent check
@@ -156,7 +178,10 @@ async function main() {
       return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
     })()`);
     if (!box) {
-      console.log(`  ! tap "${text}": not found`);
+      // say what WAS on screen, so "not found" can never be mistaken for
+      // "the feature is missing" when the real answer is "wrong screen"
+      const seen = await evaluate('document.body.innerText.split(String.fromCharCode(10)).join(" | ").slice(0,140)');
+      console.log(`  ! tap "${text}": NOT FOUND. On screen: ${JSON.stringify(seen)}`);
       return;
     }
     for (const type of ['mousePressed', 'mouseReleased']) {
@@ -241,7 +266,13 @@ async function main() {
     }
     else if (kind === 'probe') {
       const out = await evaluate(arg);
-      console.log('  probe:', JSON.stringify(out));
+      // an empty probe is the shape a dead page takes, so show the page too
+      if (out === null || out === undefined || out === '(none)' || out === '') {
+        const seen = await evaluate('document.body.innerText.split(String.fromCharCode(10)).join(" | ").slice(0,140)');
+        console.log(`  probe: EMPTY — on screen: ${JSON.stringify(seen)}`);
+      } else {
+        console.log('  probe:', JSON.stringify(out));
+      }
     }
     else if (kind === 'scroll') {
       // one wheel event per 240px keeps RN-web's scroll view following along
