@@ -311,6 +311,12 @@ export function CalculatorScreen() {
         {([['pair', 'Pair → child'], ['reverse', 'Child → parents']] as const).map(([id, label]) => (
           <Text
             key={id}
+            // the tab's PRIMARY control — a bare <Text onPress>, so it had no
+            // role, no name and no keyboard focus at all. My earlier sweep
+            // only looked for labels MISSING a role, so a control with
+            // neither slipped straight through (self-found 2026-08-16).
+            accessibilityRole="button"
+            accessibilityLabel={`${label}${mode === id ? ', showing now' : ''}`}
             onPress={() => setMode(id)}
             style={{
               paddingVertical: 8, paddingHorizontal: 16, borderRadius: 9,

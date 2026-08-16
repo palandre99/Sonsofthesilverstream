@@ -147,6 +147,8 @@ function PassivesTab() {
       <View style={s.wrap}>
         {list.map((n) => (
           <Text key={n}
+            accessibilityRole="button"
+            accessibilityLabel={`Remove ${n}`}
             onPress={() => setList(list.filter((x) => x !== n))}
             style={{
               color: T.ink, backgroundColor: T.surface2, borderRadius: 9,
@@ -224,6 +226,8 @@ function PassivesTab() {
           <View style={[s.wrap, { marginTop: 12 }]}>
             {CAKES.filter((k) => k.id !== 'special').map((k) => (
               <Text key={k.id}
+                accessibilityRole="button"
+                accessibilityLabel={`${k.name}${cake === k.id ? ', chosen' : ''}`}
                 onPress={() => setCake(k.id)}
                 style={{
                   color: cake === k.id ? T.accentInk : T.muted,
@@ -304,6 +308,8 @@ function IvTab() {
             const on = picked.includes(id);
             return (
               <Text key={id}
+                accessibilityRole="button"
+                accessibilityLabel={`${label}${on ? ', wanted' : ''}`}
                 onPress={() => setPicked(on ? picked.filter((x) => x !== id) : [...picked, id])}
                 style={{
                   color: on ? T.accentInk : T.muted,
@@ -316,6 +322,8 @@ function IvTab() {
           })}
         </View>
         <Text
+          accessibilityRole="checkbox"
+          accessibilityLabel={`Must come from one specific parent: ${specific ? 'yes' : 'no'}`}
           onPress={() => setSpecific(!specific)}
           style={[s.body, { marginTop: 10 }]}
         >
@@ -425,6 +433,8 @@ export function OddsScreen() {
       }}>
         {([['passives', 'Passives'], ['ivs', 'IVs'], ['cakes', 'Cakes']] as const).map(([id, label]) => (
           <Text key={id}
+            accessibilityRole="button"
+            accessibilityLabel={`${label}${mode === id ? ', showing now' : ''}`}
             onPress={() => setMode(id)}
             style={{
               paddingVertical: 8, paddingHorizontal: 16, borderRadius: 9,
