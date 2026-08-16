@@ -4390,3 +4390,46 @@ The 999+ cluster badge: `count > 999 ? '999+' : count`, font shrinks past 99,
 `minWidth` so it cannot clip. The legend is already region-filtered — `active`
 drops any layer whose `set.n` is 0 here, so switching to the World Tree cannot
 list a layer that has nothing on it.
+
+### L34 — REGRESSION I SHIPPED, now fixed (d61d3f3) — NOT YET PUBLISHED
+Making the 25 dungeon-only pals pickable (L30) broke the "picked elsewhere"
+banner: the map drew 174 Mau pins on Palpagos while a banner across the top
+read "Mau doesn't live on this map. Try The World Tree." Both on screen, one
+false. `elsewhere` asked `spawnLevels(n, region) === null` — the SURFACE-only
+question, a fair proxy for "does this pal live here" right up until those pals
+could be picked. It passes `true` now.
+New case answered rather than fudged: a pal that lives here but only
+underground, while dungeon spawns are off, gets "Mau is only found inside
+dungeons here. Tick 'Also show dungeon spawns' under Find." — the fix is one
+tick away on the map he is already on, so do not send him to the other island.
+LESSON: when a helper doubles as a PREDICATE, widening what feeds it changes
+every question asked of it. `spawnLevels` was three things at once: a level
+band, a "lives here" test, and a "drawn right now" test. Two of those needed
+the flag; I only changed one.
+
+### L35 — the map said the same thing twice — fixed (same commit)
+Picking Foxparks then switching to the World Tree gave BOTH the specific
+banner ("Foxparks doesn't live on this map. Try Palpagos Islands.") and a
+generic card ("Nothing here on this map. What you switched on does not appear
+in this region. Try the other map at the top."). `emptyReason` carries a
+`kind` now and the card is suppressed ONLY for that exact duplicate — with
+Dungeon switched on over the World Tree it still reads "Dungeon does not
+appear in this region", which the banner never covers.
+
+### L36 — walked and found CORRECT, left alone
+- World Tree with 7 layers on: 142 spots = the data exactly (154 minus the 12
+  skill fruit my tap missed). Pins, rings and counts all right.
+- The odd-looking alpha pin is Alpha Dualith and it is CORRECT — GrassGolem.png
+  is a stone golem with a small green creature. Measured the subject extent of
+  all 298 portraits first: median 100% of canvas, worst 65%, nothing mis-framed.
+- Place search does not leak across regions: `searchPlaces` builds per region.
+- The World Tree genuinely has no area labels — REGION_SPOTS is Palpagos-only
+  because the source (kb regions.json) has none beyond the base map. Not a bug,
+  a data limit. Worth revisiting only if a source appears.
+
+### L37 — HARNESS: coordinates are per-window-height
+`close-sheet 348,377` is an H=812 coordinate. At QA_TALL=1700 it misses, the
+sheet stays OPEN, and the empty-state card is then correctly hidden — which
+reads exactly like "I over-suppressed the card". Cost one wrong conclusion.
+Always probe `includes('What to show')` to prove a sheet actually closed.
+Also: a body-text match for a layer name can be the SHEET ROW, not the card.
