@@ -6,7 +6,9 @@ import {
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { T } from '../theme';
-import { Badge, Btn, ElementChips, getRecentPicks, PalIcon, rememberPick, s } from './kit';
+import {
+  Badge, Btn, ElementChips, getRecentPicks, PalIcon, rememberPick, s, WorkChips,
+} from './kit';
 import { Icon } from './Icon';
 import { rarityTint } from '../data/rarity';
 import { ELEMENTS as PICKER_ELEMENTS } from '../data/elements';
@@ -95,6 +97,13 @@ export function PalPicker({ visible, onClose, onPick, title, exclude }: {
           </Text>
           <View style={{ flexDirection: 'row', gap: 5, flexWrap: 'wrap' }}>
             <ElementChips name={n} />
+          </View>
+          {/* what the pal can DO — the picker showed only its elements, so
+              you could not tell a miner from a lumberjack while choosing
+              (CEO 2026-08-16). `focus` keeps the job you filtered by first,
+              so a Mining-filtered list still visibly reads as Mining. */}
+          <View style={{ flexDirection: 'row', gap: 5, flexWrap: 'wrap' }}>
+            <WorkChips name={n} top={3} focus={filters.work} />
           </View>
         </View>
         {excluded ? (
