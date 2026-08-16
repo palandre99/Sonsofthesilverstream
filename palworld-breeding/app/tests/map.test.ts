@@ -633,3 +633,37 @@ describe('counts read the same wherever they appear', () => {
     expect(screen).toMatch(/\$\{l\.label\}, \$\{l\.n\.toLocaleString\(\)\} on the map/);
   });
 });
+
+/* The time toggle had two states, so "what can I catch RIGHT NOW, in
+ * daylight?" had no setting — and when a night-only pal drew nothing, the map
+ * showed the first-run hint "Find a pal to see where it spawns" to a player
+ * who had just found one. */
+describe('day and night', () => {
+  const screen = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
+  );
+
+  it('offers all three settings, not just two', () => {
+    expect(screen).toMatch(/any: 'Any time'/);
+    expect(screen).toMatch(/day: 'Daytime'/);
+    expect(screen).toMatch(/night: 'Night'/);
+    // and they cycle round rather than dead-ending
+    expect(screen).toMatch(/const NEXT_TIME/);
+  });
+
+  it('drops "All day", which read as DAYTIME to a player', () => {
+    expect(screen).not.toMatch(/label=\{[^}]*'All day'/);
+  });
+
+  it('shows the first-run hint only when nothing is switched on', () => {
+    expect(screen).toMatch(
+      /active\.length === 0 && !sheet && filters\.pals\.size === 0 && filters\.poi\.size === 0/,
+    );
+  });
+
+  it('names the actual reason when a selection draws nothing', () => {
+    expect(screen).toMatch(/function emptyReason/);
+    expect(screen).toMatch(/only comes out at night/);
+    expect(screen).toMatch(/Nothing out in the daytime/);
+  });
+});

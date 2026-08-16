@@ -542,7 +542,8 @@ export function MapScreen() {
           nothing. Say what the map is FOR, and name the thing they would
           never guess — that it knows what is missing from their box. Shows
           only while nothing is switched on, so it never nags. */}
-      {active.length === 0 && !sheet && (
+      {/* Nothing is drawn AND nothing is switched on — a genuinely new map. */}
+      {active.length === 0 && !sheet && filters.pals.size === 0 && filters.poi.size === 0 && (
         <View style={{
           position: 'absolute', left: 12, right: 12, bottom: insets.bottom + 74,
           backgroundColor: 'rgba(12,22,24,0.94)', borderRadius: 13,
@@ -560,6 +561,26 @@ export function MapScreen() {
           <Text style={[s.body, { fontSize: 12.5 }]}>
             <Text style={{ color: T.accentInk, fontWeight: '800' }}>Layers</Text>
             {' '}puts chests, ore, statues, dungeons and bosses on it.
+          </Text>
+        </View>
+      )}
+
+      {/* Nothing is drawn but you DID pick something. The old code showed the
+          first-run hint here — "Find a pal to see where it spawns" — to a
+          player who had just found one, while the real reason sat one line
+          away in the data. Say the actual reason. */}
+      {active.length === 0 && !sheet
+        && (filters.pals.size > 0 || filters.poi.size > 0) && (
+        <View style={{
+          position: 'absolute', left: 12, right: 12, bottom: insets.bottom + 74,
+          backgroundColor: 'rgba(12,22,24,0.94)', borderRadius: 13,
+          borderWidth: 1, borderColor: T.line, padding: 12, gap: 7,
+        }}>
+          <Text style={{ color: T.ink, fontWeight: '800', fontSize: 13.5 }}>
+            {emptyReason(filters, region).title}
+          </Text>
+          <Text style={[s.body, { fontSize: 12.5 }]}>
+            {emptyReason(filters, region).body}
           </Text>
         </View>
       )}
@@ -647,15 +668,19 @@ export function MapScreen() {
             on={filters.pals.size > 0}
             onPress={() => setSheet('pals')}
           />
+          {/* Three states, not two. It used to flip between "All day" and
+              "Night", so the one question a player asks standing in daylight —
+              "what can I catch RIGHT NOW?" — had no setting. The engine always
+              supported day-only; only this button did not.
+
+              "All day" is gone as a label too: it reads as DAYTIME to anyone
+              who has not seen the code, which is exactly the ambiguity that
+              made a two-state toggle confusing. */}
           <ControlBtn
-            icon={filters.time.night && !filters.time.day ? 'weather-night' : 'white-balance-sunny'}
-            label={filters.time.night && !filters.time.day ? 'Night' : 'All day'}
-            on={filters.time.night && !filters.time.day}
-            onPress={() => patch({
-              time: filters.time.day
-                ? { day: false, night: true }
-                : { day: true, night: true },
-            })}
+            icon={timeMode(filters.time) === 'night' ? 'weather-night' : 'white-balance-sunny'}
+            label={TIME_LABEL[timeMode(filters.time)]}
+            on={timeMode(filters.time) !== 'any'}
+            onPress={() => patch({ time: NEXT_TIME[timeMode(filters.time)] })}
           />
         </View>
       </View>
@@ -740,6 +765,59 @@ function PlaceName({ name }: { name: string }) {
 }
 
 const PIN = 23;
+
+/**
+ * Why the map is empty when the player HAS switched something on.
+ *
+ * Never a generic shrug: the data knows the answer. A night-only pal in
+ * daytime is the common case and the app can name both the pal and the fix.
+ */
+function emptyReason(f: MapFilters, region: RegionId): { title: string; body: string } {
+  const mode = timeMode(f.time);
+  if (mode !== 'any' && f.pals.size) {
+    const wrongTime = [...f.pals].filter((n) => (
+      mode === 'day' ? isNightOnly(n, region) : !isNightOnly(n, region)
+    ));
+    if (wrongTime.length === f.pals.size) {
+      const who = wrongTime.length === 1 ? wrongTime[0] : `${wrongTime.length} pals you picked`;
+      return {
+        title: mode === 'day' ? 'Nothing out in the daytime' : 'Nothing out at night',
+        body: mode === 'day'
+          ? `${who} only comes out at night. Tap Daytime again for Night, or once more for Any time.`
+          : `${who} does not come out at night. Tap Night again for Any time.`,
+      };
+    }
+  }
+  if (f.level.lo > 1 || f.level.hi < 80) {
+    return {
+      title: 'Nothing in that level range',
+      body: 'Nothing you have switched on spawns between those levels on this map.',
+    };
+  }
+  return {
+    title: 'Nothing here on this map',
+    body: 'What you switched on does not appear in this region. Try the other map at the top.',
+  };
+}
+
+/** which of the three time settings a filter represents */
+function timeMode(t: { day: boolean; night: boolean }): 'any' | 'day' | 'night' {
+  if (t.day && t.night) return 'any';
+  return t.day ? 'day' : 'night';
+}
+
+const TIME_LABEL: Record<'any' | 'day' | 'night', string> = {
+  any: 'Any time',
+  day: 'Daytime',
+  night: 'Night',
+};
+
+/** Any time -> Daytime -> Night -> Any time */
+const NEXT_TIME: Record<'any' | 'day' | 'night', { day: boolean; night: boolean }> = {
+  any: { day: true, night: false },
+  day: { day: false, night: true },
+  night: { day: true, night: true },
+};
 
 /** the same words the Paldex uses for these filters, so they read as one app */
 const OWN_LABEL: Record<string, string> = {

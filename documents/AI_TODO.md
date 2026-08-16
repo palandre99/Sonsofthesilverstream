@@ -834,6 +834,26 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       element is absent from a TRUNCATED text dump — match the whole document
       for what you expect. Also confirms tapping still works after J6, on both
       a POI cluster and a fast-travel marker.
+- [x] J9 2026-08-16 ~17:00 "WHAT CAN I CATCH RIGHT NOW" HAD NO SETTING, AND
+      THE EMPTY MAP TOLD A LIE. Walked the day/night toggle against a
+      night-only pal and measured label + count together at each step: it had
+      only TWO states, "All day" and "Night". So the most ordinary question a
+      player asks standing in daylight could not be asked. The engine always
+      supported day-only — spawnPoints takes {day,night} and a test already
+      asserted a nocturnal pal returns null in daytime — only the button did
+      not. Three states now: Any time -> Daytime -> Night, cycling.
+      "All day" is gone as a label: it reads as DAYTIME to anyone who has not
+      seen the code, which is exactly what made two states confusing.
+      SECOND, WORSE DEFECT FOUND BY THE SAME WALK: with Depresso picked and
+      Daytime on, the map drew nothing and showed the FIRST-RUN hint — "Find a
+      pal to see where it spawns out in the world" — to a player who had just
+      found one. The hint fired on active.length === 0, which is also true when
+      a real selection legitimately draws nothing. It now only greets an
+      untouched map; when a selection draws nothing the app names the actual
+      reason from the data: "Nothing out in the daytime — Depresso only comes
+      out at night. Tap Daytime again for Night, or once more for Any time."
+      Also covers a too-narrow level range and a pal that is not in this
+      region. Measured: Any time 398 -> Daytime none -> Night 398.
 - [ ] H17 COLOUR CANNOT CARRY 23 IDENTITIES. Three POI layers are near-identical
       greys (npc #A9C0CC, ore #B7C4CC, coal #8E9AA3) and several are near-white
       (note #D7E3E8, quartz #CFE9FF, egg #FFEFC2). I deliberately did NOT
