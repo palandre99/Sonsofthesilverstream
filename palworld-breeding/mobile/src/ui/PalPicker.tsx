@@ -71,6 +71,13 @@ export function PalPicker({ visible, onClose, onPick, title, exclude }: {
           onPick(n);
           onClose();
         }}
+        // the row said nothing to a screen reader: no role, and "you own
+        // this one" was a bare coloured dot with no text at all
+        accessibilityRole="button"
+        accessibilityState={{ disabled: excluded }}
+        accessibilityLabel={`${n}. ${
+          excluded ? 'already one of your goals'
+            : owned ? 'in your Paldex' : 'not in your Paldex yet'}`}
         style={({ pressed }) => [{
           flexDirection: 'row', alignItems: 'center', gap: 12,
           paddingVertical: 9, paddingHorizontal: 12, borderRadius: 12,
@@ -136,6 +143,11 @@ export function PalPicker({ visible, onClose, onPick, title, exclude }: {
                   void Haptics.selectionAsync();
                   setFilters({ ...filters, own: o });
                 }}
+                accessibilityRole="button"
+                // which one is active was carried by colour alone
+                accessibilityLabel={`Show ${
+                  o === 'all' ? 'all pals' : o === 'owned' ? 'pals you own' : 'pals you are missing'
+                }${filters.own === o ? ', showing now' : ''}`}
                 style={{
                   backgroundColor: filters.own === o ? T.accentSoft : T.surface,
                   borderWidth: 1.5,
@@ -153,6 +165,9 @@ export function PalPicker({ visible, onClose, onPick, title, exclude }: {
                 void Haptics.selectionAsync();
                 setSheet(true);
               }}
+              accessibilityRole="button"
+              accessibilityLabel={`Filters and sort${
+                filtersActive || sort !== 'number' ? ', some are on' : ''}`}
               style={{
                 backgroundColor: filtersActive || sort !== 'number'
                   ? T.accentSoft : T.surface,
@@ -181,7 +196,10 @@ export function PalPicker({ visible, onClose, onPick, title, exclude }: {
                           : [...filters.elements, e],
                       });
                     }}
-                    accessibilityLabel={`Filter ${e}`}
+                    accessibilityRole="button"
+                    // it had a label but no role, and no way to hear whether
+                    // the element was currently filtering
+                    accessibilityLabel={`${e} pals${on ? ', filtering now' : ''}`}
                     style={{
                       width: 30, height: 30, borderRadius: 9,
                       alignItems: 'center', justifyContent: 'center',

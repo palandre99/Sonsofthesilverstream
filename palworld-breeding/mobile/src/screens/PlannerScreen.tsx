@@ -109,7 +109,7 @@ function HatchSheet({ child, sid, have, onClose }: {
   const partial = have && (have.m !== have.f);
   return (
     <Modal visible transparent animationType="fade" onRequestClose={onClose}>
-      <View style={{
+      <View accessibilityViewIsModal style={{
         flex: 1, backgroundColor: 'rgba(0,0,0,0.55)',
         alignItems: 'center', justifyContent: 'center', padding: 28,
       }}>
@@ -1206,7 +1206,9 @@ export function PlannerScreen() {
       {managing !== 'none' && (
         <Modal visible transparent animationType="fade"
           onRequestClose={() => setManaging('none')}>
-          <View style={{
+          {/* without this VoiceOver keeps wandering into the screen behind a
+              question that is asking you to destroy something */}
+          <View accessibilityViewIsModal style={{
             flex: 1, backgroundColor: 'rgba(0,0,0,0.55)',
             alignItems: 'center', justifyContent: 'center', padding: 28,
           }}>
