@@ -21,6 +21,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { StyleSheet, View, type LayoutChangeEvent } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
+  type SharedValue,
   runOnJS,
   useAnimatedReaction,
   useAnimatedStyle,
@@ -30,6 +31,30 @@ import Animated, {
 import { Image } from 'expo-image';
 import { MAP_TILES, MAX_TILE_Z, TILE_SIZE } from '../data/tileIndex.g';
 import { type RegionId } from './projection';
+
+/** One screen-space marker: follows the map on the UI thread, never scaled by
+ *  it, so whatever it draws stays at its true resolution. */
+function ScreenPin({ u, v, tx, ty, k, children }: {
+  u: number;
+  v: number;
+  tx: SharedValue<number>;
+  ty: SharedValue<number>;
+  k: SharedValue<number>;
+  children: React.ReactNode;
+}) {
+  const style = useAnimatedStyle(() => ({
+    transform: [
+      { translateX: tx.value + u * k.value },
+      { translateY: ty.value + v * k.value },
+    ],
+  }));
+  return (
+    <Animated.View pointerEvents="none"
+      style={[{ position: 'absolute', left: 0, top: 0 }, style]}>
+      {children}
+    </Animated.View>
+  );
+}
 
 /** Logical size of the map container. Tiles lay out against this once and are
  *  never re-laid-out; only the container's transform changes. */
@@ -44,9 +69,32 @@ const BASE = 1024;
 const TILE_PX = TILE_SIZE;
 const TILE_MAX_Z = MAX_TILE_Z;
 
-/** How far past "the whole map fits" you may zoom in. 14x puts roughly one
- *  island group across a phone screen at real texture pixels. */
+/** How far past the zoom floor you may go. */
 const MAX_ZOOM = 14;
+
+/**
+ * Hard ceiling: the source texture is 4096 px, so magnifying past that only
+ * blurs it. Raising the zoom floor to cover doubled every zoom multiple and
+ * pushed the auto-framing straight past this — the terrain went soft. Zoom is
+ * now bounded by the pixels that actually exist, not by a multiplier.
+ */
+const MAX_SCALE = 4096;
+
+/**
+ * A thing drawn in SCREEN space, tracking the map without being scaled by it.
+ *
+ * Anything inside the transformed container is rasterised by iOS at its
+ * pre-scale size and then magnified, which is invisible on a round pin and
+ * very visible on text — place names came out jagged on the CEO's phone.
+ * These sit outside the transform and follow it via their own worklet, so the
+ * text is drawn at its true size and stays crisp at every zoom.
+ */
+export interface ScreenMarker {
+  key: string;
+  u: number;
+  v: number;
+  render: () => React.ReactNode;
+}
 
 export interface MapMarker {
   key: string;
@@ -72,6 +120,7 @@ export interface MapCanvasHandle {
 export function MapCanvas({
   region,
   markers,
+  screenMarkers,
   onViewport,
   onPress,
   children,
@@ -79,6 +128,8 @@ export function MapCanvas({
 }: {
   region: RegionId;
   markers: MapMarker[];
+  /** drawn unscaled, above the map — use for text */
+  screenMarkers?: ScreenMarker[];
   /** called (throttled to real change) with the current px-per-uv scale + rect */
   onViewport?: (v: { scale: number; u0: number; v0: number; u1: number; v1: number }) => void;
   onPress?: (u: number, v: number) => void;
@@ -145,7 +196,8 @@ export function MapCanvas({
       startTy.value = ty.value;
     })
     .onUpdate((e) => {
-      const next = Math.min(zoomFloor * MAX_ZOOM, Math.max(zoomFloor, startK.value * e.scale));
+      const next = Math.min(MAX_SCALE, Math.min(zoomFloor * MAX_ZOOM,
+        Math.max(zoomFloor, startK.value * e.scale)));
       const ratio = next / startK.value;
       // keep the pinch focal point pinned under the fingers
       const nx = e.focalX - (e.focalX - startTx.value) * ratio;
@@ -159,7 +211,9 @@ export function MapCanvas({
   const doubleTap = useMemo(() => Gesture.Tap()
     .numberOfTaps(2)
     .onEnd((e) => {
-      const next = k.value > zoomFloor * 3.5 ? zoomFloor : Math.min(zoomFloor * MAX_ZOOM, k.value * 2.5);
+      const next = k.value > zoomFloor * 3.5
+        ? zoomFloor
+        : Math.min(MAX_SCALE, Math.min(zoomFloor * MAX_ZOOM, k.value * 2.5));
       const ratio = next / k.value;
       const nx = e.x - (e.x - tx.value) * ratio;
       const ny = e.y - (e.y - ty.value) * ratio;
@@ -256,7 +310,8 @@ export function MapCanvas({
   }, [onViewport, size.h, size.w]);
 
   const applyFocus = useCallback((u: number, v: number, zoom: number, animate: boolean) => {
-    const next = Math.min(zoomFloor * MAX_ZOOM, Math.max(zoomFloor, zoomFloor * zoom));
+    const next = Math.min(MAX_SCALE,
+      Math.min(zoomFloor * MAX_ZOOM, Math.max(zoomFloor, zoomFloor * zoom)));
     const c = clamp(size.w / 2 - u * next, size.h / 2 - v * next, next);
     const ms = animate ? 320 : 0;
     // Push the FINAL rect when the animation lands. The reaction below only
@@ -385,6 +440,11 @@ export function MapCanvas({
           </Animated.View>
         </Animated.View>
       </GestureDetector>
+      {screenMarkers?.map((m) => (
+        <ScreenPin key={m.key} u={m.u} v={m.v} tx={tx} ty={ty} k={k}>
+          {m.render()}
+        </ScreenPin>
+      ))}
       {children}
     </View>
   );

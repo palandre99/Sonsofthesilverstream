@@ -17,7 +17,9 @@ import * as Haptics from 'expo-haptics';
 import { T } from '../theme';
 import { Icon } from '../ui/Icon';
 import { SearchInput, s } from '../ui/kit';
-import { MapCanvas, type MapCanvasHandle, type MapMarker } from '../map/MapCanvas';
+import {
+  MapCanvas, type MapCanvasHandle, type MapMarker, type ScreenMarker,
+} from '../map/MapCanvas';
 import { clusterPoints, nearestPoint, pointsInRect, type PointSet } from '../map/points';
 import { uvToReadout, regionOf, type RegionId } from '../map/projection';
 import {
@@ -149,7 +151,7 @@ export function MapScreen() {
    * residual is bounded at 6 px of 4096 — invisible under a text label, but
    * the reason these are labels and never pins.
    */
-  const labels = useMemo<MapMarker[]>(() => {
+  const labels = useMemo<ScreenMarker[]>(() => {
     if (region !== 'palpagos' || vp.scale < 760) return [];
     // Keep the label box clear of the screen edge, or names truncate mid-word
     // ("Gobfin's Tu..."), which reads as a bug rather than as a map.
@@ -172,7 +174,7 @@ export function MapScreen() {
     // top of its neighbour.
     const placed: { x: number; y: number; w: number }[] = [];
     const minY = LABEL_H / vp.scale;
-    const out: MapMarker[] = [];
+    const out: ScreenMarker[] = [];
     for (const [name, at] of near) {
       const w = textWidth(name) / vp.scale;
       if (placed.some((q) => (
@@ -207,8 +209,9 @@ export function MapScreen() {
     canvas.current?.focus((u0 + u1) / 2, (v0 + v1) / 2, 1 / span);
   }, [focusKey]);
 
-  // labels sit UNDER the pins: a place name must never cover a spawn
-  const allMarkers = useMemo(() => [...labels, ...markers], [labels, markers]);
+  // Labels are SCREEN markers now — outside the map's transform, so their text
+  // is drawn at true resolution instead of being rasterised small and blown up
+  // (which is what made them jagged on device).
 
   // picks that have no spawns on the map currently shown
   const elsewhere = useMemo(
@@ -289,7 +292,8 @@ export function MapScreen() {
     <View style={{ flex: 1, backgroundColor: '#04090b' }}>
       <MapCanvas
         region={region}
-        markers={allMarkers}
+        markers={markers}
+        screenMarkers={labels}
         canvasRef={canvas}
         onViewport={setVp}
         onPress={onPress}

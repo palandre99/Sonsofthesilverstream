@@ -352,8 +352,19 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       straight OVER the app header, which is why it looked wrong rather than
       merely zoomed. The canvas and its gesture layer now clip their content
       (`overflow: 'hidden'`).
-- [ ] G3 "doesn't look like the angle is the same as the in-game version" —
-      OPEN, and NOT guessed at. Confirmed `T_WorldMap` is exactly the texture
+- [x] G3 ANSWERED 2026-08-16 ~12:45 from the CEO's own in-game screenshot —
+      and I should have found this myself instead of asking him.
+      **There is NO rotation.** In his shot the volcano sits left, the green
+      islands centre-right, the snow top-right — the same orientation as our
+      texture. Confirmed numerically: the readout in his screenshot reads
+      "-156, 80", which through our transform is uv (0.56, 0.30), exactly the
+      part of the map his view is centred on. A rotation would have put it
+      somewhere else entirely.
+      What actually differed was TWO things, both now fixed: the game shows a
+      zoomed rectangular crop that FILLS its frame, while ours showed the whole
+      tilted hexagon with black around it (G1), and ours over-zoomed into
+      mush (G6). The hexagon's diagonal edges are what read as "wrong angle".
+- [x] G3-original note kept for the record — NOT guessed at. Confirmed `T_WorldMap` is exactly the texture
       the game's own Map view uses (palworld.wiki.gg Game Files/Guide), so the
       ART is right and the difference must be a rotation the game's map widget
       applies at display time. Need the CEO to say which way it is turned
@@ -369,6 +380,24 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       outside the transform, driven by the same viewport. Cannot be seen in the
       browser — react-native-web composites differently — so it needs a device
       check after the change.
+
+- [x] G4 DONE: place names moved OUT of the scaled container into a
+      screen-space layer that follows the map via its own worklet. Text is now
+      drawn at true resolution instead of being rasterised small and magnified.
+      Pins stay inside the transform — round shapes do not show the artefact.
+- [x] G6 (found while fixing G1) raising the zoom floor to cover doubled every
+      zoom multiple, so the auto-framing shot past the texture's own
+      resolution and the terrain went soft. Zoom is now capped at MAX_SCALE
+      4096 — the pixels that actually exist — rather than at a multiplier.
+- [ ] G5 CEO: "All symbols should be same as game use also." His screenshot
+      shows the game's own circular icons — boss portraits, fast-travel
+      glyphs, dungeon marks — where we use MaterialCommunityIcons. pal-atlas
+      bakes the game's icon set into `public/icons/`; that is the source to
+      mine. Big but very high value: it is the difference between "a map" and
+      "the game's map".
+- [ ] G7 The game's ocean is a brighter teal than our raw texture and it draws
+      a framed panel with corner brackets. Consider a light tint + frame to
+      match the in-game feel.
 
 ### Open — the map lane's own queue
 - [x] F23 DONE 2026-08-16 ~00:02: the preview's dense clusters were an
