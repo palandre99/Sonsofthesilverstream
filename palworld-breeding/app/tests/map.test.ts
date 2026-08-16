@@ -1018,3 +1018,29 @@ describe('the deepest tiles are actually used', () => {
     }
   });
 });
+
+/* A pinch release must never be read as a tap. Both tap gestures run
+ * simultaneously with the pinch, and the double tap ANIMATES the map to a new
+ * centre — so a two-finger lift-off could jump the map on purpose, in the
+ * wrong circumstances. That is the snap the CEO reported on release. */
+describe('lifting fingers off a pinch is not a tap', () => {
+  const canvas = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'map', 'MapCanvas.tsx'), 'utf8',
+  );
+
+  it('ignores a tap made with more than one finger', () => {
+    // TapGesture has no maximum-pointer setting - minPointers only - so this
+    // has to be checked in the handler, from the event's own pointer count.
+    const taps = canvas.split('Gesture.Tap()').slice(1);
+    expect(taps.length).toBe(2);
+    for (const t of taps) {
+      expect(t.slice(0, 1800)).toMatch(/e\.numberOfPointers > 1 \|\| pinching\.value/);
+    }
+  });
+
+  it('keeps the double tap animating, which is why it must not misfire', () => {
+    // if this ever stops animating the guard above matters less, but the jump
+    // is the whole point of the control, so it should still be one finger
+    expect(canvas).toMatch(/k\.value = withTiming\(next/);
+  });
+});

@@ -1077,14 +1077,28 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       scale * PixelRatio.get(): 1.00x, pixel-for-pixel, on both densities.
       dpr is read in render and captured as a plain NUMBER — the reaction is a
       worklet and must never call into another module.
-- [ ] L3 "ZOOM STILL BUGGY" — STOP GUESSING. Two gesture fixes have shipped
+- [x] L3 "ZOOM STILL BUGGY" — MECHANISM FOUND, NOT GUESSED THIS TIME. Two gesture fixes have shipped
       unverified (K3 pan re-anchor, J1 focal anchoring) and he still reports it.
       The harness cannot pinch, so the honest next step is to EXTRACT the
       pinch/pan transform into a pure function in map/ and unit-test it: focal
       point stays under the fingers across a spread+move, no jump when the
       pinch ends and a one-finger pan continues, clamping never teleports.
-      That converts an untestable gesture into testable maths. Do this before
-      touching the gesture handlers again.
+      CAUSE: both tap gestures run SIMULTANEOUSLY with the pinch, and RNGH's
+      TapGesture has no maximum-pointer setting (minPointers only — checked the
+      installed .d.ts after guessing maxPointers and numberOfPointers wrong,
+      twice). So lifting two fingers off a pinch could be recognised as a
+      DOUBLE TAP, whose handler animates the map to a new centre over 220ms.
+      The snap on release was the map deliberately jumping, in entirely the
+      wrong circumstances.
+      FIX: both handlers now bail on `e.numberOfPointers > 1 || pinching.value`
+      — the pointer count comes off the gesture event itself, which is the only
+      place RNGH exposes it for taps.
+      STILL UNVERIFIED ON DEVICE (the harness cannot pinch), but this is a
+      named mechanism with a matching symptom rather than another guess. If it
+      is still wrong, the next step is extracting the pinch maths into a pure
+      function and unit-testing it — do NOT hand-tune the handlers again.
+      NOTE: my source-scanning tests PASSED against code that did not compile.
+      They read text, not behaviour. tsc is the gate that caught it.
 - [x] L4 THE LOOP HAD STOPPED. He asked "where is loop". I answered his "Keep
       working" turns without re-arming ScheduleWakeup, so the self-paced loop
       simply ended. Re-armed.

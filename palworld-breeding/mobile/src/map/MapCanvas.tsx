@@ -322,7 +322,20 @@ export function MapCanvas({
 
   const doubleTap = useMemo(() => Gesture.Tap()
     .numberOfTaps(2)
+    // ONE finger. Both taps ran simultaneously with the pinch and neither
+    // limited how many fingers could make them, so lifting two fingers off a
+    // pinch could be read as a double tap — whose handler ANIMATES the map to
+    // a new centre over 220ms. That is the "snaps to a different place when I
+    // release fingers" the CEO reported, and it is a jump the map performs on
+    // purpose, in the wrong circumstances.
     .onEnd((e) => {
+      // A PINCH RELEASE IS NOT A TAP. Both taps run simultaneously with the
+      // pinch, and TapGesture has no maximum-pointer setting — so lifting two
+      // fingers off a pinch could be read as a double tap, whose handler
+      // ANIMATES the map to a new centre over 220ms. That is the "snaps to a
+      // different place when I release fingers" the CEO reported: a jump the
+      // map makes on purpose, in entirely the wrong circumstances.
+      if (e.numberOfPointers > 1 || pinching.value) return;
       const next = k.value > zoomFloor * 3.5
         ? zoomFloor
         : Math.min(MAX_SCALE, Math.min(zoomFloor * MAX_ZOOM, k.value * 2.5));
@@ -333,15 +346,17 @@ export function MapCanvas({
       k.value = withTiming(next, { duration: 220 });
       tx.value = withTiming(c.x, { duration: 220 });
       ty.value = withTiming(c.y, { duration: 220 });
-    }), [MAX_SCALE, clamp, zoomFloor, k, tx, ty]);
+    }), [MAX_SCALE, clamp, pinching, zoomFloor, k, tx, ty]);
 
   const tap = useMemo(() => Gesture.Tap()
     .maxDuration(260)
     .onEnd((e) => {
+      // same reason: a two-finger lift-off must not open a marker card either
+      if (e.numberOfPointers > 1 || pinching.value) return;
       if (!onPress) return;
       runOnJS(onPress)((e.x - tx.value) / k.value, (e.y - ty.value) / k.value);
     })
-    .requireExternalGestureToFail(doubleTap), [doubleTap, k, onPress, tx, ty]);
+    .requireExternalGestureToFail(doubleTap), [doubleTap, k, onPress, pinching, tx, ty]);
 
   const gesture = useMemo(
     () => Gesture.Simultaneous(Gesture.Race(doubleTap, tap), Gesture.Simultaneous(pan, pinch)),
