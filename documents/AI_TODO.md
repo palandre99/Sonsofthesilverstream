@@ -2099,7 +2099,8 @@ The one actionable gap E71 logged, closed.
       says "26 owned" before and after. **Never press Apply on his save.**
 - **19th BAD CHECK OF MINE:** my first patch asserted and aborted because the
       search string held a REAL carriage return instead of the two characters
-      `` — exactly the trap already written in my own notes ("use RAW
+      `
+` — exactly the trap already written in my own notes ("use RAW
       strings in python heredocs"). The assert did its job and nothing was
       written. **Rule (9) paid for itself: an edit that checks its own
       assumptions fails safely.**
@@ -4176,3 +4177,45 @@ Pinned by two tests in `app/tests/map.test.ts`.
 - The Layers sheet ScrollView (23 rows, no images) — mounting all of it is free.
 - Row height is uniform, so `getItemLayout` would be valid on the pal list, but
   it buys nothing measurable and a wrong constant there causes scroll jumps.
+
+### L27 — the provenance copy stops speaking as a person — DONE (949e847, published)
+"no larger copy of it exists anywhere I could find" was the developer's voice
+in a paragraph the player reads. Now "has been published" — which is also the
+only version of that claim I actually checked. Three tests hold the block, one
+of which asserts the block is non-empty so the others cannot pass vacuously.
+Found by opening the QA window to 4200px: the bottom of the Reference tab had
+never been LOOKED at, only read as source.
+
+### L28 — NOT MY LANE, for whoever owns PalDetail.tsx
+On every pal card with an alpha boss, the line renders as:
+    Alpha boss
+    · Revealer of Paths Foxparks (Lv. 10-13) - Hillside Cavern, ...
+Two things. The `· ` prefix (`PalDetail.tsx:651`) is a bullet, but with a
+single item it reads as a dangling separator. And the level range is written
+`(Lv. 10-13)` with a full stop and a hyphen, six lines under the map's own
+`Lv 5–7` with neither. One of the two is wrong; they should not disagree on
+the same card. Same `· ` prefix is used by "Other ways to get one".
+
+### K7 — SETTLED: the zoom ceiling stays where it is
+The ledger carried "~3.2x" as a guess. Derived properly now, for the fullscreen
+map on his phone (393x852 CSS, PixelRatio 3):
+    zoomFloor = max(w, h)          = 852 CSS px   (COVER, so no empty bands)
+    MAX_SCALE = 8192 / 3           = 2730.7 CSS px
+    reach     = 2730.7 / 852       = 3.20x        (zoomFloor * MAX_ZOOM = 11928, never binds)
+At that ceiling the mapping is exactly one texture pixel per device pixel — the
+sharpest the source can be, because 8192 IS the game's native export. There are
+no more pixels to show.
+DECIDED: do not ship the 1.5x upscale. He reported "pixelated / 380 quality /
+not crisp 4K" TWICE and has never once said he cannot zoom far enough. Trading
+proven sharpness for reach he has not asked for is backwards. What would change
+this: him asking for more reach. Then 1.5x is the honest middle, and pins and
+labels draw in screen space so they would stay sharp while terrain softened.
+
+### L29 — publish race, caught by the wrapper (open until the tree settles)
+`scripts/publish.js` fired its post-bundle warning: the other session saved
+`PaldexScreen.tsx` (JSON backup import) WHILE my update was bundling, so the
+live bundle may carry their uncommitted work. Assessed rather than assumed:
+it type-checks, 319/319 pass, and their change is a guarded JSON parse with a
+try/catch fallback — a finished-looking addition, not a broken half-edit. So
+nothing on his phone is broken. Still: REPUBLISH once they commit, so the
+bundle maps to a known commit instead of to someone's working tree.
