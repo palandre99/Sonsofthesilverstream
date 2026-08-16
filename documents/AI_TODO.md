@@ -770,6 +770,14 @@ Nothing in the Plan-tab queue is blocked by this — what remains there is
 polish, micro-QoL and copy, which is safe to keep shipping.
 
 ### E13 polish-lane findings (hostile deep-eval passes, ongoing)
+- [x] 2026-08-16 ~10:45 PHASE HEADERS were telling the player to
+      parallelise a SINGLE task: every phase said "· everything here can
+      run in parallel" regardless of size, and in the live plan phases
+      3, 4 and 5 each had exactly one step. Web additionally rendered
+      "0 of 1 stepS" (the banned plural again). Now: multi-step phases
+      keep the hint, single-step phases drop it, and web pluralises
+      correctly. Eye-verified on BOTH platforms with a plan built to
+      contain both cases. Mobile changed → OTA'd.
 - [x] 2026-08-16 ~10:35 GRAMMAR BUG on web, caught by the deep-eval read:
       the plan button rendered "Plan 1 targetS" (and "Plan␣␣targets" with
       none) — the exact "1 steps"/"1 cakes" class of error the CEO banned

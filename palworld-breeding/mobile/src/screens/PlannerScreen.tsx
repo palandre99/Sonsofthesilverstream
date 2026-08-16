@@ -793,7 +793,10 @@ export function PlannerScreen() {
               <Text style={[s.h3, { marginBottom: 8 }]}>
                 Phase {wave}{' '}
                 <Text style={{ color: T.muted, fontWeight: '600', fontSize: 12.5 }}>
-                  {allDone ? '· complete' : '· everything here can run in parallel'}
+                  {/* a phase with ONE step has nothing to run in parallel
+                      WITH — the hint was noise there (deep-eval find) */}
+                  {allDone ? '· complete'
+                    : steps.length > 1 ? '· everything here can run in parallel' : ''}
                 </Text>
               </Text>
               <View style={{ gap: 8 }}>

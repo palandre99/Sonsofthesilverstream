@@ -671,7 +671,10 @@ export function PlanPage() {
                 <h3>Phase {wave}</h3>
                 <span>
                   {steps.filter((s) => checks[stepId(s.parents[0], s.parents[1], s.child)]).length}
-                  {' of '}{steps.length} steps · everything here can run in parallel
+                  {' of '}{steps.length} {steps.length === 1 ? 'step' : 'steps'}
+                  {/* a phase with ONE step has nothing to run in parallel WITH —
+                      the hint was noise there (deep-eval find) */}
+                  {steps.length > 1 ? ' · everything here can run in parallel' : ''}
                 </span>
               </div>
               <div class="pairlist">
