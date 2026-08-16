@@ -14,9 +14,13 @@ import {
 } from './palFilters';
 
 /** The Filter & Sort sheet — in-game sorting, but better. */
-export function FilterSheet({ filters, sort, onApply, onClose }: {
+export function FilterSheet({ filters, sort, onApply, onClose, base }: {
   filters: Filters; sort: SortKey;
   onApply: (f: Filters, s: SortKey) => void; onClose: () => void;
+  /** the list being filtered — defaults to every pal. A category browser
+   * passes its own subset so the button can't promise "Show 44 pals" and
+   * then hand back 14 (self-found 2026-08-16). */
+  base?: string[];
 }) {
   const [f, setF] = useState<Filters>(filters);
   const [sk, setSk] = useState<SortKey>(sort);
@@ -137,7 +141,7 @@ export function FilterSheet({ filters, sort, onApply, onClose }: {
           borderTopWidth: 1, borderTopColor: T.line,
         }}>
           <View style={{ flex: 1 }}>
-            <Btn primary label={`Show ${applyFilters(Object.keys(pals), f).length} pals`}
+            <Btn primary label={`Show ${applyFilters(base ?? Object.keys(pals), f).length} pals`}
               onPress={() => onApply(f, sk)} />
           </View>
           <Btn label="Cancel" onPress={onClose} />

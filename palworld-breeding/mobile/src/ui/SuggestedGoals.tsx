@@ -26,7 +26,11 @@ import {
   breeding, engine, getActiveProfile, getBox, getPlayerLevel, pals, ownedAny,
   setProfileLevel, workLabel,
 } from '../store';
-import { WORK_KEYS } from './palFilters';
+import {
+  applyFilters, NO_FILTERS, sortedPals, WORK_KEYS,
+  type Filters, type SortKey,
+} from './palFilters';
+import { FilterSheet } from './FilterSheet';
 import { HELPERS } from '../engine/helpers';
 import {
   attainLabel, attainScore, boxKeyOf, cachedDerivations, derivationsReady,
@@ -528,13 +532,28 @@ function CategoryBrowser({ sec, bctx, onClose }: {
   sec: SectionDef; bctx: BrowseCtx; onClose: () => void;
 }) {
   const [q, setQ] = useState('');
+  // the SAME Filter & Sort sheet the Paldex and the picker use — a big
+  // category (83 ground mounts) needs narrowing, not just a search box
+  // (CEO 2026-08-16: "why no filter similar to paldex filter search")
+  const [filters, setFilters] = useState<Filters>(NO_FILTERS);
+  const [sort, setSort] = useState<SortKey>('number');
+  const [sheetOpen, setSheetOpen] = useState(false);
   const ranked = orderItems(sec, bctx.attain);
   const rec = sec.scored
     ? recommendedSet(ranked.map((x) => ({ name: x.name, value: x.value ?? 0 })), bctx.attain)
     : new Set<string>();
-  const rows = q
-    ? ranked.filter((x) => x.name.toLowerCase().includes(q.toLowerCase()))
-    : ranked;
+  const filtersActive = filters.own !== 'all' || filters.elements.length > 0 || !!filters.work;
+  const rows = useMemo(() => {
+    const byName = new Map(ranked.map((x) => [x.name, x]));
+    let names = applyFilters(ranked.map((x) => x.name), filters);
+    // 'number' is the sheet's neutral value (same convention as PalPicker):
+    // leave the category's own best-first ranking alone unless the player
+    // actually picks a sort.
+    if (sort !== 'number') names = sortedPals(names, sort);
+    if (q) names = names.filter((n) => n.toLowerCase().includes(q.toLowerCase()));
+    return names.map((n) => byName.get(n)!).filter(Boolean);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sec.id, q, filters, sort, bctx.targets]);
   const missing = rows
     .filter((x) => !bctx.targets.includes(x.name) && !ownedAny(x.name))
     .map((x) => x.name);
@@ -557,10 +576,25 @@ function CategoryBrowser({ sec, bctx, onClose }: {
               <SearchInput value={q} onChange={setQ}
                 placeholder={`Search ${sec.items.length} pals…`} />
             </View>
+            <Btn small label={filtersActive || sort !== 'number' ? 'Filters ·' : 'Filters'}
+              primary={filtersActive || sort !== 'number'}
+              onPress={() => setSheetOpen(true)} />
             {missing.length > 1 && (
               <Btn small label={`Add ${missing.length}`} onPress={() => bctx.onAdd(missing)} />
             )}
           </View>
+          {/* say what the list is narrowed to, and give one tap back out */}
+          {(filtersActive || sort !== 'number' || !!q) && (
+            <View style={[s.wrap, { alignItems: 'center' }]}>
+              <Text style={{ color: T.accentInk, fontSize: 11.5, fontWeight: '700' }}>
+                {rows.length} of {sec.items.length} shown
+              </Text>
+              <Pressable accessibilityLabel="Clear the filters and search"
+                onPress={() => { setFilters(NO_FILTERS); setSort('number'); setQ(''); }}>
+                <Text style={{ color: T.faint, fontSize: 11.5, fontWeight: '800' }}> ✕ clear</Text>
+              </Pressable>
+            </View>
+          )}
         </View>
         <FlatList
           data={rows}
@@ -580,6 +614,12 @@ function CategoryBrowser({ sec, bctx, onClose }: {
           }
         />
       </View>
+      {sheetOpen && (
+        <FilterSheet filters={filters} sort={sort}
+          base={ranked.map((x) => x.name)}
+          onApply={(f, sk) => { setFilters(f); setSort(sk); setSheetOpen(false); }}
+          onClose={() => setSheetOpen(false)} />
+      )}
     </Modal>
   );
 }

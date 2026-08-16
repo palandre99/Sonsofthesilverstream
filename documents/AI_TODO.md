@@ -837,6 +837,31 @@ DELIBERATELY NOT DONE BY ME: this is engine code and "planner/derivations
 perf re-architecture" is explicitly parked for Fable. Ledgered with hard
 numbers so it is nearly mechanical to execute.
 
+## E14. CEO FEEDBACK 2026-08-16 ~15:00 (verbatim intake)
+- [x] E14a "Why are for example there no filter inside the suggestion for
+      breeds, for example ground mounts «83» u open it and there are 83
+      mounts recommended. Why no filter similar to paldex filter search
+      etc" — SHIPPED same session (mobile). The category browser now
+      opens the SAME Filter & sort sheet the Paldex and the picker use
+      (work / element / ownership / order), REUSING ui/FilterSheet.tsx +
+      palFilters.tsx rather than inventing a second filter UI — his own
+      earlier standard was "not the same as the Paldex". The Filters
+      button lights up when active, and a "14 of 83 shown · ✕ clear"
+      line says what the list is narrowed to with one tap back out.
+      Convention followed from PalPicker: sort 'number' is the neutral
+      value, so the category keeps its own best-first ranking unless the
+      player actually picks an order.
+      Eye-verified: Ground mounts + Fire → "14 of 83 shown".
+- [x] E14b SELF-FOUND while verifying E14a: the filter sheet's own button
+      promised "Show 44 pals" (Fire across the WHOLE dex) and then
+      delivered 14 (Fire ∩ ground mounts) — a number that did not mean
+      what it said, in a project whose bar is "every number carries
+      meaning". FilterSheet now takes an optional `base` list to count
+      against; Paldex and PalPicker are unchanged (they default to all
+      pals). Re-verified: the button now reads "Show 14 pals".
+- [ ] E14-NEXT: web parity for the category filters (do it once the Map
+      session's app/ work is committed — they hold app/src/state.ts).
+
 ### E13 polish-lane findings (hostile deep-eval passes, ongoing)
 - [x] 2026-08-16 ~14:45 "REMOVE ALL" WHILE A PLAN IS RUNNING — walked with
       a genuinely running plan (2 steps, 1/2 done, a hatched pal in the
