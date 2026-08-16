@@ -2,7 +2,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Modal, Pressable, ScrollView, Text, View } from 'react-native';
 import * as Haptics from 'expo-haptics';
-import { AnimatedCheck, HatchBurst, type Rarity, type TickState } from '../ui/celebrate';
+import {
+  AnimatedCheck, HatchBurst, HeroPop, type Rarity, type TickState,
+} from '../ui/celebrate';
 import { PalDetail } from '../ui/PalDetail';
 import { cakeNeeds } from '../engine/boosters';
 import { ADVICE_VERSION, HELPER_NAMES, helperAdvice, type HelperAdvice } from '../engine/helpers';
@@ -847,8 +849,12 @@ export function PlannerScreen() {
                       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingLeft: 36 }}>
                         <Text style={{ color: T.accent, fontWeight: '800', fontSize: 18 }}>→</Text>
                         <Pressable onPress={() => setViewing(st.child)} hitSlop={4}>
-                          <PalIcon name={st.child} size={46} />
-                          <HatchBurst burstKey={bursts[sid] ?? 0}
+                          {/* the hero pops and bursts on hatch; goals get
+                              one tier bigger a moment (self-found QoL) */}
+                          <HeroPop burstKey={bursts[sid] ?? 0}>
+                            <PalIcon name={st.child} size={46} />
+                          </HeroPop>
+                          <HatchBurst burstKey={bursts[sid] ?? 0} boost={st.isTarget}
                             rarity={(pals[st.child]?.rarity ?? 'Common') as Rarity} />
                         </Pressable>
                         <Text style={{
@@ -901,6 +907,11 @@ export function PlannerScreen() {
             const c = getChecks()[hatching.sid];
             if (tickStateOf(c) !== 'none') {
               setBursts((b) => ({ ...b, [hatching.sid]: (b[hatching.sid] ?? 0) + 1 }));
+              // hatching a GOAL earns the heavy thump on top of the
+              // success notification every tick already gets
+              if (plan?.targets.includes(hatching.child)) {
+                void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+              }
             }
             setHatching(null);
           }} />

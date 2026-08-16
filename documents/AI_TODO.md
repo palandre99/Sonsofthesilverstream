@@ -123,8 +123,13 @@ Add everything you find; finding nothing means you didn't look.*
       (module session cache). Shipped + OTA'd both.
 - [ ] Drawer: gesture to open should work mid-screen swipe (currently edge-only
       32px) — evaluate against scroll conflicts.
-- [ ] Haptics on step-complete uses success notification; add a tiny confetti
-      or scale animation on the hero row for the "hatched!" moment.
+- [x] 2026-08-16 ~09:00 "Hatched!" moment polished (mobile): the child's
+      icon now POPS (spring scale) alongside the rarity burst, GOAL steps
+      celebrate one tier bigger than intermediates, and hatching a goal
+      earns a heavy haptic thump on top of the success notification.
+      Eye-walked the full tick→hatch→burst flow, zero console errors.
+      NOTE web has no hatch celebration at all (only CSS token
+      transitions) — ledgered under WEBSITE parity.
 - [ ] Paldex row: tapping ♂/♀ needs a subtle scale/opacity animation.
 - [x] 2026-08-15 ~19:25 Web hatch dialog: Escape closes it. Shipped.
 - [ ] Coming-soon screens: add a "vote for this" tally later (local count).
@@ -140,6 +145,8 @@ Add everything you find; finding nothing means you didn't look.*
       sidebar.
 - [ ] Web parity for the in-game-style info card (stats icons, food
       drumsticks, drops, boss map panel).
+- [ ] Web parity: hatch celebration (mobile has rarity-tiered bursts +
+      hero pop + goal-tier boost; web has none — CSS rings would do).
 
 - [x] 2026-08-15: Pages deploy verified live at **/Sonsofthesilverstream/palforge/**
       (not `/hatchlab/` — that path was never used). Boots, renders, navigates,

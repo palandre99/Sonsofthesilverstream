@@ -71,10 +71,34 @@ const TIER: Record<Rarity, { rings: number; color: string; sparks: number }> = {
   Epic: { rings: 3, color: T.gold, sparks: 0 },
   Legendary: { rings: 4, color: T.gold, sparks: 6 },
 };
+const TIER_ORDER: Rarity[] = ['Common', 'Rare', 'Epic', 'Legendary'];
 
-/** Mount with a changing `burstKey` to fire; renders over its parent. */
-export function HatchBurst({ burstKey, rarity }: { burstKey: number; rarity: Rarity }) {
-  const tier = TIER[rarity] ?? TIER.Common;
+/** The hero icon pops when its burst fires — wrap it in this. */
+export function HeroPop({ burstKey, children }: {
+  burstKey: number; children: React.ReactNode;
+}) {
+  const scale = useRef(new Animated.Value(1)).current;
+  const prev = useRef(burstKey);
+  useEffect(() => {
+    if (burstKey && prev.current !== burstKey) {
+      prev.current = burstKey;
+      scale.setValue(0.8);
+      Animated.spring(scale, {
+        toValue: 1, useNativeDriver: true, bounciness: 16, speed: 20,
+      }).start();
+    }
+  }, [burstKey, scale]);
+  return <Animated.View style={{ transform: [{ scale }] }}>{children}</Animated.View>;
+}
+
+/** Mount with a changing `burstKey` to fire; renders over its parent.
+ * `boost` bumps the moment one tier — finishing a GOAL always feels
+ * bigger than an intermediate step. */
+export function HatchBurst({ burstKey, rarity, boost }: {
+  burstKey: number; rarity: Rarity; boost?: boolean;
+}) {
+  const idx = Math.max(0, TIER_ORDER.indexOf(rarity));
+  const tier = TIER[TIER_ORDER[Math.min(TIER_ORDER.length - 1, idx + (boost ? 1 : 0))]];
   const rings = useRef(
     Array.from({ length: 4 }, () => new Animated.Value(0)),
   ).current;
