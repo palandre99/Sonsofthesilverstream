@@ -578,9 +578,16 @@ function CategoryBrowser({ sec, bctx, onClose }: {
           <View style={{ flexDirection: 'row', gap: 8, alignItems: 'center' }}>
             <View style={{ flex: 1 }}>
               <SearchInput value={q} onChange={setQ}
-                placeholder={`Search ${sec.items.length} pals…`} />
+                placeholder={sec.items.length === 1
+                  ? 'Search 1 pal…' : `Search ${sec.items.length} pals…`} />
             </View>
-            <Btn small label={filtersActive || sort !== 'number' ? 'Filters ·' : 'Filters'}
+            {/* read "Filters ·" — a separator with nothing after it. Say how
+                many are on, like the website does. */}
+            <Btn small label={(() => {
+              const n = filters.elements.length + (filters.work ? 1 : 0)
+                + (filters.own === 'all' ? 0 : 1) + (sort !== 'number' ? 1 : 0);
+              return n ? `Filters (${n})` : 'Filters';
+            })()}
               primary={filtersActive || sort !== 'number'}
               onPress={() => setSheetOpen(true)} />
             {missing.length > 1 && (

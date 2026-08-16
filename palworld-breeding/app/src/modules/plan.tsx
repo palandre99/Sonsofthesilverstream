@@ -684,7 +684,7 @@ export function PlanPage() {
                 <p style={{ fontSize: '13px' }}>
                   {plan.steps.length} {plan.steps.length === 1 ? 'step' : 'steps'} means
                   at least {needs.cakes} {needs.cakes === 1 ? 'cake' : 'cakes'}:
-                  {' '}~{needs.flour} flour · {needs.berries} berries · {needs.milk} milk
+                  {' '}{needs.flour} flour · {needs.berries} berries · {needs.milk} milk
                   · {needs.eggs} eggs · {needs.honey} honey.
                 </p>
                 {est.expectedEggs > est.minEggs && (

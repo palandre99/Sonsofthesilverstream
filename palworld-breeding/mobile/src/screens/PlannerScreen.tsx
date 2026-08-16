@@ -900,7 +900,12 @@ export function PlannerScreen() {
               <Text style={[s.body, { fontSize: 12.5 }]}>
                 {plan!.steps.length} {plan!.steps.length === 1 ? 'step' : 'steps'} means
                 at least {needs.cakes} {needs.cakes === 1 ? 'cake' : 'cakes'}:
-                {' '}~{needs.flour} flour · {needs.berries} berries · {needs.milk} milk
+                {/* the "~" sat on flour ALONE, making one exact number look
+                    like a guess and the other four look precise. Every
+                    total is an exact multiple of the cake count (5 flour,
+                    8 berries, 7 milk, 8 eggs, 2 honey each), and "at least"
+                    above already carries the uncertainty. */}
+                {' '}{needs.flour} flour · {needs.berries} berries · {needs.milk} milk
                 · {needs.eggs} eggs · {needs.honey} honey.
               </Text>
               {(() => {
@@ -957,10 +962,23 @@ export function PlannerScreen() {
                 ))}
               </View>
               {covered.length > 0 && (
-                <View style={[s.wrap]}>
-                  {covered.map((a) => (
-                    <Badge key={a.helper.name} kind="ok">{a.helper.name} ✓</Badge>
-                  ))}
+                <View style={{ gap: 5, marginTop: 2 }}>
+                  {/* these ticked names sat here with NO heading at all,
+                      directly under the cake ingredients — a player had no
+                      way to tell what "CHIKIPI ✓" was doing there. */}
+                  <Text style={{
+                    color: T.faint, fontSize: 10.5, fontWeight: '800',
+                    letterSpacing: 0.8, textTransform: 'uppercase',
+                  }}>
+                    {covered.length === 1
+                      ? 'Speed-up you already have'
+                      : 'Speed-ups you already have'}
+                  </Text>
+                  <View style={[s.wrap]}>
+                    {covered.map((a) => (
+                      <Badge key={a.helper.name} kind="ok">{a.helper.name} ✓</Badge>
+                    ))}
+                  </View>
                 </View>
               )}
               {activeAdvice.map((a) => {
