@@ -456,10 +456,18 @@ export const isChecked = (sid: string): boolean => !!state.checks[sid];
 export function completeStep(sid: string, child: string, got: { m: boolean; f: boolean }): void {
   const hadM = hasGender(child, 'm');
   const hadF = hasGender(child, 'f');
+  // A HALF-DONE step is completed by calling this AGAIN. By then the first
+  // tick has already put one gender in the box, so `hadM` is true and a
+  // fresh `got.m && !hadM` records addedM:false — overwriting the fact that
+  // THIS step put it there. Unticking then left a pal in the Paldex that the
+  // plan had invented (self-found 2026-08-16). Once a tick of this step has
+  // claimed a gender, it keeps the claim for as long as it still holds it.
+  const prev = (state.checks as Record<string, unknown>)[sid];
+  const prevSc = prev && typeof prev === 'object' ? prev as StepCheck : null;
   const entry: StepCheck = {
     m: got.m, f: got.f,
-    addedM: got.m && !hadM,
-    addedF: got.f && !hadF,
+    addedM: got.m && (!hadM || !!prevSc?.addedM),
+    addedF: got.f && (!hadF || !!prevSc?.addedF),
   };
   state.checks = { ...state.checks, [sid]: entry };
   const cur = state.box[child] ?? { m: false, f: false };

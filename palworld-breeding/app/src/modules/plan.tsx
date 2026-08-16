@@ -231,10 +231,17 @@ export function PlanPage() {
   const [bursts, setBursts] = useState<Record<string, number>>({});
 
   const completeStep = (sid: string, child: string, got: { m: boolean; f: boolean }) => {
+    // completing a HALF-DONE step calls this again, and by then the first
+    // tick has already put one gender in the box — so a fresh
+    // `!hasGender(...)` records addedM:false and overwrites the fact that
+    // THIS step put it there, leaving an invented pal behind on untick.
+    // Same bug and same fix as the phone (self-found 2026-08-16).
+    const prevSc = checks[sid];
+    const prev = prevSc && typeof prevSc === 'object' ? prevSc : null;
     const entry: StepCheck = {
       m: got.m, f: got.f,
-      addedM: got.m && !hasGender(child, 'm'),
-      addedF: got.f && !hasGender(child, 'f'),
+      addedM: got.m && (!hasGender(child, 'm') || !!prev?.addedM),
+      addedF: got.f && (!hasGender(child, 'f') || !!prev?.addedF),
     };
     if (got.m) setOwnedGender(child, 'm', true);
     if (got.f) setOwnedGender(child, 'f', true);
