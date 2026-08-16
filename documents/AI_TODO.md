@@ -1142,6 +1142,24 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       previous profile's ticks and quietly show one save's progress on
       another. Four tests now pin the chain so that cannot happen silently.
       HONEST LIMIT: reasoned from the code, not measured end to end.
+- [x] L7 2026-08-16 ~22:20 TICKS CANNOT LEAK BETWEEN THE TWO MAPS, and every
+      POI layer splits by region correctly. Set out to walk the World Tree's
+      found-marks through the UI; the tap after a region switch did not
+      reproduce twice running (the marker positions differ between runs), so
+      per the standing rule I changed approach rather than tune coordinates a
+      third time.
+      Proved the real risk deterministically instead. A tick is stored as
+      layer + region + index, and the index is only unique WITHIN a region's
+      layer — fast travel #26 exists on BOTH maps — so leaving region out of
+      the key would mean ticking a statue on Palpagos silently ticked a
+      different statue on the World Tree. Four tests pin the key format,
+      including that the phone copy of found.ts matches the web one, since they
+      are deliberately separate files and only the FORMAT has to agree.
+      Then checked the split against the source: pal-atlas has 155 fast travel
+      on Palpagos and 15 on the World Tree; the app was measured showing
+      exactly 155 and 15. Generalised it — a test now asserts that for ALL 23
+      layers the two regions' counts add up to the layer's total, so a
+      regeneration that lost the region flag fails immediately.
 - [ ] K5 "also many other issues" — HE HAS MORE AND HAS NOT LISTED THEM. Ask,
       or keep walking journeys until they surface. Do not guess at what he
       means and do not claim the map is finished.

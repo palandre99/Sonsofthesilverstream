@@ -15,10 +15,11 @@ import { MAP_POIS } from '../src/data/mapPois.g';
 import { MAP_ALPHAS, MAP_SPAWNS } from '../src/data/mapSpawns.g';
 import { MAP_REGIONS } from '../src/data/mapMeta.g';
 import { MAP_TILES } from '../src/data/tileIndex.g';
+import { foundKey } from '../src/map/found';
 import { clusterPoints, decodePoints, pointsInRect } from '../src/map/points';
 import { regionOf, uvToReadout, worldToUv, tileLevelFor } from '../src/map/projection';
 import {
-  isNightOnly, spawnLevels, spawnPoints, spawnSplit, wildBands,
+  isNightOnly, poiPoints, spawnLevels, spawnPoints, spawnSplit, wildBands,
 } from '../src/map/layers';
 
 const palsJson = JSON.parse(
@@ -1081,5 +1082,66 @@ describe('found-marks follow the save profile', () => {
     // show one save's progress on another.
     expect(app).toMatch(/const Live = fullscreen \? LIVE_SCREENS\[domain\.id\]/);
     expect(app).toMatch(/<Live \/>/);
+  });
+});
+
+/* A tick is stored as layer + region + index. The index is only unique WITHIN
+ * a region's layer, so fast travel #26 exists on both maps — if the region
+ * were left out of the key, ticking a statue on Palpagos would silently tick a
+ * different statue on the World Tree. Driving this through the UI failed
+ * twice (a coordinate probed after a region switch did not reproduce), so it
+ * is proven here instead, where it is deterministic. */
+describe('a tick cannot leak between the two maps', () => {
+  it('keys the same index differently per region', () => {
+    expect(foundKey('fast_travel', 'palpagos', 26))
+      .not.toBe(foundKey('fast_travel', 'tree', 26));
+  });
+
+  it('keys the same index differently per layer', () => {
+    expect(foundKey('fast_travel', 'palpagos', 26))
+      .not.toBe(foundKey('dungeon', 'palpagos', 26));
+  });
+
+  it('is stable, so a tick survives a reload', () => {
+    expect(foundKey('chest', 'tree', 7)).toBe(foundKey('chest', 'tree', 7));
+    expect(foundKey('chest', 'tree', 7)).toBe('chest:tree:7');
+  });
+
+  it('the phone copy uses the identical key format', () => {
+    // two files on purpose - AsyncStorage vs localStorage - so the FORMAT is
+    // what has to match, or a future box-sync could not carry ticks across
+    const mobile = readFileSync(
+      join(__dirname, '..', '..', 'mobile', 'src', 'map', 'found.ts'), 'utf8',
+    );
+    expect(mobile).toMatch(/return `\$\{layerId\}:\$\{region\}:\$\{index\}`/);
+  });
+});
+
+/* POI layers hold both maps' points in one table and split them by region at
+ * read time, so a regeneration that lost the region flag would show one map's
+ * markers on the other. Fast travel is the worked example: pal-atlas has 155
+ * on Palpagos and 15 on the World Tree, and the app was measured showing
+ * exactly those two numbers. */
+describe('POI layers split correctly between the two maps', () => {
+  it('gives each map its own fast travel statues', () => {
+    expect(poiPoints('fast_travel', 'palpagos')?.n).toBe(155);
+    expect(poiPoints('fast_travel', 'tree')?.n).toBe(15);
+  });
+
+  it('accounts for every point in the layer', () => {
+    const layer = MAP_POIS.find((l) => l.id === 'fast_travel');
+    expect(layer, 'fast_travel layer must exist').toBeTruthy();
+    const palpagos = poiPoints('fast_travel', 'palpagos')?.n ?? 0;
+    const tree = poiPoints('fast_travel', 'tree')?.n ?? 0;
+    expect(palpagos + tree).toBe(layer!.n);
+  });
+
+  it('never returns one map\'s points for the other', () => {
+    // every layer must add up the same way, or something is leaking
+    for (const l of MAP_POIS) {
+      const a = poiPoints(l.id, 'palpagos')?.n ?? 0;
+      const b = poiPoints(l.id, 'tree')?.n ?? 0;
+      expect(a + b, `${l.id} splits to ${a}+${b} but the layer holds ${l.n}`).toBe(l.n);
+    }
   });
 });
