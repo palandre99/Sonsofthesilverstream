@@ -53,6 +53,8 @@ function partialGlyph(c: unknown): string | undefined {
 }
 import { planFor, stepId } from '../engine/planner';
 import { cachedDerivations } from '../logic/recommend';
+import { expectedEggs } from '../logic/economics';
+import { maleProb } from '../data/genderRatio.g';
 import { parseGenderNote } from '../engine/formula';
 import type { PlanStep } from '../engine/types';
 
@@ -620,6 +622,29 @@ export function PlannerScreen() {
                 {' '}~{needs.flour} flour · {needs.berries} berries · {needs.milk} milk
                 · {needs.eggs} eggs · {needs.honey} honey.
               </Text>
+              {(() => {
+                // gender luck priced honestly: keep-both steps average 3
+                // eggs, gender-locked recipes need one SPECIFIC gender
+                // (a male Beegarde at 10% male averages 10). Data:
+                // per-species gender table, datamined via palcalc.
+                const est = expectedEggs(plan!.steps, maleProb);
+                if (est.expectedEggs <= est.minEggs) return null;
+                const bits: string[] = [];
+                if (est.bothGenderSteps > 0) {
+                  bits.push(`${est.bothGenderSteps} ${est.bothGenderSteps === 1
+                    ? 'step needs' : 'steps need'} both genders`);
+                }
+                if (est.pickyGenderSteps > 0) {
+                  bits.push(`${est.pickyGenderSteps} ${est.pickyGenderSteps === 1
+                    ? 'needs' : 'need'} one specific gender`);
+                }
+                return (
+                  <Text style={[s.body, { fontSize: 12.5, color: T.muted }]}>
+                    Counting gender luck, expect ~{est.expectedEggs} cakes:
+                    {' '}{bits.join(' and ')}.
+                  </Text>
+                );
+              })()}
               {/* the first question a player asks: which of those can my
                   ranch already make? */}
               <View style={[s.wrap]}>

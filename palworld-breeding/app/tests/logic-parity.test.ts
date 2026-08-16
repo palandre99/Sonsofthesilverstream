@@ -11,7 +11,7 @@ const APP = join(__dirname, '..', 'src', 'logic');
 const MOBILE = join(__dirname, '..', '..', 'mobile', 'src', 'logic');
 
 /** logic files that must exist in BOTH trees */
-const SHARED = ['recommend.ts'];
+const SHARED = ['recommend.ts', 'economics.ts'];
 
 describe('logic copies', () => {
   it.each(SHARED)('%s is byte-identical in app/ and mobile/', (file) => {

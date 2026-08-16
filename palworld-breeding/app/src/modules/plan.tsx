@@ -14,6 +14,8 @@ import { stepId } from '../engine/planner';
 import { parseGenderNote } from '../engine/formula';
 import { requestPlan } from '../engine/planClient';
 import { cakeNeeds } from '../engine/boosters';
+import { expectedEggs } from '../logic/economics';
+import { maleProb } from '../data/genderRatio.g';
 import { ADVICE_VERSION, HELPER_NAMES, type HelperAdvice } from '../engine/helpers';
 import { wildLevelRange } from '../data/rarity';
 import type { PlanStep } from '../engine/types';
@@ -530,6 +532,19 @@ export function PlanPage() {
 
           {plan.steps.length > 0 && (() => {
             const needs = cakeNeeds(plan.steps.length);
+            // gender luck priced honestly: keep-both steps average 3 eggs,
+            // gender-locked recipes need one SPECIFIC gender (a male
+            // Beegarde at 10% male averages 10). Datamined gender table.
+            const est = expectedEggs(plan.steps, maleProb);
+            const bits: string[] = [];
+            if (est.bothGenderSteps > 0) {
+              bits.push(`${est.bothGenderSteps} ${est.bothGenderSteps === 1
+                ? 'step needs' : 'steps need'} both genders`);
+            }
+            if (est.pickyGenderSteps > 0) {
+              bits.push(`${est.pickyGenderSteps} ${est.pickyGenderSteps === 1
+                ? 'needs' : 'need'} one specific gender`);
+            }
             return (
               <div class="card bigcard" style={{ marginBottom: '16px' }}>
                 <h2>Make it faster</h2>
@@ -539,6 +554,12 @@ export function PlanPage() {
                   {' '}~{needs.flour} flour · {needs.berries} berries · {needs.milk} milk
                   · {needs.eggs} eggs · {needs.honey} honey.
                 </p>
+                {est.expectedEggs > est.minEggs && (
+                  <p style={{ fontSize: '13px', color: 'var(--muted)' }}>
+                    Counting gender luck, expect ~{est.expectedEggs} cakes:
+                    {' '}{bits.join(' and ')}.
+                  </p>
+                )}
                 {covered.length > 0 && (
                   <div class="kv" style={{ margin: '8px 0' }}>
                     {covered.map((a) => (

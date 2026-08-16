@@ -89,8 +89,21 @@ Add everything you find; finding nothing means you didn't look.*
       phase), so within-phase order IS the honest true-reordering.
       "Add producer as target" one-tap already existed on the advice card.
       Eye-verified: 14 phases, exactly one badge each, lineage leads.
-- [ ] Cake economics v2: expected eggs (not minimum) from the Odds Lab
-      model per step; ranch throughput rates per producer.
+- [x] 2026-08-16 ~00:40 Cake economics v2 SHIPPED both platforms: the
+      "Make it faster" card now prices GENDER LUCK — keep-both-genders
+      steps average 1/p+1/(1−p)−1 eggs (3 at 50/50), gender-locked
+      recipes need one SPECIFIC gender (a male Beegarde at 10% male
+      averages 10 eggs). New datamined per-species gender table
+      (tools/extract_gender_ratio.py → genderRatio.g.ts, palcalc v27
+      BreedingGenderProbability, 44 skewed species, 299/299 mapped) +
+      shared logic/economics.ts (parity-gated) + 5 unit tests. Eye-
+      verified: "at least 20 cakes … expect ~34: 7 steps need both
+      genders" (13×1+7×3=34 ✓). Ranch THROUGHPUT rates (drops/hour per
+      producer) remain open — needs a measured community source, never
+      invent; ledgered below.
+- [ ] Ranch throughput rates per producer (drops/hour) — community-
+      measured numbers needed with a source + label before modeling;
+      the game files don't carry production intervals we've extracted.
 
 ## SELF-FOUND IMPROVEMENTS (own audit, 2026-08-15 00:05)
 
