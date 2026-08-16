@@ -141,7 +141,12 @@ export function FilterSheet({ filters, sort, onApply, onClose, base }: {
           borderTopWidth: 1, borderTopColor: T.line,
         }}>
           <View style={{ flex: 1 }}>
-            <Btn primary label={`Show ${applyFilters(base ?? Object.keys(pals), f).length} pals`}
+            <Btn primary label={(() => {
+              // "1 pal", never "1 pals" — the banned grammar, and this
+              // sheet is shared with the Paldex and the picker
+              const n = applyFilters(base ?? Object.keys(pals), f).length;
+              return `Show ${n} ${n === 1 ? 'pal' : 'pals'}`;
+            })()}
               onPress={() => onApply(f, sk)} />
           </View>
           <Btn label="Cancel" onPress={onClose} />

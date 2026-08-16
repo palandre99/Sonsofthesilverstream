@@ -608,8 +608,14 @@ function CategoryBrowser({ sec, bctx, onClose }: {
             <BrowserRow item={item} recommended={rec.has(item.name)} bctx={bctx} />
           )}
           ListEmptyComponent={
+            // name what actually emptied the list — a filter can do it now,
+            // so blaming "that search" was wrong the moment filters landed
             <Text style={[s.body, { textAlign: 'center', marginTop: 30 }]}>
-              No pal here matches that search.
+              {filtersActive && q
+                ? 'Nothing here matches those filters and that search.'
+                : filtersActive
+                  ? 'No pal here matches those filters.'
+                  : 'No pal here matches that search.'}
             </Text>
           }
         />

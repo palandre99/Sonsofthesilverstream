@@ -869,8 +869,26 @@ numbers so it is nearly mechanical to execute.
       meaning". FilterSheet now takes an optional `base` list to count
       against; Paldex and PalPicker are unchanged (they default to all
       pals). Re-verified: the button now reads "Show 14 pals".
+- [x] E14c 2026-08-16 ~15:40 Clicked the new filters hard; TWO copy bugs
+      found and fixed, both by using the feature rather than re-reading it:
+      * "Show 1 palS" — the banned plural grammar, and it lives in the
+        SHARED FilterSheet, so the Paldex and the picker had it too, not
+        just my new browser. Now "Show 1 pal".
+      * the browser's empty state still said "No pal here matches that
+        SEARCH" — wrong the moment filters landed, since a filter can now
+        empty the list on its own. It now names the real cause: filters,
+        search, or both.
+      Verified live: Ground mounts + Medicine → "1 of 83 shown"
+      (Tarantriss); + a nonsense search → "Nothing here matches those
+      filters and that search."
+      METHOD NOTE (cost me a wrong read again): after pressing a filter
+      chip the sheet's count needs a beat — I read "Show 83 pals" and
+      briefly concluded the chip had not applied. Re-query before
+      concluding, ALWAYS.
 - [ ] E14-NEXT: web parity for the category filters (do it once the Map
       session's app/ work is committed — they hold app/src/state.ts).
+      NOTE the web FilterSheet equivalent may carry the same "1 pals"
+      plural bug — check when doing the web pass.
 
 ### E13 polish-lane findings (hostile deep-eval passes, ongoing)
 - [x] 2026-08-16 ~14:45 "REMOVE ALL" WHILE A PLAN IS RUNNING — walked with
