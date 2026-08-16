@@ -734,3 +734,36 @@ describe('the map credit matches the real sources', () => {
     expect(ref).toMatch(/eight of them at full size/);
   });
 });
+
+/* The pal card's "Open full map" hands the species to the Map fane through a
+ * one-slot mailbox. If the tab id the card SENDS and the one the map ASKS for
+ * ever drift apart, the button silently does nothing — and that is invisible
+ * in a browser pass, because the harness cannot scroll the card to reach it. */
+describe('the pal card hands its species to the map', () => {
+  const palMap = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'ui', 'PalMap.tsx'), 'utf8',
+  );
+  const mapScreen = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
+  );
+  const intent = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'nav', 'intent.ts'), 'utf8',
+  );
+
+  it('sends and receives the SAME tab id', () => {
+    const sent = palMap.match(/navigateTo\(\{\s*domain: 'map', tab: '([a-z]+)'/);
+    const taken = mapScreen.match(/takeIntentPayload\('([a-z]+)'\)/);
+    expect(sent, 'PalMap must navigate to the map').toBeTruthy();
+    expect(taken, 'MapScreen must collect the payload').toBeTruthy();
+    expect(sent![1]).toBe(taken![1]);
+  });
+
+  it('carries the pal itself, not just the destination', () => {
+    expect(palMap).toMatch(/payload: \{ pal: name/);
+    expect(mapScreen).toMatch(/takeIntentPayload\('map'\)\?\.pal/);
+  });
+
+  it('is a one-shot mailbox, so re-entering the map does not re-apply it', () => {
+    expect(intent).toMatch(/pending = null;/);
+  });
+});

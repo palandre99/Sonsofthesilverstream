@@ -917,6 +917,25 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       the number in the copy cannot drift.
       NOTE FOR THE NEXT WORKER: the hash route takes DOMAIN ids, not tab ids —
       `#ref` lands on the Calculator. Use `#breeding` then tap Ref.
+- [x] J12 2026-08-16 ~17:38 PAL CARD -> MAP HAND-OFF: contract verified, no
+      defect found. Walked "Open full map" on Penking's card and it appeared
+      dead — three times. It was not: every failure was mine. First `tap:`
+      matched an OUTER element and clicked 188,406 while the button's real rect
+      was 244,1293. Then I clicked the real rect, which is BELOW the 812px
+      viewport, so it hit nothing. Then `scroll:` did not move the card at all
+      (1053 before and after) — RN ScrollViews do not respond to the harness's
+      wheel events, same family as pan/pinch/double-tap.
+      Approach failed twice, so I changed it and proved the CONTRACT instead:
+      PalMap sends {domain:'map', tab:'map', payload:{pal}}, MapScreen calls
+      takeIntentPayload('map'), the ids match, the payload carries the pal, and
+      the mailbox is one-shot so re-entering the map cannot re-apply a stale
+      selection. Three tests now fail if those two ends ever drift apart —
+      which is exactly the bug that would be invisible in a browser pass.
+      HONEST LIMIT: the end-to-end TAP is unverified. The logic is.
+- [ ] H21 TRAP #11 — `scroll:` DOES NOT SCROLL. Measured: an element stayed at
+      y=1053 across a 6-notch and an 18-notch scroll. The harness can TAP and
+      TYPE. It cannot pan, pinch, double-tap or scroll. Anything below the fold
+      is unreachable; test that logic in vitest instead.
 - [ ] H17 COLOUR CANNOT CARRY 23 IDENTITIES. Three POI layers are near-identical
       greys (npc #A9C0CC, ore #B7C4CC, coal #8E9AA3) and several are near-white
       (note #D7E3E8, quartz #CFE9FF, egg #FFEFC2). I deliberately did NOT
