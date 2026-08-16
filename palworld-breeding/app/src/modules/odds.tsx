@@ -189,7 +189,9 @@ function OddsReadout({ poolSize, desiredCount, cake }: {
           <span class="sub">{oneIn(odds.exactlyDesired)}</span>
         </div>
         <div class="oddscard">
-          <span class="lbl">Eggs for 90% confidence</span>
+          {/* names the hero card it derives from: read against "exactly
+              those, no junk" instead, this number is ten times wrong */}
+          <span class="lbl">Eggs for 90% of all {desiredCount} wanted</span>
           <b>{isFinite(odds.eggsFor90) ? odds.eggsFor90 : '—'}</b>
           <span class="sub">
             {cyclesFor90 !== null ? `${cyclesFor90} cycles on ${c.name}` : 'not reachable'}
@@ -392,7 +394,7 @@ function IvTab() {
             <span class="sub">{oneIn(p)}</span>
           </div>
           <div class="oddscard">
-            <span class="lbl">Eggs for 90% confidence</span>
+            <span class="lbl">Eggs for 90%</span>
             <b>{attemptsFor(p, 0.9)}</b>
             <span class="sub">at {n} stat{n > 1 ? 's' : ''}</span>
           </div>

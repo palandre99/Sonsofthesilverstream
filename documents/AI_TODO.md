@@ -1724,6 +1724,43 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E34. REFERENCE TAB + WEB ODDS PARITY 2026-08-16 (no CEO prompt — the lane)
+
+The Reference tab was the last breeding surface without a full pass.
+
+- [x] **NO BUGS FOUND.** Every section renders; provenance is present and
+      honest throughout ("Community-measured numbers are labelled as such";
+      "Special Cake: exact override not datamined"; Mushroom Cake's IV bonus
+      stated without a number, which is correct — it is unmodelled). The
+      "Show all 36 claims" expander works (5 → 36 rows, 6,005 → 16,093
+      characters) and every verdict renders truthfully: 29 confirmed,
+      4 likely, 1 CONTRADICTED, 2 UPSTREAM DEFECT.
+- [x] HEADLINE NUMBERS CHECKED AGAINST THE DATA, all correct: "134 pairs
+      have a fixed recipe" = len(unique_combos) ✓; "183 in the generic pool"
+      = 299 ranks − 116 excluded ✓; 299 species ✓; one gender-locked pair
+      = 2 gendered rows ✓.
+- [x] **WHY 44,851 AND NOT 44,850 — RECORD THIS SO NOBODY "CORRECTS" IT.**
+      C(299,2)+299 = 44,850, so the quoted 44,851 looks off by one. It is
+      not. The oracle holds 44,851 rows over 44,551 DISTINCT unordered
+      pairs: `Gumoss` appears TWICE with almost every partner (and three
+      times with itself) because two game entries share that display name,
+      and Katress+Wixen contributes its two gendered outcomes. The oracle
+      test asserts exactly 44,851 with zero mismatches AND zero skips, and
+      it passes. The figure is right.
+- [x] WEB ODDS PARITY (the E33 fix ported): the website had the SAME
+      ambiguity — "Eggs for 90% confidence" sitting under two probabilities
+      twelvefold apart — now "Eggs for 90% of all N wanted". The IV card
+      kept the plain "Eggs for 90%" (one probability there, cannot be
+      misread) but lost "confidence", which is statistics jargon.
+      CHECKED AND NOT A BUG: the web pool rows are real `<label>` +
+      `<input type="checkbox">` and the web passive picker is a proper
+      listbox with role="option"/aria-selected — natively accessible. Only
+      the phone's hand-rolled versions needed E33's labels.
+- THIRD FALSE ALARM OF THE SESSION, MINE NOT THE APP'S: I counted 33 badges
+  against "36 claims" and suspected three rows were being hidden. My regex
+  simply lacked CONTRADICTED and UPSTREAM DEFECT. **Question the check
+  before the app** — that rule has now paid off five times in two turns.
+
 ## E33. ODDS LAB EXERCISED END TO END 2026-08-16 (no CEO prompt — the lane)
 
 The last breeding tab without a full pass.
