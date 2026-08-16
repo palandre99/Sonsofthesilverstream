@@ -320,7 +320,21 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       tap "189 spots on the map" and it opens a key of what is actually ON,
       with matching swatches and per-layer counts. Deliberately not a static
       key to all 23 layers, which would be a wall of colour to filter by eye.
-- [ ] F14b Region name labels on the map (the other half of "in-game feel").
+- [x] F14b DONE 2026-08-16 ~02:30: region name labels, drawn the way the game
+      draws them (light letters, dark halo, readable over snow/sand/ocean).
+      Held back until you zoom past 2x the whole-map view — all 76 at once is
+      a wall of text. Greedy north-first DECLUTTER drops a name whose box would
+      overlap one already placed, so "Golden HiSmall Settlement" can't happen.
+      Labels render UNDER pins. Also tightened MapCanvas's viewport-push
+      thresholds (12%/4% -> 5%/2%) so culling reads a fresher rect.
+- [ ] F30 NOT FIXED, and I stopped guessing after four verification cycles:
+      names whose anchor sits near the RIGHT edge still truncate mid-word
+      ("Gobfin's Tu..."). Ruled out: the negative-margin centring is correct
+      (a transform-based offset shifted every label half a box right — worse),
+      and widening the inset to a full box just deletes most labels while the
+      edge ones STILL clipped, which says the cull is not what lets them
+      through. Next step is to instrument the actual vp rect against the
+      label's uv at render time rather than reason about it.
 - [ ] F15 Fishing spots + hackable towers are in the CEO's scope list but are
       NOT in either upstream's layer set — research whether the tables exist
       before promising them.

@@ -25,6 +25,7 @@ import {
   spawnLevels, spawnPoints, spawnablePals, wildBands, type LayerGroup, type MapFilters,
 } from '../map/layers';
 import { MAP_REGIONS } from '../data/mapMeta.g';
+import { REGION_SPOTS } from '../data/regionSpots.g';
 import { takeIntentPayload } from '../nav/intent';
 import { regionsFor } from '../map/layers';
 import { ownedAny, pals } from '../store';
@@ -136,6 +137,54 @@ export function MapScreen() {
     [active],
   );
 
+  /**
+   * Place names, the way the game shows them.
+   *
+   * Held back until you have zoomed past twice the whole-map view: all 76 at
+   * once is a wall of text over the terrain, and at that distance the names
+   * are unreadable anyway. Only the ones in view are built.
+   *
+   * Positions are the paldb region labels projected in regionSpots.g.ts. That
+   * file predates the projection proof and uses palcalc's matrix, whose
+   * residual is bounded at 6 px of 4096 — invisible under a text label, but
+   * the reason these are labels and never pins.
+   */
+  const labels = useMemo<MapMarker[]>(() => {
+    if (region !== 'palpagos' || vp.scale < 760) return [];
+    // Keep the label box clear of the screen edge, or names truncate mid-word
+    // ("Gobfin's Tu..."), which reads as a bug rather than as a map.
+    // 0.75 of a box, not 0.5: the viewport rect this reads is pushed on a
+    // threshold rather than every frame, so a little slack is what keeps names
+    // from truncating mid-word at the edge. A name lost there costs nothing —
+    // pan slightly and it appears.
+    const inset = (LABEL_W * 0.75) / vp.scale;
+    const near = Object.entries(REGION_SPOTS).filter(([, at]) => (
+      at.x > vp.u0 + inset && at.x < vp.u1 - inset
+      && at.y > vp.v0 && at.y < vp.v1
+    ));
+    // Greedy declutter, north-first so the result is stable while panning:
+    // a name is dropped if its box would overlap one already placed. Two names
+    // on top of each other ("Golden HiSmall Settlement") is worse than one.
+    near.sort((a, b) => a[1].y - b[1].y || a[0].localeCompare(b[0]));
+    const placed: { x: number; y: number }[] = [];
+    const minX = LABEL_W * 0.62 / vp.scale;
+    const minY = LABEL_H / vp.scale;
+    const out: MapMarker[] = [];
+    for (const [name, at] of near) {
+      if (placed.some((q) => Math.abs(q.x - at.x) < minX && Math.abs(q.y - at.y) < minY)) {
+        continue;
+      }
+      placed.push({ x: at.x, y: at.y });
+      out.push({
+        key: `label:${name}`,
+        u: at.x,
+        v: at.y,
+        render: () => <PlaceName name={name} />,
+      });
+    }
+    return out;
+  }, [region, vp]);
+
   // Picking a single pal should SHOW you where it is, not leave you to hunt
   // the world map for teal dots.
   const focusKey = active.length === 1 && filters.pals.size === 1 ? active[0].key : null;
@@ -151,6 +200,9 @@ export function MapScreen() {
     const span = Math.max(u1 - u0, v1 - v0, 0.08) * 1.25;
     canvas.current?.focus((u0 + u1) / 2, (v0 + v1) / 2, 1 / span);
   }, [focusKey]);
+
+  // labels sit UNDER the pins: a place name must never cover a spawn
+  const allMarkers = useMemo(() => [...labels, ...markers], [labels, markers]);
 
   /* ------------------------------------------------------------ interaction */
 
@@ -224,7 +276,7 @@ export function MapScreen() {
     <View style={{ flex: 1, backgroundColor: '#04090b' }}>
       <MapCanvas
         region={region}
-        markers={markers}
+        markers={allMarkers}
         canvasRef={canvas}
         onViewport={setVp}
         onPress={onPress}
@@ -403,6 +455,32 @@ export function MapScreen() {
 }
 
 /* -------------------------------------------------------------- pieces */
+
+/** A place name, drawn like the game draws them: light letters with a dark
+ *  halo so they stay readable over snow, sand and ocean alike. */
+const LABEL_W = 150;
+const LABEL_H = 26;
+
+function PlaceName({ name }: { name: string }) {
+  return (
+    // Centred with a negative MARGIN, not a transform. Tried the transform —
+    // it shifted every name half a box to the right, because the marker
+    // wrapper's counter-scale already turns about the laid-out box's centre.
+    <View pointerEvents="none"
+      style={{ width: LABEL_W, marginLeft: -LABEL_W / 2, marginTop: -9 }}>
+      <Text
+        numberOfLines={2}
+        style={{
+          color: '#EAF6F8', fontSize: 10.5, fontWeight: '800', textAlign: 'center',
+          letterSpacing: 0.4, textShadowColor: 'rgba(4,12,16,0.95)',
+          textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 3,
+        }}
+      >
+        {name}
+      </Text>
+    </View>
+  );
+}
 
 const PIN = 23;
 

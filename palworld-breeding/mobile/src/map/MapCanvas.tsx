@@ -215,10 +215,13 @@ export function MapCanvas({
         || cur.y0 !== prev.y0 || cur.y1 !== prev.y1) {
         runOnJS(pushWindow)({ z: cur.z, x0: cur.x0, x1: cur.x1, y0: cur.y0, y1: cur.y1 });
       }
-      // marker culling wants the real rect, but only a few times a second
-      if (!prev || Math.abs(cur.scale - prev.scale) > prev.scale * 0.04
-        || Math.abs(cur.u0 - prev.u0) > (cur.u1 - cur.u0) * 0.12
-        || Math.abs(cur.v0 - prev.v0) > (cur.v1 - cur.v0) * 0.12) {
+      // Marker culling wants the real rect, but not on every frame. The
+      // thresholds are tight enough that place-name labels can trust this rect
+      // to decide whether their box would run off the screen edge — at 12% of
+      // a viewport the rect lagged far enough to clip names mid-word.
+      if (!prev || Math.abs(cur.scale - prev.scale) > prev.scale * 0.02
+        || Math.abs(cur.u0 - prev.u0) > (cur.u1 - cur.u0) * 0.05
+        || Math.abs(cur.v0 - prev.v0) > (cur.v1 - cur.v0) * 0.05) {
         runOnJS(pushViewport)(cur.scale, cur.u0, cur.v0, cur.u1, cur.v1);
       }
     },
