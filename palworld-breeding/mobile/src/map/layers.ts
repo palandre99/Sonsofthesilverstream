@@ -12,6 +12,7 @@
  * work of the layers actually visible and nothing more.
  */
 import { MAP_POIS, type PoiLayer } from '../data/mapPois.g';
+import { REGION_SPOTS } from '../data/regionSpots.g';
 import { MAP_ALPHAS, MAP_SPAWNS, type SpawnGroup } from '../data/mapSpawns.g';
 import { decodePoints, unbase64, type PointSet } from './points';
 import { REGION_BY_INDEX, type RegionId } from './projection';
@@ -312,6 +313,27 @@ function buildPlaces(region: RegionId): PlaceHit[] {
         colour: layer.colour,
         u: set.xy[i * 2],
         v: set.xy[i * 2 + 1],
+      });
+    }
+  }
+  // The 76 REGION LABELS printed across the map belong in here too.
+  //
+  // They were missing, so a player could read "Bicornis Islet" on screen, type
+  // it into a box that says it searches places, and be told nothing matched.
+  // The app draws the name and then denies knowing it — the same failure as
+  // the search that could not find sulfur.
+  //
+  // They carry no layer of their own, so they borrow the fast-travel colour
+  // and are labelled for what they are: an area, not a marker you can tick.
+  if (region === 'palpagos') {
+    for (const [name, at] of Object.entries(REGION_SPOTS)) {
+      out.push({
+        name,
+        layerId: 'region',
+        label: 'Area',
+        colour: '#5FE3C0',
+        u: at.x,
+        v: at.y,
       });
     }
   }

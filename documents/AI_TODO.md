@@ -1188,6 +1188,26 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       Grammar carried with the subject after the first attempt read "Ore,
       sulfur and coal DOES not appear" — bad grammar in his app is as bad as
       jargon in it. Verified all three cases on screen: one layer, two, three.
+- [x] L9 2026-08-16 ~23:05 THE NAMES PRINTED ON THE MAP WERE NOT SEARCHABLE.
+      Went looking for how the map behaves at its extreme edges, could not pan
+      there (harness), so tried to travel by searching the southernmost place —
+      "Bicornis Islet", a label the map DRAWS — and the search said nothing
+      matched. buildPlaces indexed only POI names; the 76 region labels were
+      never in it. The app printing a name on screen and then denying it knows
+      it is exactly the sulfur failure again, one layer over.
+      Area names are in the index now, labelled "Area" so they read as a place
+      rather than a marker you can tick, and only for Palpagos — the World Tree
+      has no place names in any source and inventing them is the one thing this
+      fane must never do (G13).
+      Verified the whole journey on screen: type "bicornis" -> tap the Area
+      result -> the map flies to it, centred and sharp, with its label showing.
+      That also exercised an extreme edge (v = 0.94, near the southern rim) and
+      the framing handled it. Both copies of layers.ts patched byte-identically;
+      parity gate green. Five tests, including one asserting the World Tree
+      still offers no area names.
+- [x] L10 THE LAYERS SHEET "CLEAR" IS CORRECTLY SCOPED — walked it: two layers
+      plus a pal, Clear inside the Layers sheet, and it cleared only the layers
+      (3,250 spots -> 273) leaving Pals · 1 intact. Same as the Find sheet.
 - [ ] K5 "also many other issues" — HE HAS MORE AND HAS NOT LISTED THEM. Ask,
       or keep walking journeys until they surface. Do not guess at what he
       means and do not claim the map is finished.

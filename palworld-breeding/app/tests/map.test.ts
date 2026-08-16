@@ -19,8 +19,9 @@ import { foundKey } from '../src/map/found';
 import { clusterPoints, decodePoints, pointsInRect } from '../src/map/points';
 import { regionOf, uvToReadout, worldToUv, tileLevelFor } from '../src/map/projection';
 import {
-  isNightOnly, poiPoints, spawnLevels, spawnPoints, spawnSplit, wildBands,
+  isNightOnly, poiPoints, searchPlaces, spawnLevels, spawnPoints, spawnSplit, wildBands,
 } from '../src/map/layers';
+import { REGION_SPOTS } from '../src/data/regionSpots.g';
 
 const palsJson = JSON.parse(
   readFileSync(join(__dirname, '..', '..', 'data', 'pals_1_0.json'), 'utf8'),
@@ -1176,5 +1177,43 @@ describe('an empty region names the layers that are missing', () => {
     expect(empty.length).toBe(15);
     // and every one of them has points on Palpagos, or it would not ship
     for (const l of empty) expect(poiPoints(l.id, 'palpagos')?.n ?? 0).toBeGreaterThan(0);
+  });
+});
+
+/* The 76 area names printed across the map were not searchable. A player could
+ * read "Bicornis Islet" on screen, type it into a box that says it searches
+ * places, and be told nothing matched — the app drawing a name and then
+ * denying it knows it, the same failure as the search that could not find
+ * sulfur. */
+describe('names printed on the map can be searched', () => {
+  it('finds an area label, not just a marker', () => {
+    const hits = searchPlaces('bicornis', 'palpagos');
+    expect(hits.length).toBeGreaterThan(0);
+    expect(hits[0].name).toBe('Bicornis Islet');
+  });
+
+  it('sends you to where that name is drawn', () => {
+    const hit = searchPlaces('bicornis', 'palpagos')[0];
+    expect(hit.u).toBeCloseTo(REGION_SPOTS['Bicornis Islet'].x, 5);
+    expect(hit.v).toBeCloseTo(REGION_SPOTS['Bicornis Islet'].y, 5);
+  });
+
+  it('calls an area an area, not a marker you can tick', () => {
+    expect(searchPlaces('bicornis', 'palpagos')[0].label).toBe('Area');
+  });
+
+  it('still finds real markers alongside them', () => {
+    // the POI names must not have been displaced by the new entries
+    const hits = searchPlaces('fisherman', 'palpagos');
+    expect(hits.length).toBeGreaterThan(0);
+  });
+
+  it('offers no area names on the World Tree, because it has none', () => {
+    // G13: no source exists for World Tree place names, and inventing them
+    // is the one thing this fane must never do
+    for (const name of Object.keys(REGION_SPOTS).slice(0, 5)) {
+      const hits = searchPlaces(name.slice(0, 6).toLowerCase(), 'tree');
+      expect(hits.every((h) => h.label !== 'Area')).toBe(true);
+    }
   });
 });
