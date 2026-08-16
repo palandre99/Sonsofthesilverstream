@@ -275,6 +275,70 @@ export function regionsFor(pal: string): RegionId[] {
   return [...seen];
 }
 
+/**
+ * Places you can search for by name.
+ *
+ * 150 real place names came in with the POI data — "Fisherman's Point",
+ * "Beach of Everlasting Summer" — and for a while nothing in the app could
+ * answer "where is that?". Built once per region, then reused.
+ */
+export interface PlaceHit {
+  name: string;
+  layerId: string;
+  label: string;
+  colour: string;
+  u: number;
+  v: number;
+}
+
+const placeIndex = new Map<RegionId, PlaceHit[]>();
+
+function buildPlaces(region: RegionId): PlaceHit[] {
+  const out: PlaceHit[] = [];
+  for (const layer of MAP_POIS) {
+    if (!layer.names) continue;
+    const set = poiPoints(layer.id, region);
+    if (!set) continue;
+    const maps = unbase64(layer.maps);
+    const want = region === 'palpagos' ? 0 : 1;
+    const names = layer.names.filter((_, i) => maps[i] === want);
+    for (let i = 0; i < set.n; i++) {
+      const name = names[i];
+      if (!name) continue;
+      out.push({
+        name,
+        layerId: layer.id,
+        label: layer.label,
+        colour: layer.colour,
+        u: set.xy[i * 2],
+        v: set.xy[i * 2 + 1],
+      });
+    }
+  }
+  return out.sort((a, b) => a.name.localeCompare(b.name));
+}
+
+/** Place-name matches for a query, deduped by name so 155 statues do not
+ *  bury everything else. */
+export function searchPlaces(query: string, region: RegionId, limit = 8): PlaceHit[] {
+  const needle = query.trim().toLowerCase();
+  if (needle.length < 2) return [];
+  let all = placeIndex.get(region);
+  if (!all) {
+    all = buildPlaces(region);
+    placeIndex.set(region, all);
+  }
+  const seen = new Set<string>();
+  const hits: PlaceHit[] = [];
+  for (const p of all) {
+    if (!p.name.toLowerCase().includes(needle) || seen.has(p.name)) continue;
+    seen.add(p.name);
+    hits.push(p);
+    if (hits.length >= limit) break;
+  }
+  return hits;
+}
+
 /* ---------------------------------------------------------------- helpers */
 
 function subset(set: PointSet, keep: number[]): PointSet {

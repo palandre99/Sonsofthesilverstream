@@ -522,9 +522,11 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       it only looked fine while every caller passed a tiny span. It takes an
       explicit uv SPAN now and fits it across the shorter screen edge, so the
       units cannot be misread.
-- [ ] H4 Nothing on the map is searchable by PLACE. The 150 real place names
-      are in the data now, so "where is Fisherman's Point" is answerable and
-      is not answered.
+- [x] H4 DONE 2026-08-16 ~14:18: the map searches PLACES as well as pals.
+      Type "fisher" and you get "Fisherman's Point — Fast travel"; tap it and
+      the map flies there. Names are the game's own, deduped so 155 statues
+      cannot bury everything else, and indexed once per region. The sheet is
+      "Find a pal or place" now, since it was already doing both.
 
 ### Open — the map lane's own queue
 - [x] F23 DONE 2026-08-16 ~00:02: the preview's dense clusters were an

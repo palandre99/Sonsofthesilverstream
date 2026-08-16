@@ -24,7 +24,7 @@ import { clusterPoints, nearestPoint, pointsInRect, type PointSet } from '../map
 import { uvToReadout, regionOf, type RegionId } from '../map/projection';
 import {
   GROUP_LABEL, alphaSpots, dungeonPoints, emptyFilters, isNightOnly, poiLayer,
-  poiLayers, poiPoints,
+  poiLayers, poiPoints, searchPlaces,
   poiName, spawnLevels, spawnPoints, spawnablePals, wildBands,
   type LayerGroup, type MapFilters,
 } from '../map/layers';
@@ -522,10 +522,10 @@ export function MapScreen() {
             Nothing on the map yet
           </Text>
           <Text style={[s.body, { fontSize: 12.5 }]}>
-            <Text style={{ color: T.accentInk, fontWeight: '800' }}>Find a pal</Text>
-            {' '}to see everywhere it spawns — or tick
+            <Text style={{ color: T.accentInk, fontWeight: '800' }}>Find</Text>
+            {' '}a pal to see everywhere it spawns — or tick
             {' '}“only pals I&apos;m missing” and the map shows you what is left
-            to catch.
+            to catch. It finds places by name too.
           </Text>
           <Text style={[s.body, { fontSize: 12.5 }]}>
             <Text style={{ color: T.accentInk, fontWeight: '800' }}>Layers</Text>
@@ -600,7 +600,7 @@ export function MapScreen() {
           />
           <ControlBtn
             icon="paw-outline"
-            label={filters.pals.size ? `Pals · ${filters.pals.size}` : 'Find a pal'}
+            label={filters.pals.size ? `Pals · ${filters.pals.size}` : 'Find'}
             on={filters.pals.size > 0}
             onPress={() => setSheet('pals')}
           />
@@ -634,6 +634,10 @@ export function MapScreen() {
           filters={filters}
           region={region}
           onToggle={togglePal}
+          onGoToPlace={(u, v) => {
+            setSheet(null);
+            canvas.current?.focus(u, v, 0.07);
+          }}
           onToggleDungeons={() => patch({ dungeons: !filters.dungeons })}
           onClear={() => patch({ pals: new Set() })}
           onClose={() => setSheet(null)}
@@ -838,13 +842,18 @@ function LayerSheet({ filters, onToggle, onClear, onClearFound, onClose }: {
   );
 }
 
-function PalSheet({ filters, region, onToggle, onToggleDungeons, onClear, onClose }: {
+function PalSheet({
+  filters, region, onToggle, onToggleDungeons, onGoToPlace, onClear, onClose,
+}: {
   filters: MapFilters; region: RegionId;
   onToggle: (name: string) => void; onToggleDungeons: () => void;
+  onGoToPlace: (u: number, v: number) => void;
   onClear: () => void; onClose: () => void;
 }) {
   const [q, setQ] = useState('');
   const [missingOnly, setMissingOnly] = useState(false);
+
+  const places = useMemo(() => searchPlaces(q, region), [q, region]);
 
   const list = useMemo(() => {
     const needle = q.trim().toLowerCase();
@@ -856,9 +865,9 @@ function PalSheet({ filters, region, onToggle, onToggleDungeons, onClear, onClos
   }, [missingOnly, q, region]);
 
   return (
-    <SheetShell title="Find a pal" onClear={onClear} onClose={onClose}>
+    <SheetShell title="Find a pal or place" onClear={onClear} onClose={onClose}>
       <View style={{ paddingHorizontal: 14, paddingTop: 12, gap: 10 }}>
-        <SearchInput value={q} onChange={setQ} placeholder="Search pals…" />
+        <SearchInput value={q} onChange={setQ} placeholder="Search pals or places…" />
         <Pressable
           onPress={onToggleDungeons}
           accessibilityRole="checkbox"
@@ -905,6 +914,40 @@ function PalSheet({ filters, region, onToggle, onToggleDungeons, onClear, onClos
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode="on-drag"
       >
+        {/* Places first: someone typing "fisherman" wants the point, and the
+            names are real ones out of the game's own tables. */}
+        {places.length > 0 && (
+          <>
+            <Text style={{
+              color: T.faint, fontSize: 10.5, fontWeight: '800', letterSpacing: 1.1,
+            }}>PLACES</Text>
+            {places.map((pl) => (
+              <Pressable
+                key={`${pl.layerId}:${pl.name}`}
+                onPress={() => onGoToPlace(pl.u, pl.v)}
+                accessibilityRole="button"
+                accessibilityLabel={`Go to ${pl.name}`}
+                style={{
+                  flexDirection: 'row', alignItems: 'center', gap: 10,
+                  paddingHorizontal: 12, paddingVertical: 11, borderRadius: 12,
+                  borderWidth: 1, borderColor: T.line, backgroundColor: T.surface,
+                }}
+              >
+                <Icon name="map-marker" size={17} color={pl.colour} />
+                <Text style={{ color: T.ink, fontWeight: '800', fontSize: 14, flex: 1 }}>
+                  {pl.name}
+                </Text>
+                <Text style={{ color: T.muted, fontWeight: '700', fontSize: 11.5 }}>
+                  {pl.label}
+                </Text>
+              </Pressable>
+            ))}
+            <Text style={{
+              color: T.faint, fontSize: 10.5, fontWeight: '800', letterSpacing: 1.1,
+              marginTop: 6,
+            }}>PALS</Text>
+          </>
+        )}
         {list.length === 0 && (
           <Text style={[s.body, { color: T.faint, paddingTop: 10 }]}>
             {missingOnly
