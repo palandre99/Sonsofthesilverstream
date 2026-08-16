@@ -4500,3 +4500,40 @@ sheet stays OPEN, and the empty-state card is then correctly hidden — which
 reads exactly like "I over-suppressed the card". Cost one wrong conclusion.
 Always probe `includes('What to show')` to prove a sheet actually closed.
 Also: a body-text match for a layer name can be the SHEET ROW, not the card.
+
+### L34/L35 — PUBLISHED (dc2fc7c, both channels verified by channel:list).
+The first `publish.js` run died on a transient spawn error before bundling;
+the retry went through. If publish exits with a raw Node error dump and no
+"Published!", nothing shipped — just run it again.
+
+### L38 — the website had the SAME three defects — DONE (befc6cf), NOT LIVE
+Acting on L34's lesson BEFORE being bitten again: grepped every caller of
+`spawnLevels`. Eight call sites, three of them on the website, all three
+asking the wrong question. The phone was fixed twice this session; the site
+was not touched either time.
+1. `palList` used the surface-only gate -> the 25 dungeon-only pals were
+   unlistable, while the site has its own working dungeon checkbox promising
+   exactly those spawns. Measured: 224 buttons -> 249 ticked; Mau Lv 5-15,
+   Mau Cryst Lv 39-45, same as the phone.
+2. Clicking a DUNGEON pin quoted the SURFACE band, printing no level at all
+   for a pal that never surfaces. Now uses `wildBands(pal).dungeon`, which is
+   what the phone already did.
+3. The legend explained square pins unconditionally (the web copy of L31).
+   All three states now checked in the browser; Chest reads 1,572 there, the
+   same number the phone shows.
+A test asserts BOTH targets contain the same sentences — one is Preact, one is
+React Native, and the player should not be able to tell from the wording.
+NOTE: this reaches the CEO only when `main` is pushed. His call, not mine.
+PROOF HONESTY: 1 and 3 measured in the running site; 2 verified by data
+(`spawnLevels('Mau','palpagos')` null vs `wildBands('Mau').dungeon` non-null)
+because a synthetic PointerEvent would not reach the map's own handler after
+two attempts.
+
+### L39 — HARNESS: the website is reachable too
+`preview_start {name: 'hatchlab'}` runs the Vite site on 5183; `#/map` is the
+route. Preact uses real DOM listeners, so `el.click()` on a button WORKS
+there (unlike the RN-web build) — that is how 224 -> 249 was measured. But
+`.mapstage` pan/zoom is pointer-capture based and synthetic PointerEvents do
+NOT reach `identify()`; do not try a third time, prove pin behaviour from data.
+Each `javascript_tool` call shares one scope, so `const x` twice in a session
+throws "already declared" — wrap every snippet in an IIFE.
