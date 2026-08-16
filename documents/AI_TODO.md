@@ -2139,6 +2139,18 @@ the present; that lesson keeps earning its place.
 **NOT PUBLISHED THIS TICK** — web-only change, and `app/src/modules/map.tsx`
 is dirty in the Map lane's tree. Reaches him on his main push.
 
+**AND A SECOND GUARD so this exact drift cannot happen again** —
+`app/tests/condense-parity.test.ts`, 6 tests reading BOTH pal cards at once
+(`mobile/src/ui/PalDetail.tsx` and `app/src/modules/paldex.tsx`) and pinning
+the four rules on each: 5% per star, partner skill = stars + 1 of 5, every job
++1 at exactly 4 stars, and the refusal to name a job at 1-3 stars. Comments are
+stripped first, so a rule that survives only in prose does not count as
+shipped. PROVEN both ways: mutating the PHONE (boost removed, honesty note
+reworded) turned 2 tests red naming "phone", then restored clean. It is a text
+check on purpose — the numbers sit in JSX on two different frameworks with no
+shared function between them, so the guard's job is to force whoever changes
+one card to change the other.
+
 ## E82. THE ODDS LAB'S LAST UNSWEPT COPY — CLEAN, AND ALREADY GUARDED
 ## 2026-08-17. THE COPY AUDIT IS NOW COMPLETE. 2026-08-17
 
