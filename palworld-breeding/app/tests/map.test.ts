@@ -1616,3 +1616,55 @@ describe('the website legend cannot hide an entry', () => {
     expect(rule).toContain('left: 10px');
   });
 });
+
+describe('the website counts what is on the map you are looking at', () => {
+  const web = readFileSync(
+    join(__dirname, '..', 'src', 'modules', 'map.tsx'), 'utf8',
+  );
+
+  it('prints the per-region count, not the both-maps total', () => {
+    // The buttons printed `l.n` — the layer's total across BOTH maps. Palpagos
+    // offered "Fast travel 170" while showing 155 of them; the World Tree
+    // offered the same 170 while showing 15. Measured after the fix: Palpagos
+    // 155/9/157, tree 15/4/none here.
+    expect(web).toContain('const poiHere');
+    expect(web).toContain("{poiHere(l.id) || 'none here'}");
+    expect(web).not.toMatch(/\{l\.label\} <i>\{l\.n\}<\/i>/);
+  });
+
+  it('and the numbers it will print are the real per-region ones', () => {
+    expect(poiPoints('fast_travel', 'palpagos')?.n).toBe(155);
+    expect(poiPoints('fast_travel', 'tree')?.n).toBe(15);
+    expect(poiPoints('syndicate_tower', 'palpagos')?.n).toBe(9);
+    expect(poiPoints('dungeon', 'tree')?.n ?? 0).toBe(0);
+  });
+
+  it('steps a layer back when this map has none of it', () => {
+    expect(web).toMatch(/poiPoints\(l\.id, region\)\?\.n \? '' : ' empty'/);
+  });
+});
+
+describe('the website says why a search found nothing', () => {
+  const web = readFileSync(
+    join(__dirname, '..', 'src', 'modules', 'map.tsx'), 'utf8',
+  );
+  const block = web.slice(web.indexOf('palList.length === 0'), web.indexOf('<div class="mappals">'));
+
+  it('has a message at all', () => {
+    // Typing a name that matched nothing made the whole list vanish silently.
+    expect(block, 'the empty branch must exist').toContain('mapempty');
+  });
+
+  it('and each branch claims only what is true of it', () => {
+    // the list is narrowed by the search AND the checkboxes, so one generic
+    // sentence would be a claim the app cannot stand behind
+    for (const line of [
+      'Nothing on this map goes by that name.',
+      'No pal by that name is still missing from your box.',
+      'Nothing left to find here',
+      'No pal by that name — but the places above match.',
+    ]) {
+      expect(block, `missing branch: ${line}`).toContain(line);
+    }
+  });
+});

@@ -310,6 +310,19 @@ export function MapPage() {
     });
   }, [dungeons, missingOnly, q, region]);
 
+  /**
+   * How many of this layer are on the map you are LOOKING AT.
+   *
+   * The buttons printed `l.n`, which is the layer's total across both maps —
+   * so Palpagos offered "Fast travel 170" while showing 155 of them, and the
+   * World Tree offered the same 170 while showing 15. The phone was fixed
+   * (L24); the website was not.
+   */
+  const poiHere = (id: string): string => {
+    const n = poiPoints(id, region)?.n ?? 0;
+    return n ? n.toLocaleString() : '';
+  };
+
   const shown = active.reduce((n, l) => n + (l.set?.n ?? 0), 0);
   const groups = useMemo(() => {
     const by = new Map<LayerGroup, ReturnType<typeof poiLayers>>();
@@ -453,6 +466,23 @@ export function MapPage() {
             ))}
           </div>
         )}
+        {palList.length === 0 && (
+          /* Typing a name that matches nothing used to make the whole list
+             vanish with no word about it. The phone names its own reason and
+             the site should too — and each branch says only what is TRUE of
+             it, since the list is narrowed by the search AND the checkboxes. */
+          <p class="mapempty">
+            {places.length > 0
+              ? 'No pal by that name — but the places above match.'
+              : q.trim() && missingOnly
+                ? 'No pal by that name is still missing from your box.'
+                : q.trim()
+                  ? 'Nothing on this map goes by that name.'
+                  : missingOnly
+                    ? 'Nothing left to find here — you own every pal that spawns on this map.'
+                    : 'No pal on this map matches those settings.'}
+          </p>
+        )}
         <div class="mappals">
           {palList.map((n) => {
             const lv = spawnLevels(n, region, dungeons);
@@ -480,14 +510,15 @@ export function MapPage() {
         {groups.map(([group, list]) => (
           <div key={group} class="maplayers">
             {list.map((l) => (
-              <button key={l.id} type="button" class={poiOn.has(l.id) ? 'on' : ''}
+              <button key={l.id} type="button"
+                class={`${poiOn.has(l.id) ? 'on' : ''}${poiPoints(l.id, region)?.n ? '' : ' empty'}`}
                 style={poiOn.has(l.id) ? { borderColor: l.colour, color: l.colour } : undefined}
                 onClick={() => setPoiOn((s) => {
                   const next = new Set(s);
                   if (next.has(l.id)) next.delete(l.id); else next.add(l.id);
                   return next;
                 })}>
-                {l.label} <i>{l.n}</i>
+                {l.label} <i>{poiHere(l.id) || 'none here'}</i>
               </button>
             ))}
           </div>
