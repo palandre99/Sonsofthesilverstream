@@ -228,13 +228,17 @@ export function MapPage() {
       && at.y > rect.v0 && at.y < rect.v1
     ));
     near.sort((a, b) => a[1].y - b[1].y || a[0].localeCompare(b[0]));
-    const placed: { x: number; y: number }[] = [];
-    const minX = 93 / view.k;
+    // Collision box sized from the NAME — a constant box makes short names hog
+    // room they do not use and long ones under-reserve it.
+    const placed: { x: number; y: number; w: number }[] = [];
     const minY = 26 / view.k;
     const out: { name: string; x: number; y: number }[] = [];
     for (const [name, at] of near) {
-      if (placed.some((q2) => Math.abs(q2.x - at.x) < minX && Math.abs(q2.y - at.y) < minY)) continue;
-      placed.push({ x: at.x, y: at.y });
+      const w2 = Math.min(150, name.length * 5.9) / view.k;
+      if (placed.some((q2) => (
+        Math.abs(q2.x - at.x) < (w2 + q2.w) / 2 && Math.abs(q2.y - at.y) < minY
+      ))) continue;
+      placed.push({ x: at.x, y: at.y, w: w2 });
       out.push({ name, x: at.x, y: at.y });
     }
     return out;

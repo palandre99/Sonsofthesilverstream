@@ -376,10 +376,13 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       desktop viewport shows far more of them than the phone does, which reads
       properly like a game map. Pal list is no longer capped at 60 and its
       scroll box grew to 42vh.
-- [ ] F33 A couple of long names can still overlap at the top of the web map
-      ("Isle of the Glacial Core" / "No. 3 Wildlife Sanctuary") — the
-      declutter box is a fixed 93x26, so very long names under-reserve. Size
-      the collision box from the actual text length.
+- [x] F33 DONE 2026-08-16 ~12:12 on BOTH platforms: the declutter box is now
+      sized from the name itself instead of a constant, so short names stop
+      hogging room they do not use and long ones stop under-reserving it.
+      Two labels collide only if their own half-widths overlap. Side effect
+      worth having: MORE names fit, because short ones no longer claim 93px.
+      Eye-verified — the "Isle of the Glacial Core" overlap is gone and
+      Autumn Rocks / Golden Hills / Fisherman's Point now appear.
 - [ ] F11 Rebuild `ui/PalMap.tsx` + `ui/MapViewer.tsx` on the new engine and
       DELETE the region-label dots — this closes the CEO's ~12:25 "MAP
       OVERHAUL" item and the "Where to find it must be a real MAP" item.

@@ -166,15 +166,21 @@ export function MapScreen() {
     // a name is dropped if its box would overlap one already placed. Two names
     // on top of each other ("Golden HiSmall Settlement") is worse than one.
     near.sort((a, b) => a[1].y - b[1].y || a[0].localeCompare(b[0]));
-    const placed: { x: number; y: number }[] = [];
-    const minX = LABEL_W * 0.62 / vp.scale;
+    // The collision box is sized from the NAME, not from a constant. A fixed
+    // box makes short names hog space they do not use and long ones
+    // under-reserve, which is how "Isle of the Glacial Core" still landed on
+    // top of its neighbour.
+    const placed: { x: number; y: number; w: number }[] = [];
     const minY = LABEL_H / vp.scale;
     const out: MapMarker[] = [];
     for (const [name, at] of near) {
-      if (placed.some((q) => Math.abs(q.x - at.x) < minX && Math.abs(q.y - at.y) < minY)) {
+      const w = textWidth(name) / vp.scale;
+      if (placed.some((q) => (
+        Math.abs(q.x - at.x) < (w + q.w) / 2 && Math.abs(q.y - at.y) < minY
+      ))) {
         continue;
       }
-      placed.push({ x: at.x, y: at.y });
+      placed.push({ x: at.x, y: at.y, w });
       out.push({
         key: `label:${name}`,
         u: at.x,
@@ -460,6 +466,13 @@ export function MapScreen() {
  *  halo so they stay readable over snow, sand and ocean alike. */
 const LABEL_W = 150;
 const LABEL_H = 26;
+
+/** Rough on-screen width of a place name at the label's 10.5px bold face.
+ *  Measuring text properly would cost a layout pass per label per frame; this
+ *  is within a few px and only ever decides whether two names collide. */
+function textWidth(name: string): number {
+  return Math.min(LABEL_W, name.length * 5.9);
+}
 
 function PlaceName({ name }: { name: string }) {
   return (
