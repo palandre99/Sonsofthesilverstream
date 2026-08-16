@@ -558,6 +558,24 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       Lesson for the ledger: the never-invent rule is easy to keep in DATA and
       easy to break in COPY. A sentence is a claim.
 
+- [x] H10 2026-08-16 ~14:42 COPY AUDIT of the whole map fane, prompted by H9.
+      Checked every user-facing sentence against the data. Two problems:
+      * FALSE CLAIM: the empty pal list said "Nothing left to find here — you
+        own every pal that spawns on this map" whenever it was empty. But the
+        list is narrowed by the SEARCH BOX as well as the missing filter, so
+        typing "zzz" made the app assert something it knew nothing about. Each
+        case now says only what is true of it — verified by searching "zzz"
+        with the filter on: "No pal by that name is still missing from your box."
+      * OVERCLAIM: "see everywhere it spawns" — dungeon spawns are excluded by
+        default, so "everywhere" was not what we show. Now "where it spawns out
+        in the world", which is exactly what the default view is.
+      Everything else checked out: night-only, dungeon, in-your-box, the spot
+      counts, the pin-shape legend and "Boss only" are all backed by the data.
+- [x] H11 A probe run returned "(none)" and I nearly recorded it as evidence —
+      the QA SERVER WAS NOT RUNNING and the page was a Chrome error screen.
+      Third harness trap today. Any probe that finds nothing must be checked
+      against the page text before it is believed.
+
 ### Open — the map lane's own queue
 - [x] F23 DONE 2026-08-16 ~00:02: the preview's dense clusters were an
       unreadable scribble — 93 overlapping rings in one bay. Now thinned to one

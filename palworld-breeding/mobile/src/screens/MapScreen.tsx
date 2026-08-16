@@ -523,7 +523,7 @@ export function MapScreen() {
           </Text>
           <Text style={[s.body, { fontSize: 12.5 }]}>
             <Text style={{ color: T.accentInk, fontWeight: '800' }}>Find</Text>
-            {' '}a pal to see everywhere it spawns — or tick
+            {' '}a pal to see where it spawns out in the world — or tick
             {' '}“only pals I&apos;m missing” and the map shows you what is left
             to catch. It finds places by name too.
           </Text>
@@ -950,9 +950,16 @@ function PalSheet({
         )}
         {list.length === 0 && (
           <Text style={[s.body, { color: T.faint, paddingTop: 10 }]}>
-            {missingOnly
-              ? 'Nothing left to find here — you own every pal that spawns on this map.'
-              : 'No pal by that name spawns on this map.'}
+            {/* The list is narrowed by BOTH the search box and the missing
+                filter, so "you own every pal that spawns here" was a claim the
+                app could not stand behind: search "zzz" with the filter on and
+                it said so while knowing nothing of the sort. Each case now
+                says only what is actually true of it. */}
+            {q.trim() && missingOnly
+              ? 'No pal by that name is still missing from your box.'
+              : q.trim()
+                ? 'No pal by that name spawns on this map.'
+                : 'Nothing left to find here — you own every pal that spawns on this map.'}
           </Text>
         )}
         {list.map((n) => {
