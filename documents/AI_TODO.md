@@ -786,6 +786,26 @@ Nothing in the Plan-tab queue is blocked by this — what remains there is
 polish, micro-QoL and copy, which is safe to keep shipping.
 
 ### E13 polish-lane findings (hostile deep-eval passes, ongoing)
+- [x] 2026-08-16 ~14:00 **PERF BUG in my own Phase-4 work, MEASURED not
+      guessed**: opening Suggested goals froze the thread for ~1.2 s and
+      the "Reading your save…" placeholder only painted AFTER the freeze
+      — it was covering nothing. Cause: `getAttainContext` (which runs
+      the reachability fixpoint) sat in a `useMemo`, and a useMemo
+      executes during RENDER — so it ran before the `if (!ready) return
+      <placeholder>` early return. The 30 ms effect and the placeholder
+      were both defeated. Fix: gate the memo on `ready` and move the
+      early return above everything that touches ctx.
+      NUMBERS (same probe, cold cache, RN-web dev build):
+        before → placeholder at 1229 ms, longest block 1229 ms
+        after  → placeholder at **22 ms**, longest block unchanged
+      Total time to content is the same (~1.4 s — the fixpoint still has
+      to run); what changed is that the wait is now COVERED instead of a
+      dead screen. 56× faster first feedback.
+      CAVEAT, do not overclaim: RN-web dev build, not the device. Native
+      Hermes + production bundle will be faster in absolute terms; the
+      ordering fix is what matters and that is platform-independent.
+      LESSON (third time this pattern has paid): a placeholder proves
+      nothing unless you MEASURE when it actually paints.
 - [x] 2026-08-16 ~13:30 PROFILE SWITCH MID-PLAN walked on mobile — the
       riskiest remaining path, because it crosses switchProfile's atomic
       flip AND the draftTargets sync added in the un-add fix. CLEAN in

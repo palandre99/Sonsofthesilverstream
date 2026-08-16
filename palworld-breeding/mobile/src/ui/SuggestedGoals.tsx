@@ -630,8 +630,15 @@ function SheetBody({ onClose, targets, onAdd, onRemove }: SheetProps) {
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [boxKey, ready]);
+  // MUST stay behind `ready`: getAttainContext runs the reachability
+  // fixpoint, and a useMemo executes during RENDER. Computing it before the
+  // "Reading your save…" early return blocked the thread for over a second
+  // and only then painted the placeholder — the placeholder was covering
+  // nothing (measured, self-found 2026-08-16).
   const ctx = useMemo(
-    () => getAttainContext(engine, pals, breeding, box, playerLevel, ownedAny),
+    () => (ready
+      ? getAttainContext(engine, pals, breeding, box, playerLevel, ownedAny)
+      : null),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [boxKey, playerLevel, ready],
   );
@@ -645,13 +652,9 @@ function SheetBody({ onClose, targets, onAdd, onRemove }: SheetProps) {
     onClose();
   }), [onClose]);
 
-  const bctx: BrowseCtx = {
-    attain: ctx.attain, stage: ctx.stage, targets, onAdd, onRemove,
-    onView: setViewing,
-  };
-  const browsingSec = browsing ? sections.find((x) => x.id === browsing) : null;
-
-  if (!ready) {
+  // the placeholder must come BEFORE anything that touches ctx — every
+  // hook above this point is unconditional, so returning here is safe
+  if (!ready || !ctx) {
     // one quiet beat on first open per box change — never a frozen thread
     return (
       <View style={{
@@ -662,6 +665,12 @@ function SheetBody({ onClose, targets, onAdd, onRemove }: SheetProps) {
       </View>
     );
   }
+
+  const bctx: BrowseCtx = {
+    attain: ctx.attain, stage: ctx.stage, targets, onAdd, onRemove,
+    onView: setViewing,
+  };
+  const browsingSec = browsing ? sections.find((x) => x.id === browsing) : null;
 
   return (
     <>
