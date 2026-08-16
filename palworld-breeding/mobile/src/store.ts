@@ -60,7 +60,12 @@ export interface PassiveInfo {
   tier: number | null;
   category: string;
   effects: string;
+  /** ALWAYS true in the data — 114 of 114. The real signal is
+   * `breedable_known` below; keep this only because the file carries it. */
   breedable: boolean;
+  /** whether the source confirmed the breedable flag at all. False for
+   * exactly the 7 World Tree passives, and nothing used to say so. */
+  breedable_known: boolean;
   mutation_exclusive: boolean;
   world_tree: boolean;
   exclusive_to: string[];

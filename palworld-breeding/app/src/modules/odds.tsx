@@ -253,8 +253,12 @@ function PassivesTab() {
         out.push(`${n} is native to ${p.exclusive_to.slice(0, 3).join(', ')}${
           p.exclusive_to.length > 3 ? ` and ${p.exclusive_to.length - 3} more` : ''
         } — a parent must already carry it.`);
-      } else if (!p.breedable) {
-        out.push(`${n} is not inheritable by breeding.`);
+      } else if (!p.breedable_known) {
+        // Was `!p.breedable`, which is true for all 114 passives — the branch
+        // could never fire. It also said the wrong thing: the flag means the
+        // source never CONFIRMED inheritance, not that inheritance is
+        // impossible. False for exactly the seven World Tree passives.
+        out.push(`${n} is a World Tree passive — no source we trust confirms it can be bred down at all, so its odds here are unproven.`);
       }
     }
     return out;

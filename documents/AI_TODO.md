@@ -1953,6 +1953,38 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E65. THE ODDS LAB QUOTED INHERITANCE ODDS FOR 7 PASSIVES NOBODY HAS
+## CONFIRMED CAN BE INHERITED 2026-08-16
+
+Same field-by-field sweep, now on passives_1_0.json (114 passives).
+
+- [x] **`breedable` IS DEAD — true for all 114.** It cannot distinguish
+      anything, yet the web had `else if (!p.breedable)` in the Odds Lab
+      warnings: **a branch that could never fire**, whose message ("X is not
+      inheritable by breeding") would also have been WRONG if it had.
+- [x] **`breedable_known` IS THE REAL FLAG and NOTHING read it.** It is false
+      for exactly 7 passives, and — verified — that set is *identical* to the
+      `world_tree` set: Demon's Hand, Dimensional Leap, God of Destruction,
+      Hermit Sage, Sanctified Meat Shield, Twin-Edged Holy Blade, World Tree
+      Seedbed (all tier 5). **None of them is caught by the two existing
+      warnings** (zero overlap with `mutation_exclusive`, zero with
+      `exclusive_to`), so the app quoted per-egg inheritance odds for them
+      and said nothing about the fact that no source confirmed they inherit
+      at all. That is precisely the "provable over plausible" promise
+      failing quietly.
+- [x] **Fixed on BOTH platforms** — mobile had no such branch at all. The
+      wording states the limit of the SOURCE, not a fact about the game:
+      "X is a World Tree passive — no source we trust confirms it can be bred
+      down at all, so its odds here are unproven." Verified live on both:
+      putting Hermit Sage in the pool now shows it (phone doc scrollWidth
+      still 375).
+- **STILL UNRENDERED, logged not built:** `native_pals` is mined for 8
+  passives (Heavyweight names 19 pals, Hard Skin 4, Hooligan 2, plus
+  Abnormal/Sadist/Coward/Glutton, and Mercy Hit points at two ITEMS rather
+  than pals). Useful — "which pals come with this already" — but it needs a
+  design decision about where it belongs, and Mercy Hit's item entries mean
+  it cannot be rendered as a plain pal list.
+
 ## E64. COORDINATION INCIDENT (MINE) — `git add` THEN `git commit` COMMITS
 ## THE WHOLE INDEX 2026-08-16
 

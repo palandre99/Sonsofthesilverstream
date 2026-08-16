@@ -176,6 +176,13 @@ function PassivesTab() {
         const more = p.exclusive_to.length - 3;
         out.push(`${n} is native to ${p.exclusive_to.slice(0, 3).join(', ')}${
           more > 0 ? ` and ${more} more` : ''} — a parent must already carry it.`);
+      } else if (!p.breedable_known) {
+        // `breedable` is true for all 114 passives, so it can never warn about
+        // anything. `breedable_known` is the real flag, false for exactly the
+        // seven World Tree passives — and NONE of them is caught by the two
+        // warnings above, so the app quoted inheritance odds for them while
+        // saying nothing about the fact that nobody confirmed they inherit.
+        out.push(`${n} is a World Tree passive — no source we trust confirms it can be bred down at all, so its odds here are unproven.`);
       }
     }
     return out;
