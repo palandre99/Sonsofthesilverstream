@@ -572,11 +572,10 @@ export function MapScreen() {
         </View>
       )}
 
-      /* An empty world with three buttons tells a new player nothing, so this
-          points at the two that matter. It used to be a five-line explainer
-          that covered a third of the map — the CEO's words: "the massive «no
-          filters selected text» also covers the entire map". It is one line
-          now, and tapping it makes it go away for good. */
+      {/* An empty world with three buttons tells a new player nothing, so
+          this points at the two that matter. It used to be a five-line
+          explainer covering a third of the map. It is one line now, and
+          tapping it makes it go away for good. */}
       {/* Nothing is drawn AND nothing is switched on — a genuinely new map. */}
       {active.length === 0 && !sheet && !hintOff
         && filters.pals.size === 0 && filters.poi.size === 0 && (

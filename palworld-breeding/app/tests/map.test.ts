@@ -952,3 +952,35 @@ describe('the mislabelled alpha is on the map', () => {
     expect(n).toBe(68617);
   });
 });
+
+/* A block comment inside JSX must be wrapped in braces. Written bare, React
+ * Native renders it as a STRING and throws "Text strings must be rendered
+ * within a <Text> component" — which is what the CEO photographed at 21:45,
+ * from a comment I had un-braced while shrinking the map hint. */
+describe('no comment is rendered as text', () => {
+  const FILES = [
+    ['mobile', 'src', 'screens', 'MapScreen.tsx'],
+    ['mobile', 'src', 'map', 'MapCanvas.tsx'],
+    ['mobile', 'src', 'ui', 'PalMap.tsx'],
+  ];
+
+  it.each(FILES.map((f) => f.join('/')))('%s braces every comment between JSX children', (rel) => {
+    const src = readFileSync(join(__dirname, '..', '..', ...rel.split('/')), 'utf8');
+    const lines = src.split(/\r?\n/);
+    const offenders: string[] = [];
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      // a comment opening at JSX indentation, not brace-wrapped
+      if (!/^\s{4,}\/\*/.test(line) || /^\s*\{\s*\/\*/.test(line)) continue;
+      // ...directly after a JSX child closed with `)}` or an element tag
+      let p = i - 1;
+      while (p >= 0 && lines[p].trim() === '') p--;
+      if (p < 0) continue;
+      const prev = lines[p].trimEnd();
+      if (/\)\}$/.test(prev) || /\/>$/.test(prev) || /<\/[A-Za-z.]+>$/.test(prev)) {
+        offenders.push(`line ${i + 1}: ${line.trim().slice(0, 60)}`);
+      }
+    }
+    expect(offenders).toEqual([]);
+  });
+});
