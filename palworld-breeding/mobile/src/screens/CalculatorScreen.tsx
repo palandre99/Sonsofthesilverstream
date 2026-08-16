@@ -181,7 +181,12 @@ function PairResult({ a, b }: { a: string; b: string }) {
 
 function ReverseLookup({ target }: { target: string }) {
   useAppVersion();
-  const [showAll, setShowAll] = useState(false);
+  // One expanded flag per group. It used to be a single boolean: pressing
+  // "Show all 24" on ONE group silently expanded every other group too, and
+  // it never reset when you picked a new target — so the next pal you looked
+  // up rendered every one of its pairs at once, with no way back.
+  const [expanded, setExpanded] = useState<Set<string>>(() => new Set());
+  useEffect(() => { setExpanded(new Set()); }, [target]);
 
   const pairs = useMemo(() => {
     const names = Object.keys(pals);
@@ -242,25 +247,27 @@ function ReverseLookup({ target }: { target: string }) {
             {title} <Text style={{ color: T.muted, fontWeight: '600' }}>· {items.length}</Text>
           </Text>
           <View style={{ gap: 6 }}>
-            {(showAll ? items : items.slice(0, 10)).map((p) => {
+            {(expanded.has(title) ? items : items.slice(0, 10)).map((p) => {
               const mother = p.note ? parseGenderNote(p.note)?.mother : undefined;
               return (
                 <Card key={`${p.a}|${p.b}`}
+                  accessibilityLabel={`${p.a} plus ${p.b}${p.note ? `, ${p.note}` : ''}`}
                   style={{ paddingVertical: 8, flexDirection: 'row', alignItems: 'center', gap: 8 }}>
                   <PalIcon name={p.a} size={32} gender={p.note ? (mother === p.a ? 'f' : 'm') : undefined} />
                   <PalIcon name={p.b} size={32} gender={p.note ? (mother === p.b ? 'f' : 'm') : undefined} />
                   <Text style={{ color: T.ink, fontWeight: '700', fontSize: 13.5, flex: 1 }}>
                     {p.a} <Text style={{ color: T.faint }}>+</Text> {p.b}
                   </Text>
-                  {p.kind === 'unique' && <Badge kind="unique">unique</Badge>}
-                  {p.kind === 'gendered' && <Badge kind="warn">♀♂</Badge>}
+                  {p.kind === 'unique' && <Badge kind="unique">fixed recipe</Badge>}
+                  {p.kind === 'gendered' && <Badge kind="warn">genders as shown</Badge>}
                 </Card>
               );
             })}
           </View>
-          {!showAll && items.length > 10 && (
+          {!expanded.has(title) && items.length > 10 && (
             <View style={{ marginTop: 8 }}>
-              <Btn label={`Show all ${items.length}`} onPress={() => setShowAll(true)} small />
+              <Btn small label={`Show all ${items.length}`}
+                onPress={() => setExpanded((prev) => new Set(prev).add(title))} />
             </View>
           )}
         </View>

@@ -127,7 +127,7 @@ function ReverseLookup({ target }: { target: string }) {
             <PalIcon name={p.b} size={36} gender={p.note ? (parseGenderNote(p.note)?.mother === p.b ? 'f' : 'm') : undefined} />
             <span class="names">{p.a} <span class="plus">+</span> {p.b}</span>
             <span class="tag">
-              {p.kind === 'unique' && <span class="badge unique">unique</span>}
+              {p.kind === 'unique' && <span class="badge unique">fixed recipe</span>}
               {p.kind === 'gendered' && <LockBadge />}
             </span>
           </div>

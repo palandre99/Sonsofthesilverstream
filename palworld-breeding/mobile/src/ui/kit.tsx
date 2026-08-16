@@ -145,10 +145,20 @@ export function Badge({ kind, children }: { kind: BadgeKind; children: React.Rea
 
 /* ---------------- layout primitives ---------------- */
 
-export function Card({ children, style }: {
+export function Card({ children, style, accessibilityLabel }: {
   children: React.ReactNode; style?: object;
+  /** Give a card a name when it reads as ONE thing (a parent pair, a step)
+   *  rather than a container — otherwise its contents are announced as
+   *  loose fragments. */
+  accessibilityLabel?: string;
 }) {
-  return <View style={[s.card, style]}>{children}</View>;
+  return (
+    <View
+      style={[s.card, style]}
+      accessible={accessibilityLabel ? true : undefined}
+      accessibilityLabel={accessibilityLabel}
+    >{children}</View>
+  );
 }
 
 export function PageHead({ title, sub }: { title: string; sub?: string }) {
