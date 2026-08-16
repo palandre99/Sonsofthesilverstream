@@ -1797,6 +1797,25 @@ have very many there ? Idk. Also why u idle??? Why loop not working"
       now", and the search box is present and named.
 - [x] E51b Visible shortcuts raised 8 → 12; "only a few" was a fair
       description of 8 out of 56.
+- [x] E51d WEB PARITY (same commit as this entry). The website had the
+      identical dead line — "…and N more — use the picker above to search
+      them all" — pointing at a picker holding all 299 pals. Web's picker is
+      an INLINE dropdown rather than a modal, so the honest fix there is to
+      open the list in place: 12 chips, then "Show all N of your pals"
+      reveals the rest. Verified in the browser: 12 → 20 on click, dead line
+      gone.
+- [x] E51e **PUBLISHED** to both channels once the Map lane's tree went
+      clean. It had been blocked one tick because MapScreen.tsx and then
+      MapCanvas.tsx were mid-edit and `eas update` bundles the whole disk.
+- **CORRECTION TO MY OWN E51 REPORT.** I told him the bare `/* ... */` block
+  in MapScreen.tsx "does not render — I was misreading the JSX". **That was
+  wrong.** The Map lane then committed a717302: "fix the console error I
+  shipped — a comment was being rendered as text". It WAS a real bug; my
+  check was simply the wrong one — I searched the rendered text for the
+  comment and found nothing, when the symptom was a CONSOLE ERROR, not
+  visible text. **Twelfth bad check. When testing whether something renders
+  wrongly, read the CONSOLE as well as the text.**
+
 - [x] E51c **MY FAULT ON THE IDLE COMPLAINT.** Nothing was broken: I had
       DECIDED, at E50, to slow the loop from 60s to 1200s because the lane
       had run out of cheap work. That was my call and it was wrong — he

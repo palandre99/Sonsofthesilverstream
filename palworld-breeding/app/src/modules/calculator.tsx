@@ -179,6 +179,11 @@ function ReverseLookup({ target }: { target: string }) {
 function CalcStartHelp({ onPick, mode }: {
   onPick: (name: string) => void; mode: 'pair' | 'reverse';
 }) {
+  // "…and N more — use the picker above" was a dead end: that picker holds
+  // all 299 pals, not yours, so with a big collection you saw a handful of
+  // chips and had no way to reach the rest of your own (CEO 2026-08-16).
+  // The page is wide and 50-odd chips cost nothing, so it opens in place.
+  const [showAllOwned, setShowAllOwned] = useState(false);
   const owned = Object.keys(box.value).filter((n) => Object.hasOwn(pals.value, n));
   const steps = [
     mode === 'pair'
@@ -196,16 +201,17 @@ function CalcStartHelp({ onPick, mode }: {
           <>
             <span class="eyebrow">START FROM YOUR PALDEX</span>
             <div class="picks">
-              {owned.slice(0, 8).map((n) => (
+              {(showAllOwned ? owned : owned.slice(0, 12)).map((n) => (
                 <button key={n} onClick={() => onPick(n)} aria-label={`Use ${n}`}>
                   <PalIcon name={n} size={26} />{n}
                 </button>
               ))}
             </div>
-            {owned.length > 8 && (
-              <span class="more">
-                …and {owned.length - 8} more — use the picker above to search them all.
-              </span>
+            {owned.length > 12 && !showAllOwned && (
+              <button class="btn" style={{ alignSelf: 'flex-start' }}
+                onClick={() => setShowAllOwned(true)}>
+                Show all {owned.length} of your pals
+              </button>
             )}
           </>
         ) : (
