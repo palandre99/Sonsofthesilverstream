@@ -4884,3 +4884,38 @@ NEXT TICK: if app.css is dirty with ONLY my two rules, commit it. If their
 .chip lines are still there, leave it again — this is the commit-side version
 of the publish guard, and there is no deadline because the web only ships on a
 main push.
+
+### L48 — CLOSED. The other lane committed app.css and my two map rules went
+with it (now at lines 462-463 of HEAD). Nothing was lost, nothing to commit.
+Holding the file back was still right: their .chip work was unfinished at the
+time and would have landed in my commit.
+
+### L49 — a comment of mine was making a false claim — FIXED (28af86b)
+`app/src/map/found.ts` said "The KEYS match, so a future box-sync can carry
+ticks across without a translation step." Wrong in the half that matters:
+    tick format  layerId:region:index   IDENTICAL on both
+    storage key  phone `palforge-<profileId>-mapfound`
+                 web   `palforge-mapfound`
+The phone scopes ticks per save profile; the WEBSITE HAS NO PROFILES AT ALL
+(checked: nothing in app/src mentions one, every key it writes is a flat
+singleton), so one unscoped key is correct there. Both behaviours right, only
+the sentence wrong — and wrong in the direction that costs whoever builds sync
+a day. Header now states both halves; a sync must CHOOSE a profile.
+
+### L50 — the parity gate now notices a new shared module itself — DONE (6683816)
+The byte-parity gate was a hand-written list of three filenames, so anything
+else copied into both trees escaped it — exactly how found.ts's divergence went
+unseen. A module present in BOTH app/src/map and mobile/src/map must now be
+classified: SHARED_MAP (byte-identical) or FORKED_MAP (deliberate, with the
+reason recorded). Anything else fails the suite naming the file.
+PROVED IT CAN FAIL: dropped `__probe.ts` into both folders, watched the test go
+red naming it, deleted both. A guard that cannot fail is decoration — do this
+for every new guard.
+NOTE for anyone adding a shared map module: put it in SHARED_MAP if it should
+be identical, or FORKED_MAP with a reason AND its own test for whatever part
+must not drift (found.ts's tick format is pinned that way).
+
+### STILL PENDING A MAIN PUSH (HIS CALL) — all web-only
+L38 (dungeon-only pals listable, dungeon-pin level band, legend footnote),
+L45 (legend capped so it cannot hide entries), L47 (per-region layer counts +
+empty-search copy), L49 (comment only).
