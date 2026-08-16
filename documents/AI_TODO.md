@@ -2075,6 +2075,39 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E73. PROFILE ISOLATION VERIFIED ON HIS REAL SAVES — NO BUG 2026-08-17
+
+The one area whose BEHAVIOUR had never been checked, only its copy. It is
+also where a bug costs him actual data, so it was worth doing carefully.
+
+- **NO WEB TWIN TO CHECK:** profiles are **mobile-only** — `app/src/state.ts`
+  has no profile system at all, so the both-trees rule has nothing to run.
+  The `switching` guard in `mobile/src/store.ts` cannot be reached from
+  `app/tests` either (it imports AsyncStorage/react-native), which is exactly
+  why this had to be done on the render.
+- [x] **SWITCHING IS ISOLATED, BOTH DIRECTIONS, ON HIS REAL PROFILES.**
+      Snapshotted all 5 storage keys first. Switched **My world → Hardcore**:
+      active flipped, My world's box still 26, Hardcore empty. Switched
+      **back**: active `default`, box **26**, plan **8 targets** — and
+      Hardcore's box key was **never even written**, so switching away does
+      not create a spurious empty record. **Drift check after: 0 keys
+      changed.**
+- **HIS DATA WAS NEVER AT RISK AND IS EXACTLY AS FOUND:** every experiment
+      used a throwaway profile ("QA TEMP DELETE ME"), the snapshot was
+      restored key-by-key, the temp key removed, the page reloaded so the app
+      re-read storage, and the final state re-verified: the same 5 keys, "My
+      world Lv42" + "Hardcore", active `default`, 26 pals, 8 targets, no
+      trace of the temp profile.
+- **DELETION REMAINS UNVERIFIED — honest gap, next tick's quick win.** The
+      delete is a deliberate TWO-PRESS confirm (`armDelete`): the first press
+      re-labels the button to `Really delete "<name>" and its data?`, and only
+      the second calls `deleteProfile`. I pressed once, saw nothing happen,
+      and cleaned up rather than press again — so the guarded delete path
+      (the one whose comment documents a real data-loss hole) still has not
+      been exercised. **It IS scriptable — press the same button twice.**
+- Worth noting the two-press design is right: no accidental deletion of a
+      world, and the confirm names the profile.
+
 ## E72. THE PHONE CAN READ A WEBSITE BACKUP NOW 2026-08-17
 
 The one actionable gap E71 logged, closed.
