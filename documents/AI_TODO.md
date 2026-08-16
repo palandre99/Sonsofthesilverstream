@@ -1150,6 +1150,27 @@ earlier. He is right and the proof is in his own list: it lumped CHIKIPI
       advice, clicking Chikipi lands on "Chikipi · Paldex · Palforge" with
       the card open, own error recorder saw none. NOT DEPLOYED — pushing
       the website to main needs the CEO's go-ahead.
+- [x] E19 WEB PARITY FOR E17 + a plural bug on BOTH platforms (commit
+      8daffeb; mobile published, web still awaiting the CEO's main push).
+      The website had the same silent staleness: `planIsCurrent` was ALREADY
+      computed there but only inside the tray IIFE to decide folding —
+      hoisted so it also drives the stale notice and hides the redundant
+      hero Plan button. Also brought across: the raw-JavaScript-error
+      failure message (now the same "Couldn't build your route" card with a
+      retry and a `<details>` for the technical text) and "2 half" ->
+      "2 half-done".
+      **FOUND BY READING THE RENDERED TEXT:** with one goal left both
+      platforms said "Build it again to cover all 1 goals" / "Plan these 1
+      goals". I had copied the mobile copy across VERBATIM, so the slip
+      travelled with it. Fixed both: "…for the goal you have left" /
+      "Plan this goal". LESSON: copying copy for parity copies its bugs —
+      read the SINGULAR case of any pluralised string.
+      **NEAR-MISS worth keeping:** my first staleness test looked like a
+      failure. The "Remove from plan" button inside the HELPER card calls
+      `removeHelper`, which re-plans immediately by design — so the plan
+      correctly stayed current. The CONTROL was wrong, not the feature.
+      Same family as the placeholder-attribute miss in E18: when a check
+      fails, suspect the check.
 - [x] E18 SHEETS + DIALOGS SWEEP (commit 3db0739, published both channels).
       The pal picker was the last part of the Plan tab saying nothing
       useful aloud. FOUR gaps, all one shape: pal rows had no role AND no
