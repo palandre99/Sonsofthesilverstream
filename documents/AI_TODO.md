@@ -1935,6 +1935,39 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E64. COORDINATION INCIDENT (MINE) — `git add` THEN `git commit` COMMITS
+## THE WHOLE INDEX 2026-08-16
+
+**This is the second time this class of mistake has happened in this repo**
+— origin carries "Ledger: coordination incident - a Map commit swept up the
+Plan redesign", i.e. it happened in the other direction before. Writing the
+mechanism down properly this time.
+
+- **What happened:** the Map lane had two deletions ALREADY STAGED
+  (`mobile/assets/map2048.jpg`, `mobile/src/ui/MapViewer.tsx`). I ran
+  `git add <my explicit paths> && git commit -F -`. Staging explicit paths
+  does NOT limit the commit — **`git commit` writes the entire index**, so
+  their two staged deletions went into my commit under my message.
+- **Why my existing rule did not catch it:** "stage EXPLICIT paths, never
+  `git commit -a`" only governs what I ADD. It says nothing about what was
+  in the index before I got there. `git status --short -- mobile/` DID show
+  `D ` (staged) rather than ` D` — I read the letter and missed the column.
+- **Fixed, losing nothing:** `git reset --soft HEAD~1`, unstaged their two
+  paths, recommitted my five, then re-staged their deletions so the index is
+  byte-for-byte what I found. The commit was local-only (`git branch -r
+  --contains` empty), so no rewrite of shared history.
+- **THE RULE THAT ACTUALLY WORKS — use the pathspec form:**
+  `git commit -F - -- <paths>` commits ONLY those paths and leaves the rest
+  of the index alone. Failing that, `git diff --cached --name-only` before
+  every commit and confirm the list is exactly mine.
+- **`D ` vs ` D` matters:** first column = staged, second = working tree.
+  A staged change belonging to someone else is MORE dangerous than an
+  unstaged one, not less.
+- **NOT PUBLISHED THIS TICK.** The Map lane has a map asset and a viewer
+  mid-deletion; `eas update` bundles the working tree, so publishing would
+  ship their unfinished refactor to the CEO's daily driver. E63 waits for
+  their tree to settle.
+
 ## E63. THE ALPHA CLAIMS — ONE REAL GAP, ONE DATA SPLIT WORTH KNOWING 2026-08-16
 
 Last untested family on the pal card. Compared all THREE alpha sources
