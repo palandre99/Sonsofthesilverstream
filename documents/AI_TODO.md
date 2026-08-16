@@ -1703,9 +1703,125 @@ page of plan tab a while back, empty and poor design"
       "gender locked" after the Plan tab stopped → "only works with the
       genders shown". Verified on Katress+Wixen, the game's only
       gender-locked pair.
-- [ ] E27c WEB BATCH still owed: Calculator empty state, job icons in web
-      Paldex rows, web filter-chip a11y, web import-sheet plural, web
-      empty-collection button, web goal next-step line.
+- [x] E27c WEB BATCH (commit f8d6609, committed NOT deployed — the site
+      needs the CEO's push to main). Calculator empty state ported (eight
+      one-click shortcuts + the three-point explainer, verified in-browser:
+      Lamball then Cattiva fills both parents and returns Daedream with the
+      close-call badge). Import plural "Add 1 pals" → "Add 1 pal" — and
+      THREE TESTS WERE ASSERTING THE WRONG STRING, so they had been holding
+      the bug in place; they now assert the fix.
+      TWO ITEMS ON THIS LIST WERE NOT BUGS, verified before acting:
+      · "web filter-chip a11y" — the six clickable non-buttons I had listed
+        (goals.tsx L466/L642/L658, paldex.tsx L281, plan.tsx L951/L991) are
+        ALL click-away BACKDROPS behind dialogs, not controls. A button role
+        there would invent a control that does not exist. Every one of those
+        dialogs already closes on Escape and has a real close button.
+      · "job icons in web Paldex rows" — they were already there. I tried
+        raising them from one to the phone's three and MEASURED the result:
+        these rows sit in a ~310px grid card, so the chips wrap and row
+        heights go 54/64 → 54/64/90, leaving the grid visibly jagged.
+        Reverted to one, reason recorded in the file. The phone's row is
+        full-width and fits three. Web empty-collection button and goal
+        next-step line: both already present.
+
+## E32. PALDEX EXERCISED END TO END 2026-08-16 (no CEO prompt — the lane)
+
+The anchor tab (always the centre slot) had never had a full pass.
+
+- [x] EXERCISED, no bugs: search (typing "astra" narrows to Astralym #204,
+      alphabetical section headers correct); the pal detail card (game
+      description, base stats WITH rank context "#1 of 299", size, rarity,
+      drops, how-to-breed); gender ♂/♀ ticks — ticking male Astralym wrote
+      the box, updated the label in BOTH the row and the open card, moved
+      the header 26→27 owned AND recomputed reachable 258→260, i.e. the
+      engine reacted; unticking restored all of it exactly.
+- [x] PERF, MEASURED AND FINE: the list is properly windowed — 26 rows of
+      299 rendered, 516 DOM nodes total. (Contrast the Plan tab, which
+      renders every step eagerly — that remains parked for Fable.)
+- [x] SEARCH BOXES HAD NO NAME (fixed). `SearchInput` in ui/kit.tsx passed a
+      placeholder and nothing else. A placeholder is only read while the box
+      is EMPTY, so the instant you type, the field goes anonymous. This is
+      the SHARED box — Paldex, both pal pickers and the category browser —
+      so it was every search box in the app at once. Now named explicitly.
+- TWO FALSE ALARMS, both caught by my own rule "never claim phone behaviour
+  from RN-web" — DO NOT RE-OPEN:
+  · the pal detail card reports no role="dialog" in RN-web, but it is a real
+    RN `<Modal presentationStyle="pageSheet">`, which gives VoiceOver proper
+    modal semantics on the phone.
+  · the bottom tab bar reports no aria-selected in RN-web, but App.tsx line
+    244 already sets `accessibilityState={{ selected: on }}`.
+- [ ] **DATA GAP FOR THE PIPELINE (cannot fix here — never invent game
+      numbers).** Of 299 pals, `Astralym` has NO elements and NO work
+      suitabilities, and `Panthalus` has no work suitabilities, in
+      app/public/data/pals_1_0.json. Every other pal has both. Their rows
+      therefore render visibly emptier than the rest. The detail card
+      degrades gracefully (it omits the section rather than showing an empty
+      one), so this is not urgent — but the extractor in
+      palworld-breeding/tools/ should be re-run against the game files for
+      these two, and the values must come from the files, not a wiki.
+
+## E31. WEB CALCULATOR + IMPORT PLURAL 2026-08-16 (commit f8d6609)
+See E27c above — same commit, tracked there.
+
+## E30. "WHICH PAL AM I MISSING" 2026-08-16 (commit e5991b5, PUBLISHED)
+
+- [x] Own both species of a pair but cannot breed them, and BOTH platforms
+      said the same dead end: "You own both species, but not a working ♂/♀
+      combination." True, and useless — it never named the pal you were
+      short of. It now does, and the answer DIFFERS PER CHILD: holding a
+      female Katress and a female Wixen, Katress Ignis says "You still need
+      a male Wixen" while Wixen Noct says "You still need a male Katress".
+      The old text said the identical thing under both.
+      The rule genuinely varies by pair kind (ordinary pair fails only when
+      everything owned is one gender; the gender-locked pair needs a
+      specific mother AND father; a species bred with itself needs one of
+      each), so it went to src/logic/genderGap.ts with 13 tests rather than
+      prose written twice. ONE OF THOSE TESTS CAUGHT ME: I asserted two
+      females left Wixen Noct short of both parents; it is short of one,
+      because the female Wixen already covers that child's mother.
+- [x] Calculator paths exercised while there, all correct, no bugs: the
+      gender-locked pair both directions, the same-species case (Lamball +
+      Lamball → Lamball, SAME SPECIES badge, correctly no warning), and the
+      tie-break badge (Lamball + Cattiva → Daedream, CLOSE CALL).
+- [x] MEASURED, NOT A BUG — the reverse-lookup scan is **40 ms**, not the
+      ~550 ms I claimed in an earlier report. The engine memoises
+      childrenOf, so all 44,850 pairs are cheap; my bad figure had timed the
+      button press, the React render, icon loading and a modal close
+      animation together. A one-pass reverse index would save ~10 ms per
+      pick. NOT worth it — do not re-open this.
+
+## E29. REVERSE LOOKUP, USED RATHER THAN READ 2026-08-16 (commit 37fd659, PUBLISHED)
+
+- [x] "Show all" was ONE flag shared by every group, and it never reset.
+      Pressing "Show all 24" under One step away also silently expanded
+      every other group — then picking a new pal dumped that pal's entire
+      list at once with no way to collapse it. Each group now expands on its
+      own and a new target starts fresh. Verified: Lamball expanded to 29
+      rows, switched to Vanwyrm Cryst, list came back collapsed.
+- [x] The reverse list still called a one-off recipe "unique" while the SAME
+      FILE said "fixed recipe" 140 lines above in pair mode — I renamed one
+      and missed the other, on both platforms. Both say "fixed recipe" now.
+- [x] The gender-locked row was flagged with a bare "♀♂" glyph — the same
+      unreadable shorthand that got "m7"/"t7" thrown out. Says it in words.
+- [x] Pair rows read as one thing ("Foxcicle plus Vanwyrm") instead of loose
+      fragments; Card learned to carry a name for that.
+- NOT A BUG (checked): mobile HIDES empty groups, so a missing "All other
+  pairs" on Lamball is correct — every Lamball pair has an owned parent.
+
+## E28. SIX CONTROLS NOTHING COULD REACH 2026-08-16 (commit cdc4ea7, PUBLISHED)
+
+- [x] The Calculator's mode toggle — the tab's PRIMARY control, the only way
+      to reach the reverse lookup — plus five controls on the Odds tab (cake
+      picker, IV picker, its own mode toggle, the "one specific parent"
+      checkbox, the remove-passive chips) were written as plain text with a
+      tap handler. No role, no name, no keyboard focus: invisible to a
+      screen reader and unreachable by keyboard.
+      **My earlier accessibility sweep missed all six because it searched
+      for controls whose LABEL was missing — these had neither a label nor a
+      role, so nothing matched the search.** Found by trying to press the
+      toggle from a script and discovering it was not there.
+      Each now announces itself with its state in words ("Child → parents,
+      showing now"; "Must come from one specific parent: yes").
 
 ## E26. HOSTILE RE-READ OF PlannerScreen 2026-08-16 (no CEO prompt)
 

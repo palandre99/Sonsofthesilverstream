@@ -218,15 +218,22 @@ export function Btn({ label, onPress, primary, danger, disabled, small }: {
 export function SearchInput({ value, onChange, placeholder }: {
   value: string; onChange: (v: string) => void; placeholder?: string;
 }) {
+  const hint = placeholder ?? 'Search…';
   return (
     <TextInput
       value={value}
       onChangeText={onChange}
-      placeholder={placeholder ?? 'Search…'}
+      placeholder={hint}
       placeholderTextColor={T.faint}
       autoCorrect={false}
       autoCapitalize="none"
       clearButtonMode="while-editing"
+      // A placeholder is not a name: it is read only while the box is
+      // EMPTY, so the moment you type, the field goes anonymous. This is
+      // the shared search box — the Paldex, both pal pickers and the
+      // category browser all use it — so it was every search box in the
+      // app, not one. Naming it explicitly keeps it named while you type.
+      accessibilityLabel={hint.replace(/…$/, '')}
       style={s.search}
     />
   );
