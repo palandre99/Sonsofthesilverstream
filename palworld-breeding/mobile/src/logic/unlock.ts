@@ -176,7 +176,12 @@ export function catchWhere(
   for (const name of u.catches) {
     for (const r of regionsOf(name)) if (!spots.includes(r)) spots.push(r);
   }
-  return spots.length ? spots.slice(0, 3).join(' · ') : null;
+  // 165 of 299 species live in more than three places, so cutting to three
+  // and saying nothing read as the complete answer — the same shape as the
+  // catch hint fixed in E52, in a different code path (self-found).
+  if (!spots.length) return null;
+  const more = spots.length - 3;
+  return spots.slice(0, 3).join(' · ') + (more > 0 ? ` and ${more} more` : '');
 }
 
 /**

@@ -1847,6 +1847,36 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E56. THE CATCHABILITY CLAIM FAMILY — TESTED, MOSTLY CLEAN 2026-08-16
+
+The last untested claim family: every sentence driven by `wild` / `regions`
+/ `minWild`. Ran it against the data.
+
+- [x] **THE DATA ITSELF IS CONSISTENT.** `wild` and `regions` agree perfectly
+      across all 299 species — zero pals marked catchable with no location,
+      zero with locations but marked uncatchable. 23 species are uncatchable.
+- [x] **THE ADVISOR'S "where to catch it" TRUNCATED SILENTLY** — `catchWhere`
+      returned `spots.slice(0, 3)` with nothing after it, and **165 of 299
+      species live in more than three places.** Same shape as E52 but a
+      DIFFERENT code path (that one was the helper card in PlannerScreen;
+      this is the shared unlock advisor). Now "…and N more", fixed in
+      src/logic/unlock.ts and mirrored to both trees.
+- [x] **CHECKED AND ALREADY HONEST, no change:** the advisor omits the
+      location line entirely when it has none, rather than inventing one —
+      and the code says so ("276 of 299 species carry regions; the rest get
+      no line at all rather than an invented one"). That matters because 13
+      species have a palcalc spawn level but ZERO regions in our data
+      (Frostallion, Jetragon, Necromus, Paladius, Neptilius, Xenovader,
+      Aegidron, Mau, Katress Ignis, and four -Cryst/-Noct variants). Seven
+      are self-breed-only, so they DO reach the advisor — and it correctly
+      says "Catch one — spawns from Lv N" with no invented place.
+- **15th BAD CHECK OF MINE:** I read `minWild` from pals_1_0.json, found it
+  null for all 276 wild species, and nearly filed "the advisor thinks
+  everything is uncatchable". **The app reads minWild from
+  `palcalcFacts.g.ts`, not from the pal table** — Amione 9, Anubis 55.
+  Checking WHERE the value comes from before trusting a null saved the
+  finding from being nonsense.
+
 ## E55. WEB PARITY FOR THE HIDDEN RECIPES + THE POOL-FLAG TEST 2026-08-16
 
 - [x] **THE WEBSITE'S PAL CARD HAD THE SAME TERNARY, and hid MORE than the
