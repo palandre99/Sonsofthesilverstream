@@ -1387,6 +1387,36 @@ and u are idle and not working again… loop not working"
 => (c) He perceives IDLE TIME. Re-arm at 60s and do MORE per turn; never
    end a turn on one small fix.
 
+## E21. CEO FEEDBACK 2026-08-16 ~15:38 (verbatim, WITH SCREENSHOT of the picker)
+"Filters in the pals yes but why doesn't pals show the symbol of their
+attributes. Like woodcutting, mining etc"
+
+- [x] E21a MOBILE PICKER (commit 11f5967, PUBLISHED). Rows showed elements
+      only. Now up to THREE job chips with levels, via the existing shared
+      `WorkChips`; `focus={filters.work}` puts the filtered job FIRST so a
+      Mining-filtered list still visibly reads as Mining.
+      MEASURED at real phone size 375x812 before keeping it: rows a UNIFORM
+      **95 px**, **0 rows overflowing**, **6.8 rows per screen**. Icons are
+      real game art (naturalWidth 64), not text. 32 chips over 12 rows.
+- [x] E21b WEB PICKER (commit 519bd38, committed NOT deployed). Same three
+      chips in the website's dropdown rows + `.pickerjobs` CSS. Verified:
+      120 rows, 263/263 icons loaded, 40 px rows, 0 overflowing.
+- [x] E21c PALDEX ROWS (commit 85ba3ba, NOT YET PUBLISHED — blocked on the
+      Map lane's MapScreen.tsx). The Paldex already had WorkChips but at
+      `top={focus ? 2 : 1}` — ONE job unless you had filtered, so a Mining-3
+      pal was indistinguishable from one that is Mining 3 AND Lumbering 2.
+      Now `top={3}` with focus preserved.
+      MEASURED 375x812: rows are **67 px or 101 px (8 of 12 tall)**, **0
+      overflowing**, **6 rows per screen**. DECISION: keep the ragged
+      heights — a combat-only pal genuinely has less to show than a worker,
+      so the variance is honest, not untidy.
+- [x] E21d FOUND WHILE MEASURING E21c: the Paldex ROWS had NO role and no
+      label — a screen reader never announced that a row opens the pal, and
+      "you own this" was carried only by row opacity. Now
+      "Lamball. in your Paldex" + role=button, 12 of 12 verified. Same
+      family as E20; the Paldex screen has NOT had a full sweep yet (filter
+      chips, import sheet, header controls still to check).
+
 - [x] E20 PLAN-TAB TAPPABLE SWEEP (commit a0dba5c). Audited every Pressable
       on the screen: **10 tappable things, only 2 declared a role.** The
       other 8 had names but no role, so a screen reader read the label as
