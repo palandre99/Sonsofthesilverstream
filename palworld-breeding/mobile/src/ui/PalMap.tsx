@@ -12,7 +12,7 @@
  * it only comes out at night — and hands the player to the full Map fane with
  * the species already selected.
  */
-import React from 'react';
+import React, { useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { T } from '../theme';
 import { s } from './kit';
@@ -25,7 +25,14 @@ import { MAP_ALPHAS, MAP_SPAWNS } from '../data/mapSpawns.g';
 import { spawnSplit } from '../map/layers';
 import { navigateTo } from '../nav/intent';
 
-const PREVIEW = 260;
+/**
+ * Fallback size, used only for the frame before the card has been measured.
+ *
+ * It used to be the ONLY size: a fixed 260px square sitting in a card about
+ * 305 wide, so every pal card carried 45px of dead space down the right of its
+ * map. Small, but it reads as a placeholder rather than a finished panel.
+ */
+const PREVIEW_FALLBACK = 260;
 
 interface RegionView {
   region: RegionId;
@@ -108,8 +115,17 @@ export function PalMap({ name }: { name: string }) {
     navigateTo({ domain: 'map', tab: 'map', payload: { pal: name, fromCard: name } });
   };
 
+  // measured once per card; the preview is square, so this is its side too
+  const [side, setSide] = useState(0);
+
   return (
-    <View style={{ gap: 10 }}>
+    <View
+      style={{ gap: 10 }}
+      onLayout={(e) => {
+        const w = Math.round(e.nativeEvent.layout.width);
+        if (w > 0) setSide((prev) => (prev === w ? prev : w));
+      }}
+    >
       {views.map((view) => (
         <Pressable
           key={view.region}
@@ -123,7 +139,8 @@ export function PalMap({ name }: { name: string }) {
             borderColor: pressed ? T.accent : T.line,
           })}
         >
-          <MapPreview region={view.region} points={view.points} side={PREVIEW}>
+          <MapPreview region={view.region} points={view.points}
+            side={side || PREVIEW_FALLBACK}>
             <View style={{
               position: 'absolute', top: 8, left: 8,
               backgroundColor: 'rgba(12,22,24,0.85)', borderRadius: 8,

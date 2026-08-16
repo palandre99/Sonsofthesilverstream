@@ -1347,6 +1347,27 @@ session's; this worker touches only the map area (see AREA LOCKS).*
  escapes turned into real newlines, breaking two string literals —
       the THIRD time today. The trap list already says to use the editor for
       multi-line changes. Fixed with the editor.
+- [x] L22 2026-08-17 ~00:50 THE QA HARNESS CAN REACH BELOW THE FOLD AFTER ALL.
+      It cannot scroll — synthetic wheel events do not move a React Native
+      ScrollView — so everything past 812px had been unreachable, and I had
+      been arguing about it from the code instead of looking. Making the WINDOW
+      taller reaches it without scrolling: `QA_TALL=1700 node scripts/qa-shot.js
+      ...`. Same width, same layout rules, so it is a longer phone rather than
+      a different app. Use it to LOOK; 812 stays the size that proves layout.
+      (Tried the MCP browser's resize_window first — it sets the viewport but
+      cannot screenshot unless the pane is displayed, so the driver was the way.)
+- [x] L23 THE PAL CARD'S MAP HAD DEAD SPACE, and nobody had ever seen it. The
+      preview was a fixed 260px square inside a card about 305 wide, so every
+      pal card carried a ~45px strip of empty card down the right of its map.
+      Small, but it reads as a placeholder rather than a finished panel — and
+      it is on EVERY pal card, which makes it high-traffic. It measures the
+      card now and fills it edge to edge, with 260 kept only as the fallback
+      for the frame before the measurement lands, and a guard so onLayout does
+      not re-render on every relayout.
+      Eye-verified at QA_TALL=1700: bigger map, clearer spawn cloud, the gold
+      boss ring and "Open full map" still placed correctly.
+      This is the first thing found by the taller window, which suggests other
+      below-the-fold surfaces are worth a look now that they are reachable.
 - [ ] K5 "also many other issues" — HE HAS MORE AND HAS NOT LISTED THEM. Ask,
       or keep walking journeys until they surface. Do not guess at what he
       means and do not claim the map is finished.

@@ -28,7 +28,21 @@ const WebSocket = require('ws');
 const CHROME = 'C:/Program Files/Google/Chrome/Application/chrome.exe';
 const PORT = 9333;
 const W = 375;
-const H = 812;
+/**
+ * Phone height by default, overridable with QA_TALL.
+ *
+ * The harness cannot scroll — synthetic wheel events do not move a React
+ * Native ScrollView — so anything below 812px was simply unreachable and had
+ * to be argued about from the code instead of looked at. Making the WINDOW
+ * taller reaches it without scrolling:
+ *
+ *   QA_TALL=1700 node scripts/qa-shot.js ...
+ *
+ * It is a taller phone, not a different app: same width, same layout rules, so
+ * what you see is what a longer screen would show. Use it to LOOK at things,
+ * not to prove phone-sized layout — 812 is still the real thing.
+ */
+const H = Number(process.env.QA_TALL) || 812;
 
 const [, , outDir, route, ...steps] = process.argv;
 if (!outDir || !route) {

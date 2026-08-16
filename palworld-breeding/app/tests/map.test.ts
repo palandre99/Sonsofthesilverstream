@@ -1321,3 +1321,30 @@ describe('the pin cap keeps the biggest concentrations', () => {
     expect(visibleCells).toBeGreaterThan(170);
   });
 });
+
+/* The pal card's map was a fixed 260px square inside a card about 305 wide, so
+ * every pal card carried a strip of dead space down the right of its map. It
+ * measures the card now. Found only after teaching the QA driver to open a
+ * TALLER window (QA_TALL), because the section sits below the fold and the
+ * harness cannot scroll — it had never actually been looked at. */
+describe('the pal card map fills its card', () => {
+  const palMap = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'ui', 'PalMap.tsx'), 'utf8',
+  );
+
+  it('measures the card instead of hard-coding a size', () => {
+    expect(palMap).toMatch(/onLayout=\{\(e\) => \{/);
+    expect(palMap).toMatch(/side=\{side \|\| PREVIEW_FALLBACK\}/);
+    expect(palMap).not.toMatch(/side=\{PREVIEW\}/);
+  });
+
+  it('keeps a fallback for the frame before the measurement lands', () => {
+    expect(palMap).toMatch(/const PREVIEW_FALLBACK = 260/);
+  });
+
+  it('does not re-set state when the width has not changed', () => {
+    // onLayout fires on every relayout; setting state unconditionally would
+    // re-render the card each time
+    expect(palMap).toMatch(/setSide\(\(prev\) => \(prev === w \? prev : w\)\)/);
+  });
+});
