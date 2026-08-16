@@ -36,12 +36,12 @@ cd ../.. && git log -1 --format='%h %ad %s' --date=short -- palworld-breeding/mo
 ## The quality gates — all green before "done"
 
 ```bash
-cd palworld-breeding/app    && npx vitest run      # 64 tests, 5 files, ~19s
+cd palworld-breeding/app    && npx vitest run      # 278 tests, 18 files, ~11s
 cd palworld-breeding/app    && npm run build       # tsc -b + vite + service worker
 cd palworld-breeding/mobile && npx tsc --noEmit    # native typecheck, must be 0 errors
 ```
 
-Last verified 2026-08-15: **64/64 passing**, mobile typecheck **clean**.
+Last verified 2026-08-16: **278/278 passing**, mobile typecheck **clean**.
 
 Tests live in `app/tests/`:
 
@@ -88,7 +88,7 @@ Pre-flight, every time:
 ```bash
 git status --porcelain          # MUST be free of work that isn't yours —
                                 # eas update bundles whatever is on disk
-cd palworld-breeding/app    && npx vitest run     # 64/64
+cd palworld-breeding/app    && npx vitest run     # 278/278
 cd ../mobile                && npx tsc --noEmit   # clean
 ```
 

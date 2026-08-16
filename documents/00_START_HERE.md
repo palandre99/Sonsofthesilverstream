@@ -44,7 +44,7 @@ box, and nothing is verified to this standard.
 | Target | Folder | Stack | Status |
 |---|---|---|---|
 | iPhone app (**priority**) | `palworld-breeding/mobile/` | Expo SDK 54, RN 0.81, TS | All 6 modules built; first dev build 2026-08-14 |
-| Website / PWA | `palworld-breeding/app/` | Vite, Preact, TS | Complete; 64 tests; offline-capable |
+| Website / PWA | `palworld-breeding/app/` | Vite, Preact, TS | Complete; 278 tests; offline-capable |
 | Reference + pipeline | `palworld-breeding/` (py, tools, guide) | Python 3 stdlib | Frozen as oracle + data refresh path |
 
 One engine, copied verbatim between `app/src/engine/` and
@@ -59,7 +59,7 @@ pool exclusions, and the single gender-locked pair — Katress×Wixen — stored
 Katress♀×Wixen♂ → Katress Ignis, Wixen♀×Katress♂ → Wixen Noct), `pals_1_0.json` (stats, work,
 spawns), `passives_1_0.json` (114 passives with tiers/exclusivity),
 `oracle_pairs.json.gz` (the 44,851-row test oracle), `verification.json`
-(29 sourced claims). Regenerate after a game patch with
+(36 sourced claims). Regenerate after a game patch with
 `tools/extract_from_kb.py` + `tools/extract_passives.py` against a fresh
 clone of beliarance/palworld-kb, then run the tests — the oracle exposes
 any mechanic change.
@@ -67,7 +67,7 @@ any mechanic change.
 ## Quality gates (all must be green before "done")
 
 ```
-cd palworld-breeding/app    && npx vitest run     # 64 tests, oracle replay exact
+cd palworld-breeding/app    && npx vitest run     # 278 tests, oracle replay exact
 cd palworld-breeding/app    && npm run build      # typecheck + PWA + sw.js
 cd palworld-breeding/mobile && npx tsc --noEmit   # native app typecheck
 ```

@@ -186,7 +186,7 @@ phone.** Re-verify the identity on every new DEV build — the check is in
 ## 6. Quality gates — all green before "done"
 
 ```bash
-cd palworld-breeding/app    && npx vitest run      # 64 tests incl. 44,851-row oracle replay
+cd palworld-breeding/app    && npx vitest run      # 278 tests incl. 44,851-row oracle replay
 cd palworld-breeding/app    && npm run build       # stricter typecheck + PWA + sw.js
 cd palworld-breeding/mobile && npx tsc --noEmit    # native typecheck
 ```

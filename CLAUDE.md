@@ -100,7 +100,7 @@ The CEO ships nothing average, and he judges by looking at it. The bar is
 ## THE WORK LOOP (non-negotiable)
 
 1. WORK one queue item (queue: `documents/AI_TODO.md`).
-2. VERIFY — `npx vitest run` in `app/` (64 tests incl. the 44,851-row
+2. VERIFY — `npx vitest run` in `app/` (278 tests incl. the 44,851-row
    oracle replay) and `npx tsc --noEmit` in `mobile/` must be green.
    Both verified green 2026-08-15. Full gate list: `08_TOOLS_AND_COMMANDS.md`.
 3. SELF-REVIEW your diff like a hostile senior engineer.
@@ -137,7 +137,7 @@ dev client's fallback bundle honest.
 
 - the feature or fix is COMPLETE — no mid-edit files, no stubs, no TODOs in
   the path the CEO will touch;
-- gates green (vitest 64/64, mobile `tsc --noEmit` clean);
+- gates green (vitest 278/278, mobile `tsc --noEmit` clean);
 - self-reviewed;
 - **committed** — so the published bundle maps to a known commit;
 - **the working tree contains no uncommitted work that is not yours.** Two

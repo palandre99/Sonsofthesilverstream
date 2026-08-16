@@ -1,7 +1,77 @@
 # PROGRESS — audited state, no invented percentages
 
-*Updated 2026-08-16 ~22:45. Update this file whenever a work block lands;
+*Updated 2026-08-16 (breeding lane, late). Update this file whenever a work block lands;
 date every entry.*
+
+## 2026-08-16 — THE BREEDING FANE: HIS FEEDBACK ROUND, THEN A HUNT FOR
+## THINGS THE APP SAID THAT WERE NOT TRUE (breeding lane)
+
+Two halves. The first built what he asked for. The second went looking for
+lies, on the theory that **any absolute sentence in the app is a claim that
+can be tested against the game data** — run it in Python against
+`public/data/*.json` and see whether it holds. It kept paying: not one of the
+things below was findable by clicking around.
+
+Gates at the end of this block: **278 vitest passing, 18 files** (includes the
+44,851-row oracle replay, unchanged), both trees `tsc --noEmit` clean.
+Everything mobile is published to BOTH channels. Web is committed but NOT
+deployed — that needs the CEO's push to `main`.
+
+**What he asked for, built (his feedback round, ledger items in `AI_TODO.md`).**
+Suggestions can be un-added again — the goal list moved into the store so it
+survives a tab switch, and both the sheet and the goal chips can remove.
+Each save profile carries a player level, and suggestions respect it. The
+recommendation engine became one shared brain in `src/logic/recommend.ts`
+mirrored across both trees, scoring a pal by how good it is AND how far away
+it is, so his own example holds: six kindling one breed away beats seven
+kindling 83 breeds away. Suggested Goals became one card system with a
+full-screen browser per category — no more horizontal scrolling in tiny
+windows — and the plan targets became a proper tray with one-tap remove.
+
+**The app was hiding real breeding recipes.** Mossanda Lux is Grizzbolt +
+Mossanda; Relaxaurus Lux is Relaxaurus + Sparkit. Both are in the game files.
+The Calculator refused to show them, the pal card's own recipe list hid them
+behind a wrong condition, the Plan tab flagged them with a warning triangle
+saying they could not be bred, and the website's card hid them AND the "all
+parent pairs" button. **The same mistake in four places, one per screen** —
+which is why every finding now gets run back through both trees before it is
+called fixed. These two are the only species of their kind, so nothing else
+was affected.
+
+**Truncated lists were presenting themselves as complete.** The catch hint
+showed three places and stopped, for 199 of 299 pals. "Legend is native to"
+showed three of six. The unlock advisor's "where to catch it" did the same
+for 165 of 299. All of them now say how many more there are. A shortened list
+is only honest if it admits it is shortened.
+
+**The pal card's stat bars were wrong twice.** They were drawn against a
+ceiling of 150 that appears nowhere in the game — the real maximum is 200 —
+so fifteen pals were painted as maxed when they are not, and everyone else's
+bar ran a third long. And "#132 of 299" implied a precision the data cannot
+support: there are only about twenty distinct values per stat, so 121 pals
+share exactly 100 attack and every one of them printed that same rank. It now
+says how many pals share the spot.
+
+**Two pals that make eggs arrive faster were mined and never shown.** Braloha
+speeds egg production at the Breeding Farm by 20~50%; Dynamoff cuts
+incubation by 20~40%. The Odds Lab counts eggs on every tab and had never
+mentioned either. Both platforms now name them, in the game's own words. The
+same sweep deleted "work speed 0" from 298 of 299 pal cards — the value is
+zero for every species, and next to a list of jobs it read as "cannot work".
+
+**Things checked and found honest, so nobody re-checks them:** the catchable
+flag and region lists agree perfectly across all 299 species; the advisor
+refuses to invent a location for the 13 legendaries that have a spawn level
+but no recorded regions; every stat rank the card prints matches the data;
+all 116 pool-excluded species do have a route. Honest "no bug here" was the
+answer five times, and that is recorded too.
+
+**My own errors this block, kept on the record:** fifteen of my checks were
+themselves the broken thing — a lowercase search for uppercased badges, a
+value read from the wrong file, reading a sheet's contents while it was
+closed. The habit that catches them is checking where a number actually comes
+from before trusting it. I also slowed my own work loop on my own judgement
+and he noticed immediately; it is back at its normal cadence and stays there.
 
 ## 2026-08-16 ~22:45 — THE MAP FANE, A FULL DAY OF HIS FEEDBACK (map lane)
 
