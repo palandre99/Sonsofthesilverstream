@@ -53,7 +53,12 @@ export function expectedEggs(
   let both = 0;
   let picky = 0;
   for (const s of steps) {
-    const p = maleProb(s.child);
+    // The estimate divides by p and by 1 - p. Today's datamined table runs
+    // 0.1 to 0.9 and unknown species default to 0.5, so neither can be zero
+    // and this changes nothing. But it is a number the player READS, and a
+    // future game patch adding a single-gender species would turn "expect
+    // ~53 cakes" into "expect ~Infinity cakes". Keep it finite.
+    const p = Math.min(0.99, Math.max(0.01, maleProb(s.child)));
     const needs = neededGender.get(s.child);
     const needsBoth = (needs?.size === 2)
       || ((needs?.size ?? 0) === 0 && s.reusedAsParent >= 2);

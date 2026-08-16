@@ -64,3 +64,18 @@ describe('expected eggs', () => {
     expect(e.expectedEggs).toBe(5); // 3 for Q's both genders + 1 + 1
   });
 });
+
+describe('the cake estimate stays a number the player can read', () => {
+  it('never returns Infinity, even if a species were 100% one gender', () => {
+    // Not reachable with today's datamined table (0.1–0.9, unknown = 0.5),
+    // but this is a figure shown on screen — "expect ~Infinity cakes" must
+    // be impossible regardless of what the data becomes.
+    const steps = [
+      { parents: ['A', 'B'], child: 'OneGender', genderNote: null, reusedAsParent: 2 },
+    ] as unknown as Parameters<typeof expectedEggs>[0];
+    for (const p of [0, 1]) {
+      const est = expectedEggs(steps, () => p);
+      expect(Number.isFinite(est.expectedEggs)).toBe(true);
+    }
+  });
+});

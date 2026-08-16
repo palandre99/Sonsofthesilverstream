@@ -1744,6 +1744,53 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E47. PLANNER RE-READ + THE CAKE ESTIMATE 2026-08-16
+
+Second hostile read of PlannerScreen.tsx (~1355 lines); the first was E26,
+before most of this work. Aimed at the E41 class — a number shown without
+saying where it came from.
+
+- [x] **THE "Make it faster" CARD IS HONEST — checked, no bug.** "35 steps
+      means at least 35 cakes: 175 flour · 280 berries · 245 milk · 280 eggs
+      · 70 honey" — every total is an exact multiple of the cake count, and
+      "at least" carries the uncertainty. The second line, "Counting gender
+      luck, expect ~53 cakes: 9 steps need both genders and N need one
+      specific gender", explains in player words WHY it exceeds the minimum.
+      Its input is `MALE_PROB_SKEWED`, generated from palcalc v27's
+      BreedingGenderProbability — **the game's own gender table**, so the
+      figure is datamined-in, arithmetic-out. Nothing to label.
+- [x] **DIVISION-BY-ZERO INSURANCE ON A NUMBER HE READS (not a live bug).**
+      `expectedEggs` computes `1/p` and `1/(1-p)`. **Verified it CANNOT blow
+      up today**: the datamined table spans 0.1–0.9 (44 skewed species, no
+      0 or 1 anywhere) and `maleProb` defaults unknown species to 0.5. But
+      the value is printed on screen, and a patch introducing a single-gender
+      species would render "expect ~Infinity cakes". Clamped to 0.01–0.99 in
+      both trees with the reasoning in the comment, plus a test asserting the
+      result stays finite at p = 0 and p = 1. 248 tests.
+      **Filed honestly as insurance, not as a defect found.**
+
+## WHAT A HOSTILE REVIEWER WOULD STILL REJECT (honest assessment)
+
+Every screen and shared component has now had a hostile read; all five
+breeding tabs plus Settings have been exercised; both trees passed a jargon
+audit; web is at parity. What genuinely remains is short, and none of it is
+cheap:
+
+1. **The Plan tab renders all 35 step rows eagerly** (~2168 DOM nodes at 40
+   steps, ~9000 at 165). Measured, real, and a re-architecture — PARKED FOR
+   FABLE by standing decision.
+2. **The About screen never shows the update message** while CLAUDE.md says
+   that is where he reads what changed (E44). Needs one `JSON.stringify(
+   Updates.manifest)` on a REAL DEVICE BUILD to settle whether the message is
+   even retrievable. CEO-facing; do not guess.
+3. **Two data gaps for the pipeline** (E32/E33) — Astralym, Panthalus, and
+   the "SAN dreceases" string. Cannot be fixed without re-running the
+   extractor against the game files.
+4. Everything else found this session is shipped.
+
+**There is no remaining cheap win I can name.** Further passes should be
+re-exercises after change, or the parked items above — not invented scope.
+
 ## E46. PLAN TAB RE-EXERCISED AFTER THE FIX WAVE 2026-08-16
 
 Re-run because the earlier end-to-end pass predated E35–E44 (~10 changes).
