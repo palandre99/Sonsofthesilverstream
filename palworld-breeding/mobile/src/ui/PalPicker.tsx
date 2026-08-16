@@ -79,13 +79,16 @@ const PickerRow = memo(function PickerRow({ n, excluded, owned, focusWork, onCho
   );
 });
 
-export function PalPicker({ visible, onClose, onPick, title, exclude }: {
+export function PalPicker({ visible, onClose, onPick, title, exclude, initialOwn }: {
   visible: boolean;
   onClose: () => void;
   onPick: (name: string) => void;
   title: string;
   /** names that can't be picked again (already targets) — shown, but dimmed */
   exclude?: Set<string>;
+  /** open already filtered — "show me MY pals" needs to land on your pals,
+   *  not on all 299 with the work left to you (CEO 2026-08-16) */
+  initialOwn?: Filters['own'];
 }) {
   const [q, setQ] = useState('');
   const [filters, setFilters] = useState<Filters>(NO_FILTERS);
@@ -110,11 +113,11 @@ export function PalPicker({ visible, onClose, onPick, title, exclude }: {
   useEffect(() => {
     if (visible) {
       setQ('');
-      setFilters(NO_FILTERS);
+      setFilters(initialOwn ? { ...NO_FILTERS, own: initialOwn } : NO_FILTERS);
       setSort('number');
       setTimeout(() => inputRef.current?.focus(), 250);
     }
-  }, [visible]);
+  }, [visible, initialOwn]);
 
   const recents = getRecentPicks().filter((n) => Object.hasOwn(pals, n));
   const showRecents = !q && !filtersActive && sort === 'number' && recents.length > 0;

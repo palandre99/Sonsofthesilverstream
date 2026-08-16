@@ -27,9 +27,11 @@ import type { ChildResult } from '../engine/types';
  * So the space is filled with the two things that are always true and
  * always useful: the pals you actually own, one tap away, and a plain
  * explanation of what each of the two modes does. */
-function CalcStartHelp({ onPick, mode }: {
+function CalcStartHelp({ onPick, mode, onBrowseOwned }: {
   onPick: (name: string) => void;
   mode: 'pair' | 'reverse';
+  /** opens the full picker already filtered to YOUR pals, with its search */
+  onBrowseOwned: () => void;
 }) {
   useAppVersion();
   // Pals you have actually used come first. This list used to sit BELOW a
@@ -48,7 +50,8 @@ function CalcStartHelp({ onPick, mode }: {
             letterSpacing: 1, marginBottom: 7,
           }}>START FROM YOUR PALDEX</Text>
           <View style={[s.wrap]}>
-            {owned.slice(0, 8).map((n) => (
+            {/* 8 was "only a few" with a 56-pal collection (CEO 2026-08-16) */}
+            {owned.slice(0, 12).map((n) => (
               <Pressable key={n}
                 onPress={() => {
                   void Haptics.selectionAsync();
@@ -67,10 +70,17 @@ function CalcStartHelp({ onPick, mode }: {
               </Pressable>
             ))}
           </View>
-          {owned.length > 8 && (
-            <Text style={[s.body, { fontSize: 11.5, marginTop: 7 }]}>
-              …and {owned.length - 8} more — use the button above to search them all.
-            </Text>
+          {/* This used to be a dead sentence pointing at "the button above" —
+              which opens ALL 299 pals, not yours. With a big collection you
+              could see eight shortcuts and had no way to reach the rest of
+              your own pals, and no search (CEO 2026-08-16, with screenshot).
+              Now it is a real button onto YOUR pals, and the picker it opens
+              already has search, filters and sorting. */}
+          {owned.length > 12 && (
+            <View style={{ marginTop: 9 }}>
+              <Btn small label={`Show all ${owned.length} of your pals`}
+                onPress={onBrowseOwned} />
+            </View>
           )}
         </Card>
       ) : (
@@ -293,7 +303,11 @@ export function CalculatorScreen() {
   const [a, setA] = useState<string | null>(null);
   const [b, setB] = useState<string | null>(null);
   const [target, setTarget] = useState<string | null>(null);
-  const [picking, setPicking] = useState<'a' | 'b' | 'target' | null>(null);
+  // the "-owned" variants open the SAME picker already filtered to your own
+  // pals, so "show all N of your pals" lands on your pals rather than on all
+  // 299 (CEO 2026-08-16)
+  type Picking = 'a' | 'b' | 'target' | 'a-owned' | 'b-owned' | 'target-owned';
+  const [picking, setPicking] = useState<Picking | null>(null);
 
   // arriving from a pal card's "show me every pair" — land with the answer
   // already on screen, and keep a one-tap way BACK to that card
@@ -409,7 +423,8 @@ export function CalculatorScreen() {
           )}
           {!(a && b) && (
             <CalcStartHelp mode="pair"
-              onPick={(n) => { if (!a) setA(n); else if (!b) setB(n); }} />
+              onPick={(n) => { if (!a) setA(n); else if (!b) setB(n); }}
+              onBrowseOwned={() => setPicking(a ? 'b-owned' : 'a-owned')} />
           )}
         </>
       ) : (
@@ -424,7 +439,8 @@ export function CalculatorScreen() {
                   cheapest from your box.
                 </Text>
               </Card>
-              <CalcStartHelp mode="reverse" onPick={(n) => setTarget(n)} />
+              <CalcStartHelp mode="reverse" onPick={(n) => setTarget(n)}
+                onBrowseOwned={() => setPicking('target-owned')} />
             </>
           )}
         </>
@@ -433,11 +449,14 @@ export function CalculatorScreen() {
       <PalPicker
         visible={picking !== null}
         onClose={() => setPicking(null)}
-        title={picking === 'target' ? 'Target species' : `Parent ${picking === 'a' ? '1' : '2'}`}
+        initialOwn={picking?.endsWith('-owned') ? 'owned' : undefined}
+        title={picking?.startsWith('target') ? 'Target species'
+          : picking?.endsWith('-owned') ? 'Your pals'
+          : `Parent ${picking === 'a' ? '1' : '2'}`}
         onPick={(n) => {
-          if (picking === 'a') setA(n);
-          else if (picking === 'b') setB(n);
-          else if (picking === 'target') setTarget(n);
+          if (picking === 'a' || picking === 'a-owned') setA(n);
+          else if (picking === 'b' || picking === 'b-owned') setB(n);
+          else if (picking?.startsWith('target')) setTarget(n);
         }}
       />
       {viewing && <PalDetail name={viewing} onClose={() => setViewing(null)} />}
