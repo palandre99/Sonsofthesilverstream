@@ -357,6 +357,17 @@
     "mobile/src/data/mapPois.g.ts (11,097 points, Nifrendil/pal-atlas MIT)",
     "tools/.cache/T_WorldMap_hi.png (game texture, jeankassio/PalMiniMap MIT)"
    ]
+  },
+  {
+   "claim": "The dungeon/field split is confirmed against a source it was not built from: dungeon-flagged spawns sit ON dungeon entrances, field spawns never do.",
+   "verdict": "verified",
+   "evidence": "10,792 of 64,671 Palpagos wild spawns are flagged as dungeon spawners - 17% of the dataset - and a wrong flag sends the player to a hillside to hunt a pal that only exists in a cave beneath it. The flag comes from Nifrendil/pal-atlas spawn-zones.json, which keeps only EPalSpawnerPlacementType::Field placements, so a spawn absent from that set is underground. Checked against a DIFFERENT list the discriminator never consulted: the 157 dungeon entrances in the POI layer. Result on a fixed 400-point sample of each class: dungeon-flagged spawns have a MEDIAN distance of 0 uu to the nearest entrance (most share coordinates exactly) with 78.0% inside 2,000 uu, while field spawns sit a median 22,869 uu away with only 0.2% inside 2,000 uu. The separation is total. Re-runnable as tools/verify_map_dungeon_split.py, which fails if the dungeon median rises above 2,000 uu or more than 1% of field spawns land on an entrance.",
+   "sources": [
+    "tools/verify_map_dungeon_split.py",
+    "Nifrendil/pal-atlas spawn-zones.json (Field placements; the discriminator)",
+    "Nifrendil/pal-atlas pois.json dungeon layer (157 entrances; the check)",
+    "Awy64/palworld-atlas-data palpagos_spawns.json build 24575149"
+   ]
   }
  ]
 }

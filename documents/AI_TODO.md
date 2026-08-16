@@ -1310,6 +1310,24 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       really differ: round pins for the open world, rounded-square for
       dungeons, in BOTH the map pins and the legend swatches, which is what the
       footer promises.
+- [x] L20 2026-08-17 ~00:20 THE DUNGEON/FIELD SPLIT IS PROVED AGAINST A SOURCE
+      IT WAS NOT BUILT FROM. This is 17% of the spawn dataset — 10,792 of
+      64,671 Palpagos wild spawns are flagged as underground — and a wrong flag
+      sends the player to a hillside to hunt a pal that only lives in the cave
+      beneath it. It had never been checked independently; the flag came from
+      pal-atlas's Field placements and nothing else.
+      Checked it against the 157 dungeon ENTRANCES in the POI layer, a list the
+      discriminator never consulted. Fixed 400-point samples of each class:
+        dungeon-flagged  median 0 uu to the nearest entrance, 78.0% within 2,000
+        field            median 22,869 uu,                     0.2% within 2,000
+      A median of zero means most flagged spawns share coordinates EXACTLY with
+      an entrance. The separation is total.
+      Re-runnable: tools/verify_map_dungeon_split.py, which fails if the
+      dungeon median exceeds 2,000 uu or more than 1% of field spawns land on
+      an entrance. Claim added to verification.json.
+      The 22% of flagged spawns further than 2,000 uu are not evidence against
+      it — some caves plainly have no entrance in the POI list — but they are
+      why the check is a median and a percentage rather than a hard "all".
 - [ ] K5 "also many other issues" — HE HAS MORE AND HAS NOT LISTED THEM. Ask,
       or keep walking journeys until they surface. Do not guess at what he
       means and do not claim the map is finished.
