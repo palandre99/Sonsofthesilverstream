@@ -1093,6 +1093,33 @@ earlier. He is right and the proof is in his own list: it lumped CHIKIPI
       advice, clicking Chikipi lands on "Chikipi · Paldex · Palforge" with
       the card open, own error recorder saw none. NOT DEPLOYED — pushing
       the website to main needs the CEO's go-ahead.
+- [x] E16g "Catch ." — A REAL BUG THE CACHE TEST FLUSHED OUT (commit 79402e2,
+      published both channels). Setting out to verify `unlockCache`
+      invalidates, I traced what happens when a stuck goal is ALREADY OWNED
+      — and the advisor returned `kind:'catch'` with an EMPTY catch list, so
+      `unlockLine` built the sentence **"Catch ."**
+      THE TRIGGER IS THE APP'S OWN ADVICE: the card says "catch a Chikipi",
+      the player does, ticks it in the Paldex, and the SAVED plan still
+      lists it under `unreachable`. `reachableNow` was supposed to guard
+      this but BOTH platforms pass `new Set()` (correctly — everything in
+      plan.unreachable is unreachable *as of plan time*), so the guard never
+      fired.
+      FIX in adviseUnlocks: `node.catches.size === 0` -> `kind:'reachable'`
+      ("Within reach now — plan again to pick it up."). Covers both the
+      owned case and the breedable-from-what-you-own case. 2 tests added,
+      141 green.
+- [x] CACHE INVALIDATION VERIFIED END-TO-END (not assumed). Ticked Chikipi
+      through its own pal card in the running app with NO reload: the
+      advice line changed live from "Catch one — spawns from Lv 1" to
+      "Within reach now". So the module-level cache only skips work when
+      goals + collection + level are all unchanged.
+- [x] MOBILE GENDER TOGGLES WERE NAMELESS (same commit). Found on the way to
+      the cache test: the ♂/♀ buttons on every pal card had NO label — a
+      screen reader announced "male sign". The website had this fixed
+      already; mobile did not. Now "Male Lamball: in your Paldex". 24
+      labelled, 0 nameless. NOTE: the state is deliberately IN THE WORDS,
+      not only in accessibilityState, because RN-web maps neither (see the
+      aria-selected note above) — so the label is true on any platform.
 - [x] E16f PLAN TAB AT REAL SAVE SIZE — MEASURED, and it found a 537 ms
       FREEZE. Shipped + published (code landed in 44edc68, see incident
       note below).
