@@ -2075,6 +2075,40 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E71. THE COLLECTION ROUND-TRIP NOW HAS A GUARD 2026-08-17
+
+Kept hunting true-but-unguarded promises.
+
+- **CHECKED, ALREADY FULLY GUARDED — no work needed:** "verified against all
+  44,851 outcomes". `oracle.test.ts` asserts `bad.length === 0` (zero
+  mismatches), `skipped === 0` (no quiet skips), `ok === oracle.rows.length`
+  AND `ok === 44851`, plus a symmetry pass. The headline number on the
+  Calculator, Reference and About screens is as guarded as it gets.
+- [x] **"Share my list" ↔ "Import list" HAD NO TEST.** The code says the
+      export is "the exact format Import understands, so a collection moves
+      between installs in two taps" — a promise about somebody's real save,
+      where a dropped gender flag is SILENT data loss, not a crash. New
+      `app/tests/box-roundtrip.test.ts` (4 tests, 0.7 s) round-trips **every
+      one of the 299 species in all three gender states** (897 lines), then a
+      whole mixed collection in one paste, then checks a JSON backup does not
+      resurrect a pal recorded as `false`/`null`.
+- **PROVEN TO FAIL:** removed `♀` from the parser's alternation and watched
+      it go red naming the exact lines ("Aegidron ♀ → unread", …), then
+      `git checkout` restored the file byte-for-byte.
+- **Checked first, so the test is meaningful:** both platforms write the same
+      three shapes (`Name`, `Name ♂`, `Name ♀`) and **no pal name contains
+      any of the separator characters the parser splits on** (`·`, `|`, `,`,
+      `#`, `*`, `-`) — so the round trip has no ambiguous cases hiding in it.
+- **PARITY GAP FOUND, LOGGED NOT BUILT — the next actionable item:** the WEB
+      import accepts a **JSON backup** (and the web has a "Copy JSON backup"
+      button); the PHONE's parser has no JSON branch at all. The phone does
+      not *claim* to accept one — its copy says "Paste names, one per line" —
+      so this is a missing capability, not a false sentence. But the CEO uses
+      both, and a JSON backup taken on the site pastes into the phone as 299
+      unreadable lines. **Port the JSON branch to
+      mobile/src/screens/PaldexScreen.tsx `parseImport` next.**
+- Suite: 312 → **316 tests, 21 files, still ~11 s.**
+
 ## E70. WEB PARITY FOR "ALREADY CARRIED BY" — AND A TYPE THAT MADE AN
 ## UNRENDERED FIELD LOOK HANDLED 2026-08-17
 
