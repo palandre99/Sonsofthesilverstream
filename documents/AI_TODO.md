@@ -262,6 +262,30 @@ node scripts/publish-guard.js && npx eas-cli update --branch <channel> --message
 
 Verified both ways: it passes on a clean tree and refuses on a dirty one.
 
+## ⚠️ CROSS-LANE RACE — 2026-08-16 ~17:02 (map worker, self-reported)
+
+publish-guard did its job and still was not enough. It checked the tree was
+clean, passed, and then `eas update` spent half a minute bundling — during
+which the Breeding session saved `mobile/src/store.ts` and added a new
+`src/logic/ticks.ts`. Both went into my bundle. EAS reported the commit with a
+trailing `*`, which is how I noticed.
+
+Outcome: harmless. The tree type-checked clean and all 193 tests passed,
+including their new ticks tests, so what reached the CEO works. That is LUCK,
+not process — their file could as easily have been mid-edit.
+
+Fix: `mobile/scripts/publish.js` wraps the whole ritual — refuse if dirty,
+publish both channels, then CHECK AGAIN and exit 2 with a loud warning if the
+tree moved while the bundle was being built, because the answer then is to
+republish from a settled tree rather than hope. Verified: exits 1 with no
+message argument and 1 on a dirty tree.
+
+Use it instead of calling eas-cli directly:
+
+```bash
+node scripts/publish.js "what changed, in the CEO's language"
+```
+
 ## AREA LOCKS
 
 *Claim an area with a dated line before multi-file work; release when done.*
