@@ -1592,3 +1592,27 @@ describe('the website map keeps step with the phone', () => {
     }
   });
 });
+
+describe('the website legend cannot hide an entry', () => {
+  const css = readFileSync(
+    join(__dirname, '..', 'src', 'design', 'app.css'), 'utf8',
+  );
+  const rule = css.slice(css.indexOf('.maplegend {'), css.indexOf('.maplegend span'));
+
+  it('caps itself to the stage and scrolls the rest', () => {
+    // Measured at 375px wide with all 23 layers on: the key is anchored to the
+    // BOTTOM of a 62vh stage, grew to 583px inside 503px, and the stage's
+    // overflow:hidden ate its top 91px - four entries gone, starting with the
+    // largest layer on the map (Chest, 1,572). Nothing scrolled, nothing hinted
+    // they existed. Desktop never showed it: there the stage is 804px tall.
+    expect(rule, 'the .maplegend rule must exist').toContain('position: absolute');
+    expect(rule).toContain('max-height: calc(100% - 20px)');
+    expect(rule).toContain('overflow-y: auto');
+  });
+
+  it('is still anchored to the bottom-left of the stage', () => {
+    // the cap must not have quietly changed where the key sits
+    expect(rule).toContain('bottom: 10px');
+    expect(rule).toContain('left: 10px');
+  });
+});
