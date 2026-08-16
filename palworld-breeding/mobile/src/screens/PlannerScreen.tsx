@@ -1060,6 +1060,8 @@ export function PlannerScreen() {
                       <Text style={[s.body, { fontSize: 12, color: T.accentInk }]}>
                         {a.catchOnly ? 'Where to catch it: ' : 'Faster to catch one: '}
                         {pals[h.name].regions.slice(0, 2).join(' · ')}
+                        {pals[h.name].regions.length > 2
+                          ? ` and ${pals[h.name].regions.length - 2} more` : ''}
                         {wildLevelRange(h.name)
                           ? ` (${wildLevelRange(h.name)})`
                           : pals[h.name].max_wild_level

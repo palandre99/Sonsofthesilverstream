@@ -1789,6 +1789,38 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E52. THE TRUNCATION SWEEP 2026-08-16 (his screenshot was a PATTERN)
+
+His Calculator screenshot exposed a shape, not a one-off: a list cut to a
+handful with nothing saying more existed. Swept every `.slice(0, N)` on a
+user-visible list in BOTH trees.
+
+- [x] **"Where to catch it" hid places for 199 of 299 pals.** The Plan tab's
+      catch hint printed `regions.slice(0, 2)` with no indication of more —
+      "Where to catch it: Sea Breeze Archipelago · Windswept Hills" when the
+      pal lives in four. **199 of 299 species have more than two regions**,
+      so this was the majority of catch hints quietly under-reporting. Now
+      "…and 2 more".
+- [x] **"Legend is native to" hid three of six.** The Odds warning printed
+      `exclusive_to.slice(0, 3)` with nothing after it — and Legend, a
+      passive players actively chase, is native to SIX pals. Read as the
+      complete answer. Now "Paladius, Necromus, Frostallion and 3 more",
+      verified on device. **The website already had a "…" here and the phone
+      had nothing — so the phone was strictly worse.** Both now carry the
+      count rather than an ellipsis, because a number means something and
+      "…" does not.
+- [x] CHECKED AND ALREADY CORRECT, no change: the Plan tab's collapsed goal
+      tray shows 5 overlapping icons but states "8 goals in this plan — tap
+      to edit" and expands to all; SuggestedGoals section cards show 6 chips
+      under a header reading "All N ›" which is itself the browse button;
+      PalDetail's example pairs say "For example:" which honestly signals a
+      sample; the Reference claims list has "Show all 36"; the web mechanics
+      page has its own expander; the pal picker's 120-row cap sits behind a
+      search box.
+- The lesson worth keeping: **a truncated list is only honest if it says so.
+  Five of the eight I checked already did. The two that did not were both
+  factual claims about game data.**
+
 ## E51. CEO FEEDBACK 2026-08-16 ~21:43 (verbatim, WITH SCREENSHOT of Calc)
 
 "The windows start from paldex in coder is bad , can only see a few op my

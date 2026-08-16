@@ -250,7 +250,9 @@ function PassivesTab() {
       if (p.mutation_exclusive) {
         out.push(`${n} only appears on a mutated pal first — you cannot breed it out of thin air, but once a pal has it, it passes down normally.`);
       } else if (p.exclusive_to.length) {
-        out.push(`${n} is native to ${p.exclusive_to.slice(0, 3).join(', ')}${p.exclusive_to.length > 3 ? '…' : ''} — a parent must already carry it.`);
+        out.push(`${n} is native to ${p.exclusive_to.slice(0, 3).join(', ')}${
+          p.exclusive_to.length > 3 ? ` and ${p.exclusive_to.length - 3} more` : ''
+        } — a parent must already carry it.`);
       } else if (!p.breedable) {
         out.push(`${n} is not inheritable by breeding.`);
       }

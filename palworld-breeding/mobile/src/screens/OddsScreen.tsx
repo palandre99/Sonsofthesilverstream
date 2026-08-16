@@ -169,7 +169,14 @@ function PassivesTab() {
       const p = byName.get(n);
       if (!p) continue;
       if (p.mutation_exclusive) out.push(`${n} only appears on a mutated pal first — once a pal has it, it passes down normally.`);
-      else if (p.exclusive_to.length) out.push(`${n} is native to ${p.exclusive_to.slice(0, 3).join(', ')} — a parent must already carry it.`);
+      else if (p.exclusive_to.length) {
+        // Legend is native to SIX pals and this listed three, with nothing to
+        // say more existed — it read as the complete answer (self-found
+        // 2026-08-16, after his Calculator screenshot showed the same shape).
+        const more = p.exclusive_to.length - 3;
+        out.push(`${n} is native to ${p.exclusive_to.slice(0, 3).join(', ')}${
+          more > 0 ? ` and ${more} more` : ''} — a parent must already carry it.`);
+      }
     }
     return out;
   }, [pool, byName]);
