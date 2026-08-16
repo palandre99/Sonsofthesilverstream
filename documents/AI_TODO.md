@@ -2034,6 +2034,41 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E67. THE PLAN'S "RUN THESE IN PARALLEL" PROMISE NOW HAS A GUARD 2026-08-16
+
+Turned the assertion method on COPY rather than data — the Calculator and
+Plan screens' absolute sentences.
+
+- **CHECKED, TRUE, NOW GUARDED:** the Plan tab prints "everything here can
+  run in parallel" under any phase with more than one step. That is a promise
+  the player acts on. It IS true — `planFor` snapshots the ready set at the
+  START of each wave, so `have.add(c)` inside the loop cannot pull another
+  step into the same wave — but **nothing tested it**, and moving one line
+  would have turned the sentence into a lie with every other test green.
+  New `app/tests/plan-waves.test.ts` builds two real plans and asserts (a) no
+  step's parent is bred in its own phase and (b) every phase only uses pals
+  the box or an earlier phase already produced.
+- **THE TEST WAS PROVEN TO FAIL.** I mutated planner.ts to let a
+  mid-wave child pull a step forward, confirmed all 3 tests went red with
+  precise messages ("phase 1: Anubis + Vanwyrm → Reptyro needs Vanwyrm, which
+  is bred in the same phase"), then restored the engine — `git diff --stat`
+  on planner.ts is empty, byte-for-byte. A test that has never been seen to
+  fail is not evidence.
+- **Cost controlled:** `planFor` is ~1 ms; `derivations` is the expensive
+  half (measured 0.8 s for an 8-pal box, 3.7 s for a 3-pal box, 5.4 s for a
+  10-pal one — the smaller the box the further it must derive). Plans are
+  built ONCE at module load and shared; a third case cost 3.7 s and taught
+  nothing new, so it was dropped. Suite: 296 → **299 tests, still ~11 s.**
+- **CHECKED, ALREADY HONEST, no change:** "you get every pair that produces
+  it" — the reverse mode's four groups (breed now / wrong genders / one step
+  away / all other pairs) are an exhaustive if-else over every pair, empty
+  groups are dropped, and both truncations (10 per group, 12 owned pals)
+  already declare themselves with a "Show all N".
+- **about_1_0.json swept:** 299 entries, all rendered; the 27 species with no
+  text are listed in the file's own `missing` key and the card omits the
+  whole block rather than showing an empty one; the 11 identical entries are
+  the Terraria collab pals sharing one clearly-labelled line. No bug.
+
 ## E66. THE PROVENANCE SCREEN WAS HIDING ITS OWN PROVENANCE 2026-08-16
 
 Field sweep on verification.json (36 claims, 4 fields). The Reference tab's
