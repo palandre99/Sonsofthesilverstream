@@ -64,6 +64,34 @@ def lift_ocean(img: Image.Image) -> Image.Image:
     return Image.fromarray(np.clip(out, 0, 255).astype(np.uint8))
 
 
+def assert_land_untouched(img: Image.Image, region: str) -> None:
+    """Prove the sea lift never reaches land, on every run.
+
+    "Water only, land keeps the game's colours" is a claim we make out loud, so
+    it gets checked rather than asserted. The mask covers ~84% of the texture,
+    which looks alarming until you remember the dark surround outside the world
+    hexagon is water too — these four unambiguous land classes are the ones
+    that must stay at 0%.
+    """
+    a = np.asarray(img.convert("RGB")).astype(np.int16)
+    r, g, b = a[..., 0], a[..., 1], a[..., 2]
+    sea = (b > g + 4) & (g > r + 6) & (r < 150)
+    classes = {
+        "grass": (g > r + 8) & (g > b + 8),
+        "snow": (r > 190) & (g > 190) & (b > 190),
+        "desert": (r > 150) & (r > b + 12),
+        "rock": (r > b) & (abs(g - r) < 25) & (r < 150),
+    }
+    for name, m in classes.items():
+        n = int(m.sum())
+        if n and (m & sea).sum():
+            raise SystemExit(
+                f"{region}: sea lift would tint {name} "
+                f"({(m & sea).sum() * 100 / n:.1f}% of it) — mask is too loose"
+            )
+    print(f"  {region}: land classes untouched by the sea lift")
+
+
 def is_flat(tile: Image.Image) -> bool:
     """True when the tile carries no detail worth its own file (open ocean)."""
     a = np.asarray(tile.convert("RGB")).astype(np.float32)
@@ -71,7 +99,9 @@ def is_flat(tile: Image.Image) -> bool:
 
 
 def build_region(region: str, src_name: str) -> dict:
-    src = lift_ocean(Image.open(CACHE / src_name).convert("RGB"))
+    raw = Image.open(CACHE / src_name).convert("RGB")
+    assert_land_untouched(raw, region)
+    src = lift_ocean(raw)
     if src.size[0] != src.size[1]:
         raise SystemExit(f"{region}: expected a square texture, got {src.size}")
 

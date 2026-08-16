@@ -426,6 +426,20 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       a framed panel with corner brackets. Consider a light tint + frame to
       match the in-game feel.
 
+- [x] G11 2026-08-16 ~13:15 hostile pass: verified THE WORLD TREE map, which
+      had never once been looked at. It renders correctly — distinct snow /
+      red / orange / dark-red biomes, fast-travel and alpha markers in the
+      right places, 22 spots. A whole second map that works.
+- [x] G12 Checked my own claim from the last commit ("water only, land keeps
+      the game's colours") instead of trusting it. The sea mask covers 84% of
+      the texture, which looks wrong until you account for the dark surround
+      outside the world hexagon being water too. Measured against four
+      unambiguous land classes — grass, snow, desert, rock — and each is
+      **0.0%** inside the mask. The claim holds, and build_map_tiles.py now
+      ASSERTS it on every run rather than leaving it to memory.
+- [ ] G13 The World Tree has no place names — regionSpots.g.ts only carries
+      Palpagos labels. Worth mining tree region names.
+
 ### Open — the map lane's own queue
 - [x] F23 DONE 2026-08-16 ~00:02: the preview's dense clusters were an
       unreadable scribble — 93 overlapping rings in one bay. Now thinned to one
