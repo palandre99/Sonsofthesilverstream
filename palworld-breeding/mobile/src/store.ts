@@ -6,6 +6,7 @@
  */
 import { useSyncExternalStore } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { afterUntick, claimFor } from './logic/ticks';
 import { BreedingEngine } from './engine/formula';
 import { derivations, planFor, stepId } from './engine/planner';
 import { ADVICE_VERSION, helperAdvice, type HelperAdvice } from './engine/helpers';
@@ -454,21 +455,15 @@ export interface StepCheck {
 export const isChecked = (sid: string): boolean => !!state.checks[sid];
 
 export function completeStep(sid: string, child: string, got: { m: boolean; f: boolean }): void {
-  const hadM = hasGender(child, 'm');
-  const hadF = hasGender(child, 'f');
-  // A HALF-DONE step is completed by calling this AGAIN. By then the first
-  // tick has already put one gender in the box, so `hadM` is true and a
-  // fresh `got.m && !hadM` records addedM:false — overwriting the fact that
-  // THIS step put it there. Unticking then left a pal in the Paldex that the
-  // plan had invented (self-found 2026-08-16). Once a tick of this step has
-  // claimed a gender, it keeps the claim for as long as it still holds it.
+  // the rule lives in logic/ticks.ts — it decides whether a collection stays
+  // correct, so both platforms share one parity-gated, tested copy
   const prev = (state.checks as Record<string, unknown>)[sid];
   const prevSc = prev && typeof prev === 'object' ? prev as StepCheck : null;
-  const entry: StepCheck = {
-    m: got.m, f: got.f,
-    addedM: got.m && (!hadM || !!prevSc?.addedM),
-    addedF: got.f && (!hadF || !!prevSc?.addedF),
-  };
+  const entry: StepCheck = claimFor(
+    got,
+    { m: hasGender(child, 'm'), f: hasGender(child, 'f') },
+    prevSc,
+  );
   state.checks = { ...state.checks, [sid]: entry };
   const cur = state.box[child] ?? { m: false, f: false };
   const merged = { m: cur.m || got.m, f: cur.f || got.f };
@@ -578,10 +573,10 @@ export function uncheckStep(sid: string, child: string): void {
     const sc = c as StepCheck;
     const cur = state.box[child];
     if (cur) {
-      const entry = { m: cur.m && !sc.addedM, f: cur.f && !sc.addedF };
+      const left = afterUntick(cur, sc);
       const nextBox = { ...state.box };
-      if (!entry.m && !entry.f) delete nextBox[child];
-      else nextBox[child] = entry;
+      if (!left) delete nextBox[child];
+      else nextBox[child] = left;
       state.box = nextBox;
     }
   }

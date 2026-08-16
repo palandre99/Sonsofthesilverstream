@@ -16,6 +16,7 @@ import { parseGenderNote } from '../engine/formula';
 import { requestPlan } from '../engine/planClient';
 import { cakeNeeds } from '../engine/boosters';
 import { expectedEggs } from '../logic/economics';
+import { claimFor } from '../logic/ticks';
 import {
   adviseUnlocks, catchWhere, unlockLine, type UnlockAdvice, type WildFact,
 } from '../logic/unlock';
@@ -231,18 +232,15 @@ export function PlanPage() {
   const [bursts, setBursts] = useState<Record<string, number>>({});
 
   const completeStep = (sid: string, child: string, got: { m: boolean; f: boolean }) => {
-    // completing a HALF-DONE step calls this again, and by then the first
-    // tick has already put one gender in the box — so a fresh
-    // `!hasGender(...)` records addedM:false and overwrites the fact that
-    // THIS step put it there, leaving an invented pal behind on untick.
-    // Same bug and same fix as the phone (self-found 2026-08-16).
+    // the rule lives in logic/ticks.ts — shared, parity-gated and tested,
+    // because it decides whether a collection stays correct
     const prevSc = checks[sid];
     const prev = prevSc && typeof prevSc === 'object' ? prevSc : null;
-    const entry: StepCheck = {
-      m: got.m, f: got.f,
-      addedM: got.m && (!hasGender(child, 'm') || !!prev?.addedM),
-      addedF: got.f && (!hasGender(child, 'f') || !!prev?.addedF),
-    };
+    const entry: StepCheck = claimFor(
+      got,
+      { m: hasGender(child, 'm'), f: hasGender(child, 'f') },
+      prev,
+    );
     if (got.m) setOwnedGender(child, 'm', true);
     if (got.f) setOwnedGender(child, 'f', true);
     const next = { ...checks, [sid]: entry };
