@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { FlatList, Modal, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import { T } from '../theme';
 import { Badge, Btn, Card, PageHead, s } from '../ui/kit';
-import { passives, type PassiveInfo } from '../store';
+import { passives } from '../store';
 import {
   attemptsFor, CAKES, cakeById, ivOdds, mutationPlan, oddsTable, passiveOdds,
   type CakeId,

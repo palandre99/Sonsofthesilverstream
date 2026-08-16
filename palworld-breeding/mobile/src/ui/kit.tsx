@@ -1,16 +1,12 @@
 /** Shared UI: pal icons, chips, badges, cards, search, pickers, toggles. */
 import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
-import {
-  FlatList, Image, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View,
-} from 'react-native';
+import { Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { ELEMENT_COLORS, T } from '../theme';
 import { PAL_ICONS } from '../data/icons.g';
 import { WORK_ICONS } from '../data/workIcons';
 import { ELEMENT_ICONS } from '../data/statIcons';
-import {
-  hasGender, ownedAny, palNumberSort, pals, setOwnedGender, topWork, useAppVersion, workLabel,
-} from '../store';
+import { hasGender, pals, setOwnedGender, topWork, useAppVersion, workLabel } from '../store';
 
 /* ---------------- pal icon ---------------- */
 
@@ -317,8 +313,6 @@ export function GenderToggles({ name, size = 30 }: { name: string; size?: number
 }
 
 /* ---------------- pal picker (modal) ---------------- */
-
-
 
 /* recently picked pals (session-only (not persisted)) */
 let recentPicks: string[] = [];

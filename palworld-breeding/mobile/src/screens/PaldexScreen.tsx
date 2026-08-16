@@ -2,26 +2,16 @@
  * Ownership lives here: ♂/♀ toggles on every row, import, stats — the
  * separate Box tab was folded in (two near-identical lists were confusing). */
 import React, { memo, useMemo, useState } from 'react';
-import { FlatList, Modal, Pressable, ScrollView, Share, Text, TextInput, View } from 'react-native';
+import { FlatList, Modal, Pressable, Share, Text, TextInput, View } from 'react-native';
 import { T } from '../theme';
+import { Badge, Btn, Card, ElementChips, GenderToggles, PalIcon, SearchInput, WorkChips, s } from '../ui/kit';
 import {
-  Badge, Btn, Card, ElementChips, GenderToggles, PageHead, PalIcon, SearchInput,
-  WorkChips, s,
-} from '../ui/kit';
-import {
-  clearBox, engine, getBox, hasGender, importNames, ownedAny,
-  pairReadyCount, palNumberSort, pals, useAppVersion, workLabel,
-  type OwnedGenders,
+  clearBox, engine, getBox, importNames, ownedAny, pals, useAppVersion,
+  workLabel, type OwnedGenders,
 } from '../store';
 import { closure } from '../engine/planner';
 import { PalDetail } from '../ui/PalDetail';
 import { rarityTint } from '../data/rarity';
-import * as Haptics from 'expo-haptics';
-import { WORK_ICONS } from '../data/workIcons';
-import { ELEMENT_ICONS } from '../data/statIcons';
-import { Image } from 'react-native';
-
-import { ELEMENTS } from '../data/elements';
 import { FilterSheet } from '../ui/FilterSheet';
 import {
   applyFilters, NO_FILTERS, sortedPals, type Filters, type SortKey,
@@ -223,7 +213,16 @@ export function PaldexScreen() {
         initialNumToRender={12}
         windowSize={7}
         renderItem={({ item }) => <Row name={item} onOpen={setOpen} focus={focusJob} />}
-        ListEmptyComponent={<Text style={[s.body, { textAlign: 'center', marginTop: 30 }]}>Nothing matches those filters.</Text>}
+        // this said "Nothing matches those filters." even when no filter was
+        // set and the search alone had emptied the list — the message named
+        // a cause the player could not act on (self-found on a code read)
+        ListEmptyComponent={
+          <Text style={[s.body, { textAlign: 'center', marginTop: 30 }]}>
+            {q && activeBits.length ? `Nothing matches “${q}” with those filters.`
+              : q ? `No pal matches “${q}”.`
+              : 'Nothing matches those filters.'}
+          </Text>
+        }
         ListFooterComponent={
           <View style={[s.wrap, { justifyContent: 'center', paddingVertical: 14 }]}>
             <Btn small label="Import list…" onPress={() => setSheet('import')} />
@@ -258,8 +257,10 @@ export function PaldexScreen() {
             <Card style={{ borderColor: T.bad, width: '100%' }}>
               <Text style={s.h2}>Clear the whole collection?</Text>
               <Text style={[s.body, { marginTop: 6 }]}>
-                Removes all {ownedNames.length} species on this device. Plan check-offs
-                are kept.
+                {ownedNames.length === 1
+                  ? 'Removes the one species you have on this device.'
+                  : `Removes all ${ownedNames.length} species on this device.`}
+                {' '}Plan check-offs are kept.
               </Text>
               <View style={[s.wrap, { marginTop: 14 }]}>
                 <Btn danger label={`Yes, clear ${ownedNames.length}`}

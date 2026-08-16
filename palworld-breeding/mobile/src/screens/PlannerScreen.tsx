@@ -7,7 +7,7 @@ import {
 } from '../ui/celebrate';
 import { PalDetail } from '../ui/PalDetail';
 import { cakeNeeds } from '../engine/boosters';
-import { ADVICE_VERSION, HELPER_NAMES, helperAdvice, type HelperAdvice } from '../engine/helpers';
+import { ADVICE_VERSION, HELPER_NAMES, helperAdvice } from '../engine/helpers';
 import { T } from '../theme';
 import {
   BackToCardChip, Badge, Btn, Card, PageHead, PalIcon, WorkChips, s,
