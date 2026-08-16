@@ -507,6 +507,15 @@ describe('zoom never asks for pixels that do not exist', () => {
     expect(tileLevelFor(9999, 512, 3)).toBe(3);      // tree stops at 3
   });
 
+  it('caps zoom at one texture pixel per DEVICE pixel', () => {
+    // The scale is CSS px per uv, but a phone draws 3 device px for each.
+    // Capping at the raw texture size let the map magnify 3x past its own
+    // pixels even with the 8192 texture — the CEO shipped it and still
+    // reported "looks pixelated", which was exactly right.
+    expect(canvas).toMatch(/PixelRatio/);
+    expect(canvas).toMatch(/texture \/ PixelRatio\.get\(\)/);
+  });
+
   it('derives the zoom ceiling from the pyramid instead of a typed-in number', () => {
     // a hard 4096 was why the terrain went soft: it let the map magnify past
     // the pixels it had. It must come from REGION_MAX_Z now.
@@ -765,5 +774,36 @@ describe('the pal card hands its species to the map', () => {
 
   it('is a one-shot mailbox, so re-entering the map does not re-apply it', () => {
     expect(intent).toMatch(/pending = null;/);
+  });
+});
+
+/* CEO, 2026-08-16 17:42, with a photo: "Map still looks pixelated and low
+ * quality.. zooming in works a bit better but still buggy, when zooming in it
+ * snaps to a different place when I release fingers". Three distinct causes. */
+describe('deep zoom is sharp, seamless and stays put', () => {
+  const canvas = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'map', 'MapCanvas.tsx'), 'utf8',
+  );
+
+  it('keeps the tile seam bleed a constant size ON SCREEN', () => {
+    // a flat 0.5 in container units is half a pixel at 1:1 and a four-pixel
+    // band of stretched edge pixels at full zoom — the straight lines that cut
+    // his map into quadrants
+    expect(canvas).not.toMatch(/width: step \+ 0\.5/);
+    expect(canvas).toMatch(/const bleed = \(0\.5 \* BASE\) \/ \(TILE_PX \* n\)/);
+    expect(canvas).toMatch(/width: step \+ bleed/);
+  });
+
+  it('stops the pan writing a position while a pinch owns the map', () => {
+    // the pan computes from an origin captured BEFORE the pinch moved
+    // anything, so on release it yanked the map back to where that implied
+    expect(canvas).toMatch(/if \(pinching\.value\) \{/);
+    expect(canvas).toMatch(/startTx\.value = tx\.value - e\.translationX/);
+  });
+
+  it('clears the pinch flag when the fingers leave', () => {
+    // a stuck flag would leave one-finger panning dead
+    expect(canvas).toMatch(/pinching\.value = 1;/);
+    expect(canvas).toMatch(/pinching\.value = 0;/);
   });
 });

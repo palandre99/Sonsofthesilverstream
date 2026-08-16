@@ -936,6 +936,39 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       y=1053 across a 6-notch and an 18-notch scroll. The harness can TAP and
       TYPE. It cannot pan, pinch, double-tap or scroll. Anything below the fold
       is unreachable; test that logic in vitest instead.
+## K. CEO FEEDBACK 2026-08-16 ~17:42 (from his phone, WITH A PHOTO)
+## "Map still looks pixelated and low quality.. zooming in works a bit better
+## but still buggy, when zooming in it snaps to a different place when I
+## release fingers , also many other issues ..."
+## "The massive «no filters selected text» also covers the entire map..."
+
+- [x] K1 STILL PIXELATED — I FIXED THE TEXTURE AND GOT THE UNITS WRONG. J2
+      shipped the 8192 source, then capped zoom at 8192 in CSS pixels. Scale is
+      CSS px per uv and the phone draws THREE device pixels for each, so full
+      zoom was a 3x upscale all over again. The ceiling is texture/PixelRatio
+      now — one texture pixel per device pixel, never magnified past its own
+      detail. He was right both times.
+- [x] K2 THE SEAMS IN HIS PHOTO were the half-pixel tile bleed. It was a flat
+      0.5 in CONTAINER units: half a pixel at 1:1, and a four-pixel band of
+      stretched edge pixels at full zoom, which is exactly the straight lines
+      cutting his map into quadrants. Bleed is now (0.5 * BASE) / (TILE_PX * n)
+      — constant half a SCREEN pixel at every zoom.
+      RULED OUT FIRST, by measurement: the 76 skipped z4 tiles are all >=98%
+      ocean, so the flat-skip was NOT dropping land. Good thing I checked
+      rather than "fixing" it.
+- [x] K3 THE SNAP ON RELEASE. Pan and pinch run simultaneously, and the pan
+      kept computing from an origin captured BEFORE the pinch moved anything —
+      so the instant the fingers lifted it yanked the map back to where that
+      stale origin implied. While a pinch owns the map the pan now RE-ANCHORS
+      instead of writing, keeping its origin in step, so it carries on smoothly
+      from wherever the pinch left off.
+      UNVERIFIED ON DEVICE: the harness cannot pinch. Reasoned from the code.
+- [x] K4 THE HINT COVERED THE MAP. It was a five-line explainer — a third of
+      the screen. One line now, with an x, and dismissing it is permanent for
+      the session. Eye-verified: two wrapped lines above the buttons.
+- [ ] K5 "also many other issues" — HE HAS MORE AND HAS NOT LISTED THEM. Ask,
+      or keep walking journeys until they surface. Do not guess at what he
+      means and do not claim the map is finished.
 - [ ] H17 COLOUR CANNOT CARRY 23 IDENTITIES. Three POI layers are near-identical
       greys (npc #A9C0CC, ore #B7C4CC, coal #8E9AA3) and several are near-white
       (note #D7E3E8, quartz #CFE9FF, egg #FFEFC2). I deliberately did NOT

@@ -18,7 +18,7 @@
  * an over-the-air update instead of costing the CEO a reinstall.
  */
 import React, { useCallback, useMemo, useState } from 'react';
-import { StyleSheet, View, type LayoutChangeEvent } from 'react-native';
+import { PixelRatio, StyleSheet, View, type LayoutChangeEvent } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   type SharedValue,
@@ -101,7 +101,13 @@ const MAX_ZOOM = 14;
  * in, so a rebuild at a deeper level raises this by itself.
  */
 function maxScaleFor(region: RegionId): number {
-  return TILE_PX * (1 << (REGION_MAX_Z[region] ?? MAX_TILE_Z));
+  const texture = TILE_PX * (1 << (REGION_MAX_Z[region] ?? MAX_TILE_Z));
+  // DIVIDED BY PIXEL DENSITY. This is scale in CSS px per uv unit, but the
+  // phone draws 3 device pixels for each of those. Capping at the raw texture
+  // size let the map magnify 3x past its own pixels again — the CEO shipped
+  // the 8192 texture and still reported "looks pixelated", correctly. One
+  // texture pixel per DEVICE pixel is the honest ceiling.
+  return texture / PixelRatio.get();
 }
 
 /**
@@ -195,6 +201,8 @@ export function MapCanvas({
   const pinchFy = useSharedValue(0);
   /** 1 while fingers are down: markers stop re-clustering until you let go */
   const gesturing = useSharedValue(0);
+  /** 1 while two fingers are on the glass */
+  const pinching = useSharedValue(0);
 
   const [win, setWin] = useState<TileWindow>({ z: 0, x0: 0, x1: 0, y0: 0, y1: 0 });
 
@@ -252,13 +260,25 @@ export function MapCanvas({
       runOnJS(markTouched)();
     })
     .onUpdate((e) => {
+      // While a pinch owns the map, the pan must not also write a position —
+      // it computes from an origin captured BEFORE the pinch moved anything,
+      // so the moment the fingers lift it yanks the map back to where that
+      // origin implies. That is the "snaps to a different place when I release
+      // fingers" the CEO reported. Re-anchor instead of writing: the pan
+      // silently keeps its origin in step with wherever the pinch has put the
+      // map, so when the pinch ends the pan carries on from there smoothly.
+      if (pinching.value) {
+        startTx.value = tx.value - e.translationX;
+        startTy.value = ty.value - e.translationY;
+        return;
+      }
       const c = clamp(startTx.value + e.translationX, startTy.value + e.translationY, k.value);
       tx.value = c.x;
       ty.value = c.y;
     })
     .onEnd(() => {
       gesturing.value = 0;
-    }), [clamp, gesturing, k, markTouched, startTx, startTy, tx, ty]);
+    }), [clamp, gesturing, k, markTouched, pinching, startTx, startTy, tx, ty]);
 
   const pinch = useMemo(() => Gesture.Pinch()
     .onStart((e) => {
@@ -269,6 +289,7 @@ export function MapCanvas({
       pinchFx.value = e.focalX;
       pinchFy.value = e.focalY;
       gesturing.value = 1;
+      pinching.value = 1;
     })
     .onUpdate((e) => {
       const next = Math.min(MAX_SCALE, Math.min(zoomFloor * MAX_ZOOM,
@@ -287,8 +308,9 @@ export function MapCanvas({
     })
     .onEnd(() => {
       gesturing.value = 0;
-    }), [MAX_SCALE, clamp, gesturing, zoomFloor, k, markTouched, pinchFx, pinchFy, pinchTx, pinchTy,
-    startK, tx, ty]);
+      pinching.value = 0;
+    }), [MAX_SCALE, clamp, gesturing, pinching, zoomFloor, k, markTouched, pinchFx, pinchFy,
+    pinchTx, pinchTy, startK, tx, ty]);
 
   const doubleTap = useMemo(() => Gesture.Tap()
     .numberOfTaps(2)
@@ -466,6 +488,11 @@ export function MapCanvas({
     const have = MAP_TILES[region] ?? {};
     const n = 1 << win.z;
     const step = BASE / n;
+    // Half a SCREEN pixel, whatever the zoom. A flat 0.5 in container units is
+    // half a pixel when the map is drawn at 1:1 and a four-pixel band of
+    // stretched edge pixels at full zoom — which is exactly the straight lines
+    // the CEO photographed cutting his map into quadrants.
+    const bleed = (0.5 * BASE) / (TILE_PX * n);
     const out: React.ReactNode[] = [];
     for (let y = win.y0; y <= win.y1; y++) {
       for (let x = win.x0; x <= win.x1; x++) {
@@ -479,9 +506,9 @@ export function MapCanvas({
               position: 'absolute',
               left: x * step,
               top: y * step,
-              // half-pixel bleed kills the hairline seams between tiles
-              width: step + 0.5,
-              height: step + 0.5,
+              // bleed kills the hairline seams between tiles at every zoom
+              width: step + bleed,
+              height: step + bleed,
             }}
             contentFit="fill"
             // DISK, not memory-disk. Only ~6 tiles are ever on screen, but a

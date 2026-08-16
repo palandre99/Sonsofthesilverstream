@@ -54,6 +54,8 @@ export function MapScreen() {
   const [filters, setFilters] = useState<MapFilters>(() => emptyFilters());
   const [sheet, setSheet] = useState<Sheet>(null);
   const [legend, setLegend] = useState(false);
+  /** the first-run hint, once dismissed, stays dismissed */
+  const [hintOff, setHintOff] = useState(false);
   const [vp, setVp] = useState<Viewport>({ scale: 1, u0: 0, v0: 0, u1: 1, v1: 1 });
   const [focus, setFocus] = useState<{
     title: string; lines: string[]; at: string; colour: string; icon: string;
@@ -557,31 +559,35 @@ export function MapScreen() {
         </View>
       )}
 
-      {/* First run: an empty world with three buttons tells a new player
-          nothing. Say what the map is FOR, and name the thing they would
-          never guess — that it knows what is missing from their box. Shows
-          only while nothing is switched on, so it never nags. */}
+      /* An empty world with three buttons tells a new player nothing, so this
+          points at the two that matter. It used to be a five-line explainer
+          that covered a third of the map — the CEO's words: "the massive «no
+          filters selected text» also covers the entire map". It is one line
+          now, and tapping it makes it go away for good. */
       {/* Nothing is drawn AND nothing is switched on — a genuinely new map. */}
-      {active.length === 0 && !sheet && filters.pals.size === 0 && filters.poi.size === 0 && (
-        <View style={{
-          position: 'absolute', left: 12, right: 12, bottom: insets.bottom + 74,
-          backgroundColor: 'rgba(12,22,24,0.94)', borderRadius: 13,
-          borderWidth: 1, borderColor: T.line, padding: 12, gap: 7,
-        }}>
-          <Text style={{ color: T.ink, fontWeight: '800', fontSize: 13.5 }}>
-            Nothing on the map yet
-          </Text>
-          <Text style={[s.body, { fontSize: 12.5 }]}>
+      {active.length === 0 && !sheet && !hintOff
+        && filters.pals.size === 0 && filters.poi.size === 0 && (
+        <Pressable
+          onPress={() => setHintOff(true)}
+          accessibilityRole="button"
+          accessibilityLabel="Hide this hint"
+          style={{
+            position: 'absolute', left: 12, right: 12, bottom: insets.bottom + 74,
+            backgroundColor: 'rgba(12,22,24,0.92)', borderRadius: 11,
+            borderWidth: 1, borderColor: T.line,
+            paddingHorizontal: 11, paddingVertical: 9,
+            flexDirection: 'row', alignItems: 'center', gap: 8,
+          }}
+        >
+          <Icon name="gesture-tap" size={15} color={T.accentInk} />
+          <Text style={[s.body, { fontSize: 12.5, flex: 1 }]}>
             <Text style={{ color: T.accentInk, fontWeight: '800' }}>Find</Text>
-            {' '}a pal to see where it spawns out in the world — or filter to
-            {' '}the ones you are missing, by element or by job, and the map
-            shows you what is left to catch. It finds places by name too.
-          </Text>
-          <Text style={[s.body, { fontSize: 12.5 }]}>
+            {' '}a pal, or{' '}
             <Text style={{ color: T.accentInk, fontWeight: '800' }}>Layers</Text>
-            {' '}puts chests, ore, statues, dungeons and bosses on it.
+            {' '}for chests, ore and dungeons.
           </Text>
-        </View>
+          <Icon name="close" size={14} color={T.faint} />
+        </Pressable>
       )}
 
       {/* Nothing is drawn but you DID pick something. The old code showed the
