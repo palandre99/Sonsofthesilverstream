@@ -365,29 +365,27 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       edge ones STILL clipped, which says the cull is not what lets them
       through. Next step is to instrument the actual vp rect against the
       label's uv at render time rather than reason about it.
-      2026-08-16 ~02:50 INSTRUMENTED, and it pointed somewhere else — see F31.
-      Measured: the clipped label's box is 150 px wide with its centre 28 px
-      from the right edge, i.e. the cull genuinely did not exclude it. Still
-      open, but no longer a guess.
+      2026-08-16 ~03:00 MEASURED at a VERIFIED 375 px viewport (see F31):
+      "Gobfin's Turf" spans 272..422 with its centre at 347, i.e. 28 px from
+      the right edge — while the cull margin is 112 px. So the geometry is
+      right and the CULL INPUT is wrong: `vp` must still describe a wider
+      view than the one on screen. Leading hypothesis, to test next: the
+      viewport is pushed during the focus ZOOM ANIMATION, and the last push
+      lands while the scale is still low, where the same screen width covers a
+      far larger uv range. Fix candidates: push once more when the animation
+      settles, or clamp the label box against the canvas width at render time
+      instead of culling by uv.
 
-- [ ] F31 **VERIFICATION INTEGRITY — fix before trusting any more pixel-level
-      QA.** `scripts/qa-shot.js` asks Chrome for a 375x812 phone, but the page
-      reports `window.innerWidth` of **1500** (and 572 after pinning
-      --force-device-scale-factor=1). Screenshots still come back phone-shaped,
-      so the pictures and the layout disagree — which means every
-      viewport-dependent check I have run (marker culling, label edge-insets,
-      anything reading `size.w`) was measured against a rect that is NOT what
-      the screenshot shows. Tried: metrics before navigate (dropped by the
-      navigation), after navigate, after load with a verification read, and
-      forcing the device scale factor. None gave 375. The driver now WARNS
-      when the viewport is not what was asked for, so this can never be
-      silent again. Until it reads 375, treat fine-grained layout findings
-      from this harness as unproven — composition and colour are still fine.
-- [ ] F15 Fishing spots + hackable towers are in the CEO's scope list but are
-      NOT in either upstream's layer set — research whether the tables exist
-      before promising them.
-- [ ] F16 On-device pass: tile memory and pinch feel on the CEO's iPhone.
-- [ ] F17 Reference tab: credit both upstreams (MIT) + the texture's origin.
+- [x] F31 RESOLVED 2026-08-16 ~03:00 — and my first report of it was WRONG.
+      `scripts/qa-shot.js` did ask for 375x812 and get 1500, because a
+      navigation silently drops `Emulation.setDeviceMetricsOverride`. Applying
+      it AFTER the load fixes it; the driver now reads the viewport back and
+      prints it, and warns if it is not what was asked for. Verified:
+      `viewport 375x812`, innerWidth 375, clientWidth 375, dpr 2. I had
+      recorded this as "still broken after four attempts" — the fix had in
+      fact landed and I missed the confirmation line under a `tail -4`.
+      Earlier screenshots were phone-shaped and composition/colour findings
+      from them stand; only the pixel-exact viewport reads were suspect.
 
 ## CEO FEEDBACK LEDGER — night of 2026-08-15 (NOTHING here may be forgotten)
 
