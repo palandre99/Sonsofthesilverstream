@@ -1744,6 +1744,42 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E48. ENGINE AUDIT (READ-ONLY) 2026-08-16 — NO BUGS FOUND
+
+Read engine/planner.ts against its own comments and against the docs'
+claims. **The engine was not touched** — the oracle and engine-parity gate
+guard it and CLAUDE.md calls it sacred.
+
+- [x] **MIRRORS VERIFIED BY HASH, not by the parity test alone.** All six
+      shared engine files (boosters, formula, helpers, odds, planner, types)
+      are byte-identical between app/ and mobile/, as are all six
+      src/logic/ files. Two files exist only on web — `planClient.ts` and
+      `planner.worker.ts`, a Web Worker pair with no mobile equivalent. That
+      is NOT a parity violation: CLAUDE.md's "identical copies" claim names
+      formula.ts, planner.ts and odds.ts, and all three match.
+- [x] **COMMENTS MATCH THE CODE.** "Cost is the number of DISTINCT steps (a
+      shared intermediate counts once)" — `steps` is a Set and merges are
+      unions, so shared work is counted once. "The fixpoint is
+      deterministic" — names are sorted, and `better()` breaks ties by step
+      count, then tie-break count, then a sorted step-list key. Wave
+      assembly sorts each ready batch and throws on a dependency cycle
+      rather than spinning.
+- [x] **THE STEP-ID ENCODING IS PROVABLY SAFE.** Steps are encoded `'A|B>C'`
+      and parsed with indexOf('|') / lastIndexOf('>'). Checked all 299
+      species names: **not one contains `|`, `>` or `<` — every name is
+      alphanumerics and spaces only.** No separator collision is possible.
+- [x] **MY SUSPICION WAS WRONG (10th bad check).** The header claims the
+      planner "reproduces the reference plans exactly" and I went looking
+      for that claim being untested. It IS tested — oracle.test.ts asserts
+      the reference 48-step plan to all 27 targets, with 8 waves, exactly 2
+      tie-break steps, Anubis from Beakon Cryst + Moldron Cryst, and the
+      Katress Ignis gender note — plus closure reaching 259 of 299.
+- Noted, not a problem: `reusedAsParent` is O(steps²) — 1,225 parseStep
+  calls at his 35-step plan, ~27k at 165. Irrelevant at these sizes.
+
+**Result: nothing to fix.** Gates re-run green: 248 tests, both trees
+typecheck.
+
 ## E47. PLANNER RE-READ + THE CAKE ESTIMATE 2026-08-16
 
 Second hostile read of PlannerScreen.tsx (~1355 lines); the first was E26,
