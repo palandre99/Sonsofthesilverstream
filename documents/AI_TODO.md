@@ -723,9 +723,19 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       an extraction pipeline we do not have; a vector redraw of the same
       symbols, which would be OUR art rather than the game's and so is a last
       resort and a CEO decision, not a silent substitution.
-- [ ] J4 FIND-PAL SEARCH should work like the Paldex search and filters —
-      element/type filters, the same interaction, the same quality bar. Today
-      it is a name box with a level/time filter and nothing else.
+- [x] J4 DONE 2026-08-16 ~16:00 — THE MAP SEARCH IS NOW THE PALDEX SEARCH.
+      Not a lookalike: it imports the same applyFilters/sortedPals out of
+      ui/palFilters and opens the same ui/FilterSheet, so all 12 work types, 9
+      elements, 4 ownership states and 7 sort orders arrived at once and will
+      never drift from the Paldex's. The bespoke "only pals I'm missing"
+      checkbox is GONE — ownership is one of the shared filters now, and two
+      controls doing one job is the exact confusion FilterSheet's own comments
+      warn about. The sheet is handed the map's own base list, so it says
+      "Show 224 pals" (the pals that really spawn on Palpagos) rather than
+      promising 298 and handing back 224. Measured end to end: 224 -> 29 with
+      Ice selected, and the applied list is Jolthog Cryst, Pengullet, Penking,
+      Foxparks Cryst, Swee — all genuinely Ice. Empty-state copy now names the
+      filters rather than the deleted checkbox.
 - [x] J5 DONE 2026-08-16 ~15:50 — BOSS AND SPAWN PINS ARE NOW THE PAL ITSELF.
       A crown said a boss was here but not WHICH; a paw print said a pal spawns
       here but not WHICH. The portraits already shipped for the Paldex (128px,

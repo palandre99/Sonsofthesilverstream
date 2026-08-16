@@ -34,7 +34,11 @@ import { PAL_ICONS } from '../data/icons.g';
 import { REGION_SPOTS } from '../data/regionSpots.g';
 import { takeIntentPayload } from '../nav/intent';
 import { regionsFor } from '../map/layers';
-import { ownedAny, pals } from '../store';
+import { ownedAny, pals, workLabel } from '../store';
+import { FilterSheet } from '../ui/FilterSheet';
+import {
+  applyFilters, NO_FILTERS, sortedPals, type Filters, type SortKey,
+} from '../ui/palFilters';
 import { PalDetail } from '../ui/PalDetail';
 import {
   clearFound, foundCount, foundKey, isFound, loadFound, onFoundChange, toggleFound,
@@ -546,9 +550,9 @@ export function MapScreen() {
           </Text>
           <Text style={[s.body, { fontSize: 12.5 }]}>
             <Text style={{ color: T.accentInk, fontWeight: '800' }}>Find</Text>
-            {' '}a pal to see where it spawns out in the world — or tick
-            {' '}“only pals I&apos;m missing” and the map shows you what is left
-            to catch. It finds places by name too.
+            {' '}a pal to see where it spawns out in the world — or filter to
+            {' '}the ones you are missing, by element or by job, and the map
+            shows you what is left to catch. It finds places by name too.
           </Text>
           <Text style={[s.body, { fontSize: 12.5 }]}>
             <Text style={{ color: T.accentInk, fontWeight: '800' }}>Layers</Text>
@@ -732,6 +736,20 @@ function PlaceName({ name }: { name: string }) {
 }
 
 const PIN = 23;
+
+/** the same words the Paldex uses for these filters, so they read as one app */
+const OWN_LABEL: Record<string, string> = {
+  owned: 'In my box',
+  missing: "I'm missing",
+  pairready: 'Pair ready',
+  onegender: 'One gender only',
+};
+
+const SORT_LABEL: Record<string, string> = {
+  name: 'A–Z',
+  rarity_desc: 'Rarest first',
+  rarity_asc: 'Common first',
+};
 
 /**
  * One colour per pal you have picked, in the order you picked them.
@@ -978,18 +996,35 @@ function PalSheet({
   onClear: () => void; onClose: () => void;
 }) {
   const [q, setQ] = useState('');
-  const [missingOnly, setMissingOnly] = useState(false);
+  // The SAME filter model the Paldex uses, not a second one that looks like
+  // it. "Only pals I'm missing" was a bespoke checkbox here while the Paldex
+  // had element, work and ownership filters plus sorting — the CEO called this
+  // search "garbage bad filters" and asked for parity, so it now runs the very
+  // same applyFilters/sortedPals and opens the very same FilterSheet.
+  const [pf, setPf] = useState<Filters>(NO_FILTERS);
+  const [sort, setSort] = useState<SortKey>('number');
+  const [filterSheet, setFilterSheet] = useState(false);
 
   const places = useMemo(() => searchPlaces(q, region), [q, region]);
 
+  /** every pal that actually spawns on THIS map — the base the filters see */
+  const base = useMemo(
+    () => spawnablePals().filter((n) => spawnLevels(n, region) !== null),
+    [region],
+  );
+
   const list = useMemo(() => {
     const needle = q.trim().toLowerCase();
-    return spawnablePals().filter((n) => {
-      if (needle && !n.toLowerCase().includes(needle)) return false;
-      if (missingOnly && ownedAny(n)) return false;
-      return spawnLevels(n, region) !== null;
-    });
-  }, [missingOnly, q, region]);
+    const named = needle ? base.filter((n) => n.toLowerCase().includes(needle)) : base;
+    return sortedPals(applyFilters(named, pf), sort);
+  }, [base, pf, q, sort]);
+
+  /** what the filter button says out loud, so an active filter is never hidden */
+  const bits: string[] = [];
+  if (pf.own !== 'all') bits.push(OWN_LABEL[pf.own]);
+  if (pf.elements.length) bits.push(pf.elements.join('/'));
+  if (pf.work) bits.push(workLabel(pf.work));
+  if (sort !== 'number') bits.push(SORT_LABEL[sort] ?? sort);
 
   return (
     <SheetShell title="Find a pal or place" onClear={onClear} onClose={onClose}>
@@ -1016,23 +1051,22 @@ function PalSheet({
           </Text>
         </Pressable>
         <Pressable
-          onPress={() => setMissingOnly((m) => !m)}
-          accessibilityRole="checkbox"
-          accessibilityState={{ checked: missingOnly }}
+          onPress={() => setFilterSheet(true)}
+          accessibilityRole="button"
+          accessibilityLabel="Filter and sort the pals"
           style={{
             flexDirection: 'row', alignItems: 'center', gap: 8, alignSelf: 'flex-start',
             paddingHorizontal: 11, paddingVertical: 9, borderRadius: 11, borderWidth: 1,
-            borderColor: missingOnly ? T.accent : T.line,
-            backgroundColor: missingOnly ? T.accentSoft : T.surface,
+            borderColor: bits.length ? T.accent : T.line,
+            backgroundColor: bits.length ? T.accentSoft : T.surface,
           }}
         >
-          <Icon
-            name={missingOnly ? 'checkbox-marked-outline' : 'checkbox-blank-outline'}
-            size={16}
-            color={missingOnly ? T.accentInk : T.muted}
-          />
-          <Text style={{ color: missingOnly ? T.accentInk : T.ink, fontWeight: '700', fontSize: 12.5 }}>
-            Only pals I&apos;m missing
+          <Icon name="tune-variant" size={16}
+            color={bits.length ? T.accentInk : T.muted} />
+          <Text style={{
+            color: bits.length ? T.accentInk : T.ink, fontWeight: '700', fontSize: 12.5,
+          }}>
+            {bits.length ? bits.join(' · ') : 'Filter & sort'}
           </Text>
         </Pressable>
       </View>
@@ -1077,16 +1111,18 @@ function PalSheet({
         )}
         {list.length === 0 && (
           <Text style={[s.body, { color: T.faint, paddingTop: 10 }]}>
-            {/* The list is narrowed by BOTH the search box and the missing
-                filter, so "you own every pal that spawns here" was a claim the
-                app could not stand behind: search "zzz" with the filter on and
-                it said so while knowing nothing of the sort. Each case now
-                says only what is actually true of it. */}
-            {q.trim() && missingOnly
-              ? 'No pal by that name is still missing from your box.'
+            {/* The list is narrowed by BOTH the search box and the filters, so
+                "you own every pal that spawns here" was a claim the app could
+                not stand behind: search "zzz" with a filter on and it said so
+                while knowing nothing of the sort. Each case says only what is
+                actually true of it. */}
+            {q.trim() && bits.length
+              ? 'No pal by that name matches those filters.'
               : q.trim()
                 ? 'No pal by that name spawns on this map.'
-                : 'Nothing left to find here — you own every pal that spawns on this map.'}
+                : bits.length
+                  ? 'No pal on this map matches those filters.'
+                  : 'Nothing left to find here — you own every pal that spawns on this map.'}
           </Text>
         )}
         {list.map((n) => {
@@ -1123,6 +1159,17 @@ function PalSheet({
           );
         })}
       </ScrollView>
+      {filterSheet && (
+        // The Paldex's own sheet, handed the pals that spawn on THIS map as its
+        // base — so "Show 44 pals" is a promise it can keep here too.
+        <FilterSheet
+          filters={pf}
+          sort={sort}
+          base={base}
+          onApply={(f, sk) => { setPf(f); setSort(sk); setFilterSheet(false); }}
+          onClose={() => setFilterSheet(false)}
+        />
+      )}
     </SheetShell>
   );
 }

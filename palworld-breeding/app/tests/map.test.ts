@@ -446,3 +446,30 @@ describe('a pal on the map looks like that pal', () => {
     expect(screen).toMatch(/night: isNightOnly\(pal, region\)/);
   });
 });
+
+/* CEO, 2026-08-16: "The find pal search function is also garbage bad filters
+ * etc , it should be similar to paldex search and filter". The map must run
+ * the Paldex's OWN filter engine, not a second one that resembles it. */
+describe('the map search is the Paldex search', () => {
+  const screen = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
+  );
+
+  it('reuses the shared filter engine and sheet', () => {
+    expect(screen).toMatch(/from '\.\.\/ui\/palFilters'/);
+    expect(screen).toMatch(/import \{ FilterSheet \} from '\.\.\/ui\/FilterSheet'/);
+    expect(screen).toMatch(/sortedPals\(applyFilters\(/);
+  });
+
+  it('hands the sheet only the pals that spawn on this map', () => {
+    // without `base` the sheet promises "Show 298 pals" and then hands back
+    // the ~224 that actually spawn here
+    expect(screen).toMatch(/base=\{base\}/);
+    expect(screen).toMatch(/spawnablePals\(\)\.filter\(\(n\) => spawnLevels\(n, region\) !== null\)/);
+  });
+
+  it('has no second, private "missing" toggle beside the shared one', () => {
+    // two controls doing one job is exactly what made the old sheet confusing
+    expect(screen).not.toMatch(/missingOnly/);
+  });
+});
