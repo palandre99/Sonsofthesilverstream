@@ -1208,6 +1208,24 @@ session's; this worker touches only the map area (see AREA LOCKS).*
 - [x] L10 THE LAYERS SHEET "CLEAR" IS CORRECTLY SCOPED — walked it: two layers
       plus a pal, Clear inside the Layers sheet, and it cleared only the layers
       (3,250 spots -> 273) leaving Pals · 1 intact. Same as the Find sheet.
+- [x] L11 2026-08-16 ~23:20 THE PUBLISH GUARD WAS BLOCKING ON THINGS THAT
+      CANNOT REACH HIS PHONE, and had just held TWO finished map fixes back
+      because the other session was mid-edit on a stylesheet
+      (app/src/design/app.css), a web component, and the shared ledger.
+      `eas update` bundles the Expo project rooted at palworld-breeding/mobile.
+      Nothing under app/, documents/ or tools/ can enter that bundle, so
+      refusing to publish over them bought no safety and cost the CEO his
+      updates — which is the opposite of the publish ritual's whole point
+      ("an item that is not on his phone is not finished").
+      Both scripts now filter `git status` to paths under mobile/, and say how
+      many files they IGNORED so nothing is hidden. Everything under mobile/
+      still blocks, app.config.js and scripts included.
+      Verified both ways: refuses while a file under mobile/ is dirty, passes
+      when only the website and docs are. Then published the two stuck fixes.
+      NOTE: patching these files through a shell heredoc mangled the 
+ escapes
+      and broke both scripts; rewriting them whole with the editor was the fix.
+      Second time CRLF/escaping has bitten a multi-line patch today.
 - [ ] K5 "also many other issues" — HE HAS MORE AND HAS NOT LISTED THEM. Ask,
       or keep walking journeys until they surface. Do not guess at what he
       means and do not claim the map is finished.
