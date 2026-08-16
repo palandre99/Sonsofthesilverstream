@@ -346,19 +346,46 @@ function Drawer({ name, onClose }: { name: string; onClose: () => void }) {
               files. The base stats below are.
             </div>
           )}
-          <div>
-          </div>
           <StatBars p={p} boost={stars * 0.05} />
         </section>
 
         {Object.keys(p.work ?? {}).length > 0 && (
           <section>
-            <h4>Work suitability</h4>
-            <div class="kv">
-              {Object.entries(p.work).sort((a, b) => b[1] - a[1]).map(([job, lvl]) => (
-                <span key={job} class="chip work">{workLabel(job)} <b>{lvl}</b></span>
-              ))}
+            {/* The star row above promised "all work +1" at 4★ and then these
+                numbers never moved — the player was told a thing and shown its
+                opposite. The phone has always struck the old level through and
+                printed the new one; the website only said it. Ported, along
+                with the 1-3★ note that refuses to guess which job goes up. */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <h4 style={{ flex: 1 }}>Work suitability</h4>
+              {stars === 4 && (
+                <span style={{ color: 'var(--gold-ink)', fontSize: '11px', fontWeight: 800 }}>
+                  4★ — every job +1
+                </span>
+              )}
             </div>
+            <div class="kv">
+              {Object.entries(p.work).sort((a, b) => b[1] - a[1]).map(([job, lvl]) => {
+                // 4★ raises EVERY existing suitability by 1 (wiki-verified).
+                // At 1-3★ the game raises ONE job and does not say which.
+                const boosted = stars === 4 ? lvl + 1 : lvl;
+                return (
+                  <span key={job} class={`chip work${boosted > lvl ? ' up' : ''}`}>
+                    {workLabel(job)}{' '}
+                    {boosted > lvl
+                      ? <b><s>{lvl}</s> {boosted}</b>
+                      : <b>{lvl}</b>}
+                  </span>
+                );
+              })}
+            </div>
+            {stars > 0 && stars < 4 && (
+              <p class="small" style={{ marginTop: '8px', color: 'var(--gold-ink)' }}>
+                At {stars}★ the game raises one of its work suitabilities by +1 — it
+                never says which one, so we don’t put a made-up number on it. At 4★
+                every job above goes up.
+              </p>
+            )}
           </section>
         )}
 

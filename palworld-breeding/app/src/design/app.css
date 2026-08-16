@@ -54,6 +54,11 @@
 .chip.work{color:var(--ink)}
 .chip.work img{width:18px;height:18px;display:inline-block;vertical-align:-4px}
 .chip.work b{color:var(--accent-ink)}
+/* a job the 4-star condense preview raised: gold, with the old level struck
+   through so the player sees what changed rather than just a new number */
+.chip.work.up{background:var(--gold-soft);box-shadow:inset 0 0 0 1px var(--gold)}
+.chip.work.up b{color:var(--gold-ink)}
+.chip.work.up b s{color:var(--faint);font-weight:700}
 .chip.el-neutral{background:var(--el-neutral-soft);color:var(--el-neutral)}
 .chip.el-fire{background:var(--el-fire-soft);color:var(--el-fire)}
 .chip.el-water{background:var(--el-water-soft);color:var(--el-water)}
@@ -452,6 +457,10 @@
 .maplegend i.sq { border-radius: 4px; }
 .maplegend b { color: var(--faint); font-weight: 700; font-size: 11.5px; }
 .maplegend em { color: var(--faint); font-size: 10.5px; font-style: normal; }
+/* a layer with nothing on THIS map still lists, but says so and steps back,
+   so the player learns the map has none rather than tapping into silence */
+.maplayers button.empty { opacity: 0.45; }
+.mapempty { color: var(--muted); font-size: 13px; margin: 4px 2px 8px; line-height: 1.45; }
 .maplabel { position: absolute; width: 150px; text-align: center; pointer-events: none;
   color: #EAF6F8; font-size: 10.5px; font-weight: 800; letter-spacing: 0.4px;
   text-shadow: 0 1px 3px rgba(4, 12, 16, 0.95); }

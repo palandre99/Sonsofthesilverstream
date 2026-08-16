@@ -1,6 +1,6 @@
 /** Paldex (merged collection) UI — import/export/filter behavior without a browser. */
 // @vitest-environment happy-dom
-import { beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { cleanup, fireEvent, render, screen } from '@testing-library/preact';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -141,5 +141,98 @@ describe('Paldex collection filters', () => {
     expect(state.box.value['Jolthog']).toEqual({ m: true, f: true });
     fireEvent.click(screen.getByRole('button', { name: /Really un-own/ }));
     expect(state.box.value['Jolthog']).toBeUndefined();
+  });
+});
+
+/**
+ * The pal card's condense preview tells the player two things about work:
+ * at 4 stars EVERY job goes up by one, and at 1-3 stars exactly one job goes
+ * up but the game never says which. Both are sentences the player acts on
+ * before spending pals in the condenser.
+ *
+ * The website printed the first one — "all work +1" — and then left the job
+ * numbers exactly where they were, so it said a thing and showed its opposite
+ * (found 2026-08-17; the phone had done it correctly all along). It also never
+ * mentioned the 1-3 star case at all. This guards the fixed behaviour, and the
+ * refusal to guess a number is asserted as hard as the number itself.
+ */
+describe('the pal card’s condense preview', () => {
+  beforeEach(() => {
+    // the drawer reads the raw breeding tables directly; loadData fills this
+    state.breedingRaw.value = data;
+  });
+  afterEach(() => {
+    state.route.value = { page: 'paldex' };
+  });
+
+  /** open Lamball's card the way the route does, and hand back its section */
+  function openCard(name = 'Lamball'): HTMLElement {
+    state.route.value = { page: 'paldex', pal: name };
+    render(<PaldexPage />);
+    const section = [...document.querySelectorAll('aside.drawer section')]
+      .find((s) => /Work suitability/.test(s.textContent ?? '')) as HTMLElement;
+    expect(section, 'the card should have a Work suitability section').toBeTruthy();
+    return section;
+  }
+
+  const star = (n: number) =>
+    screen.getByRole('button', { name: `${n} star${n === 1 ? '' : 's'} condensed` });
+
+  it('leaves every job alone until a star is pressed', () => {
+    const sec = openCard();
+    const chips = [...sec.querySelectorAll('.chip.work')];
+    expect(chips.length).toBe(Object.keys(palsJson.pals['Lamball'].work ?? {}).length);
+    expect(chips.some((c) => c.classList.contains('up'))).toBe(false);
+    expect(sec.querySelector('s')).toBeNull();
+  });
+
+  it('at 4 stars raises EVERY job by one and shows what it replaced', () => {
+    const sec = openCard();
+    fireEvent.click(star(4));
+
+    const work = palsJson.pals['Lamball'].work as Record<string, number>;
+    const chips = [...sec.querySelectorAll('.chip.work')];
+    // the promise is "every job", so no chip may be left behind
+    expect(chips.length).toBe(Object.keys(work).length);
+    expect(chips.every((c) => c.classList.contains('up'))).toBe(true);
+
+    // each chip must show the OLD level struck through and the new one beside it
+    for (const [job, lvl] of Object.entries(work)) {
+      const chip = chips.find((c) => c.textContent?.startsWith(job.replace(/^\w/, (m) => m)))
+        ?? chips.find((c) => (c.textContent ?? '').includes(String(lvl)));
+      expect(chip, `no chip for ${job}`).toBeTruthy();
+    }
+    const struck = [...sec.querySelectorAll('s')].map((s) => s.textContent);
+    expect(struck).toEqual(Object.values(work).map(String));
+    const shown = chips.map((c) => (c.textContent ?? '').trim().split(/\s+/).pop());
+    expect(shown).toEqual(Object.values(work).map((l) => String(l + 1)));
+
+    expect(sec.textContent).toContain('every job +1');
+    // the "we don't know which one" note belongs to 1-3 stars only
+    expect(sec.textContent).not.toContain('never says which one');
+  });
+
+  for (const n of [1, 2, 3]) {
+    it(`at ${n} star${n === 1 ? '' : 's'} refuses to guess which job goes up`, () => {
+      const sec = openCard();
+      fireEvent.click(star(n));
+
+      const chips = [...sec.querySelectorAll('.chip.work')];
+      expect(chips.some((c) => c.classList.contains('up'))).toBe(false);
+      expect(sec.querySelector('s')).toBeNull();
+      expect(sec.textContent).toContain(`At ${n}★ the game raises one of its work suitabilities`);
+      expect(sec.textContent).toContain('never says which one');
+      expect(sec.textContent).not.toContain('every job +1');
+    });
+  }
+
+  it('keeps the community-measured label on the condensing figures', () => {
+    state.route.value = { page: 'paldex', pal: 'Lamball' };
+    render(<PaldexPage />);
+    fireEvent.click(star(2));
+    const drawer = document.querySelector('aside.drawer')!;
+    // stats are datamined, condensing is not — the card must keep saying so
+    expect(drawer.textContent).toContain('community-measured');
+    expect(drawer.textContent).toContain('partner skill level 3 of 5');
   });
 });

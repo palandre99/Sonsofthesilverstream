@@ -2075,6 +2075,70 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E83. THE WEBSITE PROMISED "ALL WORK +1" AND THEN SHOWED THE SAME NUMBERS
+## 2026-08-17
+
+First find of the new BEHAVIOUR-and-STRUCTURE frontier, and it came from the
+accessibility sweep rather than the copy sweep.
+
+**The two structural checks came back clean, so they are now settled:**
+
+- **Every interactive control on the phone has a name.** 47 Pressables /
+  TouchableOpacities across 56 files (Map lane excluded): **0 without an
+  accessibility label or a Text child.** So nothing announces as a bare
+  "button".
+- **No control is named only by a symbol.** Scanned every Pressable whose name
+  comes from its Text children and kept the ones with no latin letter:
+  **0**. A screen reader never has to say "✕" or "♂" and stop there. (kit.tsx
+  already carries the fix comment for the ♂/♀ toggles, which were exactly
+  this bug once.)
+
+**THEN THE REAL FIND, on the pal card's condense preview — WEBSITE ONLY.**
+
+Press 4 stars on the website and the summary line said **"· all work +1"**.
+The Work suitability section underneath it did not move a single number. The
+player was told a thing and shown its opposite, on the screen they use to
+decide whether to spend pals in the condenser.
+
+The phone had been right the whole time — it strikes the old level through,
+prints the new one in gold, tags the section header "4★ — every job +1", and
+at 1-3★ prints the honest note: *"the game raises one of its work
+suitabilities by +1 — it never says which one, so we don't put a made-up
+number on it."* **The website had none of that**, and never mentioned the
+1-3★ case at all. E61's lesson again: a port is not a copy — I only found it
+by opening the other tree's file and reading it.
+
+**FIXED on the web** (`app/src/modules/paldex.tsx`, `app/src/design/app.css`):
+boosted chips with the old value struck through, the 4★ header tag, and the
+1-3★ refusal-to-guess note, all worded exactly as the phone words them. Also
+deleted a dead empty `<div>` sitting between the condensing label and the
+stat bars.
+
+**RENDERED AND MEASURED, not assumed** (localhost:5183, Lamball):
+at 4★ all 3 chips carry `.up`, background `rgb(51,39,13)` = `--gold-soft`
+against a plain sibling's `rgb(28,49,54)`; the struck value computes
+`text-decoration-line: line-through` in `--faint`; the new value is
+`--gold-ink`. At 2★: no boost, no strike, note present, summary reads
+"+10% · partner skill level 3 of 5" with the community-measured label intact.
+
+**GUARDED — 6 new tests in `paldex-ui.test.tsx`, and PROVEN to fail.**
+Mutating `const boosted = stars === 4 ? lvl + 1 : lvl` to `= lvl` turned
+**exactly one** test red (the 4★ one) while the three 1-3★ tests correctly
+stayed green. Source restored, `git status` on it empty. The tests assert the
+chip count equals the pal's real job count (so "every job" cannot quietly
+become "some jobs"), the struck values equal the real levels, the new values
+equal level+1, and that the 1-3★ note appears at 1, 2 and 3 stars and never
+at 4.
+
+**FALSE ALARM CLEARED en route:** the browser console showed the E78
+`plan.targets is not iterable` crash and the E80 `<p>` nesting errors. Both
+are HISTORY — the fixes are in the source, and a fresh `console.error` hook
+across Reference → Plan → Paldex caught **zero** errors. The buffer is not
+the present; that lesson keeps earning its place.
+
+**NOT PUBLISHED THIS TICK** — web-only change, and `app/src/modules/map.tsx`
+is dirty in the Map lane's tree. Reaches him on his main push.
+
 ## E82. THE ODDS LAB'S LAST UNSWEPT COPY — CLEAN, AND ALREADY GUARDED
 ## 2026-08-17. THE COPY AUDIT IS NOW COMPLETE. 2026-08-17
 
