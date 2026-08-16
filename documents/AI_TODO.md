@@ -4841,3 +4841,34 @@ frames"), but `javascript_tool` still measures fine — for responsive work,
 getBoundingClientRect vs the container IS the evidence. Check ALL FOUR
 directions: I first tested only right/bottom overflow and missed a
 bottom-anchored element spilling off the TOP.
+
+### L47 — the website's Find panel: two faults the phone fixed long ago — DONE (e9d8d7d), NOT LIVE
+Drove the site's Find panel at phone width (last turn only measured layout).
+1. **Layer counts were for BOTH maps at once.** Buttons printed `l.n`, the
+   grand total: Palpagos offered "Fast travel 170" while showing 155, and the
+   World Tree offered the same 170 while showing 15 — a number sitting next to
+   a map that disagreed with it. This is L24, fixed on the phone, never carried
+   over. Now per-region via a `poiHere()` helper, and a layer this map has none
+   of says "none here" and drops to 45%. Measured after: Palpagos
+   155/9/157/18/13; tree 15/4/none here; 15 of 23 layers correctly dim on the
+   tree — matching the documented Palpagos-only count exactly.
+2. **A search that matched nothing said nothing.** The list just vanished. It
+   names its reason now, one branch per true case (search vs missing-only vs
+   places-matched), because one generic sentence would be a claim the app
+   cannot stand behind. All four branches walked in the running site.
+CAUGHT MYSELF: "foxparks" on the World Tree returning "Nothing on this map
+goes by that name" LOOKS like a bug and is correct — Foxparks does not live
+there; I had left the region switched. Re-checked on Palpagos: both Foxparks
+and Foxparks Cryst return. Second time this session a NEW check was wrong
+while the code was right (cf. L41's re-centring assertion).
+
+### L48 — SHARED FILE, work held back on purpose
+`app.css` currently holds BOTH my two map rules (`.mapempty`,
+`.maplayers button.empty`) and another session's unfinished `.chip.work.up`
+work. `git add app.css` would sweep their in-flight change into my commit, so
+I committed only map.tsx + the tests and LEFT the CSS uncommitted. The copy
+renders without it, just unstyled.
+NEXT TICK: if app.css is dirty with ONLY my two rules, commit it. If their
+.chip lines are still there, leave it again — this is the commit-side version
+of the publish guard, and there is no deadline because the web only ships on a
+main push.
