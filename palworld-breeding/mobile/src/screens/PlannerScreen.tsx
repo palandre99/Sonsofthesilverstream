@@ -273,6 +273,28 @@ export function PlannerScreen() {
     return meta;
   }, [plan, checks, box]);
 
+  // Booster-aware ordering v2 (SMART PLANNING queue): not just the helper's
+  // final step — its WHOLE subtree (every step feeding it) floats to the
+  // top of its phase and says why. Cross-phase moves are impossible (a
+  // step's phase is set by when its parents exist), so within-phase order
+  // is the honest, real version of "do the accelerator branch first".
+  const speedsRest = useMemo(() => {
+    const out = new Set<string>();
+    if (!plan) return out;
+    const stepByChild = new Map(plan.steps.map((st) => [st.child, st] as const));
+    const markUp = (child: string): void => {
+      const st = stepByChild.get(child);
+      if (!st) return;
+      const sid = stepId(st.parents[0], st.parents[1], st.child);
+      if (out.has(sid)) return;
+      out.add(sid);
+      markUp(st.parents[0]);
+      markUp(st.parents[1]);
+    };
+    for (const st of plan.steps) if (HELPER_NAMES.has(st.child)) markUp(st.child);
+    return out;
+  }, [plan]);
+
   const waves = useMemo(() => {
     if (!plan) return [];
     const byWave = new Map<number, PlanStep[]>();
@@ -281,13 +303,17 @@ export function PlannerScreen() {
       list.push(st);
       byWave.set(st.wave, list);
     }
-    // helpers first inside each phase — they pay off for every later step
+    // helper subtrees first inside each phase — they pay off for every
+    // later step; the helper's own step leads its branch
+    const inLineage = (st: PlanStep): number =>
+      Number(speedsRest.has(stepId(st.parents[0], st.parents[1], st.child)));
     for (const [, list] of byWave) {
       list.sort((a, b) =>
-        Number(HELPER_NAMES.has(b.child)) - Number(HELPER_NAMES.has(a.child)));
+        inLineage(b) - inLineage(a)
+        || Number(HELPER_NAMES.has(b.child)) - Number(HELPER_NAMES.has(a.child)));
     }
     return [...byWave.entries()].sort((x, y) => x[0] - y[0]);
-  }, [plan]);
+  }, [plan, speedsRest]);
 
   const done = plan
     ? plan.steps.filter((st) =>
@@ -708,6 +734,11 @@ export function PlannerScreen() {
             // walls of struck-through cards to find the work is busywork
             const allDone = steps.every((st) =>
               tickStateOf(checks[stepId(st.parents[0], st.parents[1], st.child)]) === 'full');
+            // one badge per phase, on the FIRST unfinished helper-branch
+            // step — the sort already floats the branch, the badge says why
+            const leadHelperSid = steps
+              .map((st) => stepId(st.parents[0], st.parents[1], st.child))
+              .find((x) => speedsRest.has(x) && tickStateOf(checks[x]) !== 'full');
             if (allDone && !openPhases.has(wave)) {
               return (
                 <Pressable key={wave}
@@ -802,6 +833,9 @@ export function PlannerScreen() {
                       </View>
                       <View style={[s.wrap]}>
                         {st.isTarget && <Badge kind="gold">Goal</Badge>}
+                        {sid === leadHelperSid && (
+                          <Badge kind="plain">helper branch — do this first</Badge>
+                        )}
                         {st.kind === 'unique' && <Badge kind="unique">fixed recipe</Badge>}
                         {st.kind === 'gendered' && <Badge kind="warn">gender locked</Badge>}
                         {st.reusedAsParent >= 2 && (

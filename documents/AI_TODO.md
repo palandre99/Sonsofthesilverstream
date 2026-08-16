@@ -80,9 +80,15 @@ Add everything you find; finding nothing means you didn't look.*
       "more eggs" claim; pals that raise alpha/mutation odds ("the two
       dinosaurs"); any other breeding-economy partner skills. Verify against
       datamines/community measurements; only then add to the card.
-- [ ] Booster-aware planning v2: option to weight the route so accelerator
-      subtrees complete first (true reordering, not just a hint); "add
-      producer as target" one-tap action.
+- [x] 2026-08-16 ~00:15 Booster-aware planning v2 SHIPPED both platforms:
+      a helper's WHOLE subtree (every step feeding it) now floats to the
+      top of its phase, and the first unfinished helper-branch step in
+      each phase carries "helper branch — do this first" (one badge per
+      phase — the noisy every-card version was self-rejected on eye
+      review). Cross-phase moves are impossible (dependencies set the
+      phase), so within-phase order IS the honest true-reordering.
+      "Add producer as target" one-tap already existed on the advice card.
+      Eye-verified: 14 phases, exactly one badge each, lineage leads.
 - [ ] Cake economics v2: expected eggs (not minimum) from the Odds Lab
       model per step; ranch throughput rates per producer.
 
