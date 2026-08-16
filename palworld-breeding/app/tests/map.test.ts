@@ -262,6 +262,30 @@ describe('culling and clustering', () => {
   });
 });
 
+describe('worklet safety', () => {
+  // Shipped 2026-08-16 and CRASHED the CEO's app the moment he opened the Map:
+  // useAnimatedReaction runs on the UI thread, and calling a function imported
+  // from another module inside a worklet is a hard native crash — no error
+  // boundary, the app just closes. react-native-web runs the same code on the
+  // JS thread, so a browser pass goes green while the phone dies.
+  const canvas = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'map', 'MapCanvas.tsx'), 'utf8',
+  );
+
+  it('calls no imported helper inside the animated reaction', () => {
+    const start = canvas.indexOf('useAnimatedReaction(');
+    expect(start).toBeGreaterThan(-1);
+    const body = canvas.slice(start, canvas.indexOf('[size.w, size.h', start));
+    // every non-relative import name this file pulls in
+    const imported = [...canvas.matchAll(/import \{([^}]*)\} from/g)]
+      .flatMap((m) => m[1].split(','))
+      .map((n) => n.replace(/type/, '').trim())
+      .filter((n) => n && /^[a-z][A-Za-z]*$/.test(n));
+    const leaked = imported.filter((n) => new RegExp(`\b${n}\s*\(`).test(body));
+    expect(leaked, 'imported functions called inside a worklet').toEqual([]);
+  });
+});
+
 describe('tile levels', () => {
   it('asks for deeper tiles as the map is zoomed in', () => {
     expect(tileLevelFor(512, 512, 3)).toBe(0);

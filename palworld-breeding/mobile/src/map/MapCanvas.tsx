@@ -29,7 +29,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { Image } from 'expo-image';
 import { MAP_TILES, MAX_TILE_Z, TILE_SIZE } from '../data/tileIndex.g';
-import { tileLevelFor, type RegionId } from './projection';
+import { type RegionId } from './projection';
 
 /** Logical size of the map container. Tiles lay out against this once and are
  *  never re-laid-out; only the container's transform changes. */
@@ -190,7 +190,13 @@ export function MapCanvas({
     () => {
       const scale = k.value;
       if (scale === 0 || size.w === 0) return null;
-      const z = tileLevelFor(scale, TILE_SIZE, MAX_TILE_Z);
+      // INLINED ON PURPOSE. This runs on the UI thread, and calling a
+      // function imported from another module inside a worklet crashes the
+      // app on device — hard, no error boundary. react-native-web runs the
+      // same code on the JS thread, so a browser pass cannot catch it. Keep
+      // this in step with tileLevelFor() in projection.ts.
+      const z = Math.max(0, Math.min(MAX_TILE_Z,
+        Math.ceil(Math.log2(Math.max(1, scale) / TILE_SIZE))));
       const n = 1 << z;
       const u0 = -tx.value / scale;
       const v0 = -ty.value / scale;
