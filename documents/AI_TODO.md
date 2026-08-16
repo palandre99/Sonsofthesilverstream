@@ -406,9 +406,17 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       stale viewport is NOT the cause. Eliminated so far: the centring
       (transform version was worse), the cull margin (widening it deletes good
       labels while these two survive), and viewport staleness.
-      NEXT: stop culling by uv entirely — clamp the label's box against the
-      canvas width at render time, which cannot be fooled by whatever rect the
-      memo is reading. Cheap and terminal.
+      2026-08-16 ~11:10 INSTRUMENTED THE CULL ITSELF (temporary window probe,
+      since removed). The inputs are CORRECT: scale 3750, u1 0.69186,
+      inset 0.03, cutoff 0.66186 — and Gobfin's Turf sits at u 0.68439, which
+      is past the cutoff and should have been dropped. So the maths, the
+      viewport and the margin are all right, and the label is rendering
+      despite failing its own test. That points at render/staleness in the
+      marker list, not at geometry.
+      **DEPRIORITISED.** Four iterations on a cosmetic edge case (2 labels of
+      ~7, only at the right edge, only while zoomed in) is out of proportion
+      while web parity is untouched. Resume with fresh eyes; everything ruled
+      out is written above so the next attempt starts from evidence.
 
 - [x] F31 RESOLVED 2026-08-16 ~03:00 — and my first report of it was WRONG.
       `scripts/qa-shot.js` did ask for 375x812 and get 1500, because a
