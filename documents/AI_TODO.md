@@ -1025,11 +1025,33 @@ earlier. He is right and the proof is in his own list: it lumped CHIKIPI
 - [ ] E16b-WEB: the whole of E16 is MOBILE ONLY so far. Web parity for the
       advisor card is unstarted; `src/logic/unlock.ts` is already mirrored
       and gated, so this is UI work only.
-- [ ] E16d DATA GAP FOUND: **Astralym** has NO row in palcalcFacts.g.ts, so
-      the advisor honestly returns 'unknown' for it. Is it a real 1.0
-      species, a renamed one, or a pipeline miss? Check
-      tools/extract_palcalc_facts.py coverage — 298 species there vs 299 in
-      the breeding engine.
+- [x] E16b-WEB SHIPPED (commit 19a3594). Website card now matches the phone
+      exactly. The SENTENCES moved INTO `logic/unlock.ts` (`unlockLine`,
+      `catchWhere`) instead of being copied into the second screen — so the
+      parity gate now guards the COPY, not just the maths, and the two
+      platforms cannot drift into describing the same pal differently.
+      Verified: 6 rows identical to mobile, 6 a11y labels carry the full
+      advice, clicking Chikipi lands on "Chikipi · Paldex · Palforge" with
+      the card open, own error recorder saw none. NOT DEPLOYED — pushing
+      the website to main needs the CEO's go-ahead.
+- [x] E16d INVESTIGATED AND CLOSED — no code change, and that IS the finding.
+      **Astralym** is the ONLY species in pals_1_0 (299) missing from
+      palcalcFacts (298). It is REAL: number 204, in the breeding table, and
+      in `self_breed_only`. Its pal-table row is a placeholder — no
+      elements, no work values, hp/atk/def all exactly 200, and the game's
+      own text reads "This Pal's abilities are still being investigated."
+      It is the World Tree Dragon (icon T_WorldTreeDragon).
+      **THE TRAP I ALMOST WALKED INTO:** pals_1_0 carries `wild: false` for
+      it, which looks like a free fallback for the missing `minWild` — it
+      would have turned 'unknown' into 'raid-only'. I cross-checked the two
+      sources across all 298 species we hold BOTH for: **they disagree on
+      17**. Jetragon, Frostallion, Necromus, Paladius and friends are
+      `minWild 60-65` in the datamined table but `wild: false` in the pal
+      table. palcalc (DT_PalMonsterParameter) is the authority; `wild` is
+      NOT a substitute for `minWild`.
+      SO: do NOT add that fallback. Astralym staying 'unknown' is the
+      honest answer, and the advisor already says exactly that. The real
+      fix is upstream in palcalc's mirror, not in our code.
 
 ## E15. CEO FEEDBACK 2026-08-16 ~16:25 (verbatim intake, WITH SCREENSHOT)
 "I think this page looks very empty and poorly designed (the breeding
