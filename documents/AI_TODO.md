@@ -988,14 +988,29 @@ earlier. He is right and the proof is in his own list: it lumped CHIKIPI
       (65). Bellanoir Libero / Blazamut Ryu / Panthalus -> raid-only.
       The two weighting constants are OURS, not game data — they are
       labelled as judgement, never presented as datamined.
-- [ ] E16b NEXT: wire it into the no-route card (mobile first, then web).
-      Three different sentences for the three kinds, ranked easiest first,
-      and the level gate stated against HIS level ("spawns at Lv 60, you're
-      Lv 34"). Deliberately not started rather than half-wired.
-- [ ] E16c HIS THIRD ASK — "suggest straight up where to catch the pal u
-      want" — NEEDS LOCATION DATA WE MAY NOT HAVE. `PalInfo.regions` exists;
-      the Map session is mining map data. DO NOT invent spawn locations.
-      Check what regions actually contains before promising anything.
+- [x] E16b SHIPPED to the repo (mobile, commit 254b964 — PUBLISH STILL
+      BLOCKED, see below). Each stuck goal gets its own row with the
+      shortest way in, ranked easiest first, tappable to the pal card, and
+      a full a11y label. Three kinds -> three sentences, verified on the
+      rendered screen with all three present at once.
+      FOUND ON THE EYE PASS AND FIXED: two catches you can both make today
+      cost the same, and the tie fell through to ALPHABETICAL — which put
+      Grizzbolt (spawns 30) above Mossanda Lux (spawns 15) and made the
+      whole list look unranked. Ties now break on lower spawn level;
+      asserted as a test (139 green). This is the 8th real bug found by
+      clicking my own just-finished work — the method keeps paying.
+- [x] E16c ANSWERED AND SHIPPED (commit 88eabc5). We DO hold real spawn
+      locations: `regions` in pals_1_0.json, 276 of 299 species, the game's
+      own region names ("Eastern Wild Island", "The World Tree [Lv. 80]").
+      Each catch now shows up to 3. The 23 species with no region (Jetragon
+      among them) get NO location line rather than an invented one.
+      NOTE FOR WHOEVER TOUCHES THIS: minWild (palcalc) and regions (kb) are
+      SEPARATE sources. Mossanda Lux reads "spawns from Lv 15" beside World
+      Tree [Lv. 80] regions — not a contradiction (its range is 15-80) but
+      worth re-checking if a species ever looks wrong.
+- [ ] E16b-WEB: the whole of E16 is MOBILE ONLY so far. Web parity for the
+      advisor card is unstarted; `src/logic/unlock.ts` is already mirrored
+      and gated, so this is UI work only.
 - [ ] E16d DATA GAP FOUND: **Astralym** has NO row in palcalcFacts.g.ts, so
       the advisor honestly returns 'unknown' for it. Is it a real 1.0
       species, a renamed one, or a pipeline miss? Check
