@@ -38,6 +38,7 @@ export function MapScreen() {
   const canvas = useRef<MapCanvasHandle | null>(null);
   const [filters, setFilters] = useState<MapFilters>(() => emptyFilters());
   const [sheet, setSheet] = useState<Sheet>(null);
+  const [legend, setLegend] = useState(false);
   const [vp, setVp] = useState<Viewport>({ scale: 1, u0: 0, v0: 0, u1: 1, v1: 1 });
   const [focus, setFocus] = useState<{
     title: string; lines: string[]; at: string; colour: string; icon: string;
@@ -64,7 +65,10 @@ export function MapScreen() {
   /* ------------------------------------------------- what is on the map now */
 
   const active = useMemo(() => {
-    const out: { key: string; set: PointSet; colour: string; icon: string; label: string }[] = [];
+    const out: {
+      key: string; set: PointSet; colour: string; icon: string; label: string;
+      square?: boolean;
+    }[] = [];
     for (const id of filters.poi) {
       const set = poiPoints(id, region);
       const layer = poiLayer(id);
@@ -94,7 +98,8 @@ export function MapScreen() {
             set: inside,
             colour: '#8AA6FF',
             icon: 'door',
-            label: `${pal} (dungeons)`,
+            label: `${pal} — in dungeons`,
+            square: true,
           });
         }
       }
@@ -116,7 +121,10 @@ export function MapScreen() {
           key: `${layer.key}:${c.cell}`,
           u: c.u,
           v: c.v,
-          render: () => <Pin colour={layer.colour} icon={layer.icon} count={c.count} />,
+          render: () => (
+            <Pin colour={layer.colour} icon={layer.icon} count={c.count}
+              square={layer.square} />
+          ),
         });
       }
     }
@@ -294,15 +302,57 @@ export function MapScreen() {
         position: 'absolute', left: 12, right: 12, bottom: insets.bottom + 14, gap: 8,
       }}>
         {shownCount > 0 && (
-          <View style={{
-            alignSelf: 'flex-start', backgroundColor: 'rgba(12,22,24,0.88)',
-            borderRadius: 10, borderWidth: 1, borderColor: T.line,
-            paddingHorizontal: 10, paddingVertical: 6,
-          }}>
-            <Text style={{ color: T.muted, fontSize: 11.5, fontWeight: '700' }}>
-              {shownCount.toLocaleString()} {shownCount === 1 ? 'spot' : 'spots'} on the map
-            </Text>
-          </View>
+          <>
+            {/* The legend only lists what is ON — a static key to 23 layers
+                would be a wall of colour the player has to filter by eye. */}
+            {legend && (
+              <View style={{
+                backgroundColor: 'rgba(12,22,24,0.94)', borderRadius: 12,
+                borderWidth: 1, borderColor: T.line, padding: 10, gap: 8,
+              }}>
+                {active.map((l) => (
+                  <View key={l.key}
+                    style={{ flexDirection: 'row', alignItems: 'center', gap: 9 }}>
+                    <View style={{
+                      width: 15, height: 15,
+                      borderRadius: l.square ? 4 : 8,
+                      borderWidth: 2, borderColor: l.colour,
+                      backgroundColor: 'rgba(10,20,24,0.86)',
+                    }} />
+                    <Text style={{ color: T.ink, fontSize: 12.5, fontWeight: '700', flex: 1 }}>
+                      {l.label}
+                    </Text>
+                    <Text style={{ color: T.faint, fontSize: 11.5, fontWeight: '700' }}>
+                      {l.set.n.toLocaleString()}
+                    </Text>
+                  </View>
+                ))}
+                <Text style={{ color: T.faint, fontSize: 10.5 }}>
+                  Round pins are out in the world · square pins are inside dungeons
+                </Text>
+              </View>
+            )}
+            <Pressable
+              onPress={() => setLegend((v) => !v)}
+              accessibilityRole="button"
+              accessibilityState={{ expanded: legend }}
+              accessibilityLabel={legend ? 'Hide the key' : 'Show what the pins mean'}
+              style={{
+                alignSelf: 'flex-start', backgroundColor: 'rgba(12,22,24,0.88)',
+                borderRadius: 10, borderWidth: 1, borderColor: legend ? T.accent : T.line,
+                paddingHorizontal: 10, paddingVertical: 6,
+                flexDirection: 'row', alignItems: 'center', gap: 6,
+              }}
+            >
+              <Icon name={legend ? 'chevron-down' : 'chevron-up'} size={13}
+                color={legend ? T.accentInk : T.muted} />
+              <Text style={{
+                color: legend ? T.accentInk : T.muted, fontSize: 11.5, fontWeight: '700',
+              }}>
+                {shownCount.toLocaleString()} {shownCount === 1 ? 'spot' : 'spots'} on the map
+              </Text>
+            </Pressable>
+          </>
         )}
         <View style={{ flexDirection: 'row', gap: 8 }}>
           <ControlBtn
@@ -356,12 +406,22 @@ export function MapScreen() {
 
 const PIN = 23;
 
-function Pin({ colour, icon, count }: { colour: string; icon: string; count: number }) {
+/**
+ * Dungeon pins are SQUARE and surface pins are round.
+ *
+ * Hue alone had run out of room: night-only pals sit at #9B8CFF and dungeon
+ * spawns at #8AA6FF, which is the same colour to anyone not holding a swatch.
+ * Shape survives colour-blindness, small sizes and a busy map in a way a
+ * fourth shade of violet does not.
+ */
+function Pin({ colour, icon, count, square }: {
+  colour: string; icon: string; count: number; square?: boolean;
+}) {
   const many = count > 1;
   return (
     <View style={{
       width: PIN, height: PIN, marginLeft: -PIN / 2, marginTop: -PIN / 2,
-      borderRadius: PIN / 2, alignItems: 'center', justifyContent: 'center',
+      borderRadius: square ? 6 : PIN / 2, alignItems: 'center', justifyContent: 'center',
       backgroundColor: 'rgba(10,20,24,0.86)', borderWidth: 2, borderColor: colour,
     }}>
       {many ? (

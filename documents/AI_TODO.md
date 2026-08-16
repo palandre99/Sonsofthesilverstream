@@ -286,9 +286,11 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       different instruction — "go inside" not "walk here". Foxparks: 93 -> 189
       spots with it on. Caught a bug doing it: `filters.dungeons` was missing
       from the layer memo's deps, so the toggle did nothing until fixed.
-- [ ] F29 (own review) the surface teal and dungeon periwinkle are
-      distinguishable but close. The legend (F14) should carry the key, and
-      the dungeon hue may want more separation once it exists.
+- [x] F29 DONE — and the audit found worse than I'd flagged: night-only pals
+      (#9B8CFF) and dungeon pins (#8AA6FF) were nearly the SAME hue. Hue had
+      run out of room, so dungeon pins are now SQUARE and surface pins round.
+      Shape survives colour-blindness, small sizes and a busy map in a way a
+      fourth shade of violet does not. Eye-verified: unmistakable at pin size.
 - [x] F25 DONE 2026-08-16 ~00:55 — and it was far bigger than Foxparks.
       **167 of 260 species** showed a wild range on the card that the game's
       own spawner table disagrees with. Cause: palcalc's minWild/maxWild is
@@ -314,7 +316,11 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       driver, since tapping a map pin cannot be done by text.
 - [ ] F13 Found/not-found tracking per marker, persisted per save profile —
       every competitor has it; ours should key off the box where it can.
-- [ ] F14 In-game feel: region name labels on the map, and a legend.
+- [x] F14a DONE 2026-08-16 ~02:05: LEGEND. The count pill is now a toggle —
+      tap "189 spots on the map" and it opens a key of what is actually ON,
+      with matching swatches and per-layer counts. Deliberately not a static
+      key to all 23 layers, which would be a wall of colour to filter by eye.
+- [ ] F14b Region name labels on the map (the other half of "in-game feel").
 - [ ] F15 Fishing spots + hackable towers are in the CEO's scope list but are
       NOT in either upstream's layer set — research whether the tables exist
       before promising them.
