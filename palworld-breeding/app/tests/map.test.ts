@@ -31,7 +31,41 @@ const palsJson = JSON.parse(
 /** map modules that must stay byte-identical across the two apps */
 const SHARED_MAP = ['projection.ts', 'points.ts', 'layers.ts'];
 
+/**
+ * Duplicated in both trees ON PURPOSE, with different innards. Each entry
+ * needs its own guard for whatever part of it must NOT drift — listing it
+ * here only says the difference is deliberate, not that it is unchecked.
+ */
+const FORKED_MAP: Record<string, string> = {
+  'found.ts': 'AsyncStorage on the phone, localStorage in the browser; the '
+    + 'tick format is pinned separately, the storage keys differ by design',
+};
+
 describe('map module copies', () => {
+  it('no map module can be duplicated into both trees unnoticed', () => {
+    // The gate was a hand-written list, so a NEW file copied into both trees
+    // simply was not checked — which is exactly how found.ts came to carry a
+    // comment claiming its storage key matched the phone's when it did not.
+    // Now a duplicated file must be classified as one or the other, and the
+    // suite is what notices, rather than someone remembering.
+    const appDir = join(__dirname, '..', 'src', 'map');
+    const mobileDir = join(__dirname, '..', '..', 'mobile', 'src', 'map');
+    const mobileFiles = new Set(readdirSync(mobileDir));
+    const inBoth = readdirSync(appDir).filter((f) => mobileFiles.has(f));
+
+    expect(inBoth.length, 'the two map folders must actually be readable')
+      .toBeGreaterThan(2);
+    for (const file of inBoth) {
+      expect(
+        SHARED_MAP.includes(file) || file in FORKED_MAP,
+        `${file} is in BOTH app/src/map and mobile/src/map but is neither `
+        + 'byte-identical (add it to SHARED_MAP) nor a deliberate fork (add it '
+        + 'to FORKED_MAP with the reason, and give the part that must not '
+        + 'drift its own test)',
+      ).toBe(true);
+    }
+  });
+
   it.each(SHARED_MAP)('%s is byte-identical in app/ and mobile/', (file) => {
     const hash = (p: string) => createHash('sha256').update(readFileSync(p)).digest('hex');
     const a = join(__dirname, '..', 'src', 'map', file);
