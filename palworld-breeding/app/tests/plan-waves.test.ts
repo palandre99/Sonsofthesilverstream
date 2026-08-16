@@ -19,7 +19,7 @@
 import { describe, expect, it } from 'vitest';
 import breedingJson from '../../data/breeding_1_0.json';
 import { BreedingEngine, type BreedingData } from '../src/engine/formula';
-import { derivations, planFor, type PlanStep } from '../src/engine/planner';
+import { closure, derivations, planFor, type PlanStep } from '../src/engine/planner';
 
 const engine = new BreedingEngine(breedingJson as unknown as BreedingData);
 
@@ -38,10 +38,17 @@ const CASES: { name: string; box: string[]; targets: string[] }[] = [
   },
 ];
 
-const PLANS = CASES.map((c) => ({
-  ...c,
-  steps: planFor(engine, c.box, c.targets, derivations(engine, new Set(c.box))).steps,
-}));
+const PLANS = CASES.map((c) => {
+  // built ONCE at module load: `derivations` is the expensive half (seconds),
+  // and vitest's per-test timeout is 5s — calling it inside a test times out.
+  const derivs = derivations(engine, new Set(c.box));
+  return {
+    ...c,
+    derivs,
+    reach: closure(engine, c.box),
+    steps: planFor(engine, c.box, c.targets, derivs).steps,
+  };
+});
 
 describe('a phase never contains a step that waits on that same phase', () => {
   for (const { name, steps } of PLANS) {
@@ -122,6 +129,23 @@ describe('a phase never contains a step that waits on that same phase', () => {
         })
         .filter(Boolean);
       expect(wrong).toEqual([]);
+    }
+  });
+
+  // The Paldex header says "N/299 reachable" from `closure`; the Plan calls a
+  // goal unreachable from `derivations`. Those are two independent code paths
+  // answering the same question on two different screens, so if they ever
+  // disagree the app contradicts itself in front of the player. Measured equal
+  // across an 8-pal, a 10-pal and a single-pal box when this was written.
+  it('the Paldex’s "reachable" agrees exactly with the Plan’s derivations', () => {
+    for (const { name, box, reach, derivs: derivable } of PLANS) {
+      const onlyReach = [...reach].filter((n) => !derivable.has(n));
+      const onlyDerivable = [...derivable.keys()].filter((n) => !reach.has(n));
+      expect({ name, onlyReach, onlyDerivable })
+        .toEqual({ name, onlyReach: [], onlyDerivable: [] });
+      // and the pals you already own count as reachable, which is what the
+      // header means by it
+      for (const owned of box) expect(reach.has(owned)).toBe(true);
     }
   });
 

@@ -2075,6 +2075,37 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E81. THE WHOLE WEB APP IS FREE OF BAD MARKUP, AND THE TWO SCREENS THAT
+## ANSWER "CAN I GET IT?" AGREE EXACTLY 2026-08-17
+
+Two sweeps, both clean, one now guarded.
+
+- **INVALID NESTING: ZERO ANYWHERE.** Source scan of every `.tsx` (with JSX
+  and block comments stripped, because my first pass "found" two hits that
+  were my own explanatory comment): **0 block elements inside a `<p>`**. Then
+  the real test — a live `console.error` hook installed BEFORE visiting
+  **all five pages** (Calc, Odds, Paldex, Plan, Reference): **0 nesting
+  warnings**. On Reference with every claim expanded: **all 30 source lines
+  present and `closest('p') !== null` for every one**, and no `<p>` in the
+  live DOM contains a block element. The E80 fix is confirmed, and nothing
+  else of this class exists. A regex cannot see a block element emitted by a
+  nested COMPONENT — the console hook can, which is why both were run.
+- [x] **CROSS-SCREEN CONTRADICTION CHECK — the Paldex header says
+      "N/299 reachable" (from `closure`), the Plan calls a goal unreachable
+      (from `derivations`). Two independent code paths answering the same
+      question on two different screens.** Measured across an 8-pal, a 10-pal
+      and a single-pal box: **identical sets, 0 species in either direction**
+      (closure 255/derivations 255; 256/256; 1/1). Owned pals are counted as
+      reachable, which is what the header means. Now guarded in
+      `plan-waves.test.ts` and **mutation-proven** (made `closure` return
+      nothing; the test named the species only derivations could reach, then
+      planner.ts restored byte-for-byte).
+- **23rd BAD CHECK OF MINE:** the new test timed out at 5s because I called
+      `derivations` INSIDE it — the exact trap already written in my notes.
+      Moved to module scope with the other plans; the file now builds each
+      box's derivations, closure and plan once (3.2s total).
+- Suite: **337 passed + 1 expected fail**, 21 files, ~11s.
+
 ## E80. TWO MORE NESTED COMPONENTS — AND THE CONSOLE CAUGHT MY OWN E66 BUG
 ## 2026-08-17
 
