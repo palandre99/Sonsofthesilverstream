@@ -1473,6 +1473,47 @@ and u are idle and not working again… loop not working"
 => (c) He perceives IDLE TIME. Re-arm at 60s and do MORE per turn; never
    end a turn on one small fix.
 
+## E23. SUBSTANCE + THE CORE LOOP 2026-08-16 (no CEO prompt — the lane)
+
+- [x] E23a GOAL PROGRESS NAMES THE NEXT PAIR (commit 8236284, PUBLISHED).
+      A bar and "Katress Ignis 0/16" told him how far off he was and nothing
+      about what to DO — he had to scan 23 phases for the step that was his,
+      and a 25-step goal just looked hopeless. Each goal now names its next
+      step underneath and PREFERS a step he can breed RIGHT NOW over an
+      earlier blocked one. Verified on a real 9-goal / 40-step plan: all
+      nine resolved to something actionable ("Tetroise 0/25 — Breed now:
+      Cattiva + Cremis"). Blocked goals read "Next:"; finished goals say so.
+- [x] E23b **CORE HATCH LOOP VERIFIED END TO END — no bugs.** tick →
+      HatchSheet → "♂ only" (box 22→23, Pengullet Lux {m:true,f:false},
+      DONE stays 0/40, READY NOW 7→8) → "Got the ♀ — complete it" (DONE
+      1/40, half-done badge clears, Cinnamoth 0/2→1/2 and its next pair
+      advances to "Celaray + Pengullet Lux", goal list re-sorts).
+- [x] E23c **UNTICK BUG — REAL, AND IT CORRUPTED THE PALDEX** (commit
+      4b2ea55, both platforms, PUBLISHED).
+      ROOT CAUSE: `completeStep` recomputed `addedM`/`addedF` from CURRENT
+      ownership. Finishing a HALF-DONE step calls it a second time, by which
+      point the first tick has already put one gender in the box — so it
+      concluded "I did not add the male", OVERWROTE the record that said it
+      had, and unticking then removed only the female. A pal the plan
+      invented stayed in the Paldex forever, and every later plan treated it
+      as owned.
+      FIX: once a tick has claimed a gender it keeps the claim while it
+      still holds it (`got.m && (!hadM || prev.addedM)`).
+      PROVEN by replaying the exact sequence: record went addedM false →
+      true, and untick now empties the pal (box 23→22). OPPOSITE CASE ALSO
+      PROVEN — a pre-owned pal survives untick untouched, only the
+      tick-added gender goes. **Lesson: when changing data-integrity logic,
+      test the over-removal case too.**
+- [x] E23d "START OVER" AND "CLEAR PLAN" DIALOGS — both honest, no bugs.
+      Start over: Ribbuny (tick-added) REMOVED, pre-owned Mozzarina SURVIVED
+      intact, ticks cleared, box 24→23, DONE back to 0/40 — exactly what its
+      copy promises. Clear plan: collection untouched (23→23), plan and
+      ticks gone, back to the welcome screen. Both inherit the E23c fix.
+- [x] E23e WEB BATCH (commit 107503b + the web half of 4b2ea55): covered-
+      helpers heading, waiting-on duplication, gender wording, and the
+      completeStep claim fix. COMMITTED, NOT DEPLOYED — website goes live on
+      a push to main, which is the CEO's call.
+
 ## E22. SELF-FOUND SWEEPS + COPY PASS 2026-08-16 (no CEO prompt — the lane)
 
 - [x] E22a MOBILE A11Y SWEEP **COMPLETE** (commits a0dba5c, 3db0739, f354a76,
