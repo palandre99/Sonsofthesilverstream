@@ -64,7 +64,33 @@ function parseImport(text: string): { entries: [string, OwnedGenders][]; unknown
   const lower = new Map(Object.keys(pals).map((n) => [n.toLowerCase(), n]));
   const byName = new Map<string, OwnedGenders>();
   const unknown: string[] = [];
-  for (const raw of text.split(/\r?\n/)) {
+  const trimmed = text.trim();
+
+  // A JSON backup taken on the website used to paste in here as 299
+  // unreadable lines — the site can write AND read one, the phone could do
+  // neither. Same branch as app/src/modules/paldex.tsx: only `true` or an
+  // {m,f} object counts as owned, so a species recorded as false/null is not
+  // resurrected.
+  if (trimmed.startsWith('{')) {
+    try {
+      const obj = JSON.parse(trimmed) as Record<string, unknown>;
+      const source = (obj.box ?? obj) as Record<string, unknown>;
+      for (const [k, v] of Object.entries(source)) {
+        const name = lower.get(k.toLowerCase());
+        if (!name) { unknown.push(k); continue; }
+        let owned: OwnedGenders | null = null;
+        if (v === true) owned = { m: true, f: true };
+        else if (typeof v === 'object' && v !== null) {
+          const g = v as Partial<OwnedGenders>;
+          owned = { m: g.m === true, f: g.f === true };
+        }
+        if (owned && (owned.m || owned.f)) byName.set(name, owned);
+      }
+      return { entries: [...byName], unknown };
+    } catch { /* not valid JSON after all — fall through to line parsing */ }
+  }
+
+  for (const raw of trimmed.split(/\r?\n/)) {
     const line = raw.trim().replace(/^[-*•]\s*/, '');
     if (!line || line.startsWith('#')) continue;
     const m = /^(.*?)(?:\s*[·|,]?\s*(♂|♀|\bm\b|\bf\b))?$/i.exec(line);
@@ -91,7 +117,8 @@ function ImportSheet({ onClose }: { onClose: () => void }) {
           <Btn label="Close" onPress={onClose} small />
         </View>
         <Text style={s.body}>
-          Paste names, one per line (optional ♂/♀ suffix). Nothing is applied until
+          Paste names, one per line (optional ♂/♀ suffix), or a JSON backup
+          from the website. Nothing is applied until
           you confirm.
         </Text>
         <TextInput

@@ -2075,6 +2075,35 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E72. THE PHONE CAN READ A WEBSITE BACKUP NOW 2026-08-17
+
+The one actionable gap E71 logged, closed.
+
+- [x] **The website can write AND read a JSON backup; the phone could do
+      neither.** A backup taken on the site pasted into the phone as
+      unreadable lines. The phone never *claimed* to accept one — its copy
+      said "Paste names, one per line" — so this was a missing capability
+      rather than a false sentence, but the CEO uses both. The JSON branch
+      from `app/src/modules/paldex.tsx` is now in the phone's `parseImport`,
+      **including the rule that only `true` or an `{m,f}` object counts as
+      owned**, so a species recorded as `false`/`null` is not resurrected.
+- [x] **The copy now says so** — "…or a JSON backup from the website" — since
+      a capability nobody is told about may as well not exist.
+- **Verified on the 375x812 render with a real backup** containing all four
+      shapes: `{m:true,f:false}`, `true`, `{m:false,f:true}`, `false`, plus a
+      junk key. Sheet reads **"3 RECOGNISED · 1 NOT RECOGNISED"** — Anubis
+      (`false`) correctly excluded, `NotAPal` correctly flagged. Nothing
+      overflows.
+- **HIS COLLECTION WAS NEVER TOUCHED:** the sheet previews before applying,
+      I read the preview and pressed Close, and confirmed the header still
+      says "26 owned" before and after. **Never press Apply on his save.**
+- **19th BAD CHECK OF MINE:** my first patch asserted and aborted because the
+      search string held a REAL carriage return instead of the two characters
+      `` — exactly the trap already written in my own notes ("use RAW
+      strings in python heredocs"). The assert did its job and nothing was
+      written. **Rule (9) paid for itself: an edit that checks its own
+      assumptions fails safely.**
+
 ## E71. THE COLLECTION ROUND-TRIP NOW HAS A GUARD 2026-08-17
 
 Kept hunting true-but-unguarded promises.
