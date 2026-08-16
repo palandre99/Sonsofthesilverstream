@@ -33,7 +33,9 @@ import { REGION_SPOTS } from '../data/regionSpots.g';
 import { takeIntentPayload } from '../nav/intent';
 import { regionsFor } from '../map/layers';
 import { ownedAny, pals } from '../store';
-import { foundKey, isFound, loadFound, onFoundChange, toggleFound } from '../map/found';
+import {
+  clearFound, foundCount, foundKey, isFound, loadFound, onFoundChange, toggleFound,
+} from '../map/found';
 
 type Sheet = null | 'layers' | 'pals';
 
@@ -540,6 +542,7 @@ export function MapScreen() {
           filters={filters}
           onToggle={togglePoi}
           onClear={() => patch({ poi: new Set() })}
+          onClearFound={clearFound}
           onClose={() => setSheet(null)}
         />
       )}
@@ -681,8 +684,9 @@ function SheetShell({ title, onClear, onClose, children }: {
   );
 }
 
-function LayerSheet({ filters, onToggle, onClear, onClose }: {
-  filters: MapFilters; onToggle: (id: string) => void; onClear: () => void; onClose: () => void;
+function LayerSheet({ filters, onToggle, onClear, onClearFound, onClose }: {
+  filters: MapFilters; onToggle: (id: string) => void; onClear: () => void;
+  onClearFound: () => void; onClose: () => void;
 }) {
   const groups = useMemo(() => {
     const by = new Map<LayerGroup, ReturnType<typeof poiLayers>>();
@@ -697,6 +701,22 @@ function LayerSheet({ filters, onToggle, onClear, onClose }: {
   return (
     <SheetShell title="What to show" onClear={onClear} onClose={onClose}>
       <ScrollView contentContainerStyle={{ padding: 14, gap: 16 }}>
+        {foundCount() > 0 && (
+          <Pressable
+            onPress={onClearFound}
+            accessibilityRole="button"
+            style={{
+              alignSelf: 'flex-start', flexDirection: 'row', alignItems: 'center', gap: 7,
+              paddingHorizontal: 11, paddingVertical: 9, borderRadius: 11,
+              borderWidth: 1, borderColor: T.line, backgroundColor: T.surface,
+            }}
+          >
+            <Icon name="backup-restore" size={15} color={T.muted} />
+            <Text style={{ color: T.muted, fontWeight: '700', fontSize: 12.5 }}>
+              Clear {foundCount()} found {foundCount() === 1 ? 'mark' : 'marks'}
+            </Text>
+          </Pressable>
+        )}
         {groups.map(([group, list]) => (
           <View key={group} style={{ gap: 9 }}>
             <Text style={{

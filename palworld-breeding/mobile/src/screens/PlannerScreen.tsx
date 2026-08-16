@@ -34,6 +34,19 @@ import {
  * the website cannot drift into different words. */
 const whereOf = (u: UnlockAdvice) => catchWhere(u, (n) => pals[n]?.regions ?? []);
 
+/** Unlock advice, cached ACROSS REMOUNTS.
+ *
+ * Every tab switch remounts this screen (the Boundary key in App.tsx), so a
+ * useMemo is thrown away each time you leave and come back. Measured on the
+ * QA harness with 20 stuck goals: a **537 ms long task on every single visit
+ * to the Plan tab** — the advisor recomputing its fixpoint from scratch,
+ * blocking the thread while the screen tried to paint.
+ *
+ * Same fix the Odds screen already uses for the same reason: a module-level
+ * slot that outlives the component. Keyed on everything the answer depends
+ * on, so a changed box, level or goal list still recomputes. */
+let unlockCache: { key: string; value: UnlockAdvice[] } | null = null;
+
 /** What the game files say about catching one species. `minWild === null` is
  * the game's own "never spawns wild" (raid/tower/boss); no row at all means
  * we hold no data and must say so rather than guess. */
@@ -361,15 +374,30 @@ export function PlannerScreen() {
    * 53 ms warm, and it only ever runs when something is actually stuck —
    * a plan where everything is reachable pays nothing. */
   const playerLevel = getPlayerLevel();
-  const unlocks = useMemo(() => {
-    if (!plan || plan.unreachable.length === 0) return [];
-    // everything in plan.unreachable is unreachable by definition, so the
-    // planner's own verdict stands in for a second closure pass
-    return adviseUnlocks(
-      engine, ownedNames, new Set(), plan.unreachable, wildFact, playerLevel,
-    );
+  const unlockKey = plan && plan.unreachable.length
+    ? `${plan.unreachable.join('|')}#${ownedNames.join(',')}#${playerLevel ?? ''}`
+    : '';
+  const [unlocks, setUnlocks] = useState<UnlockAdvice[]>(
+    () => (unlockKey && unlockCache?.key === unlockKey ? unlockCache.value : []),
+  );
+  useEffect(() => {
+    if (!unlockKey) { setUnlocks([]); return undefined; }
+    if (unlockCache?.key === unlockKey) { setUnlocks(unlockCache.value); return undefined; }
+    // yield one frame first: the tab paints immediately and the advice fills
+    // in, instead of the whole screen waiting on the fixpoint
+    let alive = true;
+    const id = setTimeout(() => {
+      // everything in plan.unreachable is unreachable by definition, so the
+      // planner's own verdict stands in for a second closure pass
+      const value = adviseUnlocks(
+        engine, ownedNames, new Set(), plan!.unreachable, wildFact, playerLevel,
+      );
+      unlockCache = { key: unlockKey, value };
+      if (alive) setUnlocks(value);
+    }, 0);
+    return () => { alive = false; clearTimeout(id); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [plan?.unreachable.join('|'), ownedNames.length, playerLevel]);
+  }, [unlockKey]);
 
   // per-goal progress: how many of the steps each goal depends on are done
   const goalProgress = useMemo(() => {
@@ -729,6 +757,12 @@ export function PlannerScreen() {
                   : 'The shortest way into each, easiest first. Set your player '
                     + 'level in My world and this gets tuned to how far you have got.'}
               </Text>
+              {/* the advice lands one frame later so the tab paints at once */}
+              {unlocks.length === 0 && (
+                <Text style={[s.body, { fontSize: 12, color: T.faint }]}>
+                  Working out your options…
+                </Text>
+              )}
               <View style={{ gap: 2 }}>
                 {unlocks.map((u) => (
                   <Pressable

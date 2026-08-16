@@ -538,8 +538,15 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       loading before the Paldex does.
 - [x] F37 Web parity for marker place names (the website's card leads with the
       place's own name too).
-- [ ] F38 Found-tracking is mobile only so far; the website needs the same,
-      and neither has a "clear all ticks" control yet (clearFound() exists).
+- [x] F38 DONE 2026-08-16 ~13:35: found-tracking on the website too, and a
+      "Clear N found marks" control in the layer sheet on both platforms
+      (singular/plural handled — no "1 marks"). The web keeps its own
+      found.ts because it persists through localStorage while the phone uses
+      AsyncStorage; shimming a storage API into the parity-gated shared folder
+      would have bought nothing. The KEY FORMAT is identical on both, so a
+      future box-sync can carry ticks across without translating them.
+      Verified: a tick survived a reload and the count read "Clear 1 found
+      mark".
 - [x] F14a DONE 2026-08-16 ~02:05: LEGEND. The count pill is now a toggle —
       tap "189 spots on the map" and it opens a key of what is actually ON,
       with matching swatches and per-layer counts. Deliberately not a static

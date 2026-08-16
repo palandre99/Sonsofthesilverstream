@@ -443,3 +443,10 @@
 /* No corner brackets here on purpose: the web map already sits in a bordered
    panel, so they read as noise. They belong on the phone, where the map is
    fullscreen and has no frame of its own. */
+.mapmark { margin-top: 6px; align-self: start; padding: 6px 10px; border-radius: 9px;
+  border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+  font-size: 12px; font-weight: 700; cursor: pointer; }
+.mapmark.on { border-color: var(--ok); color: var(--ok); background: var(--ok-soft); }
+.mapclear { padding: 7px 10px; border-radius: 9px; border: 1px solid var(--line);
+  background: var(--surface); color: var(--muted); font-size: 12px; font-weight: 700;
+  cursor: pointer; }

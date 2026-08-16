@@ -17,6 +17,7 @@ import {
   spawnLevels, spawnPoints, spawnablePals, type LayerGroup,
 } from '../map/layers';
 import { box } from '../state';
+import { clearFound, foundCount, foundKey, isFound, toggleFound } from '../map/found';
 
 const BASE = 1024;
 const MAX_ZOOM = 14;
@@ -43,7 +44,10 @@ export function MapPage() {
   const [night, setNight] = useState(true);
   const [q, setQ] = useState('');
   const [missingOnly, setMissingOnly] = useState(false);
-  const [picked, setPicked] = useState<{ title: string; lines: string[]; at: string } | null>(null);
+  const [picked, setPicked] = useState<
+    { title: string; lines: string[]; at: string; mark?: string } | null
+  >(null);
+  const [ticks, setTicks] = useState(0);   // bumps when a tick changes
 
   const contain = Math.min(size.w, size.h) || 1;
 
@@ -169,16 +173,20 @@ export function MapPage() {
   const markers = useMemo(() => {
     if (!view.k) return [];
     const budget = Math.max(40, Math.floor(360 / Math.max(1, active.length)));
-    const out: { key: string; u: number; v: number; count: number; l: Layer }[] = [];
+    const out: {
+      key: string; u: number; v: number; count: number; l: Layer; done: boolean;
+    }[] = [];
     for (const l of active) {
       if (!l.set) continue;
       const hits = pointsInRect(l.set, rect.u0, rect.v0, rect.u1, rect.v1);
       for (const c of clusterPoints(l.set, hits, view.k, PIN + 14).slice(0, budget)) {
-        out.push({ key: `${l.key}:${c.cell}`, u: c.u, v: c.v, count: c.count, l });
+        const done = c.count === 1 && l.key.startsWith('poi:')
+          && isFound(foundKey(l.key.slice(4), region, c.index));
+        out.push({ key: `${l.key}:${c.cell}`, u: c.u, v: c.v, count: c.count, l, done });
       }
     }
     return out;
-  }, [active, rect, view.k]);
+  }, [active, rect, region, ticks, view.k]);
 
   const identify = useCallback((u: number, v: number) => {
     const reach = 26 / Math.max(1, view.k);
@@ -212,6 +220,9 @@ export function MapPage() {
       title: own || best.label,
       lines: own ? [best.label, ...lines] : lines,
       at: `${r.x}, ${r.y}`,
+      mark: best.key.startsWith('poi:')
+        ? foundKey(best.key.slice(4), region, bestIndex)
+        : undefined,
     });
   }, [active, region, view.k]);
 
@@ -313,6 +324,8 @@ export function MapPage() {
               style={{
                 left: m.u * BASE, top: m.v * BASE,
                 borderColor: m.l.colour, color: m.l.colour,
+                // a found marker fades back, so what stands out is what is left
+                opacity: m.done ? 0.32 : 1,
                 transform: `translate(-50%, -50%) scale(${BASE / view.k})`,
               }}
             >
@@ -333,9 +346,15 @@ export function MapPage() {
         </div>
 
         {picked && (
-          <div class="mapcard" onClick={() => setPicked(null)}>
+          <div class="mapcard">
             <b>{picked.title}</b><span>{picked.at}</span>
             {picked.lines.map((l) => <em key={l}>{l}</em>)}
+            {picked.mark && (
+              <button type="button" class={isFound(picked.mark) ? 'mapmark on' : 'mapmark'}
+                onClick={() => { toggleFound(picked.mark!); setTicks((n) => n + 1); }}>
+                {isFound(picked.mark) ? '✓ Got this one' : 'Mark as found'}
+              </button>
+            )}
           </div>
         )}
         {shown > 0 && (
@@ -382,6 +401,13 @@ export function MapPage() {
             );
           })}
         </div>
+
+        {foundCount() > 0 && (
+          <button type="button" class="mapclear"
+            onClick={() => { clearFound(); setTicks((n) => n + 1); }}>
+            Clear {foundCount()} found {foundCount() === 1 ? 'mark' : 'marks'}
+          </button>
+        )}
 
         <h3>What to show</h3>
         {groups.map(([group, list]) => (
