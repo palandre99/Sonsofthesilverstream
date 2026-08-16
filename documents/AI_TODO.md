@@ -1744,6 +1744,40 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E42. SUGGESTED GOALS HOSTILE READ 2026-08-16 (no CEO prompt — the lane)
+
+The last and largest unread component (813 lines). Read against CLAUDE.md's
+own rules first, since that is where E41 came from.
+
+- [x] **"All twelve, verified" was true BY LUCK, not by construction.** The
+      Aura squad section shipped twelve pal names typed into the file under a
+      blurb promising exactly that count. I checked every pal's
+      partner-effect text against the claim: **the twelve were exactly right
+      — 12 in the data, 12 in the list, no misses, no wrong entries.** No bug
+      today. But a patch adding a thirteenth aura pal would have left the app
+      stating a number that had quietly become false, with nothing to catch
+      it. **This same file already calls deriving from the effect text "the
+      honest way to build effect squads without hand-picking"** and has an
+      `effectItems(re)` helper for it — the aura squad just was not using it.
+      Now derived, and the count counts itself. Verified on device: the
+      section reads "All 12, straight from the game's own effect text."
+- [x] CHECKED AND CORRECT, no change: the Fighting section weights attack
+      double and SAYS so in its blurb ("attack counted double"); its gold
+      spark is `COMBAT_COMMUNITY` and the blurb calls it community-favourite;
+      "The best pals in the game" names its sources and date inline
+      ("community consensus (game8 + pindrop, Aug 2026)"); the mount section
+      labels speed callouts community-measured and saddle levels as paldb's;
+      work sections say "levels straight from the game data".
+- [x] `src/data/meta.ts` is the model for how this should be done — a
+      provenance header naming both sources, a REJECTED source recorded with
+      the reason (skycoach, dated pre-1.0 picks), and an explicit rule that
+      objective numbers never live there. **AURA_SQUAD was the one subjective
+      list living outside it**; deriving it removes the exception entirely.
+- SEVENTH BAD CHECK OF MINE: my first completeness query used
+  /every other pal/ and returned ZERO matches, which briefly looked like all
+  twelve were wrong. The game text says "for all other Base Pals". The app
+  was right; the regex was not.
+
 ## E41. THE PROVENANCE PROMISE WAS BROKEN IN TWO PLACES 2026-08-16
 ## (no CEO prompt — found reading PalDetail.tsx)
 

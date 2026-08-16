@@ -155,8 +155,6 @@ function fighterItems(): GoalItem[] {
   }));
 }
 
-const AURA_SQUAD = ['Ribbuny', 'Cinnamoth', 'Clovee', 'Petallia', 'Tetroise', 'Wumpo',
-  'Amione', 'Eikthyrdeer Terra', 'Katress Ignis', 'Mycora', 'Puffolt', 'Smokie Cryst'];
 
 /** pals whose partner-skill text matches — the honest way to build effect
  * squads without hand-picking (text shown verbatim on the rows) */
@@ -165,6 +163,19 @@ function effectItems(re: RegExp): GoalItem[] {
     .filter((n) => re.test(pals[n].partner_effect ?? ''))
     .map((n) => ({ name: n, effect: pals[n].partner_effect ?? undefined }));
 }
+/** The base-wide aura pals, DERIVED from the game's own partner-effect text
+ *  rather than hand-listed.
+ *
+ *  It used to be twelve names typed into this file, under a blurb promising
+ *  "All twelve, verified." I checked, and the twelve were exactly right — but
+ *  right by luck, not by construction: a patch adding a thirteenth aura pal
+ *  would have left the app confidently stating a number that had become
+ *  false, with nothing to catch it. This file already calls deriving from the
+ *  effect text "the honest way to build effect squads without hand-picking";
+ *  the aura squad is built that way now too, and the count counts itself.
+ *  (self-found on a code read, 2026-08-16) */
+const AURA_RE = /Work Suitability Level for all other/i;
+
 const LOOT_RE = /defeated|dropped by enemies/i;
 const RANCH_RE = /assigned to Ranch/i;
 
@@ -200,8 +211,8 @@ function buildSections(): SectionDef[] {
     },
     {
       id: 'aura', title: 'Aura squad', icon: 'creation',
-      blurb: 'Each gives +1 work suitability to every other pal in its base (auras don\'t stack — spread them across bases). All twelve, verified.',
-      items: AURA_SQUAD.map((n) => ({ name: n, effect: pals[n]?.partner_effect ?? undefined })),
+      blurb: `Each raises one work suitability for every other pal in its base (auras don't stack — spread them across bases). All ${effectItems(AURA_RE).length}, straight from the game's own effect text.`,
+      items: effectItems(AURA_RE),
     },
     {
       id: 'bestof', title: 'The best pals in the game', icon: 'crown-outline', gold: true,
