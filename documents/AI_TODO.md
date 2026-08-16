@@ -2075,6 +2075,43 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E69. THE PRIVACY PROMISE NOW HAS A GUARD, AND THE LAST UNUSED FIELD IS
+## ON SCREEN 2026-08-17
+
+Swept the Settings/About screens, which had never been checked.
+
+- **"No ads, no accounts, no tracking. Your collection and plans live on this
+  device only." — TESTED AND TRUE.** 30 dependencies, **none** of them
+  analytics, ads, telemetry or crash reporting; **zero** network calls
+  anywhere in mobile/src (no fetch, XMLHttpRequest, WebSocket, sendBeacon);
+  storage is AsyncStorage plus expo-file-system, both device-local.
+  `expo-updates` does contact Expo — that is the OTA mechanism, carries no
+  collection data, and the same screen shows the update id and channel right
+  above the promise, so it is disclosed rather than hidden.
+- [x] **GUARDED** — new `app/tests/privacy-promise.test.ts` (4 tests, 174 ms)
+      scans every mobile source file for network calls, scans package.json
+      against a banned list, and asserts the promise text still exists.
+      **PROVEN TO FAIL:** added a real `fetch()` to store.ts AND
+      `@sentry/react-native` to package.json, watched both tests go red with
+      the offender named, then `git checkout` restored both byte-for-byte.
+- **"Community-measured numbers are always labelled as such" — CHECKED,
+  TRUE.** Cakes, condensing figures, speed callouts and saddle levels all
+  carry their label. The one community figure that could have leaked in
+  unlabelled — "~24% male / ~20% female per slot" — is NOT used: the app's
+  gender probabilities come from `genderRatio.g.ts` (palcalc
+  BreedingGenderProbability), which is datamined.
+- [x] **`native_pals` WAS THE LAST MINED-BUT-UNRENDERED FIELD.** 8 passives,
+      and **zero overlap with `exclusive_to`**, so the existing "native to"
+      warning never covered them. The Odds Lab now says who already has one —
+      **19 pals are born with Heavyweight**, so catching beats breeding for
+      it. Mobile shipped; web port next.
+- **18th BAD CHECK OF MINE, caught on the render:** my own new sentence ended
+  "Catching one may be quicker than breeding for it" — nonsense for Mercy
+  Hit, whose two entries are ITEMS (Ring of Mercy, Pal Tamers Glasses), not
+  pals. You cannot catch a ring. The advice half is now conditional on a real
+  pal carrying it. **Reading the rendered sentence caught what the types
+  could not.**
+
 ## E68. "WITH THE MATHS SHOWN" SHOWED NO MATHS FOR TWO KINDS OF RESULT 2026-08-16
 
 The Calculator's own help card promises "you get exactly what they make, with

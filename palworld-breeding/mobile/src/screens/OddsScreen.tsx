@@ -9,6 +9,24 @@ import {
   type CakeId,
 } from '../engine/odds';
 
+/** Passives in the pool that something already carries. Not a warning — none
+ * of these 8 is exclusive, they all breed normally — but if 19 pals are born
+ * with Heavyweight, catching one may beat breeding for it, and the app never
+ * said so. Entries are the dataset's own words; the only reshaping is moving
+ * the "item: " prefix into plain English. */
+function bornWith(p: { native_pals?: string[] | null }): {
+  names: string[]; anyPal: boolean;
+} {
+  const raw = p.native_pals ?? [];
+  return {
+    names: raw.map((n) => (n.startsWith('item: ') ? `the ${n.slice(6)} (an item)` : n)),
+    // Mercy Hit's two entries are ITEMS, not pals. "Catching one may be
+    // quicker" is nonsense for a Ring of Mercy — caught on the render, so the
+    // advice half only appears when a real pal carries it.
+    anyPal: raw.some((n) => !n.startsWith('item: ')),
+  };
+}
+
 function pct(p: number): string {
   if (!isFinite(p) || p <= 0) return '0%';
   if (p >= 0.99995) return '100%';
@@ -248,6 +266,23 @@ function PassivesTab() {
           </View>
         )}
       </Card>
+
+      {pool.map((n) => {
+        const p = byName.get(n);
+        const born = p ? bornWith(p) : { names: [], anyPal: false };
+        if (!born.names.length) return null;
+        return (
+          <Card key={`born-${n}`} style={{ marginTop: 10 }}>
+            <Text style={[s.body, { fontSize: 12.5 }]}>
+              <Text style={{ fontWeight: '800', color: T.ink }}>{n}</Text>
+              {' '}is already carried by {born.names.length === 1 ? born.names[0]
+                : born.names.length <= 4 ? born.names.join(', ')
+                : `${born.names.slice(0, 3).join(', ')} and ${born.names.length - 3} more`}
+              .{born.anyPal ? ' Catching one may be quicker than breeding for it.' : ''}
+            </Text>
+          </Card>
+        );
+      })}
 
       {warnings.map((w) => (
         <Card key={w} style={{ backgroundColor: T.warnSoft, borderColor: T.warn, marginTop: 10 }}>

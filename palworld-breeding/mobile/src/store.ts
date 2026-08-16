@@ -69,6 +69,10 @@ export interface PassiveInfo {
   mutation_exclusive: boolean;
   world_tree: boolean;
   exclusive_to: string[];
+  /** Pals (and, for Mercy Hit, items) that already carry this passive.
+   * Mined for 8 passives, none of which is in `exclusive_to`, so the
+   * "native to" warning never covered them and nothing showed it. */
+  native_pals: string[] | null;
 }
 
 export const breeding = breedingJson as unknown as BreedingData;
