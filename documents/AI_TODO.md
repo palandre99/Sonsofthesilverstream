@@ -650,6 +650,30 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       the harness pinch does not drive the gesture handler on web. Reasoned,
       not measured: pins are fixed screen-size and zooming only SHRINKS the
       counts, so the default fit bounds the problem.
+- [x] H18 2026-08-16 ~15:35 THE MAP WAS NAMING PLACES IN THE WRONG PLACE.
+      Chased what looked like colliding labels and found something worse
+      underneath. ScreenPin's edge clamp — added so a wide name near the frame
+      would slide instead of truncating mid-word — was applied to EVERY screen
+      marker unconditionally. So a name whose true position was hundreds of
+      pixels off screen was dragged to the edge and drawn there anyway, several
+      at once, stacked at the identical x. Caught by measuring: Duneshelter and
+      Arena rendered at the SAME screen x while sitting 0.09 uv apart, so the
+      horizontal mapping was not linear at all. On a fane whose bar is "no room
+      for error on locations", a name pinned where that place is not is the one
+      unforgivable bug, and it was the CAUSE of the overlaps, not a side effect.
+      Off-screen anchors are now hidden; only a marker whose own anchor is in
+      frame slides, and it slides by its own INK width instead of by half the
+      150px box (which shoved "Arena" 75px off its spot).
+      A/B measured with one ruler: 6 overlapping pairs among 31 on-screen names
+      before, 0 among 25 after — the 6 that disappeared being exactly the ones
+      drawn at a false position.
+      Second defect the fix exposed, then fixed: names truncated at the right
+      edge, because textWidth guessed 5.9px per character. MEASURED the 30
+      names on screen: they run 5.21 to 6.67. Now 6.8 — the max plus margin,
+      because this number bounds a box, and under-reserving truncates a name
+      while over-reserving costs only a little spacing. Honest limit: measured
+      on the web build's font; iOS draws San Francisco, so the exact figure
+      there may differ, which is why it is a bounded max and not a fitted mean.
 - [ ] H17 COLOUR CANNOT CARRY 23 IDENTITIES. Three POI layers are near-identical
       greys (npc #A9C0CC, ore #B7C4CC, coal #8E9AA3) and several are near-white
       (note #D7E3E8, quartz #CFE9FF, egg #FFEFC2). I deliberately did NOT

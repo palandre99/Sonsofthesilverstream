@@ -45,15 +45,26 @@ function ScreenPin({ u, v, tx, ty, k, halfWidth, width, children }: {
   children: React.ReactNode;
 }) {
   const style = useAnimatedStyle(() => {
-    let x = tx.value + u * k.value;
+    const raw = tx.value + u * k.value;
+    let x = raw;
+    let show = 1;
     // Slide a wide marker back inside the frame rather than letting it run off
     // and truncate mid-word. Culling by the viewport could not do this
     // reliably — that rectangle is pushed on a threshold and lags the view —
     // and it is what real map apps do with edge labels anyway.
+    //
+    // But ONLY for a marker whose own anchor is on screen. This clamp used to
+    // apply to every marker unconditionally, so a name whose true position was
+    // hundreds of pixels off screen was dragged to the edge and drawn there —
+    // several at once, stacked at the identical x. That is not a decluttering
+    // artefact, it is the map stating a place is somewhere it is not, which on
+    // this fane is the one unforgivable bug. Off-screen anchors now stay off.
     if (halfWidth && width > halfWidth * 2) {
-      x = Math.min(width - halfWidth, Math.max(halfWidth, x));
+      if (raw < 0 || raw > width) show = 0;
+      else x = Math.min(width - halfWidth, Math.max(halfWidth, raw));
     }
     return {
+      opacity: show,
       transform: [{ translateX: x }, { translateY: ty.value + v * k.value }],
     };
   });

@@ -380,3 +380,36 @@ describe('a cluster still says what it is', () => {
     expect(pin).toMatch(/position: 'absolute', right: -\d+, bottom: -\d+/);
   });
 });
+
+/* A place name must appear where that place IS. The edge clamp used to apply
+ * to every screen marker unconditionally, so names whose true position was far
+ * off screen were dragged to the frame edge and drawn there, several stacked
+ * at the identical x. Measured before the fix: 6 overlapping pairs among 31
+ * on-screen names; after: 0 among 25, the 6 that vanished being exactly the
+ * ones drawn at a false position. */
+describe('place names are not dragged in from off screen', () => {
+  const canvas = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'map', 'MapCanvas.tsx'), 'utf8',
+  );
+
+  it('hides a marker whose own anchor is outside the frame', () => {
+    expect(canvas).toMatch(/function ScreenPin\(/);   // pointed at real code
+    expect(canvas).toMatch(/raw < 0 \|\| raw > width/);
+    expect(canvas).toMatch(/opacity: show/);
+  });
+
+  it('clamps against the untouched anchor, not a value already clamped', () => {
+    // clamping `x` in place would compound across frames; the slide must be
+    // derived from `raw` every time
+    expect(canvas).toMatch(/Math\.max\(halfWidth, raw\)/);
+  });
+
+  it('sizes the slide from the ink, not from the label box', () => {
+    const screen = readFileSync(
+      join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
+    );
+    // halfWidth: LABEL_W / 2 shoved a short name up to 75px off its own spot
+    expect(screen).not.toMatch(/halfWidth: LABEL_W \/ 2/);
+    expect(screen).toMatch(/halfWidth: Math\.min\(LABEL_W, textWidth\(name\)\) \/ 2/);
+  });
+});

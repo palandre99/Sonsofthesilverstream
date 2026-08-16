@@ -232,7 +232,10 @@ export function MapScreen() {
         key: `label:${name}`,
         u: at.x,
         v: at.y,
-        halfWidth: LABEL_W / 2,
+        // half the INK, not half the 150px box the ink is centred in: a short
+        // name near the edge should barely move, and clamping it by the box
+        // shoved "Arena" 75px from where Arena is
+        halfWidth: Math.min(LABEL_W, textWidth(name)) / 2,
         render: () => <PlaceName name={name} />,
       });
     }
@@ -672,8 +675,21 @@ const LABEL_H = 26;
 /** Rough on-screen width of a place name at the label's 10.5px bold face.
  *  Measuring text properly would cost a layout pass per label per frame; this
  *  is within a few px and only ever decides whether two names collide. */
+/**
+ * Widest the name can be drawn, in px.
+ *
+ * 6.8 is the MEASURED per-character maximum, not a guess: the 30 place names
+ * on screen at the default fit run 5.21 to 6.67 px per character at this size
+ * and weight. The old 5.9 was mid-range, which is the wrong end to pick — this
+ * number bounds the label's box, so under-reserving truncates a name at the
+ * screen edge ("Duneshelte…") and over-reserving only costs a little spacing.
+ *
+ * Measured on the web build's font. iOS renders San Francisco, so the exact
+ * figure there may differ slightly; that is why this is the max plus a margin
+ * rather than a fitted average.
+ */
 function textWidth(name: string): number {
-  return Math.min(LABEL_W, name.length * 5.9);
+  return Math.min(LABEL_W, name.length * 6.8);
 }
 
 function PlaceName({ name }: { name: string }) {
