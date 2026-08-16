@@ -5,7 +5,7 @@
  * byte-identical on web and mobile (logic-parity gate). */
 import { useEffect, useMemo, useState } from 'preact/hooks';
 import {
-  box, engine, breedingRaw, ownedAny, pals, playerLevel, setPlayerLevel,
+  box, engine, breedingRaw, hasGender, ownedAny, pals, playerLevel, setPlayerLevel,
 } from '../state';
 import { PalIcon } from './shared';
 import {
@@ -382,17 +382,80 @@ function BrowserRow({ item, recommended, bctx }: {
   );
 }
 
+/** The nine element names, in the game's own order. The Paldex keeps its own
+ * copy; this list is short and stable enough that sharing it would cost more
+ * than it saves. */
+const ELEMENTS = [
+  'Neutral', 'Fire', 'Water', 'Grass', 'Electric', 'Ice', 'Ground', 'Dark', 'Dragon',
+];
+
+interface Filt {
+  elements: string[];
+  work: string | null;
+  own: 'all' | 'owned' | 'missing' | 'pairready' | 'onegender';
+}
+const NO_FILT: Filt = { elements: [], work: null, own: 'all' };
+const filtCount = (f: Filt) =>
+  f.elements.length + (f.work ? 1 : 0) + (f.own === 'all' ? 0 : 1);
+
+/** Same filter meanings the Paldex uses, so a chip does what the player
+ * already learned it does there. */
+function applyFilt(names: string[], f: Filt): string[] {
+  let list = names;
+  if (f.elements.length) {
+    list = list.filter((n) => f.elements.some((e) => pals.value[n]?.elements.includes(e)));
+  }
+  if (f.work) list = list.filter((n) => ((pals.value[n]?.work ?? {})[f.work!] ?? 0) > 0);
+  switch (f.own) {
+    case 'owned': return list.filter(ownedAny);
+    case 'missing': return list.filter((n) => !ownedAny(n));
+    case 'pairready':
+      return list.filter((n) => hasGender(n, 'm') && hasGender(n, 'f'));
+    case 'onegender':
+      return list.filter((n) => ownedAny(n) && !(hasGender(n, 'm') && hasGender(n, 'f')));
+    default: return list;
+  }
+}
+
+function FiltChip({ on, label, onClick }: {
+  on: boolean; label: string; onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={on}
+      style={{
+        borderRadius: '10px', padding: '4px 9px', fontSize: '12px',
+        fontWeight: 700, cursor: 'pointer', font: 'inherit',
+        border: `1.5px solid ${on ? 'var(--accent)' : 'var(--line)'}`,
+        background: on ? 'var(--accent-soft)' : 'var(--surface)',
+        color: on ? 'var(--accent-ink)' : 'var(--muted)',
+      }}
+    >{label}</button>
+  );
+}
+
 function CategoryBrowser({ sec, bctx, onClose }: {
   sec: SectionDef; bctx: BrowseCtx; onClose: () => void;
 }) {
   const [q, setQ] = useState('');
+  // the CEO asked why a category of 83 mounts had no filter when the Paldex
+  // has one (2026-08-16). The phone got these first; this is the same set.
+  const [filt, setFilt] = useState<Filt>(NO_FILT);
+  const [showFilt, setShowFilt] = useState(false);
   const ranked = orderItems(sec, bctx.attain);
   const rec = sec.scored
     ? recommendedSet(ranked.map((x) => ({ name: x.name, value: x.value ?? 0 })), bctx.attain)
     : new Set<string>();
-  const rows = q
-    ? ranked.filter((x) => x.name.toLowerCase().includes(q.toLowerCase()))
-    : ranked;
+  const rows = (() => {
+    let out = ranked;
+    if (filtCount(filt)) {
+      const keep = new Set(applyFilt(out.map((x) => x.name), filt));
+      out = out.filter((x) => keep.has(x.name));
+    }
+    return q ? out.filter((x) => x.name.toLowerCase().includes(q.toLowerCase())) : out;
+  })();
   const missing = rows
     .filter((x) => !bctx.targets.includes(x.name) && !ownedAny(x.name))
     .map((x) => x.name);
@@ -417,19 +480,61 @@ function CategoryBrowser({ sec, bctx, onClose }: {
           <input
             value={q}
             onInput={(e) => setQ((e.currentTarget as HTMLInputElement).value)}
-            placeholder={`Search ${sec.items.length} pals…`}
+            placeholder={sec.items.length === 1
+              ? 'Search 1 pal…' : `Search ${sec.items.length} pals…`}
             aria-label={`Search ${sec.title}`}
             style={{
               flex: 1, padding: '6px 10px', borderRadius: '10px',
               border: '1px solid var(--line)', background: 'var(--surface)',
               color: 'inherit', fontSize: '13px',
             }} />
+          <button class="btn sm" onClick={() => setShowFilt((v) => !v)}
+            aria-expanded={showFilt}>
+            {filtCount(filt) ? `Filters (${filtCount(filt)})` : 'Filters'}
+          </button>
           {missing.length > 1 && (
             <button class="btn sm primary" onClick={() => bctx.onAdd(missing)}>
               Add {missing.length}
             </button>
           )}
         </div>
+        {showFilt && (
+          <div style={{ display: 'grid', gap: '7px' }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
+              {ELEMENTS.map((e) => (
+                <FiltChip key={e} label={e} on={filt.elements.includes(e)}
+                  onClick={() => setFilt({
+                    ...filt,
+                    elements: filt.elements.includes(e)
+                      ? filt.elements.filter((x) => x !== e)
+                      : [...filt.elements, e],
+                  })} />
+              ))}
+            </div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
+              {WORK_KEYS.map((w) => (
+                <FiltChip key={w} label={workLabel(w)} on={filt.work === w}
+                  onClick={() => setFilt({ ...filt, work: filt.work === w ? null : w })} />
+              ))}
+            </div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
+              {([['owned', 'Owned'], ['missing', 'Missing'],
+                 ['pairready', 'Have ♂ + ♀'], ['onegender', 'One gender']] as const)
+                .map(([k, label]) => (
+                  <FiltChip key={k} label={label} on={filt.own === k}
+                    onClick={() => setFilt({ ...filt, own: filt.own === k ? 'all' : k })} />
+                ))}
+              {filtCount(filt) > 0 && (
+                <button class="btn sm" onClick={() => setFilt(NO_FILT)}>Clear</button>
+              )}
+            </div>
+            {/* the count must match what you actually get — the phone's sheet
+                once promised "Show 44 pals" and handed back 14 */}
+            <p style={{ margin: 0, fontSize: '12px', color: 'var(--accent-ink)' }}>
+              {rows.length === 1 ? '1 pal matches' : `${rows.length} pals match`}
+            </p>
+          </div>
+        )}
         <div>
           {rows.map((item) => (
             <BrowserRow key={item.name} item={item}
@@ -437,7 +542,9 @@ function CategoryBrowser({ sec, bctx, onClose }: {
           ))}
           {rows.length === 0 && (
             <p style={{ color: 'var(--muted)', textAlign: 'center' }}>
-              No pal here matches that search.
+              {filtCount(filt)
+                ? 'No pal here matches those filters.'
+                : 'No pal here matches that search.'}
             </p>
           )}
         </div>
