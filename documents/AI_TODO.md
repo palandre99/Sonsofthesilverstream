@@ -304,8 +304,21 @@ node scripts/publish.js "what changed, in the CEO's language"
   entry only), and the map tile assets. I stay OUT of the Plan-tab
   surface above, and deliberately do NOT use `src/logic/` (their lock) —
   shared map math lives in `src/map/` and gets its own byte-parity gate.
+  UPDATED 2026-08-16 ~22:45 to match what the lane actually grew into:
+  also `mobile/src/screens/MapScreen.tsx`, `mobile/src/map/gesture.ts`,
+  `app/tests/map.test.ts` + `app/tests/mapGesture.test.ts`, and
+  `mobile/scripts/` (qa-shot.js, publish-guard.js, publish.js).
+  ONE EDIT OUTSIDE THIS LIST, declared: the "Where the map comes from"
+  paragraph in `mobile/src/screens/ReferenceScreen.tsx`. Changing the map's
+  texture and icon sources made that credit untrue, and a stale credit on a
+  provenance claim is not a typo. Nobody holds that file; I touched only that
+  paragraph.
   NOTE: I will not run `eas update` while their tree is dirty (the
   publish ritual — it would ship their unfinished Plan work to the CEO).
+  `mobile/scripts/publish.js` now enforces that rather than trusting me: it
+  refuses on a dirty tree and re-checks after the bundle, because a printed
+  `git status` is not a gate and a bundle takes ~30s during which they can
+  save a file. Both cross-lane incidents are self-reported above.
 
 
 ## F. CEO DIRECTIVE ~22:45 2026-08-15 — THE MAP FANE (second worker)

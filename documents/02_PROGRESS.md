@@ -1,7 +1,72 @@
 # PROGRESS — audited state, no invented percentages
 
-*Updated 2026-08-15 ~23:25. Update this file whenever a work block lands;
+*Updated 2026-08-16 ~22:45. Update this file whenever a work block lands;
 date every entry.*
+
+## 2026-08-16 ~22:45 — THE MAP FANE, A FULL DAY OF HIS FEEDBACK (map lane)
+
+Everything below came from the CEO looking at his phone and telling me what
+was wrong. Each item is what changed **for him**, with the number that proves
+it. Gates at this block: **278 vitest** (up from 114) and mobile
+`tsc --noEmit` clean. All shipped OTA to both channels.
+
+**The map is drawn from the game's full-size picture now.** He said it looked
+like "380 quality.. not crisp 4K". He was right twice over. First our texture
+was 4096 while his phone draws 3 real pixels per layout pixel, so full zoom was
+a 3x upscale — fixed by finding the game's native 8192 T_WorldMap
+(`jeankassio/PalMiniMap`, MIT) and adding a z4 tile level, +2.7 MB bundled.
+Verified it is the SAME map before building on it: downscaled to 4096 it
+differs from the copy we already trusted by 1.57/255 mean, i.e. compression
+noise. Then he said it was STILL blurry — and it was, because the renderer
+picked its tile level from layout pixels, so those new z4 tiles were built and
+**never once requested**: a flat 2.00x upscale on every phone. Level now comes
+from `scale * PixelRatio.get()`. The World Tree stays at 4096; no larger export
+of it exists in any source I could find, and its zoom ceiling says so.
+
+**Zoom stopped fighting him.** Three separate faults: pan and pinch both wrote
+the map position every frame from different maths; the pinch anchored on the
+LIVE focal point, which cancels out and kills two-finger dragging; and lifting
+two fingers off a pinch could be read as a DOUBLE TAP, whose handler animates
+the map to a new centre — that was the "snaps to a different place when I
+release fingers". After shipping two gesture fixes I could not verify, the
+arithmetic was extracted to `mobile/src/map/gesture.ts` and driven by 11 tests:
+focal invariance under spread and under spread+slide, zoom bounds, a 400-step
+fuzz, and the snap **measured** (corrected origin lands exactly; the old one
+lands >100 px away). The handlers INLINE that maths — importing into a
+Reanimated worklet crashed this app twice — and tests pin the copies together.
+
+**A pin now tells you what it is.** Bosses and spawns show the pal's own face
+instead of a crown or a paw print; eight POI symbols were replaced with the
+game's own at 64-100 px (up from 14-46 px), and **two candidates were rejected**
+on a side-by-side render because they did not mean the same thing. Colour says
+which pal, shape says where and when. With eight layers on, pin overlap was
+measured at 64 bad pairs of 130 pins and cut to 10 by giving each layer its own
+cluster grid phase — no pin is ever moved off its real spot to make room.
+
+**Finding things works like the rest of the app.** The map search now imports
+the Paldex's own filter engine and sheet, so all 12 jobs, 9 elements, 4
+ownership states and 7 sort orders arrived at once. Typing "sulfur" finds the
+Sulfur layer (261 nodes) instead of answering "no pal by that name". Level-cap
+chips answer "what can I catch at my level" — a filter that had been plumbed
+through the engine for weeks with no control attached.
+
+**A boss that exists in the game was missing from the map.** Sweeping our
+bounds against all 68,707 raw spawn rows found exactly ONE on the wrong map:
+the Lv 55 Alpha Dualith, filed under the World Tree with Palpagos coordinates.
+It failed projection and was silently dropped. Two independent signals settle
+it (its coordinates only fit Palpagos; pal-atlas lists the same spawner there),
+so the extractor now corrects the LABEL, never the position, prints every
+correction it makes, and still drops anything that fits neither region.
+
+**Process, after two incidents.** `mobile/scripts/publish.js` refuses to
+publish from a dirty tree and re-checks afterwards, because a printed
+`git status` is not a gate and a bundle takes 30 seconds during which the other
+session can save a file. Both incidents are self-reported in `AI_TODO.md`.
+
+Still open: H17 colour-by-group for the 23 POI layers (it changes how the whole
+map reads and he judges by looking, so it waits until he can look); K7 the
+sharpness cap cut max zoom from ~9.6x to ~3.2x of the opening view on a 3x
+phone — the honest middle if he wants more reach is allowing a 1.5x upscale.
 
 ## 2026-08-15 ~23:25 — THE MAP FANE IS REAL (second worker, map lane)
 
