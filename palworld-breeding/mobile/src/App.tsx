@@ -125,6 +125,21 @@ function Shell() {
     void loadPersisted().then(() => setReady(true));
   }, []);
 
+  // On the web QA build, follow the hash when it CHANGES too, not only at
+  // mount — otherwise a scripted journey across domains ("own a pal, then go
+  // to the Map") silently stays put and the test proves nothing. Native has no
+  // location, so this never runs there.
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.addEventListener) return undefined;
+    const onHash = () => {
+      const r = initialRoute();
+      setDomainId(r.domain);
+      setTabId(r.tab);
+    };
+    window.addEventListener('hashchange', onHash);
+    return () => window.removeEventListener('hashchange', onHash);
+  }, []);
+
   // cards can hand the player straight to another screen ("open this in the
   // Calculator") instead of printing directions for them to follow
   useEffect(() => onNavIntent((i) => {

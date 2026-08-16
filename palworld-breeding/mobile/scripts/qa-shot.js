@@ -13,6 +13,7 @@
  *   wait:<ms>        let animations and tile loads settle
  *   shot:<name>      capture <outDir>/<name>.png
  *   click:<x>,<y>    press at exact viewport coordinates
+ *   go:<hash>        jump to a route, keeping page state
  *   pinch:<factor>   zoom about the screen centre by <factor>
  *   drag:<dx>,<dy>   pan by that many pixels
  *
@@ -230,6 +231,13 @@ async function main() {
       }
       console.log(`  click ${cx},${cy}`);
       await sleep(700);
+    }
+    else if (kind === 'go') {
+      // hash routes are how the QA build reaches a screen; state persists in
+      // the page, so this can walk a real journey across domains
+      await evaluate(`location.hash = ${JSON.stringify(arg)}`);
+      console.log(`  go ${arg}`);
+      await sleep(1400);
     }
     else if (kind === 'probe') {
       const out = await evaluate(arg);

@@ -534,6 +534,18 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       map modules; only the rendering and the storage differ, which is the
       only difference that should ever exist between them.
 
+- [x] H7 2026-08-16 ~14:30: **"Only pals I'm missing" VERIFIED end to end for
+      the first time.** It is the map's headline differentiator and every
+      earlier check ran against an EMPTY box, which proves nothing — with
+      nothing owned it cannot filter anything out. Walked the real journey:
+      own Foxparks in the Paldex, go to the Map, tick the box. Foxparks drops
+      out and only Foxparks Cryst remains. It works.
+- [x] H8 Found while doing it: the QA hash route only read at MOUNT, so a
+      scripted journey across domains silently stayed put and any test built
+      on it would have passed while proving nothing. The web build follows
+      `hashchange` now (native has no location, so it never runs there), and
+      the QA driver gained a `go:<hash>` step.
+
 ### Open — the map lane's own queue
 - [x] F23 DONE 2026-08-16 ~00:02: the preview's dense clusters were an
       unreadable scribble — 93 overlapping rings in one bay. Now thinned to one
