@@ -1847,6 +1847,34 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E57. THE STAT BARS ON THE PAL CARD WERE LYING TWICE 2026-08-16
+
+Applied the same "an absolute sentence is a testable assertion" method to the
+numbers on the pal card. Both bugs were in mobile PalDetail.tsx.
+
+- [x] **THE BAR WAS DRAWN AGAINST A MADE-UP CEILING.** `((v ?? 0) / 150)`
+      clamped at 100% — but the real maximum is **200** in all three stats.
+      So Astralym's 200 attack drew exactly the same full bar as a 150, and
+      every ordinary pal's bar was overstated by a third (Jetragon's attack
+      filled 93% of the bar; it is really 70% of the ceiling and ranks #12).
+      **15 pals across the three stats were drawn as "maxed" when they are
+      not.** The ceiling is now read from the data, so it cannot drift.
+      Verified live: Jetragon's bars now measure 57.5% / 70% / 60% — exactly
+      115/200, 140/200, 120/200.
+- [x] **"#132 of 299" CLAIMED A PRECISION THE NUMBERS DO NOT HAVE.** There
+      are only 18–21 distinct values per stat across 299 species, so ties are
+      enormous: **121 pals have exactly 100 attack and every one of them
+      printed the same "#132 of 299"**, with the next pal down printing #253.
+      **82–87% of pals showed a rank they silently share with 9 or more
+      other species.** The card now prints the tie count under the rank
+      ("#12 of 299 / 4 pals tied"). The rank itself was always correct
+      competition ranking — verified every rendered number against the data.
+- Measured on the 375x812 render: rows are 26px, nothing clipped, and the
+  worst case string ("120 pals tied", 51px) fits the 78px column.
+- **KNOWN PARITY GAP, not started:** the WEB pal card has no stat bars at all
+  — no health/attack/defense, no ranks. Mobile-first per the CEO, logged here
+  so it is not lost.
+
 ## E56. THE CATCHABILITY CLAIM FAMILY — TESTED, MOSTLY CLEAN 2026-08-16
 
 The last untested claim family: every sentence driven by `wild` / `regions`

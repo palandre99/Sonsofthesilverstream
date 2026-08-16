@@ -22,18 +22,41 @@ import { Icon } from './Icon';
 import { ALPHA_SPOTS } from '../data/alphaSpots.g';
 import { PALCALC_FACTS } from '../data/palcalcFacts.g';
 
-/** rank of a value among all species for one stat (1 = best) */
-function statRank(stat: 'hp' | 'atk' | 'def', v: number | null): string | null {
+/** The real ceiling of each stat, read from the data instead of guessed. The
+ * bar used to divide by a hard-coded 150 and clamp, so all nine pals with 150
+ * or more attack drew an identical full bar — a 200 looked the same as a 150,
+ * and every ordinary pal's bar was overstated by a third. */
+const STAT_MAX: Record<'hp' | 'atk' | 'def', number> = (() => {
+  const m = { hp: 1, atk: 1, def: 1 };
+  for (const q of Object.values(pals)) {
+    for (const k of ['hp', 'atk', 'def'] as const) {
+      const v = q[k];
+      if (v != null && v > m[k]) m[k] = v;
+    }
+  }
+  return m;
+})();
+
+/** Where a value sits among all species for one stat (1 = best), and how many
+ * other species sit on exactly the same spot. The ties here are enormous —
+ * 121 pals have exactly 100 attack — so a bare "#132 of 299" read as a precise
+ * placing when four pals in five actually share theirs with nine or more. */
+function statRank(
+  stat: 'hp' | 'atk' | 'def',
+  v: number | null,
+): { rank: string; tied: number } | null {
   if (v == null) return null;
   let better = 0;
   let total = 0;
+  let same = 0;
   for (const q of Object.values(pals)) {
     const qv = q[stat];
     if (qv == null) continue;
     total++;
     if (qv > v) better++;
+    else if (qv === v) same++;
   }
-  return `#${better + 1} of ${total}`;
+  return { rank: `#${better + 1} of ${total}`, tied: same - 1 };
 }
 
 /** Deterministic sparkle field — positions fixed so nothing shifts between
@@ -127,8 +150,9 @@ function RarityAtmosphere({ r }: { r: RarityGrade }) {
   );
 }
 
-function StatBar({ label, icon, v, rank }: {
-  label: string; icon?: number; v: number | null; rank?: string | null;
+function StatBar({ label, icon, v, stat, rank }: {
+  label: string; icon?: number; v: number | null;
+  stat: 'hp' | 'atk' | 'def'; rank?: { rank: string; tied: number } | null;
 }) {
   return (
     <View style={[s.row, { gap: 8 }]}>
@@ -136,12 +160,19 @@ function StatBar({ label, icon, v, rank }: {
       <Text style={{ color: T.muted, width: 56, fontSize: 11, fontWeight: '800' }}>{label}</Text>
       <View style={{ flex: 1, height: 8, borderRadius: 4, backgroundColor: T.surface2 }}>
         <View style={{
-          width: `${Math.min(100, ((v ?? 0) / 150) * 100)}%`,
+          width: `${Math.min(100, ((v ?? 0) / STAT_MAX[stat]) * 100)}%`,
           height: '100%', borderRadius: 4, backgroundColor: T.accent,
         }} />
       </View>
       {rank != null && (
-        <Text style={{ color: T.faint, fontSize: 10, width: 66, textAlign: 'right' }}>{rank}</Text>
+        <View style={{ width: 78 }}>
+          <Text style={{ color: T.faint, fontSize: 10, textAlign: 'right' }}>{rank.rank}</Text>
+          {rank.tied > 0 && (
+            <Text style={{ color: T.faint, fontSize: 9, textAlign: 'right', opacity: 0.8 }}>
+              {rank.tied} pal{rank.tied === 1 ? '' : 's'} tied
+            </Text>
+          )}
+        </View>
       )}
       <Text style={{ color: T.ink, width: 32, fontSize: 12, textAlign: 'right' }}>{v ?? '—'}</Text>
     </View>
@@ -249,11 +280,11 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
             </View>
           </View>
           <StatBar label="Health" icon={STAT_ICONS.health} v={boost(p.hp)}
-            rank={statRank('hp', p.hp)} />
+            stat="hp" rank={statRank('hp', p.hp)} />
           <StatBar label="Attack" icon={STAT_ICONS.attack} v={boost(p.atk)}
-            rank={statRank('atk', p.atk)} />
+            stat="atk" rank={statRank('atk', p.atk)} />
           <StatBar label="Defense" icon={STAT_ICONS.defense} v={boost(p.def)}
-            rank={statRank('def', p.def)} />
+            stat="def" rank={statRank('def', p.def)} />
           {stars > 0 && (
             <>
               <Text style={[s.body, { fontSize: 11.5, color: T.goldInk }]}>
