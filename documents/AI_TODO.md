@@ -4666,3 +4666,38 @@ so nobody "fixes" it later.
 map reads `box` from state.ts, another lane's, so seed via storage not the
 Paldex UI); marking a spot found then clearing it; the website's Find and
 legend at mobile width.
+
+### L42 — the last two journeys walked. Both CORRECT, nothing changed.
+**Marking a spot found, end to end.** Tower boss layer on (9 spots, exact).
+Tapping a pin opens "Victor & Shadowbeak Tower / -153, 454 / Tower boss /
+9 on this map / Mark as found". Marking flips it to "Got this one"; the Layers
+sheet then offers "Clear 1 found mark" — correct singular. It writes
+`palforge-default-mapfound = ["syndicate_tower:palpagos:6"]`, and the tick
+SURVIVES A FULL PAGE RELOAD, which was the part most likely to be broken
+because the write is async. "Clear 1 found mark" removes the key and the
+button disappears.
+
+**"Only pals I'm missing" with a part-filled box.** Seeded 20 owned starters
+into `hatchlab-box-v2` (NOTE: the default profile uses the LEGACY key names —
+`hatchlab-box-v2`, not `palforge-default-box`; see keysFor() in store.ts).
+The filter sheet then reports, exactly: all 224 · Missing 204 · Owned 20.
+204 + 20 = 224, and all 20 seeded pals are in the Palpagos surface list.
+Applying it chips the Find sheet with "I'm missing", drops every owned pal,
+and correctly KEEPS "Fuack Ignis" while dropping "Fuack" — a variant is its
+own species. Owned rows carry a tick glyph in the unfiltered list.
+
+That closes every journey on the list. Two turns running have found no defect,
+which is the honest result and is recorded as such rather than padded with a
+change nobody asked for.
+
+### L43 — HARNESS: seeding state, and clicking pins
+- Seed store state with `localStorage.setItem(...)` then `location.reload()`
+  inside a probe, then `wait:9000`. The CDP connection survives the reload.
+  Each QA run gets a fresh profile, so a run always starts from empty.
+- DEFAULT PROFILE USES LEGACY KEYS: box `hatchlab-box-v2`, checks
+  `hatchlab-checks-v1`, plan `hatchlab-plan-v1`. Only NON-default profiles use
+  `palforge-<id>-*`. Found marks are always `palforge-<id>-mapfound`.
+- Pins ARE clickable by coordinate: probe for divs 18-34px wide inside the map
+  area to get their centres, then `click:x,y` in a second run. The default view
+  is deterministic as long as you do not switch regions, so the coordinates
+  reproduce. Tower boss (9 pins) is the easiest layer to hit.
