@@ -93,6 +93,7 @@ export function ProfilesScreen() {
                   setManaging({ id: p.id, name: p.name });
                 }}
                 hitSlop={8}
+                accessibilityRole="button"
                 accessibilityLabel={`Manage ${p.name}`}
                 style={({ pressed }) => [{
                   paddingHorizontal: 8, paddingVertical: 4, borderRadius: 8,

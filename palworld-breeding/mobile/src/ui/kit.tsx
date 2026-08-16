@@ -249,7 +249,7 @@ export function BackToCardChip({ name, onOpen, onDismiss }: {
           ‹ Back to {name}
         </Text>
       </Pressable>
-      <Pressable hitSlop={8} onPress={onDismiss} accessibilityLabel="Dismiss">
+      <Pressable hitSlop={8} onPress={onDismiss} accessibilityRole="button" accessibilityLabel="Dismiss">
         <Text style={{ color: T.faint, fontWeight: '800', fontSize: 13 }}>✕</Text>
       </Pressable>
     </View>

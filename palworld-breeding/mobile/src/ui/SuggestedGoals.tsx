@@ -348,6 +348,7 @@ function PalChip({ name, lvl, star, bctx }: {
         )}
         {addable && (
           <Pressable hitSlop={6}
+            accessibilityRole="button"
             accessibilityLabel={`Add ${name} to the plan`}
             onPress={() => {
               void Haptics.selectionAsync();
@@ -364,6 +365,7 @@ function PalChip({ name, lvl, star, bctx }: {
         )}
         {added && (
           <Pressable hitSlop={6}
+            accessibilityRole="button"
             accessibilityLabel={`Remove ${name} from the plan`}
             onPress={() => bctx.onRemove([name])}
             style={{ position: 'absolute', left: -7, top: -5 }}>
@@ -407,6 +409,7 @@ function SectionCard({ sec, bctx, onBrowse }: {
       borderColor: sec.gold ? T.goldSoft : T.line, padding: 12, gap: 8,
     }}>
       <Pressable style={[s.row, { gap: 8 }]}
+        accessibilityRole="button"
         accessibilityLabel={`Browse all ${sec.title}`}
         onPress={() => {
           void Haptics.selectionAsync();
@@ -504,6 +507,7 @@ function BrowserRow({ item, recommended, bctx }: {
       </View>
       {a.kind !== 'have' ? (
         <Pressable hitSlop={8}
+          accessibilityRole="button"
           accessibilityLabel={added
             ? `Remove ${item.name} from the plan` : `Add ${item.name} to the plan`}
           onPress={() => {
@@ -589,7 +593,7 @@ function CategoryBrowser({ sec, bctx, onClose }: {
               <Text style={{ color: T.accentInk, fontSize: 11.5, fontWeight: '700' }}>
                 {rows.length} of {sec.items.length} shown
               </Text>
-              <Pressable accessibilityLabel="Clear the filters and search"
+              <Pressable accessibilityRole="button" accessibilityLabel="Clear the filters and search"
                 onPress={() => { setFilters(NO_FILTERS); setSort('number'); setQ(''); }}>
                 <Text style={{ color: T.faint, fontSize: 11.5, fontWeight: '800' }}> ✕ clear</Text>
               </Pressable>
@@ -732,6 +736,7 @@ function SheetBody({ onClose, targets, onAdd, onRemove }: SheetProps) {
           {/* the sheet says what it's tuned to — and the level is settable
               right where it matters (CEO: player level on the world save) */}
           <Pressable hitSlop={4}
+            accessibilityRole="button"
             accessibilityLabel="Set your player level"
             onPress={() => {
               setLevelInput(playerLevel != null ? String(playerLevel) : '');

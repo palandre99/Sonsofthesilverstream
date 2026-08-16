@@ -232,6 +232,7 @@ export function CalculatorScreen() {
               <Btn label={a ?? 'Parent 1…'} onPress={() => setPicking('a')} />
               {a && (
                 <Pressable hitSlop={8} onPress={() => setA(null)}
+                  accessibilityRole="button"
                   accessibilityLabel="Clear parent 1"
                   style={{ position: 'absolute', right: -6, top: -6 }}>
                   <View style={{
@@ -247,6 +248,7 @@ export function CalculatorScreen() {
             {/* both picked? one tap swaps them — cheaper than re-picking when
                 you meant the other order (self-found queue item) */}
             <Pressable hitSlop={6} disabled={!a || !b}
+              accessibilityRole="button"
               accessibilityLabel="Swap parents"
               onPress={() => {
                 void Haptics.selectionAsync();
@@ -260,6 +262,7 @@ export function CalculatorScreen() {
               <Btn label={b ?? 'Parent 2…'} onPress={() => setPicking('b')} />
               {b && (
                 <Pressable hitSlop={8} onPress={() => setB(null)}
+                  accessibilityRole="button"
                   accessibilityLabel="Clear parent 2"
                   style={{ position: 'absolute', right: -6, top: -6 }}>
                   <View style={{

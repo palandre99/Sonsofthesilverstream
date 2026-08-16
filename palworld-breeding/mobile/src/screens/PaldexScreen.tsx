@@ -105,6 +105,9 @@ function ImportSheet({ onClose }: { onClose: () => void }) {
           you confirm.
         </Text>
         <TextInput
+          // the only thing a screen reader had here was the placeholder,
+          // which is example pal names rather than what the box is for
+          accessibilityLabel="Paste pal names, one per line"
           multiline value={text} onChangeText={setText}
           placeholder={'Anubis\nKatress ♀\nWixen ♂'}
           placeholderTextColor={T.faint}
@@ -121,7 +124,10 @@ function ImportSheet({ onClose }: { onClose: () => void }) {
         </View>
         <View style={{ marginTop: 12 }}>
           <Btn primary disabled={!parsed.entries.length}
-            label={`Add ${parsed.entries.length || ''} pals`}
+            // said "Add 1 pals" on a single name, and "Add  pals" on none
+            label={parsed.entries.length === 1
+              ? 'Add 1 pal'
+              : `Add ${parsed.entries.length} pals`}
             onPress={() => {
               importNames(parsed.entries, false);
               onClose();
