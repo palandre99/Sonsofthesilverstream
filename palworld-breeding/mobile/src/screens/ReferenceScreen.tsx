@@ -151,7 +151,7 @@ export function ReferenceScreen() {
         <P>The map picture is the game&apos;s own map texture. Palpagos is drawn
         from the full-size 8192 version published by PalMiniMap (MIT); the World
         Tree comes from pal-atlas (MIT) at half that, because no larger copy of
-        it exists anywhere I could find. Most of the map symbols are the game&apos;s
+        it has been published. Most of the map symbols are the game&apos;s
         own too — eight of them at full size from PalMiniMap, the rest from
         pal-atlas.</P>
         <P>Positions use the game&apos;s own DT_WorldMapUIData bounds, checked

@@ -1417,3 +1417,36 @@ describe('the pal picker in the Find sheet', () => {
     expect(list![0]).not.toMatch(/SearchInput/);
   });
 });
+
+describe('the map provenance copy', () => {
+  const ref = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'ReferenceScreen.tsx'), 'utf8',
+  );
+  // just the map block, so this never polices another lane's copy
+  const block = ref.slice(
+    ref.indexOf('Where the map comes from'),
+    ref.indexOf('Data &'),
+  );
+
+  it('is there at all', () => {
+    expect(block).toContain('68,617');
+    expect(block.length).toBeGreaterThan(400);
+  });
+
+  it('never speaks as a person', () => {
+    // It read "no larger copy of it exists anywhere I could find" - the
+    // developer's voice, in a paragraph the player reads. The app is a
+    // product, not a narrator. ("Only pals I'm missing" elsewhere is the
+    // PLAYER's voice and is correct; this only covers provenance copy.)
+    expect(block).not.toMatch(/I/);
+    expect(block).not.toMatch(/I'(m|ve|d)/);
+    expect(block).toContain('has been published');
+  });
+
+  it('still names what it can be checked against', () => {
+    // the numbers are the point of this section - never soften it into prose
+    expect(block).toContain('DT_WorldMapUIData');
+    expect(block).toContain('58,504');
+    expect(block).toContain('11,097');
+  });
+});
