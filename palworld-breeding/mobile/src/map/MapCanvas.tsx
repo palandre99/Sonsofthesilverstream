@@ -180,6 +180,14 @@ export function MapCanvas({
   const startK = useSharedValue(0);
   const startTx = useSharedValue(0);
   const startTy = useSharedValue(0);
+  // The pinch keeps its OWN start values. Sharing them with the pan meant a
+  // pan that began first could rewrite the pinch's reference mid-gesture.
+  const pinchTx = useSharedValue(0);
+  const pinchTy = useSharedValue(0);
+  const pinchFx = useSharedValue(0);
+  const pinchFy = useSharedValue(0);
+  /** 1 while fingers are down: markers stop re-clustering until you let go */
+  const gesturing = useSharedValue(0);
 
   const [win, setWin] = useState<TileWindow>({ z: 0, x0: 0, x1: 0, y0: 0, y1: 0 });
 
@@ -222,36 +230,58 @@ export function MapCanvas({
   }, []);
 
   const pan = useMemo(() => Gesture.Pan()
+    // ONE finger only. Pan and pinch run simultaneously, and both used to
+    // write tx/ty every frame from different maths — pan from "where the
+    // finger started plus how far it moved", pinch from the focal point. They
+    // disagreed, the last writer each frame won, and the map fought itself:
+    // the CEO reported zooming as laggy and "not even zooming in where I try
+    // to". Two fingers now belong to the pinch alone, which does its own
+    // panning from the focal point.
+    .maxPointers(1)
     .onStart(() => {
       startTx.value = tx.value;
       startTy.value = ty.value;
+      gesturing.value = 1;
       runOnJS(markTouched)();
     })
     .onUpdate((e) => {
       const c = clamp(startTx.value + e.translationX, startTy.value + e.translationY, k.value);
       tx.value = c.x;
       ty.value = c.y;
-    }), [clamp, k, markTouched, startTx, startTy, tx, ty]);
+    })
+    .onEnd(() => {
+      gesturing.value = 0;
+    }), [clamp, gesturing, k, markTouched, startTx, startTy, tx, ty]);
 
   const pinch = useMemo(() => Gesture.Pinch()
-    .onStart(() => {
+    .onStart((e) => {
       runOnJS(markTouched)();
       startK.value = k.value;
-      startTx.value = tx.value;
-      startTy.value = ty.value;
+      pinchTx.value = tx.value;
+      pinchTy.value = ty.value;
+      pinchFx.value = e.focalX;
+      pinchFy.value = e.focalY;
+      gesturing.value = 1;
     })
     .onUpdate((e) => {
       const next = Math.min(MAX_SCALE, Math.min(zoomFloor * MAX_ZOOM,
         Math.max(zoomFloor, startK.value * e.scale)));
-      const ratio = next / startK.value;
-      // keep the pinch focal point pinned under the fingers
-      const nx = e.focalX - (e.focalX - startTx.value) * ratio;
-      const ny = e.focalY - (e.focalY - startTy.value) * ratio;
-      const c = clamp(nx, ny, next);
+      // The map point that was under the fingers when the pinch STARTED has to
+      // stay under them as they both spread and move. Anchoring on the live
+      // focal point instead (the old code) makes the focal its own reference,
+      // which cancels out: the map zoomed about wherever the fingers happened
+      // to be that frame and threw away two-finger dragging entirely.
+      const u = (pinchFx.value - pinchTx.value) / startK.value;
+      const v = (pinchFy.value - pinchTy.value) / startK.value;
+      const c = clamp(e.focalX - u * next, e.focalY - v * next, next);
       k.value = next;
       tx.value = c.x;
       ty.value = c.y;
-    }), [clamp, zoomFloor, k, markTouched, startK, startTx, startTy, tx, ty]);
+    })
+    .onEnd(() => {
+      gesturing.value = 0;
+    }), [clamp, gesturing, zoomFloor, k, markTouched, pinchFx, pinchFy, pinchTx, pinchTy,
+    startK, tx, ty]);
 
   const doubleTap = useMemo(() => Gesture.Tap()
     .numberOfTaps(2)
@@ -321,6 +351,7 @@ export function MapCanvas({
         v0,
         u1,
         v1,
+        g: gesturing.value,
       };
     },
     (cur, prev) => {
@@ -333,9 +364,16 @@ export function MapCanvas({
       // thresholds are tight enough that place-name labels can trust this rect
       // to decide whether their box would run off the screen edge — at 12% of
       // a viewport the rect lagged far enough to clip names mid-word.
-      if (!prev || Math.abs(cur.scale - prev.scale) > prev.scale * 0.02
+      // Re-clustering is real JS work over the whole point set, and pushing it
+      // mid-pinch ran it many times a second against a thread that is also
+      // rendering — which is what made zooming feel laggy. Tiles keep updating
+      // live (above) so the map itself never goes soft; only the MARKERS wait,
+      // and they catch up the instant the fingers lift.
+      const settled = !!prev && prev.g === 1 && cur.g === 0;
+      const moved = !prev || Math.abs(cur.scale - prev.scale) > prev.scale * 0.02
         || Math.abs(cur.u0 - prev.u0) > (cur.u1 - cur.u0) * 0.05
-        || Math.abs(cur.v0 - prev.v0) > (cur.v1 - cur.v0) * 0.05) {
+        || Math.abs(cur.v0 - prev.v0) > (cur.v1 - cur.v0) * 0.05;
+      if (settled || (cur.g === 0 && moved)) {
         runOnJS(pushViewport)(cur.scale, cur.u0, cur.v0, cur.u1, cur.v1);
       }
     },

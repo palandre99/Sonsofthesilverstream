@@ -674,6 +674,55 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       while over-reserving costs only a little spacing. Honest limit: measured
       on the web build's font; iOS draws San Francisco, so the exact figure
       there may differ, which is why it is a bounded max and not a fitted mean.
+## J. CEO FEEDBACK 2026-08-16 ~15:35 — MAP FANE, FROM HIS PHONE (with screenshot)
+## Verbatim: "Zooming in on the map is still very buggy and laggy and not even
+## zooming in where I try to, very bad experience. Also it looks like 380
+## quality.. not crisp 4K kind of if u know what I mean, very bad image
+## quality. Icons are also garbage and not accurate game icons images"
+## "The find pal search function is also garbage bad filters etc , it should be
+## similar to paldex search and filter .."
+## "Bosses etc must be the image of the actual pal it is etc also.."
+
+- [x] J1 ZOOM — FIXED 2026-08-16 ~15:40. Three real defects, all in the
+      gestures. (a) pan and pinch ran simultaneously and BOTH wrote tx/ty every
+      frame from different maths — pan from "finger start + translation", pinch
+      from the focal point. They disagreed and the last writer each frame won,
+      so the map fought itself. Pan is now one finger only; two fingers belong
+      to the pinch. (b) the focal anchor used the LIVE focal point as its own
+      reference, which cancels out — the map zoomed about wherever the fingers
+      were that frame and two-finger dragging was impossible. It now anchors on
+      the map point that sat under the fingers when the pinch began. (c) the
+      lag: every viewport change re-clustered the whole point set on the JS
+      thread, many times a second during a pinch. Markers now wait for the
+      fingers to lift; TILES keep updating live so the map never goes soft.
+      HONEST LIMIT: unverified on device. A browser pass cannot drive a real
+      pinch (F35, and the harness pinch does not reach the gesture handler), so
+      this is reasoned and type-checked, not measured. Ask him how it feels.
+- [ ] J2 IMAGE QUALITY — CAUSE MEASURED, FIX NEEDS A SOURCE. He is right and
+      the number is exact: our map texture is 4096x4096 (tools/.cache, from
+      pal-atlas). His iPhone is 3x density, so at our maximum zoom the map
+      spans ~12,000 device pixels drawn from 4096 real ones — a 3x upscale.
+      That IS "380 quality". The pyramid is not the problem; it already tops
+      out AT the source. Options: (a) obtain the game's native 8192 T_WorldMap
+      and add a z4 level — doubles linear resolution, the real fix; (b) cap
+      zoom to the pixels that exist (4096/3 = ~1365 css px per uv), which would
+      be crisp but only ~1.7x from the opening view, too little for a companion
+      map. Do (a). NEEDS RESEARCH: pal-atlas ships 4096; the 8192 original
+      lives in the game PAK. Do NOT invent a source.
+- [ ] J3 ICONS — CAUSE MEASURED. The sprites are TINY: fast_travel 22x20,
+      dungeon 22x21, chest 26x22, egg 14x20, alpha_pals 25x26. Drawn at 13-15
+      logical px on a 3x phone that is ~45 device px, so every one is an
+      upscaled 22px sprite. They are the game's own symbols (pal-atlas bakes
+      them out of the PAK) but at a resolution that cannot survive a modern
+      phone. Need a higher-resolution source for the same symbols.
+- [ ] J4 FIND-PAL SEARCH should work like the Paldex search and filters —
+      element/type filters, the same interaction, the same quality bar. Today
+      it is a name box with a level/time filter and nothing else.
+- [ ] J5 BOSS PINS MUST SHOW THE ACTUAL PAL'S PICTURE, not a generic crown.
+      The app already ships pal portraits for the Paldex, so the art exists;
+      this is a rendering change, not a data one. Same for anything else that
+      represents a specific pal on the map.
+
 - [ ] H17 COLOUR CANNOT CARRY 23 IDENTITIES. Three POI layers are near-identical
       greys (npc #A9C0CC, ore #B7C4CC, coal #8E9AA3) and several are near-white
       (note #D7E3E8, quartz #CFE9FF, egg #FFEFC2). I deliberately did NOT
