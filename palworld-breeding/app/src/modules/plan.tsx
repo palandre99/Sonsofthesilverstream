@@ -166,6 +166,9 @@ export function PlanPage() {
     run(next, planRoster ?? ownedNames);
   };
 
+  // fires the ring burst + hero pop on the step that just hatched
+  const [bursts, setBursts] = useState<Record<string, number>>({});
+
   const completeStep = (sid: string, child: string, got: { m: boolean; f: boolean }) => {
     const entry: StepCheck = {
       m: got.m, f: got.f,
@@ -177,7 +180,27 @@ export function PlanPage() {
     const next = { ...checks, [sid]: entry };
     setChecks(next);
     storage.set(CHECKS_KEY, JSON.stringify(next));
+    setBursts((b) => ({ ...b, [sid]: (b[sid] ?? 0) + 1 }));
     setHatching(null);
+  };
+
+  /** rarity-tiered hatch rings — parity with mobile: Common 1 ring, Rare 2,
+   * Epic 3 (gold), Legendary 4 (gold); finishing a GOAL bumps one tier */
+  const HatchRings = ({ burst, rarity, boost }: {
+    burst: number; rarity: string | null; boost: boolean;
+  }) => {
+    if (!burst) return null;
+    const order = ['Common', 'Rare', 'Epic', 'Legendary'];
+    const tier = Math.min(3, Math.max(0, order.indexOf(rarity ?? 'Common')) + (boost ? 1 : 0));
+    const gold = tier >= 2;
+    return (
+      <span key={burst}>
+        {Array.from({ length: tier + 1 }, (_, i) => (
+          <span key={i} class={`hatchring${gold ? ' gold' : ''}`}
+            style={{ animationDelay: `${i * 90}ms`, animationDuration: `${620 + i * 130}ms` }} />
+        ))}
+      </span>
+    );
   };
 
   /** "Start over": undo every tick properly — remove exactly what each tick
@@ -676,7 +699,14 @@ export function PlanPage() {
                       <span class="names">
                         {s.parents[0]} <span class="plus">+</span> {s.parents[1]}
                         <span class="plus"> = </span>
-                        <PalIcon name={s.child} size={30} /> <b>{s.child}</b>
+                        <span class={`hatchhero${bursts[sid] ? ' pop' : ''}`}
+                          key={`hero-${bursts[sid] ?? 0}`}>
+                          <PalIcon name={s.child} size={30} />
+                          <HatchRings burst={bursts[sid] ?? 0}
+                            rarity={pals.value[s.child]?.rarity ?? null}
+                            boost={s.isTarget} />
+                        </span>
+                        {' '}<b>{s.child}</b>
                         <WorkChips name={s.child} all />
                       </span>
                       <span class="tag" style={{ display: 'flex', gap: '5px', flexWrap: 'wrap', justifyContent: 'flex-end' }}>

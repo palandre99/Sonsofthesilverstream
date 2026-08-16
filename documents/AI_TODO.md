@@ -145,8 +145,12 @@ Add everything you find; finding nothing means you didn't look.*
       sidebar.
 - [ ] Web parity for the in-game-style info card (stats icons, food
       drumsticks, drops, boss map panel).
-- [ ] Web parity: hatch celebration (mobile has rarity-tiered bursts +
-      hero pop + goal-tier boost; web has none — CSS rings would do).
+- [x] 2026-08-16 ~09:15 Web hatch celebration SHIPPED: CSS rings + hero
+      pop on the step's child icon, same tier rules as mobile (Common 1
+      ring → Legendary 4, gold from Epic up, GOAL steps bump one tier).
+      Reduced-motion users get nothing extra (global guard). Eye-verified
+      live: Common hatch → 1 teal ring + pop, zero console errors.
+      Deploys with the next main push (batched, CEO go-ahead).
 
 - [x] 2026-08-15: Pages deploy verified live at **/Sonsofthesilverstream/palforge/**
       (not `/hatchlab/` — that path was never used). Boots, renders, navigates,

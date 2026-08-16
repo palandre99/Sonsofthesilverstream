@@ -369,3 +369,15 @@
 .hatchback{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:50;
   display:grid;place-items:center;padding:24px}
 .hatchcard{max-width:420px;width:100%}
+
+/* ---------- hatch celebration (parity with mobile celebrate.tsx:
+   rarity-tiered rings, gold from Epic up, hero pop; reduced-motion users
+   get nothing extra via the global guard in tokens.css) ---------- */
+.hatchhero{position:relative;display:inline-flex}
+.hatchhero.pop>:first-child{animation:hatch-pop 420ms ease-out}
+.hatchring{position:absolute;left:50%;top:50%;width:34px;height:34px;
+  margin:-17px 0 0 -17px;border-radius:50%;border:2px solid var(--accent);
+  opacity:0;pointer-events:none;animation:hatch-ring .7s ease-out forwards}
+.hatchring.gold{border-color:var(--gold)}
+@keyframes hatch-ring{0%{transform:scale(.7);opacity:.9}100%{transform:scale(2.3);opacity:0}}
+@keyframes hatch-pop{0%{transform:scale(.8)}60%{transform:scale(1.14)}100%{transform:scale(1)}}
