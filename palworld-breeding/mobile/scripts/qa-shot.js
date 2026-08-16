@@ -194,10 +194,18 @@ async function main() {
   };
 
   const type = async (text) => {
+    // Clear first. Typing used to APPEND, so a second `type:` in one run
+    // searched "chikcatt" and found nothing — which read as the app failing to
+    // list a pal. Set the value through React's own setter so the component
+    // state clears too, not just the DOM node.
     const ok = await evaluate(`(() => {
       const el = document.querySelector('input');
       if (!el) return false;
       el.focus();
+      const set = Object.getOwnPropertyDescriptor(
+        window.HTMLInputElement.prototype, 'value').set;
+      set.call(el, '');
+      el.dispatchEvent(new Event('input', { bubbles: true }));
       return true;
     })()`);
     if (!ok) {

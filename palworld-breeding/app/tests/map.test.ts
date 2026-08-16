@@ -306,3 +306,41 @@ describe('tile levels', () => {
     expect(tileLevelFor(1, 512, 3)).toBe(0);
   });
 });
+
+/* Four pals used to draw 1,393 dots in one teal: the map could not answer
+ * "which of these is Pengullet?". Colour now means WHICH pal and shape means
+ * where/when, so both halves of that trade are guarded here. */
+describe('a pal you picked is tellable from the others', () => {
+  const screen = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
+  );
+
+  const hues = (screen.match(/const PAL_HUES = \[([\s\S]*?)\];/) ?? [])[1] ?? '';
+  const entries = [...hues.matchAll(/(#[0-9A-Fa-f]{6}|T\.accent)/g)].map((m) => m[1]);
+
+  it('offers at least eight colours, all different', () => {
+    expect(entries.length).toBeGreaterThanOrEqual(8);
+    expect(new Set(entries).size).toBe(entries.length);
+  });
+
+  it('gives no pal a colour that reads as terrain', () => {
+    // green land and pale sand are the two the map would swallow
+    for (const hex of entries.filter((e) => e.startsWith('#'))) {
+      const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
+      expect(g > r + 30 && g > b + 30).toBe(false);   // leafy green
+      expect(Math.max(r, g, b) - Math.min(r, g, b)).toBeGreaterThan(40); // not a grey
+    }
+  });
+
+  it('spends hue on identity, not on day/night', () => {
+    // the old code branched the COLOUR on isNightOnly; night is a glyph now
+    expect(screen).not.toMatch(/colour:\s*isNightOnly\(/);
+    expect(screen).toMatch(/icon:\s*isNightOnly\([^)]*\)\s*\?\s*'weather-night'/);
+  });
+
+  it('keeps a dungeon pin the same colour as its pal', () => {
+    // shape carries "inside"; a second hue there would collide with identity
+    expect(screen).toMatch(/colour: hue,\s*\/\/ same pal/);
+    expect(screen).toMatch(/square: true/);
+  });
+});

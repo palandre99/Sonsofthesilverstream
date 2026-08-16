@@ -100,14 +100,20 @@ export function MapScreen() {
         });
       }
     }
-    for (const pal of filters.pals) {
+    // Colour says WHICH pal; shape says where and when. Every pal used to be
+    // the same teal, so picking four of them drew 1,393 identical dots and the
+    // one question you opened the map to ask — "which of these is Pengullet?" —
+    // had no answer on screen. Night-only pals keep their signal as a moon
+    // glyph instead of a hue, so nothing is lost by spending hue on identity.
+    for (const [i, pal] of [...filters.pals].entries()) {
+      const hue = PAL_HUES[i % PAL_HUES.length];
       const surface = spawnPoints(pal, region, filters.time, filters.level);
       if (surface && surface.n) {
         out.push({
           key: `pal:${pal}`,
           set: surface,
-          colour: isNightOnly(pal, region) ? '#9B8CFF' : T.accent,
-          icon: 'paw',
+          colour: hue,
+          icon: isNightOnly(pal, region) ? 'weather-night' : 'paw',
           label: pal,
         });
       }
@@ -120,7 +126,7 @@ export function MapScreen() {
           out.push({
             key: `dun:${pal}`,
             set: inside,
-            colour: '#8AA6FF',
+            colour: hue,          // same pal, same colour — the SQUARE says "inside"
             icon: 'door',
             label: `${pal} — in dungeons`,
             square: true,
@@ -550,12 +556,21 @@ export function MapScreen() {
                 {active.map((l) => (
                   <View key={l.key}
                     style={{ flexDirection: 'row', alignItems: 'center', gap: 9 }}>
+                    {/* the swatch is a miniature of the actual pin — same
+                        colour, same shape, same glyph — so the key can be
+                        matched to the map without reading a word of it */}
                     <View style={{
-                      width: 15, height: 15,
-                      borderRadius: l.square ? 4 : 8,
+                      width: 19, height: 19,
+                      borderRadius: l.square ? 5 : 9.5,
                       borderWidth: 2, borderColor: l.colour,
                       backgroundColor: 'rgba(10,20,24,0.86)',
-                    }} />
+                      alignItems: 'center', justifyContent: 'center',
+                    }}>
+                      {l.art != null
+                        ? <Image source={l.art} style={{ width: 11, height: 11 }}
+                            resizeMode="contain" />
+                        : <Icon name={l.icon} size={10} color={l.colour} />}
+                    </View>
                     <Text style={{ color: T.ink, fontSize: 12.5, fontWeight: '700', flex: 1 }}>
                       {l.label}
                     </Text>
@@ -685,12 +700,32 @@ function PlaceName({ name }: { name: string }) {
 const PIN = 23;
 
 /**
+ * One colour per pal you have picked, in the order you picked them.
+ *
+ * Chosen against the map itself, not on a swatch sheet: the terrain runs
+ * green, snow-white, teal sea and desert sand, so mid greens and pale yellows
+ * vanish into it. These eight are all high-chroma and none of them is a
+ * terrain colour. The first is the app accent, so picking a single pal — much
+ * the commonest case — looks exactly as it always has.
+ */
+const PAL_HUES = [
+  T.accent,   // teal
+  '#FFB454',  // amber
+  '#FF7597',  // rose
+  '#A98BFF',  // violet
+  '#5AD1FF',  // sky
+  '#FFE066',  // lemon
+  '#FF6B4A',  // vermilion
+  '#E86BFF',  // magenta
+];
+
+/**
  * Dungeon pins are SQUARE and surface pins are round.
  *
- * Hue alone had run out of room: night-only pals sit at #9B8CFF and dungeon
- * spawns at #8AA6FF, which is the same colour to anyone not holding a swatch.
- * Shape survives colour-blindness, small sizes and a busy map in a way a
- * fourth shade of violet does not.
+ * Hue is spent on WHICH pal a pin belongs to (see PAL_HUES), so "out in the
+ * world" versus "inside a dungeon" cannot also be a colour. Shape survives
+ * colour-blindness, small sizes and a busy map in a way another shade would
+ * not, and it stays readable when two pals sit at adjacent hues.
  */
 function Pin({ colour, icon, count, square, art, done }: {
   colour: string; icon: string; count: number; square?: boolean; art?: number;

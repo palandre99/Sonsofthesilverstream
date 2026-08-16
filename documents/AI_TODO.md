@@ -606,6 +606,38 @@ session's; this worker touches only the map area (see AREA LOCKS).*
 - [ ] H14 A fourth harness trap in a day (kill-vs-close). Every one so far has
       been the tool lying rather than the app failing. Before treating any
       surprising result as an app bug, reproduce it a second way.
+      TRAPS 5 AND 6, same session, both caught before they became "findings":
+      (5) `type:` APPENDED to the search box, so a second search in one run
+      queried "chikcatt" and the pal list came back empty — which reads exactly
+      like the app failing to list a pal. It clears the field through React's
+      own value setter now.
+      (6) Screenshots are 2x device pixels; CSS click coordinates are not.
+      Reading a button's position off a screenshot and clicking it doubled
+      every coordinate, and the taps silently hit nothing. RULE: never take a
+      tap coordinate off a screenshot — `probe:` the element's real rect.
+- [x] H2 2026-08-16 ~15:05 CLOSED AS WON'T-DO — the World Tree button is shown
+      to everyone, including players who have never been there, and it stays
+      that way. To hide it I would have to know whether he has reached the
+      endgame, and NOTHING in our data says that: we ship datamined spawn
+      tables, not his save file. Any rule I invented (has he ticked a World
+      Tree marker? owns a Tree-only pal?) would be a guess wearing a
+      progression signal's clothes, and would hide half the map from a player
+      who simply has not ticked anything yet. A visible region he has not
+      unlocked costs him one tap; a hidden one costs him the feature.
+- [x] H15 2026-08-16 ~15:10 EVERY PAL WAS THE SAME TEAL — the map could not
+      answer the question you open it to ask. Found by playing a real journey
+      rather than reading code: picked four pals, got 1,393 identical teal
+      dots, and there was no way to tell which cluster was Pengullet and which
+      was Chikipi. The data knew — Pengullet is arctic, Chikipi is the starter
+      coast — the SCREEN did not. Colour now means WHICH pal (8-colour palette,
+      in the order you picked them) and shape/glyph mean where and when: round
+      = out in the world, square = inside a dungeon, moon = night-only. So the
+      night signal survived losing its hue. The legend swatch is now a
+      miniature of the real pin, so the key can be matched to the map without
+      reading a word. Eye-verified: amber Pengullet in the northern snow, teal
+      Chikipi on the southern coast, rose Depresso carrying the moon.
+      The palette is guarded by test, and the guard rejected my first attempt —
+      mint #7BE38B is a leafy green that would sink into the grass.
 
 ### Open — the map lane's own queue
 - [x] F23 DONE 2026-08-16 ~00:02: the preview's dense clusters were an
