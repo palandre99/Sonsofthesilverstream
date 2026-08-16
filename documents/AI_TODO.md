@@ -1628,6 +1628,64 @@ and u are idle and not working again… loop not working"
 => (c) He perceives IDLE TIME. Re-arm at 60s and do MORE per turn; never
    end a turn on one small fix.
 
+## E27. CEO FEEDBACK 2026-08-16 ~17:44 (verbatim, WITH SCREENSHOT of Calc)
+"Calculator tab is also very bad , same issue as u addressed on the home
+page of plan tab a while back, empty and poor design"
+
+- [x] E27a CALCULATOR EMPTY STATE (commit 9d342b6, PUBLISHED). His shot: a
+      title, two buttons, one small card, then black. **The tab DID have a
+      quick-start row of recent pals — but only after you had already used
+      it, so a FIRST visit (exactly when help is needed) showed nothing.**
+      Now: your OWNED pals as one-tap shortcuts (8, straight from the box,
+      "Use <pal>"), plus a three-point explainer of what each mode does and
+      when to swap. Empty box → says so and points at the Paldex instead of
+      an empty shelf. BOTH modes got it — "Child → parents" was even
+      thinner than the screenshot he sent.
+      MEASURED 375x812: content reached ~57% of the screen before, 854px of
+      812 (105%, i.e. it fills and scrolls) after. Shortcut verified to load
+      a parent, not assumed.
+- [x] E27b ONE MECHANIC, TWO NAMES (commit 84dd3ce, PUBLISHED, both
+      platforms). Reading the rest of the Calculator: a one-off recipe was
+      "unique recipe" HERE but "fixed recipe" in the Plan tab, the Paldex
+      AND the Reference. Two names read as two mechanics. Standardised on
+      "fixed recipe" (majority + plainer). The Calculator also still said
+      "gender locked" after the Plan tab stopped → "only works with the
+      genders shown". Verified on Katress+Wixen, the game's only
+      gender-locked pair.
+- [ ] E27c WEB BATCH still owed: Calculator empty state, job icons in web
+      Paldex rows, web filter-chip a11y, web import-sheet plural, web
+      empty-collection button, web goal next-step line.
+
+## E26. HOSTILE RE-READ OF PlannerScreen 2026-08-16 (no CEO prompt)
+
+- [x] E26a Read as a reviewer now every path has been exercised. **Clean on
+      unused imports, dead state, and the one narrowed dependency list is
+      honest** (its key is a complete fingerprint of every input the effect
+      reads). ONE real finding (commit 8a4061e): done / half-done / ready
+      were THREE separate uncached walks of the whole step list, two of them
+      rebuilding a step key string per step — on a screen that re-renders on
+      every store change (a tick, folding the tray, opening a sheet). ~500
+      key builds per render for three numbers on a 165-step plan. Now one
+      cached pass keyed on [plan, checks, stepMeta].
+      NEAR-MISS WORTH KEEPING: the header then read 0/35 with three ticks in
+      storage, which looked like I had broken the count — all three belonged
+      to the plan REPLACED the round before. Correct. Check whose data it is
+      before believing a number is wrong.
+
+## E25. GOAL-LIST RULES EXTRACTED 2026-08-16 (commit 96209bc, PUBLISHED)
+
+- [x] Same treatment as ticks.ts: add / remove / "is the route still
+      current" existed TWICE (mobile store.ts, web state.ts) in different
+      plumbing. That duplication is how one platform warned about a stale
+      plan while the other silently showed an old route. Now
+      `logic/goals.ts` (`withTargets`, `withoutTargets`, `sameTargets`),
+      mirrored + parity-gated, **20 tests**. The important one pins
+      ORDER-INDEPENDENCE: remove a goal and add it straight back and the
+      plan is NOT stale. Verified live too.
+      NOT A BUG, recorded so nobody "fixes" it: the old comparison joined
+      names into a string, which would collide on a name containing a comma
+      — none of the 299 do.
+
 ## E24. THE LAST UNEXERCISED BEHAVIOUR 2026-08-16 (no CEO prompt — the lane)
 
 - [x] E24a TICK-CLAIM RULE EXTRACTED AND TESTED (commit 305d7f2, PUBLISHED).
