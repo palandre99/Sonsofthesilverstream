@@ -939,6 +939,52 @@ DELIBERATELY NOT DONE BY ME: this is engine code and "planner/derivations
 perf re-architecture" is explicitly parked for Fable. Ledgered with hard
 numbers so it is nearly mechanical to execute.
 
+## E16. CEO FEEDBACK 2026-08-16 ~12:46 (verbatim intake, WITH SCREENSHOT)
+"Some goals have no route as u can see, should be a clean smart well
+designed feature that tells u easy ways to unlock the path, which is fitting
+for the world save. Don't suggest catching a lvl 60 pal that has 2 steps
+away if u are level 20, then suggesting catching a lvl 10 pal that is 10
+steps away is smarter, or suggest both but ranked, an/ or suggest straight
+up where to catch the pal u want. And if lvl 70 u can catch a 60 with one
+step away then suggesting catching a lvl 10 pal 20 steps away first is not
+efficient. U understand. Deep eval analyze and think hard and improve
+engine. Engine must be very smart"
+
+He screenshotted the "9 goals have no route yet" card I had written minutes
+earlier. He is right and the proof is in his own list: it lumped CHIKIPI
+(minWild 1 — catch one on your way past) together with BELLANOIR LIBERO
+(minWild null — never spawns wild, raid only) under one useless sentence.
+
+- [x] E16a ENGINE BUILT AND TESTED (commit 24cdee6) — `src/logic/unlock.ts`,
+      mirrored both trees, 7 tests + parity gate, full suite 138 green.
+      MODEL: shortest path over the breeding graph where obtaining a species
+      is `min(catch it, breed it from two others)`. catch = 1 trip if
+      minWild <= your level, else 1 + (minWild - level) * 0.35. breed =
+      cheapest parent pair, catches UNIONED so a shared catch is paid once
+      (same rule the planner uses for shared intermediates).
+      HIS RULE IS ASSERTED IN BOTH DIRECTIONS as tests: Lv 20 picks the
+      Lv-10 catch 10 steps out over the Lv-60 catch 2 steps out; the same
+      graph at Lv 70 flips to the short hop.
+      REAL-DATA PROOF (2-pal box, throwaway probe, deleted): 185 ms cold /
+      53 ms warm. Chikipi -> catch, gate 1, 0 steps. Ranked at Lv 20:
+      Mossanda Lux (15) > Grizzbolt (30) > Jetragon (60) > Frostallion Noct
+      (65). Bellanoir Libero / Blazamut Ryu / Panthalus -> raid-only.
+      The two weighting constants are OURS, not game data — they are
+      labelled as judgement, never presented as datamined.
+- [ ] E16b NEXT: wire it into the no-route card (mobile first, then web).
+      Three different sentences for the three kinds, ranked easiest first,
+      and the level gate stated against HIS level ("spawns at Lv 60, you're
+      Lv 34"). Deliberately not started rather than half-wired.
+- [ ] E16c HIS THIRD ASK — "suggest straight up where to catch the pal u
+      want" — NEEDS LOCATION DATA WE MAY NOT HAVE. `PalInfo.regions` exists;
+      the Map session is mining map data. DO NOT invent spawn locations.
+      Check what regions actually contains before promising anything.
+- [ ] E16d DATA GAP FOUND: **Astralym** has NO row in palcalcFacts.g.ts, so
+      the advisor honestly returns 'unknown' for it. Is it a real 1.0
+      species, a renamed one, or a pipeline miss? Check
+      tools/extract_palcalc_facts.py coverage — 298 species there vs 299 in
+      the breeding engine.
+
 ## E15. CEO FEEDBACK 2026-08-16 ~16:25 (verbatim intake, WITH SCREENSHOT)
 "I think this page looks very empty and poorly designed (the breeding
 homepage before making a plan, very small and poorly designed, like temu
