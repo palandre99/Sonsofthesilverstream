@@ -996,6 +996,22 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       3.2x is too little to pinpoint a chest, the honest middle is allowing a
       1.5x upscale (4.8x reach, mild softness at the very end) — but that is
       HIS call, not mine to pick silently.
+- [x] K8 2026-08-16 ~18:39 A PAL ON BOTH MAPS IS CORRECT, PROVED AGAINST THE
+      SOURCE. 76 of the 260 spawning pals live on both maps, so the region
+      filter has to CUT the point cloud rather than relabel it. Took Anubis,
+      read the ground truth straight out of the datamined table first (35
+      open-world on Palpagos + 1 dungeon; 21 on the World Tree + 0), then
+      measured the app: 35 spots on Palpagos, 21 on the World Tree, dungeon
+      spawn correctly excluded. Exact match. Locked in as tests, including the
+      count of 76 — if a regeneration silently drops the World Tree half of
+      the dataset, that number moves.
+- [x] K9 TAPPING EMPTY MAP — CONSIDERED, DELIBERATELY UNCHANGED. With a layer
+      on, tapping bare ocean shows nothing at all; the readout is computed and
+      thrown away. Tempting to show the coordinate on every tap, since the game
+      shows coordinates and players trade them. Decided against: tap-to-dismiss
+      is the standard gesture, a card on every stray tap is noise, and he has
+      just told us the map is too cluttered. Recording the reasoning so this is
+      a decision rather than an oversight the next worker "fixes".
 - [ ] K5 "also many other issues" — HE HAS MORE AND HAS NOT LISTED THEM. Ask,
       or keep walking journeys until they surface. Do not guess at what he
       means and do not claim the map is finished.

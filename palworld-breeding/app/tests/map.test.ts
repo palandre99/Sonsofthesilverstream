@@ -844,3 +844,32 @@ describe('the level cap is reachable', () => {
     expect(screen).toMatch(/spawnPoints\(pal, region, filters\.time, filters\.level\)/);
   });
 });
+
+/* 76 pals live on BOTH maps, so the region filter has to cut the point cloud
+ * rather than just relabel it. Anubis is the worked example: the numbers below
+ * come from the datamined table, and the app was measured showing exactly
+ * these — 35 on Palpagos, 21 on the World Tree. */
+describe('a pal that lives on both maps', () => {
+  it('shows each region its own spawns, not the union', () => {
+    const all = { day: true, night: true };
+    const lv = { lo: 1, hi: 80 };
+    expect(spawnPoints('Anubis', 'palpagos', all, lv)?.n).toBe(35);
+    expect(spawnPoints('Anubis', 'tree', all, lv)?.n).toBe(21);
+  });
+
+  it('keeps the dungeon spawn out of the open-world count', () => {
+    // Anubis has exactly one dungeon spawner on Palpagos and none on the tree;
+    // standing on that hillside finds you nothing
+    expect(spawnSplit('Anubis', 'palpagos')).toEqual({ field: 35, dungeon: 1 });
+    expect(spawnSplit('Anubis', 'tree')).toEqual({ field: 21, dungeon: 0 });
+  });
+
+  it('counts the pals that appear on both maps', () => {
+    // if a regeneration silently drops the World Tree half of the dataset,
+    // this is the number that moves
+    const both = Object.entries(MAP_SPAWNS).filter(
+      ([, groups]) => groups.some((g) => g.m === 0) && groups.some((g) => g.m === 1),
+    );
+    expect(both.length).toBe(76);
+  });
+});
