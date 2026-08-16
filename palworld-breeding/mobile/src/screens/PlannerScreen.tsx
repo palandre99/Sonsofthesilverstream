@@ -193,12 +193,16 @@ export function PlannerScreen() {
   const ownedNames = Object.keys(box);
   const plan = saved;
 
+  /** Does the route on screen still cover the goals you are holding? One
+   * definition, used both to warn before replacing a plan and to say plainly
+   * when the plan has gone out of date. */
+  const planIsCurrent = !!plan
+    && [...targets].sort().join() === [...plan.targets].sort().join();
+
   /** Planning replaces the current plan — when one is mid-flight with real
    * progress and DIFFERENT goals, ask first (self-found queue item). */
   const confirmRun = () => {
-    if (plan && plan.steps.length > 0
-      && done < plan.steps.length
-      && [...targets].sort().join() !== [...plan.targets].sort().join()) {
+    if (plan && plan.steps.length > 0 && done < plan.steps.length && !planIsCurrent) {
       setManaging('replace');
       return;
     }
@@ -621,6 +625,9 @@ export function PlannerScreen() {
                       <Icon name="alert-outline" size={13} color={T.warn} />
                     )}
                     <Pressable hitSlop={8}
+                      // it had a label but no role, so a screen reader read
+                      // the words without knowing it could be pressed
+                      accessibilityRole="button"
                       accessibilityLabel={`Remove ${t} from the goals`}
                       onPress={() => removeDraftTargets([t])}
                       style={{ padding: 2 }}>
@@ -642,18 +649,53 @@ export function PlannerScreen() {
         );
       })()}
 
-      {/* a big dead "Plan targets" button with nothing to plan was half the
+      {/* A big dead "Plan targets" button with nothing to plan was half the
           reason the empty screen felt broken — the welcome card carries the
-          call to action there instead */}
-      {!(!plan && targets.length === 0) && (
+          call to action there instead.
+
+          The same button was ALSO the loudest thing on screen once a route
+          existed, sitting right above the results and rebuilding the
+          identical plan (measured at y=249, above the stat tiles). Worse,
+          editing your goals afterwards left the route below silently out of
+          date — the only hint was the button's number quietly changing.
+
+          So it now appears only when it MEANS something: your goals no
+          longer match the plan you are looking at. */}
+      {!plan && targets.length > 0 && (
         <Btn
           primary
-          disabled={!targets.length || !ownedNames.length || busy}
+          disabled={!ownedNames.length || busy}
           label={busy ? 'Planning…'
-            : targets.length ? `Plan ${targets.length} target${targets.length > 1 ? 's' : ''}`
-            : 'Plan targets'}
+            : `Plan ${targets.length} target${targets.length > 1 ? 's' : ''}`}
           onPress={confirmRun}
         />
+      )}
+      {plan && !planIsCurrent && !busy && (
+        <Card style={{
+          backgroundColor: T.accentSoft, borderColor: T.accent, marginTop: 12, gap: 9,
+        }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 9 }}>
+            <Icon name="refresh" size={18} color={T.accentInk} />
+            <Text style={[s.body, { color: T.accentInk, fontWeight: '700', flex: 1 }]}>
+              {targets.length === 0
+                ? 'You have removed every goal'
+                : 'Your goals have changed'}
+            </Text>
+          </View>
+          <Text style={s.body}>
+            {targets.length === 0
+              ? 'The route below is the one you planned earlier. Add a goal to build a new one.'
+              : 'The route below is still the old one. Build it again to cover '
+                + `all ${targets.length} goals.`}
+          </Text>
+          {targets.length > 0 && (
+            <Btn primary disabled={!ownedNames.length || busy}
+              label={`Plan these ${targets.length} goals`} onPress={confirmRun} />
+          )}
+        </Card>
+      )}
+      {plan && planIsCurrent && busy && (
+        <Btn primary disabled label="Planning…" onPress={() => {}} />
       )}
       {/* a bare spinner told him nothing about what the wait was for */}
       {busy && (
