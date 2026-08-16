@@ -1724,6 +1724,36 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E38. PROFILES — FIRST PASS EVER 2026-08-16 (no CEO prompt — the lane)
+
+Settings/Profiles had never been read or exercised. It is the ONE area that
+can destroy his data.
+
+- [x] **DELETING A PROFILE COULD OVERWRITE THE SURVIVING PROFILE'S
+      COLLECTION.** `switchProfile` was hardened on 2026-08-15 against a
+      write landing mid-flight and saving one world's data under another
+      world's keys — it sets a `switching` flag and `persist()` drops writes
+      while it is up. **`deleteProfile` had the identical hole and no
+      guard.** Deleting the ACTIVE world does:
+        activeProfile = survivor        ← pointer moves
+        await persistProfiles()         ← await, `state` still = DELETED world
+        await loadProfileData()         ← blanks state, then awaits a read
+      A write in the first window saves the deleted world's box under the
+      survivor's keys; a write in the second saves an EMPTY box over it.
+      Now wrapped in the same `switching` guard, with the reason recorded.
+- [x] EXERCISED END TO END on device, on a throwaway profile so his two real
+      ones were never at risk: create (auto-switches, starts empty while
+      "My world" keeps Lv 42 · 26 pals · plan 0/35), the two-tap delete arm
+      ("Delete this profile…" → 'Really delete "QA-TEMP" and its data?'),
+      and DELETING THE ACTIVE PROFILE — which correctly fell back to "My
+      world" with all 26 pals, its level and its plan intact.
+- [x] Storage snapshotted before the pass and diffed after: **zero drift.**
+      His profiles ("My world", "Hardcore") and box are exactly as found.
+- Confirmed correct while reading: `deleteProfile` refuses to delete the
+  last profile; `keysFor('default')` deliberately uses the ORIGINAL storage
+  keys so the profiles feature never orphaned pre-existing data;
+  `switchProfile` early-returns on an unknown or already-active id.
+
 ## E37. CALCULATOR HOSTILE CODE READ 2026-08-16 (no CEO prompt — the lane)
 
 - [x] **THE PAIR-MODE EMPTY STATE GREW A SECOND, NEAR-IDENTICAL SHORTCUT

@@ -203,14 +203,26 @@ export async function setProfileLevel(id: string, level: number | undefined): Pr
 
 export async function deleteProfile(id: string): Promise<void> {
   if (profiles.length <= 1) return; // never delete the last profile
-  const k = keysFor(id);
+  // switchProfile was hardened against a write landing mid-flight and saving
+  // one world's data under another world's keys — but THIS path had the same
+  // hole and no guard. Deleting the ACTIVE world moves the pointer to the
+  // survivor while `state` still holds the deleted world's box, and then
+  // loadProfileData blanks `state` and awaits a read. A write in either
+  // window saves the deleted world's collection — or an empty one — over the
+  // survivor's. Same guard, same reason (self-found on a code read).
+  switching = true;
   try {
-    await AsyncStorage.multiRemove([k.box, k.checks, k.plan]);
-  } catch { /* best-effort */ }
-  profiles = profiles.filter((p) => p.id !== id);
-  if (activeProfile === id) activeProfile = profiles[0].id;
-  await persistProfiles();
-  await loadProfileData();
+    const k = keysFor(id);
+    try {
+      await AsyncStorage.multiRemove([k.box, k.checks, k.plan]);
+    } catch { /* best-effort */ }
+    profiles = profiles.filter((p) => p.id !== id);
+    if (activeProfile === id) activeProfile = profiles[0].id;
+    await persistProfiles();
+    await loadProfileData();
+  } finally {
+    switching = false;
+  }
 }
 
 /** Lightweight per-profile stats for the Profiles screen — active profile
