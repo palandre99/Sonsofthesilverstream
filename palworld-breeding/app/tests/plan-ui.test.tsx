@@ -145,6 +145,26 @@ describe('Route Planner', { timeout: 20000 }, () => {
     expect(state.box.value['Lamball']).toEqual({ m: true, f: true });
   });
 
+  it('Escape backs out of the confirm dialog without destroying the plan', () => {
+    const steps = [{
+      wave: 1, parents: ['Lamball', 'Cattiva'] as [string, string], child: 'Chikipi',
+      kind: 'generic' as const, tieBreak: false, margin: 2, genderNote: null,
+      isTarget: true, neededBy: ['Chikipi'], reusedAsParent: 0,
+    }];
+    localStorage.setItem('hatchlab-plan-v1', JSON.stringify({
+      targets: ['Chikipi'], steps, unreachable: [], planned: '2026-08-14',
+    }));
+    render(<PlanPage />);
+    fireEvent.click(screen.getByRole('button', { name: 'Clear plan' }));
+    // the dialog announces the question it asks, not a bare "dialog"
+    expect(screen.getByRole('dialog', { name: 'Clear the plan?' })).toBeTruthy();
+
+    fireEvent.keyDown(window, { key: 'Escape' });
+    expect(screen.queryByRole('dialog')).toBeNull();
+    // Escape must CANCEL, never confirm — the plan is still here
+    expect(document.body.textContent).toContain('Goal progress');
+  });
+
   it('un-adding a goal sticks — even after leaving the page and returning', () => {
     // the CEO's bug: goals added from the suggestions sheet could not be
     // un-added, and removals were resurrected by a page remount

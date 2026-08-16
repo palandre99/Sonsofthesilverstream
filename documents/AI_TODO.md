@@ -770,6 +770,15 @@ Nothing in the Plan-tab queue is blocked by this — what remains there is
 polish, micro-QoL and copy, which is safe to keep shipping.
 
 ### E13 polish-lane findings (hostile deep-eval passes, ongoing)
+- [x] 2026-08-16 ~11:25 WEB keyboard: Escape closed the hatch dialog and
+      the goals sheet but NOT the confirm dialog — so a keyboard user was
+      trapped in the one dialog that asks about destroying a plan (only
+      click-away worked, which a keyboard has no way to do). Escape now
+      backs out of it, and CANCELS rather than confirms. Regression test
+      added that asserts both the dismissal AND that the plan survives —
+      it also locks in yesterday's dialog-naming fix by querying the
+      dialog BY its accessible name. Verified with a real Escape keypress
+      in a real browser, not just the happy-dom test. Web-only, no OTA.
 - [x] 2026-08-16 ~11:10 WEB a11y sweep (mirror of the mobile one). Mostly
       CLEAN — all 12 Plan-page controls named, all 21 pal images correctly
       marked decorative (alt=""), hatch dialog properly role+modal+named.

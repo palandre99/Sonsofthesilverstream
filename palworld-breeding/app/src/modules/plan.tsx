@@ -110,6 +110,17 @@ export function PlanPage() {
     return () => window.removeEventListener('keydown', onKey);
   }, [hatching]);
   const [managing, setManaging] = useState<'none' | 'reset' | 'clear' | 'removeall'>('none');
+  // ...and Escape backs out of the confirm dialog too. It had click-away
+  // only, so a keyboard user was stuck in the one dialog that asks about
+  // destroying a plan (self-found).
+  useEffect(() => {
+    if (managing === 'none') return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setManaging('none');
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [managing]);
   // the goal tray folds to one line once the plan matches the goals
   const [trayOpen, setTrayOpen] = useState(false);
   // the goals the current plan was computed for (draft may drift from it)
