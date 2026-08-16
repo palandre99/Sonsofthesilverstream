@@ -74,6 +74,37 @@ describe('a phase never contains a step that waits on that same phase', () => {
     });
   }
 
+  /**
+   * KNOWN DEFECT, deliberately executable. The Plan tab's "how it works" card
+   * promises: "Pals needed by several goals are bred once, not twice."
+   *
+   * That is only true when two goals reach a shared pal by the SAME recipe.
+   * `planFor` unions each target's INDEPENDENTLY cheapest derivation, keyed by
+   * recipe (parents+child) — so when Astegon's cheapest route to Whalaska is
+   * Petallia Ignis + Reptyro Cryst and Blazamut's is Frostplume + Univolt
+   * Cryst, BOTH survive the union and the same pal is bred twice. Measured on
+   * the ten-pal box: Whalaska in phase 18 and again in phase 21, and since
+   * breeding never consumes a parent the second chain is pure wasted work.
+   *
+   * Fixing it properly means choosing a globally cheapest SHARED forest rather
+   * than per-target cheapest routes, and dropping a duplicate can orphan the
+   * steps that existed only to feed it. That is real engine work, and the
+   * engine is sacred here — so this is recorded rather than patched.
+   *
+   * `it.fails` keeps the suite honest in both directions: the defect cannot be
+   * forgotten, and the day the planner starts sharing properly this test turns
+   * RED and tells whoever did it to flip this back to a plain `it`.
+   */
+  it.fails('KNOWN DEFECT: a pal can still be bred twice by two different recipes', () => {
+    for (const { name, steps } of PLANS) {
+      const seen = new Map<string, number>();
+      for (const s of steps) seen.set(s.child, (seen.get(s.child) ?? 0) + 1);
+      const twice = [...seen].filter(([, n]) => n > 1)
+        .map(([child, n]) => `${name}: ${child} is bred ${n} times`);
+      expect(twice).toEqual([]);
+    }
+  });
+
   it('every phase only uses pals the box or an EARLIER phase already produced', () => {
     for (const { name, box, steps } of PLANS) {
       const have = new Set(box);

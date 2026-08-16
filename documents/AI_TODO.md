@@ -2075,6 +2075,48 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E75. THE PLAN BREEDS SOME PALS TWICE — A REAL DEFECT, FOUND BY ITS OWN
+## PROMISE 2026-08-17
+
+The Plan tab's "how it works" card said: *"Pals needed by several goals are
+bred once, not twice."* Turned that into an assertion — no species may be the
+child of two steps — and it **FAILED on a real plan**.
+
+- **THE DEFECT, measured:** ten-pal box, goals Blazamut/Faleris/Orserk/
+  Astegon. **Whalaska is bred TWICE** — phase 18 (Petallia Ignis + Reptyro
+  Cryst, needed by Astegon) and phase 21 (Frostplume + Univolt Cryst, needed
+  by Blazamut). Breeding never consumes a parent, so the second chain is
+  **pure wasted work**, plus whatever steps exist only to feed it.
+- **THE CAUSE:** `planFor` is documented as "Union of cheapest derivations for
+  the targets" and unions them **keyed by RECIPE (parents+child)**. Each
+  target's cheapest route is computed INDEPENDENTLY, so when two goals reach
+  one species by DIFFERENT recipes both survive the union. The sharing that
+  does work is step-level (identical pairs dedupe); species-level sharing was
+  never implemented.
+- **NOT PATCHED, deliberately.** A correct fix means choosing a globally
+  cheapest SHARED forest instead of per-target cheapest routes, and dropping a
+  duplicate can orphan the steps that existed only to feed it. That is real
+  engine work and **the engine is sacred** — it needs the CEO's time or
+  Fable's, not a loop-tick hack. **This is the biggest open item in the
+  breeding fane.**
+- [x] **RECORDED AS AN EXECUTABLE KNOWN-FAILURE**, not a comment:
+  `it.fails('KNOWN DEFECT: a pal can still be bred twice by two different
+  recipes')` in `app/tests/plan-waves.test.ts`. The suite stays green (323
+  passed, **1 expected fail**), the defect cannot be forgotten, and **the day
+  the planner starts sharing properly the test turns RED** and tells whoever
+  fixed it to flip it back to a plain `it`.
+- [x] **THE COPY NO LONGER OVER-PROMISES.** "Pals needed by several goals are
+  bred once, not twice" → "Steps two goals both need are done once, and steps
+  that can run at the same time are grouped." That is exactly what the union
+  actually delivers. Mobile only — the web Plan page has no equivalent line.
+- **ALSO CHECKED THIS TICK, all sound:** `SLOTS = 4` is the CONFIRMED
+  datamined cap (`GameSettings.PassiveRandomAddNum`), and the "up to 6 with a
+  Special Cake" claim is only *plausible* and belongs to an item the app
+  deliberately does not model — no contradiction. `ALL_LEVEL_CAP = 80`
+  matches the data exactly (max `max_wild_level` = 80, **zero** spawn groups
+  above 80). `CATCH_TRIP`/`LEVEL_PENALTY` in unlock.ts are tuning weights and
+  are already labelled as judgement rather than game facts.
+
 ## E74. PROFILE DELETION VERIFIED — THE GUARDED PATH HOLDS 2026-08-17
 
 Closed the gap E73 left. This is the path whose own comment documents a real

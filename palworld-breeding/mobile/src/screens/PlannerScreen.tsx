@@ -573,7 +573,12 @@ export function PlannerScreen() {
               { n: '1', t: 'Choose your goals',
                 d: 'Any pals you want — suggestions are ranked by how close they already are to your save.' },
               { n: '2', t: 'Get one shared route',
-                d: 'Pals needed by several goals are bred once, not twice, and steps that can run at the same time are grouped.' },
+                // Measured 2026-08-17: the route shares a step when two goals need
+                // the SAME pair, but two goals reaching one pal by DIFFERENT recipes
+                // still breed it twice (Whalaska, phases 18 and 21 on a ten-pal box).
+                // Promising "bred once, not twice" outright was therefore false, so
+                // this says the part that is true until the planner can share properly.
+                d: 'Steps two goals both need are done once, and steps that can run at the same time are grouped.' },
               { n: '3', t: 'Tick eggs off as they hatch',
                 d: 'Each tick adds the pal to your Paldex and shows what is ready to breed next.' },
             ].map((step) => (
