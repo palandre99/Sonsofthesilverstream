@@ -786,6 +786,30 @@ Nothing in the Plan-tab queue is blocked by this — what remains there is
 polish, micro-QoL and copy, which is safe to keep shipping.
 
 ### E13 polish-lane findings (hostile deep-eval passes, ongoing)
+- [x] 2026-08-16 ~13:00 COLLECTION-INTEGRITY WALK on MOBILE — the highest-
+      stakes untested code in the app. store.ts's completeStep /
+      uncheckStep / resetPlanProgress are a SEPARATE implementation from
+      web's (not shared like the engine) and mobile has no test harness,
+      so this had never been executed by anyone. Clicked all of it:
+      * tick ♂-only on an UNOWNED pal → box gets {m:true,f:false} and the
+        record stores addedM:true/addedF:false; untick → pal REMOVED
+        entirely. Correct.
+      * THE ONE THAT MATTERS — pre-own Ribbuny as ♀, tick ♂-only (box
+        becomes ♂+♀), untick → removes ONLY the male the tick added and
+        KEEPS the pre-owned female. A bug here would silently delete a
+        pal the player caught themselves. Correct.
+      * "Start over" with a tick registered → reverses only the
+        tick-added gender, keeps everything pre-owned, clears the checks,
+        leaves the plan intact — exactly what its copy promises.
+      NOTHING BROKEN. Recording it as executed-and-correct so this is not
+      re-walked; but note it is still UNTESTED code (no mobile harness) —
+      a future refactor of store.ts has no net beneath it.
+- [ ] Consider (needs Fable/CEO): mobile has no test harness at all, so
+      store.ts's collection mutations are protected only by manual walks
+      like the one above. The engine got a byte-parity gate for exactly
+      this reason. Options: extract the tick/untick logic to a shared
+      parity-gated module, or stand up vitest for mobile. NOT started —
+      this is the "new parity-gated subsystem" class parked for Fable.
 - [x] 2026-08-16 ~12:05 Audited more of MY OWN recent work by clicking it
       (the discipline that caught the sheet-destroying backdrop bug).
       ALL CLEAN this round — recording so nobody re-treads it:
