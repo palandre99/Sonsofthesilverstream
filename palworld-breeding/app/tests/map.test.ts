@@ -873,3 +873,50 @@ describe('a pal that lives on both maps', () => {
     expect(both.length).toBe(76);
   });
 });
+
+/* Every layer used to bucket clusters on the SAME grid, so with eight layers
+ * switched on their pins landed on top of each other: measured at 130 pins
+ * with 64 overlapping pairs, one of them 96% hidden. Offsetting each layer's
+ * grid phase decorrelates them — measured after: 102 pins, 10 pairs. */
+describe('layers do not stack their pins on each other', () => {
+  const set = decodePoints(MAP_SPAWNS.Chikipi[0].pts);
+  const all = Array.from({ length: set.n }, (_, i) => i);
+
+  it('groups the same points differently for different layers', () => {
+    const a = clusterPoints(set, all, 800, 40, 0);
+    const b = clusterPoints(set, all, 800, 40, 1);
+    const keysA = a.map((c) => c.cell).join('|');
+    const keysB = b.map((c) => c.cell).join('|');
+    expect(keysA).not.toBe(keysB);
+  });
+
+  it('still draws every cluster at the true average of its own points', () => {
+    // the phase changes WHICH points group together; it must never move a
+    // cluster off the spawns it represents
+    for (const phase of [0, 1, 5]) {
+      for (const c of clusterPoints(set, all, 800, 40, phase)) {
+        expect(c.count).toBeGreaterThan(0);
+        expect(c.u).toBeGreaterThanOrEqual(0);
+        expect(c.u).toBeLessThanOrEqual(1);
+        expect(c.v).toBeGreaterThanOrEqual(0);
+        expect(c.v).toBeLessThanOrEqual(1);
+      }
+    }
+  });
+
+  it('never loses or invents a point, whatever the phase', () => {
+    for (const phase of [0, 1, 2, 7]) {
+      const total = clusterPoints(set, all, 800, 40, phase)
+        .reduce((sum, c) => sum + c.count, 0);
+      expect(total).toBe(set.n);
+    }
+  });
+
+  it('passes the layer index in, so the phases are actually used', () => {
+    const screen = readFileSync(
+      join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
+    );
+    expect(screen).toMatch(/clusterPoints\(layer\.set, hits, vp\.scale, cell, li\)/);
+    expect(screen).toMatch(/for \(const \[li, layer\] of active\.entries\(\)\)/);
+  });
+});

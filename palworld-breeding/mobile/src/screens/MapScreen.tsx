@@ -178,11 +178,19 @@ export function MapScreen() {
     // five independent swarms over each other — 1,958 spots of unreadable
     // overlap. The more layers are showing, the coarser every layer clusters,
     // and the total mounted count stays bounded either way.
-    const budget = Math.max(24, Math.floor(200 / Math.max(1, active.length)));
-    const cell = PIN + 14 + Math.max(0, active.length - 1) * 9;
-    for (const layer of active) {
+    // MEASURED, not guessed: with eight layers on this used to put 130 pins on
+    // screen, 64 of which overlapped another by more than a third of its area
+    // and one of which was 96% hidden. Each layer clusters on its OWN grid, so
+    // widening the cell only spaces a layer from itself — the collisions are
+    // BETWEEN layers, and the only honest lever is drawing fewer, coarser
+    // pins as more layers pile on. A pin may never be nudged off its spot to
+    // make room; where it sits is the one thing this map must not lie about.
+    const n = Math.max(1, active.length);
+    const budget = Math.max(16, Math.floor(170 / n));
+    const cell = PIN + 14 + Math.max(0, n - 1) * 12;
+    for (const [li, layer] of active.entries()) {
       const hits = pointsInRect(layer.set, vp.u0, vp.v0, vp.u1, vp.v1);
-      const clusters = clusterPoints(layer.set, hits, vp.scale, cell).slice(0, budget);
+      const clusters = clusterPoints(layer.set, hits, vp.scale, cell, li).slice(0, budget);
       for (const c of clusters) {
         out.push({
           // stable while the zoom holds, so a pan never remounts a pin

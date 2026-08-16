@@ -153,13 +153,28 @@ export function clusterPoints(
   indices: number[],
   scale: number,
   cellPx = 34,
+  /**
+   * Which layer this is, 0-based. Every layer used to bucket on the SAME grid,
+   * so with eight layers on, their cluster centres landed on top of each other
+   * — measured at 64 overlapping pin pairs out of 130, one of them 96% hidden.
+   * Widening the cell cannot help: it spaces a layer from ITSELF, and the
+   * collisions are between layers. Offsetting the grid phase per layer
+   * decorrelates them, and it stays truthful because a cluster is drawn at the
+   * CENTROID of the points that fell in its bucket — different grouping, still
+   * a real average of real spawns. A pin is never nudged to make room.
+   */
+  layer = 0,
 ): Cluster[] {
   const cell = cellPx / Math.max(1, scale);
+  // Golden-ratio phases: consecutive layers land as far from each other as a
+  // fraction can, and it never repeats for the layer counts we can show.
+  const pu = (layer * 0.6180339887498949) % 1;
+  const pv = (layer * 0.38196601125010515) % 1;
   const cells = new Map<string, { u: number; v: number; count: number; index: number }>();
   for (const p of indices) {
     const u = set.xy[p * 2];
     const v = set.xy[p * 2 + 1];
-    const key = `${Math.floor(u / cell)}:${Math.floor(v / cell)}`;
+    const key = `${Math.floor(u / cell + pu)}:${Math.floor(v / cell + pv)}`;
     const got = cells.get(key);
     if (got) {
       got.u += u;

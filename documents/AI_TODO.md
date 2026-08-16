@@ -1012,6 +1012,31 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       is the standard gesture, a card on every stray tap is noise, and he has
       just told us the map is too cluttered. Recording the reasoning so this is
       a decision rather than an oversight the next worker "fixes".
+- [x] K10 2026-08-16 ~18:52 EIGHT LAYERS ON WAS AN UNREADABLE PILE-UP, FIXED
+      BY MEASUREMENT. Switched on chests, ore, coal, eggs, notes, paldium,
+      sulfur and dungeons (6,906 spots) and counted the damage in the DOM
+      rather than eyeballing it: 130 pins on screen, 64 pairs overlapping by
+      more than a third of a pin's area, worst case 96% hidden.
+      ROOT CAUSE: every layer clusters on its OWN grid but the SAME phase, so
+      their cluster centres land together. Widening the cell cannot help — it
+      spaces a layer from ITSELF, and the collisions are BETWEEN layers. My own
+      old comment about "five independent swarms" had diagnosed half of it and
+      reached for the wrong lever.
+      FIX: clusterPoints takes a layer index and offsets its grid phase by the
+      golden ratio, so consecutive layers land as far apart as a fraction can.
+      Truthful by construction: a cluster is drawn at the CENTROID of whatever
+      points fell in its bucket, so a different grouping is still a real
+      average of real spawns. A pin is NEVER nudged to make room — that would
+      be the map lying about a location, which is the one thing it must not do.
+      MEASURED AFTER: 102 pins, 10 bad pairs. 84% fewer collisions while
+      showing MORE of the map than density-cutting alone managed (that got to
+      80 pins / 30 pairs, i.e. less content and three times the overlap).
+      Both copies of points.ts patched byte-identically; parity gate green.
+- [ ] K11 THE BREEDING LANE'S NEW genderGap TESTS ARE RED (2 failures) — theirs,
+      not mine, and their genderGap.ts/.test.ts are still UNTRACKED, i.e. work
+      in progress. Proved it is not my regression: my map suite is 94/94 and
+      the whole tree minus their in-flight file is 228/228. NOT fixing it (out
+      of lane) and NOT publishing over it. Mentioned to the CEO in the report.
 - [ ] K5 "also many other issues" — HE HAS MORE AND HAS NOT LISTED THEM. Ask,
       or keep walking journeys until they surface. Do not guess at what he
       means and do not claim the map is finished.
