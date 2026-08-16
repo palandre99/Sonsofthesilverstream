@@ -11,12 +11,12 @@
  * reaching out into the map rather than the map being a separate product.
  */
 import React, { useCallback, useMemo, useRef, useState } from 'react';
-import { Image, Pressable, ScrollView, Text, View } from 'react-native';
+import { FlatList, Image, Pressable, ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 import { T } from '../theme';
 import { Icon } from '../ui/Icon';
-import { SearchInput, s } from '../ui/kit';
+import { PalIcon, SearchInput, s } from '../ui/kit';
 import {
   MapCanvas, type MapCanvasHandle, type MapMarker, type ScreenMarker,
 } from '../map/MapCanvas';
@@ -1329,101 +1329,116 @@ function PalSheet({
           </Text>
         </Pressable>
       </View>
-      <ScrollView
+      {/* A FlatList, not a ScrollView. Every pal that spawns on the map is a
+          row here - 224 of them on Palpagos - and a ScrollView mounts all of
+          them the instant the sheet opens. That was survivable while a row was
+          three text nodes; now each one carries the pal's face, so opening the
+          sheet meant 224 image decodes at once on the CEO's phone. This mounts
+          about a screenful and fills in as he scrolls.
+          The search box is NOT in here (it sits above, outside the list), so
+          nothing can steal its focus when the list re-renders. */}
+      <FlatList
+        data={list}
+        keyExtractor={(n) => n}
         contentContainerStyle={{ padding: 14, gap: 7 }}
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode="on-drag"
-      >
-        {/* Layers first: "sulfur" or "chest" is a request for a KIND of thing,
-            and one tap should put every one of them on the map. */}
-        {layerHits.length > 0 && (
-          <>
-            <Text style={{
-              color: T.faint, fontSize: 10.5, fontWeight: '800', letterSpacing: 1.1,
-            }}>ON THE MAP</Text>
-            {layerHits.map((l) => {
-              const on = filters.poi.has(l.id);
-              return (
-                <Pressable
-                  key={`layer:${l.id}`}
-                  onPress={() => onTogglePoi(l.id)}
-                  accessibilityRole="checkbox"
-                  accessibilityState={{ checked: on }}
-                  style={{
-                    flexDirection: 'row', alignItems: 'center', gap: 10,
-                    paddingHorizontal: 12, paddingVertical: 11, borderRadius: 12,
-                    borderWidth: 1, borderColor: on ? l.colour : T.line,
-                    backgroundColor: on ? T.surface2 : T.surface,
-                  }}
-                >
-                  {MAP_ICONS[l.id] != null
-                    ? <Image source={MAP_ICONS[l.id]}
-                        style={{ width: 18, height: 18 }} resizeMode="contain" />
-                    : <Icon name={l.icon} size={17} color={l.colour} />}
-                  <Text style={{ color: T.ink, fontWeight: '800', fontSize: 14, flex: 1 }}>
-                    {l.label}
-                  </Text>
-                  <Text style={{ color: T.muted, fontWeight: '700', fontSize: 11.5 }}>
-                    {on ? 'on the map' : l.n.toLocaleString()}
-                  </Text>
-                </Pressable>
-              );
-            })}
-          </>
+        initialNumToRender={14}
+        windowSize={9}
+        ListHeaderComponent={(
+          <View style={{ gap: 7 }}>
+            {/* Layers first: "sulfur" or "chest" is a request for a KIND of thing,
+                and one tap should put every one of them on the map. */}
+            {layerHits.length > 0 && (
+              <>
+                <Text style={{
+                  color: T.faint, fontSize: 10.5, fontWeight: '800', letterSpacing: 1.1,
+                }}>ON THE MAP</Text>
+                {layerHits.map((l) => {
+                  const on = filters.poi.has(l.id);
+                  return (
+                    <Pressable
+                      key={`layer:${l.id}`}
+                      onPress={() => onTogglePoi(l.id)}
+                      accessibilityRole="checkbox"
+                      accessibilityState={{ checked: on }}
+                      style={{
+                        flexDirection: 'row', alignItems: 'center', gap: 10,
+                        paddingHorizontal: 12, paddingVertical: 11, borderRadius: 12,
+                        borderWidth: 1, borderColor: on ? l.colour : T.line,
+                        backgroundColor: on ? T.surface2 : T.surface,
+                      }}
+                    >
+                      {MAP_ICONS[l.id] != null
+                        ? <Image source={MAP_ICONS[l.id]}
+                            style={{ width: 18, height: 18 }} resizeMode="contain" />
+                        : <Icon name={l.icon} size={17} color={l.colour} />}
+                      <Text style={{ color: T.ink, fontWeight: '800', fontSize: 14, flex: 1 }}>
+                        {l.label}
+                      </Text>
+                      <Text style={{ color: T.muted, fontWeight: '700', fontSize: 11.5 }}>
+                        {on ? 'on the map' : l.n.toLocaleString()}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
+              </>
+            )}
+            {/* Places next: someone typing "fisherman" wants the point, and the
+                names are real ones out of the game's own tables. */}
+            {places.length > 0 && (
+              <>
+                <Text style={{
+                  color: T.faint, fontSize: 10.5, fontWeight: '800', letterSpacing: 1.1,
+                }}>PLACES</Text>
+                {places.map((pl) => (
+                  <Pressable
+                    key={`${pl.layerId}:${pl.name}`}
+                    onPress={() => onGoToPlace(pl.u, pl.v)}
+                    accessibilityRole="button"
+                    accessibilityLabel={`Go to ${pl.name}`}
+                    style={{
+                      flexDirection: 'row', alignItems: 'center', gap: 10,
+                      paddingHorizontal: 12, paddingVertical: 11, borderRadius: 12,
+                      borderWidth: 1, borderColor: T.line, backgroundColor: T.surface,
+                    }}
+                  >
+                    <Icon name="map-marker" size={17} color={pl.colour} />
+                    <Text style={{ color: T.ink, fontWeight: '800', fontSize: 14, flex: 1 }}>
+                      {pl.name}
+                    </Text>
+                    <Text style={{ color: T.muted, fontWeight: '700', fontSize: 11.5 }}>
+                      {pl.label}
+                    </Text>
+                  </Pressable>
+                ))}
+                <Text style={{
+                  color: T.faint, fontSize: 10.5, fontWeight: '800', letterSpacing: 1.1,
+                  marginTop: 6,
+                }}>PALS</Text>
+              </>
+            )}
+            {list.length === 0 && (
+              <Text style={[s.body, { color: T.faint, paddingTop: 10 }]}>
+                {/* The list is narrowed by BOTH the search box and the filters, so
+                    "you own every pal that spawns here" was a claim the app could
+                    not stand behind: search "zzz" with a filter on and it said so
+                    while knowing nothing of the sort. Each case says only what is
+                    actually true of it. */}
+                {layerHits.length || places.length
+                  ? ''
+                  : q.trim() && bits.length
+                    ? 'No pal by that name matches those filters.'
+                    : q.trim()
+                      ? 'Nothing on this map goes by that name.'
+                    : bits.length
+                      ? 'No pal on this map matches those filters.'
+                      : 'Nothing left to find here — you own every pal that spawns on this map.'}
+              </Text>
+            )}
+          </View>
         )}
-        {/* Places next: someone typing "fisherman" wants the point, and the
-            names are real ones out of the game's own tables. */}
-        {places.length > 0 && (
-          <>
-            <Text style={{
-              color: T.faint, fontSize: 10.5, fontWeight: '800', letterSpacing: 1.1,
-            }}>PLACES</Text>
-            {places.map((pl) => (
-              <Pressable
-                key={`${pl.layerId}:${pl.name}`}
-                onPress={() => onGoToPlace(pl.u, pl.v)}
-                accessibilityRole="button"
-                accessibilityLabel={`Go to ${pl.name}`}
-                style={{
-                  flexDirection: 'row', alignItems: 'center', gap: 10,
-                  paddingHorizontal: 12, paddingVertical: 11, borderRadius: 12,
-                  borderWidth: 1, borderColor: T.line, backgroundColor: T.surface,
-                }}
-              >
-                <Icon name="map-marker" size={17} color={pl.colour} />
-                <Text style={{ color: T.ink, fontWeight: '800', fontSize: 14, flex: 1 }}>
-                  {pl.name}
-                </Text>
-                <Text style={{ color: T.muted, fontWeight: '700', fontSize: 11.5 }}>
-                  {pl.label}
-                </Text>
-              </Pressable>
-            ))}
-            <Text style={{
-              color: T.faint, fontSize: 10.5, fontWeight: '800', letterSpacing: 1.1,
-              marginTop: 6,
-            }}>PALS</Text>
-          </>
-        )}
-        {list.length === 0 && (
-          <Text style={[s.body, { color: T.faint, paddingTop: 10 }]}>
-            {/* The list is narrowed by BOTH the search box and the filters, so
-                "you own every pal that spawns here" was a claim the app could
-                not stand behind: search "zzz" with a filter on and it said so
-                while knowing nothing of the sort. Each case says only what is
-                actually true of it. */}
-            {layerHits.length || places.length
-              ? ''
-              : q.trim() && bits.length
-                ? 'No pal by that name matches those filters.'
-                : q.trim()
-                  ? 'Nothing on this map goes by that name.'
-                : bits.length
-                  ? 'No pal on this map matches those filters.'
-                  : 'Nothing left to find here — you own every pal that spawns on this map.'}
-          </Text>
-        )}
-        {list.map((n) => {
+        renderItem={({ item: n }) => {
           const on = filters.pals.has(n);
           const lv = spawnLevels(n, region);
           const night = isNightOnly(n, region);
@@ -1440,9 +1455,16 @@ function PalSheet({
                 backgroundColor: on ? T.accentSoft : T.surface,
               }}
             >
+              {/* The pal's own face. Every other surface shows it — the pins,
+                  the legend, the Paldex — and the layer rows directly above
+                  these already carry the game's symbol. The one place where
+                  you actually CHOOSE a pal was the only place showing nothing
+                  but text, which also makes 224 rows far slower to scan:
+                  you read names instead of recognising creatures. */}
+              <PalIcon name={n} size={26} />
               <Icon
                 name={on ? 'eye-outline' : 'eye-off-outline'}
-                size={17}
+                size={16}
                 color={on ? T.accentInk : T.faint}
               />
               <Text style={{ color: T.ink, fontWeight: '800', fontSize: 14, flex: 1 }}>{n}</Text>
@@ -1455,8 +1477,8 @@ function PalSheet({
               )}
             </Pressable>
           );
-        })}
-      </ScrollView>
+        }}
+      />
       {filterSheet && (
         // The Paldex's own sheet, handed the pals that spawn on THIS map as its
         // base — so "Show 44 pals" is a promise it can keep here too.

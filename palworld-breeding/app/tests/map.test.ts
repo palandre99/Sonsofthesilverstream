@@ -1389,3 +1389,31 @@ describe('the layers sheet agrees with the map', () => {
     expect(poiPoints('skill_fruit', 'tree')?.n).toBe(12);
   });
 });
+
+describe('the pal picker in the Find sheet', () => {
+  const screen = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
+  );
+
+  it('shows each pal its own face, like every other surface does', () => {
+    // The pins carry portraits, the legend carries portraits, the Paldex
+    // carries portraits - the picker was the one place you chose a pal from
+    // text alone, which is both inconsistent and far slower to scan.
+    expect(screen).toMatch(/<PalIcon name=\{n\} size=\{26\} \/>/);
+    expect(screen).toMatch(/import \{ PalIcon, SearchInput, s \} from '\.\.\/ui\/kit';/);
+  });
+
+  it('mounts a screenful of rows, not all 224 of them', () => {
+    // A portrait per row is an image decode per row, so the list that holds
+    // them must not mount every pal on the map the moment the sheet opens.
+    // Measured in the QA browser: 1828 DOM nodes with a ScrollView, 758 with
+    // this - and 63 rows rendered instead of 224.
+    const list = screen.match(/<FlatList[\s\S]*?renderItem=/);
+    expect(list, 'the pal list must be a FlatList').not.toBeNull();
+    expect(list![0]).toMatch(/data=\{list\}/);
+    expect(list![0]).toMatch(/initialNumToRender=\{14\}/);
+    // the search box must stay OUTSIDE the list, or re-rendering it while he
+    // types would take his keyboard focus with it
+    expect(list![0]).not.toMatch(/SearchInput/);
+  });
+});
