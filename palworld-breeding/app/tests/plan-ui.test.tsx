@@ -100,7 +100,7 @@ describe('Route Planner', { timeout: 20000 }, () => {
 
     // the hatch dialog opens instead of instantly checking
     expect(document.body.textContent).toContain('Hatched Chikipi!');
-    fireEvent.click(screen.getByRole('button', { name: '♂ + ♀ both' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Both male and female' }));
 
     // goal complete, check persisted WITH genders, and the pal is now owned —
     // one tick, no double registration
@@ -128,7 +128,7 @@ describe('Route Planner', { timeout: 20000 }, () => {
     // hatch it via the tick
     fireEvent.change(document.querySelector('.tick input') as HTMLInputElement,
       { target: { checked: true } });
-    fireEvent.click(screen.getByRole('button', { name: '♂ + ♀ both' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Both male and female' }));
     expect(state.box.value['Hoocrates']).toEqual({ m: true, f: true });
 
     // Start over: tick-registered pal is removed again
@@ -176,7 +176,7 @@ describe('Route Planner', { timeout: 20000 }, () => {
     expect(state.box.value['Hoocrates']).toBeUndefined();
     fireEvent.change(document.querySelector('.tick input') as HTMLInputElement,
       { target: { checked: true } });
-    fireEvent.click(screen.getByRole('button', { name: '♀ only' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Female only' }));
     // registered from the tick
     expect(state.box.value['Hoocrates']).toEqual({ m: false, f: true });
     // clicking a PARTIAL tick offers complete-or-untick; untick reverses it

@@ -770,6 +770,29 @@ Nothing in the Plan-tab queue is blocked by this — what remains there is
 polish, micro-QoL and copy, which is safe to keep shipping.
 
 ### E13 polish-lane findings (hostile deep-eval passes, ongoing)
+- [x] 2026-08-16 ~11:10 WEB a11y sweep (mirror of the mobile one). Mostly
+      CLEAN — all 12 Plan-page controls named, all 21 pal images correctly
+      marked decorative (alt=""), hatch dialog properly role+modal+named.
+      TWO real defects found and fixed:
+      * the CONFIRM dialog (Start over / Clear plan / Remove all goals)
+        had role=dialog + aria-modal but NO accessible name — announced
+        as a bare "dialog" while asking you to confirm a DESTRUCTIVE
+        action. Now named after the question it asks.
+      * the hatch buttons announced the raw glyphs (screen readers say
+        "male sign"). Now "Male only" / "Female only" / "Both male and
+        female"; the ♂/♀ glyphs stay on screen unchanged.
+      Three tests queried those buttons by glyph — updated to the new
+      accessible names (a stricter assertion, not a weaker one).
+      Eye-verified live in the rendered DOM. Web-only, no OTA.
+- [x] 2026-08-16 ~11:05 Checked CLEAN, no change: the "Make it faster"
+      advice card is identical on both platforms and already pluralises
+      correctly ("+1 step" / "+3 steps"), incl. the catch-instead lines.
+- [ ] FOUND, NOT FIXED (needs a design call, ledgered not half-built):
+      on MOBILE every pal icon in a step card opens that pal's card; on
+      WEB the icons are inert. Real capability drift the CEO would notice.
+      Web already has `#/paldex/<name>` deep links, so the fix is small,
+      but it needs a decision: navigate away from the plan, or open a
+      drawer over it? Ask the CEO or let Fable design it.
 - [x] 2026-08-16 ~10:55 A11Y — the Plan tab was full of nameless buttons:
       SEVEN control types had no accessibility label, incl. all three pal
       icons on every step card, so on a 20-step plan a screen reader

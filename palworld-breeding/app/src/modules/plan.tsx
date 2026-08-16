@@ -762,7 +762,12 @@ export function PlanPage() {
 
       {managing !== 'none' && (
         <div class="hatchback" onClick={() => setManaging('none')}>
+          {/* the dialog must SAY what it is asking — it was announced as a
+              bare "dialog", and this one confirms destructive actions */}
           <div class="card bigcard hatchcard" role="dialog" aria-modal="true"
+            aria-label={managing === 'reset' ? 'Start this plan over?'
+              : managing === 'removeall' ? 'Remove all goals?'
+              : 'Clear the plan?'}
             onClick={(e) => e.stopPropagation()}>
             <h2>{managing === 'reset' ? 'Start this plan over?'
               : managing === 'removeall' ? 'Remove all goals?'
@@ -822,9 +827,14 @@ export function PlanPage() {
                     </>
                   ) : (
                     <>
-                      <button class="btn" onClick={() => completeStep(hatching.sid, hatching.child, { m: true, f: false })}>♂ only</button>
-                      <button class="btn" onClick={() => completeStep(hatching.sid, hatching.child, { m: false, f: true })}>♀ only</button>
-                      <button class="btn primary" onClick={() => completeStep(hatching.sid, hatching.child, { m: true, f: true })}>♂ + ♀ both</button>
+                      {/* the ♂/♀ glyphs stay on screen, but a screen reader
+                          should hear words, not "male sign" */}
+                      <button class="btn" aria-label="Male only"
+                        onClick={() => completeStep(hatching.sid, hatching.child, { m: true, f: false })}>♂ only</button>
+                      <button class="btn" aria-label="Female only"
+                        onClick={() => completeStep(hatching.sid, hatching.child, { m: false, f: true })}>♀ only</button>
+                      <button class="btn primary" aria-label="Both male and female"
+                        onClick={() => completeStep(hatching.sid, hatching.child, { m: true, f: true })}>♂ + ♀ both</button>
                     </>
                   )}
                 </div>
