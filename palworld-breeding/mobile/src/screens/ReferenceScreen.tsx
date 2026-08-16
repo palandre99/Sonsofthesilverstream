@@ -4,7 +4,7 @@ import { ScrollView, Text, View } from 'react-native';
 import { T } from '../theme';
 import { Badge, Btn, Card, PageHead, PalIcon, s, type BadgeKind } from '../ui/kit';
 import { HELPERS } from '../engine/helpers';
-import { claims } from '../store';
+import { claims, claimsCheckedOn } from '../store';
 
 const VERDICT: Record<string, [string, BadgeKind]> = {
   confirmed: ['confirmed', 'ok'],
@@ -102,7 +102,12 @@ export function ReferenceScreen() {
         copies.</P>
       </Section>
 
-      <Text style={[s.h2, { marginTop: 8, marginBottom: 8 }]}>Verified claims</Text>
+      <Text style={[s.h2, { marginTop: 8, marginBottom: 2 }]}>Verified claims</Text>
+      {claimsCheckedOn && (
+        <Text style={[s.body, { fontSize: 11.5, color: T.faint, marginBottom: 8 }]}>
+          Last checked {claimsCheckedOn}.
+        </Text>
+      )}
       <View style={{ gap: 8 }}>
         {shown.map((c) => {
           const [label, kind] = VERDICT[c.verdict] ?? [c.verdict, 'warn' as BadgeKind];
@@ -115,6 +120,16 @@ export function ReferenceScreen() {
                 {c.claim}
               </Text>
               <Text style={[s.body, { fontSize: 12, marginTop: 4 }]}>{c.evidence}</Text>
+              {/* 77 citations across 30 of the 36 claims were in the file and
+                  shown nowhere — on the one screen whose whole job is proving
+                  where the numbers come from. The other 6 name their sources
+                  inside the evidence text above, so they get no line rather
+                  than an empty one. */}
+              {(c.sources?.length ?? 0) > 0 && (
+                <Text style={[s.body, { fontSize: 11, color: T.faint, marginTop: 5 }]}>
+                  Checked against: {c.sources!.join(' · ')}
+                </Text>
+              )}
             </Card>
           );
         })}

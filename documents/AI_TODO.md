@@ -1973,6 +1973,33 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E66. THE PROVENANCE SCREEN WAS HIDING ITS OWN PROVENANCE 2026-08-16
+
+Field sweep on verification.json (36 claims, 4 fields). The Reference tab's
+whole job is proving where the numbers come from, and two of those four
+fields were rendered by nothing.
+
+- [x] **77 CITATIONS ACROSS 30 OF THE 36 CLAIMS WERE NEVER SHOWN.** Real,
+      checkable ones — github.com/tylercamp/palcalc, paldb.gg, palworld.wiki.gg,
+      game8.co, palbreed.org, palsphere.app. CLAUDE.md's first hard rule says
+      every figure carries "provenance in verification.json"; the provenance
+      was there and the reader could not see it. Both platforms now print
+      "Checked against: …" under each claim's evidence.
+- [x] **THE CHECK DATE WAS NEVER SHOWN EITHER.** `checked: 2026-08-15` sat in
+      the file. A "verified claims" table with no date is a weaker promise
+      than one that says when it was last looked at. Both platforms now show
+      "Last checked 2026-08-15." under the heading.
+- **The 6 claims with an empty `sources` array get NO line rather than an
+  empty one** — and they are not actually unsourced: their citations are
+  written into the evidence prose (GameSettings field names read by palcalc's
+  DB generator, paldb.cc, Austin John Gaming's testing, beliarance/palworld-kb).
+  Verified on both platforms: **exactly 30 source lines, 0 empty.**
+- Also re-confirmed while there: all **36** claims still render (29 confirmed
+  · 4 shown as LIKELY · 1 contradicted · 2 upstream-defect), phone doc
+  scrollWidth still 375, web body does not scroll sideways, and the source
+  line is genuinely dimmer than the claim text (143,166,170 vs 230,240,241 —
+  measured, after `.dim` failed me twice this session).
+
 ## E65. THE ODDS LAB QUOTED INHERITANCE ODDS FOR 7 PASSIVES NOBODY HAS
 ## CONFIRMED CAN BE INHERITED 2026-08-16
 

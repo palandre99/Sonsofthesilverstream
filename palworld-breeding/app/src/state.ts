@@ -194,10 +194,17 @@ export const verification = signal<{ claim: string; verdict: string; evidence: s
 /** the game's own Paldex text (tools/fetch_paldex_text.py) */
 export const aboutText = signal<Record<string, string>>({});
 
+export interface VerifiedClaim {
+  claim: string; verdict: string; evidence: string; sources?: string[];
+}
+/** The day the claims table was last checked — in the file all along, shown
+ * nowhere. A "verified claims" list with no date is a weaker promise. */
+export const claimsCheckedOn = signal<string | null>(null);
+
 export async function loadData(): Promise<void> {
   const emb = (window as unknown as { __HATCHLAB_EMBED?: {
     breeding: BreedingData; pals: { pals: Record<string, PalInfo> };
-    icons: Record<string, string>; verification: { claims: never[] };
+    icons: Record<string, string>; verification: { claims: never[]; checked?: string };
     passives: { passives: PassiveInfo[] };
     about?: { about: Record<string, string> };
   } }).__HATCHLAB_EMBED;
@@ -211,6 +218,7 @@ export async function loadData(): Promise<void> {
         fetch('data/passives_1_0.json').then((r) => r.json()),
       ]);
   verification.value = (verif as { claims: never[] } | undefined)?.claims ?? [];
+  claimsCheckedOn.value = (verif as { checked?: string } | undefined)?.checked ?? null;
   passives.value = (passivesJson as { passives: PassiveInfo[] } | undefined)?.passives ?? [];
   engine = new BreedingEngine(breeding);
   initPlanner(breeding);

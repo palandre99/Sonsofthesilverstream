@@ -75,8 +75,15 @@ export const breeding = breedingJson as unknown as BreedingData;
 export const pals = (palsJson as unknown as { pals: Record<string, PalInfo> }).pals;
 export const passives = (passivesJson as unknown as { passives: PassiveInfo[] }).passives;
 export const claims = (verificationJson as unknown as {
-  claims: { claim: string; verdict: string; evidence: string }[];
+  claims: { claim: string; verdict: string; evidence: string; sources?: string[] }[];
 }).claims;
+
+/** The day the claims table was last checked. It was in the file all along and
+ * shown nowhere — a "verified claims" list with no date is a weaker promise
+ * than one that says when it was last looked at. */
+export const claimsCheckedOn = (verificationJson as unknown as {
+  checked?: string;
+}).checked ?? null;
 
 export const engine = new BreedingEngine(breeding);
 export const selfOnly = new Set(breeding.self_breed_only);

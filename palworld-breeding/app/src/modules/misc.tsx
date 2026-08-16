@@ -2,7 +2,7 @@
  * Content mirrors data/verification.json and the project's research docs;
  * anything not datamined is labelled with its confidence. */
 import { useState } from 'preact/hooks';
-import { verification } from '../state';
+import { claimsCheckedOn, verification } from '../state';
 import { PalIcon } from '../components/shared';
 import { HELPERS } from '../engine/helpers';
 
@@ -28,6 +28,14 @@ function Claims() {
             </div>
             <p style={{ color: 'var(--muted)', fontSize: '13.5px', margin: '6px 0 0' }}>
               {c.evidence}
+              {/* 77 citations across 30 of the 36 claims sat in the file and
+                  were shown nowhere. The other 6 name their sources inside the
+                  evidence text, so they get no line rather than an empty one. */}
+              {(c.sources?.length ?? 0) > 0 && (
+                <div class="dim small" style="margin-top:5px">
+                  Checked against: {c.sources.join(' · ')}
+                </div>
+              )}
             </p>
           </div>
         );
@@ -164,7 +172,10 @@ export function ReferencePage() {
           base). The Route Planner's "Breeding support" preset breeds all five.</p>
       </Section>
 
-      <h2 style={{ margin: '26px 0 12px' }}>Verified claims</h2>
+      <h2 style={{ margin: '26px 0 2px' }}>Verified claims</h2>
+      {claimsCheckedOn.value && (
+        <p class="dim small" style="margin:0 0 12px">Last checked {claimsCheckedOn.value}.</p>
+      )}
       <Claims />
 
       <Section title="Data & provenance">
