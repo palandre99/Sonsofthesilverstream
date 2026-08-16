@@ -251,7 +251,14 @@ export function adviseUnlocks(
     });
   }
 
-  // easiest first — that is the whole point of ranking them
-  out.sort((a, b) => a.cost - b.cost || a.target.localeCompare(b.target));
+  // Easiest first — the whole point of ranking them. Two catches you can
+  // both make today cost the same, and falling through to alphabetical made
+  // the list LOOK unranked: a Lv 30 spawn sat above a Lv 15 one. So ties
+  // break on the lower spawn level, which is what "easier" means to a player
+  // reading the list (self-found on the eye pass, 2026-08-16).
+  const rank = (a: UnlockAdvice) => (a.gateLevel == null ? Infinity : a.gateLevel);
+  out.sort((a, b) => (
+    a.cost - b.cost || rank(a) - rank(b) || a.target.localeCompare(b.target)
+  ));
   return out;
 }

@@ -14,7 +14,7 @@ import {
 } from '../ui/kit';
 import { Icon } from '../ui/Icon';
 import { onNavIntent, takeIntentPayload } from '../nav/intent';
-import { adviseUnlocks, type WildFact } from '../logic/unlock';
+import { adviseUnlocks, type UnlockAdvice, type WildFact } from '../logic/unlock';
 import { PALCALC_FACTS } from '../data/palcalcFacts.g';
 import { wildLevelRange } from '../data/rarity';
 import { PalPicker } from '../ui/PalPicker';
@@ -24,8 +24,45 @@ import {
   addPlanTarget, pals, removePlanTarget, resetPlanProgress, savePlan, selfOnly,
   uncheckStep, useAppVersion,
   addDraftTargets, clearDraftTargets, getDraftTargets, removeDraftTargets,
-  engine,
+  engine, getPlayerLevel,
 } from '../store';
+
+/** One line of advice for a goal with no breeding route — a DIFFERENT
+ * sentence per situation, because "catch a few more pals" was equally
+ * useless for Chikipi (spawns at Lv 1) and Bellanoir Libero (never spawns
+ * at all). CEO 2026-08-16. */
+function unlockLine(u: UnlockAdvice, level: number | undefined): string {
+  if (u.kind === 'raid-only') {
+    return 'Never spawns in the wild — this one only comes from a raid or boss fight.';
+  }
+  if (u.kind === 'unknown') {
+    return "We don't hold spawn data for this one, so we won't guess how to reach it.";
+  }
+  if (u.kind === 'reachable') return 'Within reach now — plan again to pick it up.';
+
+  const who = u.catches.join(' and ');
+  const after = u.steps === 0 ? ''
+    : u.steps === 1 ? ', then one breeding step'
+    : `, then ${u.steps} breeding steps`;
+  const gate = u.gateLevel;
+  if (gate == null) return `Catch ${who}${after}.`;
+  if (!u.withinLevel && level != null) {
+    return u.catches.length > 1
+      ? `Catch ${who} — but the toughest spawns at Lv ${gate} and you're Lv ${level}${after}.`
+      : `Spawns at Lv ${gate} and you're Lv ${level} — level up first${after}.`;
+  }
+  return u.catches.length > 1
+    ? `Catch ${who} — the toughest spawns from Lv ${gate}${after}.`
+    : `Catch one — spawns from Lv ${gate}${after}.`;
+}
+
+/** What the game files say about catching one species. `minWild === null` is
+ * the game's own "never spawns wild" (raid/tower/boss); no row at all means
+ * we hold no data and must say so rather than guess. */
+function wildFact(name: string): WildFact {
+  const f = (PALCALC_FACTS as Record<string, { minWild: number | null }>)[name];
+  return f ? { minWild: f.minWild, known: true } : { minWild: null, known: false };
+}
 
 /** "planned just now / today 22:40 / yesterday 09:15 / 12 Aug" — a stamp a
  * player reads at a glance, not a raw ISO date */
@@ -340,6 +377,21 @@ export function PlannerScreen() {
   const readyNow = plan
     ? [...stepMeta.entries()].filter(([sid, m]) => m.ready && !checks[sid]).length
     : 0;
+
+  /** The cheapest way into each goal that has no route, ranked easiest
+   * first for THIS save and THIS player level. Measured at 185 ms cold /
+   * 53 ms warm, and it only ever runs when something is actually stuck —
+   * a plan where everything is reachable pays nothing. */
+  const playerLevel = getPlayerLevel();
+  const unlocks = useMemo(() => {
+    if (!plan || plan.unreachable.length === 0) return [];
+    // everything in plan.unreachable is unreachable by definition, so the
+    // planner's own verdict stands in for a second closure pass
+    return adviseUnlocks(
+      engine, ownedNames, new Set(), plan.unreachable, wildFact, playerLevel,
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [plan?.unreachable.join('|'), ownedNames.length, playerLevel]);
 
   // per-goal progress: how many of the steps each goal depends on are done
   const goalProgress = useMemo(() => {
@@ -693,11 +745,40 @@ export function PlannerScreen() {
                     : `${plan.unreachable.length} goals have no route yet`}
                 </Text>
               </View>
-              <Text style={s.body}>
-                Nothing you own leads to {plan.unreachable.join(', ')}. Catch a
-                few more pals — or tick off ones you already have in the
-                Paldex — then plan again.
+              <Text style={[s.body, { fontSize: 12.5 }]}>
+                {playerLevel != null
+                  ? `The shortest way into each, easiest first for a level ${playerLevel} player.`
+                  : 'The shortest way into each, easiest first. Set your player '
+                    + 'level in My world and this gets tuned to how far you have got.'}
               </Text>
+              <View style={{ gap: 2 }}>
+                {unlocks.map((u) => (
+                  <Pressable
+                    key={u.target}
+                    onPress={() => setViewing(u.target)}
+                    accessibilityRole="button"
+                    accessibilityLabel={`${u.target}. ${unlockLine(u, playerLevel)}`}
+                    style={({ pressed }) => [{
+                      flexDirection: 'row', alignItems: 'center', gap: 10,
+                      paddingVertical: 7,
+                    }, pressed && { opacity: 0.6 }]}
+                  >
+                    <PalIcon name={u.target} size={34} />
+                    <View style={{ flex: 1 }}>
+                      <Text style={{ color: T.ink, fontSize: 13.5, fontWeight: '700' }}>
+                        {u.target}
+                      </Text>
+                      <Text style={{
+                        color: u.kind === 'catch' && u.withinLevel ? T.accentInk : T.muted,
+                        fontSize: 12, lineHeight: 16.5,
+                      }}>
+                        {unlockLine(u, playerLevel)}
+                      </Text>
+                    </View>
+                    <Icon name="chevron-right" size={18} color={T.faint} />
+                  </Pressable>
+                ))}
+              </View>
             </Card>
           )}
 

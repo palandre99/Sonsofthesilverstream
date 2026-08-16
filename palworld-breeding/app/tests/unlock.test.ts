@@ -125,6 +125,22 @@ describe('unlock advisor — ranking fits the save you are actually playing', ()
     expect(advice.withinLevel).toBe(false);
   });
 
+  it('two catches you can both make today rank by spawn level, not name', () => {
+    // both are within a Lv 42 player's reach, so both cost the same. Falling
+    // through to alphabetical put "Grizzbolt" (spawns 30) above "Mossanda
+    // Lux" (spawns 15) on the real screen, which read as unranked.
+    const engine: PairSource = {
+      species: ['Grizzbolt', 'Mossanda Lux'], childrenOf: () => [],
+    };
+    const wild = (n: string): WildFact => (
+      n === 'Grizzbolt' ? { minWild: 30, known: true } : { minWild: 15, known: true }
+    );
+    const out = adviseUnlocks(
+      engine, [], new Set(), ['Grizzbolt', 'Mossanda Lux'], wild, 42,
+    );
+    expect(out.map((a) => a.target)).toEqual(['Mossanda Lux', 'Grizzbolt']);
+  });
+
   it('easiest goals are ranked first', () => {
     const engine: PairSource = {
       species: ['Easy', 'Hard'],
