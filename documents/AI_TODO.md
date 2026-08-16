@@ -803,11 +803,20 @@ polish, micro-QoL and copy, which is safe to keep shipping.
       "announced names" therefore stay UNVERIFIED, not passed — they
       belong to the existing on-device verification pass, not to a
       browser session. Do not tick them from RN-web evidence.
-- [ ] Still unaudited on the Plan tab (my own work, click them): tray
-      fold/expand after a manual expand + re-plan (does it re-fold, and
-      should it?); add-then-remove-then-replan; "Remove all" while a plan
-      is running (copy says plan+progress survive — verified once, worth
-      re-checking after the draft-store changes).
+- [x] 2026-08-16 ~12:35 TRAY FOLD defect found by clicking it (my own
+      work, both platforms): the tray promises "folds to one line once
+      your plan is running", but `run()` never reset `trayOpen` — so if
+      you had manually expanded the tray to edit goals and then pressed
+      Plan, it stayed expanded and the plan you just asked for was pushed
+      down the screen. Reproduced (expand → remove a goal → re-plan →
+      still expanded), fixed by folding on every successful plan, re-ran
+      the same repro to confirm. Both platforms had it; both fixed.
+- [x] 2026-08-16 ~12:30 REPLACE-PLAN CONFIRM verified CORRECT in the same
+      walk: removing a goal and re-planning with unfinished progress
+      fired the confirm with accurate copy ("0 of 16 done"), and
+      confirming rebuilt the route properly (16 steps → 2, goal progress
+      dropped the removed goal). Add-then-remove-then-replan therefore
+      also verified end to end.
 - [x] 2026-08-16 ~11:45 WEB SUGGESTED-GOALS BUG (mine, from the v4 port —
       found by auditing my own recent work): the category browser renders
       INSIDE the sheet's backdrop, so clicking the browser's backdrop to

@@ -144,6 +144,9 @@ export function PlanPage() {
         setPlannedAt(new Date().toISOString());
         setPlanRoster(roster);
         setPlanTargets(list);
+        // a fresh plan always folds the goal tray away — the plan is the
+        // thing to look at now (same fix as mobile)
+        setTrayOpen(false);
         draftTargets.value = list; // the planned goals ARE the draft now
         // best-effort persist — a quota failure must not read as a plan failure
         storage.set(PLAN_KEY, JSON.stringify({

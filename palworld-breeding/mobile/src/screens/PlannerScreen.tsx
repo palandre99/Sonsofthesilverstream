@@ -191,6 +191,11 @@ export function PlannerScreen() {
           targets, steps, unreachable, advice, adviceVersion: ADVICE_VERSION,
           planned: new Date().toISOString(), roster: ownedNames,
         });
+        // a fresh plan always folds the goal tray away — the plan is the
+        // thing to look at now. Without this, having manually expanded the
+        // tray before re-planning left it open, contradicting its own copy
+        // ("folds to one line once your plan is running").
+        setTrayOpen(false);
         void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       } catch (e) {
         setPlanError(String(e instanceof Error ? e.message : e));
