@@ -396,8 +396,12 @@ function CategoryBrowser({ sec, bctx, onClose }: {
   const missing = rows
     .filter((x) => !bctx.targets.includes(x.name) && !ownedAny(x.name))
     .map((x) => x.name);
+  // the browser sits INSIDE the sheet's backdrop, so a bare onClick bubbled
+  // up and closed the whole sheet — clicking away from a category must
+  // return you to the sheet, not destroy it
   return (
-    <div class="hatchback" onClick={onClose} style={{ zIndex: 60 }}>
+    <div class="hatchback" style={{ zIndex: 60 }}
+      onClick={(e) => { e.stopPropagation(); onClose(); }}>
       <div class="card bigcard" role="dialog" aria-modal="true" aria-label={sec.title}
         onClick={(e) => e.stopPropagation()}
         style={{

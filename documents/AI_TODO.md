@@ -778,6 +778,19 @@ Nothing in the Plan-tab queue is blocked by this — what remains there is
 polish, micro-QoL and copy, which is safe to keep shipping.
 
 ### E13 polish-lane findings (hostile deep-eval passes, ongoing)
+- [x] 2026-08-16 ~11:45 WEB SUGGESTED-GOALS BUG (mine, from the v4 port —
+      found by auditing my own recent work): the category browser renders
+      INSIDE the sheet's backdrop, so clicking the browser's backdrop to
+      go back bubbled up and closed the ENTIRE Suggested Goals sheet. You
+      lost the whole panel when you only meant to leave one category.
+      Reproduced empirically before fixing (2 nested backdrops → 0), fixed
+      with stopPropagation, re-ran the same repro to confirm (browser
+      closes, sheet survives). Escape layering verified separately with a
+      real keypress: first Escape closes the category only. MOBILE is
+      unaffected — its browser is a separate RN Modal, not a nested DOM
+      node. Web-only, no OTA.
+      LESSON: audit your OWN recent work as hostilely as inherited code —
+      this shipped four days of polish ago and no one had clicked it.
 - [x] 2026-08-16 ~11:25 WEB keyboard: Escape closed the hatch dialog and
       the goals sheet but NOT the confirm dialog — so a keyboard user was
       trapped in the one dialog that asks about destroying a plan (only
