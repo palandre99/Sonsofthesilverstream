@@ -933,6 +933,16 @@ version, not Aaa studio quality. Needs work.."
       console error is live, install your own recorder on a fresh load —
       do not trust the retained list.
 
+### COORDINATION INCIDENT 2026-08-16 ~16:45 (no harm done, but fix the habit)
+The Map session's commit `68b148c "Map: say when a pick lives on the other
+map"` swept up `mobile/src/screens/PlannerScreen.tsx` — the Plan empty-state
+redesign — which is not theirs. Nothing was lost (the work is in HEAD and
+correct), but the history now attributes a Breeding redesign to a Map commit,
+which is exactly the kind of wrong paper trail that costs the next worker time.
+NOT rewritten: rebasing shared history to fix attribution would risk their work
+for a cosmetic gain. BOTH SESSIONS: stage your own paths explicitly
+(`git add <path>`), never `git add -A` / `git commit -a` in this shared tree.
+
 ## E14. CEO FEEDBACK 2026-08-16 ~15:00 (verbatim intake)
 - [x] E14a "Why are for example there no filter inside the suggestion for
       breeds, for example ground mounts «83» u open it and there are 83
