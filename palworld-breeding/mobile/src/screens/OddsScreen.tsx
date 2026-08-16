@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { FlatList, Modal, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import { T } from '../theme';
 import { Badge, Btn, Card, PageHead, s } from '../ui/kit';
-import { passives } from '../store';
+import { pals, passives } from '../store';
 import {
   attemptsFor, CAKES, cakeById, ivOdds, mutationPlan, oddsTable, passiveOdds,
   type CakeId,
@@ -474,6 +474,16 @@ function CakesTab() {
   );
 }
 
+/** The pals whose base-side partner effect is about eggs, read from the data
+ * so this card can never name the wrong one. Every figure on this screen is a
+ * count of eggs; nothing in the app told you that two pals make the same count
+ * arrive sooner. Their own words from the game files, not a paraphrase. */
+const EGG_HELPERS = Object.entries(pals)
+  .filter(([, p]) => p.base_support?.type === 'egg_speed' || p.base_support?.type === 'incubation')
+  .map(([name, p]) => ({ name, skill: p.partner_skill ?? '', effect: p.partner_effect ?? '' }))
+  .filter((h) => h.effect)
+  .sort((a, b) => a.name.localeCompare(b.name));
+
 /* ---------------- page ---------------- */
 
 export function OddsScreen() {
@@ -500,6 +510,31 @@ export function OddsScreen() {
         ))}
       </View>
       {mode === 'passives' ? <PassivesTab /> : mode === 'ivs' ? <IvTab /> : <CakesTab />}
+
+      {EGG_HELPERS.length > 0 && (
+        <Card style={{ marginTop: 12 }}>
+          <Text style={s.h2}>
+            {EGG_HELPERS.length} pals make eggs arrive faster
+          </Text>
+          <Text style={[s.body, { marginTop: 4 }]}>
+            Every number on this screen is a count of eggs. Keep these at your base and
+            the same count takes less waiting.
+          </Text>
+          <View style={{ marginTop: 8, gap: 8 }}>
+            {EGG_HELPERS.map((h) => (
+              <View key={h.name}>
+                <Text style={{ color: T.goldInk, fontWeight: '800', fontSize: 13.5 }}>
+                  {h.name} — {h.skill}
+                </Text>
+                <Text style={[s.body, { fontSize: 12.5 }]}>{h.effect}</Text>
+              </View>
+            ))}
+          </View>
+          <Text style={[s.body, { marginTop: 8, fontSize: 11.5, color: T.faint }]}>
+            Datamined partner effects, word for word.
+          </Text>
+        </Card>
+      )}
     </ScrollView>
   );
 }

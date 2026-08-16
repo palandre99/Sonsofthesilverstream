@@ -1847,6 +1847,44 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E58. A DEAD NUMBER REMOVED, AND TWO EGG PALS FINALLY SURFACED 2026-08-16
+
+Swept every field in pals_1_0.json for ones that are the same for every
+species (dead) or mined but never shown (wasted). Two results, both shipped
+on BOTH platforms.
+
+- [x] **"work speed 0" was on 298 of 299 pal cards and meant nothing.** The
+      extractor's `craft_speed` is 0 for 298 species and null for the last
+      one. Worse than useless: it sat next to a full list of work
+      suitabilities, so it read as "this pal cannot work" — wrong for 297 of
+      the 298. Badge removed. A number that is always zero is not data.
+      (`craft_speed` had exactly two uses in either tree: the type and that
+      badge.)
+- [x] **`base_support` was mined for 24 species and rendered by NOTHING.**
+      Two of those 24 are about eggs, which is this app's whole subject:
+      **Braloha** speeds up egg production at the Breeding Farm by 20~50%,
+      **Dynamoff** cuts incubation time by 20~40%. The Odds Lab counts eggs
+      on every tab and never mentioned either. Both platforms now close the
+      page with "2 pals make eggs arrive faster", quoting the datamined
+      partner effect word for word, derived from the data so it can never
+      name the wrong pal. Verified rendering on the 375x812 mobile render AND
+      the web at 1100x860.
+- The other 22 `base_support` entries (12 work-suitability boosters, Lullu's
+  crop growth, Prunelia's harvest, the Jelliette/Jellroy watering pair,
+  Sekhmet/Anubis, Panthalus's base patrol, Ribbuny Botan's weapon bench,
+  Woolipop hunger, Shroomer Noct sanity) are real and still unsurfaced —
+  they belong to a base-building domain, NOT to breeding, so per CLAUDE.md scope
+  they wait. Logged so they are not rediscovered.
+- **CHECKED, NOT A BUG:** `nocturnal` is 73 true / 226 false and the badge
+  only shows when true. `wild` is a genuine 276/23 split.
+- **OPEN, NOT MINE, NOT CHASED:** the app logs five identical RN warnings at
+  boot — "Unexpected text node: . A text node cannot be a child of a
+  <View>". Established: they fire ONLY on initial mount (hooking
+  console.error and walking all five tabs produced zero more), no View in
+  the live DOM has a text child, and a source scan for bare text or bare //
+  comments as JSX children found nothing. My new cards add none of them.
+  Left for whoever owns the shell.
+
 ## E57. THE STAT BARS ON THE PAL CARD WERE LYING TWICE 2026-08-16
 
 Applied the same "an absolute sentence is a testable assertion" method to the

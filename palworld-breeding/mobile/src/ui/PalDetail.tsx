@@ -340,7 +340,11 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
                 </Text>
               </View>
             )}
-            {p.craft_speed != null && <Badge kind="plain">work speed {p.craft_speed}</Badge>}
+            {/* No "work speed" badge. The extractor's craft_speed is 0 for 298
+                of the 299 species and null for the last one, so it never said
+                anything — and reading "work speed 0" next to a full list of
+                work suitabilities suggests the pal cannot work, which is wrong
+                for 297 of them. A number that is always zero is not data. */}
             {/* The FLOOR matters as much as the ceiling — "up to Lv 13" never
                 told you it also spawns at 6 (CEO 2026-08-15).
                 WHERE you meet it matters just as much: the old single range

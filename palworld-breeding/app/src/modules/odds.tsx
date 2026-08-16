@@ -6,7 +6,7 @@
  * community-sourced figure as if it came from the game files.
  */
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
-import { passives as allPassives, type PassiveInfo } from '../state';
+import { pals, passives as allPassives, type PalInfo, type PassiveInfo } from '../state';
 import {
   attemptsFor,
   CAKES,
@@ -547,8 +547,25 @@ function CakesTab() {
 
 /* ---------------- page ---------------- */
 
+/** The pals whose base-side partner effect is about eggs, read from the data so
+ * this card can never name the wrong one. Every figure on this page is a count
+ * of eggs, and nothing told you two pals make the same count arrive sooner.
+ * Computed inside the component, not at module load: on the web `pals` is a
+ * signal that fills in after the data fetch, so a constant would be empty. */
+function eggHelpers(all: Record<string, PalInfo>) {
+  return Object.entries(all)
+    .filter(([, p]) => {
+      const t = (p.base_support as { type?: string } | null)?.type;
+      return t === 'egg_speed' || t === 'incubation';
+    })
+    .map(([name, p]) => ({ name, skill: p.partner_skill ?? '', effect: p.partner_effect ?? '' }))
+    .filter((h) => h.effect)
+    .sort((a, b) => a.name.localeCompare(b.name));
+}
+
 export function OddsPage() {
   const [mode, setMode] = useState<'passives' | 'ivs' | 'cakes'>('passives');
+  const EGG_HELPERS = useMemo(() => eggHelpers(pals.value), [pals.value]);
   const tabs: [typeof mode, string][] = [
     ['passives', 'Passive skills'], ['ivs', 'Stats (IVs)'], ['cakes', 'Cakes & mutation'],
   ];
@@ -570,6 +587,23 @@ export function OddsPage() {
       {mode === 'passives' ? <PassivesTab />
         : mode === 'ivs' ? <IvTab />
         : <CakesTab />}
+
+      {EGG_HELPERS.length > 0 && (
+        <section class="card" style="margin-top:12px">
+          <h2>{EGG_HELPERS.length} pals make eggs arrive faster</h2>
+          <p>Every number on this page is a count of eggs. Keep these at your base and
+            the same count takes less waiting.</p>
+          <div style="display:grid;gap:10px;margin-top:8px">
+            {EGG_HELPERS.map((h) => (
+              <div key={h.name}>
+                <strong>{h.name} — {h.skill}</strong>
+                <p>{h.effect}</p>
+              </div>
+            ))}
+          </div>
+          <p class="dim small">Datamined partner effects, word for word.</p>
+        </section>
+      )}
     </>
   );
 }

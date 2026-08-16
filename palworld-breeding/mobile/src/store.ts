@@ -36,6 +36,10 @@ export interface PalInfo {
   drops: string[];
   ranch_produce: string[] | null;
   craft_speed: number | null;
+  /** The structured read of a pal's base-side partner effect, mined for the
+   * 24 species that have one. Two of them are about eggs, which is the whole
+   * point of this app, and nothing surfaced them before. */
+  base_support: { type: string; task?: string; bonus?: number; effect?: string } | null;
   max_wild_level: number | null;
   wild: boolean;
   regions: string[];
