@@ -48,7 +48,7 @@ describe('Paldex collection import', () => {
     render(<PaldexPage />);
     const ta = openImport();
     fireEvent.input(ta, { target: { value: 'Katress ♀\nKatress ♂' } });
-    fireEvent.click(screen.getByRole('button', { name: /Add 1 pals/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Add 1 pal$/ }));
     expect(state.box.value['Katress']).toEqual({ m: true, f: true });
   });
 
@@ -70,7 +70,7 @@ describe('Paldex collection import', () => {
     render(<PaldexPage />);
     const ta = openImport();
     fireEvent.input(ta, { target: { value: 'Lamball ♀' } });
-    fireEvent.click(screen.getByRole('button', { name: /Add 1 pals/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Add 1 pal$/ }));
     expect(state.box.value['Lamball']).toEqual({ m: true, f: true });
   });
 });
@@ -83,7 +83,7 @@ describe('Paldex import edge cases', () => {
     fireEvent.input(ta, { target: { value: evil } });
     // only Cattiva (true) is recognised as owned
     expect(document.querySelector('.importmeta')!.textContent).toContain('1 recognised');
-    fireEvent.click(screen.getByRole('button', { name: /Add 1 pals/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Add 1 pal$/ }));
     expect(state.box.value['Anubis']).toBeUndefined();
     expect(state.box.value['Lamball']).toBeUndefined();
     expect(state.box.value['Cattiva']).toEqual({ m: true, f: true });

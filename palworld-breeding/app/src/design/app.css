@@ -469,3 +469,25 @@
   display: grid; gap: 5px; }
 .maphint b { color: var(--ink); font-size: 13.5px; }
 .maphint em { color: var(--muted); font-size: 12.5px; font-style: normal; }
+
+/* Calculator first-run help — the tab opened as two empty pickers and a
+   sentence. The CEO flagged it the same way he flagged the Plan tab's
+   home screen: "empty and poor design". These are the phone's shortcuts
+   and explainer, in the website's own idiom. */
+.calcstart { display: grid; gap: 7px; }
+.calcstart .eyebrow { color: var(--faint); font-size: 10.5px; font-weight: 800;
+  letter-spacing: 1px; }
+.calcstart .picks { display: flex; flex-wrap: wrap; gap: 7px; }
+.calcstart .picks button { display: flex; align-items: center; gap: 6px;
+  background: var(--surface2); border: 1px solid var(--line); border-radius: 10px;
+  padding: 5px 9px; color: var(--ink); font-weight: 700; font-size: 12.5px;
+  cursor: pointer; }
+.calcstart .picks button:hover { border-color: var(--accent); background: var(--accent-soft); }
+.calcstart .more { color: var(--muted); font-size: 11.5px; }
+.calcsteps { display: grid; gap: 12px; }
+.calcsteps .row { display: flex; gap: 11px; align-items: flex-start; }
+.calcsteps .num { flex: none; width: 22px; height: 22px; border-radius: 11px;
+  background: var(--accent-soft); color: var(--accent-ink); font-weight: 800;
+  font-size: 12px; display: grid; place-items: center; }
+.calcsteps b { display: block; color: var(--ink); font-size: 13.5px; }
+.calcsteps em { color: var(--muted); font-size: 12.5px; font-style: normal; }

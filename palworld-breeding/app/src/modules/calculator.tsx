@@ -171,6 +171,62 @@ function ReverseLookup({ target }: { target: string }) {
   );
 }
 
+
+/** What the tab shows before you have picked anything. It used to be a
+ *  heading and one sentence — the same emptiness the CEO called out on the
+ *  Plan tab's home screen. Your own pals become one-click shortcuts, and the
+ *  three steps say what the tab actually does. */
+function CalcStartHelp({ onPick, mode }: {
+  onPick: (name: string) => void; mode: 'pair' | 'reverse';
+}) {
+  const owned = Object.keys(box.value).filter((n) => Object.hasOwn(pals.value, n));
+  const steps = [
+    mode === 'pair'
+      ? { n: '1', h: 'Pair → child', b: 'Pick any two pals and you get exactly what they make, with the maths shown.' }
+      : { n: '1', h: 'Child → parents', b: 'Pick the pal you want and you get every pair that produces it.' },
+    mode === 'pair'
+      ? { n: '2', h: 'Swap to Child → parents', b: 'Already know what you want? Use the other tab above to work backwards instead.' }
+      : { n: '2', h: 'Swap to Pair → child', b: 'Curious what two pals make? Use the other tab above to work forwards instead.' },
+    { n: '3', h: 'It tells you when the rule changes', b: 'Special recipes and gender-locked pairs are called out, so a surprise result is never unexplained.' },
+  ];
+  return (
+    <>
+      <div class="card calcstart">
+        {owned.length > 0 ? (
+          <>
+            <span class="eyebrow">START FROM YOUR PALDEX</span>
+            <div class="picks">
+              {owned.slice(0, 8).map((n) => (
+                <button key={n} onClick={() => onPick(n)} aria-label={`Use ${n}`}>
+                  <PalIcon name={n} size={26} />{n}
+                </button>
+              ))}
+            </div>
+            {owned.length > 8 && (
+              <span class="more">
+                …and {owned.length - 8} more — use the picker above to search them all.
+              </span>
+            )}
+          </>
+        ) : (
+          <span class="more">
+            Tick the pals you own in the Paldex and they will show up here as
+            one-click shortcuts.
+          </span>
+        )}
+      </div>
+      <div class="card calcsteps">
+        {steps.map((r) => (
+          <div class="row" key={r.n}>
+            <span class="num">{r.n}</span>
+            <span><b>{r.h}</b><em>{r.b}</em></span>
+          </div>
+        ))}
+      </div>
+    </>
+  );
+}
+
 export function CalculatorPage() {
   const linked = route.value.page === 'calc' ? route.value.target : undefined;
   const validLink = linked && Object.hasOwn(pals.value, linked) ? linked : null;
@@ -210,11 +266,7 @@ export function CalculatorPage() {
             <PalPicker value={b} onPick={setB} placeholder="Parent 2…" />
           </div>
           {a && b ? <PairResult a={a} b={b} /> : (
-            <div class="card bigcard">
-              <h2>Pick two parents</h2>
-              <p>You'll get the child instantly, with the math shown — and a warning
-                whenever a special recipe or gender rule changes the outcome.</p>
-            </div>
+            <CalcStartHelp mode="pair" onPick={(n) => (a ? setB(n) : setA(n))} />
           )}
         </>
       ) : (
@@ -223,11 +275,7 @@ export function CalculatorPage() {
             <PalPicker value={target} onPick={setTarget} placeholder="I want this pal…" />
           </div>
           {target ? <ReverseLookup target={target} /> : (
-            <div class="card bigcard">
-              <h2>Pick a target</h2>
-              <p>You'll see every parent pair that produces it — sorted by what's
-                cheapest from your box.</p>
-            </div>
+            <CalcStartHelp mode="reverse" onPick={setTarget} />
           )}
         </>
       )}

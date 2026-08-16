@@ -197,7 +197,9 @@ function ImportPanel({ onClose }: { onClose: () => void }) {
       )}
       <div class="importbtns">
         <button class="btn primary" disabled={!parsed.entries.length} onClick={apply}>
-          {replace ? 'Replace collection' : 'Add'} {parsed.entries.length || ''} pals
+          {replace
+            ? 'Replace collection'
+            : parsed.entries.length === 1 ? 'Add 1 pal' : `Add ${parsed.entries.length || ''} pals`}
         </button>
         <button class="btn" onClick={onClose}>Cancel</button>
       </div>
@@ -614,6 +616,10 @@ export function PaldexPage() {
               </button>
               <span class="mid">
                 <ElementChips name={n} />
+                {/* ONE chip in the fallback, not the phone's three: these rows
+                    sit in a ~310px grid card, so three chips wrap to a second
+                    line and leave the whole grid jagged. The phone's row is
+                    full-width and fits three. */}
                 {work
                   ? <span class="chip work">{workLabel(work)} <b>{pals.value[n].work[work]}</b></span>
                   : <WorkChips name={n} top={1} />}
