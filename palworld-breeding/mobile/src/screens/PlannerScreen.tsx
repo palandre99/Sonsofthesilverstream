@@ -13,7 +13,7 @@ import {
   BackToCardChip, Badge, Btn, Card, PageHead, PalIcon, WorkChips, s,
 } from '../ui/kit';
 import { Icon } from '../ui/Icon';
-import { onNavIntent, takeIntentPayload } from '../nav/intent';
+import { navigateTo, onNavIntent, takeIntentPayload } from '../nav/intent';
 import {
   adviseUnlocks, catchWhere, unlockLine, type UnlockAdvice, type WildFact,
 } from '../logic/unlock';
@@ -507,11 +507,17 @@ export function PlannerScreen() {
       )}
 
       {ownedNames.length === 0 && (
-        <Card style={{ backgroundColor: T.warnSoft, borderColor: T.warn, marginBottom: 12 }}>
+        <Card style={{
+          backgroundColor: T.warnSoft, borderColor: T.warn, marginBottom: 12, gap: 10,
+        }}>
           <Text style={[s.body, { color: T.warn }]}>
             Your collection is empty — the planner needs to know what you own.
-            Tick your pals in the Paldex tab (or import a list there) first.
+            Tick your pals in the Paldex, or paste a list into it.
           </Text>
+          {/* it told him to go to the Paldex and then made him find it
+              himself. A message that names a destination should open it. */}
+          <Btn primary label="Open the Paldex"
+            onPress={() => navigateTo({ domain: 'breeding', tab: 'paldex' })} />
         </Card>
       )}
 

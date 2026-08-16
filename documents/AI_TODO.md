@@ -1446,6 +1446,56 @@ and u are idle and not working again… loop not working"
 => (c) He perceives IDLE TIME. Re-arm at 60s and do MORE per turn; never
    end a turn on one small fix.
 
+## E22. SELF-FOUND SWEEPS + COPY PASS 2026-08-16 (no CEO prompt — the lane)
+
+- [x] E22a MOBILE A11Y SWEEP **COMPLETE** (commits a0dba5c, 3db0739, f354a76,
+      3dc09a1, e0d9c15 — all published). Repo-wide scan for
+      `accessibilityLabel` with no nearby `accessibilityRole` now returns
+      exactly ONE hit: the WorkChips level chip, which names a picture and is
+      correctly not a control. What it caught along the way: 8 of 10
+      Pressables on the Plan tab; every pal row, ownership chip, element
+      chip and "Filters & sort" in the picker; the Paldex rows (where "you
+      own this" lived only in row OPACITY); the shared FilterSheet `Chip`
+      that draws EVERY filter and sort option in the app; the bottom tab
+      bar and side panel; the gender toggles; and 11 stragglers across the
+      Calculator, Settings and Suggested Goals.
+      **DO NOT RE-RUN THIS AS IF IT WERE NEW WORK.**
+- [x] E22b COUNT-THEN-PLURAL SWEEP **COMPLETE**, both trees. 16 candidates,
+      15 already guarded, 1 real ("Search 1 pals" in the mobile suggestion
+      sheet — the website had already been fixed). Earlier the same day:
+      "1 pals" (FilterSheet), "all 1 goals" / "Plan these 1 goals" (stale
+      notice, BOTH platforms — the bug travelled with the copy when I ported
+      it verbatim), "Add 1 pals" (Paldex import sheet).
+      **LESSON: copying copy between platforms copies its bugs. Read the
+      SINGULAR case of anything that interpolates a count.**
+- [x] E22c PLAN-TAB COPY READ END TO END on a real 23-phase / 40-step plan,
+      reading RENDERED TEXT rather than source. Fixed:
+      · an orphan "CHIKIPI ✓" sitting under the cake ingredients with NO
+        heading — it is a speed-up you own; now says so;
+      · "~200 flour · 320 berries · …" — the tilde sat on flour ALONE,
+        making one exact number look like a guess. Every total is an exact
+        multiple of the cake count (5/8/7/8/2 each) and "at least N cakes"
+        already carries the uncertainty. Removed, both platforms;
+      · steps reprinted the parent names from the line directly above
+        ("Broncherry Aqua + Polapup Terra → Relaxaurus" then "WAITING ON
+        BRONCHERRY AQUA + POLAPUP TERRA"). 24 steps stopped repeating; the
+        9 waiting on ONE parent still name it, which is the useful case;
+      · "GENDER LOCKED" named the mechanic, not the consequence → "only
+        works with the genders shown", pointing at the ♀/♂ already drawn on
+        the parents;
+      · "Filters ·" — a separator with nothing after it → "Filters (N)".
+      **FALSE ALARM, DO NOT "FIX":** the bare digits trailing every step look
+      like unexplained numbers in a text dump. They are work-level chips
+      whose icons are IMAGES; only the level survives innerText.
+- [x] E22d EMPTY COLLECTION STATE (first time it has ever been looked at).
+      Copy was already good — it names the problem and the fix — but it told
+      him to go to the Paldex and then made him find it himself. Now carries
+      an "Open the Paldex" button that actually goes there.
+- [ ] E22e NEXT WEB BATCH (app is the priority; batch these): job icons in
+      web Paldex rows, web filter-chip a11y, web import-sheet plural, web
+      "Speed-up you already have" heading, web waiting-on duplication, web
+      gender-locked wording.
+
 ## E21. CEO FEEDBACK 2026-08-16 ~15:38 (verbatim, WITH SCREENSHOT of the picker)
 "Filters in the pals yes but why doesn't pals show the symbol of their
 attributes. Like woodcutting, mining etc"
