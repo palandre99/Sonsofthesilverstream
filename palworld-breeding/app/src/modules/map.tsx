@@ -27,6 +27,8 @@ interface Layer {
   label: string;
   colour: string;
   square?: boolean;
+  /** the GAME's own symbol for this layer, served from /mapicons/ */
+  art?: string;
   set: ReturnType<typeof poiPoints>;
 }
 
@@ -131,7 +133,12 @@ export function MapPage() {
     for (const id of poiOn) {
       const set = poiPoints(id, region);
       const l = poiLayer(id);
-      if (set?.n && l) out.push({ key: `poi:${id}`, label: l.label, colour: l.colour, set });
+      if (set?.n && l) {
+        out.push({
+          key: `poi:${id}`, label: l.label, colour: l.colour, set,
+          art: `mapicons/${id}.png`,
+        });
+      }
     }
     for (const pal of palsOn) {
       const surface = spawnPoints(pal, region, time, level);
@@ -299,7 +306,13 @@ export function MapPage() {
                 borderColor: m.l.colour, color: m.l.colour,
                 transform: `translate(-50%, -50%) scale(${BASE / view.k})`,
               }}
-            >{m.count > 1 ? m.count : ''}</div>
+            >
+              {m.count > 1
+                ? m.count
+                : m.l.art
+                  ? <img class="mappinart" src={m.l.art} alt="" />
+                  : ''}
+            </div>
           ))}
         </div>
 

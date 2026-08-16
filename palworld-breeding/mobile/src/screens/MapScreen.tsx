@@ -306,6 +306,17 @@ export function MapScreen() {
         onPress={onPress}
       />
 
+      {/* Corner brackets — the game frames its map panel this way. Purely
+          chrome, and deliberately thin: on a phone the map needs the pixels. */}
+      <View pointerEvents="none" style={{
+        position: 'absolute', top: 8, left: 8, width: 24, height: 24,
+        borderTopWidth: 2, borderLeftWidth: 2, borderColor: T.accent, opacity: 0.5,
+      }} />
+      <View pointerEvents="none" style={{
+        position: 'absolute', top: 8, right: 8, width: 24, height: 24,
+        borderTopWidth: 2, borderRightWidth: 2, borderColor: T.accent, opacity: 0.5,
+      }} />
+
       {/* top bar — region switch + what's showing. The app shell already
           consumed the top safe area, so this only needs breathing room. */}
       <View style={{

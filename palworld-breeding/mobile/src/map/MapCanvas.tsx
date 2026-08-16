@@ -155,12 +155,20 @@ export function MapCanvas({
   /** A focus asked for before we know our size, replayed once we do. */
   const pending = React.useRef<{ u: number; v: number; zoom: number } | null>(null);
 
+  /** true once the player has panned or zoomed — after that we never re-fit. */
+  const touched = React.useRef(false);
+
   const onLayout = useCallback((e: LayoutChangeEvent) => {
     const { width, height } = e.nativeEvent.layout;
+    if (!width || !height) return;
     setSize((prev) => {
       if (prev.w === width && prev.h === height) return prev;
-      const f = Math.max(width, height);   // open at cover
-      if (k.value === 0) {
+      // Re-fit on EVERY layout until the player touches the map. Fitting only
+      // on the first one locked the map to a height the screen did not have
+      // yet — the safe area and tab bar settle a frame later — and left a
+      // black band along the bottom. Exactly the bug the web map had.
+      if (!touched.current) {
+        const f = Math.max(width, height);   // open at cover
         k.value = f;
         tx.value = (width - f) / 2;
         ty.value = (height - f) / 2;
@@ -178,19 +186,25 @@ export function MapCanvas({
     return { x, y };
   }, [size.w, size.h]);
 
+  const markTouched = useCallback(() => {
+    touched.current = true;
+  }, []);
+
   const pan = useMemo(() => Gesture.Pan()
     .onStart(() => {
       startTx.value = tx.value;
       startTy.value = ty.value;
+      runOnJS(markTouched)();
     })
     .onUpdate((e) => {
       const c = clamp(startTx.value + e.translationX, startTy.value + e.translationY, k.value);
       tx.value = c.x;
       ty.value = c.y;
-    }), [clamp, k, startTx, startTy, tx, ty]);
+    }), [clamp, k, markTouched, startTx, startTy, tx, ty]);
 
   const pinch = useMemo(() => Gesture.Pinch()
     .onStart(() => {
+      runOnJS(markTouched)();
       startK.value = k.value;
       startTx.value = tx.value;
       startTy.value = ty.value;
@@ -206,7 +220,7 @@ export function MapCanvas({
       k.value = next;
       tx.value = c.x;
       ty.value = c.y;
-    }), [clamp, zoomFloor, k, startK, startTx, startTy, tx, ty]);
+    }), [clamp, zoomFloor, k, markTouched, startK, startTx, startTy, tx, ty]);
 
   const doubleTap = useMemo(() => Gesture.Tap()
     .numberOfTaps(2)

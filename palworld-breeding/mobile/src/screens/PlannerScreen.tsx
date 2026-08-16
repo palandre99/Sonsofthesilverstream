@@ -14,6 +14,8 @@ import {
 } from '../ui/kit';
 import { Icon } from '../ui/Icon';
 import { onNavIntent, takeIntentPayload } from '../nav/intent';
+import { adviseUnlocks, type WildFact } from '../logic/unlock';
+import { PALCALC_FACTS } from '../data/palcalcFacts.g';
 import { wildLevelRange } from '../data/rarity';
 import { PalPicker } from '../ui/PalPicker';
 import { SuggestedGoals } from '../ui/SuggestedGoals';

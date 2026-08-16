@@ -439,3 +439,7 @@
   color: #EAF6F8; font-size: 10.5px; font-weight: 800; letter-spacing: 0.4px;
   text-shadow: 0 1px 3px rgba(4, 12, 16, 0.95); }
 .mappals { max-height: 42vh; }
+.mappinart { width: 15px; height: 15px; object-fit: contain; }
+/* No corner brackets here on purpose: the web map already sits in a bordered
+   panel, so they read as noise. They belong on the phone, where the map is
+   fullscreen and has no frame of its own. */

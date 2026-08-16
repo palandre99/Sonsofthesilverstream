@@ -405,7 +405,16 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       bakes the game's icon set into `public/icons/`; that is the source to
       mine. Big but very high value: it is the difference between "a map" and
       "the game's map".
-- [ ] G7 The game's ocean is a brighter teal than our raw texture and it draws
+- [x] G7a DONE 2026-08-16 ~13:00: corner brackets on the phone map, the way
+      the game frames its map panel. Deliberately NOT on the web — that map
+      already sits in a bordered panel, so brackets there read as noise.
+- [x] G9 (found while checking G7a) the phone map STILL had a black band along
+      the bottom: the fit was locked in on the FIRST layout, before the safe
+      area and tab bar settle, so it framed itself to a height the screen did
+      not have yet. The identical bug the web map had. It now re-fits on every
+      layout until the player first pans or zooms. Map fills the screen.
+- [x] G10 Web parity for the game symbols — the website's markers use them too.
+- [ ] G7b The game's ocean is a brighter teal than our raw texture and it draws
       a framed panel with corner brackets. Consider a light tint + frame to
       match the in-game feel.
 
