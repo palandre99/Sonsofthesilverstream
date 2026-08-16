@@ -1,10 +1,14 @@
 /** Calculator — pair→child and child→parents (reverse lookup).
  * Deep link: #/calc/<name> opens reverse mode with that target picked. */
 import { useEffect, useMemo, useState } from 'preact/hooks';
-import { canPairNow, engine, nav, ownedAny, pals, route, selfOnly } from '../state';
+import { box, canPairNow, engine, nav, ownedAny, pals, route, selfOnly } from '../state';
 import { parseGenderNote } from '../engine/formula';
+import { genderGap } from '../logic/genderGap';
 import { ElementChips, LockBadge, PalIcon, PalPicker, WorkChips } from '../components/shared';
 import type { ChildResult } from '../engine/types';
+
+/** what an unowned species looks like in the box */
+const NONE = { m: false, f: false };
 
 function ResultFlags({ ch }: { ch: ChildResult }) {
   return (
@@ -64,9 +68,10 @@ function PairResult({ a, b }: { a: string; b: string }) {
             )}
             {bothOwned && !canPairNow(a, b, ch.genderNote) && (
               <span class="mathnote" style={{ color: 'var(--warn)' }}>
-                ⚠ You own both species, but not a working ♂/♀ combination
-                {ch.kind === 'gendered' ? ` — this child needs ${ch.genderNote}` : ''}.
-                Swap a gender with the Pal Reverser or breed another copy.
+                ⚠ You have both species, but not a pair that can breed.{' '}
+                {genderGap(a, b, box.value[a] ?? NONE, box.value[b] ?? NONE,
+                  ch.genderNote ? parseGenderNote(ch.genderNote) : null)}{' '}
+                Swap a gender with the Pal Reverser, or breed another copy.
               </span>
             )}
             <button class="btn" style={{ alignSelf: 'flex-start' }}

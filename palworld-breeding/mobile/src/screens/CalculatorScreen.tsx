@@ -9,6 +9,7 @@ import {
   canPairNow, engine, getBox, ownedAny, pals, selfOnly, useAppVersion,
 } from '../store';
 import { parseGenderNote } from '../engine/formula';
+import { genderGap } from '../logic/genderGap';
 import { onNavIntent, takeIntentPayload } from '../nav/intent';
 import { PalDetail } from '../ui/PalDetail';
 import { Icon } from '../ui/Icon';
@@ -168,8 +169,10 @@ function PairResult({ a, b }: { a: string; b: string }) {
             )}
             {bothOwned && !canPairNow(a, b, ch.genderNote) && (
               <Text style={[s.body, { marginTop: 8, color: T.warn }]}>
-                ⚠ You own both species, but not a working ♂/♀ combination.
-                Swap a gender with the Pal Reverser or breed another copy.
+                ⚠ You have both species, but not a pair that can breed.{' '}
+                {genderGap(a, b, getBox()[a] ?? NONE, getBox()[b] ?? NONE,
+                  ch.genderNote ? parseGenderNote(ch.genderNote) : null)}{' '}
+                Swap a gender with the Pal Reverser, or breed another copy.
               </Text>
             )}
           </Card>
@@ -178,6 +181,9 @@ function PairResult({ a, b }: { a: string; b: string }) {
     </>
   );
 }
+
+/** what an unowned species looks like in the box */
+const NONE = { m: false, f: false };
 
 function ReverseLookup({ target }: { target: string }) {
   useAppVersion();
