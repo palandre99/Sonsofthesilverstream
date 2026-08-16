@@ -50,6 +50,10 @@ export interface PassiveInfo {
   world_tree: boolean;
   /** boss/legendary species that natively carry it */
   exclusive_to: string[];
+  /** Pals (and, for Mercy Hit, ITEMS) that already carry this passive.
+   * Mined for 8 passives, none of which is in `exclusive_to`, so the
+   * "native to" warning never covered them. Was typed here but rendered
+   * by nothing until 2026-08-17. */
   native_pals?: string[];
 }
 

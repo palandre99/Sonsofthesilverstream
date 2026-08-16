@@ -2075,6 +2075,26 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E70. WEB PARITY FOR "ALREADY CARRIED BY" — AND A TYPE THAT MADE AN
+## UNRENDERED FIELD LOOK HANDLED 2026-08-17
+
+- [x] **Ported the `native_pals` line to the web** (app/src/modules/odds.tsx),
+      identical wording and identical item handling. Verified live at
+      1100x860: Heavyweight reads "already carried by Kingpaca, Kingpaca
+      Cryst, Mammorest and 16 more. Catching one may be quicker than breeding
+      for it."; **Mercy Hit reads "…the Ring of Mercy (an item), the Pal
+      Tamers Glasses (an item)." with NO catching advice** — the same
+      conditional the phone got. Source line is properly dim (143,166,170),
+      body does not scroll sideways.
+- **A NEW SHAPE OF THE "MINED BUT UNRENDERED" TRAP:** the web's `PassiveInfo`
+      **already declared `native_pals?: string[]`** — undocumented, with no
+      comment — and NOTHING read it. A declared type made a forgotten field
+      look handled, and my sweep's `'native_pals' not in s` guard caught it
+      only because I asserted before writing. **A field being TYPED is not
+      evidence it is USED; grep the render, not the interface.** It now
+      carries a comment saying what it is and that nothing rendered it until
+      today.
+
 ## E69. THE PRIVACY PROMISE NOW HAS A GUARD, AND THE LAST UNUSED FIELD IS
 ## ON SCREEN 2026-08-17
 

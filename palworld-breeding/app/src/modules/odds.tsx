@@ -308,6 +308,20 @@ function PassivesTab() {
         )}
       </div>
 
+      {pool.map((n) => {
+        const p = byName.get(n);
+        const born = p ? bornWith(p) : { names: [], anyPal: false };
+        if (!born.names.length) return null;
+        return (
+          <p key={`born-${n}`} class="dim small" style="margin:8px 0 0">
+            <strong>{n}</strong> is already carried by {born.names.length === 1 ? born.names[0]
+              : born.names.length <= 4 ? born.names.join(', ')
+              : `${born.names.slice(0, 3).join(', ')} and ${born.names.length - 3} more`}
+            .{born.anyPal ? ' Catching one may be quicker than breeding for it.' : ''}
+          </p>
+        );
+      })}
+
       {warnings.map((w) => <div key={w} class="notebox">{w}</div>)}
 
       {/* The cap only blocks NEW ticks, so it can be walked around: tick four,
@@ -550,6 +564,20 @@ function CakesTab() {
 }
 
 /* ---------------- page ---------------- */
+
+/** Passives in the pool that something already carries. Not a warning — none
+ * of these 8 is exclusive, they all breed normally — but if 19 pals are born
+ * with Heavyweight, catching one may beat breeding for it, and the app never
+ * said so. The only reshaping is moving the "item: " prefix into plain
+ * English; Mercy Hit's two entries are ITEMS, so the catching advice is
+ * withheld there — you cannot catch a Ring of Mercy. */
+function bornWith(p: PassiveInfo): { names: string[]; anyPal: boolean } {
+  const raw = p.native_pals ?? [];
+  return {
+    names: raw.map((n) => (n.startsWith('item: ') ? `the ${n.slice(6)} (an item)` : n)),
+    anyPal: raw.some((n) => !n.startsWith('item: ')),
+  };
+}
 
 /** The pals whose base-side partner effect is about eggs, read from the data so
  * this card can never name the wrong one. Every figure on this page is a count
