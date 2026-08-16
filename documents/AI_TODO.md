@@ -341,6 +341,24 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       edge ones STILL clipped, which says the cull is not what lets them
       through. Next step is to instrument the actual vp rect against the
       label's uv at render time rather than reason about it.
+      2026-08-16 ~02:50 INSTRUMENTED, and it pointed somewhere else — see F31.
+      Measured: the clipped label's box is 150 px wide with its centre 28 px
+      from the right edge, i.e. the cull genuinely did not exclude it. Still
+      open, but no longer a guess.
+
+- [ ] F31 **VERIFICATION INTEGRITY — fix before trusting any more pixel-level
+      QA.** `scripts/qa-shot.js` asks Chrome for a 375x812 phone, but the page
+      reports `window.innerWidth` of **1500** (and 572 after pinning
+      --force-device-scale-factor=1). Screenshots still come back phone-shaped,
+      so the pictures and the layout disagree — which means every
+      viewport-dependent check I have run (marker culling, label edge-insets,
+      anything reading `size.w`) was measured against a rect that is NOT what
+      the screenshot shows. Tried: metrics before navigate (dropped by the
+      navigation), after navigate, after load with a verification read, and
+      forcing the device scale factor. None gave 375. The driver now WARNS
+      when the viewport is not what was asked for, so this can never be
+      silent again. Until it reads 375, treat fine-grained layout findings
+      from this harness as unproven — composition and colour are still fine.
 - [ ] F15 Fishing spots + hackable towers are in the CEO's scope list but are
       NOT in either upstream's layer set — research whether the tables exist
       before promising them.

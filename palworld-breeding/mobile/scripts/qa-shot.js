@@ -60,6 +60,11 @@ async function main() {
     '--headless=new',
     '--disable-gpu',
     '--hide-scrollbars',
+    // Without this the page lays out at 4x the requested size (innerWidth
+    // 1500 for a 375 window) while screenshots come back phone-shaped, so
+    // every viewport-dependent check reads a rect that does not match what
+    // the picture shows. Pin the scale and trust the window size.
+    '--force-device-scale-factor=1',
     `--remote-debugging-port=${PORT}`,
     `--user-data-dir=${profile}`,
     `--window-size=${W},${H}`,
@@ -102,11 +107,25 @@ async function main() {
 
   await send('Page.enable');
   await send('Runtime.enable');
+  await send('Page.navigate', { url: `http://localhost:8085/${route}` });
+  await sleep(12000);   // Metro's first bundle is slow; tiles then decode
+
+  // Applied AFTER the load, and verified. Set before navigating it is simply
+  // dropped, which left the page laying out at the real window size while
+  // screenshots came back phone-shaped — so every viewport-dependent check
+  // (marker culling, label edge-insets) was reading a rect that did not match
+  // the picture. A silent mismatch like that makes visual QA worse than none.
   await send('Emulation.setDeviceMetricsOverride', {
     width: W, height: H, deviceScaleFactor: 2, mobile: true,
   });
-  await send('Page.navigate', { url: `http://localhost:8085/${route}` });
-  await sleep(12000);   // Metro's first bundle is slow; tiles then decode
+  await sleep(1200);
+  const vp = await evaluate('({w:window.innerWidth,h:window.innerHeight})');
+  if (vp.w !== W) {
+    console.log(`  ! viewport is ${vp.w}x${vp.h}, expected ${W}x${H} — `
+      + 'screenshots will not match a phone');
+  } else {
+    console.log(`  viewport ${vp.w}x${vp.h}`);
+  }
 
   const errors = [];
   ws.on('message', (raw) => {
@@ -211,6 +230,10 @@ async function main() {
       }
       console.log(`  click ${cx},${cy}`);
       await sleep(700);
+    }
+    else if (kind === 'probe') {
+      const out = await evaluate(arg);
+      console.log('  probe:', JSON.stringify(out));
     }
     else if (kind === 'scroll') {
       // one wheel event per 240px keeps RN-web's scroll view following along
