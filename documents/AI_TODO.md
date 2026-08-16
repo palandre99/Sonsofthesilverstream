@@ -638,6 +638,28 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       Chikipi on the southern coast, rose Depresso carrying the moon.
       The palette is guarded by test, and the guard rejected my first attempt —
       mint #7BE38B is a leafy green that would sink into the grass.
+- [x] H16 2026-08-16 ~15:20 CLUSTERS THREW AWAY THE SYMBOL — the same failure
+      as H15, one layer down, found by asking the same question of the 23 POI
+      layers. A single pin drew the GAME's own icon; the moment two merged, the
+      pin drew a bare number instead. And at the default fit almost every pin
+      is a cluster, so that was the map's NORMAL state, not an edge case:
+      switch on chests, dungeons, NPCs and fast travel and you got 2,020 spots
+      of anonymous numbers. The glyph now always draws, and the count rides in
+      a small badge on the pin's corner. Eye-verified at the default fit, which
+      is the worst case — densest pins, largest counts. NOT verified zoomed in:
+      the harness pinch does not drive the gesture handler on web. Reasoned,
+      not measured: pins are fixed screen-size and zooming only SHRINKS the
+      counts, so the default fit bounds the problem.
+- [ ] H17 COLOUR CANNOT CARRY 23 IDENTITIES. Three POI layers are near-identical
+      greys (npc #A9C0CC, ore #B7C4CC, coal #8E9AA3) and several are near-white
+      (note #D7E3E8, quartz #CFE9FF, egg #FFEFC2). I deliberately did NOT
+      repaint them: with 23 layers there is no set of 23 hues a player can tell
+      apart on a busy map, so nudging two of them would be a half-measure that
+      still fails. H16 made the glyph carry identity everywhere, which is the
+      real fix. The idea worth weighing later is colouring by the four GROUPS
+      the data already carries (places / pals / collect / resources) — four
+      well-separated hues for "what kind of thing", glyph for "which thing".
+      That is a design change, so it wants the CEO's eye, not a silent swap.
 
 ### Open — the map lane's own queue
 - [x] F23 DONE 2026-08-16 ~00:02: the preview's dense clusters were an

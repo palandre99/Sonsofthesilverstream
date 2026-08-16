@@ -344,3 +344,39 @@ describe('a pal you picked is tellable from the others', () => {
     expect(screen).toMatch(/square: true/);
   });
 });
+
+/* With 23 POI layers, identity lives in the GLYPH, not the hue — so a cluster
+ * must never drop its glyph for a bare count. At the default fit almost every
+ * pin is a cluster, which made that the map's normal state, not an edge case. */
+describe('a cluster still says what it is', () => {
+  const screen = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
+  );
+  // Deliberately NOT slicing the Pin function out with a regex: the file is
+  // CRLF on this machine, so brace-anchored patterns silently match nothing
+  // and every assertion below would pass against an empty string. Anchoring on
+  // distinctive source text instead is immune to line endings.
+  const pin = screen;
+
+  it('draws the symbol whether or not the pin is a cluster', () => {
+    expect(pin).toMatch(/function Pin\(/);   // the guard is pointed at real code
+    // the old shape was `many ? <count> : art ? <Image> : <Icon>` — the glyph
+    // sat on the FALSE branch of `many`, so it vanished the moment pins merged
+    expect(pin).not.toMatch(/\{many \?\s*\(?\s*<Text/);
+    expect(pin).toMatch(/art != null \?/);
+    expect(pin).toMatch(/<Icon\s+name=\{icon\}/);
+  });
+
+  it('shows the count as a badge instead of replacing the symbol', () => {
+    expect(pin).toMatch(/\{many && \(/);
+    expect(pin).toMatch(/count > 999 \? '999\+' : count/);
+  });
+
+  it('keeps the badge attached to its own pin', () => {
+    // The badge must HANG OFF the pin it counts rather than flow inline and
+    // shove the glyph off centre. Matched on the badge's own negative offsets,
+    // not on a bare `position: 'absolute'` — the bottom controls use that too,
+    // so the loose version passed no matter what the badge did.
+    expect(pin).toMatch(/position: 'absolute', right: -\d+, bottom: -\d+/);
+  });
+});

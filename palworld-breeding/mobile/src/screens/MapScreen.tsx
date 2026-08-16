@@ -740,15 +740,35 @@ function Pin({ colour, icon, count, square, art, done }: {
       // a found marker fades back so what stands out is what you still need
       opacity: done ? 0.32 : 1,
     }}>
-      {many ? (
-        <Text style={{ color: colour, fontWeight: '900', fontSize: count > 99 ? 9 : 11 }}>
-          {count > 999 ? '999+' : count}
-        </Text>
-      ) : art != null ? (
+      {/* A cluster used to replace the symbol with a bare count, which threw
+          away the one thing that says WHAT it is — and at the default fit
+          almost every pin is a cluster, so a map with chests, ore and NPCs on
+          was a field of anonymous numbers. The glyph always shows; the count
+          rides in a badge on the corner. */}
+      {art != null ? (
         // the GAME's own symbol — a player already knows what it means
-        <Image source={art} style={{ width: 15, height: 15 }} resizeMode="contain" />
+        <Image
+          source={art}
+          style={{ width: many ? 13 : 15, height: many ? 13 : 15 }}
+          resizeMode="contain"
+        />
       ) : (
-        <Icon name={icon} size={14} color={colour} />
+        <Icon name={icon} size={many ? 12 : 14} color={colour} />
+      )}
+      {many && (
+        <View style={{
+          position: 'absolute', right: -5, bottom: -4,
+          minWidth: 14, height: 13, borderRadius: 6.5,
+          paddingHorizontal: 3, backgroundColor: colour,
+          borderWidth: 1, borderColor: 'rgba(8,18,22,0.92)',
+          alignItems: 'center', justifyContent: 'center',
+        }}>
+          <Text style={{
+            color: '#08161A', fontWeight: '900', fontSize: count > 99 ? 7.5 : 8.5,
+          }}>
+            {count > 999 ? '999+' : count}
+          </Text>
+        </View>
       )}
     </View>
   );
