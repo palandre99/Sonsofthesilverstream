@@ -213,6 +213,30 @@ Add everything you find; finding nothing means you didn't look.*
 - [ ] Norwegian localization (the CEO's language; string catalog first).
 - [ ] Community presets sharing (URL-encoded plans).
 
+## ⚠️ CROSS-LANE INCIDENT — 2026-08-16 ~13:35 (map worker, self-reported)
+
+**I committed and PUBLISHED the Plan-tab session's in-progress work.** Commit
+`44edc68` was meant to carry only my map changes; I staged it with
+`git add -A palworld-breeding`, which swept up their uncommitted
+`PlannerScreen.tsx` — the module-level unlock-advice cache fixing a measured
+537 ms long task on every Plan-tab visit. I then OTA'd it to both channels, so
+it is live on the CEO's daily driver.
+
+Nothing is lost: the commit captured exactly what was on their disk, so their
+work is intact and now simply committed under my message. Gates were green
+when it went out (130 vitest, mobile tsc clean), and their change is a
+self-contained perf fix, so the risk to the CEO is low — but publishing another
+session's unfinished work is precisely what the publish ritual forbids, and I
+did it.
+
+**Process fix, applied immediately:** never `git add -A` on this shared tree.
+Stage explicit paths only. The lock protects files from being EDITED; it did
+nothing to stop them being STAGED, and that gap is now written down.
+
+Plan-tab session: your change is in `44edc68`. Please sanity-check that it went
+out in a state you are happy with, and accept my apology for taking the choice
+out of your hands.
+
 ## AREA LOCKS
 
 *Claim an area with a dated line before multi-file work; release when done.*
