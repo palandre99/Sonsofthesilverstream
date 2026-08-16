@@ -479,18 +479,37 @@ export function PlanPage() {
         byTarget.set(t, cur);
       }
     }
+    // A goal with NO steps never appears in any step's neededBy, so it used to
+    // fall out of this list entirely — the target tray said one number and
+    // this said another, unexplained. Two different things cause zero steps
+    // and they must NOT be conflated: a goal you already own (nothing to
+    // breed) and one nothing can reach, which has its own notice. Only the
+    // owned ones belong here. Same fix as the phone (2026-08-17).
+    // `plan` here is only { steps, unreachable } — the goals it was built for
+    // live in `planTargets`. Reaching for plan.targets threw
+    // "not iterable" and blanked the whole page; caught on the render.
+    for (const t of planTargets) {
+      if (byTarget.has(t) || plan.unreachable.includes(t)) continue;
+      byTarget.set(t, { total: 0, done: 0 });
+    }
+    // no steps means "already yours", i.e. finished — not 0% done
+    const share = (v: { done: number; total: number }) => (v.total ? v.done / v.total : 1);
     return [...byTarget.entries()]
       .map(([name, v]) => ({ name, ...v }))
-      .sort((x, y) => (y.done / y.total) - (x.done / x.total) || x.name.localeCompare(y.name));
-  }, [plan, checks]);
+      .sort((x, y) => share(y) - share(x) || x.name.localeCompare(y.name));
+  }, [plan, checks, planTargets]);
 
   return (
     <>
       <div class="pagehead">
         <h1>Route Planner</h1>
-        <p>Pick any targets — the engine computes the shortest shared breeding tree from
-          your box: shared intermediates counted once, phases that can run in parallel,
-          and gender-aware ready-states on every step.</p>
+        {/* "shared intermediates counted once" was not true: two goals that
+            reach one pal by DIFFERENT recipes still breed it twice (see the
+            known-failure test in app/tests/plan-waves.test.ts). Corrected to
+            what the route really delivers, matching the phone. */}
+        <p>Pick any targets — the engine computes the shortest breeding tree from
+          your box: steps two goals both need are done once, phases that can run in
+          parallel, and gender-aware ready-states on every step.</p>
       </div>
 
       {ownedNames.length === 0 && (
@@ -649,14 +668,24 @@ export function PlanPage() {
             <div class="card bigcard" style={{ marginBottom: '16px' }}>
               <h2>Goal progress</h2>
               <div class="goalgrid">
-                {targetProgress.map((t) => (
-                  <div key={t.name} class={`goalrow${t.done === t.total ? ' complete' : ''}`}>
-                    <PalIcon name={t.name} size={30} />
-                    <span class="gname">{t.name}</span>
-                    <span class="gbar"><span style={{ width: `${(t.done / t.total) * 100}%` }} /></span>
-                    <span class="gnum">{t.done}/{t.total}</span>
-                  </div>
-                ))}
+                {targetProgress.map((t) => {
+                  // no steps = already in the Paldex, which is finished, not 0%.
+                  // The bar divided done/total, so this row also used to render
+                  // width:"NaN%" the moment such a goal appeared.
+                  const owned = t.total === 0;
+                  return (
+                    <div key={t.name} class={`goalrow${owned || t.done === t.total ? ' complete' : ''}`}>
+                      <PalIcon name={t.name} size={30} />
+                      <span class="gname">{t.name}</span>
+                      <span class="gbar">
+                        <span style={{ width: `${owned ? 100 : (t.done / t.total) * 100}%` }} />
+                      </span>
+                      <span class="gnum" title={owned ? 'Already in your Paldex — nothing to breed for it' : undefined}>
+                        {owned ? '✓ already yours' : `${t.done}/${t.total}`}
+                      </span>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           )}

@@ -2075,6 +2075,40 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E78. THE WEB HAD BOTH PROBLEMS TOO — AND MY FIRST FIX BLANKED THE
+## PAGE 2026-08-17
+
+Ran E75 and E77 back through the web tree (the both-trees rule). It had
+**both** defects.
+
+- [x] **THE SAME ZERO-STEP OMISSION.** `app/src/modules/plan.tsx` builds its
+      rows from `[...byTarget.entries()]`, so a goal you already own vanished
+      exactly as on the phone. Fixed the same way, with unreachable goals
+      deliberately excluded.
+- [x] **THE E75 OVER-PROMISE WAS STILL LIVE ON THE WEB.** The page header
+      claimed the engine computes a tree with "**shared intermediates counted
+      once**" — the very sentence E75 proved false, still up after I corrected
+      the phone. Now: "steps two goals both need are done once".
+- [x] **AND THE WEB ROW STILL LIED AFTER MY DATA FIX.** It rendered a bare
+      "0/0" for an owned goal — reads as *no progress* when it means *already
+      yours*. Now "✓ already yours", a full bar, and a tooltip. **The bar also
+      divided `done/total`, so it would have rendered `width:"NaN%"` the
+      moment such a row appeared** — the same latent NaN as the phone.
+- **21st BAD CHECK OF MINE, caught in seconds by rendering:** my first port
+      copied the phone's `for (const t of plan.targets)`. On the web, `plan`
+      state is only `{ steps, unreachable }` — the goals live in a separate
+      `planTargets`. It threw **"TypeError: plan.targets is not iterable"**
+      and **blanked the entire Route Planner behind the error boundary**. tsc
+      was perfectly happy: `plan` is a local object literal, so `.targets`
+      was never type-checked against the saved shape. Fixed to `planTargets`
+      and added it to the memo deps.
+- **THE LESSON: A PORT IS NOT A COPY.** Two trees can hold the same *feature*
+      with different *state shapes*. Read the destination's own types before
+      pasting the source's field names — and the error boundary LATCHES, so
+      reload after fixing or you will think the fix failed.
+- Web QA storage restored key-for-key afterwards (5 keys, box back to 20,
+      targets back to Ribbuny/Caprity, page healthy). Nothing of his touched.
+
 ## E77. A GOAL YOU ALREADY OWN VANISHED FROM GOAL PROGRESS 2026-08-17
 
 Kept going through the Plan's numbers (sub-method 15). `neededBy` drives the
