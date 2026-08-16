@@ -2075,6 +2075,37 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E74. PROFILE DELETION VERIFIED — THE GUARDED PATH HOLDS 2026-08-17
+
+Closed the gap E73 left. This is the path whose own comment documents a real
+data-loss hole: deleting the ACTIVE world moves the pointer to the survivor
+while `state` still holds the deleted world's box.
+
+- [x] **DELETING THE ACTIVE PROFILE IS SAFE.** Created a throwaway ("QA
+      DELETE ME", id `pmswe3a1l`), which auto-switched to it, then deleted it
+      while it was active — the exact dangerous case. Result: profile list
+      back to My world + Hardcore, active fell back to `default`, **My
+      world's box still 26 and its plan still 8 targets**, and **every one of
+      the deleted profile's storage keys was removed** (none left matching
+      its id). The deleted world's data did not land on the survivor, and no
+      blank state overwrote it.
+- [x] **The two-press confirm works and names the world:** first press
+      re-labels the button to `Really delete "QA DELETE ME" and its data?`,
+      only the second calls `deleteProfile`. Verified both presses
+      separately.
+- **ZERO DRIFT, twice over:** diffed all storage against the snapshot taken
+      before the experiment (0 keys changed), removed the temp key, reloaded
+      so the app re-read from disk, and re-verified — the same 5 keys, "My
+      world Lv42" + "Hardcore", active `default`, 26 pals, 8 targets.
+- **20th BAD CHECK OF MINE — the note I wrote last tick was wrong.** I had
+      recorded "press the header chip showing the ACTIVE PROFILE NAME to
+      reach Settings". That chip is a plain `<div>` with **no role and no
+      handler** — a label, not a button; pressing it does nothing. Last tick
+      it only appeared to work because earlier presses had already opened the
+      panel. **The real route: press the 27px-wide `<button>` at top-left
+      (the side-panel toggle, `left:16 w:27`), then press Settings inside the
+      panel.** Corrected here so the next session does not repeat it.
+
 ## E73. PROFILE ISOLATION VERIFIED ON HIS REAL SAVES — NO BUG 2026-08-17
 
 The one area whose BEHAVIOUR had never been checked, only its copy. It is
