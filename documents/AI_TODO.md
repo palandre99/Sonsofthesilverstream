@@ -1544,10 +1544,24 @@ and u are idle and not working again… loop not working"
       · Tapping the folded phase re-expands it and the subtitle swaps to
         "Phase 1 · complete".
       **THE WHOLE PLAN TAB HAS NOW BEEN EXERCISED END TO END.**
-- [ ] E24c STILL OPEN: the REPLACE-PLAN confirm ('replace' in `managing`) —
-      change goals mid-plan with real progress and check the warning fires
-      and what survives. Also consider extracting `planIsCurrent` and the
-      draftTargets rules the way ticks.ts was extracted, so they get tests.
+- [x] E24c REPLACE-PLAN CONFIRM — VERIFIED, **NO BUGS**. With a 2-goal /
+      8-step plan at 3/8 done, adding a category raised the stale notice
+      ("Plan these 8 goals") while progress stayed 3/8. Pressing it fired
+      "Replace the current plan?" with ACCURATE numbers ("still has
+      unfinished steps (3 of 8 done)").
+      · CANCEL: nothing moved — still the old 2-goal / 8-step plan, 3 ticks,
+        notice still offering the re-plan.
+      · CONFIRM: fresh 8-goal / 35-step plan at 0/35, notice cleared, and
+        **all three hatched pals survived** (Swee, Flopie, Pengullet Lux;
+        box unchanged at 26) — exactly the promise "finished steps whose
+        pals you hatched stay yours, but the old route is gone".
+      **WITH THIS, EVERY PATH ON THE PLAN TAB HAS BEEN EXERCISED.** Four
+      consecutive verification rounds with no bugs found.
+- [ ] E24d NEXT: extract `planIsCurrent` and the draftTargets rules into
+      logic/ the way ticks.ts was done, so they get real tests — the pattern
+      is proven and these are the remaining untested store rules. Then a
+      deliberate hostile re-read of PlannerScreen.tsx (dead code, duplicated
+      logic, anything a senior engineer would reject).
 
 ## E23. SUBSTANCE + THE CORE LOOP 2026-08-16 (no CEO prompt — the lane)
 
