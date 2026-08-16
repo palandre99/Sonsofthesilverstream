@@ -371,8 +371,15 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       to a box that no longer existed a frame later. Now it re-fits on every
       resize until the player first pans or zooms. Legend added, matching the
       phone (swatch shape carries surface-vs-dungeon).
-- [ ] F32b Web map still lacks place-name labels, and its pal list is capped
-      at 60 inside a 260px scroll box — fine for search, poor for browsing.
+- [x] F32b DONE 2026-08-16 ~12:10: place names on the web map too, same rules
+      as the phone (held until zoomed past 2x, greedy declutter). The wider
+      desktop viewport shows far more of them than the phone does, which reads
+      properly like a game map. Pal list is no longer capped at 60 and its
+      scroll box grew to 42vh.
+- [ ] F33 A couple of long names can still overlap at the top of the web map
+      ("Isle of the Glacial Core" / "No. 3 Wildlife Sanctuary") — the
+      declutter box is a fixed 93x26, so very long names under-reserve. Size
+      the collision box from the actual text length.
 - [ ] F11 Rebuild `ui/PalMap.tsx` + `ui/MapViewer.tsx` on the new engine and
       DELETE the region-label dots — this closes the CEO's ~12:25 "MAP
       OVERHAUL" item and the "Where to find it must be a real MAP" item.

@@ -9,6 +9,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { MAP_TILES, MAX_TILE_Z, TILE_SIZE } from '../data/tileIndex.g';
 import { MAP_REGIONS } from '../data/mapMeta.g';
+import { REGION_SPOTS } from '../data/regionSpots.g';
 import { clusterPoints, nearestPoint, pointsInRect } from '../map/points';
 import { regionOf, tileLevelFor, uvToReadout, type RegionId } from '../map/projection';
 import {
@@ -217,13 +218,35 @@ export function MapPage() {
     return out;
   }, [rect, region, view.k]);
 
+  /** Place names, same rules as the phone: only once zoomed past twice the
+   *  whole-map view, and never two boxes on top of each other. */
+  const labels = useMemo(() => {
+    if (region !== 'palpagos' || view.k < 760) return [];
+    const inset = 75 / view.k;
+    const near = Object.entries(REGION_SPOTS).filter(([, at]) => (
+      at.x > rect.u0 + inset && at.x < rect.u1 - inset
+      && at.y > rect.v0 && at.y < rect.v1
+    ));
+    near.sort((a, b) => a[1].y - b[1].y || a[0].localeCompare(b[0]));
+    const placed: { x: number; y: number }[] = [];
+    const minX = 93 / view.k;
+    const minY = 26 / view.k;
+    const out: { name: string; x: number; y: number }[] = [];
+    for (const [name, at] of near) {
+      if (placed.some((q2) => Math.abs(q2.x - at.x) < minX && Math.abs(q2.y - at.y) < minY)) continue;
+      placed.push({ x: at.x, y: at.y });
+      out.push({ name, x: at.x, y: at.y });
+    }
+    return out;
+  }, [rect, region, view.k]);
+
   const palList = useMemo(() => {
     const needle = q.trim().toLowerCase();
     return spawnablePals().filter((n) => {
       if (needle && !n.toLowerCase().includes(needle)) return false;
       if (missingOnly && (box.value[n]?.m || box.value[n]?.f)) return false;
       return spawnLevels(n, region) !== null;
-    }).slice(0, 60);
+    });
   }, [missingOnly, q, region]);
 
   const shown = active.reduce((n, l) => n + (l.set?.n ?? 0), 0);
@@ -255,6 +278,13 @@ export function MapPage() {
           {tiles.map((t) => (
             <img key={t.key} class="maptile" src={t.src} alt=""
               style={{ left: t.x, top: t.y, width: t.step + 0.5, height: t.step + 0.5 }} />
+          ))}
+          {labels.map((l) => (
+            <div key={l.name} class="maplabel"
+              style={{
+                left: l.x * BASE, top: l.y * BASE,
+                transform: `translate(-50%, -50%) scale(${BASE / view.k})`,
+              }}>{l.name}</div>
           ))}
           {markers.map((m) => (
             <div
