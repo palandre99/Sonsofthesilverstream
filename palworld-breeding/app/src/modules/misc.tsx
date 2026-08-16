@@ -31,10 +31,14 @@ function Claims() {
               {/* 77 citations across 30 of the 36 claims sat in the file and
                   were shown nowhere. The other 6 name their sources inside the
                   evidence text, so they get no line rather than an empty one. */}
+              {/* a <div> here was INVALID inside this <p>: the browser closes the
+                  paragraph early and hoists the div out, so the sources line
+                  escaped the evidence block. A block-level span nests legally
+                  and looks identical. (My own E66 bug, caught by the console.) */}
               {(c.sources?.length ?? 0) > 0 && (
-                <div class="dim small" style="margin-top:5px">
+                <span class="dim small" style="display:block;margin-top:5px">
                   Checked against: {c.sources.join(' · ')}
-                </div>
+                </span>
               )}
             </p>
           </div>

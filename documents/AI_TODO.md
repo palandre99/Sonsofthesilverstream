@@ -2075,6 +2075,36 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E80. TWO MORE NESTED COMPONENTS — AND THE CONSOLE CAUGHT MY OWN E66 BUG
+## 2026-08-17
+
+Applied sub-method 18 in both directions.
+
+- **MOBILE IS CLEAN:** grepped every RN screen and ui/ file for a component
+  defined inside another — **zero**. The phone really has none of the pattern.
+- [x] **THE WEB HAD ONE MORE: `HatchRings` inside `PlanPage`.** It is keyed
+      `key={burst}` precisely so the hatch animation replays when a step is
+      ticked — but because the component TYPE was rebuilt on every render,
+      Preact tore the rings down and replayed them on **any** unrelated state
+      change. Hoisted; now only `burst` retriggers it.
+- [x] **MY OWN E66 BUG, FOUND IN THE CONSOLE:** *"Improper nesting of
+      paragraph. Your `<p>` should not have div as child-elements"* —
+      `misc.tsx:29`, the "Checked against: …" sources line I added. I put a
+      `<div>` inside the evidence `<p>`; browsers close the paragraph early
+      and **hoist the div out**, so the sources line escaped its claim block.
+      Now a `<span style="display:block">` — verified on the render:
+      `display: block`, and **`closest('p') !== null`**, i.e. it now genuinely
+      stays inside the paragraph. Zero `div.dim.small` remain.
+- **22nd BAD CHECK OF MINE:** I read `plan.targets is not iterable` in the
+      console and briefly took it as a regression of E78. It was **stale
+      history** — the tab had crashed earlier, was stranded on a
+      `chrome-error://` page (hence a blank body and an empty hash), and
+      `read_console_messages` returns the accumulated buffer, not just the
+      current page. **A console buffer is history, not the present state.**
+- **The Map lane's dev server went DOWN mid-tick** (curl to 5183 = connection
+      refused), which fully explained the blank page. Once the port was free I
+      started my own, verified, and stopped it. Never touched theirs.
+
 ## E79. THE WEB CALCULATOR'S "SHOW ALL" EXPANDED EVERY GROUP 2026-08-17
 
 Swept the web Calculator/Odds/Paldex for over-promises that survived only

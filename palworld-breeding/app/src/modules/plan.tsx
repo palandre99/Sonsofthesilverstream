@@ -126,6 +126,31 @@ function loadSaved(): SavedPlan | null {
 // remounts must never resurrect goals the player removed
 draftTargets.value = loadSaved()?.targets ?? [];
 
+/** Rarity-tiered hatch rings — parity with mobile: Common 1 ring, Rare 2,
+ * Epic 3 (gold), Legendary 4 (gold); finishing a GOAL bumps one tier.
+ *
+ * Lived INSIDE PlanPage, which made it a new component type on every render:
+ * Preact then tore the rings down and rebuilt them on ANY unrelated state
+ * change, replaying the hatch animation when nothing had hatched. The
+ * `key={burst}` is what is supposed to replay it, and now that is the only
+ * thing that does. */
+function HatchRings({ burst, rarity, boost }: {
+  burst: number; rarity: string | null; boost: boolean;
+}) {
+  if (!burst) return null;
+  const order = ['Common', 'Rare', 'Epic', 'Legendary'];
+  const tier = Math.min(3, Math.max(0, order.indexOf(rarity ?? 'Common')) + (boost ? 1 : 0));
+  const gold = tier >= 2;
+  return (
+    <span key={burst}>
+      {Array.from({ length: tier + 1 }, (_, i) => (
+        <span key={i} class={`hatchring${gold ? ' gold' : ''}`}
+          style={{ animationDelay: `${i * 90}ms`, animationDuration: `${620 + i * 130}ms` }} />
+      ))}
+    </span>
+  );
+}
+
 export function PlanPage() {
   const saved = useMemo(loadSaved, []);
   // the goal list is shared state (state.ts draftTargets) — the sheet, the
@@ -248,25 +273,6 @@ export function PlanPage() {
     storage.set(CHECKS_KEY, JSON.stringify(next));
     setBursts((b) => ({ ...b, [sid]: (b[sid] ?? 0) + 1 }));
     setHatching(null);
-  };
-
-  /** rarity-tiered hatch rings — parity with mobile: Common 1 ring, Rare 2,
-   * Epic 3 (gold), Legendary 4 (gold); finishing a GOAL bumps one tier */
-  const HatchRings = ({ burst, rarity, boost }: {
-    burst: number; rarity: string | null; boost: boolean;
-  }) => {
-    if (!burst) return null;
-    const order = ['Common', 'Rare', 'Epic', 'Legendary'];
-    const tier = Math.min(3, Math.max(0, order.indexOf(rarity ?? 'Common')) + (boost ? 1 : 0));
-    const gold = tier >= 2;
-    return (
-      <span key={burst}>
-        {Array.from({ length: tier + 1 }, (_, i) => (
-          <span key={i} class={`hatchring${gold ? ' gold' : ''}`}
-            style={{ animationDelay: `${i * 90}ms`, animationDuration: `${620 + i * 130}ms` }} />
-        ))}
-      </span>
-    );
   };
 
   /** "Start over": undo every tick properly — remove exactly what each tick
