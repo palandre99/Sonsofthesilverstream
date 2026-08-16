@@ -437,8 +437,21 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       unambiguous land classes — grass, snow, desert, rock — and each is
       **0.0%** inside the mask. The claim holds, and build_map_tiles.py now
       ASSERTS it on every run rather than leaving it to memory.
-- [ ] G13 The World Tree has no place names — regionSpots.g.ts only carries
-      Palpagos labels. Worth mining tree region names.
+- [x] G13 INVESTIGATED, and the honest answer is there is NO source for World
+      Tree place names. Neither upstream carries region labels for it, and its
+      fast-travel points are named "World Tree (C 1)", "(lab)",
+      "(Middle Boss 2)" — internal spawner codes, not places. We do not invent
+      names, so the World Tree stays unlabelled until a real source appears.
+- [x] G14 The investigation found something better: Palpagos POI names ARE
+      real — "Ancient Civilization Ruins", "Beach of Everlasting Summer",
+      "Great Eagle Statue" — 150 of them, and NOTHING in the app showed them.
+      Tapping a statue said only "Fast travel". The marker card now leads with
+      the place's own name and keeps the layer as the subtitle.
+- [x] G15 Two lots of internal wording were shipping in the data and would
+      have surfaced the moment anything displayed names: the 21 spawner codes
+      above, and an index suffix on every repeated landmark ("Great Eagle
+      Statue (#87)" — the number exists only to tell 155 statues apart in a
+      table). Both are stripped in the extractor, so they cannot leak later.
 
 ### Open — the map lane's own queue
 - [x] F23 DONE 2026-08-16 ~00:02: the preview's dense clusters were an

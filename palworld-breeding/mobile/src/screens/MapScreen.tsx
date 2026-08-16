@@ -24,7 +24,8 @@ import { clusterPoints, nearestPoint, pointsInRect, type PointSet } from '../map
 import { uvToReadout, regionOf, type RegionId } from '../map/projection';
 import {
   GROUP_LABEL, dungeonPoints, emptyFilters, isNightOnly, poiLayer, poiLayers, poiPoints,
-  spawnLevels, spawnPoints, spawnablePals, wildBands, type LayerGroup, type MapFilters,
+  poiName, spawnLevels, spawnPoints, spawnablePals, wildBands,
+  type LayerGroup, type MapFilters,
 } from '../map/layers';
 import { MAP_REGIONS } from '../data/mapMeta.g';
 import { MAP_ICONS } from '../data/mapIcons.g';
@@ -239,14 +240,14 @@ export function MapScreen() {
    */
   const onPress = useCallback((u: number, v: number) => {
     const reach = 26 / Math.max(1, vp.scale);
-    let best: { layer: typeof active[number]; d: number } | null = null;
+    let best: { layer: typeof active[number]; d: number; index: number } | null = null;
     for (const layer of active) {
       const p = nearestPoint(layer.set, u, v, reach);
       if (p == null) continue;
       const du = layer.set.xy[p * 2] - u;
       const dv = layer.set.xy[p * 2 + 1] - v;
       const d = du * du + dv * dv;
-      if (!best || d < best.d) best = { layer, d };
+      if (!best || d < best.d) best = { layer, d, index: p };
     }
     const r = uvToReadout({ u, v }, regionOf(region));
     const at = `${r.x}, ${r.y}`;
@@ -259,6 +260,10 @@ export function MapScreen() {
 
     const { layer } = best;
     const lines: string[] = [];
+    // a statue's own name beats the layer's name every time
+    const own = layer.key.startsWith('poi:')
+      ? poiName(layer.key.slice(4), region, best.index)
+      : '';
     const palName = layer.key.startsWith('pal:') || layer.key.startsWith('dun:')
       ? layer.key.slice(4) : null;
     if (palName) {
@@ -272,7 +277,13 @@ export function MapScreen() {
     } else {
       lines.push(`${layer.set.n} on this map`);
     }
-    setFocus({ title: layer.label, lines, at, colour: layer.colour, icon: layer.icon });
+    setFocus({
+      title: own || layer.label,
+      lines: own ? [layer.label, ...lines] : lines,
+      at,
+      colour: layer.colour,
+      icon: layer.icon,
+    });
   }, [active, region, vp.scale]);
 
   const togglePoi = useCallback((id: string) => {

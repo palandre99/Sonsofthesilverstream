@@ -75,6 +75,30 @@ export function spawnablePals(): string[] {
 const poiCache = new Map<string, PointSet>();
 const spawnCache = new Map<string, PointSet>();
 
+const poiNameCache = new Map<string, string[]>();
+
+/**
+ * The place name of one marker, or '' when it has none.
+ *
+ * Statues, dungeons and towers carry real names from the game — "Beach of
+ * Everlasting Summer" tells you far more than "Fast travel" does. Ore nodes
+ * do not, and the extractor drops internal spawner codes entirely, so an
+ * empty string here means "no name worth showing", never "name missing".
+ */
+export function poiName(layerId: string, region: RegionId, index: number): string {
+  const key = `${layerId}|${region}`;
+  let names = poiNameCache.get(key);
+  if (!names) {
+    const layer = poiLayer(layerId);
+    if (!layer?.names) return '';
+    const maps = unbase64(layer.maps);
+    const want = region === 'palpagos' ? 0 : 1;
+    names = layer.names.filter((_, i) => maps[i] === want);
+    poiNameCache.set(key, names);
+  }
+  return names[index] ?? '';
+}
+
 /** Points of a POI layer for one region. Decoded once, then reused. */
 export function poiPoints(layerId: string, region: RegionId): PointSet | null {
   const key = `${layerId}|${region}`;

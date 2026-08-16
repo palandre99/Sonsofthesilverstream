@@ -44,6 +44,7 @@ from __future__ import annotations
 
 import base64
 import json
+import re
 import struct
 from collections import defaultdict
 from pathlib import Path
@@ -253,6 +254,27 @@ def build_spawns(known: set[str]) -> tuple[str, dict]:
     return "\n".join(lines) + "\n", stats
 
 
+# Names whose parenthetical is a spawner code rather than a place: "World Tree
+# (C 1)", "... (lab)", "... (Middle Boss 2)". They are internal words and this
+# project bans developer language from anything the player reads, so they never
+# leave the extractor.
+INTERNAL_NAME = re.compile(
+    r"\((?:[A-Z]\s?\d*|lab|Last Boss|Middle Boss\s*\d*)\)\s*$", re.I)
+
+
+# "Great Eagle Statue (#87)" — the number only exists to tell 155 statues
+# apart in a table. The game calls it a Great Eagle Statue.
+INDEX_SUFFIX = re.compile(r"\s*\(#\d+\)\s*$")
+
+
+def clean_poi_name(name: str) -> str:
+    """A place name a player would recognise, or '' if it is a code."""
+    n = (name or "").strip()
+    if not n or INTERNAL_NAME.search(n):
+        return ""
+    return INDEX_SUFFIX.sub("", n).strip()
+
+
 def build_pois() -> tuple[str, dict]:
     """POI layers, plus alpha pins carrying their level from atlas-data."""
     pois = json.loads((CACHE / "pois.json").read_text(encoding="utf-8"))
@@ -270,7 +292,7 @@ def build_pois() -> tuple[str, dict]:
         if uv is None:
             stats["dropped_offmap"] += 1
             continue
-        by_layer[layer].append((region, uv, p.get("name") or ""))
+        by_layer[layer].append((region, uv, clean_poi_name(p.get("name"))))
         stats["points"] += 1
 
     lines = ts_header("Points of interest, grouped by layer.")
@@ -298,7 +320,10 @@ def build_pois() -> tuple[str, dict]:
         rows = by_layer[layer]
         label, icon, group, colour = POI_LAYERS[layer]
         names = [n for _, _, n in rows]
-        keep_names = len(set(names)) > max(1, len(names) // 10)
+        real = [n for n in names if n]
+        # keep names only where they carry information: 1,405 markers all
+        # called "Ore" teach nothing, but 149 distinct statue names do
+        keep_names = len(set(real)) > max(1, len(names) // 10)
         maps = base64.b64encode(
             bytes(0 if r == "palpagos" else 1 for r, _, _ in rows)
         ).decode("ascii")
