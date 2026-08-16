@@ -126,6 +126,11 @@
   text-align:left;font-weight:600;font-size:14px}
 .picker .list button:hover,.picker .list button.hi{background:var(--accent-soft)}
 .picker .list .num{margin-left:auto;color:var(--faint);font-size:11.5px}
+/* job icons in the picker rows — you should be able to tell a miner from a
+   lumberjack while choosing, not after (CEO 2026-08-16) */
+.picker .list .pickerjobs{display:flex;gap:3px;align-items:center;flex-shrink:0;margin-left:6px}
+.picker .list .pickerjobs .chip{padding:1px 5px;font-size:10.5px;gap:2px}
+.picker .list .pickerjobs .chip img{width:13px;height:13px;vertical-align:-2px}
 
 /* ---------- calculator ---------- */
 .calcmodes{display:inline-flex;background:var(--surface2);border-radius:12px;padding:3px;

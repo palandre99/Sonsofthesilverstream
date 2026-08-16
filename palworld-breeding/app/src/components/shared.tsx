@@ -201,6 +201,12 @@ export function PalPicker({ value, onPick, placeholder = 'Choose a pal…', filt
                 <PalIcon name={n} size={28} />
                 {n}
                 <span class="num">#{pals.value[n]?.number || '—'}</span>
+                {/* what the pal can DO — the picker showed only its name, so
+                    you could not tell a miner from a lumberjack while
+                    choosing (CEO 2026-08-16, same fix as the phone) */}
+                <span class="pickerjobs">
+                  <WorkChips name={n} top={3} />
+                </span>
               </button>
             ))}
             {!matches.length && <div class="empty">No pals match “{q}”</div>}
