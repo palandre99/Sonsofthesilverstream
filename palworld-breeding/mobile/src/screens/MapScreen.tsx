@@ -23,7 +23,8 @@ import {
 import { clusterPoints, nearestPoint, pointsInRect, type PointSet } from '../map/points';
 import { uvToReadout, regionOf, type RegionId } from '../map/projection';
 import {
-  GROUP_LABEL, dungeonPoints, emptyFilters, isNightOnly, poiLayer, poiLayers, poiPoints,
+  GROUP_LABEL, alphaSpots, dungeonPoints, emptyFilters, isNightOnly, poiLayer,
+  poiLayers, poiPoints,
   poiName, spawnLevels, spawnPoints, spawnablePals, wildBands,
   type LayerGroup, type MapFilters,
 } from '../map/layers';
@@ -130,6 +131,22 @@ export function MapScreen() {
     return out;
   }, [filters.dungeons, filters.level, filters.pals, filters.poi, filters.time, region]);
 
+  /** The fixed boss of any pal you have picked — the one guaranteed place. */
+  const bossPins = useMemo<MapMarker[]>(() => {
+    const out: MapMarker[] = [];
+    for (const pal of filters.pals) {
+      for (const [i, a] of alphaSpots(pal, region).entries()) {
+        out.push({
+          key: `boss:${pal}:${i}`,
+          u: a.u,
+          v: a.v,
+          render: () => <Pin colour={T.gold} icon="crown-outline" count={1} />,
+        });
+      }
+    }
+    return out;
+  }, [filters.pals, region]);
+
   const markers = useMemo<MapMarker[]>(() => {
     const out: MapMarker[] = [];
     // Each layer clusters on its own, so switching five of them on used to put
@@ -228,9 +245,21 @@ export function MapScreen() {
       if (u < u0) u0 = u; if (u > u1) u1 = u;
       if (v < v0) v0 = v; if (v > v1) v1 = v;
     }
-    const span = Math.max(u1 - u0, v1 - v0, 0.08) * 1.25;
-    canvas.current?.focus((u0 + u1) / 2, (v0 + v1) / 2, 1 / span);
-  }, [focusKey]);
+    // Include the fixed boss. Anubis's wild spawns sit on one small islet
+    // while its alpha stands in the desert, so framing the spawns alone hid
+    // the one guaranteed place to meet it — the thing you were most likely
+    // looking for.
+    for (const a of bossPins) {
+      if (a.u < u0) u0 = a.u; if (a.u > u1) u1 = a.u;
+      if (a.v < v0) v0 = a.v; if (a.v > v1) v1 = a.v;
+    }
+    const span = Math.max(u1 - u0, v1 - v0, 0.06) * 1.25;
+    canvas.current?.focus((u0 + u1) / 2, (v0 + v1) / 2, span);
+  }, [bossPins, focusKey]);
+
+  // boss pins ride above the spawn cloud — the guaranteed spot should not be
+  // buried under a hundred maybes
+  const allPins = useMemo(() => [...markers, ...bossPins], [bossPins, markers]);
 
   // Labels are SCREEN markers now — outside the map's transform, so their text
   // is drawn at true resolution instead of being rasterised small and blown up
@@ -332,7 +361,7 @@ export function MapScreen() {
     <View style={{ flex: 1, backgroundColor: '#04090b' }}>
       <MapCanvas
         region={region}
-        markers={markers}
+        markers={allPins}
         screenMarkers={labels}
         canvasRef={canvas}
         onViewport={setVp}

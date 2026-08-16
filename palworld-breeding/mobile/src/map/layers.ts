@@ -12,7 +12,7 @@
  * work of the layers actually visible and nothing more.
  */
 import { MAP_POIS, type PoiLayer } from '../data/mapPois.g';
-import { MAP_SPAWNS, type SpawnGroup } from '../data/mapSpawns.g';
+import { MAP_ALPHAS, MAP_SPAWNS, type SpawnGroup } from '../data/mapSpawns.g';
 import { decodePoints, unbase64, type PointSet } from './points';
 import { REGION_BY_INDEX, type RegionId } from './projection';
 
@@ -253,6 +253,19 @@ export function isNightOnly(pal: string, region: RegionId): boolean {
   const groups = (MAP_SPAWNS[pal] ?? [])
     .filter((g) => REGION_BY_INDEX[g.m] === region && !g.dun);
   return groups.length > 0 && groups.every((g) => g.night);
+}
+
+/**
+ * Where this pal's FIXED BOSS stands, if it has one on this map.
+ *
+ * Picking a species used to show only its wild spawns, so the one guaranteed
+ * place to meet it — usually the reason you were looking — was missing unless
+ * you happened to have the Alpha layer switched on too.
+ */
+export function alphaSpots(pal: string, region: RegionId): { u: number; v: number; lv: number }[] {
+  return (MAP_ALPHAS[pal] ?? [])
+    .filter((a) => REGION_BY_INDEX[a.m] === region)
+    .map((a) => ({ u: a.u, v: a.v, lv: a.lv }));
 }
 
 /** Which regions a pal appears in at all. */

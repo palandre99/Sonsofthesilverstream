@@ -124,8 +124,16 @@ interface TileWindow {
 }
 
 export interface MapCanvasHandle {
-  /** Centre the view on a uv point at a given zoom multiple of the fit scale. */
-  focus: (u: number, v: number, zoom?: number) => void;
+  /**
+   * Frame a uv rectangle: centre on (u,v) and show `span` uv units across.
+   *
+   * Takes a SPAN rather than a zoom multiple on purpose. The multiplier
+   * version was ambiguous — a caller naturally computes 1/span against the
+   * whole map, while the multiplier is against the screen-fill scale, and the
+   * two differ by the screen's aspect. That silently mis-framed anything
+   * whose points were spread out.
+   */
+  focus: (u: number, v: number, span: number) => void;
   reset: () => void;
 }
 
@@ -165,7 +173,7 @@ export function MapCanvas({
   const [win, setWin] = useState<TileWindow>({ z: 0, x0: 0, x1: 0, y0: 0, y1: 0 });
 
   /** A focus asked for before we know our size, replayed once we do. */
-  const pending = React.useRef<{ u: number; v: number; zoom: number } | null>(null);
+  const pending = React.useRef<{ u: number; v: number; span: number } | null>(null);
 
   /** true once the player has panned or zoomed — after that we never re-fit. */
   const touched = React.useRef(false);
@@ -335,9 +343,12 @@ export function MapCanvas({
     });
   }, [onViewport, size.h, size.w]);
 
-  const applyFocus = useCallback((u: number, v: number, zoom: number, animate: boolean) => {
-    const next = Math.min(MAX_SCALE,
-      Math.min(zoomFloor * MAX_ZOOM, Math.max(zoomFloor, zoomFloor * zoom)));
+  const applyFocus = useCallback((u: number, v: number, span: number, animate: boolean) => {
+    // fit `span` uv units across the SHORTER screen edge, so the whole
+    // rectangle is visible whichever way the phone is held
+    const want = Math.min(size.w, size.h) / Math.max(1e-4, span);
+    const next = Math.min(MAX_SCALE, Math.min(zoomFloor * MAX_ZOOM,
+      Math.max(zoomFloor, want)));
     const c = clamp(size.w / 2 - u * next, size.h / 2 - v * next, next);
     const ms = animate ? 320 : 0;
     // Push the FINAL rect when the animation lands. The reaction below only
@@ -359,18 +370,18 @@ export function MapCanvas({
   // a black screen. Hold the request and replay it once we know our size.
   React.useEffect(() => {
     if (size.w === 0 || !pending.current) return;
-    const { u, v, zoom } = pending.current;
+    const { u, v, span } = pending.current;
     pending.current = null;
-    applyFocus(u, v, zoom, false);
+    applyFocus(u, v, span, false);
   }, [applyFocus, size.w]);
 
   React.useImperativeHandle(canvasRef, () => ({
-    focus: (u: number, v: number, zoom = 4) => {
+    focus: (u: number, v: number, span: number) => {
       if (size.w === 0) {
-        pending.current = { u, v, zoom };
+        pending.current = { u, v, span };
         return;
       }
-      applyFocus(u, v, zoom, true);
+      applyFocus(u, v, span, true);
     },
     reset: () => {
       const c = clamp((size.w - zoomFloor) / 2, (size.h - zoomFloor) / 2, zoomFloor);

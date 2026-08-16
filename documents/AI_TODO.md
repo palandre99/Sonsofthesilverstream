@@ -510,9 +510,18 @@ session's; this worker touches only the map area (see AREA LOCKS).*
 - [ ] H2 The World Tree region button is always shown, even for a player who
       has never been there. Worth checking whether it should be de-emphasised
       until they own a pal that lives there.
-- [ ] H3 There is no way to see EVERYTHING one pal needs at a glance: pick a
-      pal and you get its spawns, but not "and its alpha is here". Consider
-      folding the alpha pin into the pal layer when a species is selected.
+- [x] H3 DONE 2026-08-16 ~14:10: picking a pal now shows its FIXED BOSS as
+      well as its wild spawns, and the auto-framing includes it. Anubis is the
+      case that proves it: its spawns are on one small islet in the west while
+      its alpha stands in the desert, so the old framing showed the spawns and
+      silently hid the one guaranteed place to meet it.
+- [x] H5 (found doing H3, a real bug) `focus()` took a ZOOM MULTIPLE, and the
+      caller naturally computed 1/span against the whole map while the
+      multiplier was against the screen-fill scale — the two differ by the
+      screen's aspect. Anything whose points were spread out framed wrongly;
+      it only looked fine while every caller passed a tiny span. It takes an
+      explicit uv SPAN now and fits it across the shorter screen edge, so the
+      units cannot be misread.
 - [ ] H4 Nothing on the map is searchable by PLACE. The 150 real place names
       are in the data now, so "where is Fisherman's Point" is answerable and
       is not answered.
