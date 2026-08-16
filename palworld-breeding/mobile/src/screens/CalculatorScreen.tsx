@@ -244,7 +244,14 @@ function ReverseLookup({ target }: { target: string }) {
     ].filter(([, items]) => items.length > 0);
   }, [pairs]);
 
-  if (selfOnly.has(target)) {
+  // Two of the 28 self-breed-only species ALSO have a fixed recipe:
+  // Mossanda Lux = Grizzbolt + Mossanda, and Relaxaurus Lux = Relaxaurus +
+  // Sparkit. This branch used to fire on the flag alone and return EARLY, so
+  // for those two the app hid a recipe the player could very likely use
+  // today and told them to go catch one instead. The honest test is not
+  // "is it flagged" but "does any other pair actually make it" — so only
+  // claim it when the pair list really is empty (self-found 2026-08-16).
+  if (selfOnly.has(target) && pairs.length === 0) {
     return (
       <Card style={{ marginTop: 12, backgroundColor: T.warnSoft, borderColor: T.warn }}>
         <Text style={[s.body, { color: T.warn }]}>

@@ -1811,6 +1811,37 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E53. THE CALCULATOR HID TWO REAL RECIPES 2026-08-16
+
+Sweeping the "silently incomplete claim" class past `.slice()` into absolute
+statements. The Calculator's reverse lookup makes an EXHAUSTIVE claim —
+"the only pair that produces it" — so I checked it against the game data
+the way regions and Legend were checked. **It was false for two species.**
+
+- [x] **`Mossanda Lux` and `Relaxaurus Lux` are BOTH flagged self-breed-only
+      AND have a fixed recipe** in breeding_1_0.json:
+        Mossanda Lux  = Grizzbolt + Mossanda
+        Relaxaurus Lux = Relaxaurus + Sparkit
+      The reverse lookup branched on the FLAG ALONE and returned EARLY, so
+      for those two it never rendered the pair list at all. The player was
+      told "the only pair that produces it is X + X. Catch or hatch your
+      first one" — while holding, quite possibly, both parents of a recipe
+      the app was hiding. Verified from the raw data, not from a simulation:
+      those are the only 2 of 28 self-breed-only species with a unique combo.
+      Fixed on BOTH platforms — the branch now requires `pairs.length === 0`,
+      i.e. the honest test is "does any other pair actually make it", not
+      "is it flagged". Verified on device: Mossanda Lux now shows
+      "Grizzbolt plus Mossanda" with the FIXED RECIPE badge and no
+      self-breed-only claim.
+- [x] CHECKED AND TRUE, no change: "At least one hidden potential is always
+      taken from a parent" matches the IV model (1/2/3 categories at
+      50/33/17, so never zero). Katress+Wixen really is the only
+      gender-locked pair (2 rows in the whole table).
+- **The method that found it:** an exhaustive claim in the copy is a
+  testable assertion. Run it against the data. Regions (199/299), Legend
+  (6 not 3) and now this one all came from doing exactly that, and all three
+  were invisible to clicking.
+
 ## E52. THE TRUNCATION SWEEP 2026-08-16 (his screenshot was a PATTERN)
 
 His Calculator screenshot exposed a shape, not a one-off: a list cut to a

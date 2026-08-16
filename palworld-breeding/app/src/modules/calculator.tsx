@@ -146,7 +146,11 @@ function ReverseLookup({ target }: { target: string }) {
     </>
   );
 
-  if (selfOnly.value.has(target)) {
+  // Two of the 28 self-breed-only species ALSO have a fixed recipe (Mossanda
+  // Lux = Grizzbolt + Mossanda, Relaxaurus Lux = Relaxaurus + Sparkit), so
+  // firing on the flag alone HID a usable recipe and told the player to go
+  // catch one. Only claim it when no other pair really exists.
+  if (selfOnly.value.has(target) && pairs.length === 0) {
     return (
       <div class="notebox">
         {target} is <b>self-breed-only</b>: the only breeding pair that produces it is
