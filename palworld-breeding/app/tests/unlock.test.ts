@@ -10,7 +10,9 @@
  * data happened to line up.
  */
 import { describe, expect, it } from 'vitest';
-import { adviseUnlocks, type PairSource, type WildFact } from '../src/logic/unlock';
+import {
+  adviseUnlocks, unlockLine, type PairSource, type WildFact,
+} from '../src/logic/unlock';
 
 /** Builds: a HIGH-level catch a short hop from the goal, and a LOW-level
  * catch a long walk from it. `shortSteps`/`longSteps` set the two lengths. */
@@ -139,6 +141,29 @@ describe('unlock advisor — ranking fits the save you are actually playing', ()
       engine, [], new Set(), ['Grizzbolt', 'Mossanda Lux'], wild, 42,
     );
     expect(out.map((a) => a.target)).toEqual(['Mossanda Lux', 'Grizzbolt']);
+  });
+
+  it('a goal you have since caught never says "Catch ."', () => {
+    // the realistic path: the card says "catch a Chikipi", you do, you tick
+    // it in the Paldex — and the saved plan still lists it as unreachable.
+    // The advisor then had nothing to catch and built an empty sentence.
+    const engine: PairSource = { species: ['Chikipi'], childrenOf: () => [] };
+    const wild = (): WildFact => ({ minWild: 1, known: true });
+    const [a] = adviseUnlocks(engine, ['Chikipi'], new Set(), ['Chikipi'], wild, 42);
+    expect(a.kind).toBe('reachable');
+    expect(unlockLine(a, 42)).not.toContain('Catch .');
+    expect(unlockLine(a, 42)).toBe('Within reach now — plan again to pick it up.');
+  });
+
+  it('a goal breedable from what you own needs no catching either', () => {
+    const engine: PairSource = {
+      species: ['A', 'B', 'Goal'],
+      childrenOf: (x, y) => ([x, y].sort().join('+') === 'A+B' ? [{ species: 'Goal' }] : []),
+    };
+    const wild = (): WildFact => ({ minWild: 5, known: true });
+    const [a] = adviseUnlocks(engine, ['A', 'B'], new Set(), ['Goal'], wild, 42);
+    expect(a.kind).toBe('reachable');
+    expect(a.catches).toEqual([]);
   });
 
   it('easiest goals are ranked first', () => {

@@ -273,6 +273,14 @@ export function GenderToggles({ name, size = 30 }: { name: string; size?: number
               setOwnedGender(name, g, !on);
             }}
             hitSlop={6}
+            // the label was the bare glyph, so a screen reader announced
+            // "male sign" with no hint of the pal, the meaning or the state.
+            // The website had the same bug and was fixed first.
+            accessibilityRole="checkbox"
+            accessibilityState={{ checked: on }}
+            accessibilityLabel={
+              `${g === 'm' ? 'Male' : 'Female'} ${name}: ${on ? 'in your Paldex' : 'not yet'}`
+            }
             style={{
               width: size, height: size, borderRadius: size * 0.3,
               borderWidth: 1.5, borderColor: on ? color : T.line2,

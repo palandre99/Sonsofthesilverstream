@@ -279,6 +279,19 @@ export function adviseUnlocks(
       });
       continue;
     }
+    // Nothing left to catch means it is already within reach — you own it,
+    // or you can breed it from what you own. Without this the sentence
+    // builder was handed an empty catch list and produced "Catch ." — which
+    // is exactly what a player sees after following our own advice: catch
+    // the pal, tick it in the Paldex, and the stale plan still lists it as
+    // stuck (self-found 2026-08-16).
+    if (node.catches.size === 0) {
+      out.push({
+        target, kind: 'reachable', catches: [], steps: node.steps,
+        gateLevel: null, withinLevel: true, cost: node.cost,
+      });
+      continue;
+    }
     const catches = [...node.catches].sort((x, y) => {
       const lx = wild(x).minWild ?? 0;
       const ly = wild(y).minWild ?? 0;
