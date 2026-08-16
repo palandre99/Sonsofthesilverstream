@@ -1266,6 +1266,26 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       engine with real spawn points, level bands and day/night. The web copy of
       the asset is therefore still in use and I left it alone. Worth porting
       the map engine to the web Paldex, or at least the sharper texture.
+- [x] L17 2026-08-16 ~23:55 THE PIN CAP KEPT THE WRONG CLUSTERS. When more
+      clusters exist than pins allowed, `.slice(0, budget)` kept whichever came
+      out of the grid FIRST — which is the order points sit in the data file,
+      not significance. So the densest patch on the map could be dropped while
+      a cluster of four survived. Sorted by count before capping now.
+      HONEST ABOUT THE EVIDENCE: I A/B'd it twice at the opening view — six
+      layers (106 pins, sum 8,077) and one layer (24 pins, sum 1,939, the whole
+      layer) — and it made NO measurable difference either time, because at
+      that zoom most visible cells are ocean and the cap never bites. I nearly
+      reverted it as churn. What justifies keeping it is arithmetic I can
+      check: the cell and the viewport are both in screen pixels, so the number
+      of clusters that can be visible for one layer is scale-independent at
+      (375/37)x(812/37) ~= 222 against a budget of 170. The cap DOES bite at 1,
+      3 and 6 layers once you are zoomed into a dense area — a state the
+      harness cannot reach. Reasoned, not measured, and tested at unit level:
+      nothing dropped is bigger than anything kept.
+      ALSO MEASURED while doing this: the largest cluster in the data is 1,016
+      (red berries at a 97px cell), so the "999+" badge is NOT dead code. The
+      biggest badge actually drawn at the opening view is 843, and a 3-digit
+      badge renders cleanly — the pill widens, nothing clips.
 - [ ] K5 "also many other issues" — HE HAS MORE AND HAS NOT LISTED THEM. Ask,
       or keep walking journeys until they surface. Do not guess at what he
       means and do not claim the map is finished.

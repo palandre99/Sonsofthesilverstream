@@ -1283,3 +1283,41 @@ describe('only one map engine ships on the phone', () => {
     expect(hits).toEqual([]);
   });
 });
+
+/* When only N pins fit, they should be the N that matter. The cap used to keep
+ * whichever clusters came out of the grid first — the order points happen to
+ * sit in the data file — so the densest concentration on the map could be
+ * dropped while a cluster of four survived. */
+describe('the pin cap keeps the biggest concentrations', () => {
+  const screen = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
+  );
+
+  it('sorts by count before capping', () => {
+    expect(screen).toMatch(/\.sort\(\(a, b\) => b\.count - a\.count\)\s*\r?\n?\s*\.slice\(0, budget\)/);
+  });
+
+  it('so nothing dropped is bigger than anything kept', () => {
+    const set = decodePoints(MAP_POIS.find((l) => l.id === 'red_berries')!.pts);
+    const all = Array.from({ length: set.n }, (_, i) => i);
+    const clusters = clusterPoints(set, all, 812, 37, 0).sort((a, b) => b.count - a.count);
+    const budget = 20;
+    const kept = clusters.slice(0, budget);
+    const dropped = clusters.slice(budget);
+    expect(kept.length).toBe(budget);
+    expect(dropped.length).toBeGreaterThan(0);
+    const smallestKept = Math.min(...kept.map((c) => c.count));
+    const biggestDropped = Math.max(...dropped.map((c) => c.count));
+    expect(smallestKept).toBeGreaterThanOrEqual(biggestDropped);
+  });
+
+  it('the cap can genuinely bite, so this is not academic', () => {
+    // both the cell and the viewport are in screen px, so the number of
+    // clusters that can be visible for one layer is scale-independent:
+    // (375/37) x (812/37) is about 222 against a budget of 170
+    const PIN = 23;
+    const cell = PIN + 14;
+    const visibleCells = (375 / cell) * (812 / cell);
+    expect(visibleCells).toBeGreaterThan(170);
+  });
+});

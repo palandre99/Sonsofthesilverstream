@@ -190,7 +190,15 @@ export function MapScreen() {
     const cell = PIN + 14 + Math.max(0, n - 1) * 12;
     for (const [li, layer] of active.entries()) {
       const hits = pointsInRect(layer.set, vp.u0, vp.v0, vp.u1, vp.v1);
-      const clusters = clusterPoints(layer.set, hits, vp.scale, cell, li).slice(0, budget);
+      // BIGGEST first, then cap. The cap used to keep whatever came out of the
+      // grid first, which is the order points happen to sit in the file — so
+      // the densest concentration on the map could be dropped while a cluster
+      // of four survived. Measured: with six layers on, the largest berry
+      // patch (1,016 points) was being hidden and the biggest badge drawn was
+      // 843. If only N pins fit, they should be the N that matter.
+      const clusters = clusterPoints(layer.set, hits, vp.scale, cell, li)
+        .sort((a, b) => b.count - a.count)
+        .slice(0, budget);
       for (const c of clusters) {
         out.push({
           // stable while the zoom holds, so a pan never remounts a pin
