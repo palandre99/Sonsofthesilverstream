@@ -340,6 +340,14 @@ function Drawer({ name, onClose }: { name: string; onClose: () => void }) {
               </span>
             )}
           </div>
+          {stars > 0 && (
+            <div class="dim small" style={{ marginTop: '2px' }}>
+              Condensing figures are community-measured, not read from the game
+              files. The base stats below are.
+            </div>
+          )}
+          <div>
+          </div>
           <StatBars p={p} boost={stars * 0.05} />
         </section>
 
@@ -628,7 +636,16 @@ export function PaldexPage() {
             </div>
           );
         })}
-        {!names.length && <div class="empty">Nothing matches those filters.</div>}
+        {!names.length && (
+          <div class="empty">
+            {/* said "those filters" even with none set and only the search
+                emptying the list — naming a cause you cannot act on */}
+            {q && (el || work || ownFilter !== 'all')
+              ? `Nothing matches “${q}” with those filters.`
+              : q ? `No pal matches “${q}”.`
+              : 'Nothing matches those filters.'}
+          </div>
+        )}
       </div>
 
       {current && pals.value[current] && (

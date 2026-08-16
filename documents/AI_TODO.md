@@ -1744,6 +1744,32 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E45. WEB PARITY BATCH FOR E35–E44 2026-08-16 (the owed batch)
+
+All four verified in the browser at 1100x860, not assumed.
+
+- [x] **Paldex empty state** — said "Nothing matches those filters." even with
+      no filter set and only the search emptying the list (the E35 bug).
+      Now names the real cause. Verified: searching "zzzzz" gives
+      "No pal matches “zzzzz”."
+- [x] **Condensing provenance** (the E41 promise) — the pal card's star
+      preview showed "+20% · partner skill level 5 of 5" beside DATAMINED
+      base stats with nothing separating them. Now carries the same line the
+      phone got. Verified at 4★ on Lamball.
+- [x] **Aura squad derived** (the E42 fix) — web had the SAME twelve
+      hand-typed names under the same "All twelve, verified" blurb. Now
+      derived from the game's own effect text; the blurb counts itself.
+      Verified: reads "All 12, straight from the game's own effect text."
+- [x] **Typing 0 as your player level saved level 1** — the E44 bug exists on
+      web too, in the Suggested Goals header's level box: `v ? Number(v)`
+      treats the STRING "0" as truthy and the setter clamps up to 1. Now
+      clears instead. Verified on device: typed 0, storage went empty, then
+      restored his 42.
+- CHECKED, ALREADY CORRECT ON WEB: the level input already had
+  `aria-label="Your player level"` — web did NOT share the phone's
+  unnamed-input problem.
+- Web state snapshotted and restored; `palforge-player-level` back to 42.
+
 ## E44. SETTINGS SCREENS — FIRST PASS 2026-08-16 (no CEO prompt — the lane)
 
 - [x] **A FOURTH cluster of unnamed text fields.** SettingsScreens.tsx has

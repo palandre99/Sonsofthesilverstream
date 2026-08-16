@@ -119,8 +119,10 @@ function fighterItems(): GoalItem[] {
   }));
 }
 
-const AURA_SQUAD = ['Ribbuny', 'Cinnamoth', 'Clovee', 'Petallia', 'Tetroise', 'Wumpo',
-  'Amione', 'Eikthyrdeer Terra', 'Katress Ignis', 'Mycora', 'Puffolt', 'Smokie Cryst'];
+/** Derived from the game's own partner-effect text rather than hand-listed —
+ *  a patch adding a thirteenth aura pal would have made the old
+ *  "All twelve, verified" blurb quietly false. */
+const AURA_RE = /Work Suitability Level for all other/i;
 
 function effectItems(re: RegExp): GoalItem[] {
   const p = pals.value;
@@ -163,8 +165,8 @@ function buildSections(): SectionDef[] {
     },
     {
       id: 'aura', title: 'Aura squad',
-      blurb: 'Each gives +1 work suitability to every other pal in its base (auras don\'t stack). All twelve, verified.',
-      items: AURA_SQUAD.map((n) => ({ name: n, effect: p[n]?.partner_effect ?? undefined })),
+      blurb: `Each raises one work suitability for every other pal in its base (auras don't stack). All ${effectItems(AURA_RE).length}, straight from the game's own effect text.`,
+      items: effectItems(AURA_RE),
     },
     {
       id: 'bestof', title: 'The best pals in the game', gold: true,
@@ -674,7 +676,9 @@ export function GoalsSheet({ open, onClose, targets, onAdd, onRemove }: {
             aria-label="Your player level"
             onChange={(e2) => {
               const v = (e2.currentTarget as HTMLInputElement).value;
-              setPlayerLevel(v ? Number(v) : undefined);
+              // "0" is a truthy string and the setter clamps up to 1, so typing 0
+              // silently saved level 1 — the same bug the phone had
+              setPlayerLevel(Number(v) > 0 ? Number(v) : undefined);
             }}
             style={{
               width: '64px', padding: '2px 6px', borderRadius: '8px',
