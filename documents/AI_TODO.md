@@ -770,6 +770,24 @@ Nothing in the Plan-tab queue is blocked by this — what remains there is
 polish, micro-QoL and copy, which is safe to keep shipping.
 
 ### E13 polish-lane findings (hostile deep-eval passes, ongoing)
+- [x] 2026-08-16 ~10:55 A11Y — the Plan tab was full of nameless buttons:
+      SEVEN control types had no accessibility label, incl. all three pal
+      icons on every step card, so on a 20-step plan a screen reader
+      announced ~60 controls as just "button". All now named ("Open
+      Ribbuny"); the cake-supply badges read as whole sentences ("Berries:
+      Caprity hatches in phase 2 — open it"); the completed-phase fold
+      says how many steps it will show. Eye-verified live via the rendered
+      aria-labels: 68 named controls, ZERO icon-only unnamed buttons.
+- [x] 2026-08-16 ~10:55 Empty-state DRIFT: web explained WHY the planner
+      needs a collection, mobile just gave an order. Mobile now matches
+      web ("the planner needs to know what you own"). Verified live.
+      Standing note: when mobile and web disagree, the BETTER copy wins —
+      don't just make them identical.
+- [x] 2026-08-16 ~10:50 Checked and found CLEAN (no change needed): the
+      readiness pills are identical on both platforms and name pals
+      properly ("waiting on Flambelle + Fuack"), and the gender hints
+      ("need a ♀ X — or a ♂ Y") are the CEO's own requested wording —
+      deliberately NOT churned.
 - [x] 2026-08-16 ~10:45 PHASE HEADERS were telling the player to
       parallelise a SINGLE task: every phase said "· everything here can
       run in parallel" regardless of size, and in the live plan phases

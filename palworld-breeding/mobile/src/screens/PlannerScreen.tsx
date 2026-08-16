@@ -432,7 +432,8 @@ export function PlannerScreen() {
       {ownedNames.length === 0 && (
         <Card style={{ backgroundColor: T.warnSoft, borderColor: T.warn, marginBottom: 12 }}>
           <Text style={[s.body, { color: T.warn }]}>
-            Your collection is empty — tick your pals in the Paldex tab first (or import a list there).
+            Your collection is empty — the planner needs to know what you own.
+            Tick your pals in the Paldex tab (or import a list there) first.
           </Text>
         </Card>
       )}
@@ -580,7 +581,8 @@ export function PlannerScreen() {
                   const complete = g.done === g.total;
                   return (
                     <View key={g.name} style={[s.row, { gap: 8 }]}>
-                      <Pressable onPress={() => setViewing(g.name)} hitSlop={4}>
+                      <Pressable onPress={() => setViewing(g.name)} hitSlop={4}
+                        accessibilityLabel={`Open ${g.name}`}>
                         <PalIcon name={g.name} size={26} />
                       </Pressable>
                       <Text style={{
@@ -652,6 +654,11 @@ export function PlannerScreen() {
               <View style={[s.wrap]}>
                 {cakeSupply.map((c) => (
                   <Pressable key={c.label} disabled={!!c.ownedProducer}
+                    accessibilityLabel={c.ownedProducer
+                      ? `${c.label}: covered by ${c.ownedProducer}`
+                      : c.planned
+                        ? `${c.label}: ${c.planned} hatches in phase ${c.plannedPhase} — open it`
+                        : `${c.label}: you need ${c.best ?? 'a producer'} — open it`}
                     onPress={() => {
                       const show = c.ownedProducer ?? c.planned ?? c.best;
                       if (show) setViewing(show);
@@ -680,7 +687,8 @@ export function PlannerScreen() {
                   <View key={h.name} style={{
                     borderTopWidth: 1, borderTopColor: T.line, paddingTop: 9, gap: 6,
                   }}>
-                    <Pressable style={[s.row, { gap: 9 }]} onPress={() => setViewing(h.name)}>
+                    <Pressable style={[s.row, { gap: 9 }]} onPress={() => setViewing(h.name)}
+                      accessibilityLabel={`Open ${h.name}`}>
                       <PalIcon name={h.name} size={30} />
                       <View style={{ flex: 1 }}>
                         <Text style={{ color: T.ink, fontWeight: '800', fontSize: 13.5 }}>
@@ -769,6 +777,7 @@ export function PlannerScreen() {
             if (allDone && !openPhases.has(wave)) {
               return (
                 <Pressable key={wave}
+                  accessibilityLabel={`Phase ${wave} complete — show its ${steps.length} ${steps.length === 1 ? 'step' : 'steps'}`}
                   onPress={() => {
                     void Haptics.selectionAsync();
                     setOpenPhases((prev) => new Set(prev).add(wave));
@@ -827,6 +836,7 @@ export function PlannerScreen() {
                             else setHatching({ sid, child: st.child });
                           }} />
                         <Pressable onPress={() => setViewing(st.parents[0])} hitSlop={4}
+                          accessibilityLabel={`Open ${st.parents[0]}`}
                           style={{ flexDirection: 'row', alignItems: 'center', gap: 8, flexShrink: 1 }}>
                           <PalIcon name={st.parents[0]} size={38}
                             gender={st.genderNote ? (mother === st.parents[0] ? 'f' : 'm') : undefined} />
@@ -838,6 +848,7 @@ export function PlannerScreen() {
                         </Pressable>
                         <Text style={{ color: T.faint, fontWeight: '800', fontSize: 15 }}>+</Text>
                         <Pressable onPress={() => setViewing(st.parents[1])} hitSlop={4}
+                          accessibilityLabel={`Open ${st.parents[1]}`}
                           style={{ flexDirection: 'row', alignItems: 'center', gap: 8, flexShrink: 1 }}>
                           <PalIcon name={st.parents[1]} size={38}
                             gender={st.genderNote ? (mother === st.parents[1] ? 'f' : 'm') : undefined} />
@@ -851,7 +862,8 @@ export function PlannerScreen() {
                       {/* result — the hero line */}
                       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingLeft: 36 }}>
                         <Text style={{ color: T.accent, fontWeight: '800', fontSize: 18 }}>→</Text>
-                        <Pressable onPress={() => setViewing(st.child)} hitSlop={4}>
+                        <Pressable onPress={() => setViewing(st.child)} hitSlop={4}
+                          accessibilityLabel={`Open ${st.child}`}>
                           {/* the hero pops and bursts on hatch; goals get
                               one tier bigger a moment (self-found QoL) */}
                           <HeroPop burstKey={bursts[sid] ?? 0}>
