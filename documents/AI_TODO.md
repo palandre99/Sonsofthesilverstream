@@ -1860,6 +1860,26 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E59. CEO-FACING: A DEV SERVER HAS BEEN EATING 1.4 CORES FOR 29 HOURS 2026-08-16
+
+Ran the documented session-start process check (08_TOOLS_AND_COMMANDS.md §1)
+and it caught something. Measured, not guessed:
+
+- PID 27216, `expo start --dev-client --tunnel --clear` (this is what
+  START-APP.cmd launches), started 2026-08-15 17:25 — **29.4 hours old,
+  152,781 CPU-seconds burned = 42.4 CPU-hours = ~1.44 cores pinned
+  continuously**, 587 MB resident, plus 14 jest-worker children.
+- An idle Metro uses almost no CPU. This is the exact shape of the
+  2026-08-15 incident (three orphaned servers, ~7.5 cores, 11 hours).
+- **NOT killed by me.** It may be the server behind the CEO's live DEV app
+  right now, and stopping it would cut his live reload mid-test. Recovery is
+  one double-click of START-APP.cmd, which self-heals and takes over — so
+  this is his call, and it is in his report.
+- Also running and correctly left alone: PID 24680, `expo start --web --port
+  8085` + `scripts/qa-shot.js #map …` — the MAP LANE's active QA run.
+- My own QA servers (mobile 8086, web 5183) were stopped after use, as
+  required.
+
 ## E58. A DEAD NUMBER REMOVED, AND TWO EGG PALS FINALLY SURFACED 2026-08-16
 
 Swept every field in pals_1_0.json for ones that are the same for every
