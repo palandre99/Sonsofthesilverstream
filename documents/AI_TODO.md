@@ -1724,6 +1724,40 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E33. ODDS LAB EXERCISED END TO END 2026-08-16 (no CEO prompt — the lane)
+
+The last breeding tab without a full pass.
+
+- [x] MATHS CHECKED AGAINST THE ENGINE, correct. Base table renders the
+      published inheritance weights (40/24/12/10 perfect, 100/60/30/10 with
+      extras). With Swift + Legend wanted out of a 4-passive pool: all-wanted
+      25.0% (1 in 4.0), exactly-those-no-junk 2.0% (1 in 50), eggs for 90% =
+      9 — which is exactly ceil(ln0.1 / ln0.75). Slot cap works: at 4/4 the
+      parent's "+ Add" disappears. Pool de-duplication, junk count and the
+      "Legend is native to Paladius, Necromus, Frostallion" note all correct.
+- [x] "EGGS FOR 90%" WAS AMBIGUOUS (fixed). It sat directly under TWO
+      probabilities that differ TWELVEFOLD — "all 2 wanted" 25% and "exactly
+      those, no junk" 2% — and never said which one it counted. Read against
+      the wrong card it is off by 10x (9 eggs vs ~88). Now reads "Eggs for
+      90% of all 2 wanted", naming the hero card it derives from.
+      The IV mode's identical card was left ALONE on purpose: that mode shows
+      only one probability, so it cannot be misread.
+- [x] TWO MORE NAMELESS CONTROL GROUPS (fixed) — same class as E28, which I
+      had believed closed. The passive picker's rows were bare `<Pressable>`
+      with no role and no name, so "Add a passive" read as a blank list; and
+      every row in "The pool" was an unlabelled ☐/☑. Both now announce
+      themselves with their state in words ("Swift: wanted", "Ferocious: not
+      wanted", and when the slots are full "not wanted — all four slots are
+      taken"). The picker's search box is a RAW TextInput, so the shared
+      SearchInput fix in E32 did not reach it; named separately.
+- Layout checked at 375x812: nothing overflows the viewport.
+- [ ] **FOR THE PIPELINE, NOT TOUCHED HERE (verbatim game text is a
+      guarantee):** passives_1_0.json contains "SAN dreceases +15.0% faster"
+      under Demon's Hand — one "dreceases" against five correct "decreases"
+      elsewhere. This is either Palworld's own localisation typo, in which
+      case it MUST stay, or an extractor slip. Verify against the game files
+      before anyone "corrects" it.
+
 ## E32. PALDEX EXERCISED END TO END 2026-08-16 (no CEO prompt — the lane)
 
 The anchor tab (always the centre slot) had never had a full pass.

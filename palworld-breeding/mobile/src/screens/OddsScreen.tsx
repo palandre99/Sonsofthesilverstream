@@ -48,6 +48,7 @@ function PassivePickerModal({ visible, onClose, onPick, exclude }: {
         <TextInput
           value={q} onChangeText={setQ} placeholder="Search 114 passives…"
           placeholderTextColor={T.faint} autoCorrect={false} autoCapitalize="none"
+          accessibilityLabel="Search passives"
           style={[s.search, { marginBottom: 8 }]} />
         <FlatList
           data={matches}
@@ -55,6 +56,8 @@ function PassivePickerModal({ visible, onClose, onPick, exclude }: {
           keyboardShouldPersistTaps="handled"
           renderItem={({ item: p }) => (
             <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={`${p.name}. ${p.effects}`}
               onPress={() => { onPick(p.name); setQ(''); onClose(); }}
               style={({ pressed }) => [{
                 paddingVertical: 8, paddingHorizontal: 8, borderRadius: 10, gap: 2,
@@ -188,6 +191,12 @@ function PassivesTab() {
                 <Pressable
                   key={n}
                   disabled={capped}
+                  accessibilityRole="checkbox"
+                  accessibilityState={{ checked: on, disabled: capped }}
+                  // RN-web drops the state flags, and this row's whole
+                  // meaning IS its state, so it goes in the words too
+                  accessibilityLabel={`${n}: ${on ? 'wanted' : capped
+                    ? 'not wanted — all four slots are taken' : 'not wanted'}`}
                   onPress={() => setWant(on ? want.filter((x) => x !== n) : [...want, n])}
                   style={{
                     flexDirection: 'row', alignItems: 'center', gap: 8,
@@ -242,7 +251,7 @@ function PassivesTab() {
               big={pct(odds.allDesired)} sub={oneIn(odds.allDesired)} />
             <OddsCard label="Exactly those, no junk"
               big={pct(odds.exactlyDesired)} sub={oneIn(odds.exactlyDesired)} />
-            <OddsCard label="Eggs for 90%"
+            <OddsCard label={`Eggs for 90% of all ${desired.length} wanted`}
               big={isFinite(odds.eggsFor90) ? String(odds.eggsFor90) : '—'}
               sub={isFinite(odds.eggsFor90)
                 ? `${Math.ceil(odds.eggsFor90 / c.eggsPerCycle)} cycles on ${c.name}`
