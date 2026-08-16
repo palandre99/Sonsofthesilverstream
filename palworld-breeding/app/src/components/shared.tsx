@@ -107,7 +107,9 @@ export function LockBadge() {
         <rect x="1" y="5" width="8" height="6" rx="1.4" />
         <path d="M3 5V3.4a2 2 0 0 1 4 0V5" fill="none" stroke="currentColor" stroke-width="1.5" />
       </svg>
-      gender locked
+      {/* named the mechanic, not the consequence — the parents beside it
+          already show which must be ♀ and which ♂ (matches the phone) */}
+      only works with the genders shown
     </span>
   );
 }

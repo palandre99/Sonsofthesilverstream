@@ -694,10 +694,23 @@ export function PlanPage() {
                   </p>
                 )}
                 {covered.length > 0 && (
-                  <div class="kv" style={{ margin: '8px 0' }}>
-                    {covered.map((a) => (
-                      <span key={a.helper.name} class="badge ok">{a.helper.name} ✓</span>
-                    ))}
+                  <div style={{ margin: '8px 0' }}>
+                    {/* these ticked names had NO heading, directly under the
+                        cake ingredients — same fix as the phone */}
+                    <p style={{
+                      margin: '0 0 4px', fontSize: '10.5px', fontWeight: 800,
+                      letterSpacing: '0.8px', textTransform: 'uppercase',
+                      color: 'var(--faint)',
+                    }}>
+                      {covered.length === 1
+                        ? 'Speed-up you already have'
+                        : 'Speed-ups you already have'}
+                    </p>
+                    <div class="kv">
+                      {covered.map((a) => (
+                        <span key={a.helper.name} class="badge ok">{a.helper.name} ✓</span>
+                      ))}
+                    </div>
                   </div>
                 )}
                 {activeAdvice.map((a) => {
@@ -896,7 +909,11 @@ export function PlanPage() {
                           ? <span class="badge ok">✓ ready to breed</span>
                           : m.hint
                             ? <span class="badge warn">{m.hint}</span>
-                            : <span class="badge plain">waiting on {m.missing.join(' + ')}</span>)}
+                            // naming BOTH parents repeated the recipe shown
+                            // directly above it (same fix as the phone)
+                            : <span class="badge plain">{m.missing.length >= 2
+                              ? 'neither parent ready yet'
+                              : `waiting on ${m.missing[0]}`}</span>)}
                       </span>
                     </div>
                   );
