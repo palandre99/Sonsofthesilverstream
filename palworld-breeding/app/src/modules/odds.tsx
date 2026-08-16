@@ -166,6 +166,9 @@ function ParentPanel({ title, list, setList, other }: {
 
 /* ---------------- odds readout ---------------- */
 
+/** A pal has four passive slots — the game's own limit. */
+const SLOTS = 4;
+
 function OddsReadout({ poolSize, desiredCount, cake }: {
   poolSize: number; desiredCount: number; cake: CakeId;
 }) {
@@ -277,7 +280,7 @@ function PassivesTab() {
             {pool.map((n) => {
               const p = byName.get(n);
               const on = want.includes(n);
-              const capped = !on && desired.length >= 4;
+              const capped = !on && desired.length >= SLOTS;
               return (
                 <label key={n} class={`poolitem${on ? ' on' : ''}${capped ? ' capped' : ''}`}
                   title={capped ? 'A pal has four passive slots - wanting more than 4 is impossible' : undefined}>
@@ -294,14 +297,26 @@ function PassivesTab() {
           <p class="poolsum">
             Pool of <b>{pool.length}</b> · wanted <b>{desired.length}</b>
             {junk > 0 && <> · <span class="warnink">{junk} junk</span></>}
-            {desired.length >= 4 && <> · <span class="dim">4 is the slot cap</span></>}
+            {desired.length >= SLOTS && <> · <span class="dim">{SLOTS} is the slot cap</span></>}
           </p>
         )}
       </div>
 
       {warnings.map((w) => <div key={w} class="notebox">{w}</div>)}
 
-      {desired.length > 0 ? (
+      {/* The cap only blocks NEW ticks, so it can be walked around: tick four,
+          remove two of them from a parent (the cap releases), tick two more,
+          then put the first two back — six wanted, four slots. The maths is
+          then honestly 0%, but reads as "unlucky pairing" rather than "you
+          asked for the impossible". Say which it is. */}
+      {desired.length > SLOTS && (
+        <div class="notebox" style={{ marginTop: '14px' }}>
+          You have {desired.length} passives ticked, but a pal only ever holds
+          {' '}{SLOTS}. Untick {desired.length - SLOTS} of them to see real odds.
+        </div>
+      )}
+
+      {desired.length > 0 && desired.length <= SLOTS ? (
         <>
           <div class="searchbar" style={{ margin: '18px 0 4px' }}>
             <label class="dim" for="cakesel">Cake</label>

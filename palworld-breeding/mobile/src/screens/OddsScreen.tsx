@@ -108,6 +108,41 @@ const oddsSession = {
   cake: 'cake' as CakeId,
 };
 
+/** A pal has four passive slots — the game's own limit. */
+const SLOTS = 4;
+
+/** One parent's passive list. This lived INSIDE PassivesTab, which made it a
+ *  new component type on every render, so React unmounted and rebuilt both
+ *  cards every time anything changed. Harmless today (they hold no state of
+ *  their own) but exactly the trap that bites whoever adds some. */
+function ParentCard({ list, setList, label, onAdd }: {
+  list: string[]; setList: (v: string[]) => void; label: string; onAdd: () => void;
+}) {
+  return (
+    <Card style={{ flex: 1, padding: 12, gap: 8 }}>
+      <View style={s.row}>
+        <Text style={[s.h3, { flex: 1 }]}>{label}</Text>
+        <Text style={{ color: T.faint, fontSize: 11, fontWeight: '700' }}>{list.length}/{SLOTS}</Text>
+      </View>
+      <View style={s.wrap}>
+        {list.map((n) => (
+          <Text key={n}
+            accessibilityRole="button"
+            accessibilityLabel={`Remove ${n}`}
+            onPress={() => setList(list.filter((x) => x !== n))}
+            style={{
+              color: T.ink, backgroundColor: T.surface2, borderRadius: 9,
+              paddingHorizontal: 9, paddingVertical: 4, fontSize: 12, fontWeight: '700',
+              overflow: 'hidden',
+            }}>{n} ✕</Text>
+        ))}
+        {list.length === 0 && <Text style={{ color: T.faint, fontSize: 12 }}>No passives yet</Text>}
+      </View>
+      {list.length < SLOTS && <Btn small label="+ Add" onPress={onAdd} />}
+    </Card>
+  );
+}
+
 function PassivesTab() {
   const [a, setA] = useState<string[]>(oddsSession.a);
   const [b, setB] = useState<string[]>(oddsSession.b);
@@ -139,37 +174,13 @@ function PassivesTab() {
     return out;
   }, [pool, byName]);
 
-  const Parent = ({ list, setList, label, which }: {
-    list: string[]; setList: (v: string[]) => void; label: string; which: 'a' | 'b';
-  }) => (
-    <Card style={{ flex: 1, padding: 12, gap: 8 }}>
-      <View style={s.row}>
-        <Text style={[s.h3, { flex: 1 }]}>{label}</Text>
-        <Text style={{ color: T.faint, fontSize: 11, fontWeight: '700' }}>{list.length}/4</Text>
-      </View>
-      <View style={s.wrap}>
-        {list.map((n) => (
-          <Text key={n}
-            accessibilityRole="button"
-            accessibilityLabel={`Remove ${n}`}
-            onPress={() => setList(list.filter((x) => x !== n))}
-            style={{
-              color: T.ink, backgroundColor: T.surface2, borderRadius: 9,
-              paddingHorizontal: 9, paddingVertical: 4, fontSize: 12, fontWeight: '700',
-              overflow: 'hidden',
-            }}>{n} ✕</Text>
-        ))}
-        {list.length === 0 && <Text style={{ color: T.faint, fontSize: 12 }}>No passives yet</Text>}
-      </View>
-      {list.length < 4 && <Btn small label="+ Add" onPress={() => setPicking(which)} />}
-    </Card>
-  );
-
   return (
     <>
       <View style={{ flexDirection: 'row', gap: 10 }}>
-        <Parent list={a} setList={setA} label="Parent 1" which="a" />
-        <Parent list={b} setList={setB} label="Parent 2" which="b" />
+        <ParentCard list={a} setList={setA} label="Parent 1"
+          onAdd={() => setPicking('a')} />
+        <ParentCard list={b} setList={setB} label="Parent 2"
+          onAdd={() => setPicking('b')} />
       </View>
 
       <Card style={{ marginTop: 12 }}>
@@ -186,7 +197,7 @@ function PassivesTab() {
           <View style={{ marginTop: 10, gap: 6 }}>
             {pool.map((n) => {
               const on = want.includes(n);
-              const capped = !on && desired.length >= 4;
+              const capped = !on && desired.length >= SLOTS;
               return (
                 <Pressable
                   key={n}
@@ -218,7 +229,7 @@ function PassivesTab() {
             <Text style={[s.body, { fontSize: 12.5 }]}>
               Pool {pool.length} · wanted {desired.length}
               {junk > 0 ? ` · ${junk} junk` : ''}
-              {desired.length >= 4 ? ' · 4 is the slot cap' : ''}
+              {desired.length >= SLOTS ? ` · ${SLOTS} is the slot cap` : ''}
             </Text>
           </View>
         )}
@@ -230,7 +241,22 @@ function PassivesTab() {
         </Card>
       ))}
 
-      {odds && (
+      {/* The cap only blocks NEW ticks, so it can be walked around: tick four,
+          remove two of those passives from a parent (the cap releases), tick
+          two more, then put the first two back — now six are wanted and a pal
+          has four slots. The maths is then honestly 0%, but read as "this
+          pairing is unlucky" rather than "you asked for the impossible".
+          Say which it is. (self-found on a code read, 2026-08-16) */}
+      {desired.length > SLOTS && (
+        <Card style={{ backgroundColor: T.warnSoft, borderColor: T.warn, marginTop: 12 }}>
+          <Text style={[s.body, { color: T.warn }]}>
+            You have {desired.length} passives ticked, but a pal only ever holds
+            {' '}{SLOTS}. Untick {desired.length - SLOTS} of them to see real odds.
+          </Text>
+        </Card>
+      )}
+
+      {odds && desired.length <= SLOTS && (
         <>
           <View style={[s.wrap, { marginTop: 12 }]}>
             {CAKES.filter((k) => k.id !== 'special').map((k) => (
@@ -246,6 +272,13 @@ function PassivesTab() {
                 }}>{k.name}</Text>
             ))}
           </View>
+          {/* The website already said this; the phone just dropped Special
+              Cake from the list with no explanation, which looks like an
+              oversight rather than a principle. */}
+          <Text style={[s.body, { fontSize: 11.5, marginTop: 6, color: T.faint }]}>
+            Special Cake is not listed: its passive override has never been
+            datamined, and this app does not invent numbers.
+          </Text>
           <View style={[s.wrap, { marginTop: 10 }]}>
             <OddsCard hero label={`All ${desired.length} wanted`}
               big={pct(odds.allDesired)} sub={oneIn(odds.allDesired)} />
@@ -288,8 +321,8 @@ function PassivesTab() {
         onClose={() => setPicking(null)}
         exclude={new Set(picking === 'a' ? a : b)}
         onPick={(n) => {
-          if (picking === 'a' && a.length < 4) setA([...a, n]);
-          if (picking === 'b' && b.length < 4) setB([...b, n]);
+          if (picking === 'a' && a.length < SLOTS) setA([...a, n]);
+          if (picking === 'b' && b.length < SLOTS) setB([...b, n]);
         }}
       />
     </>

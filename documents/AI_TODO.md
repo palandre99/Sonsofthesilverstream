@@ -1724,6 +1724,38 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E36. ODDS LAB HOSTILE CODE READ 2026-08-16 (no CEO prompt — the lane)
+
+- [x] **THE FOUR-SLOT CAP COULD BE WALKED AROUND, AND THE RESULT LOOKED
+      LIKE BAD LUCK.** `desired = want ∩ pool`, but `want` is never pruned
+      when a passive leaves the pool, so the cap (`!on && desired.length >=
+      4`, which only blocks NEW ticks) releases and the stale ticks come
+      back. Reproduced ON DEVICE, all ordinary actions: tick four → remove
+      two from Parent 1 (cap releases, "Pool 2 · wanted 2") → add two to
+      Parent 2 and tick them (wanted 4, capped) → re-add the first two →
+      **"Pool 5 · wanted 5"**, and Swift returned ALREADY TICKED without
+      anyone ticking it.
+      The engine is fine: subsetContainsAll returns 0 when chosen(≤4) <
+      desired, so it is honestly 0% / 0% / "not reachable" — no NaN. But
+      the screen presented "impossible request" as "unlucky pairing".
+      Now: the odds cards are hidden and it says "You have 5 passives
+      ticked, but a pal only ever holds 4. Untick 1 of them to see real
+      odds." Verified the singular is right at exactly one over, and that
+      unticking restores the cards. **The website had the identical bug;
+      fixed there too.**
+- [x] `Parent` was a component DEFINED INSIDE PassivesTab's render, so it
+      was a new component type every render and React threw both parent
+      cards away and rebuilt them on every keystroke and every tick.
+      Harmless today (no state inside) but exactly the trap that bites
+      whoever adds some. Hoisted to module scope as `ParentCard`.
+- [x] The phone dropped Special Cake from the cake picker with NO
+      explanation — the website already said why. It now says the same:
+      "its passive override has never been datamined, and this app does
+      not invent numbers." Silent omission read as an oversight rather
+      than the principle it is.
+- [x] The bare `4` appeared in five places; it is the game's slot limit, so
+      it is now a named `SLOTS` constant in both trees.
+
 ## E34. REFERENCE TAB + WEB ODDS PARITY 2026-08-16 (no CEO prompt — the lane)
 
 The Reference tab was the last breeding surface without a full pass.
