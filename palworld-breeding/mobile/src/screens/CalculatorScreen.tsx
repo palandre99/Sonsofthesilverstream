@@ -183,6 +183,17 @@ function PairResult({ a, b }: { a: string; b: string }) {
                 {ch.genderNote} → {ch.species}. Swap the genders for the other child.
               </Text>
             )}
+            {/* The help card promises "the maths shown", and a generic or
+                gender-locked result explains itself above. A fixed recipe and
+                a same-species pair used to show a badge and nothing else — the
+                player was left to guess why the rank line had vanished. Both
+                sentences are confirmed claims in verification.json. */}
+            {ch.kind === 'unique' && (
+              <Text style={[s.body, { marginTop: 8 }]}>The game files give this pair a fixed recipe, so the rank formula is skipped.</Text>
+            )}
+            {ch.kind === 'self' && (
+              <Text style={[s.body, { marginTop: 8 }]}>Two of the same species always make that species — the rank formula is skipped.</Text>
+            )}
             {bothOwned && !canPairNow(a, b, ch.genderNote) && (
               <Text style={[s.body, { marginTop: 8, color: T.warn }]}>
                 ⚠ You have both species, but not a pair that can breed.{' '}

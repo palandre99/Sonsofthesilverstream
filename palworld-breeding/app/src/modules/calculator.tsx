@@ -66,6 +66,11 @@ function PairResult({ a, b }: { a: string; b: string }) {
             {ch.kind === 'gendered' && (
               <span class="mathnote">{ch.genderNote} → {ch.species}. Swap the genders for the other child.</span>
             )}
+            {/* A fixed recipe and a same-species pair used to show a badge and
+                nothing else, so the rank line simply vanished with no reason
+                given. Both sentences are confirmed claims in verification.json. */}
+            {ch.kind === 'unique' && <span class="mathnote">The game files give this pair a fixed recipe, so the rank formula is skipped.</span>}
+            {ch.kind === 'self' && <span class="mathnote">Two of the same species always make that species — the rank formula is skipped.</span>}
             {bothOwned && !canPairNow(a, b, ch.genderNote) && (
               <span class="mathnote" style={{ color: 'var(--warn)' }}>
                 ⚠ You have both species, but not a pair that can breed.{' '}

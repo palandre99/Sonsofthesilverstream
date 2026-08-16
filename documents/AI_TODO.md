@@ -2055,6 +2055,33 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E68. "WITH THE MATHS SHOWN" SHOWED NO MATHS FOR TWO KINDS OF RESULT 2026-08-16
+
+The Calculator's own help card promises "you get exactly what they make, with
+the maths shown". Four kinds of result exist. Two explained themselves; two
+showed a badge and nothing else.
+
+- [x] **A FIXED RECIPE (`kind: 'unique'`, 134 combos) and A SAME-SPECIES PAIR
+      (`kind: 'self'`, one for each of the 299 species) printed only an
+      uppercase badge.** The rank line the player had just been promised
+      simply vanished, with no reason given — and same-species is one of the
+      first things anyone tries. Both platforms now add one sentence:
+      "The game files give this pair a fixed recipe, so the rank formula is
+      skipped." / "Two of the same species always make that species — the
+      rank formula is skipped."
+- Both sentences are **confirmed claims in verification.json**, not my
+  wording of a mechanic: "Same species + same species always yields that
+  species" and "Unique-recipe children are excluded from the generic pool".
+- Verified on BOTH platforms with a real pairing: Grizzbolt + Mossanda shows
+  FIXED RECIPE plus the new line; Grizzbolt + Grizzbolt shows SAME SPECIES
+  plus its line. Phone doc scrollWidth 375, web body does not scroll.
+- **CHECKED, TRUE AND ALREADY GUARDED, no work needed:** the Odds pool's
+  "each listed once" — both trees build it as `[...new Set([...a, ...b])]`,
+  de-duplication is the CONFIRMED datamined mechanic ("drawing 1/2/3/4
+  passives from the parents' combined de-duplicated pool"), and
+  `odds-ui.test.tsx` already adds a duplicate to Parent 2 and asserts the
+  pool shows 2, not 3. That is the E67 pattern already in place.
+
 ## E67. THE PLAN'S "RUN THESE IN PARALLEL" PROMISE NOW HAS A GUARD 2026-08-16
 
 Turned the assertion method on COPY rather than data — the Calculator and
