@@ -966,7 +966,7 @@ session's; this worker touches only the map area (see AREA LOCKS).*
 - [x] K4 THE HINT COVERED THE MAP. It was a five-line explainer — a third of
       the screen. One line now, with an x, and dismissing it is permanent for
       the session. Eye-verified: two wrapped lines above the buttons.
-- [ ] K6 THE LEVEL FILTER IS DEAD CODE. `filters.level` is initialised to
+- [x] K6 DONE 2026-08-16 ~18:32 — THE LEVEL FILTER HAS A CONTROL AT LAST. `filters.level` is initialised to
       ALL_LEVELS, passed to spawnPoints and dungeonPoints on every render, and
       referenced by emptyReason — but NOTHING ever sets it. There is no
       control anywhere, so the range is permanently 1-80 and my "Nothing in
@@ -976,8 +976,18 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       every spawn already carries lo/hi. PLACEMENT: inside the Find sheet next
       to "Also show dungeon spawns" — NOT a new button on the map, which he
       has just told us is too cluttered.
-      NOT started: he has unlisted complaints (K5) and building an unrequested
-      feature ahead of his actual list is the wrong order.
+      BUILT after he replied "I can't chat now so u just work" to the question
+      about his unlisted issues — that is delegation, so I took the additive,
+      low-risk half and left the colour-by-group restyle alone, because that
+      changes how the whole map READS and he judges by looking.
+      Chips in the Find sheet: Any level · Up to 15 · 30 · 45 · 60. No new
+      button on the map, which he has just called cluttered.
+      Measured end to end: Penking (Lv 20-44) shows 129 spots at Any level and
+      nothing at Up to 15, where the map now says "Nothing at level 15 or
+      under - what you switched on only spawns above level 15 on this map."
+      That copy branch existed but was UNREACHABLE before today, and its old
+      wording ("between those levels") described a two-ended range the control
+      does not have; it names the cap now.
 - [ ] K7 ZOOM REACH TRADE, made unilaterally in K1 and he should know. Capping
       at one texture pixel per device pixel makes the map genuinely sharp but
       SHORTENS the reach: on a 3x phone max zoom went from 9.6x the opening

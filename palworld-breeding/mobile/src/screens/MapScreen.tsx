@@ -388,6 +388,11 @@ export function MapScreen() {
     });
   }, [active, region, vp.scale]);
 
+  const setLevelCap = useCallback((hi: number) => {
+    void Haptics.selectionAsync();
+    setFilters((f) => ({ ...f, level: { lo: 1, hi } }));
+  }, []);
+
   const togglePoi = useCallback((id: string) => {
     void Haptics.selectionAsync();
     setFilters((f) => {
@@ -728,6 +733,7 @@ export function MapScreen() {
           region={region}
           onToggle={togglePal}
           onTogglePoi={togglePoi}
+          onSetLevel={setLevelCap}
           onGoToPlace={(u, v) => {
             setSheet(null);
             canvas.current?.focus(u, v, 0.07);
@@ -791,6 +797,11 @@ function PlaceName({ name }: { name: string }) {
 
 const PIN = 23;
 
+/** the game's level cap — "Any level" is this, so no spawn is ever excluded */
+const ALL_LEVEL_CAP = 80;
+/** upper bounds a player actually thinks in, roughly the game's own pacing */
+const LEVEL_CAPS = [ALL_LEVEL_CAP, 15, 30, 45, 60];
+
 /**
  * Why the map is empty when the player HAS switched something on.
  *
@@ -813,10 +824,13 @@ function emptyReason(f: MapFilters, region: RegionId): { title: string; body: st
       };
     }
   }
-  if (f.level.lo > 1 || f.level.hi < 80) {
+  if (f.level.hi < ALL_LEVEL_CAP) {
+    // name the cap the player actually set, rather than "those levels" — the
+    // control is an upper bound, so the sentence should read like one
     return {
-      title: 'Nothing in that level range',
-      body: 'Nothing you have switched on spawns between those levels on this map.',
+      title: `Nothing at level ${f.level.hi} or under`,
+      body: `What you switched on only spawns above level ${f.level.hi} on this `
+        + 'map. Tap Any level to see all of it.',
     };
   }
   return {
@@ -1097,12 +1111,14 @@ function LayerSheet({ filters, onToggle, onClear, onClearFound, onClose }: {
 }
 
 function PalSheet({
-  filters, region, onToggle, onTogglePoi, onToggleDungeons, onGoToPlace, onClear, onClose,
+  filters, region, onToggle, onTogglePoi, onToggleDungeons, onSetLevel, onGoToPlace,
+  onClear, onClose,
 }: {
   filters: MapFilters; region: RegionId;
   onToggle: (name: string) => void;
   onTogglePoi: (id: string) => void;
   onToggleDungeons: () => void;
+  onSetLevel: (hi: number) => void;
   onGoToPlace: (u: number, v: number) => void;
   onClear: () => void; onClose: () => void;
 }) {
@@ -1177,6 +1193,37 @@ function PalSheet({
             Also show dungeon spawns
           </Text>
         </Pressable>
+        {/* "What can I actually catch at my level" — the map has known every
+            spawn's level band since the pipeline landed, and until now there
+            was no way to ask. An upper bound is the question players have:
+            a level 25 player wants to see what is at or under 25, and still
+            wants the low ones for breeding stock. */}
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
+          {LEVEL_CAPS.map((cap) => {
+            const on = filters.level.hi === cap;
+            return (
+              <Pressable
+                key={cap}
+                onPress={() => onSetLevel(cap)}
+                accessibilityRole="button"
+                accessibilityState={{ selected: on }}
+                accessibilityLabel={cap === ALL_LEVEL_CAP
+                  ? 'Any level' : `Only pals up to level ${cap}`}
+                style={{
+                  paddingHorizontal: 11, paddingVertical: 7, borderRadius: 10,
+                  borderWidth: 1, borderColor: on ? T.accent : T.line,
+                  backgroundColor: on ? T.accentSoft : T.surface,
+                }}
+              >
+                <Text style={{
+                  color: on ? T.accentInk : T.muted, fontWeight: '700', fontSize: 12,
+                }}>
+                  {cap === ALL_LEVEL_CAP ? 'Any level' : `Up to ${cap}`}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </View>
         <Pressable
           onPress={() => setFilterSheet(true)}
           accessibilityRole="button"

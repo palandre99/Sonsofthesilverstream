@@ -811,3 +811,36 @@ describe('deep zoom is sharp, seamless and stays put', () => {
     expect(canvas).toMatch(/pinching\.value = 0;/);
   });
 });
+
+/* The map has known every spawn's level band since the pipeline landed, and
+ * filters.level was plumbed all the way through spawnPoints — but NOTHING ever
+ * set it, so the range was permanently 1-80 and "what can I catch at my level"
+ * could not be asked. */
+describe('the level cap is reachable', () => {
+  const screen = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
+  );
+
+  it('has a control that actually writes the filter', () => {
+    expect(screen).toMatch(/const setLevelCap = useCallback/);
+    expect(screen).toMatch(/level: \{ lo: 1, hi \}/);
+    expect(screen).toMatch(/onPress=\{\(\) => onSetLevel\(cap\)\}/);
+  });
+
+  it('offers Any level plus real upper bounds', () => {
+    expect(screen).toMatch(/const LEVEL_CAPS = \[ALL_LEVEL_CAP, 15, 30, 45, 60\]/);
+    expect(screen).toMatch(/const ALL_LEVEL_CAP = 80/);
+  });
+
+  it('explains an empty map by naming the cap the player set', () => {
+    // "between those levels" described a two-ended range; the control is an
+    // upper bound, so the sentence has to read like one
+    expect(screen).not.toMatch(/spawns between those levels/);
+    expect(screen).toMatch(/Nothing at level \$\{f\.level\.hi\} or under/);
+  });
+
+  it('drives the same range the spawn lookup already took', () => {
+    // the filter was never the missing piece — only the control was
+    expect(screen).toMatch(/spawnPoints\(pal, region, filters\.time, filters\.level\)/);
+  });
+});
