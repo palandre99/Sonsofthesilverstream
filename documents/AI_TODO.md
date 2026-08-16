@@ -4736,3 +4736,44 @@ change nobody asked for.
   area to get their centres, then `click:x,y` in a second run. The default view
   is deterministic as long as you do not switch regions, so the coordinates
   reproduce. Tower boss (9 pins) is the easiest layer to hit.
+
+### L44 — the four proofs re-run, all still green
+`tools/verify_map_dungeon_split.py`: dungeon-flagged spawns median 0 uu to the
+nearest entrance (78.0% within 2,000); field 22,869 uu (0.2% within). 157
+entrances, 64,671 wild spawns.
+`tools/verify_map_poi_placement.py`: texture is 84.4% water; layers land
+1.0-23.3% (red_berries 1.0, coal 2.5, mushrooms 2.2 at the dry end; pal_effigy
+23.3, paldium 22.9 at the wet end). Habitat signal intact: Water pals 25.2% in
+water vs Grass 4.6%. Both scripts FAIL on regression; both passed unchanged.
+
+### L45 — the WEBSITE's legend was hiding entries at phone width — FIXED (c12ace1), NOT LIVE
+The site had only ever been looked at on a desktop. At 375px wide with all 23
+layers on, the key — anchored to the BOTTOM of a 62vh stage — grew to 583px
+inside a 503px stage, and the stage's `overflow:hidden` clipped its top 91px.
+FOUR entries gone, nothing to scroll, no hint they existed. Because it grows
+upward, the lost ones were the TOP of the list: the first was **Chest, 1,572
+points, the largest layer on the map**.
+FIX (app.css `.maplegend`): `max-height: calc(100% - 20px); overflow-y: auto;
+overscroll-behavior: contain;`. After: 481px inside 503px, nothing above the
+stage, Chest visible, scrolling reaches Mushrooms at the bottom.
+DESKTOP UNAFFECTED — stage is 804px there, the cap never engages, no scrollbar,
+key still covers 17% of the map. Verified at 1280x900.
+THE PHONE DOES NOT HAVE THIS BUG, checked not assumed: its map is FULLSCREEN,
+so the same 23 rows measure 635px inside 812 with nothing cut. L33's "the
+legend cannot overflow" holds for mobile only, and now says why.
+Web-only + CSS-only, so NO OTA; reaches him on a main push (his call).
+Side-benefit: with 23 POI layers on, every pin is round and L31's footnote
+correctly does not appear — the conditional works on the web too.
+
+### L46 — HARNESS: the website at phone width
+Port 5183 may be held by ANOTHER session's hatchlab server — do not stop it,
+just `preview_start {url:'http://localhost:5183/#/map'}` and use the tab; the
+repo is shared so it already serves your committed changes.
+`resize_window {preset:'mobile'}` then RELOAD. Beware: `preset:'desktop'`
+resets to the pane's NATIVE size, which here is only 360px — pass explicit
+`width:1280, height:900` for a real desktop check.
+Screenshots FAIL when the Browser pane is not displayed ("not compositing
+frames"), but `javascript_tool` still measures fine — for responsive work,
+getBoundingClientRect vs the container IS the evidence. Check ALL FOUR
+directions: I first tested only right/bottom overflow and missed a
+bottom-anchored element spilling off the TOP.
