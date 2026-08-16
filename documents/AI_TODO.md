@@ -2075,6 +2075,41 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E82. THE ODDS LAB'S LAST UNSWEPT COPY — CLEAN, AND ALREADY GUARDED
+## 2026-08-17. THE COPY AUDIT IS NOW COMPLETE. 2026-08-17
+
+The IV tab and cake tab were the last user-visible sentences never checked on
+either platform. Both hold.
+
+- **"one category half the time, two a third of the time, all three one time
+  in six"** — `GameSettings.TalentInheritNum = {1:3, 2:2, 3:1}`, which
+  normalises to **exactly 0.5 / 0.3333 / 0.1667**. The sentence is the
+  datamined distribution stated in words, not a rounding.
+- **"each inherited category picks mother or father on a coin flip"** — part
+  of the same **confirmed** claim in verification.json, corroborated by the
+  community's 30/30/40-per-stat model. The engine uses `Math.pow(0.5, n)`,
+  which matches.
+- **ALREADY GUARDED, no test needed:** `odds.test.ts` asserts
+  `[0.5, 0.3333, 0.1667]` outright, and pins the coin flip via
+  `ivOdds(1).fromChosenParent === (5/9) * 0.5`. The sentence cannot drift
+  from the weights without a red test.
+- **"Mushroom and Extravagant Vegetable Cake help; their exact bonus was
+  never published"** — correct, and exactly the CLAUDE.md rule that the
+  Mushroom Cake IV bonus stays unmodelled. Cake numbers also carry their
+  "community-measured — treat percentages as ≈" label.
+- **"The mutation-only passives … exist nowhere else"** — TESTED: the 5
+  flagged passives (Babysitter, Heavily Armored, Idiosyncratic, Immortality,
+  Skymarcher) have **`exclusive_to: []` and no `native_pals`**, so nothing
+  else carries them; and **all 5 have `breedable_known: true`**, which backs
+  "once a pal carries one, it breeds down like any other passive". Count
+  matches the confirmed "five mutation-exclusive passives" claim.
+
+**MILESTONE — EVERY USER-VISIBLE SENTENCE IN THE BREEDING FANE HAS NOW BEEN
+CHECKED AGAINST THE DATA, ON BOTH PLATFORMS.** Calculator, Plan, Odds Lab
+(passives/IV/cakes), Paldex, Reference, About/Settings, the pal card. The
+audit that started at E52 is complete; what remains is the E75 engine defect
+and the parked items.
+
 ## E81. THE WHOLE WEB APP IS FREE OF BAD MARKUP, AND THE TWO SCREENS THAT
 ## ANSWER "CAN I GET IT?" AGREE EXACTLY 2026-08-17
 
