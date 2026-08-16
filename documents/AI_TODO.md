@@ -730,6 +730,17 @@ below ships on BOTH platforms.*
       smarter engine iterations). E2 and all other tabs wait.
 
 ### E13 polish-lane findings (hostile deep-eval passes, ongoing)
+- [x] 2026-08-16 ~09:05 FULL-TAB HOSTILE PASS (every state, every line of
+      copy): zero new defects — the eight shipped fixes interlock on one
+      screen (checklist agrees with the plan and the advice card; late
+      Braloha honest while Phase-2 Caprity keeps pull-forward advice;
+      gender-luck line's math checks by hand; exactly one helper-branch
+      badge per phase, skipping DONE steps correctly; tray folds; stamp
+      in player words). RECOMMENDED verified on BOTH surfaces: advice
+      card (Dynamoff, +2 steps vs 20) and scored browsers (Suzaku Aqua —
+      near-best Watering within reach). Considered + rejected: sinking
+      ticked steps to the bottom of their phase (cards would jump under
+      the player's finger mid-tick; stability wins).
 - [x] 2026-08-15 ~23:10 CHECKLIST vs PLAN DISAGREEMENT (found + fixed
       same pass): the cake checklist said "Berries: NEED Caprity" while
       Caprity was a goal of the very plan on screen. It now sees
