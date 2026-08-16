@@ -46,17 +46,22 @@ export function MapPage() {
 
   /* -------------------------------------------------------------- sizing */
 
+  // Until the player pans or zooms, re-fit on every resize. Locking the fit in
+  // on the FIRST measurement is what letterboxed the map: the observer fires
+  // before the grid has settled, so the map framed itself to a box that no
+  // longer existed a frame later.
+  const touched = useRef(false);
+
   useEffect(() => {
     const el = wrap.current;
     if (!el) return;
     const measure = () => {
       const r = el.getBoundingClientRect();
+      if (!r.width || !r.height) return;
       setSize({ w: r.width, h: r.height });
-      setView((v) => (v.k === 0
-        ? { k: Math.max(r.width, r.height),
-            tx: (r.width - Math.max(r.width, r.height)) / 2,
-            ty: (r.height - Math.max(r.width, r.height)) / 2 }
-        : v));
+      if (touched.current) return;
+      const cover = Math.max(r.width, r.height);
+      setView({ k: cover, tx: (r.width - cover) / 2, ty: (r.height - cover) / 2 });
     };
     measure();
     const ro = new ResizeObserver(measure);
@@ -76,6 +81,7 @@ export function MapPage() {
 
   const onPointerDown = (e: PointerEvent) => {
     (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    touched.current = true;
     drag.current = { x: e.clientX, y: e.clientY, tx: view.tx, ty: view.ty };
   };
   const onPointerMove = (e: PointerEvent) => {
@@ -95,6 +101,7 @@ export function MapPage() {
 
   const onWheel = (e: WheelEvent) => {
     e.preventDefault();
+    touched.current = true;
     const r = (e.currentTarget as HTMLElement).getBoundingClientRect();
     const fx = e.clientX - r.left;
     const fy = e.clientY - r.top;
@@ -275,7 +282,17 @@ export function MapPage() {
             {picked.lines.map((l) => <em key={l}>{l}</em>)}
           </div>
         )}
-        {shown > 0 && <div class="mapcount">{shown.toLocaleString()} spots on the map</div>}
+        {shown > 0 && (
+          <div class="maplegend">
+            {active.map((l) => (
+              <span key={l.key}>
+                <i class={l.square ? 'sq' : ''} style={{ borderColor: l.colour }} />
+                {l.label}<b>{(l.set?.n ?? 0).toLocaleString()}</b>
+              </span>
+            ))}
+            <em>Round pins are out in the world · square pins are inside dungeons</em>
+          </div>
+        )}
       </div>
 
       <aside class="mapside">

@@ -365,9 +365,14 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       modules, so the two platforms cannot drift. Drag to pan, wheel to zoom.
       Eye-verified at 1280x860. NOT deployed: Pages needs a push to main,
       which is the CEO's call.
-- [ ] F32 Web map polish: opens letterboxed (dead space below the map) where
-      the phone opens at cover; pal list is capped at 60 with a 260px scroll
-      box; no legend yet; no place-name labels yet.
+- [x] F32a DONE 2026-08-16 ~12:05: web map no longer opens letterboxed. Cause
+      was a real race — the fit was locked in on the FIRST ResizeObserver
+      callback, which fires before the grid settles, so the map framed itself
+      to a box that no longer existed a frame later. Now it re-fits on every
+      resize until the player first pans or zooms. Legend added, matching the
+      phone (swatch shape carries surface-vs-dungeon).
+- [ ] F32b Web map still lacks place-name labels, and its pal list is capped
+      at 60 inside a 260px scroll box — fine for search, poor for browsing.
 - [ ] F11 Rebuild `ui/PalMap.tsx` + `ui/MapViewer.tsx` on the new engine and
       DELETE the region-label dots — this closes the CEO's ~12:25 "MAP
       OVERHAUL" item and the "Where to find it must be a real MAP" item.
