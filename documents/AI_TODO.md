@@ -360,6 +360,16 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       relative to ours before rotating anything — a wrong guess moves every
       pin and label with it.
 
+- [ ] G4 (found in the CEO's own screenshot, not reported by him) the place
+      names render JAGGED on device — "Foot of the Astral Mountains" is visibly
+      rough. Almost certainly because labels live INSIDE the scaled container
+      and are counter-scaled: iOS rasterises the text at its pre-scale size and
+      the container then magnifies that bitmap. Pins are round so it does not
+      show on them; text is unforgiving. Proper fix is a screen-space overlay
+      outside the transform, driven by the same viewport. Cannot be seen in the
+      browser — react-native-web composites differently — so it needs a device
+      check after the change.
+
 ### Open — the map lane's own queue
 - [x] F23 DONE 2026-08-16 ~00:02: the preview's dense clusters were an
       unreadable scribble — 93 overlapping rings in one bay. Now thinned to one

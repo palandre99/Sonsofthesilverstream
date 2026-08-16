@@ -324,7 +324,7 @@ export function MapScreen() {
         <Pressable
           onPress={() => canvas.current?.reset()}
           accessibilityRole="button"
-          accessibilityLabel="Fit the whole map on screen"
+          accessibilityLabel="Back to the whole map"
           style={{
             padding: 9, borderRadius: 11, borderWidth: 1, borderColor: T.line,
             backgroundColor: 'rgba(12,22,24,0.82)',
