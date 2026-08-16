@@ -824,6 +824,30 @@ perf re-architecture" is explicitly parked for Fable. Ledgered with hard
 numbers so it is nearly mechanical to execute.
 
 ### E13 polish-lane findings (hostile deep-eval passes, ongoing)
+- [x] 2026-08-16 ~14:45 "REMOVE ALL" WHILE A PLAN IS RUNNING — walked with
+      a genuinely running plan (2 steps, 1/2 done, a hatched pal in the
+      box) and 2 draft goals. Pressed Remove all → confirmed. Result
+      matches the promise word for word: goal chips cleared, the plan
+      survived, the 1/2 progress survived, the tick-registered pal stayed
+      in the Paldex. Copy verified: "Empties your goal list so you can
+      pick fresh. Your current plan and its progress stay until you press
+      Plan again." Nothing to fix.
+      (Bonus: the replace-plan confirm fired correctly again on the way
+      in, when re-planning with different goals over unfinished progress.)
+- [~] 2026-08-16 ~14:50 83-MOUNT BROWSER — PARTLY measured, and the part
+      that matters most is NOT yet proven. Do not treat as done:
+      * PROVEN: the browser virtualises. With 83 mounts it renders 10
+        rows, not 83 — so the big categories do not build every heavy row
+        up front. Opening the category cost one 224 ms block (RN-web dev).
+      * NOT PROVEN — scroll smoothness. I drove the list by setting
+        scrollTop and dispatching a synthetic 'scroll' event; RN-web's
+        FlatList reads real scroll metrics, so virtualisation never
+        advanced (rows stayed at 10, content height never grew) and the
+        "zero long tasks" reading is MEANINGLESS for this question.
+        A synthetic scroll is not a valid probe for RN-web list perf.
+      → Route to the ON-DEVICE verification pass (already open in NOW):
+        scroll the 83-mount browser with a real thumb and watch for jank
+        as rows materialise. That is the only honest way to answer it.
 - [x] 2026-08-16 ~14:00 **PERF BUG in my own Phase-4 work, MEASURED not
       guessed**: opening Suggested goals froze the thread for ~1.2 s and
       the "Reading your save…" placeholder only painted AFTER the freeze
