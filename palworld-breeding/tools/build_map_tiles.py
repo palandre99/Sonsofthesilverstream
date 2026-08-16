@@ -37,6 +37,32 @@ FLAT_TOLERANCE = 3.2  # a tile this uniform is indistinguishable from its parent
 
 REGIONS = {"palpagos": "palpagos.webp", "tree": "worldtree.webp"}
 
+# The game draws its map with a noticeably brighter teal sea than the raw
+# texture has (CEO, comparing against an in-game screenshot). We lift the WATER
+# only, using the same ocean classifier the projection proof uses, so the land
+# keeps the exact colours the game shipped. Done at bake time: no runtime cost,
+# no blend-mode support to depend on, and the result is inspectable as a file.
+SEA_LIFT = 0.30           # how far towards SEA_TINT an ocean pixel moves
+SEA_TINT = (46, 138, 152)  # the teal the in-game sea reads as
+
+
+def lift_ocean(img: Image.Image) -> Image.Image:
+    a = np.asarray(img.convert("RGB")).astype(np.float32)
+    r, g, b = a[..., 0], a[..., 1], a[..., 2]
+    # Ocean runs blue > green > red. The volcanic rock is blue > RED > green,
+    # and the looser mask used for the projection proof caught it — Mount
+    # Obsidian came out steel-blue. Requiring green above red excludes every
+    # purple and ash tone while still catching the whole sea gradient.
+    sea = (b > g + 4) & (g > r + 6) & (r < 150)
+    # feather the mask so coastlines do not gain a hard edge
+    m = sea.astype(np.float32)
+    m = (m + np.roll(m, 1, 0) + np.roll(m, -1, 0)
+         + np.roll(m, 1, 1) + np.roll(m, -1, 1)) / 5.0
+    m = (m * SEA_LIFT)[..., None]
+    tint = np.array(SEA_TINT, dtype=np.float32)
+    out = a * (1 - m) + tint * m
+    return Image.fromarray(np.clip(out, 0, 255).astype(np.uint8))
+
 
 def is_flat(tile: Image.Image) -> bool:
     """True when the tile carries no detail worth its own file (open ocean)."""
@@ -45,7 +71,7 @@ def is_flat(tile: Image.Image) -> bool:
 
 
 def build_region(region: str, src_name: str) -> dict:
-    src = Image.open(CACHE / src_name).convert("RGB")
+    src = lift_ocean(Image.open(CACHE / src_name).convert("RGB"))
     if src.size[0] != src.size[1]:
         raise SystemExit(f"{region}: expected a square texture, got {src.size}")
 

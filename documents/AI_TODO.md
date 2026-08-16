@@ -414,7 +414,15 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       not have yet. The identical bug the web map had. It now re-fits on every
       layout until the player first pans or zooms. Map fills the screen.
 - [x] G10 Web parity for the game symbols — the website's markers use them too.
-- [ ] G7b The game's ocean is a brighter teal than our raw texture and it draws
+- [x] G7b DONE 2026-08-16 ~13:10: the sea now reads the brighter teal the game
+      shows. Baked into the tiles rather than tinted at runtime — no per-frame
+      cost, no blend-mode support to depend on, and the result is a file you
+      can look at. WATER ONLY: land keeps the exact colours the game shipped.
+      Took two passes — the first used the loose ocean mask from the projection
+      proof and turned Mount Obsidian steel-blue. Ocean runs blue>green>red
+      while the volcanic rock is blue>red>green, so requiring green above red
+      excludes every purple and ash tone. Eye-verified both times.
+- [x] G7b-note superseded: The game's ocean is a brighter teal than our raw texture and it draws
       a framed panel with corner brackets. Consider a light tint + frame to
       match the in-game feel.
 
