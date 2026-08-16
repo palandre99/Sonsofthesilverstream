@@ -43,16 +43,24 @@ cd palworld-breeding/mobile && npx tsc --noEmit    # native typecheck, must be 0
 
 Last verified 2026-08-16: **278/278 passing**, mobile typecheck **clean**.
 
-Tests live in `app/tests/`:
+Tests live in `app/tests/` — **18 files** as of 2026-08-16:
 
 | File | Covers |
 |---|---|
 | `oracle.test.ts` | the 44,851-row replay — the one that matters |
-| `odds.test.ts` | passive/IV probability model |
+| `engine-parity.test.ts`, `logic-parity.test.ts` | the app/ and mobile/ copies of `src/engine/` and `src/logic/` are byte-identical |
+| `odds.test.ts`, `economics.test.ts`, `ticks.test.ts` | the probability and cost models |
+| `unlock.test.ts`, `recommend.test.ts`, `goals.test.ts`, `genderGap.test.ts` | the shared advice logic |
+| `helpers.test.ts`, `helpers-advice.test.ts`, `meta.test.ts` | helper + provenance layers |
+| `map.test.ts`, `mapGesture.test.ts` | map data bounds and the pinch/pan maths (map lane) |
 | `odds-ui.test.tsx`, `paldex-ui.test.tsx`, `plan-ui.test.tsx` | UI behaviour |
 
-There is **no mobile test harness yet** — it is in `AI_TODO.md`. Mobile is
-covered only by `tsc` plus eyes-on verification.
+**Mobile has no test harness of its own, and that is a decision, not a gap**
+(reconciled 2026-08-15 21:50, `AI_TODO.md`): the parity gates above prove the
+mobile copies of the engine and the shared logic are byte-identical to the
+tested ones, so identical bytes ⇒ identical behaviour. Everything mobile
+outside those two folders — screens, store, UI — is covered only by `tsc`
+plus eyes-on verification in the browser render.
 
 ## Running the app
 
