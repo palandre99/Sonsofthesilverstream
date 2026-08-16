@@ -1328,6 +1328,25 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       The 22% of flagged spawns further than 2,000 uu are not evidence against
       it — some caves plainly have no entrance in the POI list — but they are
       why the check is a median and a percentage rather than a hard "all".
+- [x] L21 2026-08-17 ~00:30 WATER PALS SPAWN IN WATER, GRASS PALS INLAND — a
+      third check, and the sharpest of the three, because it tests something
+      the other two cannot. L18 proved points land on LAND; this proves the
+      RIGHT pals land in the right places, which also exercises the
+      species-to-points mapping: shuffle the species and points would still be
+      on land, but this correlation would flatten to a line.
+      Every open-world Palpagos spawn, grouped by the pal's primary element:
+        Water 25.2 · Ice 20.8 · Dragon 15.9 · Fire 9.2 · Neutral 8.8 ·
+        Dark 8.5 · Electric 8.4 · Ground 5.4 · Grass 4.6
+      Water pals are 5.5x more likely to be in water than Grass pals, and every
+      element is far below the 84.4% random placement would score. Dungeon
+      spawns excluded — a cave mouth says nothing about habitat.
+      Folded into tools/verify_map_poi_placement.py, which now fails if Water
+      ever falls within 2x of Grass. Claim in verification.json.
+      MY OWN RULE, BROKEN AGAIN: patched the script through a shell heredoc and
+      the 
+ escapes turned into real newlines, breaking two string literals —
+      the THIRD time today. The trap list already says to use the editor for
+      multi-line changes. Fixed with the editor.
 - [ ] K5 "also many other issues" — HE HAS MORE AND HAS NOT LISTED THEM. Ask,
       or keep walking journeys until they surface. Do not guess at what he
       means and do not claim the map is finished.

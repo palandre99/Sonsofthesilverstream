@@ -368,6 +368,16 @@
     "Nifrendil/pal-atlas pois.json dungeon layer (157 entrances; the check)",
     "Awy64/palworld-atlas-data palpagos_spawns.json build 24575149"
    ]
+  },
+  {
+   "claim": "Water pals spawn in water and Grass pals inland - so the species-to-location mapping is right, not just the projection.",
+   "verdict": "verified",
+   "evidence": "Sampling every open-world spawn point on Palpagos against the game texture's own water classifier, grouped by the pal's primary element, gives an ordering only correct data can produce: Water 25.2%, Ice 20.8%, Dragon 15.9%, Fire 9.2%, Neutral 8.8%, Dark 8.5%, Electric 8.4%, Ground 5.4%, Grass 4.6%. Water pals are 5.5x more likely to be found in water than Grass pals, and every element sits far below the 84.4% a random placement would score. This tests something the land check does not: if the species-to-points mapping were shuffled, points would still land on land but the per-element correlation would collapse to a flat line. Dungeon spawns are excluded because a cave mouth says nothing about a pal's habitat. Re-runnable in tools/verify_map_poi_placement.py, which fails if Water ever drops to within 2x of Grass.",
+   "sources": [
+    "tools/verify_map_poi_placement.py species_habitat()",
+    "mobile/src/data/mapSpawns.g.ts (Awy64/palworld-atlas-data build 24575149)",
+    "data/pals_1_0.json element table"
+   ]
   }
  ]
 }

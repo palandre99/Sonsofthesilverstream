@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Second, independent check that the map projection puts markers where they belong.
+"""Do the map's markers AND spawns land on the right kind of ground?
 
 tools/verify_map_projection.py settled the WORLD->IMAGE transform against 58,504
 spawn points. This checks the other half of the dataset — the 11,097 points of
@@ -83,10 +83,63 @@ def main() -> None:
     print(f"\nthe texture itself is {baseline:.1f}% water — that is what random")
     print("placement would score, and every layer is far below it")
 
+    failures += species_habitat(sea)
+
     if failures:
         raise SystemExit("PLACEMENT REGRESSED:\n  " + "\n  ".join(failures))
     print("\nOK: things that grow on land are on land")
 
+
+
+def species_habitat(sea) -> list[str]:
+    """Do WATER pals spawn in water and GRASS pals inland?
+
+    A third, sharper signal. The land check above proves points land on land;
+    this proves the RIGHT pals land in the right places, which also tests the
+    species-to-points mapping. Shuffle the species and this correlation dies.
+    """
+    import json
+    h, w = sea.shape
+    pals = json.loads((ROOT / "data" / "pals_1_0.json").read_text(encoding="utf-8"))["pals"]
+    src = (ROOT / "mobile" / "src" / "data" / "mapSpawns.g.ts").read_text(encoding="utf-8")
+    tally: dict[str, list[int]] = {}
+    entry = re.compile(r'"([^"]+)": \[(.*?)\n  \],', re.S)
+    for name, body in entry.findall(src):
+        elements = (pals.get(name) or {}).get("elements") or ["?"]
+        # open-world only: a dungeon spawn sits at a cave mouth, which tells
+        # you nothing about the pal's habitat
+        for m, pts_b64 in re.findall(
+            r"\{ m: (\d), lo: \d+, hi: \d+, night: \w+, dun: false, n: \d+, pts: '([^']*)'",
+            body,
+        ):
+            if m != "0":
+                continue
+            pts = base64.b64decode(pts_b64)
+            row = tally.setdefault(elements[0], [0, 0])
+            for i in range(len(pts) // 4):
+                u = int.from_bytes(pts[i * 4:i * 4 + 2], "little") / 65535
+                v = int.from_bytes(pts[i * 4 + 2:i * 4 + 4], "little") / 65535
+                row[0] += 1
+                if sea[min(h - 1, int(v * (h - 1))), min(w - 1, int(u * (w - 1)))]:
+                    row[1] += 1
+
+    print()
+    print(f"{'element':<12}{'spawns':>8}{'in water':>10}")
+    rates = {}
+    for el, (total, wet) in sorted(tally.items(), key=lambda kv: -kv[1][1] / max(1, kv[1][0])):
+        if total < 200:
+            continue
+        rates[el] = 100.0 * wet / total
+        print(f"{el:<12}{total:>8}{rates[el]:>9.1f}%")
+
+    problems = []
+    if "Water" in rates and "Grass" in rates and rates["Water"] <= rates["Grass"] * 2:
+        problems.append(
+            f"Water pals are {rates['Water']:.1f}% in water and Grass {rates['Grass']:.1f}%"
+            " - the habitat signal has collapsed, which is what a shuffled"
+            " species mapping looks like"
+        )
+    return problems
 
 if __name__ == "__main__":
     main()
