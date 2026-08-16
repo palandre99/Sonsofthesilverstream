@@ -1086,6 +1086,43 @@ earlier. He is right and the proof is in his own list: it lumped CHIKIPI
       advice, clicking Chikipi lands on "Chikipi · Paldex · Palforge" with
       the card open, own error recorder saw none. NOT DEPLOYED — pushing
       the website to main needs the CEO's go-ahead.
+- [x] E16f PLAN TAB AT REAL SAVE SIZE — MEASURED, and it found a 537 ms
+      FREEZE. Shipped + published (code landed in 44edc68, see incident
+      note below).
+      **First finding, which overturned the fear:** a HUGE box is not
+      slower, it is FASTER. Node probe over real data (throwaway, deleted):
+        box=20  derivations 191ms  planFor 1ms  advisor 98ms  86 steps 36 stuck
+        box=150 derivations 216ms  planFor 0ms  advisor 50ms  52 steps  7 stuck
+        box=250 derivations 159ms  planFor 0ms  advisor 36ms  15 steps  0 stuck
+      More owned pals -> fewer stuck goals -> less to work out. planFor
+      itself is free; derivations is the cost, and it is already cached.
+      **Second finding, the real bug:** the advisor ran in a `useMemo`
+      DURING RENDER. Screens remount on every tab switch (Boundary key in
+      App.tsx), so the memo was thrown away and recomputed EVERY SINGLE
+      VISIT to the Plan tab. Measured on the QA harness with 20 stuck
+      goals: one **537 ms long task**, thread blocked, on every visit.
+      Straight through the "no frozen JS thread" bar in CLAUDE.md.
+      **FIX:** module-level `unlockCache` keyed on (stuck list # owned
+      names # level) so it survives remounts — the same pattern OddsScreen
+      already uses — plus a one-frame defer so the tab paints first and the
+      advice fills in behind "Working out your options…".
+      **MEASURED AFTER:** 1st visit 110 / 376 / 86 ms (the 376 is now the
+      advisor, AFTER paint, not blocking it). 2nd visit: advisor cost GONE
+      — 17 rows render instantly from cache.
+      **STILL OPEN, NOT MINE TO FIX NOW:** ~255 ms of screen-mount cost
+      remains on every Plan visit even with the advice cached. That is NOT
+      the advisor — it is the existing derivations/helper work, i.e. the
+      perf re-architecture already parked for Fable. Do not attribute it to
+      the unlock feature.
+- [!] CROSS-LANE INCIDENT #2 (2026-08-16): commit 44edc68 "Found-tracking on
+      the website, and a way to clear it on both" (Map lane) again swept up
+      my in-flight PlannerScreen.tsx — this time the perf fix above. Same as
+      68b148c earlier. Work is SAFE and verified in HEAD (checked all five
+      pieces of the fix are present, and the gates I ran were against
+      exactly that content), but the history credits a Map commit for a Plan
+      perf fix. The Map lane noticed independently and recorded it in
+      aa2b78c. STANDING RULE FOR BOTH LANES: `git add <explicit paths>`,
+      never `-A`, never `.`.
 - [x] E16e SHELL A11Y — SELF-FOUND, SHIPPED AND PUBLISHED (commit f354a76).
       Found while driving the QA harness for E16b: the bottom tab bar had
       `accessibilityRole="tab"` + state but NO label, and the visible Text
