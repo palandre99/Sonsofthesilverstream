@@ -163,6 +163,80 @@ describe('a whole gesture never leaves the map somewhere impossible', () => {
   });
 });
 
+describe('the map at its extreme edges', () => {
+  /** zoom all the way in about a point, then shove the map as far as it goes */
+  const driveTo = (focalX: number, focalY: number, dx: number, dy: number) => {
+    const zoomed = pinchStep({
+      startK: FLOOR, startTx: opened.tx, startTy: opened.ty,
+      focalX0: focalX, focalY0: focalY, focalX, focalY,
+      scale: 999, minK: FLOOR, maxK: CEIL, w: W, h: H,
+    });
+    const p = panStep({
+      startTx: zoomed.tx, startTy: zoomed.ty, dx, dy, k: zoomed.k, w: W, h: H,
+    });
+    return { k: zoomed.k, tx: p.tx, ty: p.ty };
+  };
+
+  it('pins the top-left corner exactly, with nothing beside it', () => {
+    const v = driveTo(0, 0, 5000, 5000);
+    expect(v.k).toBe(CEIL);
+    expect(v.tx).toBe(0);
+    expect(v.ty).toBe(0);
+  });
+
+  it('pins the bottom-right corner exactly', () => {
+    const v = driveTo(W, H, -5000, -5000);
+    expect(v.k).toBe(CEIL);
+    expect(v.tx).toBeCloseTo(W - v.k, 6);
+    expect(v.ty).toBeCloseTo(H - v.k, 6);
+  });
+
+  it('never resolves a tap to a point off the map, in any corner', () => {
+    // A tap at the very edge of the screen while hard against a corner is the
+    // case most likely to land outside [0,1] through accumulated float error,
+    // and a uv outside the map would query a pixel that does not exist.
+    const corners: [number, number, number, number][] = [
+      [0, 0, 5000, 5000],
+      [W, 0, -5000, 5000],
+      [0, H, 5000, -5000],
+      [W, H, -5000, -5000],
+    ];
+    for (const [fx, fy, dx, dy] of corners) {
+      const v = driveTo(fx, fy, dx, dy);
+      for (const [x, y] of [[0, 0], [W, 0], [0, H], [W, H], [W / 2, H / 2]]) {
+        const { u, v: vv } = screenToUv(x, y, v);
+        expect(u, `u at ${x},${y} from corner ${fx},${fy}`).toBeGreaterThanOrEqual(0);
+        expect(u).toBeLessThanOrEqual(1);
+        expect(vv, `v at ${x},${y} from corner ${fx},${fy}`).toBeGreaterThanOrEqual(0);
+        expect(vv).toBeLessThanOrEqual(1);
+      }
+    }
+  });
+
+  it('zooming out in a corner leaves you in that corner, not yanked to the middle', () => {
+    // I expected this to re-centre and it does not, which is correct: the map
+    // is 852 wide against a 393 viewport at the zoom floor, so both the
+    // centred opening view (tx -229.5) and the flush-left corner (tx 0) are
+    // legal. Re-centring would drag the view out from under the player's
+    // thumb the instant they pinched out. It only centres an axis SMALLER
+    // than the viewport, which at the floor is neither of them.
+    const corner = driveTo(0, 0, 5000, 5000);
+    const out = pinchStep({
+      startK: corner.k, startTx: corner.tx, startTy: corner.ty,
+      focalX0: 0, focalY0: 0, focalX: 0, focalY: 0,
+      scale: 0.0001, minK: FLOOR, maxK: CEIL, w: W, h: H,
+    });
+    expect(out.k).toBe(FLOOR);
+    expect(out.tx).toBe(0);
+    expect(out.ty).toBe(0);
+    // and still no empty space beside the world
+    expect(out.tx).toBeLessThanOrEqual(0);
+    expect(out.tx).toBeGreaterThanOrEqual(W - out.k);
+    expect(out.ty).toBeLessThanOrEqual(0);
+    expect(out.ty).toBeGreaterThanOrEqual(H - out.k);
+  });
+});
+
 describe('the worklet copy matches this one', () => {
   const canvas = readFileSync(
     join(__dirname, '..', '..', 'mobile', 'src', 'map', 'MapCanvas.tsx'), 'utf8',
