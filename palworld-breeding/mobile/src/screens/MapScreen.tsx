@@ -11,7 +11,7 @@
  * reaching out into the map rather than the map being a separate product.
  */
 import React, { useCallback, useMemo, useRef, useState } from 'react';
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { Image, Pressable, ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 import { T } from '../theme';
@@ -27,6 +27,7 @@ import {
   spawnLevels, spawnPoints, spawnablePals, wildBands, type LayerGroup, type MapFilters,
 } from '../map/layers';
 import { MAP_REGIONS } from '../data/mapMeta.g';
+import { MAP_ICONS } from '../data/mapIcons.g';
 import { REGION_SPOTS } from '../data/regionSpots.g';
 import { takeIntentPayload } from '../nav/intent';
 import { regionsFor } from '../map/layers';
@@ -70,13 +71,16 @@ export function MapScreen() {
   const active = useMemo(() => {
     const out: {
       key: string; set: PointSet; colour: string; icon: string; label: string;
-      square?: boolean;
+      square?: boolean; art?: number;
     }[] = [];
     for (const id of filters.poi) {
       const set = poiPoints(id, region);
       const layer = poiLayer(id);
       if (set && layer && set.n) {
-        out.push({ key: `poi:${id}`, set, colour: layer.colour, icon: layer.icon, label: layer.label });
+        out.push({
+          key: `poi:${id}`, set, colour: layer.colour, icon: layer.icon,
+          label: layer.label, art: MAP_ICONS[id],
+        });
       }
     }
     for (const pal of filters.pals) {
@@ -112,12 +116,15 @@ export function MapScreen() {
 
   const markers = useMemo<MapMarker[]>(() => {
     const out: MapMarker[] = [];
-    // A hard ceiling per layer keeps the mounted view count bounded no matter
-    // how many layers the user switches on at once.
-    const budget = Math.max(40, Math.floor(360 / Math.max(1, active.length)));
+    // Each layer clusters on its own, so switching five of them on used to put
+    // five independent swarms over each other — 1,958 spots of unreadable
+    // overlap. The more layers are showing, the coarser every layer clusters,
+    // and the total mounted count stays bounded either way.
+    const budget = Math.max(24, Math.floor(200 / Math.max(1, active.length)));
+    const cell = PIN + 14 + Math.max(0, active.length - 1) * 9;
     for (const layer of active) {
       const hits = pointsInRect(layer.set, vp.u0, vp.v0, vp.u1, vp.v1);
-      const clusters = clusterPoints(layer.set, hits, vp.scale, PIN + 14).slice(0, budget);
+      const clusters = clusterPoints(layer.set, hits, vp.scale, cell).slice(0, budget);
       for (const c of clusters) {
         out.push({
           // stable while the zoom holds, so a pan never remounts a pin
@@ -126,7 +133,7 @@ export function MapScreen() {
           v: c.v,
           render: () => (
             <Pin colour={layer.colour} icon={layer.icon} count={c.count}
-              square={layer.square} />
+              square={layer.square} art={layer.art} />
           ),
         });
       }
@@ -536,8 +543,8 @@ const PIN = 23;
  * Shape survives colour-blindness, small sizes and a busy map in a way a
  * fourth shade of violet does not.
  */
-function Pin({ colour, icon, count, square }: {
-  colour: string; icon: string; count: number; square?: boolean;
+function Pin({ colour, icon, count, square, art }: {
+  colour: string; icon: string; count: number; square?: boolean; art?: number;
 }) {
   const many = count > 1;
   return (
@@ -550,6 +557,9 @@ function Pin({ colour, icon, count, square }: {
         <Text style={{ color: colour, fontWeight: '900', fontSize: count > 99 ? 9 : 11 }}>
           {count > 999 ? '999+' : count}
         </Text>
+      ) : art != null ? (
+        // the GAME's own symbol — a player already knows what it means
+        <Image source={art} style={{ width: 15, height: 15 }} resizeMode="contain" />
       ) : (
         <Icon name={icon} size={14} color={colour} />
       )}

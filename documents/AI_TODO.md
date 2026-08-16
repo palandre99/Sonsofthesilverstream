@@ -389,7 +389,17 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       zoom multiple, so the auto-framing shot past the texture's own
       resolution and the terrain went soft. Zoom is now capped at MAX_SCALE
       4096 — the pixels that actually exist — rather than at a multiplier.
-- [ ] G5 CEO: "All symbols should be same as game use also." His screenshot
+- [x] G5 DONE 2026-08-16 ~12:55: the map now draws the GAME'S OWN symbols —
+      all 23 of them, one per POI layer, mined from Nifrendil/pal-atlas (MIT,
+      baked out of the PAK) by tools/fetch_map_icons.py. Gold chest, blue
+      fast-travel chevron, the dungeon arch, the alpha head, the tower diamond:
+      a player already knows what each one means. Clusters still show a count.
+- [x] G8 (found immediately after) five layers on meant five independent pin
+      swarms stacked on each other — 1,958 markers of unreadable overlap. The
+      cluster cell now grows with the number of active layers and the total
+      budget dropped 360 -> 200, so the terrain stays visible however many
+      layers are switched on.
+- [x] G5-original note: CEO: "All symbols should be same as game use also." His screenshot
       shows the game's own circular icons — boss portraits, fast-travel
       glyphs, dungeon marks — where we use MaterialCommunityIcons. pal-atlas
       bakes the game's icon set into `public/icons/`; that is the source to
