@@ -500,6 +500,23 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       first thing to look at — the trade was memory safety for a small decode
       cost, and only a device can price it.
 
+### H. HOSTILE REVIEW ROUND — 2026-08-16 ~14:00 (own findings, first-time-player pass)
+- [x] H1 A brand-new player opened the Map to an EMPTY world and three
+      buttons. Nothing said what the map was for, and nothing hinted that
+      "only pals I'm missing" — the one thing no competitor has — even
+      existed. Now an empty map explains itself: what "Find a pal" does, what
+      the missing-pals tick does, and what "Layers" adds. It shows only while
+      nothing is switched on, so it never nags.
+- [ ] H2 The World Tree region button is always shown, even for a player who
+      has never been there. Worth checking whether it should be de-emphasised
+      until they own a pal that lives there.
+- [ ] H3 There is no way to see EVERYTHING one pal needs at a glance: pick a
+      pal and you get its spawns, but not "and its alpha is here". Consider
+      folding the alpha pin into the pal layer when a species is selected.
+- [ ] H4 Nothing on the map is searchable by PLACE. The 150 real place names
+      are in the data now, so "where is Fisherman's Point" is answerable and
+      is not answered.
+
 ### Open — the map lane's own queue
 - [x] F23 DONE 2026-08-16 ~00:02: the preview's dense clusters were an
       unreadable scribble — 93 overlapping rings in one bay. Now thinned to one

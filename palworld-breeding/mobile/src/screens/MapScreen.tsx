@@ -479,6 +479,32 @@ export function MapScreen() {
         </View>
       )}
 
+      {/* First run: an empty world with three buttons tells a new player
+          nothing. Say what the map is FOR, and name the thing they would
+          never guess — that it knows what is missing from their box. Shows
+          only while nothing is switched on, so it never nags. */}
+      {active.length === 0 && !sheet && (
+        <View style={{
+          position: 'absolute', left: 12, right: 12, bottom: insets.bottom + 74,
+          backgroundColor: 'rgba(12,22,24,0.94)', borderRadius: 13,
+          borderWidth: 1, borderColor: T.line, padding: 12, gap: 7,
+        }}>
+          <Text style={{ color: T.ink, fontWeight: '800', fontSize: 13.5 }}>
+            Nothing on the map yet
+          </Text>
+          <Text style={[s.body, { fontSize: 12.5 }]}>
+            <Text style={{ color: T.accentInk, fontWeight: '800' }}>Find a pal</Text>
+            {' '}to see everywhere it spawns — or tick
+            {' '}“only pals I&apos;m missing” and the map shows you what is left
+            to catch.
+          </Text>
+          <Text style={[s.body, { fontSize: 12.5 }]}>
+            <Text style={{ color: T.accentInk, fontWeight: '800' }}>Layers</Text>
+            {' '}puts chests, ore, statues, dungeons and bosses on it.
+          </Text>
+        </View>
+      )}
+
       {/* bottom controls */}
       <View style={{
         position: 'absolute', left: 12, right: 12, bottom: insets.bottom + 14, gap: 8,
