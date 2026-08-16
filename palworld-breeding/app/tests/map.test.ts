@@ -665,9 +665,13 @@ describe('day and night', () => {
   });
 
   it('shows the first-run hint only when nothing is switched on', () => {
-    expect(screen).toMatch(
-      /active\.length === 0 && !sheet && filters\.pals\.size === 0 && filters\.poi\.size === 0/,
-    );
+    // Matched piecewise, not as one line: the guard gained `!hintOff` and now
+    // wraps, and a line-anchored regex would have silently stopped matching
+    // while still "passing" against a design that had moved on.
+    const guard = (screen.match(/active\.length === 0 && !sheet[\s\S]{0,140}?&& \(/) ?? [''])[0];
+    expect(guard).toMatch(/filters\.pals\.size === 0/);
+    expect(guard).toMatch(/filters\.poi\.size === 0/);
+    expect(guard).toMatch(/!hintOff/);
   });
 
   it('names the actual reason when a selection draws nothing', () => {
