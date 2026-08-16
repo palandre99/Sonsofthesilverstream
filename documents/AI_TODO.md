@@ -1248,6 +1248,24 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       to the 146 the pill reports, and every number matching the source counts
       measured straight out of pal-atlas. The legend shows the TREE's counts
       after a region switch, not the Palpagos ones.
+- [x] L15 2026-08-16 ~23:40 THE OLD MAP ENGINE WAS STILL SHIPPING, unused.
+      `mobile/src/ui/MapViewer.tsx` — the pre-rewrite map, a Modal around a
+      ScrollView whose pinch only ever worked on iOS — was imported by NOTHING.
+      My own rewrite of PalMap orphaned it and I did not clean up. It was the
+      only thing requiring `assets/map2048.jpg`, so a 399 KB image rode along
+      in every OTA update he downloads on 5G for no reason at all. That is the
+      "one production file per concept" rule in CLAUDE.md, broken by me.
+      Both removed. Verified after: tsc clean, 293 tests, the Map fane loads,
+      and the pal card's "Where to find it" still reads
+      "Palpagos Islands · Open full map · 129 spots · Lv 20-44 · plus 6 in
+      dungeons". Three tests now guard it, including one that walks all of
+      mobile/src to prove nothing reaches for that image again.
+- [ ] L16 FOR THE BREEDING/WEB LANE (not mine to fix): the WEBSITE's Paldex
+      still draws its pal map with the old flat `map2048.jpg`
+      (`app/src/modules/paldex.tsx:48`), while the phone has the tiled 8192
+      engine with real spawn points, level bands and day/night. The web copy of
+      the asset is therefore still in use and I left it alone. Worth porting
+      the map engine to the web Paldex, or at least the sharper texture.
 - [ ] K5 "also many other issues" — HE HAS MORE AND HAS NOT LISTED THEM. Ask,
       or keep walking journeys until they surface. Do not guess at what he
       means and do not claim the map is finished.

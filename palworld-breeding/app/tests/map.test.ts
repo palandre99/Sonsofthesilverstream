@@ -6,7 +6,7 @@
  * sea. tools/verify_map_projection.py proves the projection against 58,504
  * datamined points; this locks in the result and the decode path around it.
  */
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
@@ -1247,5 +1247,39 @@ describe('a lone alpha shows the pal it is', () => {
       .filter((n) => !(n in palsJson.pals));
     expect(unknown).toEqual([]);
     expect(layer!.names!.length).toBe(72);
+  });
+});
+
+/* "One production file per concept" (CLAUDE.md). MapViewer.tsx was the old
+ * map — a Modal wrapping a ScrollView whose pinch was iOS-only — and my own
+ * rewrite of the pal card orphaned it without removing it. It sat unimported,
+ * dragging a 399 KB map2048.jpg into every OTA update the CEO downloads. */
+describe('only one map engine ships on the phone', () => {
+  const mobileSrc = join(__dirname, '..', '..', 'mobile', 'src');
+
+  it('the superseded viewer is gone', () => {
+    expect(existsSync(join(mobileSrc, 'ui', 'MapViewer.tsx'))).toBe(false);
+  });
+
+  it('and so is the flat map image only it used', () => {
+    expect(existsSync(join(__dirname, '..', '..', 'mobile', 'assets', 'map2048.jpg')))
+      .toBe(false);
+  });
+
+  it('nothing on the phone reaches for that image any more', () => {
+    // the website still uses its own copy in the Paldex - that is another
+    // session's file and its own decision, not something this test governs
+    const hits: string[] = [];
+    const walk = (dir: string) => {
+      for (const e of readdirSync(dir, { withFileTypes: true })) {
+        const full = join(dir, e.name);
+        if (e.isDirectory()) walk(full);
+        else if (/\.tsx?$/.test(e.name) && readFileSync(full, 'utf8').includes('map2048')) {
+          hits.push(full);
+        }
+      }
+    };
+    walk(mobileSrc);
+    expect(hits).toEqual([]);
   });
 });
