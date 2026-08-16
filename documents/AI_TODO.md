@@ -1724,6 +1724,48 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E37. CALCULATOR HOSTILE CODE READ 2026-08-16 (no CEO prompt — the lane)
+
+- [x] **THE PAIR-MODE EMPTY STATE GREW A SECOND, NEAR-IDENTICAL SHORTCUT
+      ROW.** When E27a added "START FROM YOUR PALDEX" I never removed the
+      older "QUICK START — RECENT PALS" block sitting right above it. Two
+      chip rows, same tap, different headings, stacked — and invisible on a
+      fresh install, because recents are empty until you use the picker
+      once. So the tab he called "empty and poor design" quietly became
+      cluttered instead, and only after real use.
+      Now ONE list, ordered so the pals you have actually used come first.
+      Verified on device: picked Tanzee through the picker, cleared the
+      slot, and the list came back with a single heading and Tanzee ahead
+      of the default order.
+- [x] CHECKED FOR THE E36 STALE-STATE CLASS ELSEWHERE — **not present.**
+      The Odds `want` set could go stale because the POOL is user-built and
+      shrinks. Every other set in the app points at things that cannot
+      disappear: draft targets and plan targets are species, `filters.work`
+      is a job key, `filters.elements` are elements. Nothing to prune.
+- NOT CHANGED (deliberate): reverse mode has no ✕ to clear the target the
+  way pair mode clears each parent. Picking a different target is the
+  normal action and the picker is one tap; adding a clear button to return
+  to an empty screen is a control for a state nobody wants.
+
+## E35. PALDEX HOSTILE CODE READ 2026-08-16 (no CEO prompt — the lane)
+
+- [x] **THE EMPTY LIST BLAMED FILTERS THAT WERE NOT SET.** Search for
+      something that does not exist with no filter active and it said
+      "Nothing matches those filters." — naming a cause the player could
+      not act on and pointing them at a sheet with nothing to undo. Now:
+      "No pal matches “<query>”." when the search alone emptied it,
+      "Nothing matches “<query>” with those filters." when both apply, and
+      the original line only when filters really are the cause. Verified on
+      device. **Four rounds of clicking this tab never hit it, because I
+      always searched for pals that exist.**
+- [x] "Removes all 1 species on this device" → "Removes the one species you
+      have on this device."
+- [x] THIRTEEN DEAD IMPORTS across four files, eight in the Paldex screen
+      alone (a whole icon set and an `Image` it never rendered). Found by
+      counting every imported name's uses tree-wide, not by eye. The only
+      ones left are cosmetic unused `React` imports under the automatic JSX
+      runtime, one of which is in the Map lane's file.
+
 ## E36. ODDS LAB HOSTILE CODE READ 2026-08-16 (no CEO prompt — the lane)
 
 - [x] **THE FOUR-SLOT CAP COULD BE WALKED AROUND, AND THE RESULT LOOKED

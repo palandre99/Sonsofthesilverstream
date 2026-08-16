@@ -32,7 +32,13 @@ function CalcStartHelp({ onPick, mode }: {
   mode: 'pair' | 'reverse';
 }) {
   useAppVersion();
-  const owned = Object.keys(getBox()).filter((n) => Object.hasOwn(pals, n));
+  // Pals you have actually used come first. This list used to sit BELOW a
+  // second, near-identical "quick start — recent pals" row on the same
+  // screen: two chip rows, same tap, different headings. One list now.
+  const recent = getRecentPicks().filter((n) => Object.hasOwn(pals, n));
+  const box = Object.keys(getBox()).filter((n) => Object.hasOwn(pals, n));
+  const owned = [...recent.filter((n) => box.includes(n)),
+    ...box.filter((n) => !recent.includes(n))];
   return (
     <>
       {owned.length > 0 ? (
@@ -399,33 +405,6 @@ export function CalculatorScreen() {
                 You get the child instantly, with the math shown — and a warning whenever
                 a special recipe or gender rule changes the outcome.
               </Text>
-              {getRecentPicks().filter((n) => Object.hasOwn(pals, n)).length > 0 && (
-                <>
-                  <Text style={{
-                    color: T.faint, fontSize: 10.5, fontWeight: '800',
-                    letterSpacing: 1, marginTop: 12, marginBottom: 6,
-                  }}>QUICK START — RECENT PALS</Text>
-                  <View style={[s.wrap]}>
-                    {getRecentPicks().filter((n) => Object.hasOwn(pals, n)).slice(0, 6).map((n) => (
-                      <Pressable key={n}
-                        onPress={() => {
-                          void Haptics.selectionAsync();
-                          if (!a) setA(n);
-                          else if (!b) setB(n);
-                        }}
-                        style={({ pressed }) => [{
-                          flexDirection: 'row', alignItems: 'center', gap: 6,
-                          backgroundColor: pressed ? T.accentSoft : T.surface2,
-                          borderWidth: 1, borderColor: pressed ? T.accent : T.line,
-                          borderRadius: 10, paddingVertical: 5, paddingHorizontal: 9,
-                        }]}>
-                        <PalIcon name={n} size={26} />
-                        <Text style={{ color: T.ink, fontWeight: '700', fontSize: 12.5 }}>{n}</Text>
-                      </Pressable>
-                    ))}
-                  </View>
-                </>
-              )}
             </Card>
           )}
           {!(a && b) && (
