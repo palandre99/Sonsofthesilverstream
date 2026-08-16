@@ -1847,6 +1847,33 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E55. WEB PARITY FOR THE HIDDEN RECIPES + THE POOL-FLAG TEST 2026-08-16
+
+- [x] **THE WEBSITE'S PAL CARD HAD THE SAME TERNARY, and hid MORE than the
+      phone did.** Its else-branch held the fixed-recipe list AND the "All
+      parent pairs for X →" button, so for Mossanda Lux and Relaxaurus Lux
+      the web card showed neither the recipe NOR any route to look one up.
+      Restructured to match the phone. Verified in the browser: the card now
+      reads "self-breed-only · Mossanda Lux + Mossanda Lux" AND "fixed
+      recipe · Grizzbolt + Mossanda = Mossanda Lux" with the button back.
+      The web's "unique" badge leftover renamed to "fixed recipe" too.
+- [x] **`excluded_from_generic_pool` TESTED AGAINST THE DATA — CLEAN.** 116
+      species are excluded from the generic pool, and **every single one has
+      a route**: 88 have a fixed recipe, 2 are gender-locked children, the
+      rest are self-breedable. **Zero orphans.** And `inPool` only ever gates
+      a POSITIVE sentence ("No fixed recipe — many pairs work"), never a
+      "can't be bred" claim. Nothing to fix; recorded so nobody re-opens it.
+- **TWO MORE BAD CHECKS OF MINE (13 and 14), both caught by discipline:**
+  · I put `//` comments in JSX CHILDREN position — which renders as literal
+    text. My own note says use `{/* */}` there. Caught before shipping.
+  · Then I searched `document.body.innerText` for the block and got nothing,
+    and nearly filed the fix as broken. The drawer's text does not surface
+    that way — `section.textContent` shows it fine. **The heading query
+    proved the block existed while my text search said it did not.**
+  · Also: a transient Vite 500 during the edit made the page look dead while
+    `tsc --noEmit` reported clean. **`read_console_messages` is what caught
+    it** — the discipline added after the last miss earned itself here.
+
 ## E54. THE SAME HIDDEN-RECIPE BUG IN TWO MORE PLACES 2026-08-16
 
 Ran the E53 finding back through every other use of the `self_breed_only`

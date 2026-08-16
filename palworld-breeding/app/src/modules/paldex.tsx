@@ -373,16 +373,20 @@ function Drawer({ name, onClose }: { name: string; onClose: () => void }) {
 
         <section>
           <h4>How to breed it</h4>
-          {selfOnly.value.has(name) ? (
+          {/* The ternary hid every fixed recipe, and the "All parent pairs"
+              button, whenever a pal was flagged self-breed-only. Mossanda Lux
+              and Relaxaurus Lux are flagged AND have a real recipe, so their
+              card showed neither the recipe nor a way to look one up. */}
+          {selfOnly.value.has(name) && (
             <div class="recipe-line">
               <span class="badge bad">self-breed-only</span>
               {name} <span class="plus">+</span> {name} <span class="eq">=</span> {name}
             </div>
-          ) : (
+          )}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
               {asChild.map((c) => (
                 <div key={c.parents.join()} class="recipe-line">
-                  <span class="badge unique">unique</span>
+                  <span class="badge unique">fixed recipe</span>
                   <PalIcon name={c.parents[0]} size={26} /> {c.parents[0]}
                   <span class="plus">+</span>
                   <PalIcon name={c.parents[1]} size={26} /> {c.parents[1]}
@@ -398,7 +402,7 @@ function Drawer({ name, onClose }: { name: string; onClose: () => void }) {
                   <span class="eq">=</span> {name}
                 </div>
               ))}
-              {inPool && (
+              {inPool && !selfOnly.value.has(name) && (
                 <div class="recipe-line">
                   No fixed recipe — many different parent pairs can breed this pal.
                   The button below lists every pair you can make right now.
@@ -409,7 +413,6 @@ function Drawer({ name, onClose }: { name: string; onClose: () => void }) {
                 All parent pairs for {name} →
               </button>
             </div>
-          )}
         </section>
 
         {(asParent.length > 0 || gendered.some((g) => g.child !== name)) && (
