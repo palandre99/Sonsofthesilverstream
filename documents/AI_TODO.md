@@ -546,6 +546,18 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       `hashchange` now (native has no location, so it never runs there), and
       the QA driver gained a `go:<hash>` step.
 
+- [x] H9 2026-08-16 ~14:35 **I INVENTED A ROUTE AND SHIPPED IT.** The pal
+      card's no-spawn line read "This one never appears in the wild — hatch it
+      or beat its boss." Measured it: of the 26 pals with no wild spawn rows,
+      **all 26 also have no alpha anywhere in our tables** — so that sentence
+      sent players hunting a boss we have no record of, on every one of them.
+      Bellanoir is a summoned raid boss, not somewhere you walk. The line now
+      says only what the data supports — "This one has no spawns anywhere on
+      the map" — and the badges under it carry the real route, which come from
+      the game's own obtain_notes.
+      Lesson for the ledger: the never-invent rule is easy to keep in DATA and
+      easy to break in COPY. A sentence is a claim.
+
 ### Open — the map lane's own queue
 - [x] F23 DONE 2026-08-16 ~00:02: the preview's dense clusters were an
       unreadable scribble — 93 overlapping rings in one bay. Now thinned to one

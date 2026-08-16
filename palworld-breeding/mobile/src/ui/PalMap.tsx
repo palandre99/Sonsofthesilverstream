@@ -94,7 +94,12 @@ export function PalMap({ name }: { name: string }) {
   if (!views.length && !alphas.length && !offMap.length) {
     return (
       <Text style={[s.body, { fontSize: 12.5, color: T.faint }]}>
-        This one never appears in the wild — hatch it or beat its boss.
+        {/* Says only what the data supports. The old wording — "hatch it or
+            beat its boss" — invented a route: ALL 26 pals with no wild spawn
+            also have no boss anywhere in our tables, so it sent players
+            looking for something we have no record of. The badges under this
+            line carry the real route, straight from the game's own notes. */}
+        This one has no spawns anywhere on the map.
       </Text>
     );
   }
