@@ -180,6 +180,12 @@ export function Btn({ label, onPress, primary, danger, disabled, small }: {
         onPress();
       }}
       disabled={disabled}
+      // every button in the app comes through here, and none of them told a
+      // screen reader they were buttons — the visible text was the only clue,
+      // and a dimmed button never announced that it was unavailable
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      accessibilityState={{ disabled: !!disabled }}
       style={({ pressed }) => [
         s.btn,
         small && { paddingVertical: 6, paddingHorizontal: 12 },

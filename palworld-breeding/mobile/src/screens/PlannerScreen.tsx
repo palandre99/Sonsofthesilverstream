@@ -129,6 +129,9 @@ export function PlannerScreen() {
   const targets = getDraftTargets();
   const [busy, setBusy] = useState(false);
   const [planError, setPlanError] = useState<string | null>(null);
+  /** the raw exception text is kept for bug reports but never shouted — the
+   * CEO must read what happened in his own words first (self-found) */
+  const [errDetail, setErrDetail] = useState(false);
   const [picking, setPicking] = useState(false);
   const [suggesting, setSuggesting] = useState(false);
   const [hatching, setHatching] = useState<{ sid: string; child: string } | null>(null);
@@ -592,11 +595,56 @@ export function PlannerScreen() {
           onPress={confirmRun}
         />
       )}
-      {busy && <ActivityIndicator color={T.accent} style={{ marginTop: 14 }} />}
+      {/* a bare spinner told him nothing about what the wait was for */}
+      {busy && (
+        <Card style={{
+          marginTop: 12, flexDirection: 'row', alignItems: 'center', gap: 13,
+        }}>
+          <ActivityIndicator color={T.accent} />
+          <View style={{ flex: 1 }}>
+            <Text style={[s.body, { color: T.ink, fontWeight: '700' }]}>
+              Working out your route…
+            </Text>
+            <Text style={[s.body, { fontSize: 12 }]}>
+              Checking every pair that leads to your goals.
+            </Text>
+          </View>
+        </Card>
+      )}
 
+      {/* this used to print the raw JavaScript error at him — a developer's
+          words, on the front page of the tab, with no way out. Now it says
+          what happened, promises nothing was lost, and offers the retry;
+          the technical text stays one tap away so a screenshot is still
+          useful to whoever fixes it. */}
       {planError && (
-        <Card style={{ backgroundColor: T.badSoft, borderColor: T.bad, marginTop: 12 }}>
-          <Text style={[s.body, { color: T.bad }]}>Planning failed: {planError}</Text>
+        <Card style={{
+          backgroundColor: T.badSoft, borderColor: T.bad, marginTop: 12, gap: 10,
+        }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 9 }}>
+            <Icon name="alert-circle-outline" size={20} color={T.bad} />
+            <Text style={[s.h3, { color: T.bad, flex: 1 }]}>
+              Couldn't build your route
+            </Text>
+          </View>
+          <Text style={s.body}>
+            Something went wrong working out the breeding steps. Your goals and
+            your Paldex are untouched — nothing was lost.
+          </Text>
+          <View style={s.wrap}>
+            <Btn primary label="Try again" onPress={run} />
+            <Btn
+              small
+              label={errDetail ? 'Hide details' : 'Show details'}
+              onPress={() => setErrDetail((v) => !v)}
+            />
+          </View>
+          {errDetail && (
+            <Text selectable style={{
+              color: T.muted, fontSize: 11.5, lineHeight: 16,
+              fontFamily: 'monospace',
+            }}>{planError}</Text>
+          )}
         </Card>
       )}
 
@@ -611,8 +659,8 @@ export function PlannerScreen() {
               <Text style={s.tileBig}>{done}<Text style={{ fontSize: 14, color: T.muted }}>/{plan.steps.length}</Text></Text>
               <Text style={s.tileLabel}>DONE</Text>
               {partialCount > 0 && (
-                <Text style={{ color: T.warn, fontSize: 10, fontWeight: '800' }}>
-                  +{partialCount} half
+                <Text numberOfLines={1} style={{ color: T.warn, fontSize: 10, fontWeight: '800' }}>
+                  +{partialCount} half-done
                 </Text>
               )}
             </View>
@@ -629,10 +677,24 @@ export function PlannerScreen() {
             <Btn small danger label="Clear plan" onPress={() => setManaging('clear')} />
           </View>
 
+          {/* "Not reachable from your box: X" stated a fact and left him
+              there. Say which goals, and what actually gets him unstuck. */}
           {plan.unreachable.length > 0 && (
-            <Card style={{ backgroundColor: T.warnSoft, borderColor: T.warn, marginTop: 12 }}>
-              <Text style={[s.body, { color: T.warn }]}>
-                Not reachable from your box: {plan.unreachable.join(', ')}
+            <Card style={{
+              backgroundColor: T.warnSoft, borderColor: T.warn, marginTop: 12, gap: 8,
+            }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 9 }}>
+                <Icon name="map-marker-question-outline" size={19} color={T.warn} />
+                <Text style={[s.h3, { color: T.warn, flex: 1 }]}>
+                  {plan.unreachable.length === 1
+                    ? 'One goal has no route yet'
+                    : `${plan.unreachable.length} goals have no route yet`}
+                </Text>
+              </View>
+              <Text style={s.body}>
+                Nothing you own leads to {plan.unreachable.join(', ')}. Catch a
+                few more pals — or tick off ones you already have in the
+                Paldex — then plan again.
               </Text>
             </Card>
           )}
