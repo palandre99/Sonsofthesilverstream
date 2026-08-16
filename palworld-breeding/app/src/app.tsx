@@ -9,6 +9,7 @@ import { PaldexPage } from './modules/paldex';
 import { PlanPage } from './modules/plan';
 import { OddsPage } from './modules/odds';
 import { ReferencePage } from './modules/misc';
+import { MapPage } from './modules/map';
 
 /* The game's Pal Sphere: blue glass orb, gold swirl, gold pole caps —
  * NOT pokeball grammar (no horizontal band, no center button). */
@@ -53,6 +54,7 @@ const NAV = [
   { hash: 'plan', label: 'Route Planner', icon: icons.plan, match: 'plan' },
   { hash: 'odds', label: 'Odds Lab', icon: icons.odds, match: 'odds' },
   { hash: 'paldex', label: 'Paldex', icon: icons.paldex, match: 'paldex' },
+  { hash: 'map', label: 'Map', icon: icons.paldex, match: 'map' },
   { hash: 'reference', label: 'Reference', icon: icons.ref, match: 'reference' },
 ];
 
@@ -107,7 +109,7 @@ export function App() {
             </a>
           ))}
           <div class="navsoon" aria-hidden="true">
-            {['Map & Spawns', 'Items & Tech', 'Base & Builds', 'Bosses & Raids', 'Save Import'].map((t) => (
+            {['Items & Tech', 'Base & Builds', 'Bosses & Raids', 'Save Import'].map((t) => (
               <span key={t} class="soonitem">{t}<i>SOON</i></span>
             ))}
           </div>
@@ -129,6 +131,7 @@ export function App() {
             page === 'paldex' ? <PaldexPage /> :
             page === 'plan' ? <PlanPage /> :
             page === 'odds' ? <OddsPage /> :
+            page === 'map' ? <MapPage /> :
             <ReferencePage />}
           </Boundary>
         )}

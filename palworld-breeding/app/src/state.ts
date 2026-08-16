@@ -249,6 +249,7 @@ export type Route =
   | { page: 'paldex'; pal?: string }
   | { page: 'plan' }
   | { page: 'odds' }
+  | { page: 'map' }
   | { page: 'reference' };
 
 /** decodeURIComponent that survives truncated/mangled links ("Katress%2"). */
@@ -275,6 +276,8 @@ function parseHash(): Route {
       return { page: 'plan' };
     case 'odds':
       return { page: 'odds' };
+    case 'map':
+      return { page: 'map' };
     case 'reference':
       return { page: 'reference' };
     default:
@@ -294,6 +297,7 @@ const PAGE_TITLES: Record<Route['page'], string> = {
   plan: 'Route Planner',
   odds: 'Odds Lab',
   paldex: 'Paldex',
+  map: 'Map',
   reference: 'Reference',
 };
 

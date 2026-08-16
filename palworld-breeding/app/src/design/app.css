@@ -381,3 +381,48 @@
 .hatchring.gold{border-color:var(--gold)}
 @keyframes hatch-ring{0%{transform:scale(.7);opacity:.9}100%{transform:scale(2.3);opacity:0}}
 @keyframes hatch-pop{0%{transform:scale(.8)}60%{transform:scale(1.14)}100%{transform:scale(1)}}
+
+/* ---------------------------------------------------------------- the map
+   Same data and maths as the phone (src/map/, parity-gated); only the
+   rendering differs — a CSS transform on one container, markers counter-scaled
+   so a pin stays pin-sized at every zoom. */
+.mapwrap { display: grid; grid-template-columns: 1fr 300px; gap: 14px; height: calc(100vh - 96px); }
+.mapstage { position: relative; overflow: hidden; border-radius: 14px;
+  border: 1px solid var(--line); background: #06121a; touch-action: none; cursor: grab; }
+.mapstage:active { cursor: grabbing; }
+.mapcontent { position: absolute; transform-origin: top left; will-change: transform; }
+.maptile { position: absolute; image-rendering: auto; pointer-events: none; }
+.mappin { position: absolute; width: 23px; height: 23px; border-radius: 50%;
+  border: 2px solid; background: rgba(10, 20, 24, 0.86); display: grid; place-items: center;
+  font-size: 11px; font-weight: 900; pointer-events: none; }
+.mappin.sq { border-radius: 6px; }
+.maptop { position: absolute; top: 10px; left: 10px; display: flex; gap: 8px; }
+.maptop button { padding: 7px 11px; border-radius: 10px; border: 1px solid var(--line);
+  background: rgba(12, 22, 24, 0.85); color: var(--muted); font-weight: 800; font-size: 12px; }
+.maptop button.on { border-color: var(--accent); color: var(--accent-ink); }
+.mapcount { position: absolute; left: 10px; bottom: 10px; padding: 6px 10px; border-radius: 10px;
+  border: 1px solid var(--line); background: rgba(12, 22, 24, 0.88); color: var(--muted);
+  font-size: 11.5px; font-weight: 700; }
+.mapcard { position: absolute; top: 52px; left: 10px; right: 10px; padding: 10px 12px;
+  border-radius: 12px; border: 1px solid var(--accent); background: rgba(12, 22, 24, 0.94);
+  display: grid; gap: 3px; cursor: pointer; }
+.mapcard b { color: var(--ink); font-size: 14px; }
+.mapcard span { position: absolute; right: 12px; top: 10px; color: var(--faint); font-size: 11px; }
+.mapcard em { color: var(--muted); font-size: 12px; font-style: normal; }
+.mapside { overflow: auto; display: grid; gap: 8px; align-content: start; }
+.mapside h3 { margin: 6px 0 0; font-size: 12px; letter-spacing: 1px; color: var(--faint); }
+.mapside input[type="text"], .mapside input:not([type]) { width: 100%; padding: 8px 10px;
+  border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); }
+.mapchk { display: flex; align-items: center; gap: 7px; font-size: 12.5px; color: var(--ink); }
+.mappals { display: grid; gap: 5px; max-height: 260px; overflow: auto; }
+.mappals button, .maplayers button { display: flex; justify-content: space-between; gap: 8px;
+  padding: 7px 10px; border-radius: 9px; border: 1px solid var(--line);
+  background: var(--surface); color: var(--ink); font-size: 12.5px; font-weight: 700; }
+.mappals button.on { border-color: var(--accent); color: var(--accent-ink); }
+.mappals button i, .maplayers button i { font-style: normal; color: var(--faint); font-size: 11px; }
+.maplayers { display: flex; flex-wrap: wrap; gap: 6px; }
+.maplayers button { flex: 0 0 auto; }
+@media (max-width: 860px) {
+  .mapwrap { grid-template-columns: 1fr; height: auto; }
+  .mapstage { height: 62vh; }
+}

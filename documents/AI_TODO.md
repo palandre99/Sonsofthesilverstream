@@ -357,8 +357,17 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       no wild spawner at all. `wildLevelRange()` is UNCHANGED because the
       Planner (other session's lane) uses it — no cross-lane behaviour change.
       Eye-verified: "FOUND IN WILD LV 5 TO 7" + "IN DUNGEONS LV 6 TO 13".
-- [ ] F10 WEB PARITY: the shared math + data are already in `app/src/map/` and
-      `app/src/data/` (byte-parity gated), but the website has no map UI yet.
+- [x] F10 WEB PARITY v1 DONE 2026-08-16 ~11:30: `app/src/modules/map.tsx` +
+      a `#/map` route + a Map item in the sidebar (the "Map & Spawns" SOON
+      chip is gone). Same tiles, same 23 layers with counts, same pal search
+      with "only pals I'm missing", dungeon toggle, night toggle, tap-a-pin
+      card and the game's coordinate readout — all off the SHARED src/map/
+      modules, so the two platforms cannot drift. Drag to pan, wheel to zoom.
+      Eye-verified at 1280x860. NOT deployed: Pages needs a push to main,
+      which is the CEO's call.
+- [ ] F32 Web map polish: opens letterboxed (dead space below the map) where
+      the phone opens at cover; pal list is capped at 60 with a 260px scroll
+      box; no legend yet; no place-name labels yet.
 - [ ] F11 Rebuild `ui/PalMap.tsx` + `ui/MapViewer.tsx` on the new engine and
       DELETE the region-label dots — this closes the CEO's ~12:25 "MAP
       OVERHAUL" item and the "Where to find it must be a real MAP" item.
