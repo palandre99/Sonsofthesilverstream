@@ -10,8 +10,13 @@ import { describe, expect, it } from 'vitest';
 const APP = join(__dirname, '..', 'src', 'logic');
 const MOBILE = join(__dirname, '..', '..', 'mobile', 'src', 'logic');
 
-/** logic files that must exist in BOTH trees */
-const SHARED = ['recommend.ts', 'economics.ts'];
+/** Every .ts file in either tree's src/logic is shared — DISCOVERED, not
+ * hand-listed. A hand-maintained list silently un-guards any new logic file
+ * the day it is added, which is the one moment the guard matters most
+ * (self-found 2026-08-16 while adding unlock.ts). */
+const SHARED = [...new Set([
+  ...readdirSync(APP), ...readdirSync(MOBILE),
+])].filter((f) => f.endsWith('.ts')).sort();
 
 describe('logic copies', () => {
   it.each(SHARED)('%s is byte-identical in app/ and mobile/', (file) => {
