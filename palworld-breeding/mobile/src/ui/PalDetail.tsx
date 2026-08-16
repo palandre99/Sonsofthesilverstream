@@ -255,10 +255,21 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
           <StatBar label="Defense" icon={STAT_ICONS.defense} v={boost(p.def)}
             rank={statRank('def', p.def)} />
           {stars > 0 && (
-            <Text style={[s.body, { fontSize: 11.5, color: T.goldInk }]}>
-              Condensed {stars}★: stats +{stars * 5}% · partner skill level {stars + 1} of 5
-              {stars === 4 ? ' · every work suitability below +1' : ''}
-            </Text>
+            <>
+              <Text style={[s.body, { fontSize: 11.5, color: T.goldInk }]}>
+                Condensed {stars}★: stats +{stars * 5}% · partner skill level {stars + 1} of 5
+                {stars === 4 ? ' · every work suitability below +1' : ''}
+              </Text>
+              {/* The base stats above ARE datamined. These condensing figures
+                  are not — they are community-measured, and the app's whole
+                  promise is that you can tell which is which. They were sitting
+                  in gold right next to datamined numbers with nothing to
+                  separate them (self-found on a code read, 2026-08-16). */}
+              <Text style={[s.body, { fontSize: 11, color: T.faint }]}>
+                Condensing figures are community-measured, not read from the
+                game files. The base stats above are.
+              </Text>
+            </>
           )}
           {p.food != null && (
             <View style={[s.row, { gap: 8, marginTop: 2 }]}>

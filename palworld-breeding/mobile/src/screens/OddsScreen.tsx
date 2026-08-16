@@ -275,9 +275,15 @@ function PassivesTab() {
           {/* The website already said this; the phone just dropped Special
               Cake from the list with no explanation, which looks like an
               oversight rather than a principle. */}
+          {/* engine/odds.ts states outright that the cake table "carries a
+              'community' confidence and the UI must say so" — and no screen
+              read that field. Every cake here is community-measured. */}
           <Text style={[s.body, { fontSize: 11.5, marginTop: 6, color: T.faint }]}>
-            Special Cake is not listed: its passive override has never been
-            datamined, and this app does not invent numbers.
+            Cake egg counts and mutation rates are community-measured, not read
+            from the game files — the game's own cake table has never been
+            published. Special Cake is left out entirely for the same reason:
+            its passive override is not datamined, and this app does not invent
+            numbers.
           </Text>
           <View style={[s.wrap, { marginTop: 10 }]}>
             <OddsCard hero label={`All ${desired.length} wanted`}

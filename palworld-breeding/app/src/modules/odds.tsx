@@ -325,9 +325,15 @@ function PassivesTab() {
               {CAKES.filter((c) => c.id !== 'special')
                 .map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
             </select>
-            <span class="dim small">{cakeById(cake).effect} (Special Cake is not
-              listed: its passive override is not datamined, and this page does not
-              invent numbers.)</span>
+            {/* engine/odds.ts says the cake table "carries a 'community'
+                confidence and the UI must say so" — no screen was reading
+                that field on either platform. */}
+            <span class="dim small">{cakeById(cake).effect} Cake egg counts and
+              mutation rates are community-measured, not read from the game
+              files — the game's own cake table has never been published.
+              Special Cake is left out entirely for the same reason: its
+              passive override is not datamined, and this page does not invent
+              numbers.</span>
           </div>
           <OddsReadout poolSize={pool.length} desiredCount={desired.length} cake={cake} />
         </>

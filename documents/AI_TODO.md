@@ -1724,6 +1724,37 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E41. THE PROVENANCE PROMISE WAS BROKEN IN TWO PLACES 2026-08-16
+## (no CEO prompt — found reading PalDetail.tsx)
+
+CLAUDE.md's first quality rule: "Every mechanic figure is either datamined
+(game files / palcalc) or **labelled community-measured in the UI**." The
+Reference tab promises the player the same thing in as many words. Two
+screens broke it.
+
+- [x] **THE CONDENSING NUMBERS WERE UNLABELLED COMMUNITY FIGURES.** Tap the
+      stars on any pal card and the stat bars re-render boosted, with a gold
+      "+20%" and a line reading "Condensed 4★: stats +20% · partner skill
+      level 5 of 5". The code comment says plainly `(1.0, wiki-verified)` —
+      so the author knew — but the player saw those numbers in the same card,
+      in the same style, immediately beside HP/Attack/Defense, which ARE
+      datamined. Nothing distinguished them. Now a line underneath says so:
+      "Condensing figures are community-measured, not read from the game
+      files. The base stats above are." Verified on device at 4★.
+- [x] **THE CAKE DATA CARRIES A `confidence` FIELD THAT NO SCREEN EVER
+      READ.** engine/odds.ts declares `confidence: 'game-data' | 'community'`
+      and its own doc comment states outright: *"these carry a 'community'
+      confidence and **the UI must say so**."* All five cakes are
+      'community'. Grepping `confidence` across every .tsx returned NOTHING
+      on either platform — the contract was written and then never wired up.
+      Both Odds screens now say the cake egg counts and mutation rates are
+      community-measured, and that the game's own cake table has never been
+      published. Verified on device.
+- This is the most important class of bug in this codebase and it is
+  invisible to every other check: it typechecks, it has no wrong number in
+  it, and clicking it looks perfect. Only reading the code against the
+  product's own promise finds it.
+
 ## E40. THE NESTED-COMPONENT SWEEP 2026-08-16 (no CEO prompt — the lane)
 
 Two separate hostile reads (E36 OddsScreen, E39 PalPicker) had each turned
