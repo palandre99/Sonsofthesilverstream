@@ -39,6 +39,27 @@ function wildFact(name: string): WildFact {
 const whereOf = (u: UnlockAdvice) =>
   catchWhere(u, (n) => pals.value[n]?.regions ?? []);
 
+/** A pal's picture inside a breeding step, tappable — on the phone these
+ * open the pal's card and on the website they were decoration. Same app,
+ * same behaviour. */
+function PalLink({ name, size, gender }: {
+  name: string; size: number; gender?: 'm' | 'f';
+}) {
+  return (
+    <button
+      type="button"
+      aria-label={`Open ${name} in the Paldex`}
+      onClick={(e) => { e.stopPropagation(); nav(`paldex/${encodeURIComponent(name)}`); }}
+      style={{
+        background: 'none', border: 'none', padding: 0, margin: 0,
+        cursor: 'pointer', lineHeight: 0, display: 'inline-block',
+      }}
+    >
+      <PalIcon name={name} size={size} gender={gender} />
+    </button>
+  );
+}
+
 const CHECKS_KEY = 'hatchlab-plan-checks-v1';
 const PLAN_KEY = 'hatchlab-plan-v1';
 
@@ -841,16 +862,16 @@ export function PlanPage() {
                           }} />
                         <span />
                       </label>
-                      <PalIcon name={s.parents[0]} size={36}
+                      <PalLink name={s.parents[0]} size={36}
                         gender={s.genderNote ? (parseGenderNote(s.genderNote)?.mother === s.parents[0] ? 'f' : 'm') : undefined} />
-                      <PalIcon name={s.parents[1]} size={36}
+                      <PalLink name={s.parents[1]} size={36}
                         gender={s.genderNote ? (parseGenderNote(s.genderNote)?.mother === s.parents[1] ? 'f' : 'm') : undefined} />
                       <span class="names">
                         {s.parents[0]} <span class="plus">+</span> {s.parents[1]}
                         <span class="plus"> = </span>
                         <span class={`hatchhero${bursts[sid] ? ' pop' : ''}`}
                           key={`hero-${bursts[sid] ?? 0}`}>
-                          <PalIcon name={s.child} size={30} />
+                          <PalLink name={s.child} size={30} />
                           <HatchRings burst={bursts[sid] ?? 0}
                             rarity={pals.value[s.child]?.rarity ?? null}
                             boost={s.isTarget} />
