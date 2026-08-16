@@ -1144,26 +1144,45 @@ function LayerSheet({ filters, onToggle, onClear, onClearFound, onClose }: {
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
               {list.map((l) => {
                 const on = filters.poi.has(l.id);
+                // The count for the map you are LOOKING AT, not both maps
+                // added together. The sheet said "Fast travel 170" while the
+                // map drew 155 and the World Tree drew 15, and the layer
+                // search beside it already showed the honest per-region
+                // number — three places, two answers.
+                const here = poiPoints(l.id, filters.region)?.n ?? 0;
                 return (
                   <Pressable
                     key={l.id}
                     onPress={() => onToggle(l.id)}
                     accessibilityRole="checkbox"
                     accessibilityState={{ checked: on }}
-                    accessibilityLabel={`${l.label}, ${l.n.toLocaleString()} on the map`}
+                    accessibilityLabel={here
+                      ? `${l.label}, ${here.toLocaleString()} on this map`
+                      : `${l.label}, none on this map`}
                     style={{
                       flexDirection: 'row', alignItems: 'center', gap: 7,
                       paddingHorizontal: 11, paddingVertical: 9, borderRadius: 11,
                       borderWidth: 1, borderColor: on ? l.colour : T.line,
                       backgroundColor: on ? T.surface2 : T.surface,
+                      // 15 of the 23 layers have nothing on the World Tree.
+                      // Dimming says so BEFORE you tap, which beats explaining
+                      // it afterwards — but it stays tappable, because you may
+                      // well be about to switch back to Palpagos.
+                      opacity: here ? 1 : 0.45,
                     }}
                   >
-                    <Icon name={l.icon} size={16} color={on ? l.colour : T.muted} />
+                    {/* the GAME's own symbol, the same one the pin will draw —
+                        the sheet used to show a generic glyph, so you picked a
+                        map-pin and got a winged statue */}
+                    {MAP_ICONS[l.id] != null
+                      ? <Image source={MAP_ICONS[l.id]}
+                          style={{ width: 16, height: 16 }} resizeMode="contain" />
+                      : <Icon name={l.icon} size={16} color={on ? l.colour : T.muted} />}
                     <Text style={{ color: on ? T.ink : T.muted, fontWeight: '700', fontSize: 12.5 }}>
                       {l.label}
                     </Text>
                     <Text style={{ color: T.faint, fontWeight: '700', fontSize: 11 }}>
-                      {l.n.toLocaleString()}
+                      {here ? here.toLocaleString() : 'none here'}
                     </Text>
                   </Pressable>
                 );

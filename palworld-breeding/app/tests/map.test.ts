@@ -640,8 +640,12 @@ describe('counts read the same wherever they appear', () => {
   });
 
   it('formats the layer-sheet row and its screen-reader label alike', () => {
-    // the sighted label and the spoken one drifting apart is its own bug
-    expect(screen).toMatch(/\$\{l\.label\}, \$\{l\.n\.toLocaleString\(\)\} on the map/);
+    // The sighted label and the spoken one drifting apart is its own bug. Both
+    // now quote the count for the region you are looking at, not both maps
+    // added together, so this checks the SPOKEN one keeps the separator and
+    // the "none" case the visible chip has.
+    expect(screen).toMatch(/\$\{here\.toLocaleString\(\)\} on this map/);
+    expect(screen).toMatch(/`\$\{l\.label\}, none on this map`/);
   });
 });
 
@@ -1346,5 +1350,42 @@ describe('the pal card map fills its card', () => {
     // onLayout fires on every relayout; setting state unconditionally would
     // re-render the card each time
     expect(palMap).toMatch(/setSide\(\(prev\) => \(prev === w \? prev : w\)\)/);
+  });
+});
+
+/* The Layers sheet disagreed with the map it controls, in two ways at once:
+ * it drew generic glyphs while the pins drew the game's own symbols, and it
+ * counted BOTH maps together while the map, the legend and the layer search
+ * all counted the region you were looking at. Found by opening the sheet in a
+ * tall window — 21 of its 23 rows sit below the fold on a phone. */
+describe('the layers sheet agrees with the map', () => {
+  const screen = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
+  );
+
+  it('puts the game symbol on the chip, same as the pin', () => {
+    expect(screen).toMatch(/MAP_ICONS\[l\.id\] != null/);
+  });
+
+  it('counts the region you are looking at', () => {
+    expect(screen).toMatch(/const here = poiPoints\(l\.id, filters\.region\)\?\.n \?\? 0;/);
+    expect(screen).not.toMatch(/\{l\.n\.toLocaleString\(\)\}/);
+  });
+
+  it('says so before you tap when a layer has nothing here', () => {
+    expect(screen).toMatch(/here \? here\.toLocaleString\(\) : 'none here'/);
+    expect(screen).toMatch(/opacity: here \? 1 : 0\.45/);
+  });
+
+  it('and the numbers it will show are the real per-region ones', () => {
+    // the eight layers the World Tree actually has, straight from the data
+    expect(poiPoints('fast_travel', 'tree')?.n).toBe(15);
+    expect(poiPoints('syndicate_tower', 'tree')?.n).toBe(4);
+    expect(poiPoints('npc', 'tree')?.n).toBe(1);
+    expect(poiPoints('alpha_pals', 'tree')?.n).toBe(7);
+    expect(poiPoints('egg', 'tree')?.n).toBe(30);
+    expect(poiPoints('chest', 'tree')?.n).toBe(38);
+    expect(poiPoints('pal_effigy', 'tree')?.n).toBe(47);
+    expect(poiPoints('skill_fruit', 'tree')?.n).toBe(12);
   });
 });

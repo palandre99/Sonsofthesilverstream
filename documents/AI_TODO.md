@@ -1368,6 +1368,26 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       boss ring and "Open full map" still placed correctly.
       This is the first thing found by the taller window, which suggests other
       below-the-fold surfaces are worth a look now that they are reachable.
+- [x] L24 2026-08-17 ~01:05 THE LAYERS SHEET DISAGREED WITH THE MAP IT
+      CONTROLS, in two ways at once — found by opening it in the tall window,
+      because 21 of its 23 rows sit below the fold on a phone and nobody had
+      ever seen the whole thing.
+      (1) The chips drew GENERIC vector glyphs while the pins draw the game's
+      own symbols. You picked a map-pin icon and got a winged statue. The chips
+      now carry MAP_ICONS — the same image the pin will draw.
+      (2) The counts were BOTH MAPS ADDED TOGETHER: "Fast travel 170" while the
+      map showed 155 and the World Tree 15 — and the layer SEARCH sitting right
+      beside it already showed the honest per-region number. Three places, two
+      answers. The sheet counts the region you are looking at now.
+      Better still, it says so BEFORE you tap: the 15 layers with nothing on
+      the World Tree read "none here" and dim to 45%, so you no longer switch
+      on ore, see nothing, and have to read an explanation afterwards. They
+      stay tappable, because you may be about to switch back to Palpagos.
+      Measured: exactly 15 "none here" chips on the tree, matching the 15
+      empty layers; the eight real ones read 15/4/1/7/30/38/47/12, matching
+      the source counts exactly. Screen-reader label follows the same numbers.
+      One of my own tests went stale (it pinned the old both-maps label) — fixed
+      the test to describe the new design, per the standing rule.
 - [ ] K5 "also many other issues" — HE HAS MORE AND HAS NOT LISTED THEM. Ask,
       or keep walking journeys until they surface. Do not guess at what he
       means and do not claim the map is finished.
