@@ -90,9 +90,50 @@ function PairResult({ a, b }: { a: string; b: string }) {
   );
 }
 
+interface RevPair { a: string; b: string; kind: string; note: string | null }
+
+/** One group of parent pairs. Lived INSIDE ReverseLookup, which made it a new
+ * component type on every render — Preact tore the whole list down and rebuilt
+ * it each time. Hoisted, and each group now owns its own expansion. */
+function Group({ title, items, hint, open, onOpen }: {
+  title: string; items: RevPair[]; hint: string; open: boolean; onOpen: () => void;
+}) {
+  return (
+    <>
+      <div class="grouphead">
+        <h3>{title}</h3>
+        <span>{items.length} pairs · {hint}</span>
+      </div>
+      {items.length === 0 && <div class="card pairitem"><span class="names" style={{ color: 'var(--faint)' }}>none</span></div>}
+      <div class="pairlist">
+        {(open ? items : items.slice(0, 12)).map((p) => (
+          <div key={`${p.a}|${p.b}`} class="card pairitem">
+            <PalIcon name={p.a} size={36} gender={p.note ? (parseGenderNote(p.note)?.mother === p.a ? 'f' : 'm') : undefined} />
+            <PalIcon name={p.b} size={36} gender={p.note ? (parseGenderNote(p.note)?.mother === p.b ? 'f' : 'm') : undefined} />
+            <span class="names">{p.a} <span class="plus">+</span> {p.b}</span>
+            <span class="tag">
+              {p.kind === 'unique' && <span class="badge unique">fixed recipe</span>}
+              {p.kind === 'gendered' && <LockBadge />}
+            </span>
+          </div>
+        ))}
+      </div>
+      {!open && items.length > 12 && (
+        <button class="btn morebtn" onClick={onOpen}>
+          Show all {items.length} in this group
+        </button>
+      )}
+    </>
+  );
+}
+
 function ReverseLookup({ target }: { target: string }) {
   const e = engine!;
-  const [showAll, setShowAll] = useState(false);
+  // One shared flag used to expand ALL FOUR groups at once: pressing
+  // "Show all 47" under one heading silently opened the other three as well,
+  // which is the exact wart the phone fixed with a per-group set. Same fix
+  // here, keyed by group title.
+  const [expanded, setExpanded] = useState<Set<string>>(() => new Set());
 
   const pairs = useMemo(() => {
     const names = Object.keys(pals.value);
@@ -109,6 +150,8 @@ function ReverseLookup({ target }: { target: string }) {
     return out;
   }, [target]);
 
+  const open = (key: string) => setExpanded((prev) => new Set(prev).add(key));
+
   const groups = useMemo(() => {
     const ready: typeof pairs = [];
     const blocked: typeof pairs = [];
@@ -122,34 +165,6 @@ function ReverseLookup({ target }: { target: string }) {
     }
     return { ready, blocked, one, none };
   }, [pairs]);
-
-  const Group = ({ title, items, hint }: { title: string; items: typeof pairs; hint: string }) => (
-    <>
-      <div class="grouphead">
-        <h3>{title}</h3>
-        <span>{items.length} pairs · {hint}</span>
-      </div>
-      {items.length === 0 && <div class="card pairitem"><span class="names" style={{ color: 'var(--faint)' }}>none</span></div>}
-      <div class="pairlist">
-        {(showAll ? items : items.slice(0, 12)).map((p) => (
-          <div key={`${p.a}|${p.b}`} class="card pairitem">
-            <PalIcon name={p.a} size={36} gender={p.note ? (parseGenderNote(p.note)?.mother === p.a ? 'f' : 'm') : undefined} />
-            <PalIcon name={p.b} size={36} gender={p.note ? (parseGenderNote(p.note)?.mother === p.b ? 'f' : 'm') : undefined} />
-            <span class="names">{p.a} <span class="plus">+</span> {p.b}</span>
-            <span class="tag">
-              {p.kind === 'unique' && <span class="badge unique">fixed recipe</span>}
-              {p.kind === 'gendered' && <LockBadge />}
-            </span>
-          </div>
-        ))}
-      </div>
-      {!showAll && items.length > 12 && (
-        <button class="btn morebtn" onClick={() => setShowAll(true)}>
-          Show all {items.length}
-        </button>
-      )}
-    </>
-  );
 
   // Two of the 28 self-breed-only species ALSO have a fixed recipe (Mossanda
   // Lux = Grizzbolt + Mossanda, Relaxaurus Lux = Relaxaurus + Sparkit), so
@@ -169,13 +184,17 @@ function ReverseLookup({ target }: { target: string }) {
   return (
     <>
       <Group title="Breed right now" items={groups.ready}
-        hint="you have the genders this pair needs" />
+        hint="you have the genders this pair needs"
+        open={expanded.has('ready')} onOpen={() => open('ready')} />
       {groups.blocked.length > 0 && (
         <Group title="Own both — wrong genders" items={groups.blocked}
-          hint="fix with the Pal Reverser or another copy" />
+          hint="fix with the Pal Reverser or another copy"
+          open={expanded.has('blocked')} onOpen={() => open('blocked')} />
       )}
-      <Group title="One step away" items={groups.one} hint="you own one parent species" />
-      <Group title="All other pairs" items={groups.none} hint="neither parent owned yet" />
+      <Group title="One step away" items={groups.one} hint="you own one parent species"
+        open={expanded.has('one')} onOpen={() => open('one')} />
+      <Group title="All other pairs" items={groups.none} hint="neither parent owned yet"
+        open={expanded.has('none')} onOpen={() => open('none')} />
     </>
   );
 }

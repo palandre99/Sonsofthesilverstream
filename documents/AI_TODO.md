@@ -2075,6 +2075,36 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E79. THE WEB CALCULATOR'S "SHOW ALL" EXPANDED EVERY GROUP 2026-08-17
+
+Swept the web Calculator/Odds/Paldex for over-promises that survived only
+there (the E78 pattern). The copy came back clean — but the reverse lookup
+had two structural faults the phone had already fixed.
+
+- **CHECKED, HONEST:** every absolute sentence on those three pages is one I
+  have already verified — "exact tie resolved to the higher CombiRank",
+  "two of the same species always make that species" (my own E68 line),
+  "you get every pair that produces it", "a surprise result is never
+  unexplained". The web's grouping is the same exhaustive if/else as the
+  phone's, and each group header prints its TRUE total ("235 pairs") even
+  while showing 12, so nothing was hidden dishonestly.
+- [x] **ONE SHARED `showAll` EXPANDED ALL FOUR GROUPS.** Pressing "Show all
+      235" under one heading silently opened the other three as well — the
+      exact wart the phone fixed with a per-group set (its code still carries
+      the comment about it). Now per-group, keyed by title, and the button
+      says "Show all N **in this group**" so it describes what it does.
+- [x] **`Group` WAS DEFINED INSIDE `ReverseLookup`** — a new component type on
+      every render, so Preact tore the whole pair list down and rebuilt it
+      each time. Hoisted to module scope with explicit props.
+- **Verified on the running page** (the Map lane holds port 5183; their server
+      serves the same working tree, so I used it rather than killing theirs):
+      Anubis reverse lookup shows 3 groups with true counts 0/0/235, ONE
+      "Show all 235 in this group" button, 12 rows shown; after pressing, 235
+      rows, button gone, no error, no sideways scroll.
+- **Honest limit of this check:** with that box the other three groups are
+      empty, so I could not demonstrate isolation between groups on screen —
+      only that the mechanism works and is keyed per group in the source.
+
 ## E78. THE WEB HAD BOTH PROBLEMS TOO — AND MY FIRST FIX BLANKED THE
 ## PAGE 2026-08-17
 
