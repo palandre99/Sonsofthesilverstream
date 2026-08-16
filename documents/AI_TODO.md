@@ -4097,3 +4097,19 @@ for a cosmetic gain. BOTH SESSIONS: stage your own paths explicitly
 - [x] 2026-08-15 ~23:30 planned-date polish SHIPPED both platforms:
       "planned just now / today 22:42 / yesterday 09:15 / 12 Aug" instead
       of the raw ISO date. Eye-verified on QA.
+
+### L25 — the pal picker: faces, and a list that stops loading 224 rows at once — DONE (abe7764, published)
+Found with `QA_TALL=1700`, which reaches below the 812px fold. Two things:
+- **Every pal row now leads with that pal's portrait.** Pins, legend and Paldex
+  all show faces; the one place you CHOOSE a pal showed text only, while the
+  layer rows directly above it already carried game symbols.
+- **The list is a FlatList, not a ScrollView.** All 224 rows used to mount on
+  sheet-open. Fine for three text nodes per row; not fine once each row is an
+  image decode. Measured: 1828 DOM nodes -> 758, 63 rows rendered instead of
+  224. The search box stays outside the list so re-renders cannot steal focus.
+Pinned by two tests in `app/tests/map.test.ts`.
+
+### L26 — considered and deliberately NOT changed
+- The Layers sheet ScrollView (23 rows, no images) — mounting all of it is free.
+- Row height is uniform, so `getItemLayout` would be valid on the pal list, but
+  it buys nothing measurable and a wrong constant there causes scroll jumps.
