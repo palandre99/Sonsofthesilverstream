@@ -398,9 +398,17 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       view than the one on screen. Leading hypothesis, to test next: the
       viewport is pushed during the focus ZOOM ANIMATION, and the last push
       lands while the scale is still low, where the same screen width covers a
-      far larger uv range. Fix candidates: push once more when the animation
-      settles, or clamp the label box against the canvas width at render time
-      instead of culling by uv.
+      far larger uv range.
+      2026-08-16 ~03:15 HYPOTHESIS TESTED AND FALSIFIED: MapCanvas now pushes
+      the final rect from the zoom animation's completion callback (a real
+      improvement, kept), and the two clipped labels are byte-identical —
+      272..422 and 273..423, both centred 28 px from the right edge. So a
+      stale viewport is NOT the cause. Eliminated so far: the centring
+      (transform version was worse), the cull margin (widening it deletes good
+      labels while these two survive), and viewport staleness.
+      NEXT: stop culling by uv entirely — clamp the label's box against the
+      canvas width at render time, which cannot be fooled by whatever rect the
+      memo is reading. Cheap and terminal.
 
 - [x] F31 RESOLVED 2026-08-16 ~03:00 — and my first report of it was WRONG.
       `scripts/qa-shot.js` did ask for 375x812 and get 1500, because a

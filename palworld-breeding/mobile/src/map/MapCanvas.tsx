@@ -230,14 +230,32 @@ export function MapCanvas({
 
   /* --------------------------------------------------------------- imperative */
 
+  const settle = useCallback((scale: number, x: number, y: number) => {
+    onViewport?.({
+      scale,
+      u0: -x / scale,
+      v0: -y / scale,
+      u1: (-x + size.w) / scale,
+      v1: (-y + size.h) / scale,
+    });
+  }, [onViewport, size.h, size.w]);
+
   const applyFocus = useCallback((u: number, v: number, zoom: number, animate: boolean) => {
     const next = Math.min(contain * MAX_ZOOM, Math.max(contain, contain * zoom));
     const c = clamp(size.w / 2 - u * next, size.h / 2 - v * next, next);
     const ms = animate ? 320 : 0;
-    k.value = withTiming(next, { duration: ms });
+    // Push the FINAL rect when the animation lands. The reaction below only
+    // fires on thresholds, so its last push during a zoom happens while the
+    // scale is still low — where the same screen width covers a far wider
+    // slice of the map. Anything culling by that rect (place-name edge insets)
+    // then thinks the view is much wider than it is.
+    k.value = withTiming(next, { duration: ms }, (done) => {
+      'worklet';
+      if (done) runOnJS(settle)(next, c.x, c.y);
+    });
     tx.value = withTiming(c.x, { duration: ms });
     ty.value = withTiming(c.y, { duration: ms });
-  }, [clamp, contain, k, size.h, size.w, tx, ty]);
+  }, [clamp, contain, k, settle, size.h, size.w, tx, ty]);
 
   // A pal card can ask us to frame a species the same frame it mounts us, so
   // the request routinely arrives BEFORE the first layout. Focusing then would
