@@ -6,13 +6,102 @@ import { T } from '../theme';
 import { BackToCardChip, Badge, Btn, Card, ElementChips, PageHead, PalIcon, WorkChips, s, getRecentPicks } from '../ui/kit';
 import { PalPicker } from '../ui/PalPicker';
 import {
-  canPairNow, engine, ownedAny, pals, selfOnly, useAppVersion,
+  canPairNow, engine, getBox, ownedAny, pals, selfOnly, useAppVersion,
 } from '../store';
 import { parseGenderNote } from '../engine/formula';
 import { onNavIntent, takeIntentPayload } from '../nav/intent';
 import { PalDetail } from '../ui/PalDetail';
 import { Icon } from '../ui/Icon';
 import type { ChildResult } from '../engine/types';
+
+
+/** What the Calculator shows BEFORE you have picked anything.
+ *
+ * The CEO's screenshot (2026-08-16): a title, two buttons, one small card,
+ * then most of the screen black — "same issue as u addressed on the home
+ * page of plan tab, empty and poor design". The existing quick-start row
+ * only appeared once you had ALREADY used the tab, so a first visit showed
+ * nothing at all.
+ *
+ * So the space is filled with the two things that are always true and
+ * always useful: the pals you actually own, one tap away, and a plain
+ * explanation of what each of the two modes does. */
+function CalcStartHelp({ onPick, mode }: {
+  onPick: (name: string) => void;
+  mode: 'pair' | 'reverse';
+}) {
+  useAppVersion();
+  const owned = Object.keys(getBox()).filter((n) => Object.hasOwn(pals, n));
+  return (
+    <>
+      {owned.length > 0 ? (
+        <Card style={{ marginTop: 12 }}>
+          <Text style={{
+            color: T.faint, fontSize: 10.5, fontWeight: '800',
+            letterSpacing: 1, marginBottom: 7,
+          }}>START FROM YOUR PALDEX</Text>
+          <View style={[s.wrap]}>
+            {owned.slice(0, 8).map((n) => (
+              <Pressable key={n}
+                onPress={() => {
+                  void Haptics.selectionAsync();
+                  onPick(n);
+                }}
+                accessibilityRole="button"
+                accessibilityLabel={`Use ${n}`}
+                style={({ pressed }) => [{
+                  flexDirection: 'row', alignItems: 'center', gap: 6,
+                  backgroundColor: pressed ? T.accentSoft : T.surface2,
+                  borderWidth: 1, borderColor: pressed ? T.accent : T.line,
+                  borderRadius: 10, paddingVertical: 5, paddingHorizontal: 9,
+                }]}>
+                <PalIcon name={n} size={26} />
+                <Text style={{ color: T.ink, fontWeight: '700', fontSize: 12.5 }}>{n}</Text>
+              </Pressable>
+            ))}
+          </View>
+          {owned.length > 8 && (
+            <Text style={[s.body, { fontSize: 11.5, marginTop: 7 }]}>
+              …and {owned.length - 8} more — use the button above to search them all.
+            </Text>
+          )}
+        </Card>
+      ) : (
+        <Card style={{ marginTop: 12 }}>
+          <Text style={[s.body, { fontSize: 12.5 }]}>
+            Tick the pals you own in the Paldex and they will show up here as
+            one-tap shortcuts.
+          </Text>
+        </Card>
+      )}
+
+      <Card style={{ marginTop: 12, gap: 12 }}>
+        {[
+          mode === 'pair'
+            ? { n: '1', h: 'Pair → child', b: 'Pick any two pals and you get exactly what they make, with the maths shown.' }
+            : { n: '1', h: 'Child → parents', b: 'Pick the pal you want and you get every pair that produces it.' },
+          mode === 'pair'
+            ? { n: '2', h: 'Swap to Child → parents', b: 'Already know what you want? Use the other tab above to work backwards instead.' }
+            : { n: '2', h: 'Swap to Pair → child', b: 'Curious what two pals make? Use the other tab above to work forwards instead.' },
+          { n: '3', h: 'It tells you when the rule changes', b: 'Special recipes and gender-locked pairs are called out, so a surprise result is never unexplained.' },
+        ].map((r) => (
+          <View key={r.n} style={{ flexDirection: 'row', gap: 11 }}>
+            <View style={{
+              width: 24, height: 24, borderRadius: 12, backgroundColor: T.accentSoft,
+              alignItems: 'center', justifyContent: 'center',
+            }}>
+              <Text style={{ color: T.accentInk, fontWeight: '800', fontSize: 12 }}>{r.n}</Text>
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={{ color: T.ink, fontWeight: '800', fontSize: 13.5 }}>{r.h}</Text>
+              <Text style={[s.body, { fontSize: 12.5, marginTop: 2 }]}>{r.b}</Text>
+            </View>
+          </View>
+        ))}
+      </Card>
+    </>
+  );
+}
 
 function ResultFlags({ ch }: { ch: ChildResult }) {
   return (
@@ -312,18 +401,25 @@ export function CalculatorScreen() {
               )}
             </Card>
           )}
+          {!(a && b) && (
+            <CalcStartHelp mode="pair"
+              onPick={(n) => { if (!a) setA(n); else if (!b) setB(n); }} />
+          )}
         </>
       ) : (
         <>
           <Btn label={target ?? 'I want this pal…'} onPress={() => setPicking('target')} />
           {target ? <ReverseLookup target={target} /> : (
-            <Card style={{ marginTop: 14 }}>
-              <Text style={s.h2}>Pick a target</Text>
-              <Text style={[s.body, { marginTop: 6 }]}>
-                You'll see every parent pair that produces it — grouped by what's
-                cheapest from your box.
-              </Text>
-            </Card>
+            <>
+              <Card style={{ marginTop: 14 }}>
+                <Text style={s.h2}>Pick a target</Text>
+                <Text style={[s.body, { marginTop: 6 }]}>
+                  You'll see every parent pair that produces it — grouped by what's
+                  cheapest from your box.
+                </Text>
+              </Card>
+              <CalcStartHelp mode="reverse" onPick={(n) => setTarget(n)} />
+            </>
           )}
         </>
       )}
