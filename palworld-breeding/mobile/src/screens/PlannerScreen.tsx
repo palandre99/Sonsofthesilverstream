@@ -408,20 +408,33 @@ export function PlannerScreen() {
   // per-goal progress: how many of the steps each goal depends on are done
   const goalProgress = useMemo(() => {
     if (!plan) return [];
-    const byGoal = new Map<string, { total: number; done: number }>();
+    // a bare "0/16" told him how far off he was and nothing about what to
+    // DO — he had to scan 23 phases to find which step was his. Each goal
+    // now names its next step, preferring one he can breed RIGHT NOW.
+    interface Prog {
+      total: number; done: number;
+      next?: { a: string; b: string; ready: boolean };
+    }
+    const byGoal = new Map<string, Prog>();
     for (const st of plan.steps) {
-      const isDone = tickStateOf(checks[stepId(st.parents[0], st.parents[1], st.child)]) === 'full';
+      const sid = stepId(st.parents[0], st.parents[1], st.child);
+      const isDone = tickStateOf(checks[sid]) === 'full';
+      const ready = !!stepMeta.get(sid)?.ready;
       for (const g of st.neededBy) {
         const cur = byGoal.get(g) ?? { total: 0, done: 0 };
         cur.total++;
         if (isDone) cur.done++;
+        // first undone step wins; a READY one outranks an earlier blocked one
+        if (!isDone && (!cur.next || (ready && !cur.next.ready))) {
+          cur.next = { a: st.parents[0], b: st.parents[1], ready };
+        }
         byGoal.set(g, cur);
       }
     }
     return [...byGoal.entries()]
       .map(([name, v]) => ({ name, ...v }))
       .sort((x, y) => (y.done / y.total) - (x.done / x.total) || x.name.localeCompare(y.name));
-  }, [plan, checks]);
+  }, [plan, checks, stepMeta]);
 
   const needs = plan ? cakeNeeds(plan.steps.length) : null;
   // advice is computed WITH the plan and stored on it — the card renders in
@@ -862,27 +875,44 @@ export function PlannerScreen() {
                 {goalProgress.map((g) => {
                   const complete = g.done === g.total;
                   return (
-                    <View key={g.name} style={[s.row, { gap: 8 }]}>
-                      <Pressable onPress={() => setViewing(g.name)} hitSlop={4}
-                        accessibilityRole="button"
-                        accessibilityLabel={`Open ${g.name}`}>
-                        <PalIcon name={g.name} size={26} />
-                      </Pressable>
-                      <Text style={{
-                        color: T.ink, fontWeight: '700', fontSize: 14, width: 132,
-                      }} numberOfLines={1}>{g.name}</Text>
-                      <View style={{
-                        flex: 1, height: 8, borderRadius: 4, backgroundColor: T.surface2,
-                      }}>
+                    <View key={g.name} style={{ gap: 3 }}>
+                      <View style={[s.row, { gap: 8 }]}>
+                        <Pressable onPress={() => setViewing(g.name)} hitSlop={4}
+                          accessibilityRole="button"
+                          accessibilityLabel={`Open ${g.name}`}>
+                          <PalIcon name={g.name} size={26} />
+                        </Pressable>
+                        <Text style={{
+                          color: T.ink, fontWeight: '700', fontSize: 14, width: 132,
+                        }} numberOfLines={1}>{g.name}</Text>
                         <View style={{
-                          width: `${(g.done / g.total) * 100}%`, height: '100%',
-                          borderRadius: 4, backgroundColor: complete ? T.ok : T.accent,
-                        }} />
+                          flex: 1, height: 8, borderRadius: 4, backgroundColor: T.surface2,
+                        }}>
+                          <View style={{
+                            width: `${(g.done / g.total) * 100}%`, height: '100%',
+                            borderRadius: 4, backgroundColor: complete ? T.ok : T.accent,
+                          }} />
+                        </View>
+                        <Text style={{
+                          color: T.muted, fontSize: 11.5, fontWeight: '700', width: 38,
+                          textAlign: 'right',
+                        }}>{g.done}/{g.total}</Text>
                       </View>
-                      <Text style={{
-                        color: T.muted, fontSize: 11.5, fontWeight: '700', width: 38,
-                        textAlign: 'right',
-                      }}>{g.done}/{g.total}</Text>
+                      {/* the number alone made him hunt through the phases
+                          for the step that was actually his */}
+                      {complete ? (
+                        <Text style={{ color: T.ok, fontSize: 11.5, marginLeft: 34 }}>
+                          Done — every step for it is ticked.
+                        </Text>
+                      ) : g.next ? (
+                        <Text numberOfLines={1} style={{
+                          color: g.next.ready ? T.accentInk : T.faint,
+                          fontSize: 11.5, marginLeft: 34,
+                        }}>
+                          {g.next.ready ? 'Breed now: ' : 'Next: '}
+                          {g.next.a} + {g.next.b}
+                        </Text>
+                      ) : null}
                     </View>
                   );
                 })}
