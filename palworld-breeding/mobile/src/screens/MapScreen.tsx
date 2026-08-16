@@ -336,12 +336,29 @@ export function MapScreen() {
   // is drawn at true resolution instead of being rasterised small and blown up
   // (which is what made them jagged on device).
 
-  // picks that have no spawns on the map currently shown
+  // Picks that genuinely do not live on this map — underground included.
+  // This used to ask the SURFACE-only question, which was fine until the 25
+  // dungeon-only pals became pickable: the map then drew 174 Mau pins on
+  // Palpagos while a banner over them read "Mau doesn't live on this map.
+  // Try The World Tree." Both statements on screen at once, one of them false.
   const elsewhere = useMemo(
-    () => [...filters.pals].filter((n) => spawnLevels(n, region) === null),
+    () => [...filters.pals].filter((n) => spawnLevels(n, region, true) === null),
     [filters.pals, region],
   );
+  /**
+   * Picked pals that DO live here but only underground, while dungeon spawns
+   * are switched off. Telling this player to try the other map would send them
+   * to the wrong island; the fix is one tick away on this one.
+   */
+  const undergroundOnly = useMemo(
+    () => (filters.dungeons ? [] : [...filters.pals].filter(
+      (n) => spawnLevels(n, region) === null && spawnLevels(n, region, true) !== null,
+    )),
+    [filters.pals, region, filters.dungeons],
+  );
   const otherRegionName = region === 'palpagos' ? 'The World Tree' : 'Palpagos Islands';
+  /** why the map is blank, worked out once per render */
+  const empty = emptyReason(filters, region);
 
   /* ------------------------------------------------------------ interaction */
 
@@ -570,7 +587,7 @@ export function MapScreen() {
       {/* A pal picked on one map vanishes silently when you switch to the
           other. Say so, and say where it does live, instead of showing an
           empty world and letting the player wonder what broke. */}
-      {elsewhere.length > 0 && (
+      {(elsewhere.length > 0 || undergroundOnly.length > 0) && (
         <View style={{
           position: 'absolute', top: 56, left: 12, right: 12,
           backgroundColor: 'rgba(12,22,24,0.94)', borderRadius: 12,
@@ -579,10 +596,22 @@ export function MapScreen() {
         }}>
           <Icon name="information-outline" size={15} color={T.muted} />
           <Text style={[s.body, { fontSize: 12.5, flex: 1 }]}>
-            {elsewhere.length === 1
-              ? `${elsewhere[0]} doesn't live on this map.`
-              : `${elsewhere.length} of your picks don't live on this map.`}
-            {' '}Try {otherRegionName}.
+            {elsewhere.length > 0 ? (
+              <>
+                {elsewhere.length === 1
+                  ? `${elsewhere[0]} doesn't live on this map.`
+                  : `${elsewhere.length} of your picks don't live on this map.`}
+                {' '}Try {otherRegionName}.
+              </>
+            ) : (
+              // lives here, just not above ground — do not send them away
+              <>
+                {undergroundOnly.length === 1
+                  ? `${undergroundOnly[0]} is only found inside dungeons here.`
+                  : `${undergroundOnly.length} of your picks are only found inside dungeons here.`}
+                {' '}Tick “Also show dungeon spawns” under Find.
+              </>
+            )}
           </Text>
         </View>
       )}
@@ -622,17 +651,25 @@ export function MapScreen() {
           player who had just found one, while the real reason sat one line
           away in the data. Say the actual reason. */}
       {active.length === 0 && !sheet
-        && (filters.pals.size > 0 || filters.poi.size > 0) && (
+        && (filters.pals.size > 0 || filters.poi.size > 0)
+        // The banner above already names the pal AND the map to try. This card
+        // used to appear underneath it saying "Nothing here on this map - what
+        // you switched on does not appear in this region", which is the same
+        // answer in vaguer words, stacked on the same screen. It still shows
+        // for every other reason, including when a POI layer is missing here
+        // and the banner says nothing about it.
+        && !(empty.kind === 'region'
+          && (elsewhere.length > 0 || undergroundOnly.length > 0)) && (
         <View style={{
           position: 'absolute', left: 12, right: 12, bottom: insets.bottom + 74,
           backgroundColor: 'rgba(12,22,24,0.94)', borderRadius: 13,
           borderWidth: 1, borderColor: T.line, padding: 12, gap: 7,
         }}>
           <Text style={{ color: T.ink, fontWeight: '800', fontSize: 13.5 }}>
-            {emptyReason(filters, region).title}
+            {empty.title}
           </Text>
           <Text style={[s.body, { fontSize: 12.5 }]}>
-            {emptyReason(filters, region).body}
+            {empty.body}
           </Text>
         </View>
       )}
@@ -852,7 +889,7 @@ const LEVEL_CAPS = [ALL_LEVEL_CAP, 15, 30, 45, 60];
  * Never a generic shrug: the data knows the answer. A night-only pal in
  * daytime is the common case and the app can name both the pal and the fix.
  */
-function emptyReason(f: MapFilters, region: RegionId): { title: string; body: string } {
+function emptyReason(f: MapFilters, region: RegionId): { kind: 'time' | 'level' | 'layers' | 'region'; title: string; body: string } {
   const mode = timeMode(f.time);
   if (mode !== 'any' && f.pals.size) {
     const wrongTime = [...f.pals].filter((n) => (
@@ -861,6 +898,7 @@ function emptyReason(f: MapFilters, region: RegionId): { title: string; body: st
     if (wrongTime.length === f.pals.size) {
       const who = wrongTime.length === 1 ? wrongTime[0] : `${wrongTime.length} pals you picked`;
       return {
+        kind: 'time',
         title: mode === 'day' ? 'Nothing out in the daytime' : 'Nothing out at night',
         body: mode === 'day'
           ? `${who} only comes out at night. Tap Daytime again for Night, or once more for Any time.`
@@ -872,14 +910,21 @@ function emptyReason(f: MapFilters, region: RegionId): { title: string; body: st
     // name the cap the player actually set, rather than "those levels" — the
     // control is an upper bound, so the sentence should read like one
     return {
+      kind: 'level',
       title: `Nothing at level ${f.level.hi} or under`,
       body: `What you switched on only spawns above level ${f.level.hi} on this `
         + 'map. Tap Any level to see all of it.',
     };
   }
+  // `layers` names POI layers that are wholly absent here - information the
+  // "picked elsewhere" banner does not carry, so that card must still show.
+  // `region` is the bare fallback, which says only what the banner already
+  // said and in vaguer words.
+  const named = namedLayers(f, region);
   return {
+    kind: named ? 'layers' : 'region',
     title: 'Nothing here on this map',
-    body: `${namedLayers(f, region) ?? 'What you switched on does not appear'} in `
+    body: `${named ?? 'What you switched on does not appear'} in `
       + 'this region. Try the other map at the top.',
   };
 }

@@ -1503,3 +1503,45 @@ describe('the legend key', () => {
     expect(built.slice(0, squareAt)).toContain('key: `dun:${pal}`');
   });
 });
+
+describe('what the map says when it is blank', () => {
+  const screen = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
+  );
+
+  it('does not call a pal absent when its spawns are underground', () => {
+    // Regression, mine, same session: once the 25 dungeon-only pals became
+    // pickable, the map drew 174 Mau pins on Palpagos while a banner over
+    // them read "Mau doesn't live on this map. Try The World Tree."
+    expect(spawnLevels('Mau', 'palpagos', true)).not.toBeNull();
+    const el = screen.slice(screen.indexOf('const elsewhere'), screen.indexOf('const elsewhere') + 320);
+    expect(el, 'elsewhere block must exist').toContain('filters.pals');
+    expect(el).toContain('spawnLevels(n, region, true) === null');
+  });
+
+  it('sends an underground-only pick to the tick box, not the other island', () => {
+    const ug = screen.slice(
+      screen.indexOf('const undergroundOnly'),
+      screen.indexOf('const undergroundOnly') + 420,
+    );
+    expect(ug, 'undergroundOnly block must exist').toContain('filters.dungeons');
+    // lives here underground, but nothing is drawn because dungeons are off
+    expect(ug).toContain('spawnLevels(n, region) === null');
+    expect(ug).toContain('spawnLevels(n, region, true) !== null');
+    expect(screen).toContain('is only found inside dungeons here');
+  });
+
+  it('says it once, not twice', () => {
+    // The specific banner names the pal AND the map to try; the generic card
+    // underneath repeated it in vaguer words, both on screen together.
+    expect(screen).toMatch(/kind: 'time' \| 'level' \| 'layers' \| 'region'/);
+    expect(screen).toMatch(
+      /!\(empty\.kind === 'region'\s*\n?\s*&& \(elsewhere\.length > 0 \|\| undergroundOnly\.length > 0\)\)/);
+  });
+
+  it('but still names a layer the banner knows nothing about', () => {
+    // kind 'layers' carries information the banner does not - measured on the
+    // World Tree with Dungeon on: "Dungeon does not appear in this region."
+    expect(screen).toMatch(/kind: named \? 'layers' : 'region'/);
+  });
+});
