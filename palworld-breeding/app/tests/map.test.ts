@@ -515,3 +515,36 @@ describe('zoom never asks for pixels that do not exist', () => {
     expect(canvas).not.toMatch(/const MAX_SCALE = 4096/);
   });
 });
+
+/* CEO, 2026-08-16: "Icons are also garbage and not accurate game icons
+ * images." It was resolution: a 22px sprite drawn at ~45 device px on a 3x
+ * phone is mush. These assert the pixels, not the intention. */
+describe('map symbols have enough pixels for a 3x phone', () => {
+  /** width/height straight out of the PNG IHDR */
+  function pngSize(file: string): { w: number; h: number } {
+    const b = readFileSync(join(__dirname, '..', 'public', 'mapicons', file));
+    return { w: b.readUInt32BE(16), h: b.readUInt32BE(20) };
+  }
+
+  // upgraded to the game's own higher-resolution exports
+  const UPGRADED = [
+    'fast_travel', 'syndicate_tower', 'sealed_realm', 'bounty_targets',
+    'chest', 'dungeon', 'egg', 'note',
+  ];
+
+  it.each(UPGRADED)('%s is at least 64px', (layer) => {
+    const { w, h } = pngSize(`${layer}.png`);
+    expect(Math.min(w, h)).toBeGreaterThanOrEqual(64);
+  });
+
+  it('kept the two symbols whose replacement did not actually match', () => {
+    // T_itemicon_Relic is a green creature, not the effigy statue, and the
+    // compass boss glyph is a horned head rather than our alpha marker. Both
+    // were rejected on a side-by-side render. A sharper WRONG symbol is still
+    // wrong, so these stay small on purpose — this test records that choice.
+    for (const layer of ['pal_effigy', 'alpha_pals']) {
+      const { w } = pngSize(`${layer}.png`);
+      expect(w).toBeLessThan(64);
+    }
+  });
+});

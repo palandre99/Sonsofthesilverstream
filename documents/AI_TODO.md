@@ -749,20 +749,26 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       measured at 8192, 180 z4 tiles are measured present for Palpagos and 0
       for the tree, and tileLevelFor is asserted to select z4 above scale 4096.
       Those are tests, not opinions — but they are not his eyes on a phone.
-- [ ] J3 ICONS — CAUSE MEASURED. The sprites are TINY: fast_travel 22x20,
-      dungeon 22x21, chest 26x22, egg 14x20, alpha_pals 25x26. Drawn at 13-15
-      logical px on a 3x phone that is ~45 device px, so every one is an
-      upscaled 22px sprite. They are the game's own symbols (pal-atlas bakes
-      them out of the PAK) but at a resolution that cannot survive a modern
-      phone. Need a higher-resolution source for the same symbols.
-      RESEARCH SO FAR (2026-08-16 ~15:55): pal-atlas's public/icons holds 25
-      files and they ARE the ones we already ship — 500 to 4000 bytes each, so
-      that upstream is exhausted, not mis-fetched. Remaining candidates, in
-      order: paldb.cc (serves game UI art and is already our provenance chain
-      for other data); the game PAK itself, which the CEO owns but which needs
-      an extraction pipeline we do not have; a vector redraw of the same
-      symbols, which would be OUR art rather than the game's and so is a last
-      resort and a CEO decision, not a silent substitution.
+- [x] J3 DONE 2026-08-16 ~16:25 — EIGHT MAP SYMBOLS NOW COME FROM THE GAME AT
+      FULL SIZE, AND TWO CANDIDATES WERE REJECTED.
+      The cause was resolution, not the wrong art: pal-atlas's sprites are
+      14-46 px and a 22 px symbol drawn at ~45 device px on a 3x phone is mush.
+      jeankassio/PalMiniMap (MIT) exports the same UI textures at 64-100 px.
+      UPGRADED (8): fast_travel 100px, syndicate_tower 100px, sealed_realm 80,
+      bounty_targets 80, chest 80, dungeon 64, egg 64, note 64.
+      REJECTED (2), and this is the point: every candidate was RENDERED SIDE BY
+      SIDE against the icon it would replace before being accepted, and the
+      sheet caught two that do not correspond —
+        pal_effigy -> T_itemicon_Relic is a GREEN CREATURE, not the effigy
+        alpha_pals -> T_icon_compass_boss is a horned head, a different glyph
+      Both keep their existing art. A sharper wrong symbol is still wrong, and
+      a test now records that choice so nobody "fixes" it later.
+      13 more layers (ore, coal, sulfur, quartz, paldium, soralite, oil,
+      berries, mushrooms, merchant, pal_merchant, npc, skill_fruit) have NO
+      corresponding symbol in that repo and honestly keep their small sprites.
+      Note the upgraded ones are white/monochrome — that is how the in-game map
+      actually draws its markers, so they read more like the game, not less.
+      Eye-verified on the map with fast travel + dungeons switched on.
 - [x] J4 DONE 2026-08-16 ~16:00 — THE MAP SEARCH IS NOW THE PALDEX SEARCH.
       Not a lookalike: it imports the same applyFilters/sortedPals out of
       ui/palFilters and opens the same ui/FilterSheet, so all 12 work types, 9
