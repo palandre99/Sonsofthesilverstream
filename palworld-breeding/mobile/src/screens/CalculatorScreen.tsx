@@ -106,8 +106,16 @@ function CalcStartHelp({ onPick, mode }: {
 function ResultFlags({ ch }: { ch: ChildResult }) {
   return (
     <View style={[s.wrap, { marginTop: 6 }]}>
-      {ch.kind === 'unique' && <Badge kind="unique">unique recipe</Badge>}
-      {ch.kind === 'gendered' && <Badge kind="warn">gender locked</Badge>}
+      {/* the SAME mechanic was called "unique recipe" here and "fixed
+          recipe" on the Plan tab, in the Paldex and in the Reference — a
+          player would fairly read those as two different things. "fixed
+          recipe" wins on both plainness and majority. And "gender locked"
+          named the mechanic rather than the consequence; the ♂/♀ are drawn
+          on the parents right beside this badge. */}
+      {ch.kind === 'unique' && <Badge kind="unique">fixed recipe</Badge>}
+      {ch.kind === 'gendered' && (
+        <Badge kind="warn">only works with the genders shown</Badge>
+      )}
       {ch.kind === 'self' && <Badge kind="plain">same species</Badge>}
       {ch.tieBreak && <Badge kind="warn">close call — higher rank wins</Badge>}
     </View>

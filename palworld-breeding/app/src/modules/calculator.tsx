@@ -9,7 +9,9 @@ import type { ChildResult } from '../engine/types';
 function ResultFlags({ ch }: { ch: ChildResult }) {
   return (
     <div class="flagrow">
-      {ch.kind === 'unique' && <span class="badge unique">unique recipe</span>}
+      {/* "fixed recipe" everywhere — the Plan tab, Paldex and Reference all
+          already used it; only here did the same mechanic have a second name */}
+      {ch.kind === 'unique' && <span class="badge unique">fixed recipe</span>}
       {ch.kind === 'gendered' && <LockBadge />}
       {ch.kind === 'self' && <span class="badge plain">same species</span>}
       {ch.tieBreak && <span class="badge warn">close call — higher rank wins</span>}
@@ -185,7 +187,7 @@ export function CalculatorPage() {
       <div class="pagehead">
         <h1>Calculator</h1>
         <p>Every result runs the exact 1.0 formula, verified against all 44,851 outcomes
-          from the game files — unique recipes, the gender-locked pair, pool exclusions
+          from the game files — fixed recipes, the gender-locked pair, pool exclusions
           and exact ties resolved the way the game resolves them.</p>
       </div>
       <div class="calcmodes" role="group" aria-label="Calculator mode">
