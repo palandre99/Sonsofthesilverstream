@@ -40,6 +40,10 @@ export interface PalInfo {
    * 24 species that have one. Two of them are about eggs, which is the whole
    * point of this app, and nothing surfaced them before. */
   base_support: { type: string; task?: string; bonus?: number; effect?: string } | null;
+  /** How the game actually hands you this pal — dungeons, loot eggs, caged
+   * pals in enemy camps, the Pal Recruiter, raids, fishing. Mined for 251 of
+   * the 299 species and, until now, shown by nothing. */
+  obtain_notes: string[] | null;
   max_wild_level: number | null;
   wild: boolean;
   regions: string[];

@@ -17,6 +17,10 @@ export interface PalInfo {
   partner_skill: string | null;
   partner_effect: string | null;
   base_support: Record<string, unknown> | null;
+  /** How the game actually hands you this pal — dungeons, loot eggs, caged
+   * pals in enemy camps, the Pal Recruiter, raids, fishing. Mined for 251 of
+   * the 299 species and, until now, shown by nothing. */
+  obtain_notes: string[] | null;
   nocturnal: boolean | null;
   wild: boolean;
   regions: string[];

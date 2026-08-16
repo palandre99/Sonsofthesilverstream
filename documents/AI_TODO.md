@@ -1913,6 +1913,46 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E62. THE APP TOLD 11 PALS TO "BREED IT" WHEN THAT IS IMPOSSIBLE — AND
+## THE REAL ANSWER WAS IN THE DATA ALL ALONG 2026-08-16
+
+The biggest find of the day. Two halves, both shipped on BOTH platforms.
+
+- [x] **"no regular wild spawn — breed it" WAS IMPOSSIBLE ADVICE FOR 11 OF
+      THE 13 PALS IT APPEARED ON.** The badge shows when `!wild` and there is
+      no alpha spot. Tested every species that triggers it against
+      breeding_1_0.json: ten of them (Astralym, Bellanoir Libero, Blazamut
+      Ryu, Dandilord, Hartalis, Panthalus, Silvance, Xenogard, Xenolord,
+      Xenovader) are **self-breed-only and excluded from the generic pool** —
+      the only recipe needs one of their own kind, so "breed it" tells you to
+      do a thing that requires already having done it. Bellanoir's only
+      recipe is Bellanoir + Bellanoir Libero, same trap. Only Katress Ignis
+      (a real cross-recipe) and Mau (in the generic pool) could act on it.
+      The badge now states the fact and stops there: "no regular wild spawn".
+- [x] **`obtain_notes` IS MINED FOR 251 OF 299 SPECIES AND WAS RENDERED BY
+      NOTHING.** 670 lines of exactly what the badge was failing to say:
+      dungeons with level bands (144), dungeon loot eggs (184), the Pal
+      Recruiter (101), pals that attack bases during raids (75), caged pals
+      in enemy camps (69), fishing (21), Wildlife Sanctuaries (18),
+      incident/outbreak events (11), raid-boss rewards (9). Both cards now
+      carry an "Other ways to get one" list in the dataset's own words.
+      Verified live: **Bellanoir** reads "raid-boss reward: Eclipsed Siren
+      Bellanoir drops its Huge Dark Egg (90%)" and "breeding combo: Bellanoir
+      + Bellanoir Libero"; **Fuddler** reads three dungeons with their level
+      ranges. Neither platform overflows (phone doc scrollWidth 375, web
+      drawer no overflow, list items unclipped).
+- **JARGON CHECK BEFORE SHIPPING GAME TEXT:** scanned all 670 lines. Exactly
+      ONE leaks a data field name — "no regular wild spawn - catch its
+      boss/alpha (see alpha_locations)", 14 occurrences. Lines starting "no
+      regular wild spawn" are filtered out (the badge says it and the map
+      shows the alpha), and **nothing else is touched** — no rewriting of
+      game text, per the hard rule.
+- **NOT ACTED ON, deliberately:** Bellanoir's note names a breeding combo
+      that breeding_1_0.json does not carry as a recipe, and Astralym's says
+      "not obtainable in 1.0 - defeating it only adds a Paldex entry". Both
+      are the dataset's words and are now shown; **I did not edit the data to
+      reconcile them.** Flagging, not inventing.
+
 ## E61. THE SAME FAKE CEILING WAS ON THE WEBSITE, AND I HAD MISSED IT 2026-08-16
 
 The both-trees rule exists for exactly this, and I still broke it. When E57

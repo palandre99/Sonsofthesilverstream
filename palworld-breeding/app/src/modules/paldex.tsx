@@ -447,9 +447,21 @@ function Drawer({ name, onClose }: { name: string; onClose: () => void }) {
         <section>
           <h4>Where to find it</h4>
           <PalMapWeb name={name} />
+          {otherWays(p).length > 0 && (
+            <div style={{ marginTop: '8px' }}>
+              <strong>Other ways to get one</strong>
+              <ul style={{ margin: '4px 0 0', paddingLeft: '18px' }}>
+                {otherWays(p).map((line) => <li key={line}>{line}</li>)}
+              </ul>
+            </div>
+          )}
           <div class="kv" style={{ marginTop: '8px' }}>
+            {/* It used to say "no regular wild spawn — breed it". That advice is
+                impossible for 11 of the 13 pals it appeared on: ten can only be
+                bred from their OWN kind, so you need one already, and Bellanoir
+                has no recipe at all. The real routes are listed above now. */}
             {!p.wild && !ALPHA_SPOTS[name] && (
-              <span class="badge plain">no regular wild spawn — breed it</span>
+              <span class="badge plain">no regular wild spawn</span>
             )}
             {p.egg_types.map((e) => <span key={e} class="chip">Egg: {e}</span>)}
           </div>
@@ -460,6 +472,15 @@ function Drawer({ name, onClose }: { name: string; onClose: () => void }) {
 }
 
 /* ---------------- the merged page ---------------- */
+
+/** The obtain_notes worth showing. The only line in all 670 that leaks a data
+ * field name is "no regular wild spawn - catch its boss/alpha (see
+ * alpha_locations)", and its plain half is already the badge and the map — so
+ * lines starting that way are dropped and the rest are the dataset's own
+ * words, untouched. */
+function otherWays(p: { obtain_notes?: string[] | null }): string[] {
+  return (p.obtain_notes ?? []).filter((l) => !l.startsWith('no regular wild spawn'));
+}
 
 export function PaldexPage() {
   const [q, setQ] = useState('');

@@ -65,6 +65,15 @@ function statRank(
   return { rank: `#${better + 1} of ${total}`, tied: same - 1 };
 }
 
+/** The obtain_notes worth showing. The only line in all 670 that leaks a data
+ * field name is "no regular wild spawn - catch its boss/alpha (see
+ * alpha_locations)", and its plain half is already the badge below and the map
+ * above — so lines that start that way are dropped and the rest are the
+ * dataset's own words, untouched. */
+function otherWays(p: { obtain_notes?: string[] | null }): string[] {
+  return (p.obtain_notes ?? []).filter((l) => !l.startsWith('no regular wild spawn'));
+}
+
 /** Deterministic sparkle field — positions fixed so nothing shifts between
  * renders, density scales with the pal's own rarity integer. */
 const SPARKS: { t: number; l: `${number}%`; s: number; o: number }[] = [
@@ -630,11 +639,26 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
         <Card style={{ marginTop: 10, gap: 8 }}>
           <Text style={s.h3}>Where to find it</Text>
           <PalMap name={name} />
+          {otherWays(p).length > 0 && (
+            <View style={{ gap: 5 }}>
+              <Text style={[s.body, { fontWeight: '800', color: T.ink }]}>
+                Other ways to get one
+              </Text>
+              {otherWays(p).map((line) => (
+                <Text key={line} style={[s.body, { fontSize: 12.5 }]}>· {line}</Text>
+              ))}
+            </View>
+          )}
           <View style={[s.wrap]}>
             {/* the map + its Spawns line carry the regions now — chips here
                 only for what the map can't say */}
+            {/* It used to say "no regular wild spawn — breed it". That advice
+                is impossible for 11 of the 13 pals it appeared on: ten can
+                only be bred from their OWN kind, so you need one already, and
+                Bellanoir has no recipe at all. The real routes were sitting
+                unused in obtain_notes and are listed above now. */}
             {!p.wild && !ALPHA_SPOTS[name] && (
-              <Badge kind="plain">no regular wild spawn — breed it</Badge>
+              <Badge kind="plain">no regular wild spawn</Badge>
             )}
             {p.egg_types.map((e) => <Badge key={e} kind="plain">Egg: {e}</Badge>)}
           </View>
