@@ -14,7 +14,9 @@ import {
 } from '../ui/kit';
 import { Icon } from '../ui/Icon';
 import { onNavIntent, takeIntentPayload } from '../nav/intent';
-import { adviseUnlocks, type UnlockAdvice, type WildFact } from '../logic/unlock';
+import {
+  adviseUnlocks, catchWhere, unlockLine, type UnlockAdvice, type WildFact,
+} from '../logic/unlock';
 import { PALCALC_FACTS } from '../data/palcalcFacts.g';
 import { wildLevelRange } from '../data/rarity';
 import { PalPicker } from '../ui/PalPicker';
@@ -27,50 +29,10 @@ import {
   engine, getPlayerLevel,
 } from '../store';
 
-/** One line of advice for a goal with no breeding route — a DIFFERENT
- * sentence per situation, because "catch a few more pals" was equally
- * useless for Chikipi (spawns at Lv 1) and Bellanoir Libero (never spawns
- * at all). CEO 2026-08-16. */
-function unlockLine(u: UnlockAdvice, level: number | undefined): string {
-  if (u.kind === 'raid-only') {
-    return 'Never spawns in the wild — this one only comes from a raid or boss fight.';
-  }
-  if (u.kind === 'unknown') {
-    return "We don't hold spawn data for this one, so we won't guess how to reach it.";
-  }
-  if (u.kind === 'reachable') return 'Within reach now — plan again to pick it up.';
-
-  const who = u.catches.join(' and ');
-  const after = u.steps === 0 ? ''
-    : u.steps === 1 ? ', then one breeding step'
-    : `, then ${u.steps} breeding steps`;
-  const gate = u.gateLevel;
-  if (gate == null) return `Catch ${who}${after}.`;
-  if (!u.withinLevel && level != null) {
-    return u.catches.length > 1
-      ? `Catch ${who} — but the toughest spawns at Lv ${gate} and you're Lv ${level}${after}.`
-      : `Spawns at Lv ${gate} and you're Lv ${level} — level up first${after}.`;
-  }
-  return u.catches.length > 1
-    ? `Catch ${who} — the toughest spawns from Lv ${gate}${after}.`
-    : `Catch one — spawns from Lv ${gate}${after}.`;
-}
-
-/** Where to actually go, from the game's own region names — the CEO asked to
- * be told "straight up where to catch the pal u want" (2026-08-16). Only the
- * pals the route needs you to CATCH get a location, and only when the data
- * holds one: 23 of 299 species carry no region and are left silent rather
- * than given a guessed one. */
-function catchWhere(u: UnlockAdvice): string | null {
-  const spots: string[] = [];
-  for (const name of u.catches) {
-    for (const r of pals[name]?.regions ?? []) {
-      if (!spots.includes(r)) spots.push(r);
-    }
-  }
-  if (!spots.length) return null;
-  return spots.slice(0, 3).join(' · ');
-}
+/** Where a catch can be found — the shared builder, fed this tree's pal
+ * table. The sentences themselves live in logic/unlock.ts so the phone and
+ * the website cannot drift into different words. */
+const whereOf = (u: UnlockAdvice) => catchWhere(u, (n) => pals[n]?.regions ?? []);
 
 /** What the game files say about catching one species. `minWild === null` is
  * the game's own "never spawns wild" (raid/tower/boss); no row at all means
@@ -793,10 +755,10 @@ export function PlannerScreen() {
                       {/* WHERE to go, when the game data actually says.
                           276 of 299 species carry regions; the rest get no
                           line at all rather than an invented one. */}
-                      {u.kind === 'catch' && catchWhere(u) ? (
+                      {u.kind === 'catch' && whereOf(u) ? (
                         <Text numberOfLines={2} style={{
                           color: T.faint, fontSize: 11, lineHeight: 15, marginTop: 1,
-                        }}>{catchWhere(u)}</Text>
+                        }}>{whereOf(u)}</Text>
                       ) : null}
                     </View>
                     <Icon name="chevron-right" size={18} color={T.faint} />

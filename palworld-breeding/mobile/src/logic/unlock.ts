@@ -130,6 +130,55 @@ function better(cand: Node, cur: Node): boolean {
   return [...cand.catches].sort().join(';') < [...cur.catches].sort().join(';');
 }
 
+/** One line of advice for a goal with no breeding route — a DIFFERENT
+ * sentence per situation, because "catch a few more pals" was equally
+ * useless for Chikipi (spawns at Lv 1) and Bellanoir Libero (never spawns at
+ * all). CEO 2026-08-16.
+ *
+ * It lives HERE, in the parity-gated module, rather than in either screen,
+ * so the phone and the website cannot drift into saying different things
+ * about the same pal. */
+export function unlockLine(u: UnlockAdvice, level: number | undefined): string {
+  if (u.kind === 'raid-only') {
+    return 'Never spawns in the wild — this one only comes from a raid or boss fight.';
+  }
+  if (u.kind === 'unknown') {
+    return "We don't hold spawn data for this one, so we won't guess how to reach it.";
+  }
+  if (u.kind === 'reachable') return 'Within reach now — plan again to pick it up.';
+
+  const who = u.catches.join(' and ');
+  const after = u.steps === 0 ? ''
+    : u.steps === 1 ? ', then one breeding step'
+    : `, then ${u.steps} breeding steps`;
+  const gate = u.gateLevel;
+  if (gate == null) return `Catch ${who}${after}.`;
+  if (!u.withinLevel && level != null) {
+    return u.catches.length > 1
+      ? `Catch ${who} — but the toughest spawns at Lv ${gate} and you're Lv ${level}${after}.`
+      : `Spawns at Lv ${gate} and you're Lv ${level} — level up first${after}.`;
+  }
+  return u.catches.length > 1
+    ? `Catch ${who} — the toughest spawns from Lv ${gate}${after}.`
+    : `Catch one — spawns from Lv ${gate}${after}.`;
+}
+
+/** Where to actually go, from the game's own region names — the CEO asked to
+ * be told "straight up where to catch the pal u want" (2026-08-16). Only the
+ * pals the route needs you to CATCH get a location, and only when the data
+ * holds one: 23 of 299 species carry no region and stay silent rather than
+ * get a guessed one. `regionsOf` is injected because the two trees hold the
+ * pal table differently. */
+export function catchWhere(
+  u: UnlockAdvice, regionsOf: (name: string) => string[],
+): string | null {
+  const spots: string[] = [];
+  for (const name of u.catches) {
+    for (const r of regionsOf(name)) if (!spots.includes(r)) spots.push(r);
+  }
+  return spots.length ? spots.slice(0, 3).join(' · ') : null;
+}
+
 /**
  * Cheapest way to obtain every species, given what you own and your level.
  *

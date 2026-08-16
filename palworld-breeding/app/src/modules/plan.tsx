@@ -5,8 +5,9 @@
  * Planning runs in a Web Worker; targets, results and check-offs persist. */
 import { useEffect, useMemo, useState } from 'preact/hooks';
 import {
-  addDraftTargets, box, clearDraftTargets, draftTargets, hasGender, nav,
-  ownedAny, pals, removeDraftTargets, selfOnly, setOwnedGender, storage,
+  addDraftTargets, box, clearDraftTargets, draftTargets, engine, hasGender, nav,
+  ownedAny, pals, playerLevel, removeDraftTargets, selfOnly, setOwnedGender,
+  storage,
 } from '../state';
 import { GenderToggles, LockBadge, PalIcon, PalPicker, WorkChips } from '../components/shared';
 import { GoalsSheet } from '../components/goals';
@@ -15,10 +16,28 @@ import { parseGenderNote } from '../engine/formula';
 import { requestPlan } from '../engine/planClient';
 import { cakeNeeds } from '../engine/boosters';
 import { expectedEggs } from '../logic/economics';
+import {
+  adviseUnlocks, catchWhere, unlockLine, type UnlockAdvice, type WildFact,
+} from '../logic/unlock';
+import { PALCALC_FACTS } from '../data/palcalcFacts.g';
 import { maleProb } from '../data/genderRatio.g';
 import { ADVICE_VERSION, HELPER_NAMES, type HelperAdvice } from '../engine/helpers';
 import { wildLevelRange } from '../data/rarity';
 import type { PlanStep } from '../engine/types';
+
+/** What the game files say about catching one species. `minWild === null` is
+ * the game's own "never spawns wild" (raid/tower/boss); no row at all means
+ * we hold no data and must say so rather than guess. */
+function wildFact(name: string): WildFact {
+  const f = (PALCALC_FACTS as Record<string, { minWild: number | null }>)[name];
+  return f ? { minWild: f.minWild, known: true } : { minWild: null, known: false };
+}
+
+/** Where a catch can be found — the shared builder, fed this tree's pal
+ * table. The sentences themselves live in logic/unlock.ts so the website and
+ * the phone cannot drift into different words. */
+const whereOf = (u: UnlockAdvice) =>
+  catchWhere(u, (n) => pals.value[n]?.regions ?? []);
 
 const CHECKS_KEY = 'hatchlab-plan-checks-v1';
 const PLAN_KEY = 'hatchlab-plan-v1';
@@ -665,14 +684,71 @@ export function PlanPage() {
             );
           })()}
 
-          {plan.unreachable.length > 0 && (
-            <div class="notebox" style={{ marginBottom: '14px' }}>
-              Not reachable from your box:{' '}
-              {plan.unreachable.map((u) => (
-                <b>{u}{selfOnly.value.has(u) ? ' (self-breed-only — catch it first)' : ''}{' '}</b>
-              ))}
-            </div>
-          )}
+          {/* "Not reachable from your box: X, Y" gave Chikipi (spawns at
+              Lv 1) and Bellanoir Libero (never spawns at all) the same
+              useless sentence. Now each goal gets the shortest way in,
+              ranked easiest first for the level on this save. */}
+          {plan.unreachable.length > 0 && (() => {
+            const advice = engine
+              ? adviseUnlocks(
+                  engine, Object.keys(box.value), new Set(),
+                  plan.unreachable, wildFact, playerLevel.value,
+                )
+              : [];
+            return (
+              <div class="notebox" style={{ marginBottom: '14px' }}>
+                <h3 style={{ margin: '0 0 4px', fontSize: '15px' }}>
+                  {plan.unreachable.length === 1
+                    ? 'One goal has no route yet'
+                    : `${plan.unreachable.length} goals have no route yet`}
+                </h3>
+                <p style={{ margin: '0 0 10px', fontSize: '12.5px', color: 'var(--muted)' }}>
+                  {playerLevel.value != null
+                    ? `The shortest way into each, easiest first for a level ${playerLevel.value} player.`
+                    : 'The shortest way into each, easiest first. Set your player '
+                      + 'level on the suggestions sheet and this gets tuned to how '
+                      + 'far you have got.'}
+                </p>
+                <div style={{ display: 'grid', gap: '9px' }}>
+                  {advice.map((u) => (
+                    <button
+                      key={u.target}
+                      type="button"
+                      class="rowbtn"
+                      onClick={() => nav(`paldex/${encodeURIComponent(u.target)}`)}
+                      aria-label={`${u.target}. ${unlockLine(u, playerLevel.value)}`}
+                      style={{
+                        display: 'flex', alignItems: 'center', gap: '10px',
+                        background: 'none', border: 'none', padding: '2px 0',
+                        textAlign: 'left', cursor: 'pointer', width: '100%',
+                        font: 'inherit', color: 'inherit',
+                      }}
+                    >
+                      <PalIcon name={u.target} size={34} />
+                      <span style={{ flex: 1 }}>
+                        <b style={{ fontSize: '13.5px' }}>{u.target}</b>
+                        <span style={{
+                          display: 'block', fontSize: '12px', lineHeight: 1.38,
+                          color: u.kind === 'catch' && u.withinLevel
+                            ? 'var(--accent-ink)' : 'var(--muted)',
+                        }}>{unlockLine(u, playerLevel.value)}</span>
+                        {/* WHERE to go, when the game data actually says.
+                            276 of 299 species carry regions; the rest get no
+                            line at all rather than an invented one. */}
+                        {u.kind === 'catch' && whereOf(u) ? (
+                          <span style={{
+                            display: 'block', fontSize: '11px', lineHeight: 1.36,
+                            color: 'var(--faint)',
+                          }}>{whereOf(u)}</span>
+                        ) : null}
+                      </span>
+                      <span aria-hidden="true" style={{ color: 'var(--faint)' }}>›</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            );
+          })()}
           {waves.map(([wave, steps]) => {
             // one badge per phase, on the FIRST unfinished helper-branch
             // step — the sort already floats the branch, the badge says why
