@@ -890,6 +890,49 @@ DELIBERATELY NOT DONE BY ME: this is engine code and "planner/derivations
 perf re-architecture" is explicitly parked for Fable. Ledgered with hard
 numbers so it is nearly mechanical to execute.
 
+## E15. CEO FEEDBACK 2026-08-16 ~16:25 (verbatim intake, WITH SCREENSHOT)
+"I think this page looks very empty and poorly designed (the breeding
+homepage before making a plan, very small and poorly designed, like temu
+version, not Aaa studio quality. Needs work.."
+- [x] E15a FIRST PASS SHIPPED (mobile, committed — publish gated on the
+      Map session's mobile/ work). What was wrong, from his screenshot:
+      the whole screen above the fold was a title, THREE lines of engine
+      jargon, two small buttons and a big DEAD "Plan targets" button —
+      then ~60% pure black void.
+      * the sub literally read "shared intermediates counted once, phases
+        run in parallel, gender-aware ready-states" — three pieces of
+        developer jargon in the first sentence a player ever reads, a
+        direct violation of our own "a player's words, never a
+        developer's" rule. Now: "The shortest breeding route to the pals
+        you want, from the pals you already own."
+      * the empty state is now a real welcome: an egg emblem, "What do
+        you want to breed?", one plain sentence, a full-width primary
+        "Browse suggested goals" and a secondary "Pick a pal yourself",
+        followed by a numbered 1-2-3 explaining what the tab actually
+        does. This is blueprint §5 criterion 10 ("empty states that teach
+        the killer feature"), which the screen was failing outright.
+      * the dead disabled "Plan targets" button is gone from that state —
+        the welcome card carries the call to action instead.
+      MEASURED: content now fills 735px of an 812px viewport (~90%);
+      before it was roughly a third with the rest black.
+      HONEST LIMIT: this is composition, copy and hierarchy — a real
+      improvement, but NOT art. If he wants true AAA polish here
+      (illustration, motion, a designed emblem rather than an icon),
+      that is a visual-design pass for Fable. Ledgered as E15b.
+- [ ] E15b Deeper visual pass on the Plan empty state for FABLE:
+      illustration/art instead of a MaterialCommunityIcon, entrance
+      motion, and a considered type scale. Do not let it regress the
+      copy or the teaching structure landed in E15a.
+- [x] E15-METHOD 2026-08-16 ~16:40: a `bctx is not defined` crash appeared
+      in the console during this work and I nearly reported it as a real
+      regression. It was NOT: source ordering is correct (guard at 703,
+      const at 715, use at 721), and with a FRESH error recorder installed
+      on a clean page load the sheet opens with ZERO live errors and all
+      30 sections. The console tool RETAINS errors across reloads, so old
+      mid-edit HMR failures look current. LESSON: to judge whether a
+      console error is live, install your own recorder on a fresh load —
+      do not trust the retained list.
+
 ## E14. CEO FEEDBACK 2026-08-16 ~15:00 (verbatim intake)
 - [x] E14a "Why are for example there no filter inside the suggestion for
       breeds, for example ground mounts «83» u open it and there are 83
