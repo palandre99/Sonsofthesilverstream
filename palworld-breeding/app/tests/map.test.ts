@@ -581,3 +581,35 @@ describe('a place name never covers a pin', () => {
     expect(canvas).toMatch(/<ScreenPin key=\{m\.key\}/);
   });
 });
+
+/* "Where do I get sulfur" is the most ordinary thing a player does with a map.
+ * Typing it used to answer "No pal by that name spawns on this map" while a
+ * Sulfur layer with 261 nodes sat one tap away behind a different button. */
+describe('the search finds things that are not pals', () => {
+  const screen = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
+  );
+
+  it('matches layer names and can switch one on from the results', () => {
+    expect(screen).toMatch(/const layerHits = useMemo/);
+    expect(screen).toMatch(/l\.label\.toLowerCase\(\)\.includes\(needle\)/);
+    expect(screen).toMatch(/onPress=\{\(\) => onTogglePoi\(l\.id\)\}/);
+  });
+
+  it('offers only layers that actually have something on this map', () => {
+    // a layer with 0 nodes here would be a result that does nothing
+    expect(screen).toMatch(/\.filter\(\(l\) => l\.n > 0\)/);
+  });
+
+  it('no longer blames the pal list when a layer matched', () => {
+    // the old copy claimed "No pal by that name spawns on this map" even when
+    // the thing you asked for was right there as a layer
+    expect(screen).not.toMatch(/'No pal by that name spawns on this map\.'/);
+    expect(screen).toMatch(/layerHits\.length \|\| places\.length/);
+  });
+
+  it('says what it searches, rather than promising only pals and places', () => {
+    expect(screen).toMatch(/title="Find anything on the map"/);
+    expect(screen).toMatch(/placeholder="Search pals, places, chests, ore…"/);
+  });
+});

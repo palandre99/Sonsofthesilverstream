@@ -674,6 +674,7 @@ export function MapScreen() {
           filters={filters}
           region={region}
           onToggle={togglePal}
+          onTogglePoi={togglePoi}
           onGoToPlace={(u, v) => {
             setSheet(null);
             canvas.current?.focus(u, v, 0.07);
@@ -988,10 +989,12 @@ function LayerSheet({ filters, onToggle, onClear, onClearFound, onClose }: {
 }
 
 function PalSheet({
-  filters, region, onToggle, onToggleDungeons, onGoToPlace, onClear, onClose,
+  filters, region, onToggle, onTogglePoi, onToggleDungeons, onGoToPlace, onClear, onClose,
 }: {
   filters: MapFilters; region: RegionId;
-  onToggle: (name: string) => void; onToggleDungeons: () => void;
+  onToggle: (name: string) => void;
+  onTogglePoi: (id: string) => void;
+  onToggleDungeons: () => void;
   onGoToPlace: (u: number, v: number) => void;
   onClear: () => void; onClose: () => void;
 }) {
@@ -1006,6 +1009,22 @@ function PalSheet({
   const [filterSheet, setFilterSheet] = useState(false);
 
   const places = useMemo(() => searchPlaces(q, region), [q, region]);
+
+  /** Layers whose NAME matches what you typed.
+   *
+   * Asking "where do I get sulfur" is the most ordinary thing a player does
+   * with a map, and typing it here used to answer "No pal by that name spawns
+   * on this map" — a dead end, while a Sulfur layer with hundreds of nodes sat
+   * one tap away behind a different button. The app knew the answer and would
+   * not give it. */
+  const layerHits = useMemo(() => {
+    const needle = q.trim().toLowerCase();
+    if (!needle) return [];
+    return poiLayers()
+      .filter((l) => l.label.toLowerCase().includes(needle))
+      .map((l) => ({ ...l, n: poiPoints(l.id, region)?.n ?? 0 }))
+      .filter((l) => l.n > 0);
+  }, [q, region]);
 
   /** every pal that actually spawns on THIS map — the base the filters see */
   const base = useMemo(
@@ -1027,9 +1046,9 @@ function PalSheet({
   if (sort !== 'number') bits.push(SORT_LABEL[sort] ?? sort);
 
   return (
-    <SheetShell title="Find a pal or place" onClear={onClear} onClose={onClose}>
+    <SheetShell title="Find anything on the map" onClear={onClear} onClose={onClose}>
       <View style={{ paddingHorizontal: 14, paddingTop: 12, gap: 10 }}>
-        <SearchInput value={q} onChange={setQ} placeholder="Search pals or places…" />
+        <SearchInput value={q} onChange={setQ} placeholder="Search pals, places, chests, ore…" />
         <Pressable
           onPress={onToggleDungeons}
           accessibilityRole="checkbox"
@@ -1075,7 +1094,44 @@ function PalSheet({
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode="on-drag"
       >
-        {/* Places first: someone typing "fisherman" wants the point, and the
+        {/* Layers first: "sulfur" or "chest" is a request for a KIND of thing,
+            and one tap should put every one of them on the map. */}
+        {layerHits.length > 0 && (
+          <>
+            <Text style={{
+              color: T.faint, fontSize: 10.5, fontWeight: '800', letterSpacing: 1.1,
+            }}>ON THE MAP</Text>
+            {layerHits.map((l) => {
+              const on = filters.poi.has(l.id);
+              return (
+                <Pressable
+                  key={`layer:${l.id}`}
+                  onPress={() => onTogglePoi(l.id)}
+                  accessibilityRole="checkbox"
+                  accessibilityState={{ checked: on }}
+                  style={{
+                    flexDirection: 'row', alignItems: 'center', gap: 10,
+                    paddingHorizontal: 12, paddingVertical: 11, borderRadius: 12,
+                    borderWidth: 1, borderColor: on ? l.colour : T.line,
+                    backgroundColor: on ? T.surface2 : T.surface,
+                  }}
+                >
+                  {MAP_ICONS[l.id] != null
+                    ? <Image source={MAP_ICONS[l.id]}
+                        style={{ width: 18, height: 18 }} resizeMode="contain" />
+                    : <Icon name={l.icon} size={17} color={l.colour} />}
+                  <Text style={{ color: T.ink, fontWeight: '800', fontSize: 14, flex: 1 }}>
+                    {l.label}
+                  </Text>
+                  <Text style={{ color: T.muted, fontWeight: '700', fontSize: 11.5 }}>
+                    {on ? 'on the map' : l.n.toLocaleString()}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </>
+        )}
+        {/* Places next: someone typing "fisherman" wants the point, and the
             names are real ones out of the game's own tables. */}
         {places.length > 0 && (
           <>
@@ -1116,10 +1172,12 @@ function PalSheet({
                 not stand behind: search "zzz" with a filter on and it said so
                 while knowing nothing of the sort. Each case says only what is
                 actually true of it. */}
-            {q.trim() && bits.length
-              ? 'No pal by that name matches those filters.'
-              : q.trim()
-                ? 'No pal by that name spawns on this map.'
+            {layerHits.length || places.length
+              ? ''
+              : q.trim() && bits.length
+                ? 'No pal by that name matches those filters.'
+                : q.trim()
+                  ? 'Nothing on this map goes by that name.'
                 : bits.length
                   ? 'No pal on this map matches those filters.'
                   : 'Nothing left to find here — you own every pal that spawns on this map.'}

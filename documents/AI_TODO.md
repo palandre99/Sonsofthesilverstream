@@ -807,6 +807,18 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       worklets total, no new per-marker cost. The names stay outside the
       transform because text inside it is rasterised pre-zoom then magnified,
       which is what made them jagged on his phone.
+- [x] J7 2026-08-16 ~16:38 THE SEARCH ANSWERED "NO" TO A QUESTION IT COULD
+      ANSWER. Found by walking a real player journey rather than reading code:
+      typed "sulfur", the most ordinary thing anyone does with a game map, and
+      got "No pal by that name spawns on this map." A dead end — while a Sulfur
+      layer with 261 nodes sat one tap away behind a different button. The app
+      knew the answer and would not give it, which is worse than not having it.
+      The search matches LAYER names now and puts one on the map from the
+      result row: "sulfur" -> Sulfur 261 -> tap -> "261 spots on the map".
+      Only layers with something on the current map are offered, so a result
+      can never do nothing. Retitled "Find anything on the map" with a
+      placeholder that names what it searches, because the old title promised
+      pals and places and that promise was the bug. Eye-verified end to end.
 - [ ] H17 COLOUR CANNOT CARRY 23 IDENTITIES. Three POI layers are near-identical
       greys (npc #A9C0CC, ore #B7C4CC, coal #8E9AA3) and several are near-white
       (note #D7E3E8, quartz #CFE9FF, egg #FFEFC2). I deliberately did NOT
