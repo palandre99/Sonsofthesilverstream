@@ -1102,6 +1102,28 @@ session's; this worker touches only the map area (see AREA LOCKS).*
 - [x] L4 THE LOOP HAD STOPPED. He asked "where is loop". I answered his "Keep
       working" turns without re-arming ScheduleWakeup, so the self-paced loop
       simply ended. Re-armed.
+- [x] L5 2026-08-16 ~22:06 THE PINCH MATHS IS TESTABLE NOW — built BEFORE he
+      complains a fourth time. Three gesture fixes had shipped unverified
+      because the harness cannot pinch, pan, double-tap or scroll, and each
+      time he came back saying zoom was still wrong. Guessing at handlers we
+      cannot exercise is not a method.
+      mobile/src/map/gesture.ts holds the arithmetic as PURE functions —
+      clampView, pinchStep, panStep, reanchorPan, screenToUv — and
+      tests/mapGesture.test.ts drives whole gestures through them: 11 tests.
+      What they prove: the point under your fingers stays under them while
+      spreading AND while spreading + sliding (the case that silently fails if
+      you anchor on the LIVE focal); zoom cannot pass the pixels that exist or
+      fall below cover; a 400-step random sequence of pinches and pans never
+      leaves the map with empty space beside the world.
+      THE SNAP IS NOW MEASURED, not argued: handing over to a pan with the
+      re-anchored origin lands EXACTLY where the pinch left off, while the old
+      pre-pinch origin lands >100px away. That number is the snap he described.
+      NOT called from the handlers — an imported call inside a Reanimated
+      worklet crashed this app twice on device, and RN-web runs worklets on the
+      JS thread so a browser pass never catches it. MapCanvas inlines the same
+      maths and three tests pin the two together, the tileLevelFor pattern.
+      IF HE REPORTS THE SNAP AGAIN: the maths is proven, so look elsewhere —
+      gesture composition, RNGH activation order, or the double-tap guard.
 - [ ] K5 "also many other issues" — HE HAS MORE AND HAS NOT LISTED THEM. Ask,
       or keep walking journeys until they surface. Do not guess at what he
       means and do not claim the map is finished.
