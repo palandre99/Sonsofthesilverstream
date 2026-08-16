@@ -440,9 +440,21 @@ export function PlannerScreen() {
         byGoal.set(g, cur);
       }
     }
+    // A goal with NO steps never appeared in any step's neededBy, so it fell
+    // out of this card entirely — the tray said "8 goals" and only 6 rows
+    // showed, unexplained. Two different things cause zero steps and they must
+    // NOT be conflated: a goal you already own (nothing to breed) and a goal
+    // nothing can reach (which has its own card above). Only the owned ones
+    // belong here.
+    for (const t of plan.targets) {
+      if (byGoal.has(t) || plan.unreachable.includes(t)) continue;
+      byGoal.set(t, { total: 0, done: 0 });
+    }
+    // total 0 means "already yours", i.e. finished — not 0% done
+    const share = (v: { done: number; total: number }) => (v.total ? v.done / v.total : 1);
     return [...byGoal.entries()]
       .map(([name, v]) => ({ name, ...v }))
-      .sort((x, y) => (y.done / y.total) - (x.done / x.total) || x.name.localeCompare(y.name));
+      .sort((x, y) => share(y) - share(x) || x.name.localeCompare(y.name));
   }, [plan, checks, stepMeta]);
 
   const needs = plan ? cakeNeeds(plan.steps.length) : null;
@@ -893,7 +905,8 @@ export function PlannerScreen() {
               <Text style={s.h3}>Goal progress</Text>
               <View style={{ marginTop: 8, gap: 7 }}>
                 {goalProgress.map((g) => {
-                  const complete = g.done === g.total;
+                  const owned = g.total === 0;
+                  const complete = owned || g.done === g.total;
                   return (
                     <View key={g.name} style={{ gap: 3 }}>
                       <View style={[s.row, { gap: 8 }]}>
@@ -909,18 +922,22 @@ export function PlannerScreen() {
                           flex: 1, height: 8, borderRadius: 4, backgroundColor: T.surface2,
                         }}>
                           <View style={{
-                            width: `${(g.done / g.total) * 100}%`, height: '100%',
+                            width: `${owned ? 100 : (g.done / g.total) * 100}%`, height: '100%',
                             borderRadius: 4, backgroundColor: complete ? T.ok : T.accent,
                           }} />
                         </View>
                         <Text style={{
                           color: T.muted, fontSize: 11.5, fontWeight: '700', width: 38,
                           textAlign: 'right',
-                        }}>{g.done}/{g.total}</Text>
+                        }}>{owned ? '✓' : `${g.done}/${g.total}`}</Text>
                       </View>
                       {/* the number alone made him hunt through the phases
                           for the step that was actually his */}
-                      {complete ? (
+                      {owned ? (
+                        <Text style={{ color: T.ok, fontSize: 11.5, marginLeft: 34 }}>
+                          Already in your Paldex — nothing to breed for it.
+                        </Text>
+                      ) : complete ? (
                         <Text style={{ color: T.ok, fontSize: 11.5, marginLeft: 34 }}>
                           Done — every step for it is ticked.
                         </Text>

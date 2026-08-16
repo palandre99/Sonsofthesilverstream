@@ -2075,6 +2075,39 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E77. A GOAL YOU ALREADY OWN VANISHED FROM GOAL PROGRESS 2026-08-17
+
+Kept going through the Plan's numbers (sub-method 15). `neededBy` drives the
+per-goal progress rows.
+
+- **THE COUNTS THEMSELVES ARE EXACT.** Compared each goal's row total against
+  its own derivation size: **Jormuntide Ignis 8/8, Renjishi 12/12, Solenne
+  10/10, Blazamut 28/28, Astegon 26/26** — every one matches.
+- [x] **BUT A GOAL WITH ZERO STEPS FELL OUT OF THE CARD ENTIRELY.** The rows
+      are built from `[...byGoal.entries()]`, and `byGoal` only ever sees
+      goals that appear in some step's `neededBy`. A goal you **already own**
+      has no steps, so it silently disappeared — the tray could say 8 goals
+      while the progress card showed 6 rows, with nothing to explain the
+      difference. Fixed: zero-step goals are added explicitly and render as
+      **"✓ · Already in your Paldex — nothing to breed for it."**
+- **THE TWO ZERO-STEP CASES ARE NOT THE SAME AND ARE NOT CONFLATED.** A goal
+      can have zero steps because you own it, OR because **nothing can reach
+      it** — measured: with the ten-pal box, Faleris and Orserk are genuinely
+      unreachable (`derivs.has()` false). Unreachable goals already have their
+      own card, so they are explicitly skipped here rather than being labelled
+      "already yours", which would be a lie.
+- **Division by zero avoided deliberately:** the progress bar was
+      `(g.done / g.total) * 100` — for a zero-step goal that is `NaN%`. The
+      owned branch draws a full bar instead, and the sort treats "no steps" as
+      complete rather than 0%. **Verified on the render: no element has a NaN
+      width, doc scrollWidth still 375.**
+- **VERIFIED IN A THROWAWAY PROFILE, NOT HIS.** Built "QA OWNED GOAL" with a
+      five-pal box, set Anubis (already owned) as the goal, planned, and read
+      the card: "Anubis ✓ Already in your Paldex — nothing to breed for it."
+      Then removed the three temp keys, restored the snapshot, reloaded and
+      re-verified: 5 keys, "My world Lv42" + "Hardcore", active `default`, 26
+      pals, 8 targets. **His save was never touched.**
+
 ## E76. THE PLAN'S "PARENT IN N STEPS" COUNT — CHECKED, CORRECT, NOW
 ## GUARDED 2026-08-17
 
