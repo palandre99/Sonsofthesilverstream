@@ -1724,6 +1724,34 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E40. THE NESTED-COMPONENT SWEEP 2026-08-16 (no CEO prompt — the lane)
+
+Two separate hostile reads (E36 OddsScreen, E39 PalPicker) had each turned
+up the SAME defect — a component declared inside another component's render,
+which makes it a new type every render and forces React to unmount and
+rebuild the whole subtree. So I stopped finding them one at a time and swept
+the tree for the pattern instead.
+
+- [x] **FilterSheet's `Chip` and `Section` were both nested.** `Chip` renders
+      EVERY filter and sort option — 14 of them, icons included — so every
+      tap in that sheet threw all of them away and rebuilt them. Both hoisted
+      to module scope.
+      **Verified by DOM identity**: tapped "Owned", and both the tapped chip
+      AND an untouched chip were still the same DOM nodes afterwards, with
+      the tapped one correctly reading "Owned, selected".
+- [x] SWEEP RESULT: **the pattern is now gone from the app.** The only
+      remaining hit is `Live` in App.tsx, which is a FALSE POSITIVE — it is a
+      lookup out of the module-level LIVE_SCREENS registry, so its identity
+      is already stable. Nothing to fix there.
+- The fix took three attempts and the failures are worth recording: a
+  scripted lift left the removed block's closing brace behind (TS1005), then
+  I "removed a stray brace" that was actually Chip's real closer. **tsc
+  caught both, but tsc CANNOT catch the one that matters** — E39's first
+  attempt typechecked perfectly and did nothing. Only a DOM-identity check
+  proves this class of fix.
+- [ ] STILL UNREAD: PalDetail.tsx (585 lines), SuggestedGoals.tsx (813) —
+      the two biggest components in the app.
+
 ## E39. PAL PICKER HOSTILE CODE READ 2026-08-16 (no CEO prompt — the lane)
 
 - [x] **EVERY ROW OF THE 299-PAL LIST WAS DESTROYED AND REBUILT ON EVERY

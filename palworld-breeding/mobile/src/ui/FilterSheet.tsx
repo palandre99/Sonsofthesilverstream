@@ -13,7 +13,56 @@ import {
   applyFilters, NO_FILTERS, WORK_KEYS, type Filters, type SortKey,
 } from './palFilters';
 
-/** The Filter & Sort sheet — in-game sorting, but better. */
+/** Every filter and sort option in the sheet is one of these. Both this
+ *  and Section used to be declared INSIDE FilterSheet, so each was a new
+ *  component type on every render and all 14 chips (icons included) were
+ *  thrown away and rebuilt on every single tap. Out here their identity
+ *  is stable. */
+function Chip({ on, label, icon, onPress }: {
+  on: boolean; label: string; icon?: number; onPress: () => void;
+}) {
+  return (
+  <Pressable
+    onPress={() => {
+      void Haptics.selectionAsync();
+      onPress();
+    }}
+    // one Chip renders EVERY filter and sort option in this sheet, and
+    // whether it was on was carried by colour alone (self-found sweep,
+    // 2026-08-16). The state goes in the words — RN-web maps none of the
+    // platform state flags, so words are what is true everywhere.
+    accessibilityRole="button"
+    accessibilityLabel={`${label}${on ? ', selected' : ''}`}
+    style={{
+      flexDirection: 'row', alignItems: 'center', gap: 5,
+      backgroundColor: on ? T.accentSoft : T.surface2,
+      borderWidth: 1.5, borderColor: on ? T.accent : T.line,
+      borderRadius: 10, paddingHorizontal: 10, paddingVertical: 7,
+    }}
+  >
+    {icon != null && <Image source={icon} style={{ width: 17, height: 17 }} />}
+    <Text style={{
+      color: on ? T.accentInk : T.muted, fontWeight: '700', fontSize: 12.5,
+    }}>{label}</Text>
+  </Pressable>
+  );
+}
+
+const Section = ({ title, hint, children }: {
+  title: string; hint?: string; children: React.ReactNode;
+}) => (
+  <View style={{ gap: 7 }}>
+    <Text style={{
+      color: T.faint, fontSize: 10.5, fontWeight: '800',
+      letterSpacing: 1, textTransform: 'uppercase',
+    }}>{title}</Text>
+    <View style={[s.wrap]}>{children}</View>
+    {hint ? (
+      <Text style={{ color: T.accentInk, fontSize: 11.5, fontWeight: '600' }}>{hint}</Text>
+    ) : null}
+  </View>
+);
+
 export function FilterSheet({ filters, sort, onApply, onClose, base }: {
   filters: Filters; sort: SortKey;
   onApply: (f: Filters, s: SortKey) => void; onClose: () => void;
@@ -44,49 +93,6 @@ export function FilterSheet({ filters, sort, onApply, onClose, base }: {
       setSk(`work:${w}` as SortKey);
     }
   };
-
-  const Chip = ({ on, label, icon, onPress }: {
-    on: boolean; label: string; icon?: number; onPress: () => void;
-  }) => (
-    <Pressable
-      onPress={() => {
-        void Haptics.selectionAsync();
-        onPress();
-      }}
-      // one Chip renders EVERY filter and sort option in this sheet, and
-      // whether it was on was carried by colour alone (self-found sweep,
-      // 2026-08-16). The state goes in the words — RN-web maps none of the
-      // platform state flags, so words are what is true everywhere.
-      accessibilityRole="button"
-      accessibilityLabel={`${label}${on ? ', selected' : ''}`}
-      style={{
-        flexDirection: 'row', alignItems: 'center', gap: 5,
-        backgroundColor: on ? T.accentSoft : T.surface2,
-        borderWidth: 1.5, borderColor: on ? T.accent : T.line,
-        borderRadius: 10, paddingHorizontal: 10, paddingVertical: 7,
-      }}
-    >
-      {icon != null && <Image source={icon} style={{ width: 17, height: 17 }} />}
-      <Text style={{
-        color: on ? T.accentInk : T.muted, fontWeight: '700', fontSize: 12.5,
-      }}>{label}</Text>
-    </Pressable>
-  );
-
-  const Section = ({ title, hint, children }: {
-    title: string; hint?: string; children: React.ReactNode;
-  }) => (
-    <View style={{ gap: 7 }}>
-      <Text style={{
-        color: T.faint, fontSize: 10.5, fontWeight: '800',
-        letterSpacing: 1, textTransform: 'uppercase',
-      }}>{title}</Text>
-      <View style={[s.wrap]}>{children}</View>
-      {hint ? (
-        <Text style={{ color: T.accentInk, fontSize: 11.5, fontWeight: '600' }}>{hint}</Text>
-      ) : null}
-    </View>
-  );
 
   return (
     <Modal visible animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
