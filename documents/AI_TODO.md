@@ -1142,6 +1142,28 @@ earlier. He is right and the proof is in his own list: it lumped CHIKIPI
       advice, clicking Chikipi lands on "Chikipi · Paldex · Palforge" with
       the card open, own error recorder saw none. NOT DEPLOYED — pushing
       the website to main needs the CEO's go-ahead.
+- [x] E18 SHEETS + DIALOGS SWEEP (commit 3db0739, published both channels).
+      The pal picker was the last part of the Plan tab saying nothing
+      useful aloud. FOUR gaps, all one shape: pal rows had no role AND no
+      label (and "you own this" was a COLOUR-ONLY DOT); the All/Missing/
+      Owned buttons carried the active one in colour alone; the element
+      buttons had a label but no role and no on/off; "Filters & sort" had
+      neither. All fixed with the state IN THE WORDS ("Lamball. in your
+      Paldex", "Show all pals, showing now") — the established pattern,
+      because RN-web reports none of the platform state flags.
+      Also: the confirm dialogs and HatchSheet never set
+      `accessibilityViewIsModal`, so VoiceOver could wander behind a
+      "delete your plan?" question. Set now — DOCUMENTED API ONLY, not
+      claimed as heard, since VoiceOver cannot be exercised from a browser.
+      VERIFIED live: 12 pal rows + 3 ownership + 9 element + 1 filters, all
+      with role and spoken state.
+      **METHOD NOTE THAT COST ME FOUR CALLS:** I decided the picker "was not
+      opening" because `document.body.innerText` did not contain "Search 299
+      pals…". That string is a PLACEHOLDER ATTRIBUTE — innerText never
+      contains it. The picker had been open the whole time. When a presence
+      check fails, question the CHECK before the app: read attributes, not
+      just text. (Related: a hot reload also resets the app to the Calc tab
+      mid-session, which sent me down the wrong path first.)
 - [x] E17 WITH-PLAN STATE — looked at it the way the CEO looked at the empty
       one, and found two things (commit a30e38d, published both channels).
       **(1) A dead hero button, again.** Measured: "Plan 9 targets" sat at
