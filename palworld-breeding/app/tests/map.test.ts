@@ -1545,3 +1545,50 @@ describe('what the map says when it is blank', () => {
     expect(screen).toMatch(/kind: named \? 'layers' : 'region'/);
   });
 });
+
+describe('the website map keeps step with the phone', () => {
+  const web = readFileSync(
+    join(__dirname, '..', 'src', 'modules', 'map.tsx'), 'utf8',
+  );
+
+  it('lists the dungeon-only pals when the box is ticked', () => {
+    // The phone was fixed first (L30). The website had the identical gate and
+    // its own working dungeon toggle, so the same 25 pals were unlistable
+    // there. Measured in the browser: 224 buttons -> 249 with the box ticked,
+    // Mau reading Lv 5-15 exactly as on the phone.
+    expect(web, 'the pal list must exist').toContain('const palList');
+    expect(web).toContain('spawnLevels(n, region, dungeons) !== null');
+    expect(web).toMatch(/\}, \[dungeons, missingOnly, q, region\]\)/);
+  });
+
+  it('quotes a dungeon pin its OWN level band', () => {
+    // Asking the surface-only question printed no level at all for a pal that
+    // never comes up top - you tapped a pin and the app had nothing to say.
+    expect(web).toContain("best.key.startsWith('dun:')");
+    expect(web).toContain('wildBands(pal).dungeon');
+    // and the data is what makes that line appear rather than stay blank
+    expect(spawnLevels('Mau', 'palpagos')).toBeNull();
+    expect(wildBands('Mau').dungeon).not.toBeNull();
+  });
+
+  it('only explains square pins when some are on screen', () => {
+    expect(web).toMatch(/active\.some\(\(l\) => l\.square\) && \(/);
+    expect(web).toContain('none of these are on the surface');
+  });
+
+  it('and the two targets say the SAME words', () => {
+    // one of these is Preact and one is React Native; the player should not
+    // be able to tell that from the sentence
+    const phone = readFileSync(
+      join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
+    );
+    for (const line of [
+      'Round pins are out in the world',
+      'Square pins are inside dungeons',
+      'none of these are on the surface',
+    ]) {
+      expect(web, `web is missing: ${line}`).toContain(line);
+      expect(phone, `phone is missing: ${line}`).toContain(line);
+    }
+  });
+});

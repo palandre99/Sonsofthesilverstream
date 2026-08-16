@@ -14,7 +14,7 @@ import { clusterPoints, nearestPoint, pointsInRect } from '../map/points';
 import { regionOf, tileLevelFor, uvToReadout, type RegionId } from '../map/projection';
 import {
   alphaSpots, dungeonPoints, isNightOnly, poiLayer, poiLayers, poiName,
-  poiPoints, searchPlaces, spawnLevels, spawnPoints, spawnablePals,
+  poiPoints, searchPlaces, spawnLevels, spawnPoints, spawnablePals, wildBands,
   type LayerGroup,
 } from '../map/layers';
 import { box } from '../state';
@@ -229,7 +229,11 @@ export function MapPage() {
     const lines: string[] = [];
     const pal = best.key.startsWith('pal:') || best.key.startsWith('dun:') ? best.key.slice(4) : null;
     if (pal) {
-      const lv = spawnLevels(pal, region);
+      // A dungeon pin quotes the DUNGEON band. Asking the surface-only
+      // question here printed no level at all for the 25 pals that never come
+      // up top - you tapped a pin and the app had nothing to say about it.
+      const lv = best.key.startsWith('dun:')
+        ? wildBands(pal).dungeon : spawnLevels(pal, region);
       if (lv) lines.push(lv.lo === lv.hi ? `Level ${lv.lo}` : `Level ${lv.lo}–${lv.hi}`);
       if (isNightOnly(pal, region)) lines.push('Only comes out at night');
       if (best.key.startsWith('dun:')) lines.push('Inside a dungeon, not on the surface');
@@ -300,9 +304,11 @@ export function MapPage() {
     return spawnablePals().filter((n) => {
       if (needle && !n.toLowerCase().includes(needle)) return false;
       if (missingOnly && (box.value[n]?.m || box.value[n]?.f)) return false;
-      return spawnLevels(n, region) !== null;
+      // dungeon-aware, exactly as on the phone: with the box ticked the 25
+      // pals that only live underground belong in this list too
+      return spawnLevels(n, region, dungeons) !== null;
     });
-  }, [missingOnly, q, region]);
+  }, [dungeons, missingOnly, q, region]);
 
   const shown = active.reduce((n, l) => n + (l.set?.n ?? 0), 0);
   const groups = useMemo(() => {
@@ -411,7 +417,11 @@ export function MapPage() {
                 {l.label}<b>{(l.set?.n ?? 0).toLocaleString()}</b>
               </span>
             ))}
-            <em>Round pins are out in the world · square pins are inside dungeons</em>
+            {active.some((l) => l.square) && (
+              <em>{active.some((l) => !l.square)
+                ? 'Round pins are out in the world · square pins are inside dungeons'
+                : 'Square pins are inside dungeons — none of these are on the surface'}</em>
+            )}
           </div>
         )}
       </div>
@@ -445,7 +455,7 @@ export function MapPage() {
         )}
         <div class="mappals">
           {palList.map((n) => {
-            const lv = spawnLevels(n, region);
+            const lv = spawnLevels(n, region, dungeons);
             return (
               <button key={n} type="button" class={palsOn.has(n) ? 'on' : ''}
                 onClick={() => setPalsOn((s) => {
