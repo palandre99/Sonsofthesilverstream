@@ -667,3 +667,34 @@ describe('day and night', () => {
     expect(screen).toMatch(/Nothing out in the daytime/);
   });
 });
+
+/* The canvas deliberately never re-fits once you have panned, or the map would
+ * snap back under your finger. But the two regions are different WORLDS, and a
+ * pan position on Palpagos means nothing on the World Tree — you would land on
+ * an arbitrary patch of the new map at whatever zoom you happened to be at. */
+describe('switching region re-frames the region', () => {
+  const screen = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
+  );
+  const canvas = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'map', 'MapCanvas.tsx'), 'utf8',
+  );
+
+  it('the canvas really does stop re-fitting once touched', () => {
+    // this is WHY the screen has to reset explicitly — if this ever changes,
+    // the reset below becomes redundant rather than load-bearing
+    expect(canvas).toMatch(/if \(!touched\.current\) \{/);
+    expect(canvas).toMatch(/touched\.current = true;/);
+  });
+
+  it('resets the view when the region changes', () => {
+    expect(screen).toMatch(/const prevRegion = useRef<RegionId \| null>\(null\)/);
+    expect(screen).toMatch(/prevRegion\.current !== region/);
+    expect(screen).toMatch(/canvas\.current\?\.reset\(\)/);
+  });
+
+  it('does not reset on first mount, where it would fight the auto-focus', () => {
+    // arriving from a pal card frames that species; a reset would undo it
+    expect(screen).toMatch(/prevRegion\.current !== null && prevRegion\.current !== region/);
+  });
+});

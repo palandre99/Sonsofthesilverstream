@@ -260,6 +260,25 @@ export function MapScreen() {
     return out;
   }, [region, vp]);
 
+  /* Changing region re-frames the new one.
+   *
+   * The canvas deliberately never re-fits once you have panned — otherwise the
+   * map would snap back under your finger. But the two regions are different
+   * WORLDS, and a pan position on Palpagos means nothing on the World Tree:
+   * pan south-east, tap The World Tree, and you landed on an arbitrary corner
+   * with the map's edge and dead space on screen. Framing the region you just
+   * asked for is the only sensible answer.
+   *
+   * Skipped on first mount so it cannot fight the auto-focus below, which is
+   * what frames a species handed over from a pal card. */
+  const prevRegion = useRef<RegionId | null>(null);
+  React.useEffect(() => {
+    if (prevRegion.current !== null && prevRegion.current !== region) {
+      canvas.current?.reset();
+    }
+    prevRegion.current = region;
+  }, [region]);
+
   // Picking a single pal should SHOW you where it is, not leave you to hunt
   // the world map for teal dots.
   const focusKey = active.length === 1 && filters.pals.size === 1 ? active[0].key : null;

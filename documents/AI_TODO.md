@@ -878,6 +878,27 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       out at night. Tap Daytime again for Night, or once more for Any time."
       Also covers a too-narrow level range and a pal that is not in this
       region. Measured: Any time 398 -> Daytime none -> Night 398.
+- [x] J10 2026-08-16 ~17:19 SWITCHING REGION NOW FRAMES THE REGION. The canvas
+      deliberately never re-fits once you have panned (or the map would snap
+      back under your finger), and a region change does not trigger a layout —
+      so after a real pan, tapping The World Tree left you at the OLD position
+      and zoom on a different world. Verified BY CODE, not by eye: touched.current
+      is set on any gesture and the only re-fit is guarded by !touched.current
+      inside onLayout, which a region change never calls. The screen now resets
+      the view when the region changes, skipping first mount so it cannot fight
+      the auto-focus that frames a species handed over from a pal card.
+      HONEST LIMIT: neither the defect nor the fix is eye-verified, because the
+      QA harness CANNOT PAN (see H20). What IS verified: a normal region switch
+      still frames correctly, gates green, and the code path is unambiguous.
+- [ ] H20 TRAP #10 — `drag:` DOES NOT PAN THE MAP. Measured: the base tile sits
+      at exactly -197,43 before and after a drag. Synthetic mouse drags do not
+      drive react-native-gesture-handler on web, the same as pinch and
+      double-tap. This nearly shipped a fix for a bug I had never actually
+      reproduced: I "panned", switched region, compared two screenshots, and
+      read them as proof the pan carried over — they were both simply the
+      fitted view. RULE: the harness can TAP and TYPE. It cannot pan, pinch or
+      double-tap. Anything gesture-dependent must be proven from the code or in
+      vitest, and said plainly to be reasoned rather than measured.
 - [ ] H17 COLOUR CANNOT CARRY 23 IDENTITIES. Three POI layers are near-identical
       greys (npc #A9C0CC, ore #B7C4CC, coal #8E9AA3) and several are near-white
       (note #D7E3E8, quartz #CFE9FF, egg #FFEFC2). I deliberately did NOT
