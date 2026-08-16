@@ -53,6 +53,12 @@ export function FilterSheet({ filters, sort, onApply, onClose, base }: {
         void Haptics.selectionAsync();
         onPress();
       }}
+      // one Chip renders EVERY filter and sort option in this sheet, and
+      // whether it was on was carried by colour alone (self-found sweep,
+      // 2026-08-16). The state goes in the words — RN-web maps none of the
+      // platform state flags, so words are what is true everywhere.
+      accessibilityRole="button"
+      accessibilityLabel={`${label}${on ? ', selected' : ''}`}
       style={{
         flexDirection: 'row', alignItems: 'center', gap: 5,
         backgroundColor: on ? T.accentSoft : T.surface2,

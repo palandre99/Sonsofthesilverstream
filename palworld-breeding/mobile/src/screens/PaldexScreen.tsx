@@ -199,7 +199,10 @@ export function PaldexScreen() {
           <Text style={{ color: T.accentInk, fontSize: 11.5, fontWeight: '700' }}>
             {activeBits.join(' · ')}
           </Text>
-          <Pressable onPress={() => { setFilters(NO_FILTERS); setSort('number'); }}>
+          <Pressable
+            onPress={() => { setFilters(NO_FILTERS); setSort('number'); }}
+            accessibilityRole="button"
+            accessibilityLabel="Clear all filters and sorting">
             <Text style={{ color: T.faint, fontSize: 11.5, fontWeight: '800' }}> ✕ clear</Text>
           </Pressable>
         </View>
