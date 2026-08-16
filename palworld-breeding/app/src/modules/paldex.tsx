@@ -447,6 +447,17 @@ function Drawer({ name, onClose }: { name: string; onClose: () => void }) {
         <section>
           <h4>Where to find it</h4>
           <PalMapWeb name={name} />
+          {/* Only for pals the map cannot pin — the 116 dungeon end-bosses
+              that showed nothing. The 91 with coordinates already get a
+              "Fixed boss" summary from the map above. */}
+          {!ALPHA_SPOTS[name] && (p.alpha_locations ?? []).length > 0 && (
+            <div style={{ marginTop: '8px' }}>
+              <strong>Alpha boss</strong>
+              <ul style={{ margin: '4px 0 0', paddingLeft: '18px' }}>
+                {(p.alpha_locations ?? []).map((line) => <li key={line}>{line}</li>)}
+              </ul>
+            </div>
+          )}
           {otherWays(p).length > 0 && (
             <div style={{ marginTop: '8px' }}>
               <strong>Other ways to get one</strong>

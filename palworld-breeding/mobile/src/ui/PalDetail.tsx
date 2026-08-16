@@ -639,6 +639,19 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
         <Card style={{ marginTop: 10, gap: 8 }}>
           <Text style={s.h3}>Where to find it</Text>
           <PalMap name={name} />
+          {/* Only for the pals the MAP cannot speak for. 207 species have a
+              named boss, but just 91 carry coordinates the map can pin and
+              summarise as "Fixed boss (Lv N) — Place" above; the other 116
+              are dungeon end-bosses that showed nothing at all. Gating on
+              ALPHA_SPOTS keeps the mapped ones from saying it twice. */}
+          {!ALPHA_SPOTS[name] && (p.alpha_locations ?? []).length > 0 && (
+            <View style={{ gap: 5 }}>
+              <Text style={[s.body, { fontWeight: '800', color: T.ink }]}>Alpha boss</Text>
+              {(p.alpha_locations ?? []).map((line) => (
+                <Text key={line} style={[s.body, { fontSize: 12.5 }]}>· {line}</Text>
+              ))}
+            </View>
+          )}
           {otherWays(p).length > 0 && (
             <View style={{ gap: 5 }}>
               <Text style={[s.body, { fontWeight: '800', color: T.ink }]}>

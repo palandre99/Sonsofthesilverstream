@@ -1935,6 +1935,36 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E63. THE ALPHA CLAIMS — ONE REAL GAP, ONE DATA SPLIT WORTH KNOWING 2026-08-16
+
+Last untested family on the pal card. Compared all THREE alpha sources
+against each other.
+
+- ALPHA_SPOTS (alphaSpots.g.ts, drives the card's badge): **91 species**
+- MAP_ALPHAS (mapSpawns.g.ts, drives the map pins): **89 species**
+- pals_1_0.json `alpha_locations`: **207 species, 267 lines**
+
+- [x] **116 SPECIES HAVE A NAMED BOSS THE APP NEVER SHOWED.** Only the 91
+      with coordinates could be pinned and summarised as "Fixed boss (Lv N) —
+      Place". The other 116 are dungeon end-bosses, and their cards said
+      nothing at all. Both platforms now show an "Alpha boss" line for
+      exactly those, in the dataset's own words — verified live, Cattiva
+      reads "The Cat's Pajamas Cattiva (Lv. 10-13) - Hillside Cavern,
+      Isolated Island Cavern".
+- [x] **Gated so nothing is said twice.** My first pass showed it for all
+      207, which made Necromus print its level and place twice — once from
+      the map summary, once from the new line. Caught by looking at the
+      render, not the code. Now `!ALPHA_SPOTS[name]` gates it: the 91 mapped
+      pals keep the map's summary alone.
+- **A DATA SPLIT WORTH KNOWING, not a bug I should fix:** `Necromus` and
+  `Eye of Cthulhu` are in the OLD alpha file but NOT in the newer MAP_ALPHAS,
+  so the map cannot pin them while the card's badge logic still counts them
+  as having a fixed boss. Necromus is fine in practice — the card shows
+  "Fixed boss (Lv 60) — Palpagos Islands" from the old file. **This is the
+  map lane's data, so I did not touch it. Logged for them.**
+- **JARGON CHECK:** all 267 lines scanned, **zero** field names or dev-speak,
+  and **zero** exact duplicates of an obtain_notes line. Shown untouched.
+
 ## E62. THE APP TOLD 11 PALS TO "BREED IT" WHEN THAT IS IMPOSSIBLE — AND
 ## THE REAL ANSWER WAS IN THE DATA ALL ALONG 2026-08-16
 

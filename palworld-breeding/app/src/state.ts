@@ -21,6 +21,11 @@ export interface PalInfo {
    * pals in enemy camps, the Pal Recruiter, raids, fishing. Mined for 251 of
    * the 299 species and, until now, shown by nothing. */
   obtain_notes: string[] | null;
+  /** The named boss version — title, level and place, e.g. "Dark Knight of
+   * Legend Necromus (Lv. 60) - Palpagos Islands (440,679)". 267 lines across
+   * 207 species; only 91 of them carry coordinates the map can pin, so the
+   * other 116 were invisible. */
+  alpha_locations: string[] | null;
   nocturnal: boolean | null;
   wild: boolean;
   regions: string[];
