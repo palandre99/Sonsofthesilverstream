@@ -17,6 +17,7 @@ import { requestPlan } from '../engine/planClient';
 import { cakeNeeds } from '../engine/boosters';
 import { expectedEggs } from '../logic/economics';
 import { claimFor } from '../logic/ticks';
+import { sameTargets } from '../logic/goals';
 import {
   adviseUnlocks, catchWhere, unlockLine, type UnlockAdvice, type WildFact,
 } from '../logic/unlock';
@@ -176,8 +177,7 @@ export function PlanPage() {
    * already computed further down to decide whether to fold the goal tray;
    * hoisted so it can also say plainly when the plan has gone out of date
    * (the phone had the same silent staleness — E17). */
-  const planIsCurrent = !!plan
-    && [...targets].sort().join() === [...planTargets].sort().join();
+  const planIsCurrent = !!plan && sameTargets(targets, planTargets);
 
   const addTarget = (n: string) => addDraftTargets([n]);
 

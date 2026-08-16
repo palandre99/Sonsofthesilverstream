@@ -3,6 +3,7 @@ import { computed, effect, signal } from '@preact/signals';
 import { BreedingEngine, parseGenderNote } from './engine/formula';
 import { initPlanner } from './engine/planClient';
 import type { BreedingData } from './engine/types';
+import { withoutTargets, withTargets } from './logic/goals';
 
 export interface PalInfo {
   number: string;
@@ -144,15 +145,13 @@ export function setPlayerLevel(level: number | undefined): void {
 export const draftTargets = signal<string[]>([]);
 
 export function addDraftTargets(names: string[]): void {
-  const next = [...draftTargets.value];
-  for (const n of names) if (!next.includes(n)) next.push(n);
-  if (next.length !== draftTargets.value.length) draftTargets.value = next;
+  const next = withTargets(draftTargets.value, names);
+  if (next !== draftTargets.value) draftTargets.value = next;
 }
 
 export function removeDraftTargets(names: string[]): void {
-  const drop = new Set(names);
-  const next = draftTargets.value.filter((t) => !drop.has(t));
-  if (next.length !== draftTargets.value.length) draftTargets.value = next;
+  const next = withoutTargets(draftTargets.value, names);
+  if (next !== draftTargets.value) draftTargets.value = next;
 }
 
 export function clearDraftTargets(): void {

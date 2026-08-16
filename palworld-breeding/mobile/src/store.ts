@@ -7,6 +7,7 @@
 import { useSyncExternalStore } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { afterUntick, claimFor } from './logic/ticks';
+import { withoutTargets, withTargets } from './logic/goals';
 import { BreedingEngine } from './engine/formula';
 import { derivations, planFor, stepId } from './engine/planner';
 import { ADVICE_VERSION, helperAdvice, type HelperAdvice } from './engine/helpers';
@@ -409,17 +410,15 @@ let draftTargets: string[] = [];
 export const getDraftTargets = (): string[] => draftTargets;
 
 export function addDraftTargets(names: string[]): void {
-  const next = [...draftTargets];
-  for (const n of names) if (!next.includes(n)) next.push(n);
-  if (next.length === draftTargets.length) return;
+  const next = withTargets(draftTargets, names);
+  if (next === draftTargets) return;
   draftTargets = next;
   emit();
 }
 
 export function removeDraftTargets(names: string[]): void {
-  const drop = new Set(names);
-  const next = draftTargets.filter((t) => !drop.has(t));
-  if (next.length === draftTargets.length) return;
+  const next = withoutTargets(draftTargets, names);
+  if (next === draftTargets) return;
   draftTargets = next;
   emit();
 }

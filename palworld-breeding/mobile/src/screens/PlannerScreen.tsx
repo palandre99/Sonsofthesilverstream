@@ -17,6 +17,7 @@ import { navigateTo, onNavIntent, takeIntentPayload } from '../nav/intent';
 import {
   adviseUnlocks, catchWhere, unlockLine, type UnlockAdvice, type WildFact,
 } from '../logic/unlock';
+import { sameTargets } from '../logic/goals';
 import { PALCALC_FACTS } from '../data/palcalcFacts.g';
 import { wildLevelRange } from '../data/rarity';
 import { PalPicker } from '../ui/PalPicker';
@@ -198,8 +199,7 @@ export function PlannerScreen() {
   /** Does the route on screen still cover the goals you are holding? One
    * definition, used both to warn before replacing a plan and to say plainly
    * when the plan has gone out of date. */
-  const planIsCurrent = !!plan
-    && [...targets].sort().join() === [...plan.targets].sort().join();
+  const planIsCurrent = !!plan && sameTargets(targets, plan.targets);
 
   /** Planning replaces the current plan — when one is mid-flight with real
    * progress and DIFFERENT goals, ask first (self-found queue item). */
