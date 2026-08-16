@@ -1744,6 +1744,43 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E44. SETTINGS SCREENS — FIRST PASS 2026-08-16 (no CEO prompt — the lane)
+
+- [x] **A FOURTH cluster of unnamed text fields.** SettingsScreens.tsx has
+      three raw TextInputs — profile name, player level, new-profile name —
+      and NOT ONE had an accessible name. Same class as E32 (shared
+      SearchInput), E33 (passive picker) and E39 (pal picker). All three
+      named. Verified on device.
+- [x] **TYPING 0 IN THE LEVEL FIELD SILENTLY SAVED LEVEL 1.** `editLevel ?
+      Number(editLevel) : undefined` — "0" is a truthy STRING, so it reached
+      the store, which clamps to a minimum of 1. Now `Number(editLevel) > 0`,
+      so 0 means "no level set", which is what the empty field already means
+      and what the copy already offers ("Leave empty and the app reads it
+      from your pals instead"). Verified on device: typed 0 into Hardcore,
+      saved, the profile's level came back UNSET rather than 1.
+- [x] Storage snapshotted and diffed after: **zero drift.** "My world" still
+      Lv 42 / 26 pals, "Hardcore" still empty.
+
+- [ ] **OPEN — NEEDS A CHECK ON A REAL BUILD, NOT THE WEB QA SERVER.**
+      **CLAUDE.md states: "he reads it on the About screen version stamp, and
+      it is the only place he sees what he is getting."** Reading
+      AboutScreen: the stamp renders `Update {updateId.slice(0,8)} ·
+      {createdAt}` and `Channel {channel} · runtime {runtimeVersion}`. **It
+      never renders the update MESSAGE at all.** So every `eas update
+      --message "..."` written in his language — dozens of them — is visible
+      in the EAS dashboard and `channel:list`, and NOT in the app.
+      On the QA web server it shows "Update ? · " with an empty date, but
+      that part IS an RN-web artifact (expo-updates is inert there) and must
+      NOT be filed as a bug without checking a real build.
+      The open question is whether the message is retrievable at runtime:
+      `Updates.manifest` is typed `Partial<Manifest>` with `metadata: object`
+      — the EAS message MAY live in that metadata, or may be server-side
+      only. **Do not guess and do not ship a speculative render.** Check
+      `JSON.stringify(Updates.manifest)` on an actual device build first.
+      If the message is not available, the honest fix is to stop claiming in
+      the docs that he can read it there, and decide with him what the About
+      screen should say instead.
+
 ## E43. JARGON AUDIT — BOTH PLATFORMS 2026-08-16 (no CEO prompt — the lane)
 
 Every string that reaches the screen in both trees, read as a player who has

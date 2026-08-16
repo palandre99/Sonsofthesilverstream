@@ -120,6 +120,9 @@ export function ProfilesScreen() {
               <TextInput
                 value={editName}
                 onChangeText={setEditName}
+                // fourth cluster of raw TextInputs with no name — a
+                // placeholder stops being read the moment you type
+                accessibilityLabel="Profile name"
                 placeholder="Profile name"
                 placeholderTextColor={T.faint}
                 autoFocus
@@ -133,6 +136,7 @@ export function ProfilesScreen() {
               <TextInput
                 value={editLevel}
                 onChangeText={(t) => setEditLevel(t.replace(/[^0-9]/g, ''))}
+                accessibilityLabel="Your player level in this world, 1 to 100"
                 placeholder="Player level (1–100)"
                 placeholderTextColor={T.faint}
                 keyboardType="number-pad"
@@ -143,8 +147,12 @@ export function ProfilesScreen() {
                 <Btn primary label="Save"
                   onPress={() => {
                     void renameProfile(managing.id, editName);
+                    // "0" is truthy as a string, and the store clamps to a
+                    // minimum of 1 — so typing 0 silently saved level 1.
+                    // Treat it as "I don't want a level set", which is what
+                    // the empty field already means.
                     void setProfileLevel(managing.id,
-                      editLevel ? Number(editLevel) : undefined);
+                      Number(editLevel) > 0 ? Number(editLevel) : undefined);
                     setManaging(null);
                   }} />
                 <Btn label="Cancel" onPress={() => setManaging(null)} />
@@ -178,6 +186,7 @@ export function ProfilesScreen() {
             <TextInput
               value={newName}
               onChangeText={setNewName}
+              accessibilityLabel="Name for the new save profile"
               placeholder="e.g. Hardcore world"
               placeholderTextColor={T.faint}
               autoFocus
