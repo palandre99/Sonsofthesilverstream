@@ -33,6 +33,7 @@ import { REGION_SPOTS } from '../data/regionSpots.g';
 import { takeIntentPayload } from '../nav/intent';
 import { regionsFor } from '../map/layers';
 import { ownedAny, pals } from '../store';
+import { PalDetail } from '../ui/PalDetail';
 import {
   clearFound, foundCount, foundKey, isFound, loadFound, onFoundChange, toggleFound,
 } from '../map/found';
@@ -52,7 +53,10 @@ export function MapScreen() {
     title: string; lines: string[]; at: string; colour: string; icon: string;
     /** set only for a POI, so the card can offer to tick it off */
     mark?: string;
+    /** a pal this marker IS, so the card can open its Paldex entry */
+    pal?: string;
   } | null>(null);
+  const [openPal, setOpenPal] = useState<string | null>(null);
   const [ticks, setTicks] = useState(0);   // bumps when a tick changes
 
   React.useEffect(() => {
@@ -297,6 +301,10 @@ export function MapScreen() {
       mark: layer.key.startsWith('poi:')
         ? foundKey(layer.key.slice(4), region, best.index)
         : undefined,
+      // an alpha pin IS a pal — let the player open it without leaving the map
+      pal: palName ?? (own.startsWith('Alpha ') && pals[own.slice(6)]
+        ? own.slice(6)
+        : undefined),
     });
   }, [active, region, vp.scale]);
 
@@ -406,6 +414,23 @@ export function MapScreen() {
               {line}
             </Text>
           ))}
+          {focus.pal && (
+            <Pressable
+              onPress={() => setOpenPal(focus.pal!)}
+              accessibilityRole="button"
+              style={{
+                flexDirection: 'row', alignItems: 'center', gap: 7, marginTop: 4,
+                alignSelf: 'flex-start', paddingHorizontal: 9, paddingVertical: 6,
+                borderRadius: 9, borderWidth: 1, borderColor: T.accent,
+                backgroundColor: T.accentSoft,
+              }}
+            >
+              <Icon name="book-open-variant" size={14} color={T.accentInk} />
+              <Text style={{ color: T.accentInk, fontSize: 12, fontWeight: '700' }}>
+                Open {focus.pal}
+              </Text>
+            </Pressable>
+          )}
           {focus.mark && (
             <Pressable
               onPress={() => toggleFound(focus.mark!)}
@@ -536,6 +561,9 @@ export function MapScreen() {
           />
         </View>
       </View>
+
+      {/* the pal's own card, over the map — you keep your place */}
+      {openPal && <PalDetail name={openPal} onClose={() => setOpenPal(null)} />}
 
       {sheet === 'layers' && (
         <LayerSheet

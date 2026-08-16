@@ -477,6 +477,13 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       Statue (#87)" — the number exists only to tell 155 statues apart in a
       table). Both are stripped in the extractor, so they cannot leak later.
 
+- [x] F39 DONE 2026-08-16 ~13:42: an alpha pin IS a pal, so the marker card
+      now offers "Open <Pal>" and shows its full Paldex entry OVER the map —
+      you keep your view instead of being thrown to another tab and losing it.
+      All 72 alpha names resolve to known pals (checked, not assumed). This is
+      the map reaching back into the breeding suite, which is the whole point
+      of the Dododex model in 04_PRODUCT_BLUEPRINT §1.
+
 ### Open — the map lane's own queue
 - [x] F23 DONE 2026-08-16 ~00:02: the preview's dense clusters were an
       unreadable scribble — 93 overlapping rings in one bay. Now thinned to one
