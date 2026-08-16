@@ -715,6 +715,14 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       upscaled 22px sprite. They are the game's own symbols (pal-atlas bakes
       them out of the PAK) but at a resolution that cannot survive a modern
       phone. Need a higher-resolution source for the same symbols.
+      RESEARCH SO FAR (2026-08-16 ~15:55): pal-atlas's public/icons holds 25
+      files and they ARE the ones we already ship — 500 to 4000 bytes each, so
+      that upstream is exhausted, not mis-fetched. Remaining candidates, in
+      order: paldb.cc (serves game UI art and is already our provenance chain
+      for other data); the game PAK itself, which the CEO owns but which needs
+      an extraction pipeline we do not have; a vector redraw of the same
+      symbols, which would be OUR art rather than the game's and so is a last
+      resort and a CEO decision, not a silent substitution.
 - [ ] J4 FIND-PAL SEARCH should work like the Paldex search and filters —
       element/type filters, the same interaction, the same quality bar. Today
       it is a name box with a level/time filter and nothing else.
