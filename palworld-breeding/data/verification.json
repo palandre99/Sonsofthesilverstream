@@ -337,6 +337,16 @@
     "Nifrendil/pal-atlas public/icons/ (MIT)",
     "tools/fetch_map_icons.py"
    ]
+  },
+  {
+   "claim": "One upstream row of 68,707 was on the wrong map: the Lv 55 Alpha Dualith. Its region label is corrected to Palpagos on evidence; its position is untouched.",
+   "verdict": "verified",
+   "evidence": "palworld-atlas-data tags the row region='tree', but its coordinates (-169138.25, 575683.1) fall outside the World Tree's DT_WorldMapUIData bounds entirely and inside Palpagos's. Two independent signals agree it is a Palpagos boss: (1) the coordinates only fit Palpagos; (2) Nifrendil/pal-atlas lists the SAME spawner - notes 'remainsIsland_1_GrassGolem_FBOSS | Lv 55-55', palId BOSS_GrassGolem - as alpha_1667 with mapId 'palpagos'. Swept both spawn files: exactly 1 of 68,707 rows fails its labelled region, and that same row fits the other region; every other row is correctly labelled. Previously project() returned None for it, so the boss was silently absent from the app. Now only the LABEL moves, never the position: the recovered point lands at uv (0.89735, 0.35791), which samples as LAND on the game texture (avg rgb 58,78,62), not clamped to an edge. Anything fitting NEITHER region is still dropped. The extractor prints every correction it makes.",
+   "sources": [
+    "Awy64/palworld-atlas-data tree_spawns.json (build 24575149)",
+    "Nifrendil/pal-atlas pois.json alpha_1667 / alpha_983",
+    "tools/extract_map_data.py project()"
+   ]
   }
  ]
 }

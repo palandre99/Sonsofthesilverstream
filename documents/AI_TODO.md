@@ -1037,6 +1037,26 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       in progress. Proved it is not my regression: my map suite is 94/94 and
       the whole tree minus their in-flight file is 228/228. NOT fixing it (out
       of lane) and NOT publishing over it. Mentioned to the CEO in the report.
+- [x] K12 2026-08-16 ~20:23 A BOSS THAT EXISTS IN THE GAME WAS MISSING FROM THE
+      MAP. Chasing whether the World Tree is usable, I checked our tree bounds
+      against all 3,954 raw tree spawns and found ONE that projects far outside
+      the map (u 4.08). Traced it: the Lv 55 Alpha Dualith, tagged
+      region='tree' by palworld-atlas-data while its coordinates sit inside
+      PALPAGOS. project() returned None for it, so it was silently dropped —
+      a fixed boss in the game, absent from the app.
+      SETTLED ON EVIDENCE, NOT A GUESS: the coordinates only fit Palpagos, and
+      pal-atlas independently lists the same spawner
+      (remainsIsland_1_GrassGolem_FBOSS, BOSS_GrassGolem) as alpha_1667 with
+      mapId 'palpagos'. Swept BOTH spawn files: exactly 1 row of 68,707 fails
+      its labelled region, and it is the only one that fits the other.
+      project() now returns the region a point ACTUALLY belongs to, records
+      every correction, and the extractor prints them loudly. Only the LABEL
+      moves — the position is the upstream's own, and anything fitting NEITHER
+      region is still dropped, because then we genuinely do not know.
+      Checked the recovered spot is not a clamp artefact: uv (0.89735,
+      0.35791) samples as LAND on the game texture, not squashed to an edge.
+      Diff is one line in each generated file; the 68,617 wild spawns are
+      untouched. Claim added to verification.json; three regression tests.
 - [ ] K5 "also many other issues" — HE HAS MORE AND HAS NOT LISTED THEM. Ask,
       or keep walking journeys until they surface. Do not guess at what he
       means and do not claim the map is finished.

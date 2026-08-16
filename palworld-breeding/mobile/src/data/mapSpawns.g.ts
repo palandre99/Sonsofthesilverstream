@@ -2062,7 +2062,7 @@ export const MAP_ALPHAS: Record<string, AlphaSpot[]> = {
   "Cryolinx Terra": [{ m: 0, lv: 62, u: 0.20181, v: 0.73926 }],
   "Dazzi Noct": [{ m: 0, lv: 60, u: 0.22864, v: 0.59743 }],
   "Dinossom Lux": [{ m: 0, lv: 47, u: 0.70883, v: 0.27299 }],
-  "Dualith": [{ m: 1, lv: 75, u: 0.55956, v: 0.50234 }],
+  "Dualith": [{ m: 0, lv: 55, u: 0.89735, v: 0.35791 }, { m: 1, lv: 75, u: 0.55956, v: 0.50234 }],
   "Dualith Noct": [{ m: 0, lv: 70, u: 0.07242, v: 0.62691 }],
   "Dumud": [{ m: 0, lv: 14, u: 0.51091, v: 0.32541 }],
   "Dynamoff": [{ m: 0, lv: 67, u: 0.51156, v: 0.80910 }],

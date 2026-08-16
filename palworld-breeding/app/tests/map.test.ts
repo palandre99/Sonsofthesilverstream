@@ -12,7 +12,7 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 import { MAP_POIS } from '../src/data/mapPois.g';
-import { MAP_SPAWNS } from '../src/data/mapSpawns.g';
+import { MAP_ALPHAS, MAP_SPAWNS } from '../src/data/mapSpawns.g';
 import { MAP_REGIONS } from '../src/data/mapMeta.g';
 import { MAP_TILES } from '../src/data/tileIndex.g';
 import { clusterPoints, decodePoints, pointsInRect } from '../src/map/points';
@@ -918,5 +918,37 @@ describe('layers do not stack their pins on each other', () => {
     );
     expect(screen).toMatch(/clusterPoints\(layer\.set, hits, vp\.scale, cell, li\)/);
     expect(screen).toMatch(/for \(const \[li, layer\] of active\.entries\(\)\)/);
+  });
+});
+
+/* Exactly one row of 68,707 came from upstream on the wrong map: the Lv 55
+ * Alpha Dualith, tagged region "tree" by palworld-atlas-data while its
+ * coordinates sit inside PALPAGOS. It used to fail projection and be silently
+ * dropped, so a boss that exists in the game was missing from the app. */
+describe('the mislabelled alpha is on the map', () => {
+  it('Dualith has both of its alpha bosses', () => {
+    const spots = MAP_ALPHAS.Dualith;
+    expect(spots, 'Dualith must have alpha spots').toBeTruthy();
+    expect(spots.length).toBe(2);
+    // the recovered one: Palpagos (m 0), level 55
+    expect(spots.some((s) => s.m === 0 && s.lv === 55)).toBe(true);
+    // and the one that was always there: the World Tree, level 75
+    expect(spots.some((s) => s.m === 1 && s.lv === 75)).toBe(true);
+  });
+
+  it('puts the recovered boss inside the map, not on its edge', () => {
+    // a clamped point would land exactly on 0 or 1 — proof we corrected the
+    // LABEL rather than squashing the position to fit
+    const p = MAP_ALPHAS.Dualith.find((s) => s.m === 0)!;
+    expect(p.u).toBeGreaterThan(0.01);
+    expect(p.u).toBeLessThan(0.99);
+    expect(p.v).toBeGreaterThan(0.01);
+    expect(p.v).toBeLessThan(0.99);
+  });
+
+  it('did not disturb the wild spawn count while fixing it', () => {
+    let n = 0;
+    for (const groups of Object.values(MAP_SPAWNS)) for (const g of groups) n += g.n;
+    expect(n).toBe(68617);
   });
 });

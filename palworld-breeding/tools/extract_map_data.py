@@ -103,14 +103,45 @@ POI_LAYERS = {
 }
 
 
-def project(wx: float, wy: float, region: str) -> tuple[float, float] | None:
-    """World XY -> normalized [0,1] map-image coords, or None if out of region."""
+def _uv(wx: float, wy: float, region: str) -> tuple[float, float] | None:
     b = REGIONS[region]
     u = (wy - b["minY"]) / (b["maxY"] - b["minY"])
     v = 1.0 - (wx - b["minX"]) / (b["maxX"] - b["minX"])
     if not (0.0 <= u <= 1.0 and 0.0 <= v <= 1.0):
         return None
     return u, v
+
+
+#: rows whose upstream region label was wrong; printed loudly at the end
+MISLABELLED: list[str] = []
+
+
+def project(wx: float, wy: float, region: str,
+            what: str = "") -> tuple[float, float, str] | None:
+    """World XY -> (u, v, region) in [0,1] map-image coords, or None.
+
+    RETURNS THE REGION IT ACTUALLY BELONGS TO, which is not always the one the
+    upstream claimed. Exactly one row of 68,707 is mislabelled — the Lv 55
+    Alpha Dualith, tagged `region: tree` by palworld-atlas-data while its
+    coordinates sit squarely inside PALPAGOS. Two independent signals settle
+    it: the coordinates themselves only fit Palpagos, and pal-atlas lists the
+    same spawner (`remainsIsland_1_GrassGolem_FBOSS`) with `mapId: palpagos`.
+
+    This used to silently return None, so that alpha was simply MISSING from
+    the map — a boss that exists in the game and not in the app. Nothing is
+    invented here: the position is the upstream's own, and only the region
+    LABEL is corrected, on evidence. Anything that fits NEITHER region is still
+    dropped, because then we genuinely do not know where it goes.
+    """
+    got = _uv(wx, wy, region)
+    if got is not None:
+        return got[0], got[1], region
+    other = "tree" if region == "palpagos" else "palpagos"
+    got = _uv(wx, wy, other)
+    if got is not None:
+        MISLABELLED.append(f"{what or 'row'}: upstream said {region}, belongs to {other}")
+        return got[0], got[1], other
+    return None
 
 
 def pack(points: list[tuple[float, float]]) -> str:
@@ -169,10 +200,12 @@ def build_spawns(known: set[str]) -> tuple[str, dict]:
         for s in data["spawns"]:
             if s["kind"] == "alpha":
                 name = PAL_ID_OVERRIDES.get(s["palId"]) or s.get("palName")
-                uv = project(s["worldX"], s["worldY"], region)
-                if name in known and uv is not None:
+                got = project(s["worldX"], s["worldY"], region,
+                              f'alpha {s.get("palName")}')
+                if name in known and got is not None:
+                    u, v, real = got
                     alphas.setdefault(name, []).append(
-                        (0 if region == "palpagos" else 1, s["maxLevel"], uv)
+                        (0 if real == "palpagos" else 1, s["maxLevel"], (u, v))
                     )
                 continue
             if s["kind"] != "wild":
@@ -182,10 +215,12 @@ def build_spawns(known: set[str]) -> tuple[str, dict]:
                 stats["dropped_unknown"] += 1
                 stats["unknown"].add(f'{s.get("palName")} ({s["palId"]})')
                 continue
-            uv = project(s["worldX"], s["worldY"], region)
-            if uv is None:
+            got = project(s["worldX"], s["worldY"], region, f'wild {name}')
+            if got is None:
                 stats["dropped_offmap"] += 1
                 continue
+            u, v, real = got
+            uv = (u, v)
             lo, hi = s["minLevel"], s["maxLevel"]
             if lo > hi:
                 lo, hi = hi, lo
@@ -193,7 +228,7 @@ def build_spawns(known: set[str]) -> tuple[str, dict]:
             dungeon = (round(s["worldX"], 1), round(s["worldY"], 1)) not in field
             if dungeon:
                 stats["dungeon"] += 1
-            key = (region, lo, hi, s["availability"], dungeon)
+            key = (real, lo, hi, s["availability"], dungeon)
             groups[name][key].append(uv)
             stats["points"] += 1
 
@@ -288,7 +323,10 @@ def build_pois() -> tuple[str, dict]:
                 stats["skipped_layers"].add(layer)
             continue
         region = "tree" if p["mapId"] == "worldtree" else "palpagos"
-        uv = project(p["x"], p["y"], region)
+        got = project(p["x"], p["y"], region, f'poi {p.get("name")}')
+        uv = None if got is None else (got[0], got[1])
+        if got is not None:
+            region = got[2]
         if uv is None:
             stats["dropped_offmap"] += 1
             continue
@@ -388,6 +426,15 @@ def main() -> None:
         (d / "mapSpawns.g.ts").write_text(spawns_ts, encoding="utf-8")
         (d / "mapPois.g.ts").write_text(pois_ts, encoding="utf-8")
         (d / "mapMeta.g.ts").write_text(meta_ts, encoding="utf-8")
+
+    if MISLABELLED:
+        print("")
+        print("REGION LABELS CORRECTED (upstream put them on the wrong map):")
+        for line in MISLABELLED:
+            print(f"  {line}")
+        print("  ^ the position is the upstream's own; only the map label")
+        print("    moved, and only where the coordinates fit no other region.")
+        print("")
 
     print(f"spawns: {sstats['points']:,} points")
     print(f"  dropped, off-map:      {sstats['dropped_offmap']:,}")
