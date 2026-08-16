@@ -1,6 +1,6 @@
 /** Full-screen pal picker — the Paldex's search + Filter & Sort sheet in a
  * modal, used by the Plan and Calculator. */
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   FlatList, Image, Modal, Pressable, ScrollView, Text, TextInput, View,
 } from 'react-native';
@@ -18,6 +18,66 @@ import { FilterSheet } from './FilterSheet';
 import {
   applyFilters, NO_FILTERS, sortedPals, type Filters, type SortKey,
 } from './palFilters';
+
+/** One row of the picker list.
+ *
+ *  This was declared INSIDE PalPicker, which made it a brand-new component
+ *  type on every render — so React unmounted and rebuilt every visible row,
+ *  and every row's pal image, on each keystroke in a 299-pal search. Out
+ *  here and memoised, a keystroke re-renders only the rows that changed.
+ *  `owned` is passed IN rather than read from the store, so memo can still
+ *  see an ownership tick and update the dot. */
+const PickerRow = memo(function PickerRow({ n, excluded, owned, focusWork, onChoose }: {
+  n: string; excluded: boolean; owned: boolean;
+  focusWork?: string | null; onChoose: (n: string) => void;
+}) {
+  return (
+      <Pressable
+        disabled={excluded}
+        onPress={() => onChoose(n)}
+        // the row said nothing to a screen reader: no role, and "you own
+        // this one" was a bare coloured dot with no text at all
+        accessibilityRole="button"
+        accessibilityState={{ disabled: excluded }}
+        accessibilityLabel={`${n}. ${
+          excluded ? 'already one of your goals'
+            : owned ? 'in your Paldex' : 'not in your Paldex yet'}`}
+        style={({ pressed }) => [{
+          flexDirection: 'row', alignItems: 'center', gap: 12,
+          paddingVertical: 9, paddingHorizontal: 12, borderRadius: 12,
+          backgroundColor: pressed ? T.accentSoft : T.surface,
+          borderWidth: 1, borderColor: pressed ? T.accent : T.line,
+          borderLeftWidth: 3,
+          borderLeftColor: pressed ? T.accent : rarityTint(pals[n]?.rarity, T.line),
+          marginBottom: 6, opacity: excluded ? 0.45 : 1,
+        }]}
+      >
+        <PalIcon name={n} size={46} />
+        <View style={{ flex: 1, gap: 3 }}>
+          <Text style={{ color: T.ink, fontWeight: '800', fontSize: 16 }}>
+            {n} <Text style={{ color: T.faint, fontSize: 11, fontWeight: '700' }}>#{pals[n]?.number || '—'}</Text>
+          </Text>
+          <View style={{ flexDirection: 'row', gap: 5, flexWrap: 'wrap' }}>
+            <ElementChips name={n} />
+          </View>
+          {/* what the pal can DO — the picker showed only its elements, so
+              you could not tell a miner from a lumberjack while choosing
+              (CEO 2026-08-16). `focus` keeps the job you filtered by first,
+              so a Mining-filtered list still visibly reads as Mining. */}
+          <View style={{ flexDirection: 'row', gap: 5, flexWrap: 'wrap' }}>
+            <WorkChips name={n} top={3} focus={focusWork} />
+          </View>
+        </View>
+        {excluded ? (
+          <Badge kind="plain">added</Badge>
+        ) : owned ? (
+          <View style={{
+            width: 10, height: 10, borderRadius: 5, backgroundColor: T.ok,
+          }} />
+        ) : null}
+      </Pressable>
+  );
+});
 
 export function PalPicker({ visible, onClose, onPick, title, exclude }: {
   visible: boolean;
@@ -59,63 +119,12 @@ export function PalPicker({ visible, onClose, onPick, title, exclude }: {
   const recents = getRecentPicks().filter((n) => Object.hasOwn(pals, n));
   const showRecents = !q && !filtersActive && sort === 'number' && recents.length > 0;
 
-  const Row = ({ n }: { n: string }) => {
-    const excluded = exclude?.has(n) ?? false;
-    const owned = ownedAny(n);
-    // VANILLA rows — rarity colour experiments parked (CEO 2026-08-15
-    // evening); only the original thin edge tint remains
-    return (
-      <Pressable
-        disabled={excluded}
-        onPress={() => {
-          void Haptics.selectionAsync();
-          rememberPick(n);
-          onPick(n);
-          onClose();
-        }}
-        // the row said nothing to a screen reader: no role, and "you own
-        // this one" was a bare coloured dot with no text at all
-        accessibilityRole="button"
-        accessibilityState={{ disabled: excluded }}
-        accessibilityLabel={`${n}. ${
-          excluded ? 'already one of your goals'
-            : owned ? 'in your Paldex' : 'not in your Paldex yet'}`}
-        style={({ pressed }) => [{
-          flexDirection: 'row', alignItems: 'center', gap: 12,
-          paddingVertical: 9, paddingHorizontal: 12, borderRadius: 12,
-          backgroundColor: pressed ? T.accentSoft : T.surface,
-          borderWidth: 1, borderColor: pressed ? T.accent : T.line,
-          borderLeftWidth: 3,
-          borderLeftColor: pressed ? T.accent : rarityTint(pals[n]?.rarity, T.line),
-          marginBottom: 6, opacity: excluded ? 0.45 : 1,
-        }]}
-      >
-        <PalIcon name={n} size={46} />
-        <View style={{ flex: 1, gap: 3 }}>
-          <Text style={{ color: T.ink, fontWeight: '800', fontSize: 16 }}>
-            {n} <Text style={{ color: T.faint, fontSize: 11, fontWeight: '700' }}>#{pals[n]?.number || '—'}</Text>
-          </Text>
-          <View style={{ flexDirection: 'row', gap: 5, flexWrap: 'wrap' }}>
-            <ElementChips name={n} />
-          </View>
-          {/* what the pal can DO — the picker showed only its elements, so
-              you could not tell a miner from a lumberjack while choosing
-              (CEO 2026-08-16). `focus` keeps the job you filtered by first,
-              so a Mining-filtered list still visibly reads as Mining. */}
-          <View style={{ flexDirection: 'row', gap: 5, flexWrap: 'wrap' }}>
-            <WorkChips name={n} top={3} focus={filters.work} />
-          </View>
-        </View>
-        {excluded ? (
-          <Badge kind="plain">added</Badge>
-        ) : owned ? (
-          <View style={{
-            width: 10, height: 10, borderRadius: 5, backgroundColor: T.ok,
-          }} />
-        ) : null}
-      </Pressable>
-    );
-  };
+  const choose = useCallback((n: string) => {
+    void Haptics.selectionAsync();
+    rememberPick(n);
+    onPick(n);
+    onClose();
+  }, [onPick, onClose]);
 
   return (
     <Modal visible={visible} animationType="slide" presentationStyle="pageSheet"
@@ -135,6 +144,9 @@ export function PalPicker({ visible, onClose, onPick, title, exclude }: {
             onChangeText={setQ}
             placeholder={`Search ${Object.keys(pals).length} pals…`}
             placeholderTextColor={T.faint}
+            // a raw TextInput, so E32's shared SearchInput fix never reached
+            // it — and a placeholder stops being read the moment you type
+            accessibilityLabel="Search pals"
             autoCorrect={false}
             autoCapitalize="none"
             clearButtonMode="while-editing"
@@ -240,7 +252,11 @@ export function PalPicker({ visible, onClose, onPick, title, exclude }: {
                 letterSpacing: 1, textTransform: 'uppercase', marginBottom: 6,
                 paddingHorizontal: 2,
               }}>Recent</Text>
-              {recents.map((n) => <Row key={`r-${n}`} n={n} />)}
+              {recents.map((n) => (
+                <PickerRow key={`r-${n}`} n={n} owned={ownedAny(n)}
+                  excluded={exclude?.has(n) ?? false}
+                  focusWork={filters.work} onChoose={choose} />
+              ))}
               <Text style={{
                 color: T.faint, fontSize: 10.5, fontWeight: '800',
                 letterSpacing: 1, textTransform: 'uppercase',
@@ -248,7 +264,11 @@ export function PalPicker({ visible, onClose, onPick, title, exclude }: {
               }}>All pals</Text>
             </View>
           ) : null}
-          renderItem={({ item: n }) => <Row n={n} />}
+          renderItem={({ item: n }) => (
+            <PickerRow n={n} owned={ownedAny(n)}
+              excluded={exclude?.has(n) ?? false}
+              focusWork={filters.work} onChoose={choose} />
+          )}
           ListEmptyComponent={
             <View style={{ alignItems: 'center', marginTop: 40, gap: 6 }}>
               <Icon name="magnify" size={34} color={T.faint} />

@@ -1724,6 +1724,33 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E39. PAL PICKER HOSTILE CODE READ 2026-08-16 (no CEO prompt — the lane)
+
+- [x] **EVERY ROW OF THE 299-PAL LIST WAS DESTROYED AND REBUILT ON EVERY
+      KEYSTROKE.** `Row` was declared INSIDE PalPicker and used as the
+      FlatList's `renderItem`, so it was a brand-new component type on every
+      render — React cannot reconcile a changed type, so it unmounted and
+      remounted every visible row, pal image and all, for each character
+      typed into the search box. Same class as E36's `ParentCard`, far worse
+      impact: this is the list you type into, in the picker BOTH the Plan
+      and the Calculator use.
+      Now a module-level `memo`'d `PickerRow`. `owned` is passed IN rather
+      than read from the store inside the row, so memo can still see an
+      ownership tick and update the dot.
+      **Verified by DOM identity**: tagged the Lamball row, typed "lam", and
+      the same DOM node was still there afterwards — rows now survive a
+      keystroke instead of being rebuilt.
+      NOTE the first fix attempt did NOT work: I left a thin `Row` wrapper
+      inside render that returned `<PickerRow/>`, which re-created a
+      component type just the same and defeated the memo entirely. The
+      FlatList has to render the memoised component DIRECTLY.
+- [x] A THIRD raw search TextInput with no accessible name (after E32's
+      shared SearchInput and E33's passive picker). Named "Search pals".
+- Confirmed correct while reading, no change: the picker's empty state
+  ALREADY distinguishes search from filters ("No pal matches “q”" vs
+  "Nothing matches those filters") — the exact bug E35 fixed in the Paldex
+  had already been got right here.
+
 ## E38. PROFILES — FIRST PASS EVER 2026-08-16 (no CEO prompt — the lane)
 
 Settings/Profiles had never been read or exercised. It is the ONE area that
