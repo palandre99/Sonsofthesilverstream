@@ -126,7 +126,21 @@ export function ReferenceScreen() {
       )}
 
       <Card style={{ marginTop: 12 }}>
-        <Text style={s.h3}>Data & provenance</Text>
+        <Text style={s.h3}>Where the map comes from</Text>
+        <P>Every spot on the map is datamined, never estimated. The 68,617 wild
+        spawn points, their level ranges and whether a pal only comes out at
+        night are extracted from the game&apos;s own spawner tables by
+        palworld-atlas-data (MIT), which reads the official dedicated-server
+        package. The 11,097 chests, ore nodes, statues, dungeons and the rest
+        come from pal-atlas (MIT), as does the map picture itself — the game&apos;s
+        own map texture.</P>
+        <P>Positions use the game&apos;s own DT_WorldMapUIData bounds, checked
+        against 58,504 spawn points and a second project&apos;s markers; the worst
+        error left is about 6 pixels in 4096.</P>
+        <P>Spawns inside dungeons are kept apart from the ones out in the world,
+        because standing on the surface above a dungeon spawn finds you nothing.</P>
+
+        <Text style={[s.h3, { marginTop: 12 }]}>Data & provenance</Text>
         <P>paldb.cc CombiRanks via beliarance/palworld-kb, cross-validated against
         palcalc's 44,851 game-file results (zero mismatches) and the raw
         DT_PalCombiUnique table. Inheritance weights from GameSettings via palcalc.
