@@ -451,16 +451,25 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
 
         <Card style={{ marginTop: 10, gap: 8 }}>
           <Text style={s.h3}>How to breed it</Text>
-          {selfOnly.has(name) ? (
+          {/* This used to be a TERNARY: flagged self-breed-only meant the
+              fixed-recipe list below never rendered at all. Mossanda Lux and
+              Relaxaurus Lux are flagged AND have a real recipe (Grizzbolt +
+              Mossanda, Relaxaurus + Sparkit), so their card hid the very
+              thing the player came for. The self-breed line is an ADDITION
+              now, not a replacement (self-found 2026-08-16, same root as the
+              Calculator fix). */}
+          {selfOnly.has(name) && (
             <View style={[s.wrap]}>
               <Badge kind="bad">self-breed-only</Badge>
               <Text style={s.body}>{name} + {name} = {name}</Text>
             </View>
-          ) : (
+          )}
+          {(!selfOnly.has(name) || asChild.length > 0
+            || gendered.some((g) => g.child === name)) && (
             <>
               {asChild.map((c) => (
                 <View key={c.parents.join()} style={[s.row, { gap: 6, flexWrap: 'wrap' }]}>
-                  <Badge kind="unique">unique</Badge>
+                  <Badge kind="unique">fixed recipe</Badge>
                   <PalIcon name={c.parents[0]} size={24} />
                   <Text style={s.body}>{c.parents[0]} +</Text>
                   <PalIcon name={c.parents[1]} size={24} />
@@ -469,14 +478,14 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
               ))}
               {gendered.filter((g) => g.child === name).map((g) => (
                 <View key={g.mother} style={[s.row, { gap: 6, flexWrap: 'wrap' }]}>
-                  <Badge kind="warn">♀♂</Badge>
+                  <Badge kind="warn">genders as shown</Badge>
                   <PalIcon name={g.mother} size={24} gender="f" />
                   <Text style={s.body}>{g.mother} +</Text>
                   <PalIcon name={g.father} size={24} gender="m" />
                   <Text style={s.body}>{g.father} = {name}</Text>
                 </View>
               ))}
-              {inPool && (() => {
+              {inPool && !selfOnly.has(name) && (() => {
                 // show real example pairs INLINE — competitors do, and a
                 // cross-tab homework assignment is not a feature
                 const pairs: [string, string][] = [];

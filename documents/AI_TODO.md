@@ -1811,6 +1811,33 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E54. THE SAME HIDDEN-RECIPE BUG IN TWO MORE PLACES 2026-08-16
+
+Ran the E53 finding back through every other use of the `self_breed_only`
+flag. It was not isolated — the flag was treated as the whole story in
+three places, and two of them were still wrong.
+
+- [x] **THE PAL CARD HID IT TOO, and worse.** PalDetail's "How to breed it"
+      was a TERNARY: flagged self-breed-only meant the fixed-recipe list in
+      the else-branch NEVER RENDERED. So Mossanda Lux's card showed only
+      "self-breed-only · Mossanda Lux + Mossanda Lux" and omitted
+      Grizzbolt + Mossanda entirely — on the screen a player opens
+      specifically to ask "how do I get this". The self-breed line is now an
+      ADDITION, not a replacement. Verified on device: the card reads
+      "SELF-BREED-ONLY … | FIXED RECIPE | Grizzbolt + Mossanda = Mossanda
+      Lux". The generic example-pairs block is correctly still suppressed
+      for these (they are not in the generic pool).
+- [x] **THE PLAN TAB'S GOAL CHIP warned about them.** A ⚠ icon on any
+      unowned self-breed-only goal said "you can only catch this" — wrong
+      for exactly those two. Now it only warns when no fixed recipe exists.
+- [x] TWO NAMING MISSES IN THE SAME CARD, from the E27b/E29 sweeps: the pal
+      card still badged a fixed recipe as "unique" and the gender-locked
+      pair as the bare glyph "♀♂". Both now match the rest of the app
+      ("fixed recipe", "genders as shown").
+- **This is why a finding should be run back through the codebase.** E53
+      fixed one screen; the same mistake was sitting in two others, one of
+      them the pal card — the single most likely place to be read.
+
 ## E53. THE CALCULATOR HID TWO REAL RECIPES 2026-08-16
 
 Sweeping the "silently incomplete claim" class past `.slice()` into absolute

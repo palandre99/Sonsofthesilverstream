@@ -24,7 +24,7 @@ import { PalPicker } from '../ui/PalPicker';
 import { SuggestedGoals } from '../ui/SuggestedGoals';
 import {
   clearPlan, completeStep, getBox, getChecks, getPlan, hasGender, ownedAny,
-  addPlanTarget, pals, removePlanTarget, resetPlanProgress, savePlan, selfOnly,
+  addPlanTarget, breeding, pals, removePlanTarget, resetPlanProgress, savePlan, selfOnly,
   uncheckStep, useAppVersion,
   addDraftTargets, clearDraftTargets, getDraftTargets, removeDraftTargets,
   engine, getPlayerLevel,
@@ -652,7 +652,13 @@ export function PlannerScreen() {
                       color: owned ? T.ok : T.ink, fontSize: 12.5, fontWeight: '700',
                     }}>{t}</Text>
                     {owned && <Icon name="check" size={13} color={T.ok} />}
-                    {selfOnly.has(t) && !owned && (
+                    {/* Mossanda Lux and Relaxaurus Lux are flagged
+                        self-breed-only but DO have a fixed recipe, so this
+                        warned "you can only get this by catching it" about
+                        two pals you can actually breed. Only warn when the
+                        flag is the whole story. */}
+                    {selfOnly.has(t) && !owned
+                      && !breeding.unique_combos.some((c) => c.child === t) && (
                       <Icon name="alert-outline" size={13} color={T.warn} />
                     )}
                     <Pressable hitSlop={8}
