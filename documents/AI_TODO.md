@@ -4283,3 +4283,44 @@ it type-checks, 319/319 pass, and their change is a guarded JSON parse with a
 try/catch fallback — a finished-looking addition, not a broken half-edit. So
 nothing on his phone is broken. Still: REPUBLISH once they commit, so the
 bundle maps to a known commit instead of to someone's working tree.
+
+### L29 — CLOSED. Republished from a settled tree (dd1476e, both channels).
+
+### L30 — 25 dungeon-only pals were unsearchable — DONE (9ac2b54, published)
+Tick "Also show dungeon spawns", search "mau", get nothing; "foxparks" gives
+two rows. Mau has 174 dungeon spawns on Palpagos and the map holds every
+coordinate — the search just would not offer it.
+CAUSE: `spawnLevels()` is both the level band AND the "does this pal live
+here" test, and it filtered `!g.dun`. For the 25 species with no surface
+spawn it returned null, so the Find list dropped them permanently — with the
+dungeon box ticked or not, making the checkbox promise spawns it could never
+show. It takes an `underground` flag now; the DEFAULT is unchanged and stays
+surface-only, because a level band should mean "walk out and meet one".
+Both copies of layers.ts updated together (byte-parity gate). A test asserts
+from the data that exactly 25 species are dungeon-only and Mau is among them.
+
+### L31 — the legend stops explaining a shape that is not on screen — DONE (same commit)
+"Round pins are out in the world · square pins are inside dungeons" printed
+every time the key was opened. Only `dun:` layers are square, so the ordinary
+case (chests on, no pal picked) taught him a distinction his map did not
+contain. Now: nothing when everything is round; the full line when both
+shapes are present; and when EVERYTHING is square, "Square pins are inside
+dungeons — none of these are on the surface". All three LOOKED at — chests
+only, Foxparks (189 = 93 field + 96 dungeon), Mau (174, square-only).
+
+### L32 — HARNESS: two tap traps that cost a run each
+- The tap helper uses `innerText || aria-label`, so a button with visible text
+  can NEVER be reached by its accessibility label. The legend pill is
+  `tap:spots on the map`, not `tap:Show what the pins mean`.
+- Loose `includes` matching hits map labels: `tap:Ore` matched "Crescent Moon
+  Shore". Prove the surface is open with a probe BEFORE tapping into it.
+- POI layer labels are singular: Chest, Ore, Egg, Effigy, Note, Paldium,
+  Sulfur, Coal, Soralite, Crude oil, Red berries, Mushrooms, Skill fruit,
+  Fast travel, Tower boss, Dungeon, Sealed realm, Merchant, Pal merchant,
+  NPC, Alpha boss, Bounty target, Pure quartz.
+
+### L33 — looked at, already correct, left alone
+The 999+ cluster badge: `count > 999 ? '999+' : count`, font shrinks past 99,
+`minWidth` so it cannot clip. The legend is already region-filtered — `active`
+drops any layer whose `set.n` is 0 here, so switching to the World Tree cannot
+list a layer that has nothing on it.
