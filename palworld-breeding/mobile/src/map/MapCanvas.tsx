@@ -35,6 +35,15 @@ import { type RegionId } from './projection';
  *  never re-laid-out; only the container's transform changes. */
 const BASE = 1024;
 
+/**
+ * Local copies of the tile constants, because the animated reaction below runs
+ * on the UI thread and closing over a value from another module is the same
+ * class of hazard as calling an imported function there — which crashed the
+ * app when the Map first shipped. A test pins these to tileIndex.g.
+ */
+const TILE_PX = TILE_SIZE;
+const TILE_MAX_Z = MAX_TILE_Z;
+
 /** How far past "the whole map fits" you may zoom in. 14x puts roughly one
  *  island group across a phone screen at real texture pixels. */
 const MAX_ZOOM = 14;
@@ -195,8 +204,8 @@ export function MapCanvas({
       // app on device — hard, no error boundary. react-native-web runs the
       // same code on the JS thread, so a browser pass cannot catch it. Keep
       // this in step with tileLevelFor() in projection.ts.
-      const z = Math.max(0, Math.min(MAX_TILE_Z,
-        Math.ceil(Math.log2(Math.max(1, scale) / TILE_SIZE))));
+      const z = Math.max(0, Math.min(TILE_MAX_Z,
+        Math.ceil(Math.log2(Math.max(1, scale) / TILE_PX))));
       const n = 1 << z;
       const u0 = -tx.value / scale;
       const v0 = -ty.value / scale;

@@ -272,6 +272,14 @@ describe('worklet safety', () => {
     join(__dirname, '..', '..', 'mobile', 'src', 'map', 'MapCanvas.tsx'), 'utf8',
   );
 
+  it('keeps its local tile constants in step with the generated ones', () => {
+    // The reaction closes over LOCAL copies so it never reaches into another
+    // module from the UI thread; that only stays safe if they agree.
+    expect(canvas).toMatch(/const TILE_PX = TILE_SIZE;/);
+    expect(canvas).toMatch(/const TILE_MAX_Z = MAX_TILE_Z;/);
+    expect(canvas).not.toMatch(/Math\.min\(MAX_TILE_Z/);
+  });
+
   it('calls no imported helper inside the animated reaction', () => {
     const start = canvas.indexOf('useAnimatedReaction(');
     expect(start).toBeGreaterThan(-1);

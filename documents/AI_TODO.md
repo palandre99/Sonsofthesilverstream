@@ -317,6 +317,25 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       where the species actually lives, level band, day/night, and a tap
       through to the Map fane with the species preselected and framed.
 
+### F34 WORKLET-BOUNDARY AUDIT — 2026-08-16 ~12:18 (after the 2nd device crash)
+- [x] Audited every worklet in `mobile/src/map/` programmatically: gesture
+      onStart/onUpdate/onEnd, useAnimatedReaction, useAnimatedStyle, withTiming
+      callbacks and every explicit `'worklet'`. Result: **zero** imported
+      functions called from a worklet after the tileLevelFor fix.
+- [x] Closed the remaining exposure: the reaction still CLOSED OVER imported
+      constants (`TILE_SIZE`, `MAX_TILE_Z`). Same class of hazard, so they are
+      now local copies (`TILE_PX`, `TILE_MAX_Z`) pinned to the generated ones
+      by a test.
+- [x] Two guards now stand where the two crashes came through:
+      GestureHandlerRootView must wrap the tree, and the reaction's body must
+      contain no imported call. Both fail the suite, not the app.
+- [ ] F35 STANDING: react-native-web cannot catch the JS-thread/UI-thread
+      boundary — it runs worklets on the JS thread, so a browser pass is green
+      while the phone dies. Both crashes this session came through that gap.
+      Any NEW worklet, or any new native module surface, needs a device check
+      or a static guard before it ships. Treat "eye-verified in the browser"
+      as proof of composition and data ONLY.
+
 ### Open — the map lane's own queue
 - [x] F23 DONE 2026-08-16 ~00:02: the preview's dense clusters were an
       unreadable scribble — 93 overlapping rings in one bay. Now thinned to one
