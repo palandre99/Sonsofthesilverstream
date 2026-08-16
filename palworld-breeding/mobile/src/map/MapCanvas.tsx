@@ -405,7 +405,14 @@ export function MapCanvas({
               height: step + 0.5,
             }}
             contentFit="fill"
-            cachePolicy="memory-disk"
+            // DISK, not memory-disk. Only ~6 tiles are ever on screen, but a
+            // memory cache retains what you pan past, and all 140 bundled
+            // tiles resident is ~140 MB of decoded bitmaps — an out-of-memory
+            // kill on an older phone, which is a silent hard crash with no
+            // error, the same class the Map already hit twice. Re-decoding a
+            // 512px webp off disk is cheap; being killed is not.
+            cachePolicy="disk"
+            recyclingKey={`${win.z}_${x}_${y}`}
             transition={0}
           />,
         );
@@ -434,6 +441,8 @@ export function MapCanvas({
                 source={base}
                 style={{ position: 'absolute', width: BASE, height: BASE }}
                 contentFit="fill"
+                // the base is ONE tile and always visible, so it is the one
+                // worth keeping decoded
                 cachePolicy="memory-disk"
                 transition={0}
               />

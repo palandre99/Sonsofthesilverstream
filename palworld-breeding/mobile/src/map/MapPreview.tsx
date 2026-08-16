@@ -110,7 +110,7 @@ export function MapPreview({ region, points, side, children }: {
               height: step + 0.5,
             }}
             contentFit="fill"
-            cachePolicy="memory-disk"
+            cachePolicy="disk"
             transition={0}
           />,
         );

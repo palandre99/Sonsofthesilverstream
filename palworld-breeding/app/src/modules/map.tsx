@@ -45,7 +45,7 @@ export function MapPage() {
   const [q, setQ] = useState('');
   const [missingOnly, setMissingOnly] = useState(false);
   const [picked, setPicked] = useState<
-    { title: string; lines: string[]; at: string; mark?: string } | null
+    { title: string; lines: string[]; at: string; mark?: string; pal?: string } | null
   >(null);
   const [ticks, setTicks] = useState(0);   // bumps when a tick changes
 
@@ -223,6 +223,8 @@ export function MapPage() {
       mark: best.key.startsWith('poi:')
         ? foundKey(best.key.slice(4), region, bestIndex)
         : undefined,
+      // an alpha pin IS a pal; the router already deep-links the Paldex
+      pal: pal ?? (own.startsWith('Alpha ') ? own.slice(6) : undefined),
     });
   }, [active, region, view.k]);
 
@@ -349,6 +351,11 @@ export function MapPage() {
           <div class="mapcard">
             <b>{picked.title}</b><span>{picked.at}</span>
             {picked.lines.map((l) => <em key={l}>{l}</em>)}
+            {picked.pal && (
+              <a class="mapmark go" href={`#/paldex/${encodeURIComponent(picked.pal)}`}>
+                Open {picked.pal}
+              </a>
+            )}
             {picked.mark && (
               <button type="button" class={isFound(picked.mark) ? 'mapmark on' : 'mapmark'}
                 onClick={() => { toggleFound(picked.mark!); setTicks((n) => n + 1); }}>

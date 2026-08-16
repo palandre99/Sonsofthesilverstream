@@ -450,3 +450,5 @@
 .mapclear { padding: 7px 10px; border-radius: 9px; border: 1px solid var(--line);
   background: var(--surface); color: var(--muted); font-size: 12px; font-weight: 700;
   cursor: pointer; }
+.mapmark.go { border-color: var(--accent); color: var(--accent-ink); text-decoration: none;
+  display: inline-block; }

@@ -484,6 +484,22 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       the map reaching back into the breeding suite, which is the whole point
       of the Dododex model in 04_PRODUCT_BLUEPRINT §1.
 
+- [x] F40 Web parity for the boss link: the website's marker card offers
+      "Open <Pal>" too, deep-linking `#/paldex/<pal>` which its router already
+      understands.
+- [x] F41 MEASURED the tile memory rather than assuming it. At most 6 tiles
+      are ever on screen (~6 MB) — but `cachePolicy="memory-disk"` RETAINS
+      what you pan past, and all 140 bundled tiles resident is **~140 MB of
+      decoded bitmaps**. That is an out-of-memory kill on an older phone, and
+      an OOM is a silent hard crash with no error — the same class the Map
+      already hit twice. Detail tiles now use `cachePolicy="disk"` with a
+      recycling key; only the single always-visible base tile stays in memory.
+      Re-decoding a 512px webp off disk is cheap; being killed is not.
+- [ ] F42 F41 is reasoned from numbers, not measured on the CEO's phone. If
+      panning ever feels like it stutters on device, the disk policy is the
+      first thing to look at — the trade was memory safety for a small decode
+      cost, and only a device can price it.
+
 ### Open — the map lane's own queue
 - [x] F23 DONE 2026-08-16 ~00:02: the preview's dense clusters were an
       unreadable scribble — 93 overlapping rings in one bay. Now thinned to one
