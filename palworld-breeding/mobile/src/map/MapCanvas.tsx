@@ -186,6 +186,14 @@ export function MapCanvas({
   // deepest level this region HAS, and the zoom ceiling that follows from it
   const maxZ = REGION_MAX_Z[region] ?? MAX_TILE_Z;
   const MAX_SCALE = maxScaleFor(region);
+  /**
+   * How many real pixels the screen draws per layout pixel.
+   *
+   * Read here and captured as a plain NUMBER, because the reaction below is a
+   * worklet and must not call into another module — that crashed the app twice
+   * when this fane first shipped.
+   */
+  const dpr = PixelRatio.get();
 
   const tx = useSharedValue(0);
   const ty = useSharedValue(0);
@@ -362,8 +370,13 @@ export function MapCanvas({
       // app on device — hard, no error boundary. react-native-web runs the
       // same code on the JS thread, so a browser pass cannot catch it. Keep
       // this in step with tileLevelFor() in projection.ts.
+      // DEVICE pixels, not layout pixels. Choosing the level from `scale`
+      // alone asked for a 4096 tile to cover 8192 real pixels at full zoom —
+      // a flat 2x upscale on every phone, which is why the map still looked
+      // soft after the 8192 texture landed: the deepest tiles were built and
+      // then never requested.
       const z = Math.max(0, Math.min(maxZ,
-        Math.ceil(Math.log2(Math.max(1, scale) / TILE_PX))));
+        Math.ceil(Math.log2(Math.max(1, scale * dpr) / TILE_PX))));
       const n = 1 << z;
       const u0 = -tx.value / scale;
       const v0 = -ty.value / scale;
@@ -419,7 +432,7 @@ export function MapCanvas({
       u1: (-x + size.w) / scale,
       v1: (-y + size.h) / scale,
     });
-  }, [maxZ, onViewport, size.h, size.w]);
+  }, [dpr, maxZ, onViewport, size.h, size.w]);
 
   const applyFocus = useCallback((u: number, v: number, span: number, animate: boolean) => {
     // fit `span` uv units across the SHORTER screen edge, so the whole

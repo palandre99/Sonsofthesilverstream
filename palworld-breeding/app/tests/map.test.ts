@@ -984,3 +984,37 @@ describe('no comment is rendered as text', () => {
     expect(offenders).toEqual([]);
   });
 });
+
+/* The tile level must be chosen from DEVICE pixels. Choosing it from layout
+ * pixels asked a 4096 tile to cover 8192 real pixels at full zoom — a flat 2x
+ * upscale on every phone, and the reason the map still looked soft after the
+ * 8192 texture landed: the deepest tiles were built and never requested. */
+describe('the deepest tiles are actually used', () => {
+  const canvas = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'map', 'MapCanvas.tsx'), 'utf8',
+  );
+
+  it('scales the level by pixel density', () => {
+    expect(canvas).toMatch(/const dpr = PixelRatio\.get\(\)/);
+    expect(canvas).toMatch(/Math\.log2\(Math\.max\(1, scale \* dpr\) \/ TILE_PX\)/);
+  });
+
+  it('reaches the deepest level exactly at the zoom ceiling', () => {
+    // ceiling is texture/dpr in layout px, so scale*dpr == the texture size
+    for (const dpr of [2, 3]) {
+      const cap = 8192 / dpr;
+      expect(tileLevelFor(cap * dpr, 512, 4)).toBe(4);
+      // and one level down well before it, so we are not always paying for z4
+      expect(tileLevelFor(cap * dpr / 4, 512, 4)).toBe(2);
+    }
+  });
+
+  it('never draws a tile stretched more than 1:1 at full zoom', () => {
+    for (const dpr of [2, 3]) {
+      const devicePx = 8192;             // the whole map across the screen
+      const z = tileLevelFor(devicePx, 512, 4);
+      const texture = 512 * 2 ** z;
+      expect(devicePx / texture).toBeLessThanOrEqual(1);
+    }
+  });
+});

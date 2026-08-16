@@ -1057,6 +1057,37 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       0.35791) samples as LAND on the game texture, not squashed to an edge.
       Diff is one line in each generated file; the 68,617 wild spawns are
       untouched. Claim added to verification.json; three regression tests.
+## L. CEO FEEDBACK 2026-08-16 ~21:45 (photo of a red LogBox on his phone)
+## "Zoom still buggy . Errors, low pixel quality etch and where is loop .."
+
+- [x] L1 THE CONSOLE ERROR WAS MINE AND I SHIPPED IT. "Text strings must be
+      rendered within a <Text> component." While shrinking the K4 hint I
+      dropped the braces from a JSX comment; written bare, React Native
+      renders the comment TEXT and throws. Braces restored, verified the text
+      no longer appears in the rendered page, and a test now scans the map
+      screens for a comment opening at JSX indentation directly after a JSX
+      child — the exact shape of this bug.
+- [x] L2 "LOW PIXEL QUALITY" — THE z4 TILES WERE NEVER BEING REQUESTED. The
+      tile level came from `Math.log2(scale / 512)` where scale is in LAYOUT
+      pixels, but the screen draws 2-3 real pixels for each one. Measured: at
+      the zoom ceiling that picks z3 (4096 texture px) to cover 8192 device px
+      — a flat 2.00x upscale on BOTH 2x and 3x phones. So J2 built the 8192
+      pyramid, K1 capped zoom to keep it honest, and the renderer then quietly
+      asked for the half-size level anyway. Level is now chosen from
+      scale * PixelRatio.get(): 1.00x, pixel-for-pixel, on both densities.
+      dpr is read in render and captured as a plain NUMBER — the reaction is a
+      worklet and must never call into another module.
+- [ ] L3 "ZOOM STILL BUGGY" — STOP GUESSING. Two gesture fixes have shipped
+      unverified (K3 pan re-anchor, J1 focal anchoring) and he still reports it.
+      The harness cannot pinch, so the honest next step is to EXTRACT the
+      pinch/pan transform into a pure function in map/ and unit-test it: focal
+      point stays under the fingers across a spread+move, no jump when the
+      pinch ends and a one-finger pan continues, clamping never teleports.
+      That converts an untestable gesture into testable maths. Do this before
+      touching the gesture handlers again.
+- [x] L4 THE LOOP HAD STOPPED. He asked "where is loop". I answered his "Keep
+      working" turns without re-arming ScheduleWakeup, so the self-paced loop
+      simply ended. Re-armed.
 - [ ] K5 "also many other issues" — HE HAS MORE AND HAS NOT LISTED THEM. Ask,
       or keep walking journeys until they surface. Do not guess at what he
       means and do not claim the map is finished.
