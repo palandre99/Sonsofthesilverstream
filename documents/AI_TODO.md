@@ -792,18 +792,21 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       (bosses larger again) because a face at 23px is a smudge. The night
       signal moved from the glyph to a corner badge, so nothing was lost.
       Eye-verified: Anubis's face under a gold crown at Twilight Dunes.
-- [ ] J6 A PLACE NAME CAN COVER A PIN. Found while verifying J5 — "Twilight
-      Dunes" printed straight across Anubis's face. Place names are drawn ABOVE
-      the pins because pins live inside the transformed map container (they
-      track the map exactly) while names sit outside it (text inside the
-      transform is rasterised then magnified, and came out jagged on his
-      phone). So the stack is tiles < pins < names, and the fix is to move the
-      pins OUT into the same screen-space layer as the names and draw them
-      after — which would also make the pins crisper for the same reason the
-      names are. That is a real refactor of the marker layer, not a tweak, and
-      it sits next to the gesture code that was just changed. Do it deliberately
-      rather than immediately after a gesture change.
-
+- [x] J6 DONE 2026-08-16 ~16:31 — A PLACE NAME NO LONGER COVERS A PIN.
+      Order is now tiles < names < pins: a pin is the thing you are looking
+      for, a place name is context for it, and context does not go on top.
+      Eye-verified on the case that exposed it — Anubis's crowned portrait now
+      draws over "Twilight Dunes" instead of being printed across.
+      NOTE THE APPROACH I DID NOT TAKE. The obvious fix was to make pins
+      screen-space markers like the names. That would have given ~200 markers
+      ~200 worklets all recomputing every frame — the exact "N worklets
+      fighting for the frame" this file was built to avoid, and the CEO had
+      just finished reporting the map as laggy, so trading a layering nit for
+      a frame-rate regression would have been a bad deal. Pins ride a SECOND
+      container on the same shared transform instead: same stacking order, two
+      worklets total, no new per-marker cost. The names stay outside the
+      transform because text inside it is rasterised pre-zoom then magnified,
+      which is what made them jagged on his phone.
 - [ ] H17 COLOUR CANNOT CARRY 23 IDENTITIES. Three POI layers are near-identical
       greys (npc #A9C0CC, ore #B7C4CC, coal #8E9AA3) and several are near-white
       (note #D7E3E8, quartz #CFE9FF, egg #FFEFC2). I deliberately did NOT

@@ -548,3 +548,36 @@ describe('map symbols have enough pixels for a 3x phone', () => {
     }
   });
 });
+
+/* A pin is the thing you are looking for; a place name is context for it.
+ * Names used to be drawn last, so "Twilight Dunes" printed across Anubis's
+ * face. Order is now tiles < names < pins. */
+describe('a place name never covers a pin', () => {
+  const canvas = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'map', 'MapCanvas.tsx'), 'utf8',
+  );
+
+  it('draws the names before the pins', () => {
+    const names = canvas.indexOf('screenMarkers?.map(');
+    const pins = canvas.indexOf('markers.map((m) => (');
+    expect(names).toBeGreaterThan(-1);
+    expect(pins).toBeGreaterThan(-1);
+    expect(names).toBeLessThan(pins);
+  });
+
+  it('keeps pins on ONE shared counter-scale worklet', () => {
+    // Making each pin its own screen-space marker would give ~200 markers
+    // ~200 worklets recomputing every frame — the exact thing this file was
+    // built to avoid, and the CEO had just reported the map as laggy. Pins
+    // ride a second container on the same transform instead.
+    expect(canvas).toMatch(/const pinStyle = useAnimatedStyle/);
+    // the shared map transform is applied to two containers now
+    expect(canvas.split('mapStyle,').length - 1).toBeGreaterThanOrEqual(2);
+  });
+
+  it('leaves the text outside the transform, where it stays crisp', () => {
+    // text inside the transform is rasterised pre-zoom then magnified, which
+    // came out jagged on the phone
+    expect(canvas).toMatch(/<ScreenPin key=\{m\.key\}/);
+  });
+});

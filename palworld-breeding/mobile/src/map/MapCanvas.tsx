@@ -527,6 +527,37 @@ export function MapCanvas({
               />
             ) : null}
             {tiles}
+          </Animated.View>
+
+          {/* Place names sit BETWEEN the terrain and the pins.
+              They used to be drawn last, so "Twilight Dunes" printed straight
+              across Anubis's face. A pin is the thing you are looking for; a
+              place name is context for it, and context does not go on top.
+
+              They stay outside the transform because text inside it is
+              rasterised at its pre-zoom size and then magnified, which came
+              out jagged on the CEO's phone. */}
+          {screenMarkers?.map((m) => (
+            <ScreenPin key={m.key} u={m.u} v={m.v} tx={tx} ty={ty} k={k}
+              halfWidth={m.halfWidth} width={size.w}>
+              {m.render()}
+            </ScreenPin>
+          ))}
+
+          {/* Pins ride a SECOND container on the same transform rather than
+              becoming screen-space markers themselves. Making each pin its own
+              ScreenPin would have given ~200 markers ~200 worklets all
+              recomputing every frame — precisely the "N worklets fighting for
+              the frame" this file was built to avoid, and the CEO has just
+              finished reporting the map as laggy. Two containers sharing two
+              worklets costs nothing and gets the same stacking order. */}
+          <Animated.View
+            pointerEvents="box-none"
+            style={[
+              { position: 'absolute', width: BASE, height: BASE, transformOrigin: 'top left' },
+              mapStyle,
+            ]}
+          >
             {markers.map((m) => (
               <Animated.View
                 key={m.key}
@@ -542,12 +573,6 @@ export function MapCanvas({
           </Animated.View>
         </Animated.View>
       </GestureDetector>
-      {screenMarkers?.map((m) => (
-        <ScreenPin key={m.key} u={m.u} v={m.v} tx={tx} ty={ty} k={k}
-          halfWidth={m.halfWidth} width={size.w}>
-          {m.render()}
-        </ScreenPin>
-      ))}
       {children}
     </View>
   );
