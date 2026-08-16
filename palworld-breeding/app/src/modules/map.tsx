@@ -13,8 +13,8 @@ import { REGION_SPOTS } from '../data/regionSpots.g';
 import { clusterPoints, nearestPoint, pointsInRect } from '../map/points';
 import { regionOf, tileLevelFor, uvToReadout, type RegionId } from '../map/projection';
 import {
-  dungeonPoints, isNightOnly, poiLayer, poiLayers, poiPoints, spawnLevels,
-  spawnPoints, spawnablePals, type LayerGroup,
+  dungeonPoints, isNightOnly, poiLayer, poiLayers, poiName, poiPoints,
+  spawnLevels, spawnPoints, spawnablePals, type LayerGroup,
 } from '../map/layers';
 import { box } from '../state';
 
@@ -183,6 +183,7 @@ export function MapPage() {
   const identify = useCallback((u: number, v: number) => {
     const reach = 26 / Math.max(1, view.k);
     let best: Layer | null = null;
+    let bestIndex = -1;
     let bestD = Infinity;
     for (const l of active) {
       if (!l.set) continue;
@@ -191,7 +192,7 @@ export function MapPage() {
       const du = l.set.xy[p * 2] - u;
       const dv = l.set.xy[p * 2 + 1] - v;
       const d = du * du + dv * dv;
-      if (d < bestD) { bestD = d; best = l; }
+      if (d < bestD) { bestD = d; best = l; bestIndex = p; }
     }
     const r = uvToReadout({ u, v }, regionOf(region));
     if (!best) { setPicked(null); return; }
@@ -203,7 +204,15 @@ export function MapPage() {
       if (isNightOnly(pal, region)) lines.push('Only comes out at night');
       if (best.key.startsWith('dun:')) lines.push('Inside a dungeon, not on the surface');
     }
-    setPicked({ title: best.label, lines, at: `${r.x}, ${r.y}` });
+    // a place's own name beats the layer's name every time
+    const own = best.key.startsWith('poi:')
+      ? poiName(best.key.slice(4), region, bestIndex)
+      : '';
+    setPicked({
+      title: own || best.label,
+      lines: own ? [best.label, ...lines] : lines,
+      at: `${r.x}, ${r.y}`,
+    });
   }, [active, region, view.k]);
 
   /* -------------------------------------------------------------- tiles */

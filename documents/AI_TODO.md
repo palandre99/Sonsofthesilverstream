@@ -530,8 +530,16 @@ session's; this worker touches only the map area (see AREA LOCKS).*
       target stays thumb-sized at every zoom instead of shrinking as you zoom
       in. Tap the card to dismiss. Also added a `click:x,y` step to the QA
       driver, since tapping a map pin cannot be done by text.
-- [ ] F13 Found/not-found tracking per marker, persisted per save profile —
-      every competitor has it; ours should key off the box where it can.
+- [x] F13 DONE 2026-08-16 ~13:30: "Mark as found" on the marker card, ticked
+      markers fade back so what stands out is what you still need. Persisted
+      PER SAVE PROFILE, so ticks follow the save the player is on, like the box
+      does. Lives in its own `map/found.ts` rather than store.ts — that file
+      belongs to the other session right now, and marker ticks have no business
+      loading before the Paldex does.
+- [x] F37 Web parity for marker place names (the website's card leads with the
+      place's own name too).
+- [ ] F38 Found-tracking is mobile only so far; the website needs the same,
+      and neither has a "clear all ticks" control yet (clearFound() exists).
 - [x] F14a DONE 2026-08-16 ~02:05: LEGEND. The count pill is now a toggle —
       tap "189 spots on the map" and it opens a key of what is actually ON,
       with matching swatches and per-layer counts. Deliberately not a static

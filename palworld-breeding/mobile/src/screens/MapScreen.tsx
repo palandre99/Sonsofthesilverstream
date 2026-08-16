@@ -33,6 +33,7 @@ import { REGION_SPOTS } from '../data/regionSpots.g';
 import { takeIntentPayload } from '../nav/intent';
 import { regionsFor } from '../map/layers';
 import { ownedAny, pals } from '../store';
+import { foundKey, isFound, loadFound, onFoundChange, toggleFound } from '../map/found';
 
 type Sheet = null | 'layers' | 'pals';
 
@@ -47,7 +48,15 @@ export function MapScreen() {
   const [vp, setVp] = useState<Viewport>({ scale: 1, u0: 0, v0: 0, u1: 1, v1: 1 });
   const [focus, setFocus] = useState<{
     title: string; lines: string[]; at: string; colour: string; icon: string;
+    /** set only for a POI, so the card can offer to tick it off */
+    mark?: string;
   } | null>(null);
+  const [ticks, setTicks] = useState(0);   // bumps when a tick changes
+
+  React.useEffect(() => {
+    void loadFound();
+    return onFoundChange(() => setTicks((n) => n + 1));
+  }, []);
 
   const region = filters.region;
 
@@ -140,7 +149,7 @@ export function MapScreen() {
       }
     }
     return out;
-  }, [active, vp]);
+  }, [active, region, ticks, vp]);
 
   const shownCount = useMemo(
     () => active.reduce((n, l) => n + l.set.n, 0),
@@ -283,6 +292,9 @@ export function MapScreen() {
       at,
       colour: layer.colour,
       icon: layer.icon,
+      mark: layer.key.startsWith('poi:')
+        ? foundKey(layer.key.slice(4), region, best.index)
+        : undefined,
     });
   }, [active, region, vp.scale]);
 
@@ -392,6 +404,31 @@ export function MapScreen() {
               {line}
             </Text>
           ))}
+          {focus.mark && (
+            <Pressable
+              onPress={() => toggleFound(focus.mark!)}
+              accessibilityRole="checkbox"
+              accessibilityState={{ checked: isFound(focus.mark) }}
+              style={{
+                flexDirection: 'row', alignItems: 'center', gap: 7, marginTop: 4,
+                alignSelf: 'flex-start', paddingHorizontal: 9, paddingVertical: 6,
+                borderRadius: 9, borderWidth: 1,
+                borderColor: isFound(focus.mark) ? T.ok : T.line,
+                backgroundColor: isFound(focus.mark) ? T.okSoft : T.surface,
+              }}
+            >
+              <Icon
+                name={isFound(focus.mark) ? 'check-circle' : 'checkbox-blank-circle-outline'}
+                size={14}
+                color={isFound(focus.mark) ? T.ok : T.muted}
+              />
+              <Text style={{
+                color: isFound(focus.mark) ? T.ok : T.ink, fontSize: 12, fontWeight: '700',
+              }}>
+                {isFound(focus.mark) ? 'Got this one' : 'Mark as found'}
+              </Text>
+            </Pressable>
+          )}
         </Pressable>
       )}
 
@@ -565,8 +602,9 @@ const PIN = 23;
  * Shape survives colour-blindness, small sizes and a busy map in a way a
  * fourth shade of violet does not.
  */
-function Pin({ colour, icon, count, square, art }: {
+function Pin({ colour, icon, count, square, art, done }: {
   colour: string; icon: string; count: number; square?: boolean; art?: number;
+  done?: boolean;
 }) {
   const many = count > 1;
   return (
@@ -574,6 +612,8 @@ function Pin({ colour, icon, count, square, art }: {
       width: PIN, height: PIN, marginLeft: -PIN / 2, marginTop: -PIN / 2,
       borderRadius: square ? 6 : PIN / 2, alignItems: 'center', justifyContent: 'center',
       backgroundColor: 'rgba(10,20,24,0.86)', borderWidth: 2, borderColor: colour,
+      // a found marker fades back so what stands out is what you still need
+      opacity: done ? 0.32 : 1,
     }}>
       {many ? (
         <Text style={{ color: colour, fontWeight: '900', fontSize: count > 99 ? 9 : 11 }}>
