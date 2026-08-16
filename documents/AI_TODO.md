@@ -76,10 +76,18 @@ Add everything you find; finding nothing means you didn't look.*
 - [x] 2026-08-15: v1 "Make it faster" card on the Plan: cake/ingredient math
       from the verified recipe, ranch-producer coverage from real
       ranch_produce data, accelerator scheduling hints (Braloha/Dynamoff).
-- [ ] RESEARCH before modeling (CEO mentioned, unverified): Grintale
-      "more eggs" claim; pals that raise alpha/mutation odds ("the two
-      dinosaurs"); any other breeding-economy partner skills. Verify against
-      datamines/community measurements; only then add to the card.
+- [x] 2026-08-16 ~10:25 RESEARCH CLOSED — all three parts answered with
+      proof. (a) Grintale's "more eggs" and (b) the "two dinosaurs"
+      (Broncherry / Broncherry Aqua alpha-egg chance) are CONFIRMED from
+      the game's own partner-skill text and live on the advice card
+      (eye-seen in the QA walk, with catch-instead hints). (c) "Any
+      OTHER breeding-economy partner skills" — verified by sweeping all
+      299 partner_effect strings for egg/incubate/hatch/breeding-farm:
+      exactly 6 real ones exist (Braloha, Broncherry, Broncherry Aqua,
+      Chikipi, Dynamoff, Grintale) and the registry already has all 6.
+      The only other hit is Tocotoco's "egg launcher" — a weapon, not
+      breeding economy. **The helper registry has full coverage; nothing
+      is missing.**
 - [x] 2026-08-16 ~00:15 Booster-aware planning v2 SHIPPED both platforms:
       a helper's WHOLE subtree (every step feeding it) now floats to the
       top of its phase, and the first unfinished helper-branch step in
@@ -101,9 +109,27 @@ Add everything you find; finding nothing means you didn't look.*
       genders" (13×1+7×3=34 ✓). Ranch THROUGHPUT rates (drops/hour per
       producer) remain open — needs a measured community source, never
       invent; ledgered below.
-- [ ] Ranch throughput rates per producer (drops/hour) — community-
-      measured numbers needed with a source + label before modeling;
-      the game files don't carry production intervals we've extracted.
+- [x] 2026-08-16 ~10:20 Ranch throughput rates: **RESEARCHED → WON'T
+      MODEL** (decision, not a skip). Three independent reasons, each
+      sufficient:
+      1. The only figure in circulation ("~50 seconds per drop") is a
+         PRE-1.0 number from a single uncited page; wiki.gg cites that
+         same page, so it looks like two sources and is one. Our own
+         rule ("one source is a rumour") already fails it.
+      2. The **1.0 patch notes explicitly say the default production
+         interval "has been adjusted"** — so the stale number describes
+         a game that no longer exists.
+      3. The killer: the same patch notes say **"the time required for
+         ranch item production can now be adjusted in World Settings"**
+         — it is a PLAYER-CONFIGURABLE value. Even a correct default
+         would be wrong for every player who changed it, and we cannot
+         read their world settings.
+      A drops/hour number here would be exactly the invented figure the
+      QUALITY BAR forbids. What we DO show stays honest and useful: WHICH
+      producer makes each ingredient (datamined ranch_produce), whether
+      the player owns one, and which phase the plan hatches one in.
+      REOPEN ONLY IF: a datamined interval appears in the game files, or
+      the CEO wants a labelled "assuming default settings" estimate.
 
 ## SELF-FOUND IMPROVEMENTS (own audit, 2026-08-15 00:05)
 
@@ -730,6 +756,18 @@ below ships on BOTH platforms.*
       is the ONLY lane until his sign-off: E1 ✓, E3–E11 in order, then
       endless polish passes (deep-eval with the previewer, micro-QoL,
       smarter engine iterations). E2 and all other tabs wait.
+
+### E13 lane note — MODEL HANDOVER 2026-08-16 ~10:20
+The Fable usage limit was reached mid-lane; Opus is driving until it
+returns. Deliberate steering while that holds: take research,
+verification, provenance, docs and small well-scoped fixes (each still
+gated + eye-verified); **do NOT start deep work that Fable does better**
+— park it rather than half-do it. Explicitly parked for Fable's return:
+  * any NEW shared parity-gated subsystem (the logic/*.ts class of work),
+  * large UI rebuilds of the Suggested Goals v4 kind,
+  * perf re-architecture of the planner/derivations path.
+Nothing in the Plan-tab queue is blocked by this — what remains there is
+polish, micro-QoL and copy, which is safe to keep shipping.
 
 ### E13 polish-lane findings (hostile deep-eval passes, ongoing)
 - [x] 2026-08-16 ~09:05 FULL-TAB HOSTILE PASS (every state, every line of
