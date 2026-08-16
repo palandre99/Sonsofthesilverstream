@@ -89,8 +89,12 @@
 .gpin.m{background:var(--male)}
 
 .stats{display:flex;flex-direction:column;gap:5px}
-.stat{display:grid;grid-template-columns:36px 1fr 36px;gap:9px;align-items:center;
+/* four columns since the rank arrived: label, bar, where-it-ranks, value.
+   The rank column is sized for the longest string the data can produce —
+   "#132 of 299 · 121 tied" — so it never wraps the row. */
+.stat{display:grid;grid-template-columns:36px 1fr auto 36px;gap:9px;align-items:center;
   font-size:12px}
+.stat .sr{color:var(--dim,var(--muted));text-align:right}
 .stat .sl{color:var(--muted);font-weight:800;letter-spacing:.05em}
 .stat .sb{height:8px;border-radius:4px;background:var(--surface2);overflow:hidden}
 .stat .sb span{display:block;height:100%;border-radius:4px;background:var(--accent)}

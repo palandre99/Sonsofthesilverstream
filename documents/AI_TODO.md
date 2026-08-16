@@ -1895,6 +1895,31 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E61. THE SAME FAKE CEILING WAS ON THE WEBSITE, AND I HAD MISSED IT 2026-08-16
+
+The both-trees rule exists for exactly this, and I still broke it. When E57
+fixed the phone's stat bars I did NOT re-run the finding through the web tree
+— I ran a grep that missed the component and filed "the web has no stat bars"
+as a parity gap. It has them, and they had the identical bug.
+
+- [x] **The web bar divided by the same hard-coded 150** (`shared.tsx`
+      StatBars). Every pal at or above 150 drew a full bar, and the rest ran a
+      third long — the same lie as the phone's, shipped to the same person.
+      Now reads the ceiling from the data.
+- [x] **The web had no rank at all.** Added, with the tie count the phone
+      shows. Verified against the data on the worst case in the game: Arsox
+      renders "ATK #132 of 299 · 120 tied", which is exactly the 121-way tie
+      at 100 attack.
+- [x] **The row grid had to grow with it.** `.stat` was a three-column grid;
+      a fourth child silently wrapped the value onto its own line and pushed
+      the drawer into horizontal overflow. Caught by measuring, not by
+      looking at the code. Now four columns, rank sized to its content:
+      one line, nothing clipped, no overflow, bar still 202px on the longest
+      possible string.
+- **THE LESSON, restated because I broke it:** when a finding is fixed in one
+  tree, OPEN the other tree's file and READ it. A grep that comes back empty
+  is not evidence the feature is absent — it is evidence the grep was wrong.
+
 ## E60. THE FOOD GAUGE HAD A FAKE CEILING TOO, AND THE JOB ROW HID A
 ## QUARTER OF THE PALDEX 2026-08-16
 
@@ -2008,9 +2033,12 @@ numbers on the pal card. Both bugs were in mobile PalDetail.tsx.
       competition ranking — verified every rendered number against the data.
 - Measured on the 375x812 render: rows are 26px, nothing clipped, and the
   worst case string ("120 pals tied", 51px) fits the 78px column.
-- **KNOWN PARITY GAP, not started:** the WEB pal card has no stat bars at all
-  — no health/attack/defense, no ranks. Mobile-first per the CEO, logged here
-  so it is not lost.
+- ~~**KNOWN PARITY GAP:** the WEB pal card has no stat bars at all.~~
+  **THIS WAS WRONG — MY 17th BAD CHECK.** The web card DOES have stat bars
+  (`<StatBars p={p} …/>`, paldex.tsx:351). I grepped the module for "hp",
+  saw only the sort options, and concluded the feature was missing instead of
+  looking for the component that renders it. Corrected in E61, where the web
+  turned out to carry the SAME /150 bug I had just fixed on the phone.
 
 ## E56. THE CATCHABILITY CLAIM FAMILY — TESTED, MOSTLY CLEAN 2026-08-16
 

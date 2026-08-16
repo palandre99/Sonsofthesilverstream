@@ -1,5 +1,5 @@
 /** Shared presentational components. */
-import { useEffect, useRef, useState } from 'preact/hooks';
+import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { hasGender, iconFiles, ownedAny, pals, setOwnedGender, topWork, workLabel, type PalInfo } from '../state';
 import { rarityTint } from '../data/rarity';
 import iKindling from '../assets/work/Kindling.png';
@@ -96,16 +96,59 @@ export function WorkChips({ name, top = 3, all = false }: {
 
 export function StatBars({ p, boost = 0 }: { p: PalInfo; boost?: number }) {
   const up = (v: number | null) => (v == null ? v : Math.round(v * (1 + boost)));
-  const rows: [string, number | null][] = [['HP', up(p.hp)], ['ATK', up(p.atk)], ['DEF', up(p.def)]];
+  // The ceiling comes from the data, never a guess. This bar used to divide by
+  // a hard-coded 150 while the real maximum is 200, so every pal at or above
+  // 150 drew an identical full bar and everyone else's ran a third long. The
+  // phone had the identical bug; both were fixed together.
+  const all = pals.value;
+  const max = useMemo(() => {
+    const m = { hp: 1, atk: 1, def: 1 };
+    for (const q of Object.values(all)) {
+      for (const k of ['hp', 'atk', 'def'] as const) {
+        const v = q[k];
+        if (v != null && v > m[k]) m[k] = v;
+      }
+    }
+    return m;
+  }, [all]);
+  // Where the species sits, and how many share the spot. With only about
+  // twenty distinct values per stat across 299 pals the ties are enormous —
+  // 121 pals have exactly 100 attack — so a bare rank would overstate itself.
+  const rank = (stat: 'hp' | 'atk' | 'def') => {
+    const v = p[stat];
+    if (v == null) return null;
+    let better = 0; let total = 0; let same = 0;
+    for (const q of Object.values(all)) {
+      const qv = q[stat];
+      if (qv == null) continue;
+      total++;
+      if (qv > v) better++;
+      else if (qv === v) same++;
+    }
+    return { text: `#${better + 1} of ${total}`, tied: same - 1 };
+  };
+  const rows: ['HP' | 'ATK' | 'DEF', 'hp' | 'atk' | 'def'][] =
+    [['HP', 'hp'], ['ATK', 'atk'], ['DEF', 'def']];
   return (
     <div class="stats">
-      {rows.map(([label, v]) => (
-        <div class="stat">
-          <span class="sl">{label}</span>
-          <span class="sb"><span style={{ width: `${Math.min(100, ((v ?? 0) / 150) * 100)}%` }} /></span>
-          <span class="sv">{v ?? '—'}</span>
-        </div>
-      ))}
+      {rows.map(([label, key]) => {
+        const v = up(p[key]);
+        const r = rank(key);
+        return (
+          <div class="stat" key={key}>
+            <span class="sl">{label}</span>
+            <span class="sb">
+              <span style={{ width: `${Math.min(100, ((v ?? 0) / max[key]) * 100)}%` }} />
+            </span>
+            {r && (
+              <span class="sr" style="opacity:.7;font-size:11px;white-space:nowrap">
+                {r.text}{r.tied > 0 ? ` · ${r.tied} tied` : ''}
+              </span>
+            )}
+            <span class="sv">{v ?? '—'}</span>
+          </div>
+        );
+      })}
     </div>
   );
 }
