@@ -56,6 +56,22 @@ function unlockLine(u: UnlockAdvice, level: number | undefined): string {
     : `Catch one — spawns from Lv ${gate}${after}.`;
 }
 
+/** Where to actually go, from the game's own region names — the CEO asked to
+ * be told "straight up where to catch the pal u want" (2026-08-16). Only the
+ * pals the route needs you to CATCH get a location, and only when the data
+ * holds one: 23 of 299 species carry no region and are left silent rather
+ * than given a guessed one. */
+function catchWhere(u: UnlockAdvice): string | null {
+  const spots: string[] = [];
+  for (const name of u.catches) {
+    for (const r of pals[name]?.regions ?? []) {
+      if (!spots.includes(r)) spots.push(r);
+    }
+  }
+  if (!spots.length) return null;
+  return spots.slice(0, 3).join(' · ');
+}
+
 /** What the game files say about catching one species. `minWild === null` is
  * the game's own "never spawns wild" (raid/tower/boss); no row at all means
  * we hold no data and must say so rather than guess. */
@@ -774,6 +790,14 @@ export function PlannerScreen() {
                       }}>
                         {unlockLine(u, playerLevel)}
                       </Text>
+                      {/* WHERE to go, when the game data actually says.
+                          276 of 299 species carry regions; the rest get no
+                          line at all rather than an invented one. */}
+                      {u.kind === 'catch' && catchWhere(u) ? (
+                        <Text numberOfLines={2} style={{
+                          color: T.faint, fontSize: 11, lineHeight: 15, marginTop: 1,
+                        }}>{catchWhere(u)}</Text>
+                      ) : null}
                     </View>
                     <Icon name="chevron-right" size={18} color={T.faint} />
                   </Pressable>
