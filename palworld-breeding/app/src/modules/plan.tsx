@@ -150,6 +150,13 @@ export function PlanPage() {
 
   const ownedNames = Object.keys(box.value);
 
+  /** Does the route on screen still cover the goals you are holding? It was
+   * already computed further down to decide whether to fold the goal tray;
+   * hoisted so it can also say plainly when the plan has gone out of date
+   * (the phone had the same silent staleness — E17). */
+  const planIsCurrent = !!plan
+    && [...targets].sort().join() === [...planTargets].sort().join();
+
   const addTarget = (n: string) => addDraftTargets([n]);
 
   const run = (list: string[] = targets, roster: string[] = ownedNames) => {
@@ -475,8 +482,7 @@ export function PlanPage() {
           <PalPicker value={null} onPick={addTarget} placeholder="Add a target…" />
         </div>
         {targets.length > 0 && (() => {
-          const isPlanned = !!plan
-            && [...targets].sort().join() === [...planTargets].sort().join();
+          const isPlanned = planIsCurrent;
           if (isPlanned && !trayOpen) {
             return (
               <button
@@ -533,17 +539,65 @@ export function PlanPage() {
             </div>
           );
         })()}
-        <button class="btn primary" disabled={!targets.length || !ownedNames.length || busy}
-          onClick={() => run()}>
-          {busy ? 'Planning…'
-            : targets.length ? `Plan ${targets.length} target${targets.length > 1 ? 's' : ''}`
-              : 'Plan targets'}
-        </button>
+        {/* The same button was the loudest thing on screen once a route
+            existed, and rebuilt the plan you were already reading. Worse,
+            editing goals afterwards left the route below silently out of
+            date. Shown now only when it MEANS something — same as the
+            phone (E17). */}
+        {(!plan || busy) && (
+          <button class="btn primary" disabled={!targets.length || !ownedNames.length || busy}
+            onClick={() => run()}>
+            {busy ? 'Planning…'
+              : targets.length ? `Plan ${targets.length} target${targets.length > 1 ? 's' : ''}`
+                : 'Plan targets'}
+          </button>
+        )}
       </div>
 
+      {plan && !planIsCurrent && !busy && (
+        <div class="notebox" style={{ marginBottom: '14px' }}>
+          <h3 style={{ margin: '0 0 4px', fontSize: '15px' }}>
+            {targets.length === 0
+              ? 'You have removed every goal'
+              : 'Your goals have changed'}
+          </h3>
+          <p style={{ margin: '0 0 10px', fontSize: '13px' }}>
+            {targets.length === 0
+              ? 'The route below is the one you planned earlier. Add a goal to build a new one.'
+              : targets.length === 1
+                ? 'The route below is still the old one. Build it again for the goal you have left.'
+                : `The route below is still the old one. Build it again to cover all ${targets.length} goals.`}
+          </p>
+          {targets.length > 0 && (
+            <button class="btn primary" disabled={!ownedNames.length || busy}
+              onClick={() => run()}>
+              {targets.length === 1 ? 'Plan this goal' : `Plan these ${targets.length} goals`}
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* this led with the raw JavaScript error, exactly as the phone did
+          before E16. Say what happened, promise nothing was lost, offer the
+          retry — and keep the technical text one click away so a screenshot
+          is still useful to whoever fixes it. */}
       {planError && (
         <div class="notebox" style={{ marginBottom: '14px' }}>
-          Planning failed: {planError}. Try again — if it persists, reload the page.
+          <h3 style={{ margin: '0 0 4px', fontSize: '15px' }}>Couldn't build your route</h3>
+          <p style={{ margin: '0 0 10px', fontSize: '13px' }}>
+            Something went wrong working out the breeding steps. Your goals and
+            your Paldex are untouched — nothing was lost.
+          </p>
+          <button class="btn primary" onClick={() => run()}>Try again</button>
+          <details style={{ marginTop: '8px' }}>
+            <summary style={{ cursor: 'pointer', fontSize: '12px', color: 'var(--muted)' }}>
+              Show details
+            </summary>
+            <p style={{
+              margin: '6px 0 0', fontSize: '11.5px', color: 'var(--muted)',
+              fontFamily: 'monospace', wordBreak: 'break-word',
+            }}>{planError}</p>
+          </details>
         </div>
       )}
 
@@ -551,7 +605,7 @@ export function PlanPage() {
         <>
           <div class="boxstats">
             <div class="tile"><b>{plan.steps.length}</b><span>breeding steps</span></div>
-            <div class="tile"><b>{done} / {plan.steps.length}</b><span>done{partialCount > 0 ? ` · ${partialCount} half` : ''}</span></div>
+            <div class="tile"><b>{done} / {plan.steps.length}</b><span>done{partialCount > 0 ? ` · ${partialCount} half-done` : ''}</span></div>
             <div class="tile"><b>{[...stepMeta.entries()].filter(([sid, m]) => m.ready && !checks[sid]).length}</b><span>ready right now</span></div>
             {planMs !== null && (
               <div class="tile"><b>{planMs < 1000 ? `${Math.round(planMs)}ms` : `${(planMs / 1000).toFixed(1)}s`}</b><span>planned in</span></div>

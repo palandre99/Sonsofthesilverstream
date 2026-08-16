@@ -685,12 +685,14 @@ export function PlannerScreen() {
           <Text style={s.body}>
             {targets.length === 0
               ? 'The route below is the one you planned earlier. Add a goal to build a new one.'
-              : 'The route below is still the old one. Build it again to cover '
-                + `all ${targets.length} goals.`}
+              : targets.length === 1
+                ? 'The route below is still the old one. Build it again for the goal you have left.'
+                : `The route below is still the old one. Build it again to cover all ${targets.length} goals.`}
           </Text>
           {targets.length > 0 && (
             <Btn primary disabled={!ownedNames.length || busy}
-              label={`Plan these ${targets.length} goals`} onPress={confirmRun} />
+              label={targets.length === 1 ? 'Plan this goal' : `Plan these ${targets.length} goals`}
+              onPress={confirmRun} />
           )}
         </Card>
       )}
