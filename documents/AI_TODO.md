@@ -1047,6 +1047,28 @@ earlier. He is right and the proof is in his own list: it lumped CHIKIPI
       advice, clicking Chikipi lands on "Chikipi · Paldex · Palforge" with
       the card open, own error recorder saw none. NOT DEPLOYED — pushing
       the website to main needs the CEO's go-ahead.
+- [x] E16e SHELL A11Y — SELF-FOUND, SHIPPED AND PUBLISHED (commit f354a76).
+      Found while driving the QA harness for E16b: the bottom tab bar had
+      `accessibilityRole="tab"` + state but NO label, and the visible Text
+      is an icon GLYPH + the word, so a screen reader read a private-use
+      character instead of "Paldex". The side panel was worse — section
+      buttons had NO role AND no label; the settings row was a dot, a name
+      and a cog. All fixed in App.tsx + DomainPanel.tsx. Section buttons now
+      announce the FULL title even when the narrow panel abbreviates the
+      visible word ("Items & Tech", not "Items"), and `soon` domains say
+      "coming soon". Measured delta: 5 tabs nameless -> Calc/Plan/Paldex/
+      Odds/Ref.
+- [x] SUGGESTED GOALS A11Y SWEEP — CLOSED CLEAN, no work needed. 443
+      interactive nodes in the open sheet, 441 named; the 2 without names
+      carry `role="presentation"` so they are correctly outside the tree.
+      This was an open question since the E-round; it is now answered.
+- [!] DO NOT "FIX" THIS: **no element anywhere in the mobile app reports
+      `aria-selected`** — react-native-web (SDK 54's version) does not map
+      `accessibilityState={{selected}}` to it at all; I checked the whole
+      document, count is 0. That is my BROWSER QA HARNESS, not the phone.
+      iOS VoiceOver uses `accessibilityState`, which is the documented API
+      and was already set. Never claim (or "fix") VoiceOver behaviour from
+      what RN-web renders. Same class of trap as the Astralym `wild` field.
 - [x] E16d INVESTIGATED AND CLOSED — no code change, and that IS the finding.
       **Astralym** is the ONLY species in pals_1_0 (299) missing from
       palcalcFacts (298). It is REAL: number 204, in the breeding table, and
