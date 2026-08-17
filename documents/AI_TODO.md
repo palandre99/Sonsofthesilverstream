@@ -2105,6 +2105,49 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E130. HIS 23:17 SCREENSHOT — THE ENLARGED MAP SAT UNDER THE STATUS BAR,
+## AND "LEAVES THE PALDEX" WAS A LIE FROM THE PLAN; PALDEX IS NOW HOME
+## 2026-08-17 (night)
+
+**Verbatim (with screenshot):** "Opening the map to see where a pal is from
+a pal info card looks terrible and buggy, can't even get out of it. And it
+says leaves the paldex if I open the full map.. I hate that. Can't u make a
+feature so it opens the map but with a back button?.. or swipe to close…
+And it says leaves paldex? This example I didn't even come from paldex. I
+tapped a pal in the plan project." Plus, separately: "opening breeding fane
+should put me in paldex not calc… the home hub."
+
+**THREE FIXES SHIPPED (breeding lane only):**
+1. **The enlarged spawn map is now a pageSheet** (like every other sheet in
+   the app) instead of a bare fullscreen Modal. The screenshot showed the
+   title rendered BEHIND the clock and the ‹ Back button colliding with the
+   system icons — that collision was the "can't even get out of it". A
+   pageSheet stacks below the status bar and swipes down to close (his
+   "swipe to close or something", natively). HONEST LIMIT: the status-bar
+   behaviour is native-iOS; verified here by code + the fact that the pal
+   card itself is a pageSheet and renders correctly in his screenshots.
+   Eye-verified on the render: Plan → Cattiva card → enlarge → ‹ Back →
+   card → close → Plan, every hop landing where it should.
+2. **The label stopped lying about where you came from**: "Open the full
+   map (leaves the Paldex)" → "(switches to the Map)", true from the Plan
+   and Calculator too. Both copies (button + accessibility label).
+   pal-map-return.test.ts pins the new label and bans the old one.
+3. **Paldex is Breeding's home** (his order): boot fallback and the side
+   panel's Breeding entry both land on the Paldex now. Other domains keep
+   leading with their own first live tab. Verified on the render: cold
+   root load → Paldex; Settings → Breeding → Paldex.
+
+**THE WAY BACK FROM THE FULL MAP — half built, half handed over.** The
+full map itself is the Map lane's screen, so the breeding side can't put
+a back button on it. What shipped here: PaldexScreen now consumes a nav
+intent payload (`{pal}`) by opening that pal's card — so a single
+`navigateTo({domain:'breeding', tab:'paldex', payload:{pal}})` from the
+map IS the back button. The request to the Map lane is at the tail of
+this file. PalMap has sent `fromCard` in its payload since E125; it is
+currently dropped on the map side.
+
+Gates: 676 tests, mobile tsc clean, app build clean.
+
 ## E129. THE SHARE BUTTON WAS INVENTING A FEMALE — THE "?" MARK NOW RIDES
 ## THE SHARE/IMPORT FORMAT 2026-08-17 (night)
 
@@ -8700,3 +8743,16 @@ pins updated; 663 tests; tsc clean.
 PUBLISH: queued with e98eb9c (found filter) behind the goals lane
 (boxShare.ts/PaldexScreen.tsx in flight); one raw-Node publish crash
 tonight — rerun on any dump without "publish: done".
+
+### FOR THE MAP LANE — a back button on the full map (CEO 23:17, via breeding)
+The CEO opened the full map from a pal card and hated that it strands him
+("can't u make a feature so it opens the map but with a back button?").
+The breeding side has done its half tonight (E130): `PalMap` already sends
+`payload: { pal, fromCard }` when it jumps to your domain, and
+`PaldexScreen` now OPENS a pal's card when an intent arrives with
+`payload.pal`. So the whole feature, on your side, is: consume `fromCard`
+from the intent payload when MapScreen mounts/receives it, and render a
+small "‹ Back to <pal>'s card" chip that calls
+`navigateTo({ domain: 'breeding', tab: 'paldex', payload: { pal: fromCard } })`.
+(BackToCardChip in the breeding screens is the visual precedent.) That one
+chip closes his loop: card → full map → card.

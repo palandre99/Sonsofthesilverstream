@@ -1,7 +1,7 @@
 /** Paldex — the encyclopedia AND your collection, one screen.
  * Ownership lives here: ♂/♀ toggles on every row, import, stats — the
  * separate Box tab was folded in (two near-identical lists were confusing). */
-import React, { memo, useMemo, useState } from 'react';
+import React, { memo, useEffect, useMemo, useState } from 'react';
 import { FlatList, Modal, Pressable, Share, Text, TextInput, View } from 'react-native';
 import { T } from '../theme';
 import {
@@ -22,6 +22,7 @@ import {
 } from '../ui/palFilters';
 import { SAMPLE_BOX } from '../data/sampleBox';
 import { exportLine, parseImport } from '../boxShare';
+import { onNavIntent, takeIntentPayload } from '../nav/intent';
 
 /** The empty Paldex used to be 299 untickable-looking rows and a footer
  * button — nothing on it said that ticking pals is what makes every other
@@ -199,6 +200,18 @@ export function PaldexScreen() {
   const [sort, setSort] = useState<SortKey>('number');
   const [open, setOpen] = useState<string | null>(null);
   const [sheet, setSheet] = useState<'none' | 'import' | 'clear' | 'filter'>('none');
+
+  // arriving with a pal in the intent payload opens that pal's card — the
+  // Paldex half of "come back to the card you were reading" from anywhere
+  // that can only send an intent (e.g. the full map's way back)
+  useEffect(() => {
+    const apply = () => {
+      const p = takeIntentPayload('paldex');
+      if (p?.pal) setOpen(p.pal);
+    };
+    apply(); // payload waiting from before this screen mounted
+    return onNavIntent(apply); // ...or arriving while it's already open
+  }, []);
   // bulk un-own arms once before it fires, so a stray tap cannot wipe a
   // filtered slice of the collection
   const [armUnown, setArmUnown] = useState(false);

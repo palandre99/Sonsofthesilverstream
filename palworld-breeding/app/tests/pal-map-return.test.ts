@@ -44,15 +44,28 @@ describe('the map preview enlarges in place instead of leaving the Paldex', () =
     expect(code).toContain('`‹ Back to ${name}`');
   });
 
+  it('the enlarged view is a sheet, never under the status bar', () => {
+    // a bare fullscreen Modal put the title behind the clock and the Back
+    // button under the system icons on a real phone — "can't even get out
+    // of it" (CEO screenshot, 2026-08-17 23:17). pageSheet stacks below the
+    // status bar and swipes down to close.
+    expect(code, 'the enlarged map lost its pageSheet presentation')
+      .toContain('presentationStyle="pageSheet"');
+  });
+
   it('the enlarged map is actually bigger than the preview', () => {
     expect(code).toContain("Dimensions.get('window').width");
   });
 
   it('the Map fane is still reachable — from controls that SAY they leave', () => {
     // removing the capability would be the wrong fix; hiding the cost would
-    // be the old bug
+    // be the old bug. The label must also be TRUE from every origin: this
+    // card opens from the Plan and the Calculator too, and the CEO hit
+    // "leaves the Paldex" from the Plan (23:17) — it read as a lie there.
     expect(code).toContain('Full map ›');
-    expect(code).toContain('leaves the Paldex');
+    expect(code).toContain('switches to the Map');
+    expect(code, 'the label names the Paldex again — the card has other origins')
+      .not.toContain('leaves the Paldex');
     expect(code, 'the full-map jump lost its return payload')
       .toContain("payload: { pal: name, fromCard: name }");
   });

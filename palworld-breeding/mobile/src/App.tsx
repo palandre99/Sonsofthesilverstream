@@ -103,7 +103,9 @@ function UpdateBanner() {
  *  Native has no location, so this is a no-op there. Standing order is to look
  *  at every change with our own eyes — that needs a way to reach the screen. */
 function initialRoute(): { domain: string; tab: string } {
-  const fallback = { domain: 'breeding', tab: 'calc' };
+  // the Paldex is Breeding's home hub (CEO 2026-08-17): the collection is
+  // what every other breeding screen works from, so the app opens on it
+  const fallback = { domain: 'breeding', tab: 'paldex' };
   const hash = typeof window !== 'undefined' ? window.location?.hash ?? '' : '';
   const [domain, tab] = hash.replace(/^#\/?/, '').split('/');
   const found = DOMAINS.find((d) => d.id === domain);
@@ -178,8 +180,12 @@ function Shell() {
   const selectDomain = (id: string) => {
     const d = DOMAINS.find((x) => x.id === id)!;
     setDomainId(id);
-    // land on the domain's first live tab, else its first tab
-    const first = d.tabs.find((t) => LIVE_SCREENS[t.id] && t.id !== 'paldex') ?? d.tabs[0];
+    // Breeding lands on the Paldex — its home hub (CEO 2026-08-17). Other
+    // domains land on their own first live tab so a new domain leads with
+    // its own story rather than the shared anchor.
+    const first = id === 'breeding'
+      ? d.tabs.find((t) => t.id === 'paldex')
+      : d.tabs.find((t) => LIVE_SCREENS[t.id] && t.id !== 'paldex') ?? d.tabs[0];
     setTabId(first ? first.id : '');
   };
 

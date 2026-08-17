@@ -195,7 +195,10 @@ export function PalMap({ name }: { name: string }) {
               onPress={openFullMap}
               hitSlop={8}
               accessibilityRole="button"
-              accessibilityLabel={`Open ${name} on the full map — this leaves the Paldex`}>
+              // said "leaves the Paldex" — but this card opens from the Plan
+              // and the Calculator too, and the CEO hit it from the Plan
+              // (23:17 report). Name the true cost from anywhere.
+              accessibilityLabel={`Open ${name} on the full map — this switches to the Map section`}>
               <Text style={{ color: T.accentInk, fontSize: 11.5, fontWeight: '800' }}>
                 Full map ›
               </Text>
@@ -236,7 +239,13 @@ export function PalMap({ name }: { name: string }) {
       ))}
 
       {expanded && (
-        <Modal visible animationType="fade" transparent={false}
+        /* pageSheet, like every other sheet in the app: it stacks on the
+           card's own sheet, swipes down to close, and can never sit under
+           the status bar. The first version was a bare fullscreen Modal —
+           on his phone the title rendered behind the clock and the Back
+           button collided with the system icons ("looks terrible and buggy,
+           can't even get out of it", CEO screenshot 2026-08-17 23:17). */
+        <Modal visible animationType="slide" presentationStyle="pageSheet"
           onRequestClose={() => setExpanded(null)}>
           <View style={{ flex: 1, backgroundColor: T.bg2, padding: 14, gap: 12 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
@@ -256,8 +265,9 @@ export function PalMap({ name }: { name: string }) {
                 ? `Lv ${expanded.lo}` : `Lv ${expanded.lo}–${expanded.hi}`}
               {expanded.nightOnly && expanded.spawns > 0 ? ' · only at night' : ''}
             </Text>
-            {/* the one-way door, clearly labelled as one */}
-            <Btn small label="Open the full map (leaves the Paldex)"
+            {/* the one-way door, clearly labelled as one — in words that are
+                true from the Plan and the Calculator too, not just the Paldex */}
+            <Btn small label="Open the full map (switches to the Map)"
               onPress={() => { setExpanded(null); openFullMap(); }} />
           </View>
         </Modal>
