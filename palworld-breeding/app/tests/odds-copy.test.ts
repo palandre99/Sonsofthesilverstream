@@ -136,6 +136,47 @@ describe('the cakes card says what it means', () => {
   });
 });
 
+describe('the mutation hunt accounts for every cake', () => {
+  /* Five cakes are listed in "Which cake for which job" and only three get a
+   * mutation card. Until 2026-08-17 nothing said why, so two cakes simply
+   * vanished between one card and the next. They are absent for a real reason
+   * — they mutate at exactly plain Cake's rate, so their cards would be three
+   * identical copies — and that reason is now on screen and checked here
+   * against the cake table itself. */
+  const SHOWN = ['cake', 'vegetable', 'extravagant'];
+
+  it('the unlisted cakes really do mutate like plain Cake', () => {
+    const base = CAKES.find((c) => c.id === 'cake')!;
+    const hidden = CAKES.filter((c) => !SHOWN.includes(c.id));
+    expect(hidden.length, 'the cake table changed shape').toBe(2);
+    for (const c of hidden) {
+      expect(c.mutationPerEgg, `${c.name} no longer matches plain Cake`)
+        .toBe(base.mutationPerEgg);
+      expect(c.eggsPerCycle, `${c.name} no longer matches plain Cake`)
+        .toBe(base.eggsPerCycle);
+    }
+  });
+
+  it('and the screen says so, naming them from the table', () => {
+    expect(code, 'the explanation for the missing cakes is gone')
+      .toContain('they mutate ');
+    expect(code).toContain('at the same rate as plain Cake');
+    expect(code, 'the names are hard-coded instead of derived')
+      .toContain('function sameAsPlainCake()');
+    expect(code).toContain("c.mutationPerEgg === base.mutationPerEgg");
+    expect(code).toContain('c.eggsPerCycle === base.eggsPerCycle');
+  });
+
+  it('the three that ARE hunted are the ones with distinct numbers', () => {
+    const plans = SHOWN.map((id) => {
+      const c = CAKES.find((x) => x.id === id)!;
+      return `${c.eggsPerCycle}/${c.mutationPerEgg}`;
+    });
+    expect(new Set(plans).size, 'two hunted cakes now show identical numbers')
+      .toBe(3);
+  });
+});
+
 describe('counted labels read like a person wrote them', () => {
   it('does not say “All 1 wanted” when one passive is ticked', () => {
     expect(code, 'the one-passive wording is gone')

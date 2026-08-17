@@ -634,6 +634,20 @@ function IvTab() {
 
 /* ---------------- cakes ---------------- */
 
+/** Cakes that mutate exactly like plain Cake, so a mutation card for them
+ * would repeat the same three numbers. Derived from the cake table rather
+ * than hard-coded, so adding a cake cannot leave the sentence stale. */
+function sameAsPlainCake(): string[] {
+  const base = cakeById('cake');
+  const shown = new Set(['cake', 'vegetable', 'extravagant']);
+  return CAKES
+    .filter((c) => !shown.has(c.id)
+      && c.mutationPerEgg === base.mutationPerEgg
+      && c.eggsPerCycle === base.eggsPerCycle)
+    .map((c) => c.name);
+}
+
+
 function CakesTab() {
   const mutationPassives = passives.filter((p) => p.mutation_exclusive);
   return (
@@ -683,6 +697,19 @@ function CakesTab() {
             );
           })}
         </View>
+        {/* Five cakes are listed above and only three are hunted here, and
+            until now nothing said why. The missing two are not missing for a
+            reason the player can guess — they mutate at EXACTLY the rate plain
+            Cake does, so their cards would be three identical copies. Say so,
+            and name them, rather than letting two cakes quietly vanish.
+            The claim is checked against the cake table itself. */}
+        <Text style={[s.body, { fontSize: 12, marginTop: 10, color: T.muted }]}>
+          {sameAsPlainCake().length > 0 && (
+            `${sameAsPlainCake().join(' and ')} are not listed because they mutate `
+            + `at the same rate as plain Cake — the numbers would be identical. `
+            + `They are worth baking for their other effects, not for mutations.`
+          )}
+        </Text>
       </Card>
 
       <Card style={{ marginTop: 12 }}>
