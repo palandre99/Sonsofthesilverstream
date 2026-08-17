@@ -2098,6 +2098,80 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E108. THE COUNTED-LABEL SWEEP IS DONE, AND A PLANNER FIX THAT
+## WORKED WAS REJECTED ON ITS PRICE 2026-08-17 (overnight)
+
+**NOTHING SHIPPED THIS TICK. That is the finding.**
+
+**PART 1 — THE COUNTED-LABEL SWEEP IS NOW EXHAUSTED, APP-WIDE.** The last two
+unswept surfaces came back clean, and both were measured rather than read:
+
+- **Suggested Goals sheet.** "All N ›" has no plural gate, so I checked whether
+  a one-item section is even reachable: **30 sections, smallest is 4** (Cake
+  supply), read off the live render. "All 1 ›" cannot happen. The bulk buttons
+  are already gated behind `> 1` ("Add these N" / "Remove these N"), and the
+  category browser's search already says **"Search 1 pal…"** at one.
+- **`attainLabel` — the shared status brain** behind every chip and row on that
+  sheet: every branch correct, including **`'BREED · 1 STEP'`** singular.
+- **`PalDetail`**: one counted label in the whole card, already guarded
+  (`{rank.tied} pal{rank.tied === 1 ? '' : 's'} tied`).
+
+So: Odds Lab (5 fixed at E103), Plan (clean), Paldex (3 fixed at E106),
+Suggested Goals (clean), the status brain (clean), the pal card (clean).
+**Stop running this sweep — it is finished.**
+
+**PART 2 — THE PLATEAU-CROSSING PLANNER: IT WORKED, AND IT IS REJECTED.**
+
+E102 left a documented limit: Melpaca from Chikipi + Pengullet + Depresso +
+Rooby plans in 5 steps where 4 is optimal, because the good route needs TWO
+recipe swaps at once across a plan of equal length, and it goes through
+Hoocrates — a pal the plan never otherwise makes.
+
+Built both halves: a candidate pool widened by one step (so Hoocrates can be
+offered at all, priced honestly at +1 step), and a descent that may step
+SIDEWAYS once, but only onto a plan that a further swap can then shorten.
+
+**IT WORKS.** Melpaca **5 → 4**, the limit closed. Twelve boxes **127 → 123
+steps**, no box worse.
+
+**AND IT IS UNSHIPPABLE.** On his real 26-pal box and 8 goals:
+
+| | before | after |
+|---|---|---|
+| `planFor` | ~1.5 ms | **10,697 ms** |
+| `helperAdvice` (calls planFor once per helper) | ~1 s | **99,526 ms** |
+
+A minute and a half to draw the "Make it faster" card. **Four steps saved
+across twelve boxes is worth nothing against that.** The wider pool is
+quadratic in a set that explodes on a big box — 26 owned + 32 produced gives a
+pool of 58, whose one-step neighbourhood pushes the candidate set past 250, and
+`helpers.ts:172` calls `planFor` in a LOOP.
+
+Reverted with `git checkout`. **This is the `normalise()` rejection at E88 all
+over again, and the rule that caught it both times is METHOD #26: a correctness
+fix must be measured for what it costs the player.**
+
+**TWO CHEAPER DIRECTIONS, NEITHER VALIDATED — do not treat these as designs:**
+(a) prune `nearby` to species that actually appear in some candidate recipe for
+a pal already in the plan, instead of every one-step child; (b) gate the whole
+pass on plan size, since every measured gain was on SMALL boxes and his 32-step
+plan needs none of it. Anyone trying again should start by re-running the two
+numbers above.
+
+**PART 3 — MY OWN E107 NOTE WAS WRONG (METHOD #31, again).** I logged "the
+step-tick control is not reachable by aria-label — an a11y gap". It is not a
+gap: `AnimatedCheck` sets **`accessibilityRole="checkbox"`** and a full label,
+and the render shows **all 35 ticks** as proper checkboxes reading *"Done:
+Cattiva + Gumoss = Ribbuny"*. I had searched for `role="button"`. **Open item
+(12) is closed as FALSE.** (`aria-checked` reads null on RN-web, but none of
+his 3 orphan checks belong to current steps so there was nothing checked to
+compare, and iOS uses native accessibility rather than DOM aria — a web
+artifact, not chased.)
+
+Gates unchanged at 480; the tree is exactly as E107 left it. Nothing published
+because nothing user-facing changed — an unchanged bundle would be noise on his
+About screen.
+
 ## E107. WALKED A GENUINELY FRESH INSTALL — THE CHAIN HOLDS, AND ONE
 ## SCREEN CHANGED ITS MIND ABOUT A WORD 2026-08-17 (overnight)
 
