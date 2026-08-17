@@ -357,6 +357,19 @@ export function MapScreen() {
     [filters.pals, region, filters.dungeons],
   );
   const otherRegionName = region === 'palpagos' ? 'The World Tree' : 'Palpagos Islands';
+  /**
+   * Has this player got a box yet?
+   *
+   * Decides WHICH thing the first-run hint teaches. "Only pals I'm missing" is
+   * the one thing this map does that no competitor does — it turns the world
+   * into a to-do list — but it is invisible until you open Find and then
+   * Filter, and it does NOTHING for someone whose box is empty (everything is
+   * missing, so nothing is filtered). Teaching it to an empty box would be
+   * teaching a no-op; teaching only the buttons to someone with 200 pals
+   * wastes the one line we allow ourselves on things they can already see.
+   */
+  const ownsSomething = useMemo(() => Object.keys(pals).some(ownedAny), []);
+
   /** why the map is blank, worked out once per render */
   const empty = emptyReason(filters, region);
 
@@ -631,9 +644,12 @@ export function MapScreen() {
       )}
 
       {/* An empty world with three buttons tells a new player nothing, so
-          this points at the two that matter. It used to be a five-line
-          explainer covering a third of the map. It is one line now, and
-          tapping it makes it go away for good. */}
+          this points at what matters. It used to be a five-line explainer
+          covering a third of the map. It is one line now, and tapping it
+          makes it go away for good.
+          WHICH line depends on whether they have a box yet: with one, the
+          most valuable thing we can teach is the feature nobody else has,
+          which is otherwise buried two taps deep inside Find. */}
       {/* Nothing is drawn AND nothing is switched on — a genuinely new map. */}
       {active.length === 0 && !sheet && !hintOff
         && filters.pals.size === 0 && filters.poi.size === 0 && (
@@ -651,10 +667,21 @@ export function MapScreen() {
         >
           <Icon name="gesture-tap" size={15} color={T.accentInk} />
           <Text style={[s.body, { fontSize: 12.5, flex: 1 }]}>
-            <Text style={{ color: T.accentInk, fontWeight: '800' }}>Find</Text>
-            {' '}a pal, or{' '}
-            <Text style={{ color: T.accentInk, fontWeight: '800' }}>Layers</Text>
-            {' '}for chests, ore and dungeons.
+            {ownsSomething ? (
+              <>
+                <Text style={{ color: T.accentInk, fontWeight: '800' }}>Find</Text>
+                {' '}&rarr;{' '}
+                <Text style={{ color: T.accentInk, fontWeight: '800' }}>Filter</Text>
+                {' '}shows only the pals you are still missing.
+              </>
+            ) : (
+              <>
+                <Text style={{ color: T.accentInk, fontWeight: '800' }}>Find</Text>
+                {' '}a pal, or{' '}
+                <Text style={{ color: T.accentInk, fontWeight: '800' }}>Layers</Text>
+                {' '}for chests, ore and dungeons.
+              </>
+            )}
           </Text>
           <Icon name="close" size={14} color={T.faint} />
         </Pressable>

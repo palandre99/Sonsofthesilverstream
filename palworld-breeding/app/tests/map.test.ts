@@ -1883,3 +1883,41 @@ describe('the map feels the same everywhere you change something', () => {
     expect(screen).toMatch(/if \(r\.id !== region\) void Haptics\.selectionAsync\(\);/);
   });
 });
+
+describe('the first-run hint teaches the thing nobody else has', () => {
+  const screen = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
+  );
+
+  it('names the wedge once there is a box to filter', () => {
+    // Blueprint §5 criterion 10: empty states TEACH the killer feature. The
+    // hint taught the two BUTTONS — which are already on screen — and never
+    // mentioned "only pals I'm missing", the one thing this map does that no
+    // competitor does, and which is buried two taps deep inside Find.
+    expect(screen).toContain('still missing');
+    expect(screen).toMatch(/const ownsSomething = useMemo\(\) => Object\.keys\(pals\)\.some\(ownedAny\)|const ownsSomething = useMemo\(/);
+  });
+
+  it('but not to an empty box, where the filter would do nothing', () => {
+    // everything is missing when you own nothing, so that hint would teach a
+    // no-op. The buttons are the right lesson then.
+    expect(screen).toContain('a pal, or');
+    expect(screen).toContain('for chests, ore and dungeons');
+    // both branches must hang off the same test
+    const block = screen.slice(screen.indexOf('{ownsSomething ? ('), screen.indexOf('{ownsSomething ? (') + 900);
+    expect(block, 'the hint must branch on the box').toContain('still missing');
+    expect(block).toContain('for chests, ore and dungeons');
+  });
+
+  it('and it is still ONE line, dismissible, and shown only on a blank map', () => {
+    // it was a five-line explainer covering a third of the map once
+    const guard = screen.slice(
+      screen.indexOf('{active.length === 0 && !sheet && !hintOff'),
+      screen.indexOf('{active.length === 0 && !sheet && !hintOff') + 200,
+    );
+    expect(guard, 'the hint guard must exist').toContain('hintOff');
+    expect(guard).toContain('filters.pals.size === 0');
+    expect(guard).toContain('filters.poi.size === 0');
+    expect(screen).toContain('setHintOff(true)');
+  });
+});
