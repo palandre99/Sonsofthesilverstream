@@ -7931,3 +7931,29 @@ insert between), joined labels when stops share a spot ("1 · 4"); then
 slice 3 share/export. The M38 pre-existing oddities (empty-tap card
 survives region switch; hint returns on the other region) remain fair
 eval targets between slices.
+
+### M40 — ROUTES SLICE 2 BUILT + VERIFIED (d28b205) — publish pending AGAIN on the other lane
+Per-stop removal shipped the M37 way: position IS identity (the number on
+the badge), no ids, `removeStop(region, i)` counts only THIS region's stops
+— proven by mutation that "remove stop 3" can never touch the other
+island's route. Badges are one per SPOT now: numbers JOIN ("1 · 4") when a
+run returns to a place, closing M38's known limit. The badge owns the tap
+since this slice (pointerEvents="none" removed — the test explaining it was
+REWRITTEN, not just deleted): it opens the mark's card when the mark still
+exists (route verbs live there, now with per-stop "Remove stop N" rows) or
+a bare "Route stop" card when the mark was deleted — a stop with no card
+would be unremovable. Region switch closes the stop card for the same
+reason it closes the mark card. 613 tests, tsc clean both trees.
+EYE-VERIFIED (qa-slice2*/): joined badge; pin card listing Stop 1 of 4 +
+Stop 4 of 4 with separate removes; removal renumbering the line live; the
+bare-stop card (Sulfur run) reachable and removable; pill honest at every
+step. QA notes for next worker: each qa-shot run launches a FRESH Chrome —
+localStorage never survives, seed EVERY run; badge centres from the shot
+are viewport = screenshot/2 (stop at u .5 v .62 = click:186,519).
+INSERT-BETWEEN is deliberately NOT in this slice: it is a mode (pick a
+position, then pick a spot), modes are bug farms, and remove+re-add covers
+the mistake case at 3-10 stop route sizes. Revisit only if he asks.
+PUBLISH: guard blocked — goals lane mid-feature in PalDetail.tsx. d28b205
+retries next tick; it is not "done" until it is on his phone.
+NEXT: publish retry -> slice 3 share/export text (the seed of cross-device
+sync) -> the M38 pre-existing oddities as eval targets between slices.
