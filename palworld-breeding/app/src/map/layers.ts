@@ -546,3 +546,37 @@ export function whereFromLine(u: number, v: number, region: RegionId): string | 
   return `${m} m ${w.dir} of the ${w.name}${suffix}`;
 }
 
+/* --------------------------------------------- the list behind a layer */
+
+/** Does this layer carry a real name per point? (The list feature only
+ *  exists where the game named the things — a list of "Chest, Chest,
+ *  Chest" 1,572 times would be noise pretending to be information.) */
+export function hasNames(layerId: string): boolean {
+  return poiLayer(layerId)?.names != null;
+}
+
+export interface NamedPoint {
+  name: string;
+  u: number;
+  v: number;
+  /** index into this REGION's point set — feeds poiName and foundKey */
+  index: number;
+}
+
+/**
+ * Every named point of a layer on one map, ALPHABETICAL — "so I can find
+ * the one I am looking for instead of looking all over the map" (CEO).
+ * Scanning a list is a by-name job; the level rides along as detail.
+ */
+export function namedPoints(layerId: string, region: RegionId): NamedPoint[] {
+  const set = poiPoints(layerId, region);
+  if (!set || !hasNames(layerId)) return [];
+  const out: NamedPoint[] = [];
+  for (let i = 0; i < set.n; i++) {
+    const name = poiName(layerId, region, i);
+    if (!name) continue;   // a nameless row cannot be found by name
+    out.push({ name, u: set.xy[i * 2], v: set.xy[i * 2 + 1], index: i });
+  }
+  out.sort((a, b) => a.name.localeCompare(b.name));
+  return out;
+}

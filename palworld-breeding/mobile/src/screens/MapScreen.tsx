@@ -39,7 +39,7 @@ import {
   poiLayer,
   poiLayers, poiPoints, searchPlaces,
   poiName, spawnLevels, spawnPoints, spawnablePals, wildBands,
-  whereFromLine,
+  hasNames, namedPoints, whereFromLine,
   type LayerGroup, type MapFilters,
 } from '../map/layers';
 import { MAP_REGIONS } from '../data/mapMeta.g';
@@ -59,7 +59,7 @@ import {
   clearFound, foundCount, foundKey, isFound, loadFound, onFoundChange, toggleFound,
 } from '../map/found';
 
-type Sheet = null | 'layers' | 'pals';
+type Sheet = null | 'layers' | 'pals' | { list: string };
 
 interface Viewport { scale: number; u0: number; v0: number; u1: number; v1: number }
 
@@ -1377,6 +1377,67 @@ export function MapScreen() {
       {/* the pal's own card, over the map — you keep your place */}
       {openPal && <PalDetail name={openPal} onClose={() => setOpenPal(null)} />}
 
+      {typeof sheet === 'object' && sheet !== null && (() => {
+        const layer = poiLayers().find((l) => l.id === sheet.list);
+        const rows = namedPoints(sheet.list, region);
+        if (!layer || rows.length === 0) { return null; }
+        return (
+          <SheetShell
+            title={`All ${rows.length} — ${layer.label}`}
+            onClear={() => setSheet('layers')}
+            onClose={() => setSheet(null)}
+          >
+            <FlatList
+              data={rows}
+              initialNumToRender={16}
+              keyExtractor={(r) => `${r.index}`}
+              contentContainerStyle={{ padding: 14, gap: 8 }}
+              renderItem={({ item }) => {
+                const found = isFound(foundKey(sheet.list, region, item.index));
+                // an alpha's level is on its card; here it makes the list
+                // scannable for "what can I fight right now"
+                const lv = sheet.list === 'alpha_pals' && item.name.startsWith('Alpha ')
+                  ? MAP_ALPHAS[item.name.slice(6)]?.find((a) =>
+                    a.m === (region === 'palpagos' ? 0 : 1)
+                    && Math.abs(a.u - item.u) < 0.002 && Math.abs(a.v - item.v) < 0.002)?.lv
+                  : undefined;
+                return (
+                  <Pressable
+                    onPress={() => {
+                      void Haptics.selectionAsync();
+                      setSheet(null);
+                      // fly there: ~1/16 of the map across the short edge —
+                      // close enough that the centred pin is unmistakable
+                      canvas.current?.focus(item.u, item.v, 0.06);
+                    }}
+                    accessibilityRole="button"
+                    style={{
+                      flexDirection: 'row', alignItems: 'center', gap: 9,
+                      paddingHorizontal: 11, paddingVertical: 9, borderRadius: 11,
+                      borderWidth: 1, borderColor: T.line, backgroundColor: T.surface,
+                    }}
+                  >
+                    <Icon
+                      name={found ? 'check-circle' : layer.icon}
+                      size={15}
+                      color={found ? T.ok : layer.colour}
+                    />
+                    <Text style={{ color: T.ink, fontWeight: '700', fontSize: 13, flex: 1 }}>
+                      {item.name}
+                    </Text>
+                    {lv != null && (
+                      <Text style={{ color: T.faint, fontSize: 11.5, fontWeight: '700' }}>
+                        Level {lv}
+                      </Text>
+                    )}
+                  </Pressable>
+                );
+              }}
+            />
+          </SheetShell>
+        );
+      })()}
+
       {sheet === 'layers' && (
         <LayerSheet
           filters={filters}
@@ -1385,6 +1446,7 @@ export function MapScreen() {
           onClearFound={clearFound}
           onClearMine={() => { clearPins(region); setOpenPin(null); }}
           myMarks={myPins.length}
+          onOpenList={(id) => setSheet({ list: id })}
           onClearRoute={() => { clearRoute(region); setOpenStops(null); }}
           onShareRoute={() => {
             const name = MAP_REGIONS.find((r) => r.id === region)?.name ?? region;
@@ -1806,12 +1868,13 @@ function SheetShell({ title, onClear, onClose, children }: {
 
 function LayerSheet({
   filters, onToggle, onClear, onClearFound, onClearMine, myMarks,
-  onClearRoute, onShareRoute, onImportRoute, routeStops, onClose,
+  onClearRoute, onShareRoute, onImportRoute, routeStops, onOpenList, onClose,
 }: {
   filters: MapFilters; onToggle: (id: string) => void; onClear: () => void;
   onClearFound: () => void; onClearMine: () => void; myMarks: number;
   onClearRoute: () => void; onShareRoute: () => void;
   onImportRoute: () => void; routeStops: number;
+  onOpenList: (id: string) => void;
   onClose: () => void;
 }) {
   const groups = useMemo(() => {
@@ -1966,6 +2029,24 @@ function LayerSheet({
                     <Text style={{ color: T.faint, fontWeight: '700', fontSize: 11 }}>
                       {here ? here.toLocaleString() : 'none here'}
                     </Text>
+                    {/* "it should be possible to get a list so I can find
+                        the one I am looking for" (CEO). Only layers whose
+                        points the game NAMED get one — a list of 1,572
+                        rows saying "Chest" is noise, not information. */}
+                    {on && here > 0 && hasNames(l.id) && (
+                      <Pressable
+                        onPress={() => onOpenList(l.id)}
+                        accessibilityRole="button"
+                        accessibilityLabel={`List all ${l.label}`}
+                        hitSlop={6}
+                        style={{
+                          marginLeft: 2, paddingLeft: 8, paddingVertical: 2,
+                          borderLeftWidth: 1, borderLeftColor: T.line,
+                        }}
+                      >
+                        <Icon name="format-list-bulleted" size={15} color={l.colour} />
+                      </Pressable>
+                    )}
                   </Pressable>
                 );
               })}

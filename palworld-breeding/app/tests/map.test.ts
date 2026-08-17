@@ -23,7 +23,7 @@ import { decodeRoute, encodeRoute } from '../../mobile/src/map/routeShare';
 import {
   closeMatches, isNightOnly, poiLayers, poiPoints, searchPlaces, spawnablePals, spawnLevels,
   spawnPoints, spawnSplit,
-  whereFrom, whereFromLine, wildBands,
+  hasNames, namedPoints, whereFrom, whereFromLine, wildBands,
 } from '../src/map/layers';
 import { REGION_SPOTS } from '../src/data/regionSpots.g';
 
@@ -1472,9 +1472,12 @@ describe('the pal picker in the Find sheet', () => {
     // them must not mount every pal on the map the moment the sheet opens.
     // Measured in the QA browser: 1828 DOM nodes with a ScrollView, 758 with
     // this - and 63 rows rendered instead of 224.
-    const list = screen.match(/<FlatList[\s\S]*?renderItem=/);
-    expect(list, 'the pal list must be a FlatList').not.toBeNull();
-    expect(list![0]).toMatch(/data=\{list\}/);
+    // anchored on the PAL sheet's own list — the layer list is a FlatList
+    // too now, with its own budget
+    const at = screen.indexOf('data={list}');
+    expect(at, 'the pal list must exist').toBeGreaterThan(-1);
+    const list = [screen.slice(screen.lastIndexOf('<FlatList', at), at + 400)];
+    expect(list[0]).toMatch(/data=\{list\}/);
     expect(list![0]).toMatch(/initialNumToRender=\{14\}/);
     // the search box must stay OUTSIDE the list, or re-rendering it while he
     // types would take his keyboard focus with it
@@ -2711,5 +2714,51 @@ describe('a boss card says its level (CEO, 20:13)', () => {
     // matched by region AND position — a species with two spots must not
     // show the other island's level
     expect(block).toContain('a.m === mi');
+  });
+});
+
+describe('the list behind a layer (CEO: "find the one I am looking for")', () => {
+  it('every alpha is listed, named, levelled ground truth, ALPHABETICAL', () => {
+    const rows = namedPoints('alpha_pals', 'palpagos');
+    expect(rows.length).toBe(poiPoints('alpha_pals', 'palpagos')!.n);
+    for (const r of rows) expect(r.name.length).toBeGreaterThan(0);
+    const names = rows.map((r) => r.name);
+    expect([...names].sort((a, b) => a.localeCompare(b))).toEqual(names);
+    // every row's uv is a real on-map point
+    for (const r of rows) {
+      expect(r.u).toBeGreaterThanOrEqual(0);
+      expect(r.u).toBeLessThanOrEqual(1);
+    }
+  });
+
+  it('a nameless layer refuses to pretend it has a list', () => {
+    // 1,572 rows saying "Chest" would be noise pretending to be information
+    expect(hasNames('chest')).toBe(false);
+    expect(namedPoints('chest', 'palpagos')).toEqual([]);
+    expect(hasNames('alpha_pals')).toBe(true);
+    expect(hasNames('fast_travel')).toBe(true);
+  });
+
+  it('the list is region-scoped like everything else', () => {
+    const pal = namedPoints('alpha_pals', 'palpagos');
+    const tree = namedPoints('alpha_pals', 'tree');
+    expect(pal.length + tree.length).toBeGreaterThan(pal.length);
+    const palNames = new Set(pal.map((r) => r.name));
+    // the World Tree's alphas are its own, not a re-listing
+    expect(tree.every((r) => r.name.length > 0)).toBe(true);
+  });
+
+  it('tapping a row flies the map and closes the sheet (wiring)', () => {
+    const screen = readFileSync(
+      join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
+    );
+    const at = screen.indexOf('typeof sheet === ');
+    expect(at, 'the list view must exist').toBeGreaterThan(-1);
+    const view = screen.slice(at, at + 3200);
+    expect(view).toContain("canvas.current?.focus(item.u, item.v, 0.06)");
+    expect(view).toContain('setSheet(null)');
+    expect(view).toContain('isFound(foundKey(sheet.list, region, item.index))');
+    // the chip affordance exists and only for named layers that are ON
+    expect(screen).toContain('on && here > 0 && hasNames(l.id)');
   });
 });
