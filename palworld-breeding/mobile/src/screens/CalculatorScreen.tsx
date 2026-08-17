@@ -222,7 +222,7 @@ function ResultFlags({ ch }: { ch: ChildResult }) {
         <Badge kind="warn">only works with the genders shown</Badge>
       )}
       {ch.kind === 'self' && <Badge kind="plain">same species</Badge>}
-      {ch.tieBreak && <Badge kind="warn">close call — higher rank wins</Badge>}
+      {ch.tieBreak && <Badge kind="warn">close call — the bigger number wins</Badge>}
     </View>
   );
 }
@@ -259,11 +259,20 @@ function PairResult({ a, b }: { a: string; b: string }) {
               <WorkChips name={ch.species} top={3} />
             </View>
             <ResultFlags ch={ch} />
+            {/* This line used to read:
+                  rank target ⌊(2580 + 130 + 1)/2⌋ = 1355 → Blazehowl (1360)
+                  · tie resolved to the higher CombiRank
+                On the app's flagship screen: floor brackets a player has never
+                seen, a raw game-file field name, and "tie" — the word the CEO
+                banned by name. Every number is kept; the notation is not. */}
             {ch.kind === 'generic' && (
               <Text style={[s.body, { marginTop: 8 }]}>
-                rank target ⌊({ra} + {rb} + 1)/2⌋ = {target} → {ch.species}
-                {' '}({engine.ranks.get(ch.species)})
-                {ch.tieBreak ? ' · tie resolved to the higher CombiRank' : ''}
+                Every pal has a hidden breeding number. Yours are {ra} and {rb} —
+                average them, rounding up, and you get {target}. The nearest pal
+                to that is {ch.species} at {engine.ranks.get(ch.species)}.
+                {ch.tieBreak
+                  ? ' Two were the same distance away, so the bigger number won.'
+                  : ''}
               </Text>
             )}
             {ch.kind === 'gendered' && (
@@ -277,10 +286,10 @@ function PairResult({ a, b }: { a: string; b: string }) {
                 player was left to guess why the rank line had vanished. Both
                 sentences are confirmed claims in verification.json. */}
             {ch.kind === 'unique' && (
-              <Text style={[s.body, { marginTop: 8 }]}>The game files give this pair a fixed recipe, so the rank formula is skipped.</Text>
+              <Text style={[s.body, { marginTop: 8 }]}>The game files give this pair a fixed recipe, so the breeding numbers are skipped.</Text>
             )}
             {ch.kind === 'self' && (
-              <Text style={[s.body, { marginTop: 8 }]}>Two of the same species always make that species — the rank formula is skipped.</Text>
+              <Text style={[s.body, { marginTop: 8 }]}>Two of the same species always make that species — the breeding numbers are skipped.</Text>
             )}
             {bothOwned && !canPairNow(a, b, ch.genderNote) && (
               <Text style={[s.body, { marginTop: 8, color: T.warn }]}>
