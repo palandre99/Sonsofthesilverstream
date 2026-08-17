@@ -159,10 +159,18 @@ export function ProfilesScreen() {
               </View>
               {getProfiles().length > 1 && (
                 <View style={{ marginTop: 14, borderTopWidth: 1, borderTopColor: T.line, paddingTop: 12 }}>
+                  {/* "and its data" is a phrase, not an answer — the player
+                      cannot tell whether it means this world's pals or all of
+                      them. The confirm now counts exactly what disappears,
+                      from the same `profileStats` the row above already
+                      shows, and says the other worlds are untouched. */}
                   <Btn danger
                     label={armDelete
-                      ? `Really delete "${managing.name}" and its data?`
-                      : 'Delete this profile…'}
+                      ? `Really delete "${managing.name}"${
+                        stats[managing.id]
+                          ? ` — its ${stats[managing.id].owned} pals and its plan`
+                          : ''}?`
+                      : 'Delete this world…'}
                     onPress={() => {
                       if (!armDelete) { setArmDelete(true); return; }
                       void deleteProfile(managing.id);

@@ -82,27 +82,34 @@ describe('a phase never contains a step that waits on that same phase', () => {
   }
 
   /**
-   * KNOWN DEFECT, deliberately executable. The Plan tab's "how it works" card
-   * promises: "Pals needed by several goals are bred once, not twice."
+   * The Plan tab's "how it works" card promises: "Pals needed by several goals
+   * are bred once, not twice." This is the test of that sentence.
    *
-   * That is only true when two goals reach a shared pal by the SAME recipe.
-   * `planFor` unions each target's INDEPENDENTLY cheapest derivation, keyed by
-   * recipe (parents+child) — so when Astegon's cheapest route to Whalaska is
-   * Petallia Ignis + Reptyro Cryst and Blazamut's is Frostplume + Univolt
-   * Cryst, BOTH survive the union and the same pal is bred twice. Measured on
-   * the ten-pal box: Whalaska in phase 18 and again in phase 21, and since
-   * breeding never consumes a parent the second chain is pure wasted work.
+   * IT USED TO BE FALSE, and sat here as `it.fails` for exactly that reason.
+   * The fixpoint in `derivations` improves species one at a time and never
+   * rebuilds the ancestors that already routed through an older, worse recipe
+   * for an intermediate — so Astegon's route still made Whalaska with
+   * Petallia Ignis + Reptyro Cryst long after Whalaska's own cheapest recipe
+   * had become Frostplume + Univolt Cryst. Planning both goals unioned the two
+   * and the app told the player to breed the same pal twice, in phases 18 and
+   * 21, which since breeding never consumes a parent is pure wasted work.
    *
-   * Fixing it properly means choosing a globally cheapest SHARED forest rather
-   * than per-target cheapest routes, and dropping a duplicate can orphan the
-   * steps that existed only to feed it. That is real engine work, and the
-   * engine is sacred here — so this is recorded rather than patched.
+   * FIXED 2026-08-17 in `planFor`: when a pal genuinely has two recipes in the
+   * union, keep whichever one leaves the smallest plan and walk back from the
+   * goals so the steps that only fed the other disappear with it. The result
+   * is always a subset of the old plan, so a plan can only get shorter.
    *
-   * `it.fails` keeps the suite honest in both directions: the defect cannot be
-   * forgotten, and the day the planner starts sharing properly this test turns
-   * RED and tells whoever did it to flip this back to a plain `it`.
+   * The obvious fix — rebuild every route from each species' own cheapest
+   * recipe — was written, measured, and REJECTED: across twelve boxes it took
+   * the total from 299 steps to 323, because the stale recipes were often the
+   * ones two goals shared. Measured again after the targeted fix: 299, exactly
+   * unchanged, and the ten-pal case that was broken went 36 steps to 35 with
+   * Whalaska bred once instead of twice.
+   *
+   * `it.fails` was flipped back to a plain `it` the moment it went green —
+   * which is exactly what its old comment told whoever fixed this to do.
    */
-  it.fails('KNOWN DEFECT: a pal can still be bred twice by two different recipes', () => {
+  it('a pal needed by several goals is bred once, not twice', () => {
     for (const { name, steps } of PLANS) {
       const seen = new Map<string, number>();
       for (const s of steps) seen.set(s.child, (seen.get(s.child) ?? 0) + 1);
@@ -110,6 +117,27 @@ describe('a phase never contains a step that waits on that same phase', () => {
         .map(([child, n]) => `${name}: ${child} is bred ${n} times`);
       expect(twice).toEqual([]);
     }
+  });
+
+  /**
+   * The de-duplication above must never be paid for in extra steps. The
+   * rejected fix (rebuild every route from each species' own cheapest recipe)
+   * removed duplicates too — and quietly made plans 8% longer, because the
+   * recipes it discarded were often the ones two goals shared. Nobody would
+   * have noticed from a green suite; the plan would just have grown.
+   *
+   * So the step counts are pinned. These are the measured sizes with the fix
+   * in place, identical to the sizes before it for the mid-game box and one
+   * step SHORTER for the wide box (36 → 35, where Whalaska was the pal being
+   * bred twice). If a future change moves either number, it is trading the
+   * player's time for something and that trade needs a human.
+   */
+  it('does not buy the fix with extra steps', () => {
+    const sizes = Object.fromEntries(PLANS.map((p) => [p.name, p.steps.length]));
+    expect(sizes).toEqual({
+      'mid-game box, three goals': 14,
+      'wide box, four distant goals': 35,
+    });
   });
 
   // The Plan prints "keep male+female — parent in N steps" on any step whose

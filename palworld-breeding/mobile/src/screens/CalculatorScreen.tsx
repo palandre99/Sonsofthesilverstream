@@ -389,10 +389,23 @@ function ReverseLookup({ target }: { target: string }) {
               );
             })}
           </View>
-          {!expanded.has(title) && items.length > 10 && (
+          {/* ONE-WAY DOOR, same shape as the finished-phase bug the CEO found
+              on the Plan tab: `Show all N` added the group to `expanded` and
+              then hid itself, so nothing could ever collapse it again. A
+              group can hold dozens of pairs, so expanding one meant scrolling
+              past all of them for the rest of the visit. It is a toggle now.
+              (Found by sweeping every `new Set(prev).add(` for a matching
+              `.delete(` — sub-method 25.) */}
+          {items.length > 10 && (
             <View style={{ marginTop: 8 }}>
-              <Btn small label={`Show all ${items.length}`}
-                onPress={() => setExpanded((prev) => new Set(prev).add(title))} />
+              <Btn small
+                label={expanded.has(title) ? 'Show fewer' : `Show all ${items.length}`}
+                onPress={() => setExpanded((prev) => {
+                  const next = new Set(prev);
+                  if (next.has(title)) next.delete(title);
+                  else next.add(title);
+                  return next;
+                })} />
             </View>
           )}
         </View>

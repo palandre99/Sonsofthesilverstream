@@ -2098,6 +2098,74 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E88. THE PLANNER NO LONGER BREEDS THE SAME PAL TWICE — E75 IS CLOSED,
+## AND THE OBVIOUS FIX WAS MEASURED AND THROWN AWAY 2026-08-17 (overnight)
+
+**The biggest known defect in the app is fixed.** The Plan tab's "how it works"
+card has always promised *"pals needed by several goals are bred once, not
+twice"*, and since E75 we have known that was FALSE. It is now true, tested,
+and the `it.fails` that recorded it is a plain passing `it`.
+
+**ROOT CAUSE, found with a diagnostic rather than guessed.** `derivations`
+improves species one at a time. When a better route to an intermediate turns
+up, the species that ALREADY routed through the old one are never rebuilt — an
+ancestor is only replaced by a strictly better candidate, and an
+equal-length route never wins. So an ancestor keeps a stale recipe for ever.
+Measured on the ten-pal box: Whalaska's own cheapest recipe is
+`Frostplume + Univolt Cryst`; Blazamut's route used exactly that; **Astegon's
+still used `Petallia Ignis + Reptyro Cryst`**, long superseded. Union both and
+the plan contains two ways to make Whalaska. **7 stale embedded steps existed
+across the whole map.**
+
+**THE OBVIOUS FIX WAS WRITTEN, MEASURED, AND REJECTED.** Rebuilding every route
+transitively from each species' single recipe (`normalise()`) removed all 7
+inconsistencies and all duplicates — and across twelve generated boxes took the
+total from **299 steps to 323**. An 8% longer plan for every player, because
+the "stale" recipes were frequently the ones two goals SHARED. Correctness is
+not worth making the CEO breed 24 more pals. **Reverted.**
+
+**THE FIX THAT SHIPPED is contained to `planFor` and can only ever REMOVE
+steps.** When a pal really does have two recipes in the union, keep whichever
+one leaves the smallest plan and walk back from the goals so the steps that
+only existed to feed the other disappear with it. It runs at all only when a
+duplicate exists, so the common case is untouched by construction.
+
+**MEASURED, both directions:**
+
+| | before | after |
+|---|---|---|
+| twelve generated boxes, total steps | 299 | **299 — identical** |
+| the broken ten-pal case | 36 steps, Whalaska **twice** (phases 18 and 21) | **35 steps, Whalaska once** |
+| goals lost | — | **0** |
+| steps needing a parent too early | — | **0** |
+
+**GUARDED THREE WAYS.** The duplicate test is now a real `it`. A NEW test pins
+the step counts (14 and 35) so nobody can ever buy de-duplication with a longer
+plan again — the failure mode that nearly shipped tonight would have left the
+suite green while quietly costing the player 8%. And the 44,851-row oracle plus
+`engine-parity` (both trees byte-identical) were green throughout.
+
+**Suite: 401 passing, ZERO expected failures — the first fully green run since
+E75 was found.**
+
+## E88b. TWO MORE ONE-WAY DOORS AND A VAGUE DELETE, SAME NIGHT
+
+Sweeping `new Set(prev).add(` for a matching `.delete(` — sub-method 25, born
+from the phase bug he found — turned up **one more**:
+
+- **The Calculator's reverse lookup.** `Show all N` on a group of parent pairs
+  added the group to `expanded` and then hid its own button, so nothing could
+  collapse it again. A group can hold dozens of pairs, so expanding one meant
+  scrolling past all of them for the rest of the visit. **Now a toggle**
+  ("Show all N" ↔ "Show fewer").
+
+- **"Delete this profile… / Really delete X and its data?"** — "its data" is a
+  phrase, not an answer, and the player cannot tell whether it means this
+  world's pals or all of them. The confirm now counts exactly what goes, from
+  the `profileStats` the row above already shows: *"Really delete 'My world' —
+  its 26 pals and its plan?"*, and the button is "Delete this world…" since
+  profile = world here.
+
 ## E87. CEO FEEDBACK: THE MAIN ACTION ON THE CALCULATOR WAS THE SMALLEST
 ## THING ON IT 2026-08-17
 

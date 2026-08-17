@@ -116,14 +116,93 @@ export function planFor(
   const unreachable = targets.filter((t) => !derivs.has(t));
   const wanted = new Set(targets.filter((t) => derivs.has(t)));
 
-  const all = new Set<StepId>();
-  const neededBy = new Map<StepId, Set<string>>();
+  let all = new Set<StepId>();
+  let neededBy = new Map<StepId, Set<string>>();
   for (const t of wanted) {
     for (const s of derivs.get(t)!) {
       all.add(s);
       let n = neededBy.get(s);
       if (!n) neededBy.set(s, (n = new Set()));
       n.add(t);
+    }
+  }
+
+  // ---- one recipe per pal -------------------------------------------------
+  //
+  // The Plan tab promises "pals needed by several goals are bred once, not
+  // twice", and until 2026-08-17 that could be false. `derivations` improves
+  // species one at a time and never rebuilds the ancestors that already routed
+  // through an older recipe for an intermediate, so a goal can carry a stale
+  // one for ever. Measured on a ten-pal box: Whalaska's own cheapest recipe is
+  // Frostplume + Univolt Cryst, Blazamut's route used exactly that, and
+  // Astegon's still used Petallia Ignis + Reptyro Cryst. Union the two and the
+  // player was told to breed Whalaska twice — phases 18 and 21 — and since
+  // breeding never consumes a parent, the second chain is pure wasted work.
+  //
+  // The obvious fix — force every route to use each species' own cheapest
+  // recipe — was tried and REJECTED on measurement: across twelve boxes it
+  // took the total from 299 steps to 323, because the "stale" recipes were
+  // often the ones two goals SHARED. Correctness is not worth an 8% longer
+  // plan.
+  //
+  // So this instead: when a pal really does have two recipes in the union,
+  // keep whichever ONE leaves the smallest plan and drop the steps that only
+  // existed to feed the other. It walks back from the goals, so orphaned
+  // feeder chains disappear with the recipe they served. The result is always
+  // a SUBSET of what we already had — the plan can only get shorter, never
+  // longer — and it runs at all only in the rare case that a duplicate exists.
+  const recipesFor = new Map<string, StepId[]>();
+  for (const s of all) {
+    const { c } = parseStep(s);
+    const list = recipesFor.get(c);
+    if (list) list.push(s);
+    else recipesFor.set(c, [s]);
+  }
+  const contested = [...recipesFor].filter(([, v]) => v.length > 1);
+
+  if (contested.length) {
+    /** steps still needed once each pal is made exactly one way */
+    const reachedFrom = (seeds: Iterable<string>, choice: Map<string, StepId>) => {
+      const keep = new Set<StepId>();
+      const stack = [...seeds];
+      while (stack.length) {
+        const name = stack.pop()!;
+        if (rosterSet.has(name)) continue;
+        const id = choice.get(name);
+        if (!id || keep.has(id)) continue;
+        keep.add(id);
+        const p = parseStep(id);
+        stack.push(p.a, p.b);
+      }
+      return keep;
+    };
+
+    // start from the cheapest-looking recipe for each contested pal, then try
+    // the alternatives one pal at a time and keep whichever shrinks the plan.
+    // Ties break on the sorted step id so the plan stays deterministic.
+    const choice = new Map<string, StepId>();
+    for (const [c, list] of recipesFor) choice.set(c, [...list].sort()[0]);
+
+    for (const [c, list] of contested) {
+      let best = choice.get(c)!;
+      let bestSize = reachedFrom(wanted, choice).size;
+      for (const cand of [...list].sort()) {
+        if (cand === best) continue;
+        choice.set(c, cand);
+        const size = reachedFrom(wanted, choice).size;
+        if (size < bestSize) { best = cand; bestSize = size; }
+      }
+      choice.set(c, best);
+    }
+
+    all = reachedFrom(wanted, choice);
+    neededBy = new Map<StepId, Set<string>>();
+    for (const t of wanted) {
+      for (const s of reachedFrom([t], choice)) {
+        let n = neededBy.get(s);
+        if (!n) neededBy.set(s, (n = new Set()));
+        n.add(t);
+      }
     }
   }
 
