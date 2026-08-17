@@ -2821,3 +2821,17 @@ describe('chips show collection progress', () => {
     expect(screen).toContain('const done = got > 0 && got === here;');
   });
 });
+
+describe('found spots fade on the map (CEO 22:45)', () => {
+  const screen = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
+  );
+
+  it('a found SINGLE dims and keeps its place; clusters stay loud', () => {
+    const at = screen.indexOf('const done = c.count === 1');
+    expect(at, 'the dim branch must exist').toBeGreaterThan(-1);
+    const block = screen.slice(at, at + 400);
+    expect(block).toContain("isFound(foundKey(layer.key.slice(4), region, c.index))");
+    expect(screen).toContain('done ? { opacity: 0.4 } : undefined');
+  });
+});

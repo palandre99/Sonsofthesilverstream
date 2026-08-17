@@ -228,12 +228,19 @@ export function MapScreen() {
         .sort((a, b) => b.count - a.count)
         .slice(0, budget);
       for (const c of clusters) {
+        // A found spot fades but keeps its place — done things recede,
+        // remaining things stay loud (CEO 22:45, judgment ledgered M57).
+        // Singles only: a cluster mixes found and not-found, and it breaks
+        // apart at exactly the zooms where per-spot state matters.
+        const done = c.count === 1 && layer.key.startsWith('poi:')
+          && isFound(foundKey(layer.key.slice(4), region, c.index));
         out.push({
           // stable while the zoom holds, so a pan never remounts a pin
           key: `${layer.key}:${c.cell}`,
           u: c.u,
           v: c.v,
           render: () => (
+            <View style={done ? { opacity: 0.4 } : undefined}>
             <Pin colour={layer.colour} icon={layer.icon} count={c.count}
               square={layer.square} art={layer.art}
               // A lone alpha shows the face of the pal it actually is. The
@@ -244,6 +251,7 @@ export function MapScreen() {
               // bosses cannot wear one face.
               photo={layer.photo ?? (c.count === 1 ? alphaPortrait(layer.key, region, c.index) : undefined)}
               night={layer.night} />
+            </View>
           ),
         });
       }
