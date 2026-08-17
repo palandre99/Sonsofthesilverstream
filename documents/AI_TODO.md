@@ -5669,3 +5669,40 @@ states DRIVEN AND LOOKED AT (fresh profile, then 4 seeded pals + reload).
   ("1,572 spots", "Lv 5-7" — meaningful, or naked?), **11** rows carry
   decision-grade scent (the Find list is virtualized and carries
   portrait+name+level — measure against the criterion's own bar).
+
+### M14 — criterion 2: search TIMED, and made fuzzy — DONE (d3f162c, PUBLISHED)
+**Timing, measured not assumed.** Find is 1 tap from the map. Search dispatch
+across 224 pals + 23 layers + places: "f" 45.8ms (worst — biggest result set),
+"fox" 16.6ms, "foxparks" 8.2ms, "chest" 8.3ms, "zzz" 5.1ms. The criterion
+allows 1000ms. PASSES with a 20x margin.
+**Fuzzy: was failing.** Substring only, so "foxpraks" gave "Nothing on this map
+goes by that name" — true and useless. `closeMatches()` in layers.ts (both
+copies, byte-parity gated) is consulted ONLY when the exact search returns
+empty, so the common path cannot regress; results render as tappable chips
+with the pal's face.
+WRITING THE TESTS IMPROVED THE FUNCTION: my first cut used plain Levenshtein,
+where swapping two adjacent letters costs TWO edits, so a short name could
+never survive its likeliest typo ("ignsi" -> "ignis" scored 2 against a budget
+of 1). Now optimal string alignment — a swap is ONE edit.
+THE TEST THAT MATTERS MOST is the one asserting it REFUSES to guess: "zzzzqq",
+"qwertyuiop" and any 2-letter query return nothing. A rescue that fires on
+anything would put four confident wrong answers under "Did you mean", which is
+worse than the dead end it replaces.
+Verified: foxpraks->Foxparks(+Cryst), lupmoon->Loupmoon, blazehowel->Blazehowl,
+exact "foxparks"->no suggestions. "jormuntid"->nothing is CORRECT (Jormuntide
+is dungeon-only on Palpagos, so it is not in the searchable list).
+
+### AAA AUDIT — 5 of 15 criteria now checked against the map
+- **2** search <=1 tap, <=1s, fuzzy — TIMED + FIXED (M14)
+- **10** empty states teach the killer feature — FIXED (M13)
+- **12** motion / reduced-motion — FIXED (M11)
+- **13** fence estimates from fact — PASS by construction
+- **15** native citizenship — haptics FIXED (M12), Dynamic Type PASSES
+- STILL UNAUDITED: **1** data-version badge (the map has a provenance LINE —
+  decide honestly whether a build stamp adds anything or is clutter), **6**
+  numbers carry context never float, **11** rows carry decision-grade scent.
+
+### PUBLISHED TONIGHT (7 updates)
+48a4023 snap + 9.6x reach · 3fbe0e3 provenance + double-tap ladder ·
+b1deb58 Reduce Motion + haptics · 8b2d5f8 the wedge in the hint ·
+d3f162c did-you-mean. All verified on both channels.
