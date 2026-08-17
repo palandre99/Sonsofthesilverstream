@@ -2098,6 +2098,49 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E125. CEO FEEDBACK — THE MAP PREVIEW WAS A ONE-WAY DOOR
+## 2026-08-17 (evening)
+
+**Verbatim:**
+
+> "Open the full map feature inside pal info card is nice but it takes me all
+> out of the paldex so I can't easily return to the paldex pal info card ..
+> and no u wont do the map fane work.. its another worker u are to stay in
+> breeding fan until it's perfect"
+
+The whole "Where to find it" preview was ONE Pressable whose only action was
+`navigateTo` the Map domain — fullscreen, no tabs, and the way back is side
+panel → Breeding → Paldex → search → reopen the card. A one-way door with no
+warning on it.
+
+**Fixed entirely in the breeding lane** (`ui/PalMap.tsx`; it imports the Map
+lane's `MapPreview` but edits none of their files):
+
+- **Tapping the preview now ENLARGES IT IN PLACE** — a modal stacked on the
+  card, screen-wide, same spawn points and level band, closed by
+  **"‹ Back to {name}"**. Closing lands exactly where he was. Badge reads
+  "Tap to enlarge" instead of "Open full map".
+- **The Map fane stays one tap away, but only from controls that admit the
+  cost**: "Full map ›" in the preview's footer, and "Open the full map
+  (leaves the Paldex)" inside the enlarged view. The `fromCard` payload is
+  preserved.
+- Guard: exactly ONE `navigateTo` in the file, so no unlabelled control can
+  ever be a door again.
+
+`pal-map-return.test.ts` is new, 5 tests. Gates **643** (count includes the
+Map lane's in-flight test edits). Mobile typecheck clean.
+
+**RENDER CHECK PENDING:** the QA Metro on 8086 (PID 62320) DIED mid-
+verification — page served nothing, `curl` 000, process gone. Restarted in the
+background; the next tick verifies the modal open/close on the render and
+publishes (tree also currently carries the Map lane's uncommitted work, so
+publish is held regardless). The change itself is pinned by the five source
+assertions and a clean typecheck.
+
+**Method note (#25 applied to NAVIGATION): a state you can enter must be
+exitable — and a door out of the player's context must SAY it is one. Same
+shape as E117's expanded ABOUT card, one level up.**
+
 ## E124. THE STAT RANKS, READ ALOUD AT EVERY EXTREME — ONE CONTRADICTION
 ## 2026-08-17 (evening)
 

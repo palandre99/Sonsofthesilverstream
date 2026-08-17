@@ -13,9 +13,9 @@
  * the species already selected.
  */
 import React, { useState } from 'react';
-import { Pressable, Text, View } from 'react-native';
+import { Dimensions, Modal, Pressable, Text, View } from 'react-native';
 import { T } from '../theme';
-import { s } from './kit';
+import { Btn, s } from './kit';
 import { Icon } from './Icon';
 import { ALPHA_SPOTS } from '../data/alphaSpots.g';
 import { MapPreview, type PreviewPoint } from '../map/MapPreview';
@@ -115,6 +115,15 @@ export function PalMap({ name }: { name: string }) {
     navigateTo({ domain: 'map', tab: 'map', payload: { pal: name, fromCard: name } });
   };
 
+  /* Tapping the preview used to be a one-way door: it jumped to the Map fane
+   * (fullscreen, its own domain), and getting back to THIS card meant side
+   * panel → Breeding → Paldex → search → reopen. CEO, 2026-08-17: "it takes
+   * me all out of the paldex so I can't easily return to the paldex pal info
+   * card". The preview now enlarges IN PLACE — a modal stacked on the card,
+   * so closing it lands exactly where he was. The Map fane is still one tap
+   * away, but only from a button that says so. */
+  const [expanded, setExpanded] = useState<ReturnType<typeof viewsFor>[number] | null>(null);
+
   // measured once per card; the preview is square, so this is its side too
   const [side, setSide] = useState(0);
 
@@ -129,9 +138,9 @@ export function PalMap({ name }: { name: string }) {
       {views.map((view) => (
         <Pressable
           key={view.region}
-          onPress={openFullMap}
+          onPress={() => setExpanded(view)}
           accessibilityRole="button"
-          accessibilityLabel={`Open ${name} on the full map`}
+          accessibilityLabel={`See ${name}'s spawns bigger`}
           style={({ pressed }) => ({
             borderRadius: 12,
             overflow: 'hidden',
@@ -158,7 +167,7 @@ export function PalMap({ name }: { name: string }) {
             }}>
               <Icon name="arrow-expand-all" size={12} color={T.accentInk} />
               <Text style={{ color: T.accentInk, fontSize: 10.5, fontWeight: '800' }}>
-                Open full map
+                Tap to enlarge
               </Text>
             </View>
           </MapPreview>
@@ -182,6 +191,15 @@ export function PalMap({ name }: { name: string }) {
                 ? ` · plus ${spawnSplit(name, view.region).dungeon} in dungeons`
                 : ''}
             </Text>
+            <Pressable
+              onPress={openFullMap}
+              hitSlop={8}
+              accessibilityRole="button"
+              accessibilityLabel={`Open ${name} on the full map — this leaves the Paldex`}>
+              <Text style={{ color: T.accentInk, fontSize: 11.5, fontWeight: '800' }}>
+                Full map ›
+              </Text>
+            </Pressable>
           </View>
         </Pressable>
       ))}
@@ -202,6 +220,34 @@ export function PalMap({ name }: { name: string }) {
           </Text>
         </View>
       ))}
+
+      {expanded && (
+        <Modal visible animationType="fade" transparent={false}
+          onRequestClose={() => setExpanded(null)}>
+          <View style={{ flex: 1, backgroundColor: T.bg2, padding: 14, gap: 12 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+              <View style={{ flex: 1 }}>
+                <Text style={s.h3}>{name} — {expanded.label}</Text>
+              </View>
+              <Btn small primary label={`‹ Back to ${name}`}
+                onPress={() => setExpanded(null)} />
+            </View>
+            <MapPreview region={expanded.region} points={expanded.points}
+              side={Dimensions.get('window').width - 28} />
+            <Text style={[s.body, { fontSize: 12.5 }]}>
+              {expanded.spawns > 0
+                ? `${expanded.spawns} ${expanded.spawns === 1 ? 'spot' : 'spots'} · `
+                : 'Boss only · '}
+              {expanded.lo === expanded.hi
+                ? `Lv ${expanded.lo}` : `Lv ${expanded.lo}–${expanded.hi}`}
+              {expanded.nightOnly && expanded.spawns > 0 ? ' · only at night' : ''}
+            </Text>
+            {/* the one-way door, clearly labelled as one */}
+            <Btn small label="Open the full map (leaves the Paldex)"
+              onPress={() => { setExpanded(null); openFullMap(); }} />
+          </View>
+        </Modal>
+      )}
     </View>
   );
 }
