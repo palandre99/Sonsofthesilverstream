@@ -2098,6 +2098,63 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E85. "T5" AND "neg" WERE THE BADGES ON A 114-ITEM LIST; THE FIELD THAT
+## SORTS THEM WAS DECLARED AND NEVER READ 2026-08-17
+
+First app-only tick under the website hold. Found by running the E84 field-diff
+across every data file against `mobile/src` alone.
+
+**`passives.category` — mined for all 114, referenced by NOTHING.** It splits
+them six ways: combat 56, work 22, detrimental 15, mount 12, utility 6,
+mixed 3 (sums to exactly 114). It was even declared on `PassiveInfo`. So the
+"Add a passive" sheet — the one list a player must find one entry in out of
+114 — could only be searched by NAME. If you did not already know a passive's
+name, you could not find it.
+
+**And the badge on every row read `T5`, `T3` or `neg`.** Developer shorthand,
+in the player's face, in the exact shape the CEO already banned once ("m7/t7
+note badges are terrible"). E52-E82 swept SENTENCES; a badge is user-visible
+text too, and it slipped through.
+
+**FIXED:** the row now reads **kind · name · rank** — "Work · Demon's Hand ·
+World Tree tier", "Downside · Clumsy · Weakens your pal". Kind filter chips
+with live counts sit above the list. Wording comes from the file's own
+`tier_scale` ("-3..-1 detrimental, 1..4 positive, 5 = new 1.0 'World Tree'
+gold tier"), so tier 5 gets the game's own name and positives are stated as
+the rank they are — **no invented adjectives**. Only "detrimental" is
+reworded, to "Downside", because that is what it means to the person choosing.
+
+**ALSO:** the search box said "Search 114 passives…" as a literal while the
+sheet hides any passive already on a parent. Now reads the real count.
+
+**RENDERED AND MEASURED** (375x812): chips read All 114 · Combat 56 · Work 22 ·
+Riding 12 · Utility 6 · Mixed 3 · Downside 15. Filtering to Downside returns
+only detrimental entries; rows show gold `rgb(246,205,121)` for World Tree and
+red `rgb(240,138,119)` for downsides; no row overflows 375. Searching "Swift"
+gives "Riding · Swift · Rank 4 of 4" and the data says Swift is mount tier 4.
+Zero console errors. Accessibility label reads "Clumsy. Downside, Weakens your
+pal. Work Speed -10%".
+
+**`world_tree` — CHECKED AND NOT A GAP.** All 7 flagged passives already say
+"World Tree" in their effects text and 0 unflagged ones do, so the flag is
+exactly redundant with what the player already reads. Do not re-chase.
+
+**GUARDED — `app/tests/passive-kinds.test.ts`, 8 tests, PROVEN.** They check
+the CODE against the DATA: every category in the file has a label (or the
+badge falls through to `?? p.category` and prints "detrimental" raw), no chip
+exists for a kind the data lacks, "Rank N of 4" holds only while 4 IS the top
+positive tier, every negative-tier passive is `detrimental` and vice versa,
+and neither `T${tier}` nor `'neg'` may return. Dropping the Downside kind and
+restoring the old badge turned **4 red**. Restored; gates green.
+
+**A CHECK OF MINE WAS WRONG AGAIN (24th):** my "did any non-Downside leak
+through the filter" expression matched `, Downside,` while the labels read
+`. Downside,` — it flagged all six correct rows as leaks. The app was right;
+the test expression was not.
+
+**NOT PUBLISHED THIS TICK** — the Map lane has `MapCanvas.tsx` and
+`mapGesture.test.ts` dirty with one red map test. Publish next tick.
+
 ## E84. THE SAME SCREEN WAS HIDING THREE MORE THINGS — THE WEBSITE'S PAL
 ## CARD WAS MISSING TWO WHOLE SECTIONS 2026-08-17
 

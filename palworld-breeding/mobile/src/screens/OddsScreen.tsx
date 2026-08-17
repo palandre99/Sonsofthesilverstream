@@ -42,18 +42,56 @@ function oneIn(p: number): string {
 
 /* ---------------- passive picker modal ---------------- */
 
+/** The game sorts every passive into one of six kinds, and the app had never
+ * said so — `category` was declared on PassiveInfo and read by nothing, so a
+ * player picking from 114 entries could only search by name. These are the
+ * game's own groupings; "detrimental" is the only one reworded, because
+ * "Downside" is what it actually means to the person choosing. */
+const PASSIVE_KINDS: { id: string; label: string }[] = [
+  { id: 'combat', label: 'Combat' },
+  { id: 'work', label: 'Work' },
+  { id: 'mount', label: 'Riding' },
+  { id: 'utility', label: 'Utility' },
+  { id: 'mixed', label: 'Mixed' },
+  { id: 'detrimental', label: 'Downside' },
+];
+const KIND_LABEL: Record<string, string> =
+  Object.fromEntries(PASSIVE_KINDS.map((k) => [k.id, k.label]));
+
+/** What a tier MEANS, in the words the data itself uses. The file's own
+ * `tier_scale` reads "-3..-1 detrimental, 1..4 positive, 5 = new 1.0 'World
+ * Tree' gold tier" — so tier 5 gets the game's name for it and the rest are
+ * stated as the rank they are. No invented adjectives. */
+function tierWords(tier: number | null): string {
+  if (tier == null) return '';
+  if (tier === 5) return 'World Tree tier';
+  if (tier > 0) return `Rank ${tier} of 4`;
+  return 'Weakens your pal';
+}
+
 function PassivePickerModal({ visible, onClose, onPick, exclude }: {
   visible: boolean; onClose: () => void; onPick: (name: string) => void;
   exclude: Set<string>;
 }) {
   const [q, setQ] = useState('');
+  const [kind, setKind] = useState<string | null>(null);
+  const available = useMemo(
+    () => passives.filter((p) => !exclude.has(p.name)), [exclude],
+  );
+  // counts come from what is actually pickable right now, so a chip never
+  // promises entries the exclude set has already taken away
+  const counts = useMemo(() => {
+    const m: Record<string, number> = {};
+    for (const p of available) m[p.category] = (m[p.category] ?? 0) + 1;
+    return m;
+  }, [available]);
   const matches = useMemo(() => {
     const needle = q.toLowerCase();
-    return passives
-      .filter((p) => !exclude.has(p.name))
+    return available
+      .filter((p) => !kind || p.category === kind)
       .filter((p) => !needle || p.name.toLowerCase().includes(needle)
         || p.effects.toLowerCase().includes(needle));
-  }, [q, exclude]);
+  }, [q, kind, available]);
 
   return (
     <Modal visible={visible} animationType="slide" presentationStyle="pageSheet"
@@ -64,10 +102,42 @@ function PassivePickerModal({ visible, onClose, onPick, exclude }: {
           <Btn label="Close" onPress={onClose} small />
         </View>
         <TextInput
-          value={q} onChangeText={setQ} placeholder="Search 114 passives…"
+          value={q} onChangeText={setQ}
+          // the literal 114 was the whole file; once a passive is already on a
+          // parent it is excluded here, so the box was offering to search
+          // entries it would never show
+          placeholder={`Search ${available.length} passives…`}
           placeholderTextColor={T.faint} autoCorrect={false} autoCapitalize="none"
           accessibilityLabel="Search passives"
           style={[s.search, { marginBottom: 8 }]} />
+        <View style={[s.wrap, { marginBottom: 8 }]}>
+          {[{ id: null as string | null, label: 'All', n: available.length },
+            ...PASSIVE_KINDS.map((k) => ({ id: k.id as string | null, label: k.label, n: counts[k.id] ?? 0 }))]
+            .filter((k) => k.n > 0)
+            .map((k) => {
+              const on = kind === k.id;
+              return (
+                <Pressable key={k.label} onPress={() => setKind(k.id)}
+                  accessibilityRole="button"
+                  accessibilityState={{ selected: on }}
+                  accessibilityLabel={`${k.label}, ${k.n} passive${k.n === 1 ? '' : 's'}${on ? ', showing now' : ''}`}
+                  style={[s.chip, {
+                    backgroundColor: on ? T.accentSoft : T.surface2,
+                    borderWidth: on ? 1 : 0, borderColor: on ? T.accent : 'transparent',
+                    paddingHorizontal: 10, paddingVertical: 5,
+                  }]}>
+                  <Text style={[s.chipText, { color: on ? T.accentInk : T.muted }]}>
+                    {k.label} {k.n}
+                  </Text>
+                </Pressable>
+              );
+            })}
+        </View>
+        {matches.length === 0 && (
+          <Text style={[s.body, { color: T.muted, marginBottom: 8 }]}>
+            Nothing here matches. Try another kind, or clear the search.
+          </Text>
+        )}
         <FlatList
           data={matches}
           keyExtractor={(p) => p.name}
@@ -75,17 +145,27 @@ function PassivePickerModal({ visible, onClose, onPick, exclude }: {
           renderItem={({ item: p }) => (
             <Pressable
               accessibilityRole="button"
-              accessibilityLabel={`${p.name}. ${p.effects}`}
+              accessibilityLabel={`${p.name}. ${KIND_LABEL[p.category] ?? p.category}, ${tierWords(p.tier)}. ${p.effects}`}
               onPress={() => { onPick(p.name); setQ(''); onClose(); }}
               style={({ pressed }) => [{
                 paddingVertical: 8, paddingHorizontal: 8, borderRadius: 10, gap: 2,
               }, pressed && { backgroundColor: T.accentSoft }]}
             >
+              {/* This badge used to read "T5", "T3" or "neg" — developer
+                  shorthand in the one list a player has to read 114 of. The
+                  CEO banned exactly this shape once already ("m7/t7 note
+                  badges are terrible"). It now names the KIND, which is a
+                  mined field, and the rank is spelled out beside it. */}
               <View style={[s.row, { gap: 8 }]}>
-                <Badge kind={p.tier != null && p.tier >= 4 ? 'gold' : p.tier != null && p.tier > 0 ? 'ok' : 'bad'}>
-                  {p.tier != null && p.tier > 0 ? `T${p.tier}` : 'neg'}
+                <Badge kind={p.tier === 5 ? 'gold' : p.tier != null && p.tier > 0 ? 'ok' : 'bad'}>
+                  {KIND_LABEL[p.category] ?? p.category}
                 </Badge>
-                <Text style={{ color: T.ink, fontWeight: '700', fontSize: 14.5 }}>{p.name}</Text>
+                <Text style={{ color: T.ink, fontWeight: '700', fontSize: 14.5, flex: 1 }}
+                  numberOfLines={1}>{p.name}</Text>
+                <Text style={{
+                  color: p.tier === 5 ? T.goldInk : p.tier != null && p.tier > 0 ? T.muted : T.bad,
+                  fontSize: 11, fontWeight: '700',
+                }}>{tierWords(p.tier)}</Text>
               </View>
               <Text style={{ color: T.muted, fontSize: 12 }} numberOfLines={1}>{p.effects}</Text>
             </Pressable>
