@@ -142,9 +142,14 @@ function ImportSheet({ onClose }: { onClose: () => void }) {
         <View style={{ marginTop: 12 }}>
           <Btn primary disabled={!parsed.entries.length}
             // said "Add 1 pals" on a single name, and "Add  pals" on none
-            label={parsed.entries.length === 1
-              ? 'Add 1 pal'
-              : `Add ${parsed.entries.length} pals`}
+            // "Add 0 pals" is what a template string says, not what a person
+            // says. With nothing pasted the button is disabled anyway, so it
+            // may as well tell you what to do instead of counting nothing.
+            label={parsed.entries.length === 0
+              ? 'Paste a list first'
+              : parsed.entries.length === 1
+                ? 'Add 1 pal'
+                : `Add ${parsed.entries.length} pals`}
             onPress={() => {
               importNames(parsed.entries, false);
               onClose();

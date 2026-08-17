@@ -2098,6 +2098,46 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E92. THE IMPORT SHEET WALKED FOR THE FIRST TIME — EVERY BRANCH CORRECT,
+## ONE TEMPLATE-STRING ARTEFACT 2026-08-17 (overnight)
+
+E91 published to both channels (clean hashes) the moment the Map lane's tree
+went clean. Then the Paldex import sheet, which had never once been exercised
+on a render. **Every parsing branch is right**, checked by feeding it a
+deliberately nasty list and reading the preview — **without ever pressing Add,
+and with his save snapshotted first.**
+
+- **`anubis / Katress ♀ / WIXEN ♂ / - Lamball / # a comment / not-a-pal /
+  Anubis`** → **"4 recognised · 1 not recognised"**. Correct on every count:
+  case-insensitive, gender suffixes kept, the `-` bullet stripped, the `#`
+  comment skipped, the duplicate Anubis deduped to one, and exactly one bad
+  name flagged.
+- **A JSON backup `{Lamball:{m:true,f:false}, Cattiva:false, Chikipi:null,
+  Anubis:true}`** → **"2 recognised"**. `false` and `null` correctly refuse to
+  resurrect a species — the E72 fix, still holding.
+- **One name** → "Add 1 pal", not "Add 1 pals".
+
+**THE ONE ROUGH EDGE: an empty box read "Add 0 pals".** That is what a
+template string says, not what a person says. The button is disabled anyway,
+so it now reads **"Paste a list first"** — it tells you what to do instead of
+counting nothing.
+
+**PROOF THE PREVIEW IS SIDE-EFFECT FREE:** the box still held exactly 26 pals
+*before* the snapshot was restored, so reading the preview never touched
+state. Restore was a zero-mismatch no-op; temp key deleted.
+
+**DELIBERATELY NOT ADDED: a "replace my collection" toggle.** The website has
+one; the phone merges only. On a phone that is the safer default, "Clear
+collection…" already exists as a separate, confirmed action, and the sheet's
+own copy ("Nothing is applied until you confirm") never promises replace. Not
+a gap — a choice. Recorded so it is not "fixed" later.
+
+**Still unmeasured** (the pal detail card would not open in time on this pass,
+Settings/Profiles, the Suggested Goals sheet, the category browser) — queued.
+
+Gates: 421 passing, 0 expected failures, 24 files; both trees typecheck; zero
+console errors.
+
 ## E91. THE PHONE COULD NOT DO THE ONE THING THE PHONE MOST NEEDS —
 ## BULK OWN / UN-OWN 2026-08-17 (overnight)
 
