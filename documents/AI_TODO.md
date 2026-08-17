@@ -7881,3 +7881,19 @@ f55cd63 is NOT on his phone yet and is not "done" until it is.
 NEXT: publish retry -> MY_PIN re-hue -> routes slice 2 (remove one stop /
 insert between; joined badge labels) -> slice 3 share/export = the seed of
 cross-device sync.
+
+### M39 — ROUTES SLICE 1 + MARK RE-HUE PUBLISHED (15b5985, both channels confirmed)
+The goals lane committed; the guard cleared; f55cd63 + 15b5985 are on both
+channels (timestamps checked via channel:list). The M38 eval finding is
+FIXED: MY_PIN was RGB distance 1.0 from Skill fruit #FF8FB0 — the set-
+membership colour test waved it through. MY_PIN is now #F050FF magenta
+(nearest data colour: 85 units), and the test MEASURES distance with a
+40-unit bar (~2.4x the data palette's own closest pair, the two reds at 17).
+Proven by mutation: the old pink FAILS the new guard. Eye-verified: card
+border, mark icon and key swatch all magenta; route chartreuse unmistakably
+its own thing beside it.
+NEXT: routes slice 2 — tap a badge -> per-stop verbs (remove one stop /
+insert between), joined labels when stops share a spot ("1 · 4"); then
+slice 3 share/export. The M38 pre-existing oddities (empty-tap card
+survives region switch; hint returns on the other region) remain fair
+eval targets between slices.
