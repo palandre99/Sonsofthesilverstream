@@ -273,9 +273,15 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
         <Card style={{ marginTop: 10, gap: 7 }}>
           <View style={[s.row, { gap: 8 }]}>
             <Text style={[s.h3, { flex: 1 }]}>Base stats</Text>
-            <View style={{ flexDirection: 'row', gap: 3, alignItems: 'center' }}>
+            {/* MEASURED at 21 px tall with 6 of slop = 33 — the smallest
+                control left in the app after the 44 pt sweep, and one you tap
+                repeatedly to compare stat gains. The stars sit 23 px apart, so
+                slop has to be generous VERTICALLY (where the thumb misses) and
+                tight horizontally (or neighbouring stars swallow each other's
+                taps, which is worse than a small target). */}
+            <View style={{ flexDirection: 'row', gap: 5, alignItems: 'center' }}>
               {[1, 2, 3, 4].map((n) => (
-                <Pressable key={n} hitSlop={6}
+                <Pressable key={n} hitSlop={{ top: 11, bottom: 11, left: 2, right: 2 }}
                   onPress={() => {
                     void Haptics.selectionAsync();
                     setStars(stars === n ? 0 : n);
@@ -283,7 +289,7 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
                   accessibilityRole="button"
                   accessibilityState={{ selected: stars >= n }}
                   accessibilityLabel={`${n} star${n === 1 ? '' : 's'} condensed`}>
-                  <Icon name={stars >= n ? 'star' : 'star-outline'} size={20}
+                  <Icon name={stars >= n ? 'star' : 'star-outline'} size={24}
                     color={stars >= n ? T.gold : T.faint} />
                 </Pressable>
               ))}

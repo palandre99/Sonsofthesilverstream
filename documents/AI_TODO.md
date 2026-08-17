@@ -2098,6 +2098,49 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E93. THE CAPABILITY DIFF CAME BACK CLEAN, AND THE LAST UNDERSIZED
+## CONTROL WAS ON THE PAL CARD 2026-08-17 (overnight)
+
+**Ran the phone-vs-website capability diff properly** (sub-method 29 — the
+technique that found E91). It pairs each web module with its phone screen,
+extracts every `<button>` label, and lists what exists on one and not the
+other. **Result across all five screens: the phone is at parity or ahead.**
+
+The only web-only string left is **"Copy JSON backup"**, and it is NOT a gap:
+the phone's "Share my list…" writes gender-suffixed lines that carry exactly
+the same information (both genders / ♂ only / ♀ only), the round trip is
+already guarded across all 299 species × 3 states, and a native Share sheet
+beats a clipboard button on a phone. Recorded so it is not "fixed" later.
+
+**TWO OF MY OWN SCANNER BUGS, both caught before they produced a false find
+(27th and 28th):**
+- `<button[^>]*>` is WRONG for JSX — `onClick={() => f()}` contains a `>` in
+  the arrow, so the "label" came out as `setHatching(null)}>Cancel`. Rewrote
+  it to scan to the real tag end tracking braces and strings.
+- The string-literal harvest was pulling **inline CSS** out of the same
+  braces and reporting `-10px`, `var(--muted)` and `inline-flex` as missing
+  phone capabilities. Filtered.
+
+**THEN THE PAL CARD, measured for the first time.** On RN-web a
+`presentationStyle="pageSheet"` Modal renders **below the fold** (y=1119 in an
+812-tall viewport) rather than as an overlay — a web-only artifact, it is a
+real sheet on iOS. Measuring needs a ~2.2 s mount wait and no viewport filter.
+
+**THE FIND: the condensing stars were 21 px with 6 of slop = 33 effective** —
+the smallest control left in the app after E89/E90, and one you tap repeatedly
+to compare stat gains at 1★ vs 4★. Now **24 px icons at a 29 px pitch with
+`hitSlop={{top:11,bottom:11,left:2,right:2}}`** → **46 effective height**, and
+28 effective width against a 29 px pitch, so **neighbouring stars cannot
+swallow each other's taps** — which on a 4-star row is worse than a small
+target. Slop had to be asymmetric; a uniform value would have made stars
+overlap.
+
+**Verified on the render:** four 24×24 stars, pitch 29; pressing the third
+gives *"Condensed 3★: stats +15% · partner skill level 4 of 5"* (3×5=15, 3+1=4)
+with the community-measured label intact. Zero console errors.
+
+Gates: 423 passing, 0 expected failures, 24 files; both trees typecheck.
+
 ## E92. THE IMPORT SHEET WALKED FOR THE FIRST TIME — EVERY BRANCH CORRECT,
 ## ONE TEMPLATE-STRING ARTEFACT 2026-08-17 (overnight)
 
