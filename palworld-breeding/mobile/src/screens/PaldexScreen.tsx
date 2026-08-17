@@ -6,8 +6,8 @@ import { FlatList, Modal, Pressable, Share, Text, TextInput, View } from 'react-
 import { T } from '../theme';
 import { Badge, Btn, Card, ElementChips, GenderToggles, PalIcon, SearchInput, WorkChips, s } from '../ui/kit';
 import {
-  clearBox, engine, getBox, importNames, ownedAny, pals, useAppVersion,
-  workLabel, type OwnedGenders,
+  clearBox, engine, getBox, importNames, ownedAny, pals, setOwnedGender,
+  useAppVersion, workLabel, type OwnedGenders,
 } from '../store';
 import { closure } from '../engine/planner';
 import { PalDetail } from '../ui/PalDetail';
@@ -164,6 +164,9 @@ export function PaldexScreen() {
   const [sort, setSort] = useState<SortKey>('number');
   const [open, setOpen] = useState<string | null>(null);
   const [sheet, setSheet] = useState<'none' | 'import' | 'clear' | 'filter'>('none');
+  // bulk un-own arms once before it fires, so a stray tap cannot wipe a
+  // filtered slice of the collection
+  const [armUnown, setArmUnown] = useState(false);
 
   const box = getBox();
   const ownedNames = Object.keys(box);
@@ -252,6 +255,49 @@ export function PaldexScreen() {
         }
         ListFooterComponent={
           <View style={[s.wrap, { justifyContent: 'center', paddingVertical: 14 }]}>
+            {/* THE WEBSITE HAS HAD BULK OWN/UN-OWN SINCE LAUNCH AND THE PHONE
+                NEVER DID — and the phone is where it matters, because ticking
+                a filtered list one pal at a time is two taps each. Filter to
+                "Fire pals" or "Missing" and you can take the whole list in
+                one press.
+
+                It only appears when a filter or a search is actually
+                narrowing things, so "all shown" always means something
+                smaller than the whole dex — otherwise the button would be a
+                trap that owns all 299. The un-own arms first and then names
+                the exact number, the same two-step the website uses. */}
+            {(activeBits.length > 0 || !!q) && names.length > 0 && (() => {
+              const shownOwned = names.filter((n) => ownedAny(n)).length;
+              return (
+                <>
+                  {shownOwned < names.length && (
+                    <Btn small
+                      label={`Own all ${names.length} shown`}
+                      onPress={() => {
+                        for (const n of names) {
+                          setOwnedGender(n, 'm', true);
+                          setOwnedGender(n, 'f', true);
+                        }
+                        setArmUnown(false);
+                      }} />
+                  )}
+                  {shownOwned > 0 && (
+                    <Btn small danger
+                      label={armUnown
+                        ? `Really un-own ${shownOwned}?`
+                        : `Un-own ${shownOwned} shown`}
+                      onPress={() => {
+                        if (!armUnown) { setArmUnown(true); return; }
+                        for (const n of names) {
+                          setOwnedGender(n, 'm', false);
+                          setOwnedGender(n, 'f', false);
+                        }
+                        setArmUnown(false);
+                      }} />
+                  )}
+                </>
+              );
+            })()}
             <Btn small label="Import list…" onPress={() => setSheet('import')} />
             <Btn small disabled={!ownedNames.length} label="Share my list…"
               onPress={() => {

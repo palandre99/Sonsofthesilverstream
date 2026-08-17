@@ -2098,6 +2098,51 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E91. THE PHONE COULD NOT DO THE ONE THING THE PHONE MOST NEEDS —
+## BULK OWN / UN-OWN 2026-08-17 (overnight)
+
+**The website has had "Own all shown" and "Un-own all shown" since launch. The
+phone never did.** That is exactly backwards: on a laptop you tick pals with a
+mouse, on a phone every species costs two taps (♂ and ♀). Filter the Paldex to
+"Fire pals" or "Missing" and you were still tapping fifty times.
+
+**SHIPPED on the phone**, with two properties that make it a feature instead
+of a footgun:
+
+- **It only appears while a search or a filter is NARROWING the list.** On an
+  unfiltered Paldex "Own all shown" would own all 299 species in one tap, so
+  the buttons simply do not exist there. Verified on the render: with no
+  filter, **zero bulk buttons**.
+- **Un-own arms, then names the exact number.** "Un-own 1 shown" → "Really
+  un-own 1?" → fires. Same two-step the website uses.
+- **"Own all" disappears once everything shown is already owned**, and
+  "Un-own" only appears when something shown is owned — so neither button ever
+  promises a no-op.
+- Counts come from the FILTERED list (`names`), never the whole box, or the
+  label would offer to un-own pals that are not on screen.
+
+**WALKED ON THE RENDER, on a scripted state, with his save snapshotted first:**
+search "Jolthog" → **"Own all 2 shown" / "Un-own 1 shown"** (two Jolthog
+species exist, he owns one). Own-all took the box **26 → 27** and the own
+button vanished. First un-own tap left it at **27 — armed only**. Confirm took
+it to **25**. His save was then restored key-by-key with a **zero-mismatch
+diff**, temp key deleted, reload confirmed 26 owned / 8 goals / 35 steps.
+
+**GUARDED — `app/tests/mobile-paldex.test.ts`, 6 tests, PROVEN.** Removing the
+filter gate and the arming step turned **2 red**, the first naming the actual
+danger ("Own all shown on an unfiltered Paldex owns all 299 species"). There
+is no RN test environment here, so this reads the screen's source the way
+`privacy-promise.test.ts` does, comments stripped.
+
+**PRINTED NUMBERS VERIFIED (queue item 3):** the Paldex header reads
+**"26 owned · 258/299 reachable"** on his real save, and `closure()` over his
+exact 26-pal box returns **258** — matching to the species. All 26 owned pals
+are inside that reachable set, which is what the word implies. **Correct.**
+
+Zero console errors or warnings across Paldex, Plan, Calc and Odds.
+
+Gates: 416 passing, 0 expected failures, 24 files; both trees typecheck.
+
 ## E90. THE 44 PT SWEEP FINISHED, AND THE ODDS LAB'S IV AND CAKE TABS WERE
 ## WALKED FOR THE FIRST TIME 2026-08-17 (overnight)
 
