@@ -100,14 +100,33 @@ const MAX_ZOOM = 14;
  * and honestly stops at 4096. Derived from the tile pyramid rather than typed
  * in, so a rebuild at a deeper level raises this by itself.
  */
+/**
+ * How far past one-texture-pixel-per-device-pixel the map may still zoom.
+ *
+ * The cap used to be exactly 1.0, which is the sharpest the source can ever
+ * be — and it is still where the GROUND stops gaining detail. But the CEO
+ * asked for the opposite thing: "able to zoom way further in", because
+ * "chests, small stuff may be hidden". Those are not the same complaint as
+ * "pixelated", and the fix for one is not the fix for the other:
+ *
+ *   - Pins, counts and place names are drawn at a FIXED size, so they stay
+ *     exactly as crisp at 9.6x as at 1x. Only the ground softens.
+ *   - Clustering is driven by screen distance, so every extra step of zoom
+ *     pulls overlapping markers apart. This is the ONLY thing that separates
+ *     five chests sitting within a few metres of each other in game.
+ *
+ * So the ground goes soft at the very end of the range in exchange for being
+ * able to tell two chests apart. That is the trade every map app makes — the
+ * imagery stops improving long before the zoom does.
+ */
+const OVERZOOM = 3;
+
 function maxScaleFor(region: RegionId): number {
   const texture = TILE_PX * (1 << (REGION_MAX_Z[region] ?? MAX_TILE_Z));
   // DIVIDED BY PIXEL DENSITY. This is scale in CSS px per uv unit, but the
-  // phone draws 3 device pixels for each of those. Capping at the raw texture
-  // size let the map magnify 3x past its own pixels again — the CEO shipped
-  // the 8192 texture and still reported "looks pixelated", correctly. One
-  // texture pixel per DEVICE pixel is the honest ceiling.
-  return texture / PixelRatio.get();
+  // phone draws 3 device pixels for each of those, so texture/dpr is the
+  // point where one texture pixel lands on one device pixel.
+  return (texture * OVERZOOM) / PixelRatio.get();
 }
 
 /**
@@ -211,6 +230,18 @@ export function MapCanvas({
   const gesturing = useSharedValue(0);
   /** 1 while two fingers are on the glass */
   const pinching = useSharedValue(0);
+  /**
+   * Set the instant a pinch ends. RNGH measures a Pan's translation from the
+   * CENTROID of the pointers it is tracking, so the moment one of two fingers
+   * lifts, translationX/Y jump by half the distance between them — hundreds of
+   * pixels, in one frame, with no movement by the hand at all. The pan's
+   * origin was re-anchored against the OLD centroid, so the first frame after
+   * the pinch adds that jump straight to the map. That is the "snaps over to
+   * some other place when I release" the CEO has now reported three times: it
+   * is not the pinch maths, which is proven, it is the hand-off between two
+   * gestures that measure from different points.
+   */
+  const rebase = useSharedValue(0);
 
   const [win, setWin] = useState<TileWindow>({ z: 0, x0: 0, x1: 0, y0: 0, y1: 0 });
 
@@ -265,6 +296,9 @@ export function MapCanvas({
       startTx.value = tx.value;
       startTy.value = ty.value;
       gesturing.value = 1;
+      // a pan that begins cleanly has a valid origin already; a leftover
+      // rebase flag here would swallow its first frame of movement
+      rebase.value = 0;
       runOnJS(markTouched)();
     })
     .onUpdate((e) => {
@@ -280,13 +314,24 @@ export function MapCanvas({
         startTy.value = ty.value - e.translationY;
         return;
       }
+      if (rebase.value) {
+        // First frame after the pinch let go. translationX/Y have just jumped
+        // from a two-finger centroid to the one finger still down, so the
+        // origin captured against the old reading is meaningless. Rebase on
+        // the new reading and write nothing this frame: the map stays exactly
+        // where the pinch left it, and the next frame pans from there.
+        startTx.value = tx.value - e.translationX;
+        startTy.value = ty.value - e.translationY;
+        rebase.value = 0;
+        return;
+      }
       const c = clamp(startTx.value + e.translationX, startTy.value + e.translationY, k.value);
       tx.value = c.x;
       ty.value = c.y;
     })
     .onEnd(() => {
       gesturing.value = 0;
-    }), [clamp, gesturing, k, markTouched, pinching, startTx, startTy, tx, ty]);
+    }), [clamp, gesturing, k, markTouched, pinching, rebase, startTx, startTy, tx, ty]);
 
   const pinch = useMemo(() => Gesture.Pinch()
     .onStart((e) => {
@@ -317,8 +362,11 @@ export function MapCanvas({
     .onEnd(() => {
       gesturing.value = 0;
       pinching.value = 0;
-    }), [MAX_SCALE, clamp, gesturing, pinching, zoomFloor, k, markTouched, pinchFx, pinchFy,
-    pinchTx, pinchTy, startK, tx, ty]);
+      // whatever the pan reads next is measured from a different point than
+      // what it read last — make it rebase before it writes anything
+      rebase.value = 1;
+    }), [MAX_SCALE, clamp, gesturing, pinching, rebase, zoomFloor, k, markTouched, pinchFx,
+    pinchFy, pinchTx, pinchTy, startK, tx, ty]);
 
   const doubleTap = useMemo(() => Gesture.Tap()
     .numberOfTaps(2)

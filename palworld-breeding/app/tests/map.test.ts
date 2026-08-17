@@ -563,13 +563,20 @@ describe('zoom never asks for pixels that do not exist', () => {
     expect(tileLevelFor(9999, 512, 3)).toBe(3);      // tree stops at 3
   });
 
-  it('caps zoom at one texture pixel per DEVICE pixel', () => {
-    // The scale is CSS px per uv, but a phone draws 3 device px for each.
-    // Capping at the raw texture size let the map magnify 3x past its own
-    // pixels even with the 8192 texture — the CEO shipped it and still
-    // reported "looks pixelated", which was exactly right.
+  it('measures the ceiling in DEVICE pixels, then deliberately zooms past it', () => {
+    // The scale is CSS px per uv, but a phone draws 3 device px for each, so
+    // texture/dpr is where one texture pixel meets one device pixel. That was
+    // the hard cap, and it is still where the GROUND stops gaining detail.
+    // It is no longer where zooming stops: "able to zoom way further in ..
+    // chests, small stuff may be hidden" (CEO, 2026-08-17). Pins and labels
+    // are fixed-size so they stay crisp, and only more zoom pulls overlapping
+    // markers apart. Reach went 3.2x -> 9.6x on his phone.
     expect(canvas).toMatch(/PixelRatio/);
-    expect(canvas).toMatch(/texture \/ PixelRatio\.get\(\)/);
+    expect(canvas).toMatch(/const OVERZOOM = 3;/);
+    expect(canvas).toMatch(/\(texture \* OVERZOOM\) \/ PixelRatio\.get\(\)/);
+    // the honest half: past that point the ground is magnified, and the
+    // comment has to keep saying so
+    expect(canvas).toMatch(/Only the ground softens/);
   });
 
   it('derives the zoom ceiling from the pyramid instead of a typed-in number', () => {

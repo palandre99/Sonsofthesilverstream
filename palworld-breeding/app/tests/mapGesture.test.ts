@@ -16,11 +16,14 @@ import { describe, expect, it } from 'vitest';
 import {
   clampView, panStep, pinchStep, reanchorPan, screenToUv,
 } from '../../mobile/src/map/gesture';
+import { tileLevelFor } from '../src/map/projection';
 
 const W = 393;
 const H = 852;
 const FLOOR = Math.max(W, H);          // the map opens at cover
-const CEIL = 8192 / 3;                 // one texture pixel per device pixel
+// The app's own ceiling, mirrored: texture * OVERZOOM / dpr. A test above
+// pins this against MapCanvas so the two cannot drift apart silently.
+const CEIL = (8192 * 3) / 3;
 
 /** the view you get when the map first lays out */
 const opened = { k: FLOOR, tx: (W - FLOOR) / 2, ty: (H - FLOOR) / 2 };
@@ -234,6 +237,120 @@ describe('the map at its extreme edges', () => {
     expect(out.tx).toBeGreaterThanOrEqual(W - out.k);
     expect(out.ty).toBeLessThanOrEqual(0);
     expect(out.ty).toBeGreaterThanOrEqual(H - out.k);
+  });
+});
+
+describe('letting go of a pinch', () => {
+  /**
+   * THE BUG THE CEO HAS REPORTED THREE TIMES.
+   *
+   * Pan and Pinch run simultaneously. RNGH measures a Pan's translation from
+   * the CENTROID of the pointers it tracks, so the instant one of two fingers
+   * lifts, translationX/Y jump by roughly half the gap between them — with no
+   * movement of the hand at all. The pan's origin had been re-anchored against
+   * the OLD centroid, so the first frame after the pinch adds that jump
+   * straight into the map position. The formulas were never wrong; the
+   * hand-off between two gestures measuring from different points was.
+   */
+  const FINGER_GAP = 240;          // a normal pinch spread
+  const JUMP = FINGER_GAP / 2;     // centroid -> remaining finger
+
+  /** the map mid-pinch: zoomed in, sitting somewhere specific */
+  const afterPinch = { k: FLOOR * 2, tx: -300, ty: -450 };
+
+  it('reproduces the snap when the pan trusts the jumped reading', () => {
+    // what the code used to do: origin anchored against the last two-finger
+    // reading, then the first one-finger frame is written straight through
+    const lastTwoFinger = 40;
+    const anchored = reanchorPan(afterPinch, lastTwoFinger, 0);
+    const firstOneFinger = lastTwoFinger + JUMP;   // the discontinuity
+    const moved = panStep({
+      startTx: anchored.startTx, startTy: anchored.startTy,
+      dx: firstOneFinger, dy: 0, k: afterPinch.k, w: W, h: H,
+    });
+    expect(Math.abs(moved.tx - afterPinch.tx)).toBeCloseTo(JUMP, 6);
+  });
+
+  it('and holds still when the pan rebases on the new reading first', () => {
+    // what it does now: the frame after the pinch REBASES and writes nothing,
+    // so the map stays exactly where the pinch left it
+    const firstOneFinger = 40 + JUMP;
+    const rebased = reanchorPan(afterPinch, firstOneFinger, 0);
+    const next = panStep({
+      startTx: rebased.startTx, startTy: rebased.startTy,
+      dx: firstOneFinger, dy: 0, k: afterPinch.k, w: W, h: H,
+    });
+    expect(next.tx).toBeCloseTo(afterPinch.tx, 6);
+    expect(next.ty).toBeCloseTo(afterPinch.ty, 6);
+  });
+
+  it('and real finger movement after the rebase still pans normally', () => {
+    const atLift = 40 + JUMP;
+    const rebased = reanchorPan(afterPinch, atLift, 0);
+    const dragged = panStep({
+      startTx: rebased.startTx, startTy: rebased.startTy,
+      dx: atLift + 90, dy: 0, k: afterPinch.k, w: W, h: H,
+    });
+    expect(dragged.tx).toBeCloseTo(afterPinch.tx + 90, 6);
+  });
+
+  it('the canvas actually wires that rebase up', () => {
+    const canvas = readFileSync(
+      join(__dirname, '..', '..', 'mobile', 'src', 'map', 'MapCanvas.tsx'), 'utf8',
+    );
+    expect(canvas, 'a rebase flag must exist').toMatch(/const rebase = useSharedValue\(0\)/);
+    // raised when the pinch lets go
+    const pinchEnd = canvas.slice(canvas.indexOf('pinching.value = 0;'));
+    expect(pinchEnd.slice(0, 260)).toContain('rebase.value = 1');
+    // consumed by the pan BEFORE it writes a position
+    const panUpdate = canvas.slice(canvas.indexOf('if (rebase.value) {'));
+    expect(panUpdate.slice(0, 900)).toContain('rebase.value = 0');
+    expect(panUpdate.indexOf('return;')).toBeLessThan(panUpdate.indexOf('const c = clamp('));
+  });
+});
+
+describe('how far in it can actually go', () => {
+  const canvas = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'map', 'MapCanvas.tsx'), 'utf8',
+  );
+
+  it('zooms past the texture on purpose, and says why', () => {
+    // "It should be better and able to zoom way further in .. chests, small
+    // stuff may be hidden" (CEO). The old ceiling was exactly one texture
+    // pixel per device pixel — the sharpest the ground can be, and the point
+    // it stops improving. But sharpness and REACH are different complaints:
+    // pins and labels are fixed-size so they stay crisp at any zoom, and
+    // clustering is by screen distance, so only more zoom separates markers
+    // that sit on top of each other.
+    expect(canvas).toMatch(/const OVERZOOM = 3;/);
+    expect(canvas).toMatch(/return \(texture \* OVERZOOM\) \/ PixelRatio\.get\(\);/);
+  });
+
+  it('which is 9.6x on his phone, up from 3.2x', () => {
+    const TEXTURE = 512 * (1 << 4);      // palpagos z4 = 8192
+    const DPR = 3;                        // his iPhone
+    const floor = Math.max(393, 852);     // COVER: the long edge
+    const ceil3 = (TEXTURE * 3) / DPR;
+    expect(ceil3).toBe(8192);
+    expect(ceil3 / floor).toBeCloseTo(9.6, 1);
+    // and the other cap must not quietly become the binding one
+    const MAX_ZOOM = 14;
+    expect(floor * MAX_ZOOM).toBeGreaterThan(ceil3);
+  });
+
+  it('never asks for a tile level that does not exist', () => {
+    // overzoom makes this matter far more than it used to: past the texture
+    // there is no deeper pyramid, so the level MUST clamp or the map falls
+    // through to the blurry base
+    const MAXZ = 4;
+    // tileLevelFor takes scale in DEVICE px and the TILE size, not the dpr
+    for (const scale of [852, 2730, 5000, 8192]) {
+      const z = tileLevelFor(scale * 3, 512, MAXZ);
+      expect(z).toBeLessThanOrEqual(MAXZ);
+      expect(z).toBeGreaterThanOrEqual(0);
+    }
+    // at the very top it should be sitting ON the deepest level, not below it
+    expect(tileLevelFor(8192 * 3, 512, MAXZ)).toBe(MAXZ);
   });
 });
 
