@@ -4919,3 +4919,38 @@ must not drift (found.ts's tick format is pinned that way).
 L38 (dungeon-only pals listable, dungeon-pin level band, legend footnote),
 L45 (legend capped so it cannot hide entries), L47 (per-region layer counts +
 empty-search copy), L49 (comment only).
+
+### L51 — swept the WHOLE of src/ for ungated duplication. Nothing broken.
+16 source modules exist in both app/src and mobile/src. All are byte-identical
+except `found.ts`, which is the documented deliberate fork (L49/L50).
+Coverage of the three gates:
+  - `logic-parity.test.ts`  — already SELF-NOTICING: its SHARED list is built
+    from `readdirSync` of BOTH dirs, so a new logic module cannot escape.
+  - `map.test.ts`           — made self-noticing in L50.
+  - `engine-parity.test.ts` — SHARED is a HARDCODED list of six
+    (formula, planner, odds, helpers, boosters, types). Right now it is
+    COMPLETE: those are exactly the six that exist in both trees, and all six
+    are byte-identical. app/src/engine additionally has planClient.ts and
+    planner.worker.ts, which are web-only and correctly exempt.
+LATENT GAP, NOT MINE TO FIX: engine-parity's hardcoded list has the same
+weakness the map gate had — a NEW module added to both engine dirs escapes the
+gate silently. The engine is the sacred one, so this is worth closing. The fix
+is the L50 pattern: derive the list from readdirSync of both dirs, keep an
+explicit exempt list for the web-only workers, and PROVE it fails by dropping
+a probe file in. `app/tests/engine-parity.test.ts` is outside the map lane —
+handing it over rather than editing it. NO LIVE DEFECT TODAY.
+
+### L52 — website night filter has parity. Walked, correct, unchanged.
+"Include night-only spawns" unticked removes Loupmoon (1,095, the largest
+night-only species) entirely — legend gone, layer gone — matching the phone's
+Daytime behaviour. Ticked, the legend reads "Loupmoon 1,095", the same number
+the phone shows.
+
+### L53 — HARNESS: the pane's display state changes what you can measure
+`.mapstage` measured 343x503 earlier this session and 2x2 later, because the
+Browser pane was no longer being displayed. LAYOUT and PIN COUNTS are
+meaningless when it collapses; DOM-level facts (legend text, list contents,
+checkbox state, class names) stay valid either way. ALWAYS print the stage
+rect alongside any layout claim so a collapsed pane cannot be mistaken for a
+defect. The L45 legend-clipping numbers were taken with a real 343x503 stage
+and stand.
