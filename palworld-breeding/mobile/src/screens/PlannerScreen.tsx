@@ -384,6 +384,21 @@ export function PlannerScreen() {
     return { done: full, partialCount: half, readyNow: ready };
   }, [plan, checks, stepMeta]);
 
+  /** Every step ticked — the plan is finished and the screen should say so
+   * instead of showing a 1/1 tile next to two destructive buttons. A plan
+   * with no steps is not "complete", it is empty. */
+  const planComplete = !!plan && plan.steps.length > 0 && done === plan.steps.length;
+
+  /** What the player actually achieved, named. "Cremis is yours." beats
+   * "1 of 1 done" — he came here for the pal, not the counter. */
+  const completedSentence = useMemo(() => {
+    const goals = plan?.targets ?? [];
+    if (goals.length === 0) return 'Every step is done.';
+    if (goals.length === 1) return `${goals[0]} is yours.`;
+    if (goals.length === 2) return `${goals[0]} and ${goals[1]} are yours.`;
+    return `${goals.slice(0, 2).join(', ')} and ${goals.length - 2} more are yours.`;
+  }, [plan]);
+
   /** The cheapest way into each goal that has no route, ranked easiest
    * first for THIS save and THIS player level. Measured at 185 ms cold /
    * 53 ms warm, and it only ever runs when something is actually stuck —
@@ -806,8 +821,53 @@ export function PlannerScreen() {
         </Card>
       )}
 
+      {/* A FINISHED PLAN USED TO LOOK EXACTLY LIKE AN UNFINISHED ONE — three
+          tiles reading 1/1, a timestamp, and two buttons that both looked
+          like they might delete something. The CEO: "it doesn't collapse
+          clean like a finished plan, starting a new plan is confusing... the
+          two options are confusing — do they remove the plan and the pals
+          from paldex?" (2026-08-17, with screenshots.)
+
+          So a completed plan now says it is complete, says what you got, and
+          offers the one thing you actually want next. The two destructive
+          actions are no longer peers competing for a tap: carrying on is the
+          primary button, and undoing is a quiet line underneath. */}
+      {plan && planComplete && (
+        <Card style={{
+          marginTop: 16, borderColor: T.ok, backgroundColor: T.okSoft, gap: 10,
+        }}
+          accessibilityLabel={`Plan complete. ${completedSentence} Every one of ${
+            plan.steps.length} step${plan.steps.length === 1 ? '' : 's'} is ticked.`}>
+          <View style={[s.row, { gap: 9 }]}>
+            <Icon name="check-circle" size={22} color={T.ok} />
+            <Text style={[s.h2, { flex: 1, color: T.ok }]}>Plan complete</Text>
+          </View>
+          <Text style={s.body}>
+            {completedSentence} All {plan.steps.length} step
+            {plan.steps.length === 1 ? '' : 's'} ticked off.
+          </Text>
+          <Btn primary label="Plan something new"
+            onPress={() => setManaging('clear')} />
+          <Text style={[s.body, { fontSize: 12, color: T.muted }]}>
+            Clears this finished route so you can pick fresh goals. Every pal
+            you hatched stays in your Paldex.
+          </Text>
+          <Pressable onPress={() => setManaging('reset')} hitSlop={8}
+            accessibilityRole="button"
+            accessibilityLabel="Undo my progress — unticks every step and takes back the pals those ticks added">
+            <Text style={{
+              color: T.muted, fontSize: 12, textDecorationLine: 'underline',
+            }}>
+              Ticked something by mistake? Undo my progress
+            </Text>
+          </Pressable>
+        </Card>
+      )}
+
       {plan && (
         <>
+          {!planComplete && (
+          <>
           <View style={[s.wrap, { marginTop: 16 }]}>
             <View style={s.tile}>
               <Text style={s.tileBig}>{plan.steps.length}</Text>
@@ -827,13 +887,26 @@ export function PlannerScreen() {
               <Text style={s.tileLabel}>READY NOW</Text>
             </View>
           </View>
-          <View style={[s.wrap, { marginTop: 8, alignItems: 'center' }]}>
+          {/* "Start over" and "Clear plan" sat side by side and neither said
+              what it did to your collection — you had to tap a destructive
+              button to read its own explanation. The labels now carry the
+              outcome, and the one line that actually matters (does this take
+              my pals away?) is visible without tapping anything. */}
+          <View style={{ marginTop: 8, gap: 6 }}>
             <Text style={[s.body, { fontSize: 12 }]}>
               {plannedWhen(plan.planned)}
             </Text>
-            <Btn small label="Start over" onPress={() => setManaging('reset')} />
-            <Btn small danger label="Clear plan" onPress={() => setManaging('clear')} />
+            <View style={s.wrap}>
+              <Btn small label="Undo my progress" onPress={() => setManaging('reset')} />
+              <Btn small danger label="Forget this plan" onPress={() => setManaging('clear')} />
+            </View>
+            <Text style={{ color: T.muted, fontSize: 11.5, lineHeight: 16 }}>
+              Undo unticks every step and takes back the pals those ticks
+              added. Forget deletes the route only — hatched pals stay yours.
+            </Text>
           </View>
+          </>
+          )}
 
           {/* "Not reachable from your box: X" stated a fact and left him
               there. Say which goals, and what actually gets him unstuck. */}
@@ -1177,15 +1250,48 @@ export function PlannerScreen() {
             }
             return (
             <View key={wave} style={{ marginTop: 18 }}>
-              <Text style={[s.h3, { marginBottom: 8 }]}>
-                Phase {wave}{' '}
-                <Text style={{ color: T.muted, fontWeight: '600', fontSize: 12.5 }}>
-                  {/* a phase with ONE step has nothing to run in parallel
-                      WITH — the hint was noise there (deep-eval find) */}
-                  {allDone ? '· complete'
-                    : steps.length > 1 ? '· everything here can run in parallel' : ''}
+              {/* A finished phase collapsed on its own and reopened on a tap,
+                  but the open header was plain text — so reopening one to
+                  look at it was a ONE-WAY DOOR, and the only way back to the
+                  tidy view was reloading the app. The CEO found it within
+                  minutes of the collapse landing (2026-08-17). When a phase
+                  is finished this header is the other half of that toggle. */}
+              {allDone ? (
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityState={{ expanded: true }}
+                  accessibilityLabel={`Phase ${wave} complete, showing its ${steps.length} ${steps.length === 1 ? 'step' : 'steps'} — tap to hide them again`}
+                  hitSlop={6}
+                  onPress={() => {
+                    void Haptics.selectionAsync();
+                    setOpenPhases((prev) => {
+                      const next = new Set(prev);
+                      next.delete(wave);
+                      return next;
+                    });
+                  }}
+                  style={[s.row, { marginBottom: 8, gap: 6 }]}>
+                  <Text style={[s.h3, { flex: 1 }]}>
+                    Phase {wave}{' '}
+                    <Text style={{ color: T.ok, fontWeight: '600', fontSize: 12.5 }}>
+                      · complete
+                    </Text>
+                  </Text>
+                  <Text style={{ color: T.muted, fontSize: 12, fontWeight: '700' }}>
+                    tap to hide
+                  </Text>
+                  <Icon name="chevron-up" size={18} color={T.muted} />
+                </Pressable>
+              ) : (
+                <Text style={[s.h3, { marginBottom: 8 }]}>
+                  Phase {wave}{' '}
+                  <Text style={{ color: T.muted, fontWeight: '600', fontSize: 12.5 }}>
+                    {/* a phase with ONE step has nothing to run in parallel
+                        WITH — the hint was noise there (deep-eval find) */}
+                    {steps.length > 1 ? '· everything here can run in parallel' : ''}
+                  </Text>
                 </Text>
-              </Text>
+              )}
               <View style={{ gap: 8 }}>
                 {steps.map((st) => {
                   const sid = stepId(st.parents[0], st.parents[1], st.child);
@@ -1333,10 +1439,13 @@ export function PlannerScreen() {
           }}>
             <Card style={{ width: '100%', borderColor: managing === 'clear' ? T.bad : T.line }}>
               <Text style={s.h2}>
-                {managing === 'reset' ? 'Start this plan over?'
+                {managing === 'reset' ? 'Undo your progress?'
                   : managing === 'replace' ? 'Replace the current plan?'
                   : managing === 'removeall' ? 'Remove all goals?'
-                  : 'Clear the plan?'}
+                  // finishing a plan and starting the next one is a normal,
+                  // happy step — it should not be phrased as destruction
+                  : planComplete ? 'Plan something new?'
+                  : 'Forget this plan?'}
               </Text>
               <Text style={[s.body, { marginTop: 6 }]}>
                 {managing === 'reset'
@@ -1347,15 +1456,19 @@ export function PlannerScreen() {
                       // it used to say "until you press Plan again" — that
                       // button no longer sits there once a route exists
                       ? 'Empties your goal list so you can pick fresh. The route you already have, and everything you have ticked off, stays until you build a new one.'
-                      : 'Forgets the plan and its ticks so you can plan fresh. Your collection stays exactly as it is — hatched pals are still yours.'}
+                      : planComplete
+                        ? 'Clears this finished route and empties your goal list so you can pick fresh. Every pal you hatched stays in your Paldex — nothing you own is touched.'
+                        : 'Forgets the plan and its ticks so you can plan fresh. Your collection stays exactly as it is — hatched pals are still yours.'}
               </Text>
               <View style={[s.wrap, { marginTop: 14 }]}>
-                <Btn danger={managing === 'clear'}
-                  primary={managing === 'reset' || managing === 'replace'}
-                  label={managing === 'reset' ? 'Start over'
+                <Btn danger={managing === 'clear' && !planComplete}
+                  primary={managing === 'reset' || managing === 'replace'
+                    || (managing === 'clear' && planComplete)}
+                  label={managing === 'reset' ? 'Undo my progress'
                     : managing === 'replace' ? 'Plan the new goals'
                     : managing === 'removeall' ? 'Remove all goals'
-                    : 'Clear plan'}
+                    : planComplete ? 'Plan something new'
+                    : 'Forget this plan'}
                   onPress={() => {
                     if (managing === 'reset') { resetPlanProgress(); setManaging('none'); }
                     else if (managing === 'replace') run();

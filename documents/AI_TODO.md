@@ -2098,6 +2098,86 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E86. CEO FEEDBACK: A FINISHED PLAN LOOKED EXACTLY LIKE AN UNFINISHED
+## ONE, AND A REOPENED PHASE WAS A ONE-WAY DOOR 2026-08-17
+
+Two reports, minutes apart, both with screenshots. Verbatim:
+
+> "When finishing a plan breed it's a bit confusing, it doesn't collapse clean
+> like a finished plan, starting a new plan is confusing. The two options
+> 'clear or start over' are confusing — do they remove the plan and the pals
+> from paldex? How does it work? Point is it's confusing and difficult to
+> manouvre and doesn't look or feel polished or clean or AAA."
+
+> "Also within the plan when finishing a phase it collapses cleanly. Looks
+> good, but tapping to open the phase again to look at it, then I can't
+> collapse it back again. Missing feature."
+
+**HE IS RIGHT ON BOTH, AND THE SECOND ONE IS A PLAIN BUG.**
+
+**1. A finished plan advertised nothing.** With every step ticked the screen
+still showed three tiles reading 1 STEPS / 1/1 DONE / 0 READY NOW, a
+timestamp, and two buttons. Nothing said "you did it", nothing offered the
+obvious next move, and the two buttons were peers competing for the same tap.
+
+**FIXED —** a completed plan (every step ticked, at least one step) now shows
+a single green **"Plan complete"** card: *"Cremis is yours. All 2 steps ticked
+off."* One primary button, **"Plan something new"**, with the consequence
+printed underneath before you touch it — *"Every pal you hatched stays in your
+Paldex."* Undoing is demoted to a quiet underlined line, *"Ticked something by
+mistake? Undo my progress"*, because it is the rare case, not the peer.
+
+**2. The two destructive buttons hid their meaning behind a tap.** "Start
+over" and "Clear plan" told you nothing about your collection — you had to
+press one of them to read its own explanation, which is exactly backwards.
+They now carry the outcome in the label, and the one question he actually
+asked ("do they remove the pals from paldex?") is answered on screen without
+tapping anything:
+
+- **"Undo my progress"** — *unticks every step and takes back the pals those
+  ticks added.*
+- **"Forget this plan"** — *deletes the route only; hatched pals stay yours.*
+
+The confirm dialogs follow the same wording, and finishing a plan is no longer
+phrased as destruction: the complete-state dialog reads "Plan something new?"
+in the primary colour rather than "Clear the plan?" in red.
+
+**3. THE BUG — reopening a finished phase was one-way.** The collapsed pill
+called `setOpenPhases(prev => new Set(prev).add(wave))`, and the expanded
+header was a plain `<Text>`. Nothing ever removed a wave from the set, so once
+you looked inside a finished phase the only way back to the tidy view was
+restarting the app. **The open header is now the other half of the toggle** —
+"tap to hide" with a chevron, `accessibilityState={{ expanded: true }}`.
+
+**A REGRESSION I CAUGHT ON THE RENDER, NOT IN REVIEW.** My first cut gated the
+whole `{plan && ...}` block on `!planComplete`, which deleted Goal progress,
+Make it faster AND the entire route from a finished plan. He asked for it to
+COLLAPSE, not vanish. Rendering it is what showed me — the body text simply
+ended after the card. Restructured so only the tiles and the action row are
+conditional. **This is sub-method 12 earning its keep again: the render is the
+test.**
+
+**RENDERED AND MEASURED** on a scripted finished plan (2 steps, 2 phases, all
+ticked): the card reads "Plan complete · Cremis is yours. All 2 steps ticked
+off."; the old tiles are gone; Goal progress and both "Phase N complete" pills
+are still there; opening Phase 1 shows its steps and a "tap to hide"
+affordance; tapping that returns it to the pill. Dialog reads "Plan something
+new? ... nothing you own is touched." Zero console errors across all four
+tabs.
+
+**HIS REAL SAVE WAS NEVER AT RISK** — every `/hatchlab|palforge/` key was
+snapshotted first, the scenario was scripted on top, and afterwards all five
+keys were restored byte for byte with a zero-mismatch diff, the temp key
+deleted, and the app reloaded to confirm: 8 goals, 35 steps, 3 ticks, 26
+owned, exactly as before.
+
+**A CHECK OF MINE WAS WRONG (25th):** my scripted tick key was
+`Swee|Lamball>Cremis`, but `stepId` sorts the parents — the real key is
+`Lamball|Swee>Cremis`. Phase 2 silently stayed unticked and the completion
+card correctly did not appear. The app was right; my scenario was not.
+
+Gates green: 387 + 1 expected fail across 23 files, both trees typecheck.
+
 ## E85. "T5" AND "neg" WERE THE BADGES ON A 114-ITEM LIST; THE FIELD THAT
 ## SORTS THEM WAS DECLARED AND NEVER READ 2026-08-17
 
