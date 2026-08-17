@@ -105,6 +105,13 @@
 .stat .sb span{display:block;height:100%;border-radius:4px;background:var(--accent)}
 .stat .sv{text-align:right}
 
+/* how much a pal eats — same gauge the phone draws, pips sized to the real
+   maximum in the data. Wraps rather than overflowing on a narrow drawer. */
+.foodrow{display:flex;align-items:center;gap:9px;flex-wrap:wrap;font-size:12px;
+  margin-top:6px}
+.foodrow b{color:var(--muted);font-weight:800;letter-spacing:.05em}
+.foodrow .pips{display:inline-flex;gap:2px}
+
 .searchbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:0 0 16px}
 .searchbar input[type=search]{flex:1 1 240px;max-width:360px;padding:10px 14px;
   border-radius:11px;border:1px solid var(--line);background:var(--surface)}

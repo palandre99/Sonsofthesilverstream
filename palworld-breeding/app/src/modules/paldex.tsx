@@ -14,6 +14,9 @@ import {
 import { closure } from '../engine/planner';
 import { aboutText } from '../state';
 import { ALPHA_SPOTS } from '../data/alphaSpots.g';
+import { PALCALC_FACTS } from '../data/palcalcFacts.g';
+import foodOn from '../assets/stat/FoodOn.png';
+import foodOff from '../assets/stat/FoodOff.png';
 import { REGION_SPOTS } from '../data/regionSpots.g';
 import { rarityTint } from '../data/rarity';
 import { ElementChips, GenderToggles, LockBadge, PalIcon, StatBars, WorkChips } from '../components/shared';
@@ -269,6 +272,13 @@ function Drawer({ name, onClose }: { name: string; onClose: () => void }) {
   // Hooks BEFORE any conditional return (rules of hooks — reviewer catch).
   const [stars, setStars] = useState(0);
   useEffect(() => setStars(0), [name]);
+  // How many pips the food gauge draws. Read from the data, never a guessed
+  // 10 — `pals` is a signal filled after the fetch, so this has to be a memo
+  // inside the component rather than a module constant like the phone's.
+  const FOOD_MAX = useMemo(
+    () => Math.max(1, ...Object.values(pals.value).map((q) => q.food ?? 0)),
+    [pals.value],
+  );
   if (!p) return null;
 
   const asChild = raw.unique_combos.filter((c) => c.child === name);
@@ -347,7 +357,38 @@ function Drawer({ name, onClose }: { name: string; onClose: () => void }) {
             </div>
           )}
           <StatBars p={p} boost={stars * 0.05} />
+          {/* The food gauge shipped on the phone at launch. On the website the
+              art was sitting unused in assets/stat and `food` was not even a
+              field on PalInfo, so how much a pal eats — the thing that decides
+              whether you can keep it at your base — was invisible here. The
+              ceiling is the real maximum in the data, never a guessed 10. */}
+          {p.food != null && (
+            <div class="foodrow">
+              <img src={foodOn} alt="" width="16" height="16" />
+              <b>Food</b>
+              <span class="pips">
+                {Array.from({ length: FOOD_MAX }, (_, i) => (
+                  <img key={i} src={i < p.food! ? foodOn : foodOff} alt=""
+                    width="14" height="14"
+                    style={{ opacity: i < p.food! ? 1 : 0.45 }} />
+                ))}
+              </span>
+              <span class="dim small">{p.food} of {FOOD_MAX}</span>
+            </div>
+          )}
         </section>
+
+        {(p.drops?.length > 0 || (p.ranch_produce?.length ?? 0) > 0) && (
+          <section>
+            <h4>Drops</h4>
+            <div class="kv">
+              {(p.drops ?? []).map((d) => <span key={d} class="badge plain">{d}</span>)}
+              {(p.ranch_produce ?? []).map((r) => (
+                <span key={`r-${r}`} class="badge ok">Ranch: {r}</span>
+              ))}
+            </div>
+          </section>
+        )}
 
         {Object.keys(p.work ?? {}).length > 0 && (
           <section>
@@ -389,9 +430,38 @@ function Drawer({ name, onClose }: { name: string; onClose: () => void }) {
           </section>
         )}
 
+        {(PALCALC_FACTS[name]?.passives?.length ?? 0) > 0 && (
+          <section>
+            {/* The passives a species ALWAYS hatches with are datamined and the
+                website already had the file — goals.tsx reads it — but the pal
+                card never showed them. The phone has said this since the
+                born-with work landed. */}
+            <h4>Born with</h4>
+            <p style={{ color: 'var(--muted)', fontSize: '13.5px', margin: '0 0 8px' }}>
+              Every {name} always carries{' '}
+              {PALCALC_FACTS[name]!.passives!.join(' + ')} — datamined, and
+              breedable into your lines.
+            </p>
+            <div class="kv">
+              {PALCALC_FACTS[name]!.passives!.map((ps) => (
+                <span key={ps} class="badge gold">{ps}</span>
+              ))}
+            </div>
+          </section>
+        )}
+
         {p.partner_skill && (
           <section>
-            <h4>Partner skill — {p.partner_skill}</h4>
+            {/* Same bug as the work levels, same screen: the star row said
+                "partner skill level 3 of 5" and this section showed nothing at
+                all, so the one number the player came here to check was only
+                ever printed somewhere else. The phone has always badged it. */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <h4 style={{ flex: 1 }}>Partner skill — {p.partner_skill}</h4>
+              <span class={`badge ${stars > 0 ? 'gold' : 'plain'}`}>
+                LEVEL {stars + 1} OF 5
+              </span>
+            </div>
             <p style={{ color: 'var(--muted)', fontSize: '13.5px', margin: 0 }}>
               {p.partner_effect}
             </p>

@@ -235,4 +235,72 @@ describe('the pal card’s condense preview', () => {
     expect(drawer.textContent).toContain('community-measured');
     expect(drawer.textContent).toContain('partner skill level 3 of 5');
   });
+
+  it('shows the partner skill level the star row claims', () => {
+    state.route.value = { page: 'paldex', pal: 'Lamball' };
+    render(<PaldexPage />);
+    const badge = () => [...document.querySelectorAll('aside.drawer .badge')]
+      .map((b) => b.textContent?.trim()).find((t) => /^LEVEL/.test(t ?? ''));
+    // the section printed nothing at all before — the number lived only in the
+    // summary line above it
+    expect(badge()).toBe('LEVEL 1 OF 5');
+    fireEvent.click(star(3));
+    expect(badge()).toBe('LEVEL 4 OF 5');
+  });
+});
+
+/**
+ * Drops, ranch produce and how much a pal eats: three fields the phone has
+ * always shown and the website rendered nowhere at all — `drops` was not even
+ * declared on the web's PalInfo, and the food art sat unused in assets.
+ * Checked against the data rather than against fixed strings, so the tests
+ * follow the game rather than a snapshot of it.
+ */
+describe('the pal card shows what a pal drops and eats', () => {
+  beforeEach(() => { state.breedingRaw.value = data; });
+  afterEach(() => { state.route.value = { page: 'paldex' }; });
+
+  const FOOD_MAX = Math.max(
+    1,
+    ...Object.values(palsJson.pals).map((q) => (q as { food?: number | null }).food ?? 0),
+  );
+
+  function open(name: string): HTMLElement {
+    state.route.value = { page: 'paldex', pal: name };
+    render(<PaldexPage />);
+    return document.querySelector('aside.drawer') as HTMLElement;
+  }
+
+  it('lists exactly the drops the data holds, and marks ranch produce', () => {
+    // Caprity both drops things and makes something on a Ranch
+    const info = palsJson.pals['Caprity'] as unknown as
+      { drops: string[]; ranch_produce: string[] | null };
+    const badges = [...open('Caprity').querySelectorAll('.badge.plain, .badge.ok')]
+      .map((b) => b.textContent?.trim())
+      .filter((t) => !/^LEVEL/.test(t ?? ''));
+    expect(badges).toEqual([
+      ...info.drops,
+      ...(info.ranch_produce ?? []).map((r) => `Ranch: ${r}`),
+    ]);
+  });
+
+  it('draws the food gauge to the real ceiling, not a guessed one', () => {
+    const info = palsJson.pals['Caprity'] as unknown as { food: number };
+    const row = open('Caprity').querySelector('.foodrow')!;
+    expect(row.querySelectorAll('.pips img').length).toBe(FOOD_MAX);
+    expect(row.textContent).toContain(`${info.food} of ${FOOD_MAX}`);
+    // the ceiling is a real datamined maximum, so a pal must be able to reach it
+    expect(Object.values(palsJson.pals)
+      .some((q) => (q as { food?: number | null }).food === FOOD_MAX)).toBe(true);
+  });
+
+  it('names the passives a species is always born with', () => {
+    // Anubis always hatches with Earth Emperor (datamined via palcalc)
+    const card = open('Anubis');
+    expect(card.textContent).toContain('Born with');
+    expect(card.textContent).toContain('Every Anubis always carries');
+    // and a species with no guaranteed passives gets no empty section
+    cleanup();
+    expect(open('Lamball').textContent).not.toContain('Born with');
+  });
 });

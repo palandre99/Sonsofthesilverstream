@@ -2075,6 +2075,84 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E84. THE SAME SCREEN WAS HIDING THREE MORE THINGS — THE WEBSITE'S PAL
+## CARD WAS MISSING TWO WHOLE SECTIONS 2026-08-17
+
+Sub-method 15 ("after finding one bad number on a screen, CHECK THE OTHER
+NUMBERS ON THE SAME SCREEN") applied to E83's screen, and it paid three times.
+
+**1. The partner-skill level was announced and never shown.** The star row
+said "partner skill level 3 of 5"; the Partner skill section below it printed
+nothing. The phone has always carried a LEVEL N OF 5 badge that turns gold
+once you condense. Ported exactly, gold at 1★+ and grey at 0★.
+
+**2. `drops` and `ranch_produce` were mined and rendered by NOTHING on the
+web.** 298 species have drops, 29 make something on a Ranch — all sitting in
+`pals_1_0.json`, which the website already loads. `grep '\.drops' app/src/`
+returned **zero hits**, and the website's own `PalInfo` type did not even
+declare the field. The phone has had a Drops section since launch.
+
+**3. `food` the same.** 298 species carry it; the art (`FoodOn.png`,
+`FoodOff.png`) was sitting unused in `app/src/assets/stat/` — nothing in the
+web tree imported anything from that folder. How much a pal eats decides
+whether you can keep it at your base, and the website never said.
+
+**HOW THEY WERE FOUND — a field-by-field diff of the two trees.** Wrote a
+scan listing all 25 pal fields with, for each, whether the WEB and the PHONE
+reference it. Result: `drops` and `food` were "PHONE yes / WEB no", and
+everything else matched. `combi_rank`, `craft_speed` and `mount` are NO on
+both, which is correct — engine-only or deliberately parked. That table is
+the cheapest parity check yet and should be re-run whenever data lands.
+
+**FIXED on the web** — `PalInfo` gains `food`/`drops`/`ranch_produce`; the
+card gains a Drops section (drops as plain badges, ranch produce as "Ranch: X"
+in green), a food gauge whose ceiling is `Math.max(...)` over the data inside
+a `useMemo` (the web's `pals` is a signal, so it cannot be a module constant
+like the phone's), a Born with section, and the partner-skill badge.
+
+**BORN WITH — mined, present in the web tree, imported by the wrong screen.**
+`palcalcFacts.g.ts` lives in `app/src/data/` and `goals.tsx` reads it for a
+suggestions section, but the pal CARD never did. Now it says exactly what the
+phone says: "Every {name} always carries X — datamined, and breedable into
+your lines."
+
+**RENDERED AND MEASURED** (localhost:5183): Caprity → sections now read
+Stats · **Drops** · Work suitability · Partner skill · How to breed it ·
+Special recipes · Where to find it; food gauge draws **9 pips reading "2 of
+9"**, and the data's true maximum food is **9** with Caprity at **2** — the
+ceiling is not a guess. Drop badges read exactly `Caprity Meat / Red Berries /
+Horn` + `Ranch: Red Berries`, matching the JSON field for field. Anubis → the
+**Born with** section appears between Work suitability and Partner skill,
+exactly where the phone puts it, gold badge measured `rgb(51,39,13)`
+(`--gold-soft`) against a plain sibling's `rgb(28,49,54)`. All gauge images
+report `naturalWidth 20`, so no broken asset. Six pals visited with a fresh
+`console.error`/`console.warn` hook: **zero errors, zero warnings**.
+
+**GUARDED — `condense-parity.test.ts` renamed to `palcard-parity.test.ts`**
+(the file now guards the whole card, not just condensing) **and widened to 15
+tests**: an explicit phone-heading/web-heading pairing for all 8 sections, plus
+ranch produce, food, and a check that the food ceiling is not a literal.
+**PROVEN:** ripping the Drops and Born-with sections back out of the website —
+i.e. restoring it to its state an hour earlier — turned **3 tests red, every
+message naming "the website"**. Source restored; gates green.
+
+**PLUS 4 RENDER TESTS in `paldex-ui.test.tsx`** that check the new sections
+against the DATA, not fixed strings: the drop badges equal
+`drops + ranch_produce` exactly, the gauge draws `FOOD_MAX` pips and prints
+"N of MAX" with a real species reaching that ceiling, the partner badge reads
+LEVEL 1 OF 5 then LEVEL 4 OF 5 after pressing 3 stars, and a species with no
+guaranteed passives gets NO empty Born-with section.
+
+**COORDINATION HAZARD, NEW AND MINE TO AVOID:** `git mv` stages instantly, and
+the Map lane's next commit **swallowed my staged rename** — the mirror image of
+E64. Their ledger commit `042066c` now contains my file rename. No damage (the
+file is at the right path and my content changes were still in the working
+tree), but the rule tightens: **stage NOTHING until the moment of committing.**
+Do renames with a plain `mv` and pass both paths to `git commit -- <paths>`.
+
+Tests **372 + 1 expected fail**, 22 files. Both trees typecheck.
+**Web-only again, so no OTA.** Reaches him on his main push.
+
 ## E83. THE WEBSITE PROMISED "ALL WORK +1" AND THEN SHOWED THE SAME NUMBERS
 ## 2026-08-17
 

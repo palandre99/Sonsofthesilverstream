@@ -1,7 +1,13 @@
 /**
  * The pal card exists twice — `mobile/src/ui/PalDetail.tsx` and
- * `app/src/modules/paldex.tsx` — and both tell the player what condensing
- * does. They are separate code, so they can drift, and on 2026-08-17 they had:
+ * `app/src/modules/paldex.tsx` — and nothing but attention keeps the two in
+ * step. Within a day of each other they were caught missing FOUR things on the
+ * website: the work levels at 4 stars, the partner-skill level badge, the
+ * Drops section, and the Born-with section. So this file guards the card as a
+ * whole: the sections it must have, and the condensing rules it must state.
+ *
+ * Both tell the player what condensing does. They are separate code, so they
+ * can drift, and on 2026-08-17 they had:
  * the phone raised every work level at 4 stars and explained the 1-3 star case,
  * while the website printed "all work +1" and then showed unchanged numbers.
  *
@@ -88,6 +94,50 @@ describe('both platforms describe condensing the same way', () => {
     for (const [who, src] of files) {
       expect(code(src), `${who} stopped labelling condensing as community-measured`)
         .toContain('community-measured');
+    }
+  });
+});
+
+/**
+ * Section-level parity. The website was missing Drops and Born with entirely —
+ * `drops` (298 species) and `ranch_produce` (29) were sitting in the same JSON
+ * the site already loads with nothing rendering them, and the born-with
+ * passives file was imported by the suggestions screen but never by the card.
+ * Nobody noticed because each card looked complete on its own; the gap only
+ * appears when you list both.
+ *
+ * The headings differ in wording ("Base stats" on the phone, "Stats" on the
+ * web), so the pairing is spelled out rather than compared as sets — and a
+ * section added to one platform and not the other fails here with a message
+ * naming which one is behind.
+ */
+describe('both pal cards offer the same sections', () => {
+  const SECTIONS: { what: string; phone: string; web: string }[] = [
+    { what: 'the stat block', phone: 'Base stats', web: 'Stats' },
+    { what: 'what it drops', phone: 'Drops', web: 'Drops' },
+    { what: 'work suitability', phone: 'Work suitability', web: 'Work suitability' },
+    { what: 'guaranteed passives', phone: 'Born with', web: 'Born with' },
+    { what: 'the partner skill', phone: 'Partner skill —', web: 'Partner skill —' },
+    { what: 'how to breed it', phone: 'How to breed it', web: 'How to breed it' },
+    { what: 'recipes it appears in', phone: 'Special recipes as a parent', web: 'Special recipes as a parent' },
+    { what: 'where it lives', phone: 'Where to find it', web: 'Where to find it' },
+  ];
+
+  for (const { what, phone, web } of SECTIONS) {
+    it(`both show ${what}`, () => {
+      expect(code(files[0][1]), `the phone's card lost "${phone}"`).toContain(phone);
+      expect(code(files[1][1]), `the website's card lost "${web}"`).toContain(web);
+    });
+  }
+
+  it('renders the ranch produce and food fields both platforms mine', () => {
+    for (const [who, src] of files) {
+      const c = code(src);
+      expect(c, `${who} stopped showing ranch produce`).toContain('ranch_produce');
+      expect(c, `${who} stopped showing how much it eats`).toMatch(/\bfood\b/);
+      // the food gauge's ceiling must come from the data, never a literal
+      expect(c, `${who} hard-coded a food ceiling instead of reading the data`)
+        .toMatch(/FOOD_MAX/);
     }
   });
 });

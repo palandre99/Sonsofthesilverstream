@@ -17,6 +17,15 @@ export interface PalInfo {
   partner_skill: string | null;
   partner_effect: string | null;
   base_support: Record<string, unknown> | null;
+  /** How hungry it is, 1..9 — the phone has drawn this gauge since launch and
+   * the website's own type did not even declare the field. Present on 298 of
+   * the 299 species. */
+  food: number | null;
+  /** What it drops when defeated or caught (298 species) and what it makes on
+   * a Ranch (29). Both sat in the JSON the site already loads, rendered by
+   * nothing on the web — the pal card showed neither. */
+  drops: string[];
+  ranch_produce: string[] | null;
   /** How the game actually hands you this pal — dungeons, loot eggs, caged
    * pals in enemy camps, the Pal Recruiter, raids, fishing. Mined for 251 of
    * the 299 species and, until now, shown by nothing. */
