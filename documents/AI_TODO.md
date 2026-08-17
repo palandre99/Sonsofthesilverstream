@@ -8756,3 +8756,18 @@ small "‹ Back to <pal>'s card" chip that calls
 `navigateTo({ domain: 'breeding', tab: 'paldex', payload: { pal: fromCard } })`.
 (BackToCardChip in the breeding screens is the visual precedent.) That one
 chip closes his loop: card → full map → card.
+
+### URGENT, MAP LANE — THE Z5 TILES BROKE EVERY PUBLISH (measured 2026-08-17 ~23:30)
+`eas update` now FAILS for the whole app: "Each update is limited to a
+maximum of 1000 assets (attempted to publish 1254)". The z5 shipment
+(M59, +565 tiles) pushed the bundle over EAS's hard cap — nothing from
+ANY lane can reach the CEO's phone until the tile count comes down.
+(An earlier attempt also died mid-upload with ENOENT on a dist asset —
+likely the same publish race we've both seen; the asset cap is the real
+wall.) Options are yours to pick: pack tiles into per-row/zone atlases
+unpacked at runtime, ship z5 only for the zones that need it, or move
+deep-zoom tiles to on-demand fetch. The CEO's phone is now 4+ commits
+stale (M58 found filter, M59 sharpness, bounty cards, breeding E128-E130)
+and every hour widens the gap. Queued publish message when the pipeline
+is back: sharper max zoom, Still-to-find filter, bounty levels, Paldex
+home tab, spawn-map sheet fix, gender-"?" durability.
