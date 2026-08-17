@@ -869,7 +869,10 @@ export function MapScreen() {
           most valuable thing we can teach is the feature nobody else has,
           which is otherwise buried two taps deep inside Find. */}
       {/* Nothing is drawn AND nothing is switched on — a genuinely new map. */}
-      {active.length === 0 && !sheet && !hintOff
+      {/* A player who has dropped a mark has already found the control
+          cluster — the hint's job is done. This also ends the collision where
+          the "My mark" pill drew on top of the hint's last line. */}
+      {active.length === 0 && !sheet && !hintOff && myPins.length === 0
         && filters.pals.size === 0 && filters.poi.size === 0 && (
         <Pressable
           onPress={() => setHintOff(true)}
@@ -1055,8 +1058,10 @@ export function MapScreen() {
                   ? `${shownCount.toLocaleString()} ${shownCount === 1 ? 'spot' : 'spots'} on the map`
                   : ''}
                 {shownCount > 0 && myPins.length > 0 ? ' · ' : ''}
+                {/* "1 of my mark" was broken English, and even the plural
+                    "N of my marks" implied a subset. It is all of them. */}
                 {myPins.length > 0
-                  ? `${myPins.length} of my ${myPins.length === 1 ? 'mark' : 'marks'}`
+                  ? (myPins.length === 1 ? 'My mark' : `My ${myPins.length} marks`)
                   : ''}
               </Text>
             </Pressable>
@@ -1486,8 +1491,17 @@ function LayerSheet({
       list.push(l);
       by.set(l.group, list);
     }
-    return [...by.entries()];
-  }, []);
+    // Layers this map actually HAS come first; "none here" chips sink to the
+    // end of their group. On the World Tree 15 of 23 layers are empty, and
+    // the wide dimmed chips wrapped one-per-line and scattered the useful
+    // ones apart — the sheet read as a list of what you cannot have. Stable
+    // within each half, so the familiar order survives.
+    const here = (id: string) => ((poiPoints(id, filters.region)?.n ?? 0) > 0 ? 0 : 1);
+    return [...by.entries()].map(([g, list]) => [
+      g,
+      [...list].sort((a, b) => here(a.id) - here(b.id)),
+    ] as [LayerGroup, ReturnType<typeof poiLayers>]);
+  }, [filters.region]);
 
   return (
     <SheetShell title="What to show" onClear={onClear} onClose={onClose}>
@@ -1504,7 +1518,7 @@ function LayerSheet({
           >
             <Icon name="map-marker-off-outline" size={15} color={T.muted} />
             <Text style={{ color: T.muted, fontWeight: '700', fontSize: 12.5 }}>
-              Clear {myMarks} of my {myMarks === 1 ? 'mark' : 'marks'}
+              {myMarks === 1 ? 'Clear my mark' : `Clear my ${myMarks} marks`}
             </Text>
           </Pressable>
         )}

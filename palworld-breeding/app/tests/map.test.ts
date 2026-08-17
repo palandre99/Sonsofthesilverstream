@@ -2092,7 +2092,9 @@ describe('your marks are accounted for like everything else on the map', () => {
     // the map contradicting itself is the exact bug this fane keeps getting
     // caught by (cf. the Mau banner)
     expect(screen).toMatch(/shownCount > 0\s*\n?\s*\? `\$\{shownCount\.toLocaleString\(\)\}/);
-    expect(screen).toMatch(/of my \$\{myPins\.length === 1 \? 'mark' : 'marks'\}/);
+    // "1 of my mark" was broken English and "N of my marks" implied a subset
+    expect(screen).toContain("? 'My mark'");
+    expect(screen).toContain('`My ${myPins.length} marks`');
   });
 
   it('and counts them SEPARATELY from the datamined spots', () => {
@@ -2103,7 +2105,9 @@ describe('your marks are accounted for like everything else on the map', () => {
   });
 
   it('can be cleared for THIS map only, without touching the other one', () => {
-    expect(screen).toMatch(/Clear \{myMarks\} of my \{myMarks === 1 \? 'mark' : 'marks'\}/);
+    // it clears ALL of them on this map, so it must not read like a subset
+    expect(screen).toContain("'Clear my mark'");
+    expect(screen).toContain('`Clear my ${myMarks} marks`');
     expect(screen).toContain('clearPins(region)');
   });
 });
@@ -2217,5 +2221,27 @@ describe('renaming a mark offers exactly the two verbs that end an edit', () => 
     expect(at, 'the remove handler must exist').toBeGreaterThan(-1);
     const before = screen.slice(at - 700, at);
     expect(before).toContain('draft === null && (');
+  });
+});
+
+describe('round-3 fixes hold', () => {
+  const screen = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
+  );
+
+  it('layers this map has come before the ones it lacks', () => {
+    // On the World Tree 15 of 23 layers are empty and the wide "none here"
+    // chips wrapped one-per-line, scattering the useful chips apart. Verified
+    // live: Fast travel/Tower boss/NPC lead, the empties sink.
+    const memo = screen.slice(screen.indexOf('const groups = useMemo'),
+      screen.indexOf('const groups = useMemo') + 1100);
+    expect(memo).toContain('here(a.id) - here(b.id)');
+    expect(memo).toContain('[filters.region]');
+  });
+
+  it('the first-run hint stands down once the player has a mark', () => {
+    // its job is teaching the controls; a dropped mark proves they were
+    // found — and the "My mark" pill drew on top of the hint's last line
+    expect(screen).toMatch(/!hintOff && myPins\.length === 0/);
   });
 });
