@@ -402,3 +402,78 @@ function decodeFromXY(xy: Float32Array, n: number): PointSet {
   for (const [key, list] of buckets) packed.set(key, Int32Array.from(list));
   return { xy, n, buckets: packed };
 }
+
+/* ------------------------------------------------- rescuing a mistyped name */
+
+/**
+ * Edit distance, abandoned as soon as it exceeds `cap`.
+ *
+ * Pal names are invented words — Foxparks, Jormuntide, Katress Ignis — typed
+ * on a phone keyboard, so transposing two letters is the normal case rather
+ * than the exotic one. The map's search is a substring match, which is right
+ * for the common path and gives NOTHING for "foxpraks". The player is then
+ * told, correctly and uselessly, that nothing goes by that name.
+ *
+ * Capped because we only ever ask "is this close enough", never "how far".
+ */
+function editDistance(a: string, b: string, cap: number): number {
+  if (Math.abs(a.length - b.length) > cap) return cap + 1;
+  // Optimal string alignment, NOT plain Levenshtein: a swapped pair of
+  // adjacent letters costs ONE edit here and two there. That distinction is
+  // the whole point — swapping two letters is the commonest typo on a phone,
+  // and charging it double meant a short name could never survive its most
+  // likely misspelling. "ignsi" is one slip from "ignis" and two from nothing.
+  let two = new Array<number>(b.length + 1);
+  let prev = new Array<number>(b.length + 1);
+  let curr = new Array<number>(b.length + 1);
+  for (let j = 0; j <= b.length; j++) prev[j] = j;
+  for (let i = 1; i <= a.length; i++) {
+    curr[0] = i;
+    let best = curr[0];
+    for (let j = 1; j <= b.length; j++) {
+      const sub = prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1);
+      let v = Math.min(sub, prev[j] + 1, curr[j - 1] + 1);
+      if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) {
+        v = Math.min(v, two[j - 2] + 1);          // the swap
+      }
+      curr[j] = v;
+      if (v < best) best = v;
+    }
+    if (best > cap) return cap + 1;      // this row is already too far gone
+    const spare = two;
+    two = prev;
+    prev = curr;
+    curr = spare;
+  }
+  return prev[b.length];
+}
+
+/**
+ * Names a typo was probably reaching for. ONLY consulted when the exact
+ * search found nothing, so the common path is untouched and cannot regress.
+ *
+ * Matches against each WORD as well as the whole name, so "ignis" still finds
+ * "Katress Ignis" and a typo in the second word is caught too.
+ */
+export function closeMatches(query: string, names: string[], limit = 6): string[] {
+  const q = query.trim().toLowerCase();
+  // two letters is not a typo, it is a prefix, and it would match half the box
+  if (q.length < 3) return [];
+  // one slip per four characters, so short names are not matched to anything
+  const cap = q.length <= 5 ? 1 : 2;
+
+  const scored: { name: string; d: number }[] = [];
+  for (const name of names) {
+    const low = name.toLowerCase();
+    let best = editDistance(q, low, cap);
+    if (best > cap) {
+      for (const word of low.split(' ')) {
+        const d = editDistance(q, word, cap);
+        if (d < best) best = d;
+      }
+    }
+    if (best <= cap) scored.push({ name, d: best });
+  }
+  scored.sort((x, y) => (x.d - y.d) || x.name.localeCompare(y.name));
+  return scored.slice(0, limit).map((r) => r.name);
+}

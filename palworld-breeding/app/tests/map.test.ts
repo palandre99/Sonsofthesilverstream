@@ -19,7 +19,8 @@ import { foundKey } from '../src/map/found';
 import { clusterPoints, decodePoints, pointsInRect } from '../src/map/points';
 import { regionOf, uvToReadout, worldToUv, tileLevelFor } from '../src/map/projection';
 import {
-  isNightOnly, poiPoints, searchPlaces, spawnablePals, spawnLevels, spawnPoints, spawnSplit,
+  closeMatches, isNightOnly, poiPoints, searchPlaces, spawnablePals, spawnLevels,
+  spawnPoints, spawnSplit,
   wildBands,
 } from '../src/map/layers';
 import { REGION_SPOTS } from '../src/data/regionSpots.g';
@@ -1919,5 +1920,48 @@ describe('the first-run hint teaches the thing nobody else has', () => {
     expect(guard).toContain('filters.pals.size === 0');
     expect(guard).toContain('filters.poi.size === 0');
     expect(screen).toContain('setHintOff(true)');
+  });
+});
+
+describe('a mistyped pal name gets rescued', () => {
+  const onMap = spawnablePals().filter((n) => spawnLevels(n, 'palpagos') !== null);
+
+  it('catches the typos a thumb actually makes', () => {
+    // Blueprint §5 criterion 2 asks for FUZZY search. Ours was a substring
+    // match, which is right for the common path and gives NOTHING for a
+    // transposition — and pal names are invented words typed on glass.
+    expect(closeMatches('foxpraks', onMap)).toContain('Foxparks');   // transposed
+    expect(closeMatches('lupmoon', onMap)).toContain('Loupmoon');    // dropped
+    expect(closeMatches('blazehowel', onMap)).toContain('Blazehowl'); // inserted
+    expect(closeMatches('katres', onMap)).toContain('Katress');      // dropped
+  });
+
+  it('matches a word inside a name, not just the whole thing', () => {
+    // "ignis" should still reach "Katress Ignis" even mistyped
+    expect(closeMatches('ignsi', onMap).some((n) => n.includes('Ignis'))).toBe(true);
+  });
+
+  it('and REFUSES to guess when there is nothing close — the part that matters', () => {
+    // A rescue that fires on anything is worse than none: it would put four
+    // confident wrong answers under "Did you mean".
+    expect(closeMatches('zzzzqq', onMap)).toEqual([]);
+    expect(closeMatches('qwertyuiop', onMap)).toEqual([]);
+    // two letters is a prefix, not a typo — it would match half the box
+    expect(closeMatches('fo', onMap)).toEqual([]);
+    expect(closeMatches('', onMap)).toEqual([]);
+  });
+
+  it('is stricter on short names, where one slip is most of the word', () => {
+    // cap is 1 below 6 characters. "mau" must not drag in "may"-ish noise.
+    const short = closeMatches('mau', onMap);
+    for (const n of short) expect(n.length).toBeLessThanOrEqual(6);
+  });
+
+  it('is only consulted when the exact search came back empty', () => {
+    const screen = readFileSync(
+      join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
+    );
+    expect(screen).toMatch(/list\.length === 0 && q\.trim\(\) \? closeMatches\(q, base, 4\) : \[\]/);
+    expect(screen).toContain('Did you mean');
   });
 });

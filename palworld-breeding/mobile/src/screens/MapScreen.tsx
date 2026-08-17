@@ -23,7 +23,8 @@ import {
 import { clusterPoints, nearestPoint, pointsInRect, type PointSet } from '../map/points';
 import { uvToReadout, regionOf, type RegionId } from '../map/projection';
 import {
-  GROUP_LABEL, alphaSpots, dungeonPoints, emptyFilters, isNightOnly, poiLayer,
+  GROUP_LABEL, alphaSpots, closeMatches, dungeonPoints, emptyFilters, isNightOnly,
+  poiLayer,
   poiLayers, poiPoints, searchPlaces,
   poiName, spawnLevels, spawnPoints, spawnablePals, wildBands,
   type LayerGroup, type MapFilters,
@@ -1356,6 +1357,20 @@ function PalSheet({
     return sortedPals(applyFilters(named, pf), sort);
   }, [base, pf, q, sort]);
 
+  /**
+   * Names a typo was probably reaching for.
+   *
+   * Pal names are invented words typed on a phone keyboard — Foxparks,
+   * Jormuntide, Katress Ignis — so transposing two letters is ordinary, not
+   * exotic. "foxpraks" matched nothing and the app said so, correctly and
+   * uselessly. Computed ONLY when the exact search came back empty, so the
+   * common path is untouched and cannot regress.
+   */
+  const didYouMean = useMemo(
+    () => (list.length === 0 && q.trim() ? closeMatches(q, base, 4) : []),
+    [base, list.length, q],
+  );
+
   /** what the filter button says out loud, so an active filter is never hidden */
   const bits: string[] = [];
   if (pf.own !== 'all') bits.push(OWN_LABEL[pf.own]);
@@ -1544,6 +1559,33 @@ function PalSheet({
                       ? 'No pal on this map matches those filters.'
                       : 'Nothing left to find here — you own every pal that spawns on this map.'}
               </Text>
+            )}
+            {didYouMean.length > 0 && (
+              <View style={{
+                flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center',
+                gap: 7, paddingTop: 8,
+              }}>
+                <Text style={{ color: T.faint, fontSize: 12.5, fontWeight: '700' }}>
+                  Did you mean
+                </Text>
+                {didYouMean.map((n) => (
+                  <Pressable
+                    key={n}
+                    onPress={() => { void Haptics.selectionAsync(); setQ(n); }}
+                    accessibilityRole="button"
+                    style={{
+                      flexDirection: 'row', alignItems: 'center', gap: 6,
+                      paddingHorizontal: 9, paddingVertical: 6, borderRadius: 11,
+                      borderWidth: 1, borderColor: T.accent, backgroundColor: T.accentSoft,
+                    }}
+                  >
+                    <PalIcon name={n} size={18} />
+                    <Text style={{ color: T.accentInk, fontWeight: '800', fontSize: 12.5 }}>
+                      {n}
+                    </Text>
+                  </Pressable>
+                ))}
+              </View>
             )}
           </View>
         )}
