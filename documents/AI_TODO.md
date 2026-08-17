@@ -8428,3 +8428,31 @@ NEXT (M52 item 2): the independent accuracy audit — second coordinate
 source vetted for licence/provenance, per-point distance tables for
 alphas + fast_travel + towers, distribution + every outlier chased to a
 verdict. His screenshot of any specific wrong pin outranks the audit.
+
+### M54 — THE INDEPENDENT PLACEMENT AUDIT (M52 item 2): 0.0 m, 100% coverage
+His charge: "I think a lot of stuff u have placed isn't accurate so
+triple check... Never guess." Audited offline from the vetted cache, two
+INDEPENDENT pipelines, both carrying raw world coordinates (no projection
+involved — pure world-space distance):
+- Witness A: the OFFICIAL dedicated-server package's boss table
+  (DT_BossSpawnerLoactionData via atlas-data, build 24575149): 82
+  overworld boss locations on Palpagos.
+- Witness B: pal-atlas pois.json — the community pipeline every POI layer
+  we ship came from.
+RESULT:
+- 64/64 alphas matched by species: distance 0.0 m on every single one —
+  pal-atlas carries the game's own numbers byte-exactly.
+- The 18 officials without an alpha_pals match are EXACTLY the 18 sealed
+  realms, each at 0.0 m from its Sealed Realm pin (Caprity Noct/Smokie/
+  Penking/... all 18/18). Nothing is missing; they are categorised the
+  way the game presents them.
+- VERDICT: 82/82 official boss locations are on our map at 0.0 m error.
+HONEST LIMITS: fast_travel/towers/dungeons/chests have NO second official
+table among our sources — their witnesses are (1) the pipeline that just
+proved byte-exact on the one layer where an official cross-check exists,
+and (2) the M46 land-fit (96-100% within 6px of land, misses inside the
+shallow-water glow). That is what "triple-checked" can honestly mean
+tonight; a specific wrong-pin screenshot from him still outranks all of
+it and gets chased as its own case.
+NOTHING user-visible changed — the deliverable is the verdict. M52 queue
+COMPLETE (lists M53 + audit M54).
