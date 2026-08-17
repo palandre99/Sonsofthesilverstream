@@ -7957,3 +7957,30 @@ PUBLISH: guard blocked — goals lane mid-feature in PalDetail.tsx. d28b205
 retries next tick; it is not "done" until it is on his phone.
 NEXT: publish retry -> slice 3 share/export text (the seed of cross-device
 sync) -> the M38 pre-existing oddities as eval targets between slices.
+
+### M41 — SHARE A ROUTE: THE DESIGN, decided before code
+**What is shared:** ONE region's route as a text message a human can read
+AND a phone can import losslessly. Readable header + numbered stop labels,
+then a machine token `[palforge-route <base64(JSON)>]`. Base64 because
+messaging apps rewrite straight quotes into curly ones (smart punctuation)
+— raw JSON in a chat message is a format that corrupts itself in transit.
+The JSON carries {v:1, region, stops:[[u,v,label]...]} at full float
+precision: the READOUT is display, uv is truth, import must be lossless.
+**The codec is PURE** — `mobile/src/map/routeShare.ts`, no RN imports
+(type-only imports erase at compile), hand-rolled UTF-8+base64 so nothing
+depends on whether Hermes ships btoa (unverifiable from here, F35). Being
+pure, the gate can EXECUTE it: real round-trip tests, not text assertions.
+**Verbs live in the Layers sheet** beside Clear my route: "Share my route"
+(OS share sheet via core RN Share — no new dependency) and "Import a route
+from the clipboard" (expo-clipboard 8.0.8, already in package.json).
+**Import semantics, all refusals in plain language:**
+- no token in the pasted text -> say so;
+- damaged/tampered token -> say so;
+- ANY row failing the stop guard -> the WHOLE import refused (a route with
+  missing stops is a DIFFERENT route — never salvage);
+- wrong region -> refuse and NAME the right map ("This is a Palpagos
+  Islands route — switch to that map to import it");
+- existing route on this map -> Alert confirm Replace/Cancel. NEVER merge.
+**Guards to prove-fail:** garbage refused; truncated token refused; region
+mismatch refused; round-trip preserves order and labels byte-for-byte.
+This is also the seed of cross-device sync: the wire format exists now.
