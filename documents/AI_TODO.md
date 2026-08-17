@@ -2098,6 +2098,60 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E107. WALKED A GENUINELY FRESH INSTALL — THE CHAIN HOLDS, AND ONE
+## SCREEN CHANGED ITS MIND ABOUT A WORD 2026-08-17 (overnight)
+
+Nobody had taken the first-launch path since the sample box shipped at E101.
+Snapshotted his data, **cleared every stored key** — no box, no plan, no
+profile, no level — and walked it as a new player.
+
+**THE WHOLE CHAIN HOLDS.** Worth recording in full, because it is the product's
+first impression and it has never been checked end to end:
+
+| step | what a new player gets |
+|---|---|
+| first launch | lands on the Calculator, profile "My world", **no storage written yet** |
+| Plan tab | *"Your collection is empty — the planner needs to know what you own"* + **Open the Paldex** |
+| that button | opens the Paldex's *"Nothing ticked yet"* card |
+| Try a sample box | **12 owned · 258 of 299 reachable**, empty card gone |
+| back to Plan | empty-collection warning gone, offers Browse suggested goals / Pick a pal yourself |
+| Suggested goals | real rankings against the NEW box — BREED · 2 STEPS, CATCH LV 20, CATCH LV 6, HAVE IT |
+| add + build | **"1 goal in this plan · 2 STEPS · 0/2 DONE · 1 READY NOW · planned just now"** |
+
+Nothing clipped, no horizontal overflow at 375 pt, console clean on all four
+tabs.
+
+**THE ONE DEFECT, AND IT LIVES ONLY ON THAT PATH.** The Plan tab says **goal**
+everywhere — "Suggested goals", "Choose your goals", "N goals in this plan",
+"Remove all N goals", "One goal has no route yet". But the two controls a
+**first-time** player touches said:
+
+    "+ Add target…"        "Plan 1 target"
+
+and a card lower down used both words in consecutive lines: *"Every goal in
+this plan… Add another **target** above."* Worst of all, **the re-plan button
+twenty-five lines away already said "Plan this goal" / "Plan these N goals" for
+the SAME action** — so the screen had two wordings for one button, and the
+jargon one was reserved for the player least able to absorb it. All three now
+say goal. `targets` stays the variable name; the player never reads it.
+
+**NOT VERIFIED, SAID PLAINLY:** I did not tick a step. The tick control is not
+reachable by aria-label, and it is long-established code rather than anything
+this run touched — hunting its selector was not worth the tick.
+
+**MY GUARD WAS WRONG TWICE BEFORE IT WAS RIGHT (METHOD #31, third night
+running).** I tried to EXTRACT every player-visible string with regexes: first
+it flagged `${targets.length}` inside "Remove all N goals" as the word
+"targets" leaking (it is a value, not copy — same fix as E104: substitute
+interpolations first); then, widened, it swallowed half the file's SOURCE CODE
+and reported functions as copy. **A regex extractor over TSX is the wrong tool.**
+The test now names the exact strings it forbids and the exact strings it
+requires — precise, readable, and incapable of over-matching.
+
+`planner-copy.test.ts` (4). Gates 480. Mobile typecheck clean. His data
+restored key-by-key and re-verified: 26 owned / 8 goals / 35 steps / 3 checks /
+Lv 42. Published to both channels.
+
 ## E106. ZERO / ONE / MANY ON PLAN AND PALDEX — A DESTRUCTIVE
 ## CONFIRM THAT COUNTED TO ONE 2026-08-17 (overnight)
 
