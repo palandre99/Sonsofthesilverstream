@@ -2768,7 +2768,7 @@ describe('the list behind a layer (CEO: "find the one I am looking for")', () =>
     );
     const at = screen.indexOf('typeof sheet === ');
     expect(at, 'the list view must exist').toBeGreaterThan(-1);
-    const view = screen.slice(at, at + 3200);
+    const view = screen.slice(at, at + 9000);
     expect(view).toContain("canvas.current?.focus(item.u, item.v, 0.06)");
     expect(view).toContain('setSheet(null)');
     expect(view).toContain('isFound(foundKey(sheet.list, region, item.index))');
@@ -2795,8 +2795,9 @@ describe('the list, round 2 (CEO: "Work")', () => {
     expect(screen).toContain('nameTally.get(item.name) ?? 0) > 1');
     expect(screen).toContain('whereFromLine(item.u, item.v, region)');
     // and the list opens with honest progress
-    expect(screen).toContain('`All ${rows.length} found`');
-    expect(screen).toContain('`${foundCount2} of ${rows.length} found`');
+    // progress counts the FULL list even while filters narrow the rows
+    expect(screen).toContain('`All ${rowsAll.length} found`');
+    expect(screen).toContain('`${foundCount2} of ${rowsAll.length} found`');
   });
 });
 
@@ -2894,7 +2895,7 @@ describe('bounties carry their level and wanted poster (CEO 22:42) — EXECUTED'
     expect(screen).toContain('const plv = poiLv(layer.key.slice(4), region, origIndex);');
     expect(screen).toContain('lines.unshift(`Level ${plv}`)');
     expect(screen).toContain('const pinfo = poiInfo(layer.key.slice(4), region, origIndex);');
-    expect(screen).toContain('poiLv(sheet.list, region, item.index)');
+    expect(screen).toContain('poiLv(sheet.list, region, r.index)');
   });
 });
 
@@ -2928,5 +2929,21 @@ describe('the sheets resize (CEO 23:22)', () => {
     expect(screen).toContain('Tap to cycle half, tall and full screen');
     // release snaps to the NEAREST stop — no free-floating heights
     expect(screen).toContain('SHEET_SNAPS.forEach((f, i) => {');
+  });
+});
+
+describe('list filters (CEO 22:38: search, level, paldex link)', () => {
+  const screen = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
+  );
+
+  it('search, level sort and only-missing are wired, and reset on open', () => {
+    expect(screen).toContain("rows.filter((r) => r.name.toLowerCase().includes(needle))");
+    expect(screen).toContain("(lvOf(a) ?? 999) - (lvOf(b) ?? 999)");
+    expect(screen).toContain("!ownedAny(r.name.slice(6))");
+    // stale filters must not leak into the next list
+    expect(screen).toContain("setListQ(''); setListSort('name'); setListMissing(false);");
+    // the progress line stays honest against the FULL list, not the filtered
+    expect(screen).toContain('foundCount2 === rowsAll.length');
   });
 });

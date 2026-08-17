@@ -88,6 +88,11 @@ export function MapScreen() {
   /** a route spot whose card is open and has NO pin under it (the mark was
    *  deleted after the stop was added) — the stop must stay reachable */
   const [openStops, setOpenStops] = useState<{ u: number; v: number } | null>(null);
+  /** layer-list controls — "more filters, like paldex, type, level, search
+   *  for name" (CEO, 22:38). Reset each time a list opens. */
+  const [listQ, setListQ] = useState('');
+  const [listSort, setListSort] = useState<'name' | 'level'>('name');
+  const [listMissing, setListMissing] = useState(false);
   /** the draft name while renaming that pin — null when not renaming */
   const [draft, setDraft] = useState<string | null>(null);
 
@@ -1425,9 +1430,28 @@ export function MapScreen() {
 
       {typeof sheet === 'object' && sheet !== null && (() => {
         const layer = poiLayers().find((l) => l.id === sheet.list);
-        const rows = namedPoints(sheet.list, region);
-        if (!layer || rows.length === 0) { return null; }
-        const foundCount2 = rows.filter(
+        const rowsAll = namedPoints(sheet.list, region);
+        if (!layer || rowsAll.length === 0) { return null; }
+        const isAlphaList = sheet.list === 'alpha_pals';
+        const lvOf = (r: { name: string; u: number; v: number; index: number }) =>
+          poiLv(sheet.list, region, r.index)
+          ?? (isAlphaList && r.name.startsWith('Alpha ')
+            ? MAP_ALPHAS[r.name.slice(6)]?.find((a) =>
+              a.m === (region === 'palpagos' ? 0 : 1)
+              && Math.abs(a.u - r.u) < 0.002 && Math.abs(a.v - r.v) < 0.002)?.lv
+            : undefined)
+          ?? null;
+        const needle = listQ.trim().toLowerCase();
+        let rows = rowsAll;
+        if (needle) rows = rows.filter((r) => r.name.toLowerCase().includes(needle));
+        if (isAlphaList && listMissing) {
+          rows = rows.filter((r) => r.name.startsWith('Alpha ')
+            && !ownedAny(r.name.slice(6)));
+        }
+        if (listSort === 'level') {
+          rows = [...rows].sort((a, b) => (lvOf(a) ?? 999) - (lvOf(b) ?? 999));
+        }
+        const foundCount2 = rowsAll.filter(
           (r) => isFound(foundKey(sheet.list, region, r.index)),
         ).length;
         // Merchants, some statues and skill fruits share identical names —
@@ -1446,25 +1470,60 @@ export function MapScreen() {
               keyExtractor={(r) => `${r.index}`}
               contentContainerStyle={{ padding: 14, gap: 8 }}
               ListHeaderComponent={(
-                <Text style={{
-                  color: foundCount2 === rows.length ? T.ok : T.faint,
-                  fontSize: 11.5, fontWeight: '700', marginBottom: 2,
-                }}>
-                  {foundCount2 === rows.length
-                    ? `All ${rows.length} found`
-                    : `${foundCount2} of ${rows.length} found`}
-                </Text>
+                <View style={{ gap: 8, marginBottom: 4 }}>
+                  <SearchInput value={listQ} onChange={setListQ}
+                    placeholder={`Search ${layer.label.toLowerCase()}…`} />
+                  {isAlphaList && (
+                    <View style={{ flexDirection: 'row', gap: 8 }}>
+                      <Pressable
+                        onPress={() => setListSort(listSort === 'name' ? 'level' : 'name')}
+                        accessibilityRole="button"
+                        style={{
+                          paddingHorizontal: 10, paddingVertical: 6, borderRadius: 10,
+                          borderWidth: 1, borderColor: T.line, backgroundColor: T.surface,
+                        }}
+                      >
+                        <Text style={{ color: T.muted, fontWeight: '700', fontSize: 12 }}>
+                          {/* the label is the ACTION, not the state — "A to
+                              Z" while sorted A-Z read as a dead button */}
+                          {listSort === 'name' ? 'Sort by level' : 'Sort A to Z'}
+                        </Text>
+                      </Pressable>
+                      <Pressable
+                        onPress={() => setListMissing(!listMissing)}
+                        accessibilityRole="checkbox"
+                        accessibilityState={{ checked: listMissing }}
+                        style={{
+                          paddingHorizontal: 10, paddingVertical: 6, borderRadius: 10,
+                          borderWidth: 1,
+                          borderColor: listMissing ? T.accent : T.line,
+                          backgroundColor: listMissing ? T.accentSoft : T.surface,
+                        }}
+                      >
+                        <Text style={{
+                          color: listMissing ? T.accentInk : T.muted,
+                          fontWeight: '700', fontSize: 12,
+                        }}>
+                          Only ones I am missing
+                        </Text>
+                      </Pressable>
+                    </View>
+                  )}
+                  <Text style={{
+                    color: foundCount2 === rowsAll.length ? T.ok : T.faint,
+                    fontSize: 11.5, fontWeight: '700',
+                  }}>
+                    {foundCount2 === rowsAll.length
+                      ? `All ${rowsAll.length} found`
+                      : `${foundCount2} of ${rowsAll.length} found`}
+                  </Text>
+                </View>
               )}
               renderItem={({ item }) => {
                 const found = isFound(foundKey(sheet.list, region, item.index));
                 // an alpha's level is on its card; here it makes the list
                 // scannable for "what can I fight right now"
-                const lv = poiLv(sheet.list, region, item.index)
-                  ?? (sheet.list === 'alpha_pals' && item.name.startsWith('Alpha ')
-                    ? MAP_ALPHAS[item.name.slice(6)]?.find((a) =>
-                      a.m === (region === 'palpagos' ? 0 : 1)
-                      && Math.abs(a.u - item.u) < 0.002 && Math.abs(a.v - item.v) < 0.002)?.lv
-                    : undefined);
+                const lv = lvOf(item);
                 return (
                   <Pressable
                     onPress={() => {
@@ -1532,7 +1591,10 @@ export function MapScreen() {
           onClearFound={clearFound}
           onClearMine={() => { clearPins(region); setOpenPin(null); }}
           myMarks={myPins.length}
-          onOpenList={(id) => setSheet({ list: id })}
+          onOpenList={(id) => {
+            setListQ(''); setListSort('name'); setListMissing(false);
+            setSheet({ list: id });
+          }}
           onFoundMode={(m) => {
             void Haptics.selectionAsync();
             setFilters((f) => ({ ...f, found: m }));
