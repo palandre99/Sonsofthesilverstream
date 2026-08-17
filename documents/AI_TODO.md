@@ -2098,6 +2098,51 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E127. HATCH FLOW READ ALOUD + THE FIXPOINT DECOMPOSED AND PARKED HONESTLY
+## 2026-08-17 (night)
+
+**`celebrate.tsx` / `AnimatedCheck` / the hatching flow, read aloud:**
+
+- **Rarity tiers: CLEAN (#44).** The burst maps rarity words to ring counts;
+  measured the data — exactly the four tier keys exist (Common 121, Rare 105,
+  Epic 65, Legendary 8), so the unknown-rarity fallback (Common-sized burst)
+  is defence, not a path.
+- **Call sites: CLEAN.** The one `AnimatedCheck` user passes a full label and
+  the partial-state glyph; the `'step done'` fallback label is dead code.
+- **ONE DEFECT: the step checkbox's label asserted the state.** It read
+  "Done: Lamball + Cattiva = …" even when UNCHECKED, so a screen reader said
+  "Done: … checkbox, not checked" — a contradiction in one breath. A label
+  should name the THING; the checkbox reports its own state. Now "Breed
+  Lamball + Cattiva = …". (#43 applied to accessibility.)
+
+**The suggestions-sheet fixpoint, DECOMPOSED (method #32) and PARKED (#47):**
+
+| phase | measured (RN-web dev harness, 26-pal box) |
+|---|---|
+| tap → "Reading your save…" visible | 1,003 ms (modal mount) |
+| placeholder up → sections appear | **5,633 ms — the fixpoint phase** |
+
+So `cachedDerivations` dominates, confirmed — BUT the workspace records this
+same computation at **~335 ms on a real device**, and the dev harness is
+plausibly ~15× slower than his phone. Restructuring engine-adjacent code
+(the fixpoint lives behind the sacred planner) on the strength of a
+dev-harness timing would be the exact mistake #26 exists to stop, at night,
+with no device to verify on. **Parked with numbers: the next step is ONE
+measurement on a real build** (the same `Updates.manifest` probe the About
+screen needs — open item). If the device really pays multiple seconds, the
+candidates are chunking the fixpoint across frames (engine change, both
+trees, oracle) or warming the cache at boot (moves the freeze, must be
+measured, not assumed).
+
+Gates **655**. Mobile typecheck clean. Published to both channels.
+
+**LOOP STATUS, for the record:** ScheduleWakeup lost six confirmed firings
+today; the every-2-minutes cron (055d305f) is REGISTERED and also not being
+delivered. Both mechanisms confirmed-scheduled, zero arrivals — a harness
+fault this session cannot repair from inside. Told the CEO plainly; a session
+restart would reset it. Until then every CEO message runs a LONG multi-item
+turn (this one: read-aloud + label fix + fixpoint decomposition).
+
 ## INCIDENT NOTE (2026-08-17 night, breeding lane) — PUBLISH PROTOCOL BREACH, OWNED
 
 My E126 preview publish went out while the Map lane had UNCOMMITTED work on
