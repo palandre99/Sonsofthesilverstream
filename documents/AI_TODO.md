@@ -2098,6 +2098,61 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E94. WALKED THE APP AS A BRAND-NEW PLAYER, AND MEASURED THE SUGGESTED
+## GOALS SHEET FOR THE FIRST TIME 2026-08-17 (overnight)
+
+**THE EMPTY-STATE WALK CAME BACK CLEAN.** Scripted a first-launch state (empty
+box, no plan, no checks) on top of a snapshot and walked all five tabs. He has
+complained twice before about screens that are "empty and poor design"; none
+of them are now:
+
+- **Plan** names the problem and hands you the fix: *"Your collection is empty
+  — the planner needs to know what you own. Tick your pals in the Paldex, or
+  paste a list into it."* with an **"Open the Paldex" button** right there.
+- **Calculator** shows two dashed "Tap to choose" slots plus *"Tick the pals
+  you own in the Paldex and they will show up here as one-tap shortcuts."*
+- **Odds Lab**: *"Add passives to a parent above and the pool appears here."*
+- **Paldex** and **Reference** have nothing to be empty about.
+- Zero console errors in the whole walk.
+
+**THEN THE SUGGESTED GOALS SHEET, never measured before — and it held the
+three smallest controls in the app:**
+
+| control | was | now |
+|---|---|---|
+| "Tuned to your level N — tap to change" | **15 px** + 4 slop = 23 | 30 px + 8 = **46** |
+| the +/− badge on every pal tile | **19 px** + 6 slop = 31 | 19 px + 12 = **43** |
+| the section header that opens the browser | **21 px**, no slop at all | 29 px + 10 = **49** |
+
+The badges sit on tile corners and the tiles are ~78 px wide, so the generous
+slop cannot reach a neighbour's badge. Verified on the render after: level row
+30, section header 29; the only sub-36 left are the goal-row pal icons, which
+are the known 26 + slop 9 = 44.
+
+**A REAL PERFORMANCE NUMBER, measured properly.** Tapping "Suggested goals"
+**blocks the main thread for 1055 ms** on his real 26-pal box (empty box:
+visibly instant). Measured the honest way — schedule a `setTimeout(…, 0)`
+immediately after the click and read how late it actually fires; the click and
+the paint both happen inside that block.
+
+**TWO MEASUREMENT MISTAKES OF MY OWN, corrected in place (29th and 30th):**
+- My first two timings (2994 ms, 6814 ms) **included my own settle wait** —
+  the real figures are ~0.5 s and ~1 s. A number is not a measurement until
+  you know what is inside it.
+- A `requestAnimationFrame` poll to detect first paint **hung the tool for
+  30 s** — because the thread is blocked, rAF cannot fire until the work is
+  already finished, so it can never measure the block. That failure is itself
+  the evidence: the thread really is blocked, not merely slow.
+
+**1055 ms goes to the PARKED planner-performance item** (still Fable's), now
+with a concrete number and a repeatable way to measure it, rather than a
+re-architecture attempted at 3am. The old figure on record was a 4437 ms
+freeze, so this is already far better — but the bar says "no frozen JS thread"
+and one second is still felt.
+
+Gates: 423 passing, 0 expected failures, 24 files; both trees typecheck. His
+save restored with a zero-mismatch diff (26 owned confirmed after reload).
+
 ## E93. THE CAPABILITY DIFF CAME BACK CLEAN, AND THE LAST UNDERSIZED
 ## CONTROL WAS ON THE PAL CARD 2026-08-17 (overnight)
 

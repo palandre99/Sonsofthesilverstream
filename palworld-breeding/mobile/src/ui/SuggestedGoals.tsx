@@ -358,7 +358,10 @@ function PalChip({ name, lvl, star, bctx }: {
           </View>
         )}
         {addable && (
-          <Pressable hitSlop={6}
+          /* 19 px + 6 of slop was 31 — under the 44 pt minimum, on the badge
+             you tap to build a plan. The tiles are ~78 px wide and this sits
+             on a corner, so 12 cannot collide with a neighbour's badge. */
+          <Pressable hitSlop={12}
             accessibilityRole="button"
             accessibilityLabel={`Add ${name} to the plan`}
             onPress={() => {
@@ -375,7 +378,7 @@ function PalChip({ name, lvl, star, bctx }: {
           </Pressable>
         )}
         {added && (
-          <Pressable hitSlop={6}
+          <Pressable hitSlop={12}
             accessibilityRole="button"
             accessibilityLabel={`Remove ${name} from the plan`}
             onPress={() => bctx.onRemove([name])}
@@ -419,7 +422,9 @@ function SectionCard({ sec, bctx, onBrowse }: {
       backgroundColor: T.surface, borderWidth: 1, borderRadius: 14,
       borderColor: sec.gold ? T.goldSoft : T.line, padding: 12, gap: 8,
     }}>
-      <Pressable style={[s.row, { gap: 8 }]}
+      {/* the whole section header opens the browser, and it drew 21 px with
+          no slop at all */}
+      <Pressable hitSlop={10} style={[s.row, { gap: 8, paddingVertical: 4 }]}
         accessibilityRole="button"
         accessibilityLabel={`Browse all ${sec.title}`}
         onPress={() => {
@@ -753,7 +758,10 @@ function SheetBody({ onClose, targets, onAdd, onRemove }: SheetProps) {
           </View>
           {/* the sheet says what it's tuned to — and the level is settable
               right where it matters (CEO: player level on the world save) */}
-          <Pressable hitSlop={4}
+          {/* measured at 15 px tall with 4 of slop = 23 effective — the
+              smallest control in the app, and the one that tunes every
+              suggestion below it */}
+          <Pressable hitSlop={8}
             accessibilityRole="button"
             accessibilityLabel="Set your player level"
             onPress={() => {
@@ -762,7 +770,8 @@ function SheetBody({ onClose, targets, onAdd, onRemove }: SheetProps) {
             }}
             style={({ pressed }) => [{
               flexDirection: 'row', alignItems: 'center', gap: 5,
-              alignSelf: 'flex-start', opacity: pressed ? 0.6 : 1,
+              alignSelf: 'flex-start', paddingVertical: 7, minHeight: 30,
+              opacity: pressed ? 0.6 : 1,
             }]}>
             <Icon name="account-outline" size={14} color={T.accentInk} />
             <Text style={{ color: T.accentInk, fontSize: 11.5, fontWeight: '700' }}>
