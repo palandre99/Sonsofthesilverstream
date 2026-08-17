@@ -7695,3 +7695,14 @@ NEXT EVAL TARGETS (round 2): the pin card + rename flow visuals; the World
 Tree at all layers; the Find sheet's pre-results stack height (dungeon toggle
 + caps + Filter&sort ≈ 370px before the first result — candidate compaction);
 deep-zoom pin density at 9.6x.
+
+### M34 — EVAL ROUND 2, targets (a)+(b): one fix shipped, one clean pass
+- FIXED + PUBLISHED (7d54f24): mid-RENAME the pin card showed four buttons,
+  one of them Remove — deleting the whole mark one slip from Save. Edit mode
+  now shows ONLY Save/Cancel; Remove/Close return with view mode. Verified
+  live in both modes.
+- CLEAN: the World Tree at all 8 layers — 154 spots, exactly the documented
+  per-layer totals (15+4+1+7+30+38+47+12), pins well separated. No action.
+REMAINING ROUND-2 TARGETS: (c) the Find sheet's ~370px pre-results stack —
+candidate compaction; (d) deep-zoom pin density at 9.6x. Then a fresh-eyes
+round 3, then the backlog (routes, sync).
