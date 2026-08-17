@@ -2098,6 +2098,84 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E102. THE PLANNER WAS NOT ACTUALLY GIVING THE SHORTEST ROUTE —
+## PROVED IT, FIXED IT, MEASURED IT 2026-08-17 (overnight)
+
+The CEO asked for a "better engine" by name. The Plan tab has always
+promised **"the shortest breeding route to the pals you want"**, and in E52–E101
+nobody had ever checked whether that sentence was TRUE. It was not.
+
+**GROUND TRUTH BUILT FIRST.** `derivations` is a fixpoint over set-union costs
+— a heuristic, never proven minimal. So: a breadth-first search over sets of
+owned pals, where every layer is exactly one more breeding step. Slow,
+exponential, and obviously correct — the right shape for an oracle.
+
+**THE VERDICT: three of 119 species across five small boxes were routed LONG,
+by up to two steps.** The clearest case, with every step independently
+re-verified against the engine:
+
+    box: Lamball + Cattiva + Chikipi + Lifmunk        goal: Pengullet Lux
+    TRUE (4)                          PLANNER (6)
+      Cattiva + Lifmunk -> Cremis       Cattiva + Lifmunk -> Cremis
+      Cremis + Lifmunk -> Pengullet     Cremis + Lifmunk -> Pengullet
+      Lamball + Pengullet -> Sparkit    Cattiva + Chikipi -> Nox
+      Pengullet + Sparkit -> P. Lux     Chikipi + Nox -> Depresso
+                                        Depresso + Lifmunk -> Sparkit
+                                        Pengullet + Sparkit -> P. Lux
+
+Both routes need Sparkit. The planner bred it **standalone** — Nox, then
+Depresso, then Sparkit — while the plan was already producing Pengullet, and
+Lamball + Pengullet makes Sparkit in ONE. It commits to each ingredient's
+cheapest SOLO recipe and never reconsiders it in light of what the rest of the
+plan already provides.
+
+**THE FIX — a repair pass over the assembled plan.** Every pal in the plan is
+re-offered a recipe built from what the plan already produces; a swap is
+adopted only when the WHOLE plan gets strictly shorter AND still builds from
+the box. Never longer, never a new species, never a cycle — the same discipline
+E88 used.
+
+**One measured design correction inside the fix:** taking the FIRST improving
+swap took a one-step saving on Pengullet's recipe, which then blocked the
+two-step saving on Sparkit and stalled at five. Weighing every swap against the
+same plan and applying only the winner — steepest descent — finds the four.
+
+**MEASURED ACROSS TWELVE BOXES: 152 steps → 127. A sixth shorter, and NOT ONE
+BOX GOT LONGER.** His own 26-pal box: 12 → 10. The sample box: 13 → 11. The
+pinned plan sizes moved down with it (14 → 12, 35 → 26), which is the pin doing
+its job. `planFor` cost 4 ms → 18 ms across twelve plans; `derivations` still
+dominates at ~6 s and is cached.
+
+**THE PHONE NOW BEATS THE PYTHON REFERENCE.** The acceptance roster's 27 goals
+plan in **45 steps against the reference's 48** — three fewer eggs on his own
+fixture. Deliberate divergence, written into the planner docstring and the
+oracle test. **The 44,851-outcome species oracle is untouched and still replays
+with zero mismatches — that is the sacred guarantee, and this is not it.** The
+Python `planner.py` keeps the older routes until someone ports the pass.
+
+**The oracle test got stronger, not just renumbered.** A bare step count cannot
+tell a shorter plan from a broken one, so the reference plan is now validated
+from scratch: every step a real breeding pair, every parent in hand when it
+runs, all 27 goals reached, no pal bred twice. Trade-off recorded honestly: 45
+steps but 9 phases instead of 8, and 3 tie-break steps instead of 2.
+
+**KNOWN LIMIT, IN A TEST RATHER THAN HIDDEN.** One species in 119 — Melpaca
+from Chikipi + Pengullet + Depresso + Rooby — is still one step long. Its
+optimum routes through Hoocrates, a pal the plan does not otherwise make, which
+pays off only because it is used twice; reaching it needs two swaps at once
+across a plan of EQUAL length, and the pass only ever takes a strictly shorter
+one. `planner-shortcuts.test.ts` asserts the gap so a future fix has its test
+already waiting.
+
+Gates 453 (5 new). Both trees typecheck, engines byte-identical (`cmp`).
+Mutation-proven: neutering the pass fails four separate guards. Published to
+both channels.
+
+**NOT DONE, LOGGED:** E88's recipe-swap pass has the same theoretical cycle
+risk my pass guards against (`buildable`), and the wave builder THROWS on a
+cycle. Never observed in 453 tests or any session. Left alone deliberately
+rather than changed at 5am.
+
 ## E101. THE SAMPLE BOX — AAA CRITERION #10 CLOSED 2026-08-17 (overnight)
 
 **Criterion #10 of the CEO's own 15-point bar: "empty states teach the killer
