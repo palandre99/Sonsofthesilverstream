@@ -276,6 +276,28 @@ export function MapCanvas({
    */
   const rebase = useSharedValue(0);
   /**
+   * Did THIS touch sequence ever have more than one finger on the glass?
+   *
+   * THE THIRD DISTINCT CAUSE of "it snaps over to where my first finger was".
+   * The first two were real and are fixed (the pan/pinch hand-off, and the
+   * pointer-count rebase). This one is the double tap, which is not a bug in
+   * any formula at all — it is the map doing exactly what it was told, at a
+   * moment nobody meant to tell it.
+   *
+   * `doubleTap.onEnd` ANIMATES the map to centre on the tap point. Lift two
+   * fingers off a pinch and put them straight back — which is what everyone
+   * does while framing something — and RNGH can read those lifts as two taps.
+   * The old guard (`e.numberOfPointers > 1 || pinching.value`) cannot catch
+   * it: by the time onEnd runs the pinch has ended, so `pinching` is 0, and
+   * the pointer count is down to 1 or 0. TapGesture has no `maxPointers` to
+   * lean on either — the type definitions only offer `minPointers`.
+   *
+   * So track the sequence itself. A fresh single finger clears the flag; a
+   * second finger sets it, and it stays set until the next sequence begins.
+   * A tap that shared a sequence with a pinch can never move the map.
+   */
+  const multiTouch = useSharedValue(0);
+  /**
    * How many pointers the pan saw on its previous frame.
    *
    * The CEO pinned the symptom exactly: "it snaps over in the zoom to where my
@@ -391,6 +413,9 @@ export function MapCanvas({
     tx, ty]);
 
   const pinch = useMemo(() => Gesture.Pinch()
+    .onTouchesDown((e) => {
+      if (e.numberOfTouches > 1) multiTouch.value = 1;
+    })
     .onStart((e) => {
       runOnJS(markTouched)();
       startK.value = k.value;
@@ -422,10 +447,15 @@ export function MapCanvas({
       // whatever the pan reads next is measured from a different point than
       // what it read last — make it rebase before it writes anything
       rebase.value = 1;
-    }), [MAX_SCALE, clamp, gesturing, pinching, rebase, zoomFloor, k, markTouched, pinchFx,
+    }), [MAX_SCALE, clamp, gesturing, multiTouch, pinching, rebase, zoomFloor, k, markTouched, pinchFx,
     pinchFy, pinchTx, pinchTy, startK, tx, ty]);
 
   const doubleTap = useMemo(() => Gesture.Tap()
+    .onTouchesDown((e) => {
+      // one finger down and nothing else on the glass = a new sequence
+      if (e.numberOfTouches === 1) multiTouch.value = 0;
+      else multiTouch.value = 1;
+    })
     .numberOfTaps(2)
     // ONE finger. Both taps ran simultaneously with the pinch and neither
     // limited how many fingers could make them, so lifting two fingers off a
@@ -440,7 +470,7 @@ export function MapCanvas({
       // ANIMATES the map to a new centre over 220ms. That is the "snaps to a
       // different place when I release fingers" the CEO reported: a jump the
       // map makes on purpose, in entirely the wrong circumstances.
-      if (e.numberOfPointers > 1 || pinching.value) return;
+      if (e.numberOfPointers > 1 || pinching.value || multiTouch.value) return;
       // Double tap walks IN, and only goes home once there is nowhere left to
       // go. The threshold used to be a flat `zoomFloor * 3.5`, which was dead
       // code while the ceiling was 3.2x — it could never be reached, so the
@@ -459,17 +489,18 @@ export function MapCanvas({
       k.value = withTiming(next, { duration: 220 * glide });
       tx.value = withTiming(c.x, { duration: 220 * glide });
       ty.value = withTiming(c.y, { duration: 220 * glide });
-    }), [MAX_SCALE, clamp, glide, pinching, zoomFloor, k, tx, ty]);
+    }), [MAX_SCALE, clamp, glide, multiTouch, pinching, zoomFloor, k, tx, ty]);
 
   const tap = useMemo(() => Gesture.Tap()
     .maxDuration(260)
     .onEnd((e) => {
       // same reason: a two-finger lift-off must not open a marker card either
-      if (e.numberOfPointers > 1 || pinching.value) return;
+      if (e.numberOfPointers > 1 || pinching.value || multiTouch.value) return;
       if (!onPress) return;
       runOnJS(onPress)((e.x - tx.value) / k.value, (e.y - ty.value) / k.value);
     })
-    .requireExternalGestureToFail(doubleTap), [doubleTap, k, onPress, pinching, tx, ty]);
+    .requireExternalGestureToFail(doubleTap),
+  [doubleTap, k, multiTouch, onPress, pinching, tx, ty]);
 
   const gesture = useMemo(
     () => Gesture.Simultaneous(Gesture.Race(doubleTap, tap), Gesture.Simultaneous(pan, pinch)),

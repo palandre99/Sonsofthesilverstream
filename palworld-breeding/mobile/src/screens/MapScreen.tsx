@@ -314,6 +314,14 @@ export function MapScreen() {
   React.useEffect(() => {
     if (prevRegion.current !== null && prevRegion.current !== region) {
       canvas.current?.reset();
+      // A mark's card is a card about a place on THIS map. Leaving it open
+      // across a region switch left a Palpagos mark on screen while the World
+      // Tree was drawn underneath it and not one of its pins was visible —
+      // and its Remove button would have deleted a mark on the island you had
+      // just left. Same fault as the Mau banner: the map asserting something
+      // about a place that is not here.
+      setOpenPin(null);
+      setDraft(null);
     }
     prevRegion.current = region;
   }, [region]);

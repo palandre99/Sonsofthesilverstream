@@ -2151,3 +2151,31 @@ describe('naming a mark', () => {
     expect(row).toContain('maxWidth');
   });
 });
+
+describe('a mark card belongs to the map it is on', () => {
+  const screen = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
+  );
+
+  it('closes when you switch island', () => {
+    // Found by hostile review of my own night's work, then reproduced:
+    // open a Palpagos mark's card, switch to the World Tree, and the card
+    // stayed on screen with ZERO of its pins drawn underneath — and its
+    // Remove button would have deleted a mark on the island you just left.
+    // Same fault as the Mau banner: the map asserting something about a place
+    // that is not here.
+    const effect = screen.slice(
+      screen.indexOf('if (prevRegion.current !== null'),
+      screen.indexOf('if (prevRegion.current !== null') + 800,
+    );
+    expect(effect, 'the region-change effect must exist').toContain('canvas.current?.reset()');
+    expect(effect).toContain('setOpenPin(null)');
+    expect(effect).toContain('setDraft(null)');
+  });
+
+  it('and only when the region actually CHANGED, not on first mount', () => {
+    // closing it on mount would be harmless but wrong; the guard is what makes
+    // the auto-focus from a pal card survive
+    expect(screen).toMatch(/prevRegion\.current !== null && prevRegion\.current !== region/);
+  });
+});

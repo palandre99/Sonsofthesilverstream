@@ -122,7 +122,13 @@ async function main() {
 
   await send('Page.enable');
   await send('Runtime.enable');
-  await send('Page.navigate', { url: `http://localhost:8085/${route}` });
+  // The port is overridable because 8085 can be left in FIN_WAIT_2/CLOSE_WAIT
+  // after a night of starting and stopping the QA server, and a preview that
+  // cannot bind reads exactly like "the app is broken". .claude/launch.json
+  // keeps a second config (palforge-mobile-qa-b) on 8086 for that case:
+  //   QA_PORT=8086 node scripts/qa-shot.js ...
+  const port = Number(process.env.QA_PORT) || 8085;
+  await send('Page.navigate', { url: `http://localhost:${port}/${route}` });
   await sleep(12000);   // Metro's first bundle is slow; tiles then decode
 
   // Prove the APP is on screen before running a single step. Three separate

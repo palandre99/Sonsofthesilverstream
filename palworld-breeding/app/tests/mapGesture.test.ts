@@ -479,6 +479,46 @@ describe('the double-tap zoom ladder', () => {
   });
 });
 
+describe('a tap that shared a sequence with a pinch cannot move the map', () => {
+  /**
+   * THE THIRD DISTINCT CAUSE of "it snaps over to where my first finger was",
+   * reported after two real fixes had shipped. This one is not a formula at
+   * all: `doubleTap.onEnd` ANIMATES the map to centre on the tap point, so it
+   * is the map doing exactly what it was told at a moment nobody meant to
+   * tell it.
+   *
+   * Lift two fingers off a pinch and put them straight back — what everyone
+   * does while framing something — and those lifts can read as two taps. The
+   * old guard could not catch it: by then the pinch has ended so `pinching`
+   * is 0, and the pointer count is down to 1. TapGesture has no `maxPointers`
+   * either; the type definitions offer only `minPointers` (checked, not
+   * assumed).
+   */
+  const canvas = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'map', 'MapCanvas.tsx'), 'utf8',
+  );
+
+  it('tracks whether the sequence was ever multi-finger', () => {
+    expect(canvas).toMatch(/const multiTouch = useSharedValue\(0\)/);
+    // a second finger sets it, from the pinch's own touch stream
+    expect(canvas).toMatch(/if \(e\.numberOfTouches > 1\) multiTouch\.value = 1;/);
+    // a fresh single finger clears it, so a real double tap still works
+    expect(canvas).toMatch(/if \(e\.numberOfTouches === 1\) multiTouch\.value = 0;/);
+  });
+
+  it('and BOTH taps refuse to act while it is set', () => {
+    const guards = canvas.match(/pinching\.value \|\| multiTouch\.value\) return;/g) ?? [];
+    expect(guards.length, 'the double tap AND the single tap must both check it')
+      .toBe(2);
+  });
+
+  it('the double tap is the one that MOVES the map, which is why it matters', () => {
+    const dbl = canvas.slice(canvas.indexOf('const doubleTap'), canvas.indexOf('const tap ='));
+    expect(dbl).toContain('withTiming');
+    expect(dbl).toContain('multiTouch.value');
+  });
+});
+
 describe('the worklet copy matches this one', () => {
   const canvas = readFileSync(
     join(__dirname, '..', '..', 'mobile', 'src', 'map', 'MapCanvas.tsx'), 'utf8',
