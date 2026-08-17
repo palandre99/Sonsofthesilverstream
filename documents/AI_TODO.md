@@ -7320,3 +7320,41 @@ b1deb58 Reduce Motion + haptics · 8b2d5f8 the wedge in the hint ·
 d3f162c did-you-mean · 41bfda1/770d4d1 game-build stamp · 292b61d custom pins ·
 ee33cc7 marks counted and explained · 76059f1 naming a mark ·
 2622440 the snap's third cause + the cross-island card.
+
+### M27 — EVERY WRITER OF THE MAP TRANSFORM, ENUMERATED. No fourth cause.
+He has reported the zoom snap enough times that guessing at a fourth cause
+would be irresponsible. So instead of guessing: grep every line in MapCanvas
+that writes `k.value`, `tx.value` or `ty.value`. There are SIX, and each one
+was checked against "could this fire when the player did not ask for it".
+
+1. **onLayout re-fit** (l.332) — guarded by `!touched.current` AND only when
+   the size actually changes. Inert after the first touch of the session.
+2. **pan.onUpdate** (l.406) — guarded by the pinch check AND the pointer-count
+   rebase (M24's predecessor).
+3. **pinch.onUpdate** (l.440) — intentional; this IS the zoom.
+4. **doubleTap.onEnd** (l.489) — the one that was firing unbidden. Now guarded
+   by `multiTouch` as well (M24).
+5. **applyFocus** (l.609) — reached only from two callers: the auto-focus
+   effect and a place tap. The effect's deps are `[bossPins, focusKey]`, and
+   `bossPins` depends on `[filters.pals, region]` while `focusKey` derives
+   from `active` (deps: the filters + region). NEITHER changes during a
+   pinch — verified by reading the dependency arrays, which is the thing that
+   would have made this fire mid-gesture. It cannot.
+6. **reset** (l.638) — the "back to the whole map" button, and the region
+   change. Both explicit.
+
+The only memos that depend on `vp` (which DOES change every frame of a
+gesture) are marker recomputes at l.238, l.300 and l.500 — none of them write
+the transform. `settle` runs via runOnJS on animation completion and only
+reports the viewport.
+
+CONCLUSION: there is no fourth cause inside the map's own code. If he reports
+the snap again after 2622440, the cause is NOT in these six paths, and the
+next place to look is above the map — the nav/gesture stack that hosts it, or
+RNGH itself. Do not go back to the formulas; they have been proven three
+times now.
+
+### THE DISCRIMINATING QUESTION, if he reports it again
+"Does it happen on a SLOW SINGLE pinch, with no re-grip and no second pinch?"
+  YES -> the double-tap theory is wrong too; look OUTSIDE MapCanvas.
+  NO  -> it was the accidental double tap, and 2622440 is the fix.
