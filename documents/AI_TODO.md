@@ -6130,3 +6130,31 @@ prove it is restored. Never trust a loop to clean up after itself.
 b1deb58 Reduce Motion + haptics · 8b2d5f8 the wedge in the hint ·
 d3f162c did-you-mean · 41bfda1/770d4d1 game-build stamp ·
 292b61d custom pins · ee33cc7 marks counted and explained.
+
+### M23 — marks can be named — SHIPPED (76059f1, published)
+"-88, -346" says where a mark is and nothing about why you put it there.
+Tap a mark -> Rename -> "Nitewing parking spot".
+THE THREE FAILURE MODES, each handled and each WALKED:
+- CANCEL writes nothing. Typed a new name, cancelled, stored label unchanged.
+  Closing the card discards a half-typed name too.
+- AN EMPTY NAME falls back to the coordinates, so you never get a blank pin
+  you cannot tell from any other.
+- A LONG NAME is capped at 40 IN THE STORE (not in whichever caller remembers
+  to) because the label is player text — the one string this app does not
+  control. Typed 72, stored 40, card truncates with an ellipsis at the same
+  width; checked against the real rect, nothing overflows.
+Survives a restart: renamed, reloaded, came back named.
+
+### CUSTOM MARKS ARE FEATURE-COMPLETE
+drop (button, never a gesture) · name · rename · remove one · clear all
+(region-scoped) · counted in the pill separately from datamined spots ·
+listed in the key · persisted per profile · never clustered · colour proven
+unused by any data layer.
+REMAINING ROADMAP, still unbuilt: shareable ROUTES, search by ZONE,
+cross-device sync.
+
+### PUBLISHED TONIGHT — 10 updates, all verified on both channels
+48a4023 snap + 9.6x reach · 3fbe0e3 provenance + double-tap ladder ·
+b1deb58 Reduce Motion + haptics · 8b2d5f8 the wedge in the hint ·
+d3f162c did-you-mean · 41bfda1/770d4d1 game-build stamp · 292b61d custom pins ·
+ee33cc7 marks counted and explained · 76059f1 naming a mark.
