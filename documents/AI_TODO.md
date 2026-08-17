@@ -2144,6 +2144,17 @@ goals / 35 steps / 26 owned. Zero console errors across all five tabs.
 
 Gates green: 390 + 1 expected fail across 23 files, both trees typecheck.
 
+**PUBLISH HAZARD, LEARNED THE HARD WAY THIS TICK.** `git status` was clean
+when I committed, so I published — and `eas update` reported the commit with a
+trailing `*`, meaning the working tree was dirty AT BUNDLE TIME. The Map lane
+had written `MapCanvas.tsx` in the seconds between my commit and my publish,
+and that in-flight edit went to the CEO's phone inside my update. No damage
+(25 added lines, `mobile/ tsc --noEmit` clean on the published tree), but the
+rule needs sharpening: **the foreign-work check belongs IMMEDIATELY BEFORE
+`eas update`, not before the commit.** The window between them is enough. If
+the hash comes back with a `*`, someone else's work is in the bundle — check
+what it was before assuming it is fine.
+
 ## E86. CEO FEEDBACK: A FINISHED PLAN LOOKED EXACTLY LIKE AN UNFINISHED
 ## ONE, AND A REOPENED PHASE WAS A ONE-WAY DOOR 2026-08-17
 
