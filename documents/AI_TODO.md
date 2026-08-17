@@ -8153,3 +8153,28 @@ where-lines (M45), accuracy re-proof (M46). NEXT: fresh brutal eval round
 of the whole fane with the new features in it; then the zoom watch (About
 stamp + all-layers-off discriminator; cluster continuity is the queued
 hypothesis).
+
+### M47 — EVAL ROUND 4 (the fane with all the new features in it): 5 CLEAN PASSES, 0 fixes, 1 self-rejected alarm
+Walked hostile on QA, seeded marks+route, layers up to 3,358 spots:
+1. CLEAN — multi-layer POI card (Effigy): count + where-line ("390 m east
+   of the Great Eagle Statue") + Mark as found on one compact card, no
+   contradiction, switcher clear.
+2. CLEAN — pal cards carry NO where-line (probed), level band intact.
+3. SELF-REJECTED ALARM — "Anubis picked but no pins visible": the wide
+   westward frame is the DOCUMENTED intent (spawns on a west islet + alpha
+   in the desert, the exact case the framing comment records); the Find
+   sheet staying open is by design. Confirmed state before calling defect.
+4. CLEAN — magenta marks + chartreuse dotted route remain instantly
+   findable over the 3,358-pin chest+egg swarm; casing keeps the line
+   readable over pale sand. The M39 re-hue is earning its keep.
+5. CLEAN — the key with everything on: Chest 1,572 · Egg 1,786 · My marks
+   2 · My route 3 stops · accuracy sentence + build stamp; pill matches
+   the key exactly (datamined sums with datamined; personal separate).
+6. CLEAN — copy sweep of every card seen: player words throughout.
+EVAL ROUNDS 1-4 TOTAL: 6 fixes shipped, 10 clean passes, 2 rejections
+with numbers, 2 ledger corrections, 1 self-rejected alarm.
+NOTHING PUBLISHED this round — no changes. NEXT: accessibility + Dynamic
+Type pass over the NEW controls (route verbs on cards, share/import
+buttons, where-lines at larger text sizes) — the one surface the eval
+rounds have not yet walked with the new features in place. Then the zoom
+watch (M44 discriminators) and keep looping.
