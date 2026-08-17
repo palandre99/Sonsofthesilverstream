@@ -55,6 +55,16 @@ function cycles(n: number): string {
   return `${n} cycle${n === 1 ? '' : 's'}`;
 }
 
+/** The cake badges contradicted the card's own explanation: Vegetable Cake
+ * showed "2.0% mutation per cycle" directly above the line "Two eggs at 1%
+ * each is 1.99% per cycle, not 2% per egg". `pct` rounds to one decimal, which
+ * rounds away precisely the point that paragraph exists to make. This keeps
+ * the exact figure and drops trailing zeros, so the badges read 1%, 1.99%
+ * and 3% — and the sentence underneath is now visibly true. */
+function pctExact(p: number): string {
+  return `${(p * 100).toFixed(2).replace(/\.?0+$/, '')}%`;
+}
+
 /* ---------------- passive picker modal ---------------- */
 
 /** The game sorts every passive into one of six kinds, and the app had never
@@ -536,8 +546,15 @@ function IvTab() {
     <>
       <Card>
         <Text style={s.h2}>Which stats matter?</Text>
+        {/* This screen called one thing three names — the tab says "IVs", this
+            line said "hidden potential", and the card at the bottom said "IV
+            work" — and never once said they were the same thing. A player who
+            taps IVs and reads "hidden potential" is left to work that out.
+            Both names now appear together, once, at the top. */}
         <Text style={[s.body, { marginTop: 4 }]}>
-          At least one hidden potential is always taken from a parent; the rest roll fresh.
+          IVs are your pal's hidden potential in HP, Attack and Defence — a
+          roll the game never shows you. At least one of the three is always
+          taken from a parent; the rest roll fresh.
         </Text>
         <View style={[s.wrap, { marginTop: 10 }]}>
           {([['hp', 'HP'], ['atk', 'Attack'], ['def', 'Defence']] as const).map(([id, label]) => {
@@ -606,8 +623,9 @@ function IvTab() {
         <Text style={[s.body, { marginTop: 4 }]}>
           The game inherits one category half the time, two a third of the time, all three
           one time in six — then each inherited category picks mother or father on a coin
-          flip. Serious IV work is volume plus selection across generations. Mushroom and
-          Extravagant Vegetable Cake help; their exact bonus was never published.
+          flip. Getting all three high comes down to hatching plenty and keeping the best
+          of each generation. Mushroom and Extravagant Vegetable Cake help; their exact
+          bonus was never published.
         </Text>
       </Card>
     </>
@@ -629,8 +647,14 @@ function CakesTab() {
               <View key={k.id} style={{ gap: 2 }}>
                 <View style={[s.row, { gap: 8 }]}>
                   <Text style={{ color: T.ink, fontWeight: '800', fontSize: 14 }}>{k.name}</Text>
-                  <Badge kind="plain">{k.eggsPerCycle} egg{k.eggsPerCycle > 1 ? 's' : ''}/cycle</Badge>
-                  <Badge kind="plain">{pct(m.mutationPerCycle)} mut/cycle</Badge>
+                  {/* "mut/cycle" — a player cannot tell whether that means
+                      mutation, mutant or mutated, and the whole point of the
+                      line below is that this figure is PER CYCLE and not per
+                      egg. Both badges now say it in words. */}
+                  <Badge kind="plain">
+                    {k.eggsPerCycle} egg{k.eggsPerCycle > 1 ? 's' : ''} per cycle
+                  </Badge>
+                  <Badge kind="plain">{pctExact(m.mutationPerCycle)} mutation per cycle</Badge>
                 </View>
                 <Text style={[s.body, { fontSize: 12.5 }]}>{k.effect}</Text>
               </View>
@@ -638,8 +662,8 @@ function CakesTab() {
           })}
         </View>
         <Text style={[s.body, { marginTop: 10, fontSize: 12 }]}>
-          Cake numbers are community-measured — treat percentages as ≈. Two eggs at 1%
-          each is 1.99% per cycle, not 2% per egg.
+          Cake numbers are community-measured, so treat the percentages as rough. Two
+          eggs at 1% each is 1.99% per cycle, not 2% per egg.
         </Text>
       </Card>
 
@@ -651,7 +675,11 @@ function CakesTab() {
             return (
               <OddsCard key={id} hero={id === 'extravagant'}
                 label={cakeById(id).name} big={String(m.cyclesFor90)}
-                sub={`cycles for 90% · ~${Math.round(m.expectedEggs)} eggs avg`} />
+                // "avg" was the last abbreviation left in the app. "average"
+                // is also the word doing the work here: the big number is the
+                // cycles for a 90% chance, this one is the typical count —
+                // two different statistics on one card.
+                sub={`cycles for 90% · ${Math.round(m.expectedEggs)} eggs on average`} />
             );
           })}
         </View>

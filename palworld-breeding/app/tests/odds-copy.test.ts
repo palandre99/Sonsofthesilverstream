@@ -47,11 +47,23 @@ describe('the odds the screen quotes are the odds the engine computes', () => {
     expect(code).toContain('one time in six');
   });
 
-  it('“at least one hidden potential is always taken from a parent”', () => {
+  it('“at least one of the three is always taken from a parent”', () => {
     // the claim is that zero inherited categories is impossible
     expect([...ivInheritP.keys()].every((k) => k >= 1)).toBe(true);
     expect(ivOdds(1).categoriesInherited).toBeGreaterThan(0);
-    expect(code).toContain('At least one hidden potential is always taken from a parent');
+    expect(code).toContain('At least one of the three is always');
+    // and there really are three of them
+    expect(IV_CATEGORIES).toBe(3);
+  });
+
+  it('introduces “IVs” and “hidden potential” as the same thing, once', () => {
+    // the screen used to call one thing three names — the tab said IVs, the
+    // body said hidden potential, the last card said "IV work" — and never
+    // tied them together
+    expect(code, 'the two names are no longer introduced together')
+      .toContain("IVs are your pal's hidden potential");
+    expect(code, '"IV work" is back — jargon the screen never defines')
+      .not.toContain('Serious IV work');
   });
 
   it('“each inherited category picks mother or father on a coin flip”', () => {
@@ -88,6 +100,36 @@ describe('rare is not the same as impossible', () => {
     const p = passiveOdds({ poolSize: 1, desiredCount: 1 }).allDesired;
     expect(p).toBeCloseTo(1, 6);
     expect(code).toContain("return 'every egg';");
+  });
+});
+
+describe('the cakes card says what it means', () => {
+  it('“two eggs at 1% each is 1.99% per cycle, not 2% per egg”', () => {
+    const veg = CAKES.find((c) => c.id === 'vegetable')!;
+    expect(veg.eggsPerCycle).toBe(2);
+    expect(veg.mutationPerEgg).toBe(0.01);
+    // the arithmetic the sentence claims: 1 - 0.99^2
+    const perCycle = 1 - (1 - veg.mutationPerEgg) ** veg.eggsPerCycle;
+    expect(+(perCycle * 100).toFixed(2)).toBe(1.99);
+    expect(code).toContain('is 1.99% per cycle, not 2% per egg');
+  });
+
+  it('and the badge above that sentence does not round it back to 2%', () => {
+    // `pct` rounds to one decimal, so the badge read "2.0% mutation per cycle"
+    // directly above the line explaining that it is NOT 2%. Caught on the
+    // render, not in the source.
+    expect(code, 'the cake badge is back on the rounding formatter')
+      .toContain('{pctExact(m.mutationPerCycle)} mutation per cycle');
+    const exact = (p: number) => `${(p * 100).toFixed(2).replace(/\.?0+$/, '')}%`;
+    expect(exact(0.0199)).toBe('1.99%');
+    expect(exact(0.01)).toBe('1%');
+    expect(exact(0.03)).toBe('3%');
+  });
+
+  it('does not abbreviate a mutation to “mut”', () => {
+    expect(code, '"mut/cycle" is back — a player cannot tell whether that is '
+      + 'mutation, mutant or mutated').not.toContain('mut/cycle');
+    expect(code).toContain('mutation per cycle');
   });
 });
 
