@@ -8048,3 +8048,23 @@ Mau banner), and the first-run hint now asks the GLOBAL question ("ever
 marked anything, either island" — pinCount+stopCount both regions) instead
 of reappearing on the Tree for a player with four Palpagos stops. Both
 eye-verified; 632 tests; published as 6ccb91d.
+
+### M43 — TILE CRISPNESS SHIPPED (195c648, both channels) — M42 item 1 done
+The experiment, run before touching the repo (scratchpad tile_quality_exp):
+all 180 kept z4 tiles encoded at three qualities — q82: 2.94 MB, q92:
+5.07 MB, q96: 6.75 MB — and a 3x3 crop sheet of the three most detailed
+tiles at 2x nearest (exactly how max zoom renders). BY EYE: 82 smears the
+dark volcanic striations and snow-cliff speckle, 92 keeps them, 96 is
+indistinguishable from 92 while costing +1.7 MB. DECISION: QUALITY = 92
+whole-pyramid (reasoning inline at build_map_tiles.py:34). Total mobile
+tile bundle 7 -> 11 MB. Kept-tile set unchanged (is_flat runs pre-encode)
+so tileIndex.g is byte-identical — no index churn, no test churn: 632
+green untouched. Both platform outputs rebuilt (app/public tiles are
+generated artifacts of the shared tool, not web-feature work).
+Post-rebuild render verified live (tiles decode, no gaps). NOTE for next
+worker: qa-shot's pinch step did not move the map this round — the ladder
+was not needed (crop sheet proves the decode path), but if a future round
+NEEDS live deep zoom, budget time to debug the wheel+ctrl synthesis first.
+NEXT (M42 queue): item 2 — the zoom-bug algebra re-derivation from
+scratch, in writing; then item 3 "exactly where" descriptions; then item 4
+projection residual re-proof.
