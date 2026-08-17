@@ -7266,3 +7266,57 @@ cross-device sync.
 b1deb58 Reduce Motion + haptics · 8b2d5f8 the wedge in the hint ·
 d3f162c did-you-mean · 41bfda1/770d4d1 game-build stamp · 292b61d custom pins ·
 ee33cc7 marks counted and explained · 76059f1 naming a mark.
+
+### M24 — THE ZOOM SNAP, THIRD CAUSE — SHIPPED (2622440, published)
+He reported it again after two fixes. Both earlier fixes were REAL and remain
+correct; this is a third, separate cause, and it is not a formula at all — it
+is the map doing exactly what it was told at a moment nobody meant to tell it.
+`doubleTap.onEnd` zooms 2.5x about the tap point (or, at the ceiling, goes all
+the way home). Lift two fingers off a pinch and put them straight back — what
+everyone does while framing — and RNGH can read those lifts as TWO TAPS. The
+map then jumps about where a finger was. That is his sentence exactly.
+WHY THE OLD GUARD COULD NOT CATCH IT: `e.numberOfPointers > 1 ||
+pinching.value` runs at onEnd, by which time the pinch has ended (pinching 0)
+and the count is down to 1 or 0. And TapGesture has NO `maxPointers` — the
+type definitions offer only `minPointers` (checked, not assumed).
+FIX: track the SEQUENCE, not the instant. `multiTouch` via `onTouchesDown`
+(verified to exist on the base Gesture class): a fresh single finger clears
+it, a second finger sets it, it stays set until the next sequence begins. Both
+taps refuse to act while set. A genuine double tap on a clean sequence still
+works — traced: finger down (clears) -> release -> finger down (clears) ->
+onEnd allowed.
+PROOF HONESTY: verified by type definitions, handler ordering, and the app
+still rendering and behaving in the browser. A browser CANNOT prove native
+gesture behaviour (F35). If he reports it again, the discriminating question
+is: does it happen on a SLOW SINGLE pinch with no re-grip? Yes -> this theory
+is wrong too and the cause is elsewhere. No -> it was the double tap.
+
+### M25 — a mark's card outlived its island — FIXED (same commit)
+Found by hostile review of my own night's work, not by him. Opening a mark's
+card on Palpagos and switching to the World Tree left the card on screen with
+none of its pins drawn beneath it — and its Remove would have deleted a mark
+on the island you had just left. Same fault as the Mau banner. Closes on a
+region change now.
+
+### M26 — IN-GAME IMAGES OF LOCATIONS: researched, and the answer is no
+He asked: "maybe also in game images of the locations would be smart?"
+THERE IS NO SOURCE. The datamining tools (PalworldDataTools/PalworldDataExtractor,
+ARXII-13/Palworld-Interactive-Map) yield TABLES and COORDINATES; the game does
+not ship a per-location preview image, and nothing in our two upstreams
+(palworld-atlas-data, pal-atlas) carries one. Community screenshots are out on
+two counts: licensing, and the "provable over plausible" bar — we could not
+say which build a stranger's screenshot came from.
+THE ONE PROVABLE SUBSTITUTE, if he wants it: a CROP OF THE GAME'S OWN MAP
+TEXTURE around the spot. That IS an in-game image of the location, from the
+game's files, with no licensing or accuracy risk — and the machinery already
+exists (MapPreview does exactly this on every pal card). Low value while the
+player is already looking at the map; worth more in the Find sheet's place
+results, before you travel there. NOT BUILT — raise it with him rather than
+guess, because it is a visual-design call.
+
+### PUBLISHED TONIGHT — 11 updates, all verified on both channels
+48a4023 snap + 9.6x reach · 3fbe0e3 provenance + double-tap ladder ·
+b1deb58 Reduce Motion + haptics · 8b2d5f8 the wedge in the hint ·
+d3f162c did-you-mean · 41bfda1/770d4d1 game-build stamp · 292b61d custom pins ·
+ee33cc7 marks counted and explained · 76059f1 naming a mark ·
+2622440 the snap's third cause + the cross-island card.
