@@ -23,7 +23,7 @@ import { decodeRoute, encodeRoute } from '../../mobile/src/map/routeShare';
 import {
   closeMatches, isNightOnly, poiLayers, poiPoints, searchPlaces, spawnablePals, spawnLevels,
   spawnPoints, spawnSplit,
-  hasNames, namedPoints, whereFrom, whereFromLine, wildBands,
+  hasNames, listSortKey, namedPoints, whereFrom, whereFromLine, wildBands,
 } from '../src/map/layers';
 import { REGION_SPOTS } from '../src/data/regionSpots.g';
 
@@ -2760,5 +2760,28 @@ describe('the list behind a layer (CEO: "find the one I am looking for")', () =>
     expect(view).toContain('isFound(foundKey(sheet.list, region, item.index))');
     // the chip affordance exists and only for named layers that are ON
     expect(screen).toContain('on && here > 0 && hasNames(l.id)');
+  });
+});
+
+describe('the list, round 2 (CEO: "Work")', () => {
+  it('sealed realms file under the BOSS, with the game name untouched', () => {
+    expect(listSortKey('sealed_realm', 'Sealed Realm (Penking)')).toBe('Penking');
+    expect(listSortKey('alpha_pals', 'Alpha Anubis')).toBe('Alpha Anubis');
+    const rows = namedPoints('sealed_realm', 'palpagos');
+    const keys = rows.map((r) => listSortKey('sealed_realm', r.name));
+    expect([...keys].sort((a, b) => a.localeCompare(b))).toEqual(keys);
+    // every displayed name is still the game's own full string
+    expect(rows.every((r) => r.name.startsWith('Sealed Realm ('))).toBe(true);
+  });
+
+  it('rows with duplicated names carry their where-line (wiring)', () => {
+    const screen = readFileSync(
+      join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
+    );
+    expect(screen).toContain('nameTally.get(item.name) ?? 0) > 1');
+    expect(screen).toContain('whereFromLine(item.u, item.v, region)');
+    // and the list opens with honest progress
+    expect(screen).toContain('`All ${rows.length} found`');
+    expect(screen).toContain('`${foundCount2} of ${rows.length} found`');
   });
 });

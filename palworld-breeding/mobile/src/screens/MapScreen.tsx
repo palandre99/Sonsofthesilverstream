@@ -1381,6 +1381,13 @@ export function MapScreen() {
         const layer = poiLayers().find((l) => l.id === sheet.list);
         const rows = namedPoints(sheet.list, region);
         if (!layer || rows.length === 0) { return null; }
+        const foundCount2 = rows.filter(
+          (r) => isFound(foundKey(sheet.list, region, r.index)),
+        ).length;
+        // Merchants, some statues and skill fruits share identical names —
+        // rows that read the same answer "which one?" with where they ARE.
+        const nameTally = new Map<string, number>();
+        for (const r of rows) nameTally.set(r.name, (nameTally.get(r.name) ?? 0) + 1);
         return (
           <SheetShell
             title={`All ${rows.length} — ${layer.label}`}
@@ -1392,6 +1399,16 @@ export function MapScreen() {
               initialNumToRender={16}
               keyExtractor={(r) => `${r.index}`}
               contentContainerStyle={{ padding: 14, gap: 8 }}
+              ListHeaderComponent={(
+                <Text style={{
+                  color: foundCount2 === rows.length ? T.ok : T.faint,
+                  fontSize: 11.5, fontWeight: '700', marginBottom: 2,
+                }}>
+                  {foundCount2 === rows.length
+                    ? `All ${rows.length} found`
+                    : `${foundCount2} of ${rows.length} found`}
+                </Text>
+              )}
               renderItem={({ item }) => {
                 const found = isFound(foundKey(sheet.list, region, item.index));
                 // an alpha's level is on its card; here it makes the list
@@ -1422,9 +1439,25 @@ export function MapScreen() {
                       size={15}
                       color={found ? T.ok : layer.colour}
                     />
-                    <Text style={{ color: T.ink, fontWeight: '700', fontSize: 13, flex: 1 }}>
-                      {item.name}
-                    </Text>
+                    <View style={{ flex: 1, gap: 1 }}>
+                      <Text style={{ color: T.ink, fontWeight: '700', fontSize: 13 }}>
+                        {item.name}
+                      </Text>
+                      {(nameTally.get(item.name) ?? 0) > 1 && (
+                        <Text style={{ color: T.faint, fontSize: 10.5, fontWeight: '600' }}>
+                          {/* a row within 30 m of a statue gets no where-line
+                              (you are standing on it) — the game's own
+                              coordinates step in so twins never read blank */}
+                          {whereFromLine(item.u, item.v, region)
+                            ?? (() => {
+                              const r2 = uvToReadout(
+                                { u: item.u, v: item.v }, regionOf(region),
+                              );
+                              return `at ${r2.x}, ${r2.y}`;
+                            })()}
+                        </Text>
+                      )}
+                    </View>
                     {lv != null && (
                       <Text style={{ color: T.faint, fontSize: 11.5, fontWeight: '700' }}>
                         Level {lv}

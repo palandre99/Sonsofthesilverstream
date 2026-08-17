@@ -568,6 +568,20 @@ export interface NamedPoint {
  * the one I am looking for instead of looking all over the map" (CEO).
  * Scanning a list is a by-name job; the level rides along as detail.
  */
+/**
+ * How a list row files itself. Sealed realms are all named
+ * "Sealed Realm (<boss>)", so a plain alphabetical sort files 18 rows
+ * under S and the scanning token hides in parentheses — the list sorts by
+ * the boss instead. The NAME shown is still the game's own, untouched.
+ */
+export function listSortKey(layerId: string, name: string): string {
+  if (layerId === 'sealed_realm') {
+    const m = /^Sealed Realm \((.+)\)$/.exec(name);
+    if (m) return m[1];
+  }
+  return name;
+}
+
 export function namedPoints(layerId: string, region: RegionId): NamedPoint[] {
   const set = poiPoints(layerId, region);
   if (!set || !hasNames(layerId)) return [];
@@ -577,6 +591,6 @@ export function namedPoints(layerId: string, region: RegionId): NamedPoint[] {
     if (!name) continue;   // a nameless row cannot be found by name
     out.push({ name, u: set.xy[i * 2], v: set.xy[i * 2 + 1], index: i });
   }
-  out.sort((a, b) => a.name.localeCompare(b.name));
+  out.sort((a, b) => listSortKey(layerId, a.name).localeCompare(listSortKey(layerId, b.name)));
   return out;
 }
