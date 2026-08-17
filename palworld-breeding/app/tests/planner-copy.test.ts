@@ -62,3 +62,28 @@ describe('the Plan tab calls a goal a goal', () => {
     expect(code).toContain('Suggested goals…');
   });
 });
+
+describe('a gender gap comes with a way to close it', () => {
+  // CEO 2026-08-17: "it should give more info to be smarter… tells me how
+  // to fix this step". The hint names the gap; these rows say how to close
+  // it, and each one opens the named pal's card. The advice text itself is
+  // pinned behaviourally in genderFix.test.ts — this pins the WIRING.
+  it('every option the hint names gets a how-to-fix row', () => {
+    expect(code, 'the fix rows are gone from the step card')
+      .toContain('m.needs.map((n) => {');
+    expect(code, 'the row no longer computes real advice')
+      .toContain('const fix = fixFor(n.s, n.g);');
+    expect(code).toContain('{fixLine(fix)}');
+  });
+
+  it('the row opens the pal it names, and says so to a screen reader', () => {
+    expect(code).toContain('onPress={() => setViewing(n.s)}');
+    expect(code).toContain('opens its card');
+  });
+
+  it("the advice pair check uses the engine's full answer, both gendered directions", () => {
+    // childOf(a,b)[0] would miss the second Katress/Wixen direction
+    expect(code, 'the pair scan stopped checking every child of a pair')
+      .toContain('engine.childrenOf(x, y).some(');
+  });
+});

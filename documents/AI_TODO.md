@@ -2105,6 +2105,61 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E131. THE GENDER GAP NOW COMES WITH THE WAY TO CLOSE IT — THE ENGINE
+## THINKS ABOUT WHAT HE OWNS 2026-08-17 (night)
+
+**His ask, verbatim (22:5x):** "it says 'u need a male x or male y'…that is
+nice, but it should give more info to be smarter, maybe a 'breed x and y to
+get a female', or 'catch one here' and a tap to open map? … A smoother
+experience that tells me how to fix this step… The engine must be smart and
+dynamic and actually think of what I have."
+
+**BUILT.** Under every step hint ("need a ♂ Cattiva — or a ♂ Gumoss"), one
+tappable row per option, each ending on that pal's card (where the spawn
+map and every obtain route already live). The advice ranks by CHEAPNESS,
+computed from his actual box:
+
+1. **"first check the one you marked '?'"** — if he owns one of that
+   species with the gender unchecked, zero eggs beats any odds (his E122
+   feature feeding his E131 feature).
+2. **"breed X + Y (again) — about N% of eggs hatch male"** — an owned pair
+   that can breed TODAY whose egg is that species; the plan's own recipe
+   preferred and phrased "again"; odds from the datamined gender table
+   (genderRatio.g / palcalc BreedingGenderProbability — 50/50 says "about
+   half", skewed species print their real skew, e.g. Beegarde 10% male).
+   The pair check reads engine.childrenOf, so BOTH Katress/Wixen gendered
+   directions are honest.
+3. **"catch it in the wild, tap for where"** — the card's spawn map is one
+   tap (and E130 made that map a sheet that behaves).
+4. Neither → "tap the card for how to get it" (obtain_notes carries it).
+
+**MECHANICS.** Shared `logic/genderFix.ts` (byte-parity, behaviourally
+tested — real imports, not source pins): findPair (plan-recipe-first, then
+name-order scan, deterministic), oddsPhrase, fixLine. PlannerScreen's
+stepMeta now emits structured needs (hint string BYTE-IDENTICAL to
+before); fixFor memoises per box/plan and computes only for hinted
+species, capped at 2 rows per step.
+
+**MEASURED, per E108's rule:** worst case (131 owned, no match, all
+17,161 pairs rejected, real engine): **cold 12.9 ms, warm 6.7 ms** —
+pinned in the test at <250/<60 ms, measurement written from inside the
+test (vitest swallows console).
+
+**EYE-VERIFIED** under the snapshot protocol, in his exact scenario
+(both parents ♀-only): hint unchanged; "♂ Cattiva — breed Cattiva +
+Celaray — about half the eggs hatch male · or catch one — tap for where"
+(the engine found his ♀ Cattiva × Celaray remakes the species — that IS
+"actually think of what I have"); "♂ Gumoss — first check the one you
+marked '?'" when a "?" existed; row tap → card → close → Plan. State
+restored and re-verified (26 owned, all pairs whole).
+
+Guards: 11 genderFix tests + 3 wiring pins in planner-copy (16 total new).
+Gates 692, app build clean, mobile tsc clean. FOLLOW-UP logged: the
+Calculator's same-gender warning could reuse these rows.
+
+**PUBLISH still blocked by the EAS 1000-asset cap (see the URGENT map-lane
+note at the tail).** E128-E131 all queue behind it.
+
 ## E130. HIS 23:17 SCREENSHOT — THE ENLARGED MAP SAT UNDER THE STATUS BAR,
 ## AND "LEAVES THE PALDEX" WAS A LIE FROM THE PLAN; PALDEX IS NOW HOME
 ## 2026-08-17 (night)

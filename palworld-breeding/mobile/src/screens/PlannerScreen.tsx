@@ -29,8 +29,9 @@ import {
   addPlanTarget, breeding, pals, removePlanTarget, resetPlanProgress, savePlan, selfOnly,
   uncheckStep, useAppVersion,
   addDraftTargets, clearDraftTargets, getDraftTargets, removeDraftTargets,
-  engine, getPlayerLevel,
+  engine, getPlayerLevel, canPairNow, genderUnsure,
 } from '../store';
+import { findPair, fixLine, type NeedFix } from '../logic/genderFix';
 
 /** Where a catch can be found — the shared builder, fed this tree's pal
  * table. The sentences themselves live in logic/unlock.ts so the phone and
@@ -280,7 +281,11 @@ export function PlannerScreen() {
 
   // gender-aware ready-states: bred intermediates count as either gender
   const stepMeta = useMemo(() => {
-    const meta = new Map<string, { ready: boolean; missing: string[]; hint: string | null }>();
+    const meta = new Map<string, {
+      ready: boolean; missing: string[]; hint: string | null;
+      /** the exact ♂/♀ options the hint names, for the how-to-fix rows */
+      needs: { g: 'm' | 'f'; s: string }[];
+    }>();
     if (!plan) return meta;
     // legacy boolean ticks predate gender recording — treat as both genders;
     // modern ticks wrote real genders into the box, so the box is the truth
@@ -304,6 +309,7 @@ export function PlannerScreen() {
       if (!hasSpecies(b, ob)) missing.push(b);
       let ready = false;
       let hint: string | null = null;
+      const needs: { g: 'm' | 'f'; s: string }[] = [];
       if (!missing.length) {
         if (st.genderNote) {
           const parsed = parseGenderNote(st.genderNote);
@@ -315,45 +321,82 @@ export function PlannerScreen() {
         }
         if (!ready) {
           // name the exact ♂/♀ that unlocks this step — never jargon
-          const combos: string[][] = [];
+          type Need = { g: 'm' | 'f'; s: string };
+          const combos: Need[][] = [];
           if (st.genderNote) {
             const parsed = parseGenderNote(st.genderNote);
             const motherIsA = parsed?.mother === a;
-            const need: string[] = [];
+            const need: Need[] = [];
             if (motherIsA) {
-              if (!oa.f) need.push(`♀ ${a}`);
-              if (!ob.m) need.push(`♂ ${b}`);
+              if (!oa.f) need.push({ g: 'f', s: a });
+              if (!ob.m) need.push({ g: 'm', s: b });
             } else {
-              if (!ob.f) need.push(`♀ ${b}`);
-              if (!oa.m) need.push(`♂ ${a}`);
+              if (!ob.f) need.push({ g: 'f', s: b });
+              if (!oa.m) need.push({ g: 'm', s: a });
             }
             combos.push(need);
           } else if (a === b) {
-            const need: string[] = [];
-            if (!oa.m) need.push(`♂ ${a}`);
-            if (!oa.f) need.push(`♀ ${a}`);
+            const need: Need[] = [];
+            if (!oa.m) need.push({ g: 'm', s: a });
+            if (!oa.f) need.push({ g: 'f', s: a });
             combos.push(need);
           } else {
-            const n1: string[] = [];
-            if (!oa.m) n1.push(`♂ ${a}`);
-            if (!ob.f) n1.push(`♀ ${b}`);
-            const n2: string[] = [];
-            if (!oa.f) n2.push(`♀ ${a}`);
-            if (!ob.m) n2.push(`♂ ${b}`);
+            const n1: Need[] = [];
+            if (!oa.m) n1.push({ g: 'm', s: a });
+            if (!ob.f) n1.push({ g: 'f', s: b });
+            const n2: Need[] = [];
+            if (!oa.f) n2.push({ g: 'f', s: a });
+            if (!ob.m) n2.push({ g: 'm', s: b });
             combos.push(n1, n2);
           }
+          const glyphOf = (n: Need) => `${n.g === 'm' ? '♂' : '♀'} ${n.s}`;
           const real = combos.filter((c) => c.length);
           const min = Math.min(...real.map((c) => c.length));
           const best = real.filter((c) => c.length === min);
           hint = best.length
-            ? `need a ${best.map((c) => c.join(' + ')).join(' — or a ')}`
+            ? `need a ${best.map((c) => c.map(glyphOf).join(' + ')).join(' — or a ')}`
             : null;
+          // the same options, structured, for the how-to-fix rows — at most
+          // two, so a two-way gap never becomes a wall of advice
+          for (const c of best) {
+            for (const n of c) {
+              if (needs.length < 2
+                && !needs.some((x) => x.g === n.g && x.s === n.s)) needs.push(n);
+            }
+          }
         }
       }
-      meta.set(stepId(a, b, st.child), { ready, missing, hint });
+      meta.set(stepId(a, b, st.child), { ready, missing, hint, needs });
     }
     return meta;
   }, [plan, checks, box]);
+
+  /** How to actually get a missing ♂/♀ — computed lazily, cached per
+   * box/plan change, and only ever asked for the species a hint names (a
+   * handful at most). The pair scan is owned², but engine.childrenOf is
+   * cached by pair, so repeat visits are lookups. */
+  const fixFor = useMemo(() => {
+    const cache = new Map<string, NeedFix>();
+    const ownedNames = Object.keys(box);
+    return (s: string, g: 'm' | 'f'): NeedFix => {
+      const key = `${g}|${s}`;
+      const hit = cache.get(key);
+      if (hit) return hit;
+      const planStep = plan?.steps.find((st) => st.child === s);
+      const { pair, fromPlan } = findPair(
+        ownedNames,
+        planStep ? [planStep.parents[0], planStep.parents[1]] : null,
+        (x, y) => engine.childrenOf(x, y).some(
+          (ch) => ch.species === s && canPairNow(x, y, ch.genderNote)),
+      );
+      const fix: NeedFix = {
+        species: s, gender: g, unsure: genderUnsure(s), pair, fromPlan,
+        wild: !!pals[s]?.wild, maleProb: maleProb(s),
+      };
+      cache.set(key, fix);
+      return fix;
+    };
+  }, [plan, box]);
 
   // Booster-aware ordering v2 (SMART PLANNING queue): not just the helper's
   // final step — its WHOLE subtree (every step feeding it) floats to the
@@ -1453,6 +1496,32 @@ export function PlannerScreen() {
                               ? 'neither parent ready yet'
                               : `waiting on ${m.missing[0]}`}</Badge>)}
                       </View>
+                      {/* HOW to close the gap the hint names — one tappable
+                          row per option, each ending on the pal's card
+                          (CEO 2026-08-17: "tells me how to fix this step") */}
+                      {!checked && !partial && !m.ready && m.needs.map((n) => {
+                        const fix = fixFor(n.s, n.g);
+                        return (
+                          <Pressable key={`${n.g}${n.s}`}
+                            onPress={() => setViewing(n.s)}
+                            accessibilityRole="button"
+                            accessibilityLabel={
+                              `How to get a ${n.g === 'm' ? 'male' : 'female'} ${n.s} — opens its card`}
+                            style={({ pressed }) => ({
+                              flexDirection: 'row', alignItems: 'center', gap: 6,
+                              paddingLeft: 36, paddingRight: 4, paddingVertical: 2,
+                              opacity: pressed ? 0.6 : 1,
+                            })}>
+                            <Text style={{ color: T.muted, fontSize: 12, flex: 1 }}>
+                              <Text style={{ color: T.accentInk, fontWeight: '800' }}>
+                                {n.g === 'm' ? '♂' : '♀'} {n.s}
+                              </Text>
+                              {'  '}{fixLine(fix)}
+                            </Text>
+                            <Icon name="chevron-right" size={14} color={T.faint} />
+                          </Pressable>
+                        );
+                      })}
                       {/* the result's full work suitabilities — always its own row */}
                       <View style={[s.wrap, { paddingLeft: 36 }]}>
                         <WorkChips name={st.child} all />
