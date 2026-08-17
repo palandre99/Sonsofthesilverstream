@@ -7661,3 +7661,37 @@ new `u` (caught, gender unchecked) state, so the map's owned-tick, "I'm
 missing" filter and wedge hint inherit the new meaning automatically — the
 reward for importing their helpers instead of forking them. Pins/found stores
 are gender-blind and unaffected. Nothing changed in the lane.
+
+## CEO ORDER 17:40 — NEVER IDLE-HOLD. Every tick evaluates or works.
+Verbatim: "u are not looping and working. u must also sometimes do a brutale
+eval, analysis from the app fane u have made so far. look for all improvements
+u urself can locate, then work on those, aswell as the other stuff in the
+workspace to do lists u have in ur lane. also never stop fucking looping.."
+The wait-for-his-verdict hold posture is REVOKED. Standing order now: each
+tick either fixes something, evaluates with fresh eyes (screenshots + hostile
+critique), or works a backlog item. "Nothing changed" ticks are no longer
+acceptable as a steady state.
+
+### M33 — BRUTAL EVAL ROUND 1 (screens: default, mark, Find, all-23-layers,
+key open). FINDINGS AND DISPOSITIONS:
+- FIXED + PUBLISHED (bda89c3): the five level chips wrapped 4+1 with "Up to
+  60" stranded alone — now one sideways-scrolling row, fifth chip peeking as
+  the scroll hint. Measured: one distinct row top, chip 5 at x 331-404 / 376.
+- REJECTED: re-centring the initial cover fit on the landmass. From the
+  actual screenshot the land already spans most of the frame; the gain is a
+  few percent of ocean, and the change invalidates the proven gesture-test
+  fixtures (`opened` view constant) that pin four corner behaviours. Not
+  worth trading proven correctness for.
+- OBSERVED, NO ACTION: pins can slide under the top control row at the very
+  top edge — controls win the tap, same as every map app; not a defect.
+- OBSERVED, WAITS FOR HIM: at 23 layers the map is a wall of same-weight
+  badges; the cure is H17 colour-by-group, which changes how the map reads.
+- FALSE ALARM CAUGHT BY DATA: a crop showed empty portrait circles in pal
+  rows; naturalWidth probe showed 25/25 loaded — a single frame before
+  decode. When the PICTURE is the thing in doubt, measure instead.
+- HARNESS: pal rows are role=CHECKBOX, not button — a button-only matcher
+  silently no-ops on them (cost one dead probe this round).
+NEXT EVAL TARGETS (round 2): the pin card + rename flow visuals; the World
+Tree at all layers; the Find sheet's pre-results stack height (dungeon toggle
++ caps + Filter&sort ≈ 370px before the first result — candidate compaction);
+deep-zoom pin density at 9.6x.
