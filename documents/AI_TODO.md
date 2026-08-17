@@ -8402,3 +8402,29 @@ QUEUE, in order:
    ambiguity). If OUR point is wrong anywhere, fix the extractor, never
    hand-edit. His standing offer holds: ONE screenshot of a wrong pin
    outranks any audit sample.
+
+### M53 — LAYER LISTS SHIPPED (4598b17, both channels) — M52 item 1 done
+Design decisions, recorded: the affordance lives ON the layer's chip in
+the Layers sheet (his flow — "tapping it" IS the chip), as a joined list
+glyph that appears only when the chip is ON, has points on this map, and
+the layer is NAMED (hasNames). Alphabetical (finding-by-name is the
+stated job); alpha levels ride along via the AlphaSpot region+position
+match; found rows show the green check; tap = close sheet +
+canvas.focus(u,v,0.06). Nameless layers (chest/ore/eggs...) deliberately
+refuse a list — 1,572 rows saying "Chest" is noise pretending to be
+information. Generic across ALL named layers from day one: alpha_pals,
+fast_travel, syndicate_tower, sealed_realm, merchant, pal_merchant,
+bounty_targets, skill_fruit, npc? (npc has no names — hasNames guards it).
+Pure data helper namedPoints/hasNames in byte-parity layers.ts, EXECUTED
+tests against the real 65 alphas (named, sorted, region-scoped; nameless
+refuse). The pal-sheet FlatList row-budget test was re-anchored (it
+matched my new FlatList — first-match regex trap again); the layer list
+carries its own initialNumToRender=16 for the same decode reason.
+QA notes: the chip glyph is icon-only — tap: cannot find it, click
+(157,1120) tall with Alpha boss at (81,1120); list rows are text, tap:
+works. Eye-verified end to end: glyph -> list -> Alpha Anubis -> flown
+and centred on Twilight Dunes.
+NEXT (M52 item 2): the independent accuracy audit — second coordinate
+source vetted for licence/provenance, per-point distance tables for
+alphas + fast_travel + towers, distribution + every outlier chased to a
+verdict. His screenshot of any specific wrong pin outranks the audit.
