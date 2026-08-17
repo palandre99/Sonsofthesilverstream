@@ -1,12 +1,12 @@
 /** Calculator — pair→child and child→parents, same engine as the web app. */
 import React, { useEffect, useMemo, useState } from 'react';
-import { ScrollView, Text, View, Pressable } from 'react-native';
+import { ScrollView, Share, Text, View, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { T } from '../theme';
 import { BackToCardChip, Badge, Btn, Card, ElementChips, PageHead, PalIcon, WorkChips, s, getRecentPicks } from '../ui/kit';
 import { PalPicker } from '../ui/PalPicker';
 import {
-  canPairNow, engine, getBox, ownedAny, pals, selfOnly, useAppVersion,
+  breeding, canPairNow, engine, getBox, ownedAny, pals, selfOnly, useAppVersion,
 } from '../store';
 import { parseGenderNote } from '../engine/formula';
 import { genderGap } from '../logic/genderGap';
@@ -227,6 +227,41 @@ function ResultFlags({ ch }: { ch: ChildResult }) {
   );
 }
 
+/** The sentence under a result, in one place.
+ *
+ * It is rendered on screen AND sent by the share sheet, and those two must
+ * never drift — a friend reading the shared text should see exactly what the
+ * screen said. Every number here comes from the engine. */
+function resultSentence(ch: ChildResult, ra: number, rb: number, target: number): string {
+  if (ch.kind === 'unique') {
+    return 'The game files give this pair a fixed recipe, so the breeding numbers are skipped.';
+  }
+  if (ch.kind === 'self') {
+    return 'Two of the same species always make that species — the breeding numbers are skipped.';
+  }
+  if (ch.kind === 'gendered') {
+    return `${ch.genderNote} → ${ch.species}. Swap the genders for the other child.`;
+  }
+  return `Every pal has a hidden breeding number. Yours are ${ra} and ${rb} — `
+    + `average them, rounding up, and you get ${target}. The nearest pal to that `
+    + `is ${ch.species} at ${engine.ranks.get(ch.species)}.`
+    + (ch.tieBreak ? ' Two were the same distance away, so the bigger number won.' : '');
+}
+
+/** What the share sheet sends for one pairing. The provenance line travels
+ * with it, because a number pasted into Discord with no source is exactly the
+ * thing this app exists to replace. */
+export function shareTextForPair(a: string, b: string, ch: ChildResult,
+  ra: number, rb: number, target: number): string {
+  return [
+    `${a} + ${b} = ${ch.species}`,
+    '',
+    resultSentence(ch, ra, rb, target),
+    '',
+    `Palworld ${breeding.game_version} · read from the game files · Palforge`,
+  ].join('\n');
+}
+
 function PairResult({ a, b }: { a: string; b: string }) {
   useAppVersion();
   const results = engine.childrenOf(a, b);
@@ -267,17 +302,12 @@ function PairResult({ a, b }: { a: string; b: string }) {
                 banned by name. Every number is kept; the notation is not. */}
             {ch.kind === 'generic' && (
               <Text style={[s.body, { marginTop: 8 }]}>
-                Every pal has a hidden breeding number. Yours are {ra} and {rb} —
-                average them, rounding up, and you get {target}. The nearest pal
-                to that is {ch.species} at {engine.ranks.get(ch.species)}.
-                {ch.tieBreak
-                  ? ' Two were the same distance away, so the bigger number won.'
-                  : ''}
+                {resultSentence(ch, ra, rb, target)}
               </Text>
             )}
             {ch.kind === 'gendered' && (
               <Text style={[s.body, { marginTop: 8 }]}>
-                {ch.genderNote} → {ch.species}. Swap the genders for the other child.
+                {resultSentence(ch, ra, rb, target)}
               </Text>
             )}
             {/* The help card promises "the maths shown", and a generic or
@@ -291,6 +321,18 @@ function PairResult({ a, b }: { a: string; b: string }) {
             {ch.kind === 'self' && (
               <Text style={[s.body, { marginTop: 8 }]}>Two of the same species always make that species — the breeding numbers are skipped.</Text>
             )}
+            {/* Sharing a result was the one thing players do with this screen
+                that the app could not do for them — they screenshot it. Text
+                travels better: it is searchable, quotable, and carries the
+                build it came from. */}
+            <View style={[s.wrap, { marginTop: 10 }]}>
+              <Btn small label="Share this result"
+                onPress={() => {
+                  void Share.share({
+                    message: shareTextForPair(a, b, ch, ra, rb, target),
+                  });
+                }} />
+            </View>
             {bothOwned && !canPairNow(a, b, ch.genderNote) && (
               <Text style={[s.body, { marginTop: 8, color: T.warn }]}>
                 ⚠ You have both species, but not a pair that can breed.{' '}

@@ -1,6 +1,8 @@
 /** Route Planner — shortest shared breeding tree from your box, on-device. */
 import React, { useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, Modal, Pressable, ScrollView, Text, View } from 'react-native';
+import {
+  ActivityIndicator, Modal, Pressable, ScrollView, Share, Text, View,
+} from 'react-native';
 import * as Haptics from 'expo-haptics';
 import {
   AnimatedCheck, HatchBurst, HeroPop, type Rarity, type TickState,
@@ -54,6 +56,38 @@ let unlockCache: { key: string; value: UnlockAdvice[] } | null = null;
 function wildFact(name: string): WildFact {
   const f = (PALCALC_FACTS as Record<string, { minWild: number | null }>)[name];
   return f ? { minWild: f.minWild, known: true } : { minWild: null, known: false };
+}
+
+/** The whole route as text somebody else can read.
+ *
+ * Players screenshot their plan to ask for help with it. A screenshot cannot
+ * be searched, quoted, or checked against a build — this can. The phases and
+ * the order are exactly what the screen shows, and the provenance line travels
+ * with it. */
+export function shareTextForPlan(
+  targets: string[], steps: PlanStep[], gameVersion: string,
+): string {
+  const lines: string[] = [];
+  lines.push(steps.length === 1
+    ? `Breeding route — ${targets.length === 1 ? '1 goal' : `${targets.length} goals`}, 1 step`
+    : `Breeding route — ${targets.length === 1 ? '1 goal' : `${targets.length} goals`}, ${steps.length} steps`);
+  lines.push('');
+  lines.push(`Goals: ${[...targets].sort().join(', ')}`);
+  let wave = 0;
+  let n = 0;
+  for (const st of [...steps].sort((x, y) => x.wave - y.wave)) {
+    if (st.wave !== wave) {
+      wave = st.wave;
+      lines.push('');
+      lines.push(`Phase ${wave}`);
+    }
+    n += 1;
+    lines.push(`${n}. ${st.parents[0]} + ${st.parents[1]} → ${st.child}`
+      + (st.genderNote ? ` (${st.genderNote})` : ''));
+  }
+  lines.push('');
+  lines.push(`Palworld ${gameVersion} · read from the game files · Palforge`);
+  return lines.join('\n');
 }
 
 /** "planned just now / today 22:40 / yesterday 09:15 / 12 Aug" — a stamp a
@@ -907,6 +941,12 @@ export function PlannerScreen() {
             </Text>
             <View style={s.wrap}>
               <Btn small label="Undo my progress" onPress={() => setManaging('reset')} />
+              <Btn small label="Share this route"
+                onPress={() => {
+                  void Share.share({
+                    message: shareTextForPlan(plan.targets, plan.steps, breeding.game_version),
+                  });
+                }} />
               <Btn small danger label="Forget this plan" onPress={() => setManaging('clear')} />
             </View>
             <Text style={{ color: T.muted, fontSize: 11.5, lineHeight: 16 }}>
