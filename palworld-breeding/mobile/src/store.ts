@@ -546,8 +546,11 @@ export function completeStep(sid: string, child: string, got: { m: boolean; f: b
   );
   state.checks = { ...state.checks, [sid]: entry };
   const cur = state.box[child] ?? { m: false, f: false };
-  const merged = { m: cur.m || got.m, f: cur.f || got.f };
-  if (merged.m || merged.f) state.box = { ...state.box, [child]: merged };
+  // the hatched egg answers nothing about an earlier catch still waiting for
+  // its gender check — the "?" survives the tick (unlike a Paldex gender tap,
+  // which IS the player answering that question)
+  const merged = { m: cur.m || got.m, f: cur.f || got.f, ...(cur.u ? { u: true } : {}) };
+  if (merged.m || merged.f || cur.u) state.box = { ...state.box, [child]: merged };
   void persist('checks');
   void persist('box');
   emit();
@@ -564,8 +567,10 @@ export function resetPlanProgress(): void {
       const child = sid.slice(sid.lastIndexOf('>') + 1);
       const cur = nextBox[child];
       if (cur) {
-        const entry = { m: cur.m && !sc.addedM, f: cur.f && !sc.addedF };
-        if (!entry.m && !entry.f) delete nextBox[child];
+        // same shared rule as a single untick — it knows the "?" mark is
+        // not a tick's to take
+        const entry = afterUntick(cur, sc);
+        if (!entry) delete nextBox[child];
         else nextBox[child] = entry;
       }
     }

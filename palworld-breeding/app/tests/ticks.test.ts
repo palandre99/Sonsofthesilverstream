@@ -73,3 +73,27 @@ describe('what survives an untick', () => {
     expect(afterUntick({ m: true, f: true }, second)).toBeNull();
   });
 });
+
+describe("the '?' mark is not a tick's to take", () => {
+  // "Caught one, couldn't check the gender" marks a DIFFERENT individual
+  // than anything the step hatched. Unticking the step must leave the mark
+  // alone — and a species owned only through that mark must stay in the
+  // collection, or the untick deletes a pal the player still has.
+  it('survives an untick next to a kept gender', () => {
+    const claim = claimFor({ m: true, f: true }, { m: true, f: false });
+    expect(afterUntick({ m: true, f: true, u: true }, claim))
+      .toEqual({ m: true, f: false, u: true });
+  });
+
+  it('keeps the entry alive even when the tick added every known gender', () => {
+    const claim = claimFor({ m: true, f: true }, NONE);
+    // without the mark this entry would go — with it, the caught pal stays
+    expect(afterUntick({ m: true, f: true, u: true }, claim))
+      .toEqual({ m: false, f: false, u: true });
+  });
+
+  it('absent means absent — saves without the mark behave exactly as before', () => {
+    const claim = claimFor({ m: true, f: true }, NONE);
+    expect(afterUntick({ m: true, f: true }, claim)).toBeNull();
+  });
+});

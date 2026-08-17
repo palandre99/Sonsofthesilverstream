@@ -93,6 +93,29 @@ describe('answering the question clears it', () => {
   });
 });
 
+describe('the plan cannot take the mark either', () => {
+  // These three paths predate the feature and silently dropped the mark —
+  // worst case, unticking a step DELETED a species the player still owns
+  // (caught in the wild, gender never checked). A hatched egg answers
+  // nothing about that earlier catch.
+  it('ticking a step keeps the mark on the hatched species', () => {
+    expect(store, 'completeStep drops the "?" from the box entry again')
+      .toContain('{ m: cur.m || got.m, f: cur.f || got.f, ...(cur.u ? { u: true } : {}) }');
+    expect(store, 'a species owned only through "?" must survive the merge write')
+      .toContain('if (merged.m || merged.f || cur.u)');
+  });
+
+  it('unticking — single step or "Start over" — goes through the one shared rule', () => {
+    // afterUntick is where "?" survival lives; both unwind paths must use it
+    // rather than re-inlining the rule without it (resetPlanProgress did)
+    const calls = store.split('afterUntick(').length - 1;
+    expect(calls, 'an unwind path stopped using the shared untick rule')
+      .toBeGreaterThanOrEqual(2);
+    expect(store, 'the inlined duplicate of the untick rule is back')
+      .not.toContain('cur.m && !sc.addedM');
+  });
+});
+
 describe('you can find them again at base', () => {
   it('the filter exists and uses the real predicate', () => {
     expect(filters).toContain("| 'unsure'");

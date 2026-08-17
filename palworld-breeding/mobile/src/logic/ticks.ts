@@ -58,11 +58,21 @@ export function claimFor(
 /**
  * What should remain of a pal after unticking a step, given what the tick
  * claimed. Returns null when nothing is left and the entry should go.
+ *
+ * The "?" mark — "caught one, couldn't check the gender" — belongs to a
+ * different individual than anything this step hatched, so it is never a
+ * tick's to take: it survives the untick, and an entry holding only that
+ * mark survives with it. Without this, unticking a step could delete a
+ * species the player still owns.
  */
 export function afterUntick(
-  current: { m: boolean; f: boolean },
+  current: { m: boolean; f: boolean; u?: boolean },
   claim: { addedM: boolean; addedF: boolean },
-): { m: boolean; f: boolean } | null {
-  const left = { m: current.m && !claim.addedM, f: current.f && !claim.addedF };
-  return left.m || left.f ? left : null;
+): { m: boolean; f: boolean; u?: boolean } | null {
+  const left = {
+    m: current.m && !claim.addedM,
+    f: current.f && !claim.addedF,
+    ...(current.u ? { u: true } : {}),
+  };
+  return left.m || left.f || current.u ? left : null;
 }
