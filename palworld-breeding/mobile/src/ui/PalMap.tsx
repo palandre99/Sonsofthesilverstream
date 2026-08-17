@@ -22,7 +22,7 @@ import { MapPreview, type PreviewPoint } from '../map/MapPreview';
 import { decodePoints } from '../map/points';
 import { REGION_BY_INDEX, type RegionId } from '../map/projection';
 import { MAP_ALPHAS, MAP_SPAWNS } from '../data/mapSpawns.g';
-import { spawnSplit } from '../map/layers';
+import { spawnSplit, whereFromLine } from '../map/layers';
 import { navigateTo } from '../nav/intent';
 
 /**
@@ -212,6 +212,20 @@ export function PalMap({ name }: { name: string }) {
           </Text>
         </View>
       ))}
+      {/* exactly where the boss stands, in the same words the map's cards
+          use — the spot is a fixed datamined point, so the line is
+          arithmetic, not an estimate. The spawn CLOUD gets no such line on
+          purpose: a cloud has no honest single "where". */}
+      {(MAP_ALPHAS[name] ?? []).map((spot, i) => {
+        const line = whereFromLine(spot.u, spot.v, REGION_BY_INDEX[spot.m]);
+        if (!line) return null;
+        return (
+          <Text key={`aw${i}`}
+            style={[s.body, { fontSize: 11, color: T.faint, marginLeft: 20 }]}>
+            {line}
+          </Text>
+        );
+      })}
       {offMap.map((sp, i) => (
         <View key={`o${i}`} style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
           <Icon name="star-four-points-outline" size={14} color={T.goldInk} />
