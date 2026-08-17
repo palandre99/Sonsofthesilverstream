@@ -8456,3 +8456,29 @@ tonight; a specific wrong-pin screenshot from him still outranks all of
 it and gets chased as its own case.
 NOTHING user-visible changed — the deliverable is the verdict. M52 queue
 COMPLETE (lists M53 + audit M54).
+
+### M55 — "Work": layer lists round 2 shipped (1cefc46, both channels)
+His one-word order re-engaged the loop; the work chosen was the sharpest
+remaining edge of his own last feature. Three changes, all serving "find
+the one I am looking for":
+1. PROGRESS HEADER: every list opens with "N of M found" (green "All M
+   found" when complete) — the list doubles as a checklist now.
+2. TWINS TELL APART: rows sharing a name (3 Medal Merchants, 6 Wandering
+   Merchants, twin Dimension Warp/Respawn Point statues, skill fruits by
+   biome) carry their where-line as a subtitle; the 3 rows that stand AT
+   a statue (whereFromLine honestly null inside 30 m) fall back to the
+   game's own coordinates so no twin ever reads blank. Duplication was
+   MEASURED from pois.json first (merchant 3 dup names, pal_merchant 1,
+   fast_travel 2, skill_fruit 7) — the subtitle only appears where it
+   disambiguates.
+3. SEALED REALMS FILE BY BOSS: listSortKey (pure, byte-parity layers.ts,
+   executed tests) files "Sealed Realm (Penking)" under P; the DISPLAYED
+   name stays the game's own untouched string, proven by test.
+653 tests, tsc clean both, eye-verified on the merchant list incl. the
+3 coordinate fallbacks. QA note: the chip list-glyph position depends on
+the chip's row/width — Merchant glyph at (150,1002) tall; measure from a
+shot, do not reuse the alpha coords.
+STATE: every CEO ask through 22:2x is shipped or verdict-delivered.
+Watch holds; next unwalked surfaces if he orders more work with no
+report: the where-line could join the pal-card spawn map; bounty list;
+found-progress could surface on the chip itself.
