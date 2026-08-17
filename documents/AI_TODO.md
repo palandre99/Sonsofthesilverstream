@@ -7746,3 +7746,31 @@ EVAL ROUNDS 1-3 TOTAL: 6 fixes shipped, 5 clean passes, 2 rejections with
 numbers, 2 ledger corrections. The fane has now been hostilely reviewed
 surface by surface. NEXT: the backlog — shareable routes, then cross-device
 sync (whole or not at all, found.ts store pattern).
+
+### M37 — ROUTES: THE DESIGN, decided before a line of code
+**What a route IS:** an ordered list of SELF-CONTAINED waypoints
+`{u, v, label}` — copies of the player's marks at the moment of adding, not
+references to pin ids. Deleting a mark can then never break a route, and a
+self-contained list serialises cleanly for the eventual "shareable" half.
+**What it must NEVER do:** reorder itself. The player owns the order; an
+"optimal" ordering would be an estimate, and this map does not estimate.
+**Slice 1 (WHOLE, shippable):** one route per region. "Add to route" on the
+mark card copies that mark in as the next stop. Stops render as NUMBERED
+badges (1, 2, 3…) through the existing CounterScaled machinery — zero new
+marker tech. The path draws as ONE svg Polyline inside the map transform with
+`vectorEffect="non-scaling-stroke"` — VERIFIED in the installed
+react-native-svg 15.12.1 typings (types.d.ts:51), so the line follows the map
+while its thickness stays constant at every zoom. Counted in the pill
+("· My route: 4 stops", never summed with spots), listed in the key,
+"Clear my route" beside the other clears, persisted `palforge-<id>-maproutes`
+on the found.ts pattern, region- and profile-scoped like pins.
+**Guards to prove-fail:** region scoping; malformed rows filtered; ORDER
+PRESERVED byte-for-byte through save/load (the property that makes it a route).
+**Slices after 1:** (2) remove one stop / insert between; (3) share = export
+text the other phone can import — which is also the seed of cross-device sync.
+**NEW-KIND-OF-THING checklist (the M21 lesson, applied up front):** the pill,
+the key, the region switch (route must vanish on the other island), profile
+switch, the empty-state guards, and the first-run hint must all account for
+route stops BEFORE slice 1 is called whole.
+IMPLEMENTATION starts next tick: store + tests first, then render, then card
+wiring.
