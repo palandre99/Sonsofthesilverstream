@@ -38,6 +38,12 @@ TILE = 512
 # pixels are the neighbour's actual art, so a seam is physically impossible
 # at any zoom.
 GUTTER = 2
+# EAS updates hard-cap at 1000 assets; all 565 kept z5 tiles blew it (1254
+# total, publish refused by the server). z5 is a LUXURY level — its fallback
+# is the same content at z4 — so only the tiles with the most real detail
+# ship, ranked by high-frequency energy. Smooth terrain upscales from z4
+# indistinguishably; settlements, ridges and paths keep double density.
+Z5_KEEP = 250
 # 92, up from 82 (CEO: "fixing the low resolution", 2026-08-17). Measured on
 # the three most detailed z4 tiles at 2x, columns side by side: 82 smears the
 # dark rock striations, 92 keeps them, 96 adds nothing visible for +1.7 MB.
@@ -138,6 +144,7 @@ def build_region(region: str, src_name: str, max_z: int) -> dict:
     manifest: dict[str, list[str]] = {}
     total_bytes = 0
     skipped = 0
+    z5_candidates: list = []
 
     for z in range(max_z + 1):
         n = 2**z
@@ -177,12 +184,30 @@ def build_region(region: str, src_name: str, max_z: int) -> dict:
                 if z > 0 and is_flat(flat_probe):
                     skipped += 1
                     continue
+                if z == 5:
+                    # rank now, save later — only the Z5_KEEP most detailed ship
+                    a = np.asarray(flat_probe.convert("L")).astype(np.float32)
+                    detail = float(np.abs(np.diff(a, axis=0)).mean()
+                                   + np.abs(np.diff(a, axis=1)).mean())
+                    z5_candidates.append((detail, tx, ty, tile))
+                    continue
                 name = f"{z}_{tx}_{ty}.webp"
                 for out in (MOBILE_OUT / region, WEB_OUT / region):
                     out.mkdir(parents=True, exist_ok=True)
                     tile.save(out / name, "WEBP", quality=QUALITY, method=6)
                 total_bytes += (MOBILE_OUT / region / name).stat().st_size
                 present.append(f"{tx}_{ty}")
+        if z == 5 and z5_candidates:
+            z5_candidates.sort(key=lambda r: -r[0])
+            for detail, tx, ty, tile in z5_candidates[:Z5_KEEP]:
+                name = f"5_{tx}_{ty}.webp"
+                for out in (MOBILE_OUT / region, WEB_OUT / region):
+                    out.mkdir(parents=True, exist_ok=True)
+                    tile.save(out / name, "WEBP", quality=QUALITY, method=6)
+                total_bytes += (MOBILE_OUT / region / name).stat().st_size
+                present.append(f"{tx}_{ty}")
+            skipped += len(z5_candidates) - min(Z5_KEEP, len(z5_candidates))
+            z5_candidates.clear()
         manifest[str(z)] = present
         print(f"  {region} z{z}: {len(present):>3}/{n * n:<3} tiles kept")
 

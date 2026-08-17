@@ -552,7 +552,9 @@ describe('zoom never asks for pixels that do not exist', () => {
 
   it('actually ships the deeper level for Palpagos and not for the tree', () => {
     const z5 = [...MAP_TILES.palpagos].filter((k) => k.startsWith('5_'));
-    expect(z5.length).toBeGreaterThan(400);          // 565 kept of 1024
+    // 250 exactly: EAS hard-caps updates at 1000 assets, so only the 250
+    // most detailed z5 tiles ship; the rest fall back to z4 invisibly
+    expect(z5.length).toBe(250);
     expect([...MAP_TILES.tree].some((k) => k.startsWith('4_'))).toBe(false);
   });
 
