@@ -7559,3 +7559,17 @@ Safe on both failure shapes: failed-to-START never published anything, and
 failed-PARTWAY is idempotent in effect (same bundle, fresh update id).
 LABELLED REASONED: the transient cannot be triggered on demand, so the retry
 path is verified only by the script parsing and its usage path running.
+
+### M31 — pin profile-scoping WALKED both ways. Correct. Nothing changed.
+The one unwalked journey left in the marks feature: do marks leak across
+saves? Seeded two profiles via `palforge-profiles-v1` and walked it:
+- mark dropped on the DEFAULT save -> switch active to w2 + reload ->
+  ZERO pins visible; dropping one on w2 writes `palforge-w2-mappins` and
+  leaves `palforge-default-mappins` untouched.
+- both saves seeded with distinct marks -> active w2 shows ONLY "-344, -548"
+  -> switch back to default -> ONLY "-88, -346". Round trip exact.
+CAVEAT, labelled: this walks the COLD path (app start with a different active
+save). The WARM path — switching saves in Settings and returning to the map
+within one session — rests on loadPins' `loadedFor` check re-running on
+MapScreen mount, which is the same mechanism found.ts uses; reasoned, not
+walked, because driving the Settings UI is another lane's surface.
