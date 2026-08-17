@@ -8129,3 +8129,27 @@ ledger (tools/verify_map_projection.py against the current build), then
 the queue is walked; after that, fresh brutal eval of the fane with the
 new features in it, and the zoom watch (M44: next report must carry his
 About stamp; if it survives d7b8e9c, build cluster continuity first).
+
+### M46 — PLACEMENT ACCURACY RE-PROVEN (M42 item 4; the queue is walked)
+tools/verify_map_projection.py re-run against the current cache (build
+24575149). Results, verbatim from the runner:
+- The shipped transform (DT_WorldMapUIData — the table the GAME uses to
+  draw its own map) wins the land-fit over 58,504 non-Water wild spawn
+  points; the 6,167 Water-element spawns legitimately sit in the sea.
+- Both spawn populations agree the leftover residual is SYSTEMATIC and
+  bounded: world edges land at u 0.0015..0.9990 = at most 6.1 px of inset
+  at 4096, i.e. ~1.5 px at display size — below the width of a marker dot
+  at every zoom we render.
+- Independent cross-check (pal-atlas POI layers, different upstream):
+  fast_travel 155 markers 96.1% within 6 px of land, dungeon 157 98.1%,
+  merchant 13 100%, towers 9 88.9% — the misses sit inside the texture's
+  own shallow-water glow, which is wider than 6 px.
+NOTHING SHIPPED — nothing user-visible changed; the map's key already
+carries the accuracy sentence and build stamp. If the CEO reports ONE
+specific wrong pin, that screenshot outranks this audit and gets
+investigated as its own case.
+THE M42 QUEUE IS COMPLETE: q92 tiles (M43), fifth zoom cause (M44),
+where-lines (M45), accuracy re-proof (M46). NEXT: fresh brutal eval round
+of the whole fane with the new features in it; then the zoom watch (About
+stamp + all-layers-off discriminator; cluster continuity is the queued
+hypothesis).
