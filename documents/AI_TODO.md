@@ -2098,6 +2098,64 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E104. JARGON SWEEP — ONE THING, THREE NAMES, AND A CARD THAT
+## ARGUED WITH ITSELF 2026-08-17 (overnight)
+
+Quality bar #3 is "a player's words, never a developer's" — he banned
+"tie-break" by name. Nothing had ever swept the phone app end to end for it.
+Three real findings, all in the Odds Lab.
+
+**1. THE SCREEN CALLED ONE THING THREE NAMES.** The tab says **"IVs"**, the
+first body line said **"hidden potential"**, and the closing card said **"IV
+work"** — and the screen never once said they were the same thing. A player who
+taps IVs and reads "hidden potential" is left to work that out alone. Both
+names are now introduced together, once, at the top: *"IVs are your pal's
+hidden potential in HP, Attack and Defence — a roll the game never shows you."*
+"Serious IV work" is gone.
+
+**2. ABBREVIATIONS NOBODY ASKED FOR.** `mut/cycle` — mutation? mutant?
+mutated? — while the paragraph directly below exists to say the figure is per
+CYCLE and not per egg. Both badges now say it in words: "2 eggs per cycle",
+"1.99% mutation per cycle". Also "treat percentages as ≈" → "treat the
+percentages as rough", and "eggs avg" → "eggs on average", which was the last
+abbreviation left in the app.
+
+**3. THE ONE ONLY THE RENDER COULD FIND — A CARD CONTRADICTING ITSELF.**
+Vegetable Cake's badge printed **"2.0% mutation per cycle"** directly above the
+sentence **"Two eggs at 1% each is 1.99% per cycle, not 2% per egg"**. The
+shared percentage formatter rounds to one decimal, which rounds away *precisely
+the point that paragraph exists to make*. The badge now prints the exact figure
+with trailing zeros dropped — 1%, 1.99%, 3% — and the card agrees with itself.
+Source-reading would never have caught this: both halves were individually
+correct.
+
+**MY SCANNER WAS WRONG THREE TIMES BEFORE IT WAS RIGHT (METHOD #31).**
+
+| pass | what it claimed | what was actually wrong |
+|---|---|---|
+| 1 | "4 flags in 1,433 strings" | scanned only QUOTED strings — **JSX text has no quotes**, so most of the app's prose was invisible |
+| 2 | "37 flags" | matched `>...<`, which is also TypeScript generics — flagged `Promise<void>` as copy |
+| 3 | "0 flags in 1,305" | whitelist filter silently dropped any string containing `~` or a brace, i.e. every counted label |
+| 4 | **1 flag in 3,037** | self-tests first: proves it finds "eggs avg" and "mut/cycle", proves it ignores TS generics, proves it keeps real prose |
+
+The final scanner asserts against known-good and known-bad samples before it
+runs. **A scanner that reports zero is worthless until it has proven it can
+report one.** All four of the first pass's "flags" were also false: game data
+text, the game's own word "mutate", a gaming-normal "roster", and a code
+fragment.
+
+**Also burned time on a `\b` that a bash heredoc turned into a literal
+backspace byte** — the workspace already warns "write Python with the Write
+tool, not heredocs", and this is the third time. It cost three failed patches.
+
+Verified on the render: the IVs intro, "1.99% mutation per cycle" agreeing with
+its own paragraph, "100 eggs on average", **nothing clipped** despite every
+label getting longer (measured `scrollWidth > clientWidth` across the screen),
+console clean under my own hooks.
+
+`odds-copy.test.ts` now 15. Gates 468. Mobile typecheck clean. Published to
+both channels.
+
 ## E103. THE ODDS LAB GAVE ADVICE IN A ROBOT'S VOICE ON ITS MOST
 ## COMMON SCREEN 2026-08-17 (overnight)
 
