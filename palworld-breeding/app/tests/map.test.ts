@@ -1742,3 +1742,43 @@ describe('found marks: what the two copies share and what they do not', () => {
     expect(webSrc).toContain('has to CHOOSE a profile');
   });
 });
+
+describe('does zooming further actually separate the small stuff', () => {
+  // "It's also very difficult to see exactly where stuff is, pals is one thing
+  // but chests .. small stuff may be hidden" (CEO, 2026-08-17). Reach went
+  // 3.2x -> 9.6x for this reason, so the claim needs checking against the real
+  // chest positions rather than assumed.
+  const chests = poiPoints('chest', 'palpagos')!;
+  const all = Array.from({ length: chests.n }, (_, i) => i);
+
+  const clustersAt = (scale: number) => clusterPoints(chests, all, scale, 34, 0).length;
+
+  it('there are 1,572 chests to pull apart', () => {
+    expect(chests.n).toBe(1572);
+  });
+
+  it('every step of zoom breaks more of them out', () => {
+    const floor = 852;                 // COVER on his phone
+    const oldCeiling = 8192 / 3;       // 2730 — where zoom used to stop
+    const newCeiling = 8192;           // 9.6x
+
+    const atFloor = clustersAt(floor);
+    const atOld = clustersAt(oldCeiling);
+    const atNew = clustersAt(newCeiling);
+
+    // more zoom must never merge markers back together
+    expect(atOld).toBeGreaterThan(atFloor);
+    expect(atNew).toBeGreaterThan(atOld);
+
+    // and the new ceiling must be worth having: it has to resolve a big
+    // fraction of the 1,572 into their own pins, which the old one did not
+    expect(atOld / chests.n).toBeLessThan(0.75);
+    expect(atNew / chests.n).toBeGreaterThan(0.9);
+  });
+
+  it('and at the deepest zoom almost every chest stands alone', () => {
+    const singles = clusterPoints(chests, all, 8192, 34, 0).filter((c) => c.count === 1).length;
+    // the number that matters to a player looking for ONE chest
+    expect(singles / chests.n).toBeGreaterThan(0.85);
+  });
+});
