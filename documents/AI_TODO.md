@@ -2098,6 +2098,64 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E105. THE FLAGSHIP SCREEN EXPLAINED ITSELF IN MATHS NOTATION
+## 2026-08-17 (overnight)
+
+Went looking for layout breakage in the parent slots at the longest pal names.
+Found nothing there — and something worse sitting six pixels underneath.
+
+**The Calculator's result card explained itself like this:**
+
+    rank target ⌊(2580 + 130 + 1)/2⌋ = 1355 → Blazehowl (1360)
+    · tie resolved to the higher CombiRank
+
+Floor brackets a player has never seen. **`CombiRank` — a raw game-file field
+name.** And **"tie"** — the exact word the CEO banned. Three violations of "a
+player's words, never a developer's" in one sentence, on the screen the
+blueprint calls the anchor of the whole product, in the line whose only job is
+to make a surprising result make sense.
+
+**It now reads:** *"Every pal has a hidden breeding number. Yours are 2580 and
+130 — average them, rounding up, and you get 1355. The nearest pal to that is
+Blazehowl at 1360. Two were the same distance away, so the bigger number won."*
+
+**Every number survived.** That is the point — the rewrite had to stay
+provable, not just readable. The badge and the two skip-cases were left
+speaking the old vocabulary by my first pass (METHOD #15 caught them): "close
+call — higher rank wins" → "the bigger number wins", "the rank formula is
+skipped" → "the breeding numbers are skipped".
+
+**THE ORIGINAL QUESTION, ANSWERED BY MEASUREMENT RATHER THAN WORRY.** The
+longest name in the game is **Eikthyrdeer Terra, 17 characters against a median
+of 8** (read from the data, not guessed). At a real 375 pt iPhone width the
+slots are 145 px and the name renders **125 px into a 129 px box — it fits,
+unclipped, at full size**, with Bellanoir Libero at 114 px beside it. Nothing
+anywhere on the Calculator clips or overflows with both loaded: measured
+`scrollWidth > clientWidth` across every leaf node, plus document scrollWidth
+against the viewport (375 = 375). **Not a defect. Worth knowing anyway: the
+safety net in that slot is `adjustsFontSizeToFit`, which is iOS-ONLY** — fine
+for his phone, latent the day Android ships.
+
+**GUARDS TIE THE PLAIN SENTENCE BACK TO THE ENGINE** (`calculator-copy.test.ts`,
+6): the ranks really are 2580 and 130, the pair really does make Blazehowl at
+1360, and **"average them, rounding up" is proven identical to the old
+⌊(A+B+1)/2⌋ across 200 odd-sum rank pairs**. Plain language that quietly
+stopped being true would be worse than the notation it replaced.
+
+**MY OWN GUARD WAS WRONG FIRST (METHOD #31, again).** `/\btie[- ]?break/i`
+flagged `ch.tieBreak` — the ENGINE'S legitimate field name. The ban is on what
+the player reads, not on the codebase. Making the separator mandatory
+(`/tie[- ]break/i`) catches the copy and leaves the identifier alone.
+
+Mutation-proven: restoring the old line fails two guards. Gates 474. Mobile
+typecheck clean. Console clean at 375 pt. Published to both channels.
+
+**LOGGED, NOT DONE — `ReferenceScreen.tsx` IS THE MAP LANE'S FILE.** It still
+says "CombiRank" and prints ⌊(A + B + 1)/2⌋. That is defensible for a technical
+appendix, and the Calculator now stands on its own, but the two screens name
+one concept two ways (METHOD #20). Whoever owns Reference should decide whether
+to bridge them — this ledger entry is the handoff.
+
 ## E104. JARGON SWEEP — ONE THING, THREE NAMES, AND A CARD THAT
 ## ARGUED WITH ITSELF 2026-08-17 (overnight)
 
