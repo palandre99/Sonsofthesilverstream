@@ -2098,6 +2098,57 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E128. THE PLAN COULD DELETE A PAL HE STILL OWNS — THE "?" MARK WAS
+## NOT SURVIVING PLAN TICKS 2026-08-17 (night, new session)
+
+**CEO's standing order re-issued at session start: "only stay in fane
+breeding… find all areas to improve still — better, more accurate, better
+design."** First find of the hunt came from reading `store.ts` as a hostile
+reviewer: the three plan-tick paths predate E122 and none of them knew about
+the "?" mark.
+
+**THE FAILURE, CONCRETELY.** Catch a pal at night, can't see the gender,
+tick "?" (his own feature, E122). A plan later hatches that species; tick
+the step "got ♂"; the "?" silently vanishes — the reminder the mark exists
+for is gone. Worse: UNTICK that step (mis-tap, or "Start over") and the
+whole box entry is deleted — a species he still owns leaves his collection.
+The E123 lesson verbatim: per-species flags are AGGREGATES; a hatched egg
+answers nothing about the earlier catch still waiting for its gender check.
+
+**THE FIX, three paths, one rule:**
+- `afterUntick` (shared `logic/ticks.ts`, byte-parity both trees) now
+  carries the mark through and keeps the entry alive on it — the "?" is
+  never a tick's to take;
+- `completeStep` preserves the mark on its merge (a Paldex gender TAP still
+  clears it — that gesture IS the player answering the question; a step
+  tick is not);
+- `resetPlanProgress` had RE-INLINED the untick rule instead of calling it
+  and was fixed by deletion: it now calls `afterUntick` like `uncheckStep`.
+
+**PROOF.** 3 new tick tests + 2 source assertions; all three mutations
+proven caught (afterUntick reverted, completeStep spread dropped, Start
+over re-inlined — each fails its guard). Walked on the render through the
+real UI under the snapshot protocol: Ribbuny "?" → step tick "got ♂" →
+`{m:true,f:false,u:true}` (mark survives) → untick → `{m:false,f:false,
+u:true}`, still owned at 27. Old code: `{m:true,f:false}` then DELETED.
+Snapshot restored key-by-key and re-verified (26 owned, 3 ticks, 2
+profiles, Lv 42). Commit 2e55aba.
+
+**ALSO: THE WEB BUILD GATE HAD BEEN RED SINCE 01:24** (736c7f3 — the
+provenance work read `c.sources` off a signal typed without it). vitest
+does not typecheck, recent sessions ran vitest + mobile tsc only, so the
+break sat invisible for ~22 h. `npm run build` in app/ is IN the gate list
+(00_START_HERE §gates) — run it. Fixed as gate repair, not a port: the
+signal now uses the `VerifiedClaim` interface that already declared
+`sources` (ab83bec). Gates now truly all green: 663 tests, app build
+clean, mobile tsc clean.
+
+**PUBLISH QUEUED (M56 precedent): the Map lane is mid-flight** — hundreds
+of regenerated map tiles + `build_map_tiles.py` uncommitted in the shared
+tree. `eas update` bundles the disk, so publishing now would ship their
+half-done tile experiment to his phone. Retry next tick; the fix is
+committed and ready.
+
 ## E127. HATCH FLOW READ ALOUD + THE FIXPOINT DECOMPOSED AND PARKED HONESTLY
 ## 2026-08-17 (night)
 
