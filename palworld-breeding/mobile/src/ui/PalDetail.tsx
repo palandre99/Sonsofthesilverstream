@@ -385,7 +385,9 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
             <>
               <Text style={[s.body, { fontSize: 11.5, color: T.goldInk }]}>
                 Condensed {stars}★: stats +{stars * 5}% · partner skill level {stars + 1} of 5
-                {stars === 4 ? ' · every work suitability below +1' : ''}
+                {stars === 4 ? ' · every work suitability below +1' : ''} · ranks
+                compare base stats
+                
               </Text>
               {/* The base stats above ARE datamined. These condensing figures
                   are not — they are community-measured, and the app's whole

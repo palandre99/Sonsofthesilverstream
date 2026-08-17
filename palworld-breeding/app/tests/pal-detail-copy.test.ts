@@ -70,6 +70,56 @@ const GATES = [
   },
 ];
 
+describe('the stat ranks are honest at every extreme', () => {
+  /* Read aloud 2026-08-17, every branch measured against the data:
+   * no pal has a null hp/atk/def (the "—" branch is defence, not a path);
+   * rank 1, the worst rank and the 1-pal tie all read correctly; the largest
+   * tie is 121 pals at 100 attack and the badge says so. One real defect:
+   * at stars > 0 the VALUE column shows the boosted preview while the rank
+   * badge stays computed from base — two individually-correct numbers
+   * contradicting on screen (method #43). The rank SHOULD stay at base
+   * (species rank is a base-stat fact), so the fix is the sentence, not the
+   * number: the stars footnote now says "ranks compare base stats". */
+  const stats = ['hp', 'atk', 'def'] as const;
+
+  it('every pal has every stat — the "—" branch is defence, not a path', () => {
+    for (const k of stats) {
+      const nulls = Object.entries(pals).filter(([, p]) =>
+        (p as Record<string, unknown>)[k] == null);
+      expect(nulls.map(([n]) => n)).toEqual([]);
+    }
+  });
+
+  it('the rank is computed from the BASE stat, never the boosted preview', () => {
+    // feeding boost() into statRank would make the badge lie about the
+    // number printed beside it in the opposite direction
+    expect(code).toContain("rank={statRank('hp', p.hp)}");
+    expect(code).toContain("rank={statRank('atk', p.atk)}");
+    expect(code).toContain("rank={statRank('def', p.def)}");
+    expect(code, 'the rank badge is ranking the boosted preview')
+      .not.toMatch(/statRank\('(?:hp|atk|def)', boost\(/);
+  });
+
+  it('and the stars footnote says so', () => {
+    // the value column boosts, the badge does not — without this sentence the
+    // two correct numbers contradict each other on screen
+    expect(code).toContain('ranks');
+    expect(code).toContain('compare base stats');
+  });
+
+  it('the bar cannot overflow its track, even boosted', () => {
+    expect(code).toContain('Math.min(100,');
+  });
+
+  it('the singular tie really occurs, so the plural branch matters', () => {
+    // Defense's best value is shared by exactly two species today
+    const defs = Object.values(pals).map((p) => (p as { def?: number }).def ?? 0);
+    const best = Math.max(...defs);
+    expect(defs.filter((v) => v === best).length).toBe(2);
+    expect(code).toContain("pal{rank.tied === 1 ? '' : 's'} tied");
+  });
+});
+
 describe('a card with nothing to show says so instead of vanishing', () => {
   for (const g of GATES) {
     describe(g.card, () => {

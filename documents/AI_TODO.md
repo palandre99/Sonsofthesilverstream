@@ -2098,6 +2098,40 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E124. THE STAT RANKS, READ ALOUD AT EVERY EXTREME — ONE CONTRADICTION
+## 2026-08-17 (evening)
+
+The pal card's stats-and-rank block ("#2 of 299", "14 pals tied"), measured
+branch by branch against the data rather than eyeballed:
+
+| branch | measured | verdict |
+|---|---|---|
+| null stat → "—" | **0 of 299** pals have a null hp/atk/def | defence, not a path — pinned |
+| rank 1 | hp/atk best = 200, "#1 of 299", 0 tied | correct |
+| worst rank | hp "#290 of 299" (9 tied) · atk "#286" (13 tied) · def "#297" (2 tied) | correct — ties, not #299 |
+| singular tie | def's best (200) shared by exactly 2 species → "1 pal tied" | occurs for real; plural branch guarded |
+| giant tie | 121 pals at 100 atk | badge says so |
+| bar overflow | `Math.min(100, …)`, ceiling derived from data | cannot overflow |
+
+**THE ONE DEFECT (method #43): at stars > 0 the VALUE column shows the boosted
+preview (`boost(p.hp)` — e.g. 216) while the rank badge stays computed from
+base (180).** Two individually-correct numbers contradicting on screen. The
+rank SHOULD stay at base — a species' rank is a base-stat fact, and ranking a
+boosted individual against other species' base stats would lie the other way —
+so the fix is the SENTENCE, not the number (method #17's mirror): the stars
+footnote now ends **"· ranks compare base stats"**.
+
+Guarded five ways, incl. a regex that fails if `boost()` is ever fed into
+`statRank`. `pal-detail-copy.test.ts` now 15. Gates **618**. Mobile typecheck
+clean.
+
+**DELIVERY NOTE:** E123 (his gender-"?" bugfix) reached his phone WITHOUT my
+publish — the Map lane published both channels ~7 min after my commit, and
+`eas update` bundles the working tree, so my committed fix rode along.
+Verified via `channel:list` timestamps. My own publishes stay HELD while their
+`MapScreen.tsx`/`routes.ts`/`map.test.ts` edits are in flight; E124 ships with
+the next clean-tree tick.
+
 ## E123. CEO BUG REPORT ON E122 — WRONG SEMANTICS AND A BROKEN HEADER
 ## 2026-08-17 18:13, screenshot from his phone ("Main play", 131 owned)
 
