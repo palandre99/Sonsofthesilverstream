@@ -7774,3 +7774,47 @@ switch, the empty-state guards, and the first-run hint must all account for
 route stops BEFORE slice 1 is called whole.
 IMPLEMENTATION starts next tick: store + tests first, then render, then card
 wiring.
+
+### M38 — ROUTES SLICE 1 SHIPPED (commit f55cd63) — publish PENDING on the other lane
+Built exactly to the M37 design, with ONE recorded correction to it: the
+polyline could NOT live inside the map transform. The canvas's own history
+says why — content in there is rasterised at pre-zoom size and GPU-magnified
+(that is why place names moved out), so non-scaling-stroke has nothing to
+act on: the stroke is baked before the GPU scales it. The line is drawn in
+SCREEN space instead, its geometry recomputed per frame on the UI thread
+(screen = u·k + tx, ScreenPin's own arithmetic) — constant-width and crisp
+at every zoom BY CONSTRUCTION. M37's "Polyline inside the transform with
+vectorEffect" is therefore superseded; the typings check was true but
+irrelevant.
+TWO BUGS THE QA BROWSER CAUGHT before the CEO could:
+- An <svg> under absoluteFill keeps its INTRINSIC 300x150 size (CSS replaced
+  element, opposing offsets do not stretch it) — the route was in the DOM,
+  correct to the pixel, and invisible. Explicit width/height from the
+  canvas's measured size. Probed, not guessed.
+- The numbered badges captured web clicks and the event bubbled past the
+  SIBLING pin to the map (opened the empty-tap card). Badges are now
+  pointerEvents="none" — tapping a number opens the mark beneath it, which
+  is where the route verbs live.
+EYE-VERIFIED end to end (qa-journey/): line+badges over both dark terrain
+and pale sand; key row; "Start my route here" -> "Add to my route — stop N"
+-> "On my route — stop N" (muted, when the spot is the LAST stop); pill
+updates live and never sums; World Tree shows nothing; "Clear my route — 4
+stops" clears one island only and the marks survive. Store guards PROVEN to
+fail one at a time (sort added / isStop bypassed / clear-scope flipped),
+restored, grep-confirmed. 605 tests, tsc clean both trees.
+PROFILE SWITCH is reasoned, not measured (F35): loadRoute() mirrors
+loadPins() byte-for-byte and M31 walked that mechanism both ways.
+KNOWN LIMITS, none of them a false place:
+- Two stops on the same spot: the later badge covers the earlier number
+  (slice 2: joined labels, remove/insert per stop).
+- Pre-existing, seen while walking: the empty-tap card survives a region
+  switch; the first-run hint returns on a region where you have no marks.
+EVAL FINDING while picking the route colour: MY_PIN #FF8FB1 is ONE HEX
+DIGIT from data layer #FF8FB0 — passes the not-in-set test, visually
+identical. Which layer owns #FF8FB0, and re-hue MY_PIN, next tick.
+PUBLISH: guard correctly BLOCKED — the goals lane has uncommitted work in
+mobile/src (SuggestedGoals.tsx). Retry each tick until their tree is clean;
+f55cd63 is NOT on his phone yet and is not "done" until it is.
+NEXT: publish retry -> MY_PIN re-hue -> routes slice 2 (remove one stop /
+insert between; joined badge labels) -> slice 3 share/export = the seed of
+cross-device sync.
