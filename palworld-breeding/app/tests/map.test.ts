@@ -2190,11 +2190,14 @@ describe('a mark card belongs to the map it is on', () => {
     // that is not here.
     const effect = screen.slice(
       screen.indexOf('if (prevRegion.current !== null'),
-      screen.indexOf('if (prevRegion.current !== null') + 800,
+      screen.indexOf('if (prevRegion.current !== null') + 1200,
     );
     expect(effect, 'the region-change effect must exist').toContain('canvas.current?.reset()');
     expect(effect).toContain('setOpenPin(null)');
     expect(effect).toContain('setDraft(null)');
+    // the focus card names a POI or readout of the island you just left —
+    // found surviving the switch in QA while walking the routes work
+    expect(effect).toContain('setFocus(null)');
   });
 
   it('and only when the region actually CHANGED, not on first mount', () => {
@@ -2254,10 +2257,16 @@ describe('round-3 fixes hold', () => {
     expect(memo).toContain('[filters.region]');
   });
 
-  it('the first-run hint stands down once the player has a mark', () => {
-    // its job is teaching the controls; a dropped mark proves they were
-    // found — and the "My mark" pill drew on top of the hint's last line
-    expect(screen).toMatch(/!hintOff && myPins\.length === 0/);
+  it('the first-run hint stands down once the player has EVER marked', () => {
+    // Its job is teaching the controls; a dropped mark proves they were
+    // found — on EITHER island. The region-scoped guard made the hint
+    // reappear on the World Tree for a player with four stops on Palpagos.
+    expect(screen).toMatch(/!hintOff && neverMarked/);
+    const memo = screen.slice(screen.indexOf('const neverMarked'),
+      screen.indexOf('const neverMarked') + 400);
+    expect(memo, 'the global question must exist')
+      .toContain("pinCount('palpagos') + pinCount('tree')");
+    expect(memo).toContain("stopCount('palpagos') + stopCount('tree')");
   });
 });
 
@@ -2423,8 +2432,9 @@ describe('the route is accounted for like everything else on the map', () => {
     );
   });
 
-  it('the first-run hint stands down once a route exists', () => {
-    expect(screen).toMatch(/myPins\.length === 0\s*&& myRoute\.length === 0/);
+  it('the first-run hint stands down once a route exists, anywhere', () => {
+    // routes count as proof of learning too, via the same global memo
+    expect(screen).toMatch(/stopCount\('palpagos'\) \+ stopCount\('tree'\)/);
   });
 
   it('can be cleared for THIS map only, from the same place as the other clears', () => {
@@ -2482,7 +2492,7 @@ describe('removing one stop (slice 2)', () => {
   it('the stop card is a card about THIS island', () => {
     // same fault family as the mark card across a region switch (the Mau
     // banner): switching islands closes it
-    expect(screen).toMatch(/setOpenPin\(null\);\s*\n\s*setOpenStops\(null\);\s*\n\s*setDraft\(null\);/);
+    expect(screen).toMatch(/setOpenPin\(null\);\s*\n\s*setOpenStops\(null\);/);
   });
 });
 

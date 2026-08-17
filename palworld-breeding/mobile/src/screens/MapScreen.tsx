@@ -26,11 +26,12 @@ import {
 import { clusterPoints, nearestPoint, pointsInRect, type PointSet } from '../map/points';
 import { uvToReadout, regionOf, type RegionId } from '../map/projection';
 import {
-  PIN_LABEL_MAX, addPin, clearPins, loadPins, onPinsChange, pinsIn, removePin,
+  PIN_LABEL_MAX, addPin, clearPins, loadPins, onPinsChange, pinCount, pinsIn, removePin,
   renamePin, type MapPin,
 } from '../map/pins';
 import {
-  addStop, clearRoute, importRoute, loadRoute, onRouteChange, removeStop, routeIn,
+  addStop, clearRoute, importRoute, loadRoute, onRouteChange, removeStop,
+  routeIn, stopCount,
 } from '../map/routes';
 import { decodeRoute, encodeRoute } from '../map/routeShare';
 import {
@@ -332,6 +333,10 @@ export function MapScreen() {
       // about a place that is not here.
       setOpenPin(null);
       setOpenStops(null);
+      // the focus card too: it names a POI or a coordinate readout of the
+      // island you just LEFT — same fault family, found surviving the
+      // switch in QA while walking the routes work
+      setFocus(null);
       setDraft(null);
     }
     prevRegion.current = region;
@@ -396,6 +401,16 @@ export function MapScreen() {
 
   /** this map's route, in the order the player added the stops */
   const myRoute = useMemo(() => routeIn(region), [region, ticks]);
+
+  /** Has this player EVER marked or routed anything, on either island?
+   *  The first-run hint teaches the controls; proof of learning is global,
+   *  and asking the region-scoped question made the hint reappear on the
+   *  World Tree for a player with four stops on Palpagos. */
+  const neverMarked = useMemo(
+    () => pinCount('palpagos') + pinCount('tree')
+      + stopCount('palpagos') + stopCount('tree') === 0,
+    [ticks],
+  );
 
   /** Open whatever is at a route spot: the mark's card when a pin is still
    *  there (it carries the route verbs), or the bare-stop card when the mark
@@ -1081,8 +1096,7 @@ export function MapScreen() {
       {/* A player who has dropped a mark has already found the control
           cluster — the hint's job is done. This also ends the collision where
           the "My mark" pill drew on top of the hint's last line. */}
-      {active.length === 0 && !sheet && !hintOff && myPins.length === 0
-        && myRoute.length === 0
+      {active.length === 0 && !sheet && !hintOff && neverMarked
         && filters.pals.size === 0 && filters.poi.size === 0 && (
         <Pressable
           onPress={() => setHintOff(true)}
