@@ -484,7 +484,12 @@ export function MapScreen() {
         {MAP_REGIONS.map((r) => (
           <Pressable
             key={r.id}
-            onPress={() => patch({ region: r.id as RegionId })}
+            onPress={() => {
+              // the same tick the side panel gives when it changes domain —
+              // this throws the current view away and re-frames the world
+              if (r.id !== region) void Haptics.selectionAsync();
+              patch({ region: r.id as RegionId });
+            }}
             accessibilityRole="button"
             accessibilityState={{ selected: region === r.id }}
             style={{
@@ -558,7 +563,16 @@ export function MapScreen() {
           )}
           {focus.mark && (
             <Pressable
-              onPress={() => toggleFound(focus.mark!)}
+              onPress={() => {
+                // The map already ticks on the level cap, on a layer toggle
+                // and on picking a pal — but not here, and not on switching
+                // region. Same class of action, silent in two places out of
+                // five. This one is the only map action that COMMITS anything
+                // (it writes a tick to disk that survives a restart), so it
+                // earns a real impact rather than a selection tick.
+                void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                toggleFound(focus.mark!);
+              }}
               accessibilityRole="checkbox"
               accessibilityState={{ checked: isFound(focus.mark) }}
               style={{

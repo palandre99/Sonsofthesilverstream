@@ -1847,3 +1847,39 @@ describe('the map respects Reduce Motion', () => {
     expect(canvas).not.toMatch(/withTiming\([^,]*glide/);
   });
 });
+
+describe('the map feels the same everywhere you change something', () => {
+  const screen = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
+  );
+
+  it('every state change on the map gives feedback, not three out of five', () => {
+    // Blueprint §5 criterion 15, "system haptics". The map already ticked on
+    // the level cap, a layer toggle and picking a pal — but was silent on
+    // marking a spot found and on switching region. Same class of action,
+    // inconsistent by accident rather than by choice.
+    for (const fn of ['setLevelCap', 'togglePoi', 'togglePal']) {
+      const body = screen.slice(screen.indexOf(`const ${fn} =`), screen.indexOf(`const ${fn} =`) + 260);
+      expect(body, `${fn} must exist`).toContain('setFilters');
+      expect(body, `${fn} lost its haptic`).toContain('Haptics.');
+    }
+    // the two that were missing
+    const found = screen.slice(screen.indexOf('toggleFound(focus.mark!)') - 700,
+      screen.indexOf('toggleFound(focus.mark!)') + 40);
+    expect(found).toContain('Haptics.impactAsync');
+    const region = screen.slice(screen.indexOf('patch({ region: r.id as RegionId })') - 400,
+      screen.indexOf('patch({ region: r.id as RegionId })') + 60);
+    expect(region).toContain('Haptics.selectionAsync');
+  });
+
+  it('the commit action feels different from a selection', () => {
+    // marking found is the only map action that writes to disk and survives a
+    // restart; it should not feel identical to flicking a filter on
+    expect(screen).toContain('Haptics.ImpactFeedbackStyle.Light');
+  });
+
+  it('and switching to the region you are already on stays silent', () => {
+    // a tick for a tap that changes nothing is noise
+    expect(screen).toMatch(/if \(r\.id !== region\) void Haptics\.selectionAsync\(\);/);
+  });
+});
