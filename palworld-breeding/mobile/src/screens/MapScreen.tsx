@@ -39,6 +39,7 @@ import {
   poiLayer,
   poiLayers, poiPoints, searchPlaces,
   poiName, spawnLevels, spawnPoints, spawnablePals, wildBands,
+  whereFromLine,
   type LayerGroup, type MapFilters,
 } from '../map/layers';
 import { MAP_REGIONS } from '../data/mapMeta.g';
@@ -569,6 +570,15 @@ export function MapScreen() {
       // spots on the map", and the same number in two formats one line apart
       // reads as a bug even when it is not
       lines.push(`${layer.set.n.toLocaleString()} on this map`);
+      // "exactly where small hidden stuff is" (CEO): how far, which way,
+      // from which statue — both ends datamined, the distance is arithmetic.
+      // Not on the fast-travel layer itself: a statue IS the landmark.
+      if (layer.key !== 'poi:fast_travel') {
+        const where = whereFromLine(
+          layer.set.xy[best.index * 2], layer.set.xy[best.index * 2 + 1], region,
+        );
+        if (where) lines.push(where);
+      }
     }
     setFocus({
       title: own || layer.label,

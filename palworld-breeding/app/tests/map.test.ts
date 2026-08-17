@@ -23,7 +23,7 @@ import { decodeRoute, encodeRoute } from '../../mobile/src/map/routeShare';
 import {
   closeMatches, isNightOnly, poiLayers, poiPoints, searchPlaces, spawnablePals, spawnLevels,
   spawnPoints, spawnSplit,
-  wildBands,
+  whereFrom, whereFromLine, wildBands,
 } from '../src/map/layers';
 import { REGION_SPOTS } from '../src/data/regionSpots.g';
 
@@ -2624,5 +2624,80 @@ describe('importing a route (slice 3) — the wiring', () => {
     expect(screen).toContain('Share my route');
     expect(screen).toContain('Import a route from the clipboard');
     expect(screen).toContain('Share.share({ message: encodeRoute(region, name, myRoute) })');
+  });
+});
+
+describe('"exactly where small hidden stuff is" — EXECUTED', () => {
+  it('the metre unit survives a full-population sanity check', () => {
+    // Every chest on Palpagos vs its nearest statue. Unreal's world unit is
+    // one centimetre; if that assumption were wrong the whole distribution
+    // shifts by orders of magnitude and this fails loudly. 155 statues on a
+    // ~14.5 km island puts typical nearest distances in the tens-to-hundreds
+    // of metres.
+    const chests = poiPoints('chest', 'palpagos');
+    expect(chests, 'chest points must exist').not.toBeNull();
+    const ds: number[] = [];
+    for (let i = 0; i < chests!.n; i++) {
+      const w = whereFrom(chests!.xy[i * 2], chests!.xy[i * 2 + 1], 'palpagos');
+      expect(w).not.toBeNull();
+      ds.push(w!.metres);
+    }
+    ds.sort((a, b) => a - b);
+    const median = ds[Math.floor(ds.length / 2)];
+    expect(median).toBeGreaterThan(40);
+    expect(median).toBeLessThan(1500);
+    expect(ds[ds.length - 1]).toBeLessThan(8000);
+  });
+
+  it('the compass words point the way the map is drawn', () => {
+    // synthetic offsets from a REAL statue, through the real axes swap:
+    // +v is south on the texture, +u is east
+    const statues = poiPoints('fast_travel', 'palpagos')!;
+    const su = statues.xy[0];
+    const sv = statues.xy[1];
+    const south = whereFrom(su, sv + 0.01, 'palpagos')!;
+    expect(south.dir).toBe('south');
+    const east = whereFrom(su + 0.01, sv, 'palpagos')!;
+    expect(east.dir).toBe('east');
+    const nw = whereFrom(su - 0.007, sv - 0.007, 'palpagos')!;
+    expect(nw.dir).toBe('north-west');
+  });
+
+  it('a synthetic 100 m offset measures 100 m', () => {
+    // 10,000 world units straight south of statue 0 = 100 m exactly
+    const statues = poiPoints('fast_travel', 'palpagos')!;
+    const r = MAP_REGIONS.find((x) => x.id === 'palpagos')!;
+    const dv = 10000 / (r.maxX - r.minX);
+    const w = whereFrom(statues.xy[0], statues.xy[1] + dv, 'palpagos')!;
+    expect(w.metres).toBeCloseTo(100, 1);
+    expect(w.dir).toBe('south');
+  });
+
+  it('standing on the statue says nothing, and the line rounds to 10 m', () => {
+    const statues = poiPoints('fast_travel', 'palpagos')!;
+    expect(whereFromLine(statues.xy[0], statues.xy[1], 'palpagos')).toBeNull();
+    const r = MAP_REGIONS.find((x) => x.id === 'palpagos')!;
+    const dv = 21700 / (r.maxX - r.minX);   // 217 m
+    const line = whereFromLine(statues.xy[0], statues.xy[1] + dv, 'palpagos');
+    expect(line).toMatch(/^220 m south of the .+$/);
+  });
+
+  it('never says "Statue statue" — some names already carry the word', () => {
+    // caught by eye on the QA screen: "the Great Eagle Statue statue"
+    const statues = poiPoints('fast_travel', 'palpagos')!;
+    const r = MAP_REGIONS.find((x) => x.id === 'palpagos')!;
+    const dv = 21700 / (r.maxX - r.minX);
+    let sawBare = 0;
+    let sawSuffixed = 0;
+    for (let i = 0; i < statues.n; i++) {
+      const line = whereFromLine(statues.xy[i * 2], statues.xy[i * 2 + 1] + dv, 'palpagos')!;
+      expect(line).not.toMatch(/statue statue$/i);
+      if (/statue$/i.test(line)) {
+        if (/Statue$/.test(line)) sawBare += 1; else sawSuffixed += 1;
+      }
+    }
+    // both kinds of name exist in the data, so both branches really ran
+    expect(sawBare).toBeGreaterThan(0);
+    expect(sawSuffixed).toBeGreaterThan(0);
   });
 });

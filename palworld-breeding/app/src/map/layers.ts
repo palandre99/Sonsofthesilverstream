@@ -15,7 +15,7 @@ import { MAP_POIS, type PoiLayer } from '../data/mapPois.g';
 import { REGION_SPOTS } from '../data/regionSpots.g';
 import { MAP_ALPHAS, MAP_SPAWNS, type SpawnGroup } from '../data/mapSpawns.g';
 import { decodePoints, unbase64, type PointSet } from './points';
-import { REGION_BY_INDEX, type RegionId } from './projection';
+import { REGION_BY_INDEX, type RegionId, regionOf } from './projection';
 
 export type LayerGroup = 'places' | 'pals' | 'collect' | 'resources';
 
@@ -477,3 +477,72 @@ export function closeMatches(query: string, names: string[], limit = 6): string[
   scored.sort((x, y) => (x.d - y.d) || x.name.localeCompare(y.name));
   return scored.slice(0, limit).map((r) => r.name);
 }
+
+/* ------------------------------------------------- where IS this, in words */
+
+/**
+ * "Exactly where small hidden stuff is" (CEO, 2026-08-17): a chest pin at
+ * deep zoom is a dot on terrain — the words a player actually navigates by
+ * are "how far, which way, from which statue". Both endpoints are datamined
+ * points; the distance is arithmetic between them, not an estimate.
+ *
+ * UNITS: Unreal's standard world unit is one centimetre (engine convention,
+ * documented by Epic; Palworld is UE5 and its datamined readout scale of
+ * 458.52 world units per map-grid step is consistent with it). Distances
+ * are world-unit differences divided by 100 — metres in the engine's own
+ * terms. A test executes this over every chest on Palpagos and fails if the
+ * nearest-statue distribution leaves the plausible band, so a wrong unit
+ * cannot ship silently.
+ *
+ * AXES: u runs west->east along worldY, v runs north->south along worldX
+ * (the map texture swaps them — see worldToUv). Distance must weight each
+ * axis by ITS OWN world span, and "north" is falling v.
+ */
+export interface WhereFrom {
+  /** the statue's display name, the game's own */
+  name: string;
+  metres: number;
+  /** 8-way compass word, lowercase ("north-east") */
+  dir: string;
+}
+
+const COMPASS = ['north', 'north-east', 'east', 'south-east',
+  'south', 'south-west', 'west', 'north-west'];
+
+export function whereFrom(u: number, v: number, region: RegionId): WhereFrom | null {
+  const set = poiPoints('fast_travel', region);
+  if (!set || set.n === 0) return null;
+  const r = regionOf(region);
+  const spanU = r.maxY - r.minY;   // u maps worldY
+  const spanV = r.maxX - r.minX;   // v maps worldX
+  let bi = -1;
+  let bd = Infinity;
+  for (let i = 0; i < set.n; i++) {
+    const dx = (set.xy[i * 2] - u) * spanU;
+    const dy = (set.xy[i * 2 + 1] - v) * spanV;
+    const d = dx * dx + dy * dy;
+    if (d < bd) { bd = d; bi = i; }
+  }
+  const metres = Math.sqrt(bd) / 100;
+  // FROM the statue TO the point: how the sentence reads ("north-east OF X")
+  const east = (u - set.xy[bi * 2]) * spanU;
+  const north = -(v - set.xy[bi * 2 + 1]) * spanV;
+  const angle = Math.atan2(east, north);            // 0 = north, cw positive
+  const dir = COMPASS[((Math.round(angle / (Math.PI / 4)) % 8) + 8) % 8];
+  return { name: poiName('fast_travel', region, bi), metres, dir };
+}
+
+/** The sentence the card prints, or null when it would be silly (the point
+ *  IS a statue, or the region has none). Rounded to 10 m — GPS-app honesty,
+ *  not fake single-metre precision. */
+export function whereFromLine(u: number, v: number, region: RegionId): string | null {
+  const w = whereFrom(u, v, region);
+  if (!w) return null;
+  if (w.metres < 30) return null;   // you are basically standing on it
+  const m = Math.round(w.metres / 10) * 10;
+  // some statue names already END in "Statue" (Great Eagle Statue) — caught
+  // on screen as "the Great Eagle Statue statue"
+  const suffix = /statue$/i.test(w.name) ? '' : ' statue';
+  return `${m} m ${w.dir} of the ${w.name}${suffix}`;
+}
+
