@@ -8482,3 +8482,14 @@ STATE: every CEO ask through 22:2x is shipped or verdict-delivered.
 Watch holds; next unwalked surfaces if he orders more work with no
 report: the where-line could join the pal-card spawn map; bounty list;
 found-progress could surface on the chip itself.
+
+### M56 — chips show collection progress (d9cead8, PUBLISH QUEUED behind the goals lane)
+Hopper item 1 shipped: layer chips read "3/1,572" once anything is
+ticked, green "9/9" when a layer is complete on that island, plain
+count when untouched (no 0/N noise). foundCountFor counts by key
+prefix `layer:region:` so the region scope is the key shape itself —
+proven-by-construction, pinned by test. 655 tests, tsc clean,
+eye-verified (towers green at 9/9, chests 3/1,572).
+PUBLISH: guard blocked on the goals lane's in-flight PlannerScreen.tsx
+— d9cead8 queues; retry next tick. HOPPER remains: where-line on the
+pal-card spawn map (verify PalMap data shape first); bounty variants.
