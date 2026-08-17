@@ -7706,3 +7706,23 @@ deep-zoom pin density at 9.6x.
 REMAINING ROUND-2 TARGETS: (c) the Find sheet's ~370px pre-results stack —
 candidate compaction; (d) deep-zoom pin density at 9.6x. Then a fresh-eyes
 round 3, then the backlog (routes, sync).
+
+### M35 — EVAL ROUND 2 COMPLETE. Dispositions for (c) and (d):
+- (c) Find pre-results stack: MEASURED 197px, NOT the ~370px M33 claimed —
+  that figure came from a different window state, and a ledger number is a
+  claim like any other; corrected here. Search + three control rows in 197px
+  is a tight, correct control panel. COMPACTION REJECTED WITH NUMBERS: the
+  dungeon toggle (210px) beside Filter & sort (119px) fits 340/343 — a 3px
+  cram that breaks the moment Dynamic Type scales text up, trading the
+  accessibility pass for ONE extra visible result row.
+- (d) deep-zoom density at a dense place (Duneshelter + 1,572 chests):
+  CLEAN — z0+9 z4 tiles, 89 markers, nearly every chest its own pin (one "2",
+  one "3"), terrain sharp. The label sitting partly under a pin is the
+  names-under-pins design decision holding, not a defect.
+ROUND 2 TALLY: 1 fix shipped (rename edit-mode), 2 clean passes (World Tree
+density, deep zoom), 1 rejection with numbers (stack compaction), 1 ledger
+correction (the 370px figure).
+NEXT: fresh-eyes ROUND 3 across the whole fane (states not yet critiqued
+this round: the empty World Tree, the Layers sheet itself, the mark-drop
+moment, region switching mid-layers). Then the backlog: shareable routes,
+cross-device sync.
