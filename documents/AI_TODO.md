@@ -8856,3 +8856,15 @@ HIS 23:2x QUEUE, next builds in order:
    stats is a PALDEX-side feature — PalDetail/Paldex are OUT OF THE MAP
    LANE. LOGGED HERE FOR THE GOALS LANE / shared backlog; the map lane
    will not edit PalDetail.
+
+### M61 — Smokie noise fixed: adaptive density clustering (7cde6e6, both channels)
+Each layer's cluster cell scales with ITS OWN on-screen hit count
+(cell × clamp(sqrt(hits/120), 1, 4)): Smokie's 1,638 spawns went from
+~170 tiny bubbles to 13 area bubbles (counts 23-224, centroids honest),
+splitting naturally on zoom-in; sparse layers untouched; POI swarms
+(1,572 chests) get the same collapse for free. Judged against his 23:21
+screenshot. 689 tests; the layer-phase pin updated to layerCell.
+NEXT (his queue): DRAGGABLE SHEETS (23:22) — SheetShell drag handle,
+three snap heights (half/tall/full); the sheet is not the map, its
+gesture is safe. Then list filters (search/sort/only-missing). The
+alpha-variant stats card stays logged for the GOALS lane (M60).
