@@ -8868,3 +8868,23 @@ NEXT (his queue): DRAGGABLE SHEETS (23:22) — SheetShell drag handle,
 three snap heights (half/tall/full); the sheet is not the map, its
 gesture is safe. Then list filters (search/sort/only-missing). The
 alpha-variant stats card stays logged for the GOALS lane (M60).
+
+### M62 — resizable sheets shipped (fb61db1, both channels)
+His 23:22 ask, whole: SheetShell (Layers, Find, layer lists — one shell)
+gains a grab handle with three snaps (SHEET_SNAPS 0.4/0.14/0 of screen
+height), core-Animated JS-driver on `top`, PanResponder ON THE HANDLE
+ONLY (nowhere near the sacred map gestures), release snaps to nearest,
+tap-to-cycle as the a11y/QA path ("Resize this panel..."). Verified by
+tap-cycling: the handle's own tap coordinates moved 731 -> 289 -> full,
+and at full screen every layer group fits without scrolling. 693 tests.
+F35: the DRAG itself is native-only behaviour (the harness cannot
+synthesize it); the snap/cycle logic is the tested path and the drag
+shares the same settle().
+HIS 23:2x QUEUE now: clustering DONE (M61), sheets DONE (M62); REMAINING:
+list filters (search/sort/only-missing), alpha-variant stats = GOALS
+LANE (M60). Session outputs tonight, for the next worker: M37-M62 —
+routes complete, marks magenta, where-lines, icon art, z5 terrain +
+seam + sharpen chain, found dim + three-way filter, bounty posters,
+adaptive clustering, layer lists + round 2, chip progress, resizable
+sheets, the 0.0 m placement audit, five zoom causes, and the publish
+pipeline lessons (1000-asset cap, guard-respect precedents).
