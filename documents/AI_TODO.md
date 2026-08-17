@@ -5541,3 +5541,32 @@ Tests hold all five together so a sixth silent action cannot slip in.
 ### PUBLISHED TONIGHT, in order
 48a4023 snap fix + 9.6x reach · 3fbe0e3 provenance line + double-tap ladder ·
 b1deb58 Reduce Motion + haptic consistency. All verified on both channels.
+
+### M13 — criterion 10: the hint now teaches the WEDGE — DONE (196a47f), pending publish
+The first-run hint taught the two BUTTONS ("Find a pal, or Layers for chests,
+ore and dungeons") — which are large, labelled and already on screen — and
+never mentioned the thing MapScreen's own header calls "the wedge nobody else
+has": only pals I'm missing, which turns the world into a to-do list and lives
+two taps deep inside Find.
+CONTEXTUAL, because teaching it to an empty box teaches a NO-OP (own nothing,
+everything is missing, the filter changes nothing):
+    empty box -> "Find a pal, or Layers for chests, ore and dungeons."
+    has a box -> "Find -> Filter shows only the pals you are still missing."
+Still one line, still dismissible for good, still only on a blank map. Both
+states DRIVEN AND LOOKED AT (fresh profile, then 4 seeded pals + reload).
+
+### AAA AUDIT — where it stands after tonight
+- 10 empty states teach the killer feature — FIXED (M13)
+- 12 motion / reduced-motion — FIXED (M11); its anti-example (blank map at
+  launch) impossible here: bundled tiles + a permanent z0 base
+- 13 fence estimates from fact — PASS by construction (no estimates exist)
+- 15 native citizenship — haptics FIXED (M12); Dynamic Type PASSES. Share
+  sheet / widgets / Handoff are NOT map-lane and unstarted app-wide: RAISE
+  WITH HIM as product scope.
+- STILL UNAUDITED against the map: **1** data-version badge (the map now has a
+  provenance LINE — is a build stamp + "44,851 outcomes" one tap away needed
+  too?), **2** search <=1 tap and <=1s (Find is 1 tap; TIME it against 224
+  pals + 23 layers + places), **6** numbers carry context never float
+  ("1,572 spots", "Lv 5-7" — meaningful, or naked?), **11** rows carry
+  decision-grade scent (the Find list is virtualized and carries
+  portrait+name+level — measure against the criterion's own bar).
