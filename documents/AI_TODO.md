@@ -2098,6 +2098,37 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E97. THE LAST UNMEASURED SCREEN, AND A BUTTON THAT SAID "REMOVE ALL…"
+## WITHOUT SAYING ALL WHAT 2026-08-17 (overnight)
+
+**Settings/Profiles measured — the last surface never checked.** One find: the
+per-profile **"Manage" pencil draws 25 px** and had 8 of slop = 41, just under
+the minimum. It is the only way into renaming a world, setting its level, or
+deleting it. Now slop 10 → **45**. Everything else on the screen was already
+fine ("+ New profile" 36, profile rows tall enough to hit).
+
+**"Remove all…" → "Remove all 8 goals…".** The button that empties the goal
+tray answered nothing: all *what* — goals, pals, the plan? The CEO has been
+burned once already by a Plan-tab button whose meaning only appeared after
+tapping it (E86). The label now **names the thing and counts it**, and the
+confirm title matches ("Remove all 8 goals?"). Verified on the render.
+
+**A SUSPECTED CROSS-SCREEN CONTRADICTION THAT TURNED OUT TO BE CORRECT.**
+Settings shows his world as **"Lv 42 · 26 pals · plan 0/35"** while
+`hatchlab-checks-v1` holds **3 ticks** — which looks like two screens
+disagreeing. It is not. Checked every tick against the current plan's step ids:
+**all 3 are ORPHANS** — `Cattiva|Daedream>Swee`, `Cattiva|Nitewing>Flopie`,
+`Pengullet|Sparkit>Pengullet Lux` match no step in the present 35-step route.
+He bred those three under an EARLIER plan (Swee, Flopie and Pengullet Lux are
+all in his box today), then re-planned, and the route changed. So **0 of the
+current 35 really are done**, Settings is right, and the Plan tab agrees.
+
+Recorded so nobody "fixes" the orphan ticks: they are harmless, they cost
+nothing, and if a step ever returns to the plan its tick is still there.
+
+Gates: 435 passing, 0 expected failures, 24 files; both trees typecheck; zero
+console errors.
+
 ## E96. THE STRESS WALKS — AND THE PLANNER SLOWDOWN IS WORST EXACTLY WHERE
 ## EVERY REAL PLAYER SITS 2026-08-17 (overnight)
 

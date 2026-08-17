@@ -708,7 +708,13 @@ export function PlannerScreen() {
             </View>
             <View style={s.wrap}>
               {targets.length > 1 && (
-                <Btn small label="Remove all…" onPress={() => setManaging('removeall')} />
+                /* "Remove all…" answers nothing — all WHAT? It sits in the
+                   goal tray, but so does everything else on this screen, and
+                   the CEO has already been burned once by a button whose
+                   meaning only appeared after tapping it. Name the thing, and
+                   count it, so the label is the whole answer. */
+                <Btn small label={`Remove all ${targets.length} goals…`}
+                  onPress={() => setManaging('removeall')} />
               )}
               {planned && trayOpen && (
                 <Btn small label="Fold away" onPress={() => setTrayOpen(false)} />
@@ -1453,7 +1459,7 @@ export function PlannerScreen() {
               <Text style={s.h2}>
                 {managing === 'reset' ? 'Undo your progress?'
                   : managing === 'replace' ? 'Replace the current plan?'
-                  : managing === 'removeall' ? 'Remove all goals?'
+                  : managing === 'removeall' ? `Remove all ${targets.length} goals?`
                   // finishing a plan and starting the next one is a normal,
                   // happy step — it should not be phrased as destruction
                   : planComplete ? 'Plan something new?'

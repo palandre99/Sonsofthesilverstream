@@ -92,7 +92,10 @@ export function ProfilesScreen() {
                   setArmDelete(false);
                   setManaging({ id: p.id, name: p.name });
                 }}
-                hitSlop={8}
+                /* the glyph draws 25 px; 8 of slop left it at 41, just under
+                   the 44 pt minimum — and this is the only way into renaming a
+                   world, setting its level, or deleting it */
+                hitSlop={10}
                 accessibilityRole="button"
                 accessibilityLabel={`Manage ${p.name}`}
                 style={({ pressed }) => [{
