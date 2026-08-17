@@ -3,6 +3,58 @@
 *Updated 2026-08-17 (breeding lane). Update this file whenever a work block lands;
 date every entry.*
 
+## 2026-08-17 overnight->night — THE PAL CARD READ ALOUD END TO END, AND A DAY OF HIS FEEDBACK (breeding lane)
+
+Twenty-eight ledger entries landed and shipped (E100-E127, AI_TODO.md has
+the full detail per entry). The shape of the day:
+
+**The overnight run read the app aloud like a player.** The sample box for an
+empty Paldex; the planner now BEATS the old Python reference (127 steps vs
+152 across twelve boxes); the Calculator, Odds Lab, picker, Settings and the
+whole pal card rewritten in a player's words. The pal card audit alone: three
+cards used to VANISH when a pal had no data (they now say what our files
+list, for exactly the pals affected, counted from the data); 17 partner
+effects arrive cut off from the source and 2 carried a raw game variable —
+the app now marks the gap honestly instead of pretending; the ABOUT blurb's
+"read more" follows the real layout instead of a character count; "many
+parent pairs work" became the real number (25 to 1,270 across 183 pals) and
+owned pairs past the old scan cap are found; stat ranks verified at every
+extreme; the star preview says its ranks compare base stats; the map preview
+enlarges IN PLACE with "Back to {name}" instead of dumping him in the Map
+fane (his feedback); the two gendered special recipes say "genders as shown"
+in words.
+
+**His daytime feedback round, all shipped same-day:** suggestion rows name
+BOTH routes (catch level AND breeding steps, or "no breeding route from your
+pals yet" — 223 of 299 rows had a hidden second route); pals he already owns
+sink to the bottom instead of being recommended; mounts are ranked by the
+game's own stat block against distance (his level-80 flying list led with a
+280-stat starter; now Shaolong/Shadowbeak/Eidrolon Ignis, and owned Nitewing
+went 1st -> 29th of 29); his "best first / closest first" idea is a toggle in
+every scored category; his gender-"?" idea is built (tick a pal you caught
+but could not identify, filter "Gender to check", one-tap reminder in the
+Paldex header) — and his bug report on it fixed same-evening: the mark now
+COEXISTS with known genders (per-species flags are aggregates, not answers
+to one question) and the header no longer collapses into a one-character
+column.
+
+**Honest engineering ledger:** the suggestions sheet's slow first open was
+decomposed — 1.0s modal mount + 5.6s reachability fixpoint on the DEV
+harness, but the same computation is on record at ~335ms on device, so the
+restructure is PARKED pending one real-device measurement (virtualising the
+sections bought only 12%; the old "180 tiles" theory was wrong and is
+retracted). One publish went out over the map lane's uncommitted tiles —
+owned in the ledger, rule tightened (read `git status` in its own command
+BEFORE any publish). The test harness's comment-stripper was found swallowing
+6,672 chars of source (16 test files fixed — `not.toContain` passes
+vacuously against truncated reads).
+
+**State at handoff:** tests 655 passing incl. the 44,851-row oracle, both
+trees typecheck, engines + `src/logic/recommend.ts` byte-identical, published
+to both channels through E127. Session timers (ScheduleWakeup AND cron) are
+registered but not being delivered — a harness fault; work continues on
+CEO-message wakes until the session restarts.
+
 ## 2026-08-17 overnight->afternoon — THE MAP'S ZOOM CRACKED, AND A NIGHT OF POLISH (map lane)
 
 He went to sleep saying "work while I sleep, for hours. I expect major
