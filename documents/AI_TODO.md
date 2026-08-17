@@ -2098,6 +2098,57 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E114. TWO CAKES VANISHED BETWEEN ONE CARD AND THE NEXT
+## 2026-08-17 (overnight)
+
+Pushed the Odds Lab's **IVs** and **Cakes** tabs to their extremes. E103 swept
+the Passives tab and found five defects; these two had only ever been READ,
+never exercised.
+
+**EVERY NUMBER ON BOTH TABS IS CORRECT** — checked against the engine as an
+oracle rather than eyeballed:
+
+| state | screen | `ivOdds` |
+|---|---|---|
+| 1 stat, either parent | 55.6% · 1 in 1.8 eggs · 3 for 90% | ✓ |
+| 1 stat, chosen parent | 27.8% · 1 in 3.6 eggs · 8 | ✓ |
+| 3 stats, chosen parent | 2.1% · 1 in 48 eggs · 110 | ✓ |
+| 3 stats, either parent | 16.7% · 1 in 6.0 eggs · 13 | ✓ |
+| zero stats | "Pick at least one stat." | ✓ |
+
+Cakes likewise: 1 egg/1%, 1/1%, **2 eggs/1.99%**, 1/3%, and the hunt cards
+230/100, 115/100, 76/33 — all exactly `mutationPlan` and the cake table. The
+"3 stats" / "1 stat" plural is right, and "FROM EITHER PARENT" ↔ "FROM YOUR
+CHOSEN PARENT" swaps correctly with the checkbox.
+
+**THE ONE REAL FINDING: "Which cake for which job" lists FIVE cakes; "Hunting a
+mutation" shows THREE.** Two cakes simply disappeared between one card and the
+next, with nothing saying why. They are absent for a good reason — **Mushroom
+and Special mutate at exactly plain Cake's rate**, so their cards would be three
+identical copies — but the player was never told, and could not have worked it
+out without comparing six numbers by hand.
+
+*"Mushroom Cake and Special Cake are not listed because they mutate at the same
+rate as plain Cake — the numbers would be identical. They are worth baking for
+their other effects, not for mutations."*
+
+**The names are DERIVED from the cake table, not typed** (`sameAsPlainCake()`
+filters on `mutationPerEgg` and `eggsPerCycle` matching Cake's), so adding a
+cake or changing a rate cannot leave that sentence stale — the same lesson as
+E110's pinned egg-helper count.
+
+Guarded three ways: the two unlisted cakes must really match plain Cake, the
+three shown must have **distinct** numbers, and the names must be derived.
+**Mutation-proven** — hard-coding the two names fails the guard.
+
+Console clean, nothing clipped at 375 pt. `odds-copy.test.ts` now 19. Gates
+507. Mobile typecheck clean. Published to both channels.
+
+**METHOD NOTE — the inverse of #11.** "A capability nobody is told about may as
+well not exist" has a mirror: **an ABSENCE nobody explains reads as a bug.**
+Two cakes missing from a list is not a defect in the numbers; it is a defect in
+the telling.
+
 ## E113. THE PICKER BLAMED YOUR SPELLING FOR A FILTER
 ## 2026-08-17 (overnight)
 
