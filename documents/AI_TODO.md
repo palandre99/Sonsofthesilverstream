@@ -2098,6 +2098,54 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E112. SHARE A RESULT OR A ROUTE — AAA #15's ACTIONABLE HALF
+## 2026-08-17 (overnight)
+
+E111's re-derivation found `Share.share` exactly ONCE in the whole tree — the
+Paldex's "Share my list…". Criterion #15 asks for a share sheet on every pal /
+plan / **result**, so the two things players actually pass around could only
+leave the app as a screenshot.
+
+**"Share this result"** on the Calculator sends:
+
+    Lamball + Cattiva = Daedream
+
+    Every pal has a hidden breeding number. Yours are 3050 and 2760 —
+    average them, rounding up, and you get 2905. The nearest pal to that
+    is Daedream at 2910. Two were the same distance away, so the bigger
+    number won.
+
+    Palworld 1.0 · read from the game files · Palforge
+
+**"Share this route"** on the Plan sends the goals, then every step numbered
+and grouped by phase — **80 lines for his real 8-goal, 35-step plan, ending at
+"Phase 20 · 35. Lapure + Relaxaurus Lux → Tetroise"** — with the same
+provenance line.
+
+**TWO PROPERTIES MAKE THAT TEXT WORTH SENDING RATHER THAN A SCREENSHOT, and
+neither is visible from reading the buttons:**
+
+1. **IT SAYS WHAT THE SCREEN SAYS.** The explanation is now ONE function,
+   `resultSentence`, rendered by the card AND sent by the share. Written twice
+   they would drift, and a friend would be reading a sentence the app never
+   showed anyone. **Verified character-for-character on the render:** the
+   string in the payload is the string in the card.
+2. **THE PROVENANCE TRAVELS.** A number pasted into Discord with no source is
+   exactly what this app exists to replace, so both payloads end with the build
+   they came from — read from the data, never typed.
+
+**VERIFIED WITHOUT SENDING ANYTHING:** redefined `navigator.share` to capture
+the payload instead of opening the OS sheet, then read both. Console clean,
+nothing clipped at 375 pt.
+
+`share-copy.test.ts` (7). Gates 497. Mobile typecheck clean. **Mutation-proven
+twice over** — letting the card write its own sentence fails the drift guard;
+dropping the provenance line fails the stamp guard. Published to both channels.
+
+**#15 IS NOW PARTIALLY MET AND HONESTLY SO:** haptics everywhere, share on the
+collection, the result and the route. **Widgets and Handoff remain genuinely
+unbuilt scope**, not defects.
+
 ## E111. THE AAA BAR, RE-DERIVED — CRITERION #1 WAS NOT CLOSED
 ## 2026-08-17 (overnight)
 
