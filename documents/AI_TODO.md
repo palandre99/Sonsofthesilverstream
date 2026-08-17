@@ -8008,3 +8008,43 @@ NEXT: the two M38 oddities as eval targets (empty-tap card survives region
 switch; first-run hint returns on a region with no marks — decide RIGHT
 behaviour), then a fresh brutal eval round of the whole fane, then
 cross-device sync design.
+
+### M42 — CEO REDIRECT (verbatim) + two stale-state fixes shipped (6ccb91d, published)
+**CEO, mid-session:** "Route selection is overkill … focus on making the map
+actually good instead… fixing zoom, fixing the low resolution, able to zoom
+further in, more accurate placements, better description of exactly where
+small hidden stuff is etc …"
+**PRIORITY RESET, effective now:** routes are DONE as shipped (slices 1-3
+live) — no slice 4, no cross-device sync design, no further route polish.
+The lane's whole budget goes to map fundamentals, in this order:
+1. TILE CRISPNESS EXPERIMENT — measured facts: Palpagos already builds from
+   the game's NATIVE 8192 (T_WorldMap_hi.png, z4, since the "380 quality"
+   round); the World Tree is capped at 4096 because NO 8192 export of
+   T_TreeMap exists in the game files (hard data ceiling, not a choice);
+   tiles encode at WEBP QUALITY 82 (build_map_tiles.py:34). The remaining
+   real lever is COMPRESSION, not pixels: rebuild z3+z4 at q>=92, measure
+   bundle delta, compare crops BY EYE at max zoom, ship if sane.
+2. ZOOM BUG, FRESH APPROACH — enumerating transform writers has gone two
+   rounds without ending his reports; the rule says change approach:
+   re-derive the pan/pinch/anchor ALGEBRA from scratch (assume nothing from
+   M27/M28), hunting any frame where anchor math can read a stale value.
+   His falsifier still stands: slow single pinch, no re-grip?
+3. "EXACTLY WHERE SMALL HIDDEN STUFF IS" — new focus-card line for POIs:
+   distance + compass direction from the nearest fast-travel statue (both
+   endpoints datamined; distance = world units, arithmetic not estimate),
+   e.g. "210 m north-east of the Grassy Behemoth Hills statue". Also
+   surface what we already know per-point: inside-dungeon, night-only.
+4. PLACEMENT ACCURACY PROOF — re-run the projection residual gate against
+   the current data build and write the numbers into the ledger; if he has
+   ONE concrete wrong pin, that example beats any audit.
+"Zoom way further in" honesty, for whoever reports next: past ~3.2x the map
+magnifies pixels that do not exist in the game's own files; more REACH is
+free (OVERZOOM constant) but shows nothing new — the answer to "find small
+stuff" is #3 plus pin resolution (90%+ of chests resolve at the current
+ceiling, measured M-round).
+ALSO SHIPPED THIS TICK (before the redirect landed): the two M38 oddities —
+region switch closes the tap card (same fault family as the mark card /
+Mau banner), and the first-run hint now asks the GLOBAL question ("ever
+marked anything, either island" — pinCount+stopCount both regions) instead
+of reappearing on the Tree for a player with four Palpagos stops. Both
+eye-verified; 632 tests; published as 6ccb91d.
