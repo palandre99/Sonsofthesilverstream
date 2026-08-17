@@ -8355,3 +8355,50 @@ any npm touch; committed as housekeeping, guard cleared, published clean.
 643 tests, tsc clean both trees. WATCH: pins-soft is structurally dead
 (screen space — they cannot change size); names-moving is dead (glue);
 the next report starts from his About stamp.
+
+### M51 — the 20:47-21:52 rounds SHIPPED (f142f2e + 1ad999e, both channels confirmed)
+1. ICONS: measured all 23 — 15 were 17-26px community sprites (THE
+   pixelation). The 8 material layers (ore/coal/sulfur/paldium/quartz/
+   berries/mushrooms/crude oil — the thousands-of-pins layers) now carry
+   the GAME'S OWN 256px item art (mlg404/palworld-paldex-api, MIT verified
+   via API), baked to 96px. The game's map never draws materials, so no
+   map glyph exists; the inventory icon IS the game's image. 7 layers keep
+   small art honestly (no item exists; a sharper wrong symbol is still
+   wrong; skill fruit ships only per-skill icons). VERDICT IN: "Render
+   good now on zoom" — the MarkerPin + item-art chain closed his icon
+   complaint.
+2. TERRAIN AT MAX ZOOM: deepest tile level bakes UnsharpMask(2,80,2) —
+   judged on 3x side-by-side crops (80 wins, 130 halos on coasts).
+   Enhances existing edges, invents nothing.
+3. REACH: OVERZOOM 7 / MAX_ZOOM 20 (~20x floor on his phone, +43%); the
+   floor-multiple cap now binds ON PURPOSE (fixture rewritten). One
+   borderline ocean tile joined the pyramid post-sharpen (321 total).
+647 tests, tsc clean both. INCIDENT (their ledger, 09c7de5): the goals
+lane's E126 publish carried my in-flight icons — resolved by 1ad999e
+landing everything on a known commit.
+
+### M52 — CEO REDIRECT (21:5x): layer LISTS + a placement accuracy audit
+Verbatim: "tapping [alpha bosses] shows all which is good but it should
+be possible to get a list so I can find the one I am looking for instead
+of looking all over the map. I also think a lot of stuff u have placed
+isn't accurate so triple check deep research web and make sure all is
+accurate. Never guess."
+QUEUE, in order:
+1. LAYER LIST (design before build, M37 precedent): for layers whose
+   points have NAMES (alpha_pals, fast_travel, syndicate_tower,
+   sealed_realm, merchant, pal_merchant, bounty_targets, skill_fruit) —
+   a scannable list (name + level for alphas + found-tick state), one tap
+   flies the map to that point (canvas.focus exists). WHERE it lives must
+   not fight the sheet's job — candidate: a "List" affordance on the
+   ACTIVE layer chip or on the tapped-pin card ("See all 65"). Alphas
+   first (his example), pattern generalises. Reuse existing search-row
+   look; found-ticks shown so the list doubles as a checklist.
+2. ACCURACY AUDIT with numbers: fetch an INDEPENDENT coordinate source
+   (candidates: palworld.gg map data endpoints, PalMiniMap Info.json
+   points, paldb; vet licence + provenance like M51 did), project both
+   through the proven transform, per-point distance table for alphas +
+   fast travels + towers at minimum; ledger the distribution and chase
+   every outlier to a verdict (our error vs their error vs genuine
+   ambiguity). If OUR point is wrong anywhere, fix the extractor, never
+   hand-edit. His standing offer holds: ONE screenshot of a wrong pin
+   outranks any audit sample.
