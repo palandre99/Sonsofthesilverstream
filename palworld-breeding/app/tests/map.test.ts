@@ -1814,3 +1814,36 @@ describe('the map answers "is this even accurate"', () => {
     expect(MAP_POIS.length).toBeGreaterThan(20);
   });
 });
+
+describe('the map respects Reduce Motion', () => {
+  const canvas = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'map', 'MapCanvas.tsx'), 'utf8',
+  );
+
+  it('asks the phone, and keeps listening', () => {
+    // Blueprint §5 criterion 12: "motion is physical and cancelable ...
+    // reduced-motion respected". The map glides the ENTIRE world for 220-320ms
+    // on double-tap zoom, on framing a species, and on "back to the whole
+    // map" — precisely the large-field movement that makes people ill.
+    expect(canvas).toContain('AccessibilityInfo.isReduceMotionEnabled()');
+    // and honour it being switched on WHILE the app is open
+    expect(canvas).toContain("addEventListener('reduceMotionChanged'");
+    expect(canvas).toContain('sub.remove()');
+  });
+
+  it('every animation in the file goes through it — none left behind', () => {
+    const durations = canvas.match(/duration: [^}]+/g) ?? [];
+    expect(durations.length, 'the map must still animate something').toBeGreaterThan(5);
+    for (const d of durations) {
+      expect(d, `an animation escaped the reduced-motion switch: ${d}`).toContain('* glide');
+    }
+  });
+
+  it('and the destination is unchanged — only the sweep goes', () => {
+    // glide multiplies DURATION only. If it ever touched a target value the
+    // map would end up somewhere different for these users, which would be a
+    // far worse bug than the one being fixed.
+    expect(canvas).toMatch(/const glide = useReducedMotion\(\) \? 0 : 1;/);
+    expect(canvas).not.toMatch(/withTiming\([^,]*glide/);
+  });
+});

@@ -18,7 +18,9 @@
  * an over-the-air update instead of costing the CEO a reinstall.
  */
 import React, { useCallback, useMemo, useState } from 'react';
-import { PixelRatio, StyleSheet, View, type LayoutChangeEvent } from 'react-native';
+import {
+  AccessibilityInfo, PixelRatio, StyleSheet, View, type LayoutChangeEvent,
+} from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   type SharedValue,
@@ -130,6 +132,35 @@ function maxScaleFor(region: RegionId): number {
 }
 
 /**
+ * Does this phone want motion cut down?
+ *
+ * The map animates three things — double-tap zoom, framing a species, and
+ * "back to the whole map". Each is a 220-320ms glide of the ENTIRE world,
+ * which is exactly the large-field movement that provokes nausea in people
+ * who switch Reduce Motion on. The blueprint's design bar names it outright
+ * (criterion 12: "motion is physical and cancelable ... reduced-motion
+ * respected") and the map was ignoring it.
+ *
+ * Cutting the duration to 0 keeps every destination identical: the map still
+ * ends up in exactly the same place, it just arrives without the sweep.
+ */
+function useReducedMotion(): boolean {
+  const [reduced, setReduced] = React.useState(false);
+  React.useEffect(() => {
+    let alive = true;
+    AccessibilityInfo.isReduceMotionEnabled()
+      .then((on) => { if (alive) setReduced(on); })
+      .catch(() => { /* a phone that will not answer is a phone that wants motion */ });
+    const sub = AccessibilityInfo.addEventListener('reduceMotionChanged', setReduced);
+    return () => {
+      alive = false;
+      sub.remove();
+    };
+  }, []);
+  return reduced;
+}
+
+/**
  * A thing drawn in SCREEN space, tracking the map without being scaled by it.
  *
  * Anything inside the transformed container is rasterised by iOS at its
@@ -213,6 +244,8 @@ export function MapCanvas({
    * when this fane first shipped.
    */
   const dpr = PixelRatio.get();
+  /** 0 when the phone asks for less motion — same destination, no sweep */
+  const glide = useReducedMotion() ? 0 : 1;
 
   const tx = useSharedValue(0);
   const ty = useSharedValue(0);
@@ -423,10 +456,10 @@ export function MapCanvas({
       const nx = e.x - (e.x - tx.value) * ratio;
       const ny = e.y - (e.y - ty.value) * ratio;
       const c = clamp(nx, ny, next);
-      k.value = withTiming(next, { duration: 220 });
-      tx.value = withTiming(c.x, { duration: 220 });
-      ty.value = withTiming(c.y, { duration: 220 });
-    }), [MAX_SCALE, clamp, pinching, zoomFloor, k, tx, ty]);
+      k.value = withTiming(next, { duration: 220 * glide });
+      tx.value = withTiming(c.x, { duration: 220 * glide });
+      ty.value = withTiming(c.y, { duration: 220 * glide });
+    }), [MAX_SCALE, clamp, glide, pinching, zoomFloor, k, tx, ty]);
 
   const tap = useMemo(() => Gesture.Tap()
     .maxDuration(260)
@@ -542,13 +575,13 @@ export function MapCanvas({
     // scale is still low — where the same screen width covers a far wider
     // slice of the map. Anything culling by that rect (place-name edge insets)
     // then thinks the view is much wider than it is.
-    k.value = withTiming(next, { duration: ms }, (done) => {
+    k.value = withTiming(next, { duration: ms * glide }, (done) => {
       'worklet';
       if (done) runOnJS(settle)(next, c.x, c.y);
     });
-    tx.value = withTiming(c.x, { duration: ms });
-    ty.value = withTiming(c.y, { duration: ms });
-  }, [MAX_SCALE, clamp, zoomFloor, k, settle, size.h, size.w, tx, ty]);
+    tx.value = withTiming(c.x, { duration: ms * glide });
+    ty.value = withTiming(c.y, { duration: ms * glide });
+  }, [MAX_SCALE, clamp, glide, zoomFloor, k, settle, size.h, size.w, tx, ty]);
 
   // A pal card can ask us to frame a species the same frame it mounts us, so
   // the request routinely arrives BEFORE the first layout. Focusing then would
@@ -571,11 +604,11 @@ export function MapCanvas({
     },
     reset: () => {
       const c = clamp((size.w - zoomFloor) / 2, (size.h - zoomFloor) / 2, zoomFloor);
-      k.value = withTiming(zoomFloor, { duration: 320 });
-      tx.value = withTiming(c.x, { duration: 320 });
-      ty.value = withTiming(c.y, { duration: 320 });
+      k.value = withTiming(zoomFloor, { duration: 320 * glide });
+      tx.value = withTiming(c.x, { duration: 320 * glide });
+      ty.value = withTiming(c.y, { duration: 320 * glide });
     },
-  }), [applyFocus, clamp, zoomFloor, k, size.h, size.w, tx, ty]);
+  }), [applyFocus, clamp, glide, zoomFloor, k, size.h, size.w, tx, ty]);
 
   /* ------------------------------------------------------------- rendering */
 
