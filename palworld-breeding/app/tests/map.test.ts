@@ -2060,13 +2060,23 @@ describe("the player's own pins", () => {
     expect(block).not.toContain('clusterPoints');
   });
 
-  it('uses a colour no data layer uses', () => {
-    // a mark you made must never be mistaken for something the game files put
-    // there
-    const mine = /const MY_PIN = '(#[0-9A-Fa-f]{6})'/.exec(screen);
+  it('uses a colour MEASURABLY far from every data layer', () => {
+    // A mark you made must never be mistaken for something the game files
+    // put there. Exact-match checking already failed once: MY_PIN was
+    // #FF8FB1 and Skill fruit is #FF8FB0 — distance 1.0, visually the same
+    // colour, and the set-membership test waved it through. The bar is 40
+    // RGB-units, ~2.4x the data palette's own closest pair (17, two reds
+    // told apart by their glyphs).
+    const mine = /const MY_PIN = '#([0-9A-Fa-f]{6})'/.exec(screen);
     expect(mine, 'the pin colour must be named once').not.toBeNull();
-    const used = new Set(poiLayers().map((l) => l.colour.toLowerCase()));
-    expect(used.has(mine![1].toLowerCase())).toBe(false);
+    const rgb = (h: string) => [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16));
+    const dist = (a: string, b: string) => Math.hypot(
+      ...rgb(a).map((x, i) => x - rgb(b)[i]),
+    );
+    for (const l of poiLayers()) {
+      expect(dist(mine![1], l.colour.slice(1)), `too close to ${l.id} ${l.colour}`)
+        .toBeGreaterThanOrEqual(40);
+    }
   });
 });
 
@@ -2356,13 +2366,21 @@ describe('the route on the screen', () => {
     expect(badges).not.toContain('clusterPoints');
   });
 
-  it('uses a colour no data layer uses, and not the mark colour either', () => {
-    const mine = /const MY_ROUTE = '(#[0-9A-Fa-f]{6})'/.exec(screen);
+  it('uses a colour MEASURABLY far from every layer AND the mark colour', () => {
+    // same 40-unit bar as MY_PIN, and the two overlay colours must also be
+    // far from each other — your path and your marks are different answers
+    const mine = /const MY_ROUTE = '#([0-9A-Fa-f]{6})'/.exec(screen);
     expect(mine, 'the route colour must be named once').not.toBeNull();
-    const used = new Set(poiLayers().map((l) => l.colour.toLowerCase()));
-    expect(used.has(mine![1].toLowerCase())).toBe(false);
-    const pin = /const MY_PIN = '(#[0-9A-Fa-f]{6})'/.exec(screen);
-    expect(mine![1].toLowerCase()).not.toBe(pin![1].toLowerCase());
+    const rgb = (h: string) => [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16));
+    const dist = (a: string, b: string) => Math.hypot(
+      ...rgb(a).map((x, i) => x - rgb(b)[i]),
+    );
+    for (const l of poiLayers()) {
+      expect(dist(mine![1], l.colour.slice(1)), `too close to ${l.id} ${l.colour}`)
+        .toBeGreaterThanOrEqual(40);
+    }
+    const pin = /const MY_PIN = '#([0-9A-Fa-f]{6})'/.exec(screen);
+    expect(dist(mine![1], pin![1])).toBeGreaterThanOrEqual(40);
   });
 });
 

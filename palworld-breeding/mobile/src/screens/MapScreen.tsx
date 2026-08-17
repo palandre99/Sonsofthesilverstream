@@ -1291,7 +1291,11 @@ function PlaceName({ name }: { name: string }) {
 
 /** The player's own pins. Deliberately a colour NO data layer uses, so a mark
  *  you made can never be mistaken for something the game files put there. */
-const MY_PIN = '#FF8FB1';
+/** Magenta, MEASURED against the data palette: nearest layer colour is 85
+ *  RGB-units away. The old pink #FF8FB1 sat at distance 1.0 from Skill
+ *  fruit's #FF8FB0 — a mark you made was the same colour as 43 pins the
+ *  game files put there, which is exactly what this colour must never be. */
+const MY_PIN = '#F050FF';
 /** chartreuse: verified absent from all 23 data-layer colours and far from
  *  MY_PIN — a path you drew must never read as something the game put there */
 const MY_ROUTE = '#C8FF4D';
