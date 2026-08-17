@@ -2098,6 +2098,63 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E96. THE STRESS WALKS — AND THE PLANNER SLOWDOWN IS WORST EXACTLY WHERE
+## EVERY REAL PLAYER SITS 2026-08-17 (overnight)
+
+Three scripted collections, each on top of a snapshot, each restored after.
+**No defects found — but one measurement changes what the parked performance
+item actually is.**
+
+**THE PERFORMANCE SHAPE, measured at three sizes.** Time the main thread is
+blocked when tapping "Suggested goals":
+
+| collection | block |
+|---|---|
+| empty box | instant |
+| **his real 26 pals** | **1055 ms** |
+| all 299 owned | **29 ms** |
+
+**The cost is not proportional to collection size — it peaks in the middle.**
+Both ends are trivial for the obvious reason: with nothing owned nothing is
+reachable, and with everything owned nothing needs deriving. The expensive
+case is a partial roster with a large reachable frontier — which is precisely
+where every real player lives, all game. So the parked planner-speed item is
+not "slow for big collections"; it is **slow for normal ones**, and the
+benchmark to optimise against is a mid-size box, not 299.
+
+**ALL 299 OWNED — clean.** Paldex header reads "299 owned · 299/299
+reachable". The suggestions sheet correctly collapses to nothing actionable:
+**zero per-pal add buttons, zero "Add these N" bulk buttons**, every entry
+"HAVE IT". That is sub-method 16 (the empty case) handled properly in the
+maximal direction.
+
+**ONE PAL OWNED — clean.** "1 owned · 1/299 reachable" (Lamball alone breeds
+only Lamball, so 1 is right). No broken plurals, no "1 of 1" oddities. The
+Calculator shows the single shortcut and correctly hides "Show all N of your
+pals", which only appears above 12.
+
+**LONGEST NAMES AT 375 px — clean.** Owned only the longest real names and put
+the two longest into the Calculator: **"Eikthyrdeer Terra" and "Bellanoir
+Libero" both fit on ONE line inside the 145 px slots** (`adjustsFontSizeToFit`
+earning its place), and a whole-screen scan found **zero elements extending
+past the viewport**. The result card rendered its full explanation without
+wrapping damage: *"close call — higher rank wins · rank target
+⌊(2580 + 130 + 1)/2⌋ = 1355 → Blazehowl (1360)"* — and the arithmetic checks
+out by hand.
+
+**DELIBERATELY NOT CHANGED:** with all 299 owned the sheet still lists 30
+sections of "HAVE IT" with nothing to do and no "you own everything" note. It
+is real, but it is a state no player reaches mid-game, and inventing copy for
+it at 4 am is not worth the risk of it appearing wrongly at 298. Logged, not
+built.
+
+Zero console errors or warnings in any of the three walks. His save restored
+with a zero-mismatch diff and re-verified after reload: 26 owned, 8 goals,
+35 steps, 3 ticks.
+
+Gates: 430 passing, 0 expected failures; both trees typecheck. **No code
+changed this tick — findings only, so nothing to publish.**
+
 ## E95. THIRTEEN PRINTED COUNTS VERIFIED AGAINST THE GAME DATA, AND THE
 ## LAST UNSLOPPED CONTROL FOUND 2026-08-17 (overnight)
 
