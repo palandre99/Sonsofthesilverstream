@@ -2098,6 +2098,56 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E111. THE AAA BAR, RE-DERIVED — CRITERION #1 WAS NOT CLOSED
+## 2026-08-17 (overnight)
+
+METHOD #37 says the CEO's own 15-point bar finds something every time it is
+run. Ran it again — **re-deriving each verdict against the app as it is, not
+against my own notes** — and the first criterion I had marked CLOSED was not.
+
+**#1 asks for the build stamp AND the proof, one tap from any data screen.**
+E100 wired four surfaces (Calculator, Odds, Plan, Paldex) and I wrote "#1
+CLOSED". **The fifth was the PAL CARD** — the densest datamined surface in the
+whole app: stats, rank, work levels, drops, spawn levels, passives, obtain
+notes. It carried no provenance line at all. And because it is a MODAL, there
+was no route to the proof from inside it: you had to close the card, find the
+Reference tab, and go looking.
+
+**METHOD #38 again** — I enumerated the screens that use `PageHead` and missed
+the one that does not.
+
+**FIXED:** the card carries the same stamp, and `DataStamp` now takes an
+optional `beforeNavigate` so the card closes itself on the way to Reference —
+navigating underneath a modal would have left the card sitting on top of the
+answer.
+
+**Verified on the render:** with the card open the page holds TWO stamps (the
+Paldex behind, the card's own directly under its title row at y=906, 34 px),
+and tapping the card's closes the card and lands on the Reference content.
+
+**THE STAMP HAD SHIPPED WITH NO TEST AT ALL.** E100 built a very specific claim
+— "Palworld 1.0 · read from the game files 14 Aug 2026" — and nothing guarded
+it. That is exactly how METHOD #6 says a true promise becomes a lie. It is
+guarded now: the build and date must be READ FROM THE DATA rather than typed,
+all five surfaces must carry it, and the card's must close itself.
+Mutation-proven — deleting the card's stamp fails two guards.
+
+**ALSO RE-DERIVED, WITH EVIDENCE RATHER THAN MEMORY:**
+
+- **#7 offline-complete — MET, proven:** zero `fetch` / `axios` /
+  `XMLHttpRequest` anywhere in `mobile/src`. The app cannot degrade in
+  airplane mode because it never asks the network for anything.
+- **#15 native platform citizenship — PARTIAL, and I had written it off as
+  "not built".** Haptics are everywhere and the collection has a real share
+  sheet. But the criterion asks for share on **every pal / plan / result**, and
+  share exists in exactly ONE place (`Share.share` appears once in the whole
+  tree, in the Paldex). Sharing a pairing result or a route is small, useful,
+  and squarely inside the breeding fane — **logged as the next candidate, NOT
+  built at 7am.** Widgets and Handoff remain genuinely unbuilt scope.
+
+`data-stamp.test.ts` (4). Gates 490. Mobile typecheck clean. Published to both
+channels.
+
 ## E110. THE SCAN E108 CLAIMED TO HAVE DONE, ACTUALLY DONE
 ## 2026-08-17 (overnight)
 
