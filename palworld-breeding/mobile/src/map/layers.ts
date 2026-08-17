@@ -43,6 +43,10 @@ export interface MapFilters {
   /** inclusive level window applied to spawn layers */
   level: { lo: number; hi: number };
   region: RegionId;
+  /** All spots / only ones not yet ticked found / only ticked ones.
+   *  "Still to find" turns the map into a to-do list that clears as you
+   *  play — the collection twin of "only pals I'm missing". */
+  found: 'all' | 'todo' | 'found';
 }
 
 export const ALL_LEVELS = { lo: 1, hi: 80 };
@@ -55,6 +59,7 @@ export function emptyFilters(): MapFilters {
     dungeons: false,
     level: { ...ALL_LEVELS },
     region: 'palpagos',
+    found: 'all',
   };
 }
 
@@ -376,6 +381,18 @@ export function searchPlaces(query: string, region: RegionId, limit = 8): PlaceH
 }
 
 /* ---------------------------------------------------------------- helpers */
+
+/**
+ * A filtered view of a point set that REMEMBERS where each kept point came
+ * from. Found-ticks are keyed by a point's index in the FULL layer, so any
+ * filtered rendering must map its indices back or every tick lands on the
+ * wrong spot.
+ */
+export function subsetWithIndex(set: PointSet, keep: number[]): {
+  set: PointSet; orig: number[];
+} {
+  return { set: subset(set, keep), orig: keep };
+}
 
 function subset(set: PointSet, keep: number[]): PointSet {
   const xy = new Float32Array(keep.length * 2);

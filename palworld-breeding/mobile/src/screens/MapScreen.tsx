@@ -39,7 +39,7 @@ import {
   poiLayer,
   poiLayers, poiPoints, searchPlaces,
   poiName, spawnLevels, spawnPoints, spawnablePals, wildBands,
-  hasNames, namedPoints, whereFromLine,
+  hasNames, namedPoints, subsetWithIndex, whereFromLine,
   type LayerGroup, type MapFilters,
 } from '../map/layers';
 import { MAP_REGIONS } from '../data/mapMeta.g';
@@ -124,18 +124,35 @@ export function MapScreen() {
     const out: {
       key: string; set: PointSet; colour: string; icon: string; label: string;
       square?: boolean; art?: number;
+      /** original-layer index per point, present when a found filter is on */
+      orig?: number[];
       /** a pal's own portrait — drawn instead of a glyph, so a pin IS the pal */
       photo?: number; night?: boolean;
     }[] = [];
     for (const id of filters.poi) {
-      const set = poiPoints(id, region);
+      const full = poiPoints(id, region);
       const layer = poiLayer(id);
-      if (set && layer && set.n) {
-        out.push({
-          key: `poi:${id}`, set, colour: layer.colour, icon: layer.icon,
-          label: layer.label, art: MAP_ICONS[id],
-        });
+      if (!full || !layer || !full.n) continue;
+      let set = full;
+      let orig: number[] | undefined;
+      if (filters.found !== 'all') {
+        // ticked state is keyed by the FULL layer's indices, so the
+        // filtered set carries its origin map — without it, dimming and
+        // tap-through would land on the wrong spots
+        const keep: number[] = [];
+        for (let i = 0; i < full.n; i++) {
+          const got = isFound(foundKey(id, region, i));
+          if (filters.found === 'found' ? got : !got) keep.push(i);
+        }
+        if (keep.length === 0) continue;
+        const sub = subsetWithIndex(full, keep);
+        set = sub.set;
+        orig = sub.orig;
       }
+      out.push({
+        key: `poi:${id}`, set, orig, colour: layer.colour, icon: layer.icon,
+        label: layer.label, art: MAP_ICONS[id],
+      });
     }
     // Colour says WHICH pal; shape says where and when. Every pal used to be
     // the same teal, so picking four of them drew 1,393 identical dots and the
@@ -176,7 +193,8 @@ export function MapScreen() {
       }
     }
     return out;
-  }, [filters.dungeons, filters.level, filters.pals, filters.poi, filters.time, region]);
+  }, [filters.dungeons, filters.found, filters.level, filters.pals, filters.poi,
+    filters.time, region, ticks]);
 
   /** The fixed boss of any pal you have picked — the one guaranteed place. */
   const bossPins = useMemo<MapMarker[]>(() => {
@@ -232,8 +250,9 @@ export function MapScreen() {
         // remaining things stay loud (CEO 22:45, judgment ledgered M57).
         // Singles only: a cluster mixes found and not-found, and it breaks
         // apart at exactly the zooms where per-spot state matters.
+        const oi = layer.orig ? layer.orig[c.index] : c.index;
         const done = c.count === 1 && layer.key.startsWith('poi:')
-          && isFound(foundKey(layer.key.slice(4), region, c.index));
+          && isFound(foundKey(layer.key.slice(4), region, oi));
         out.push({
           // stable while the zoom holds, so a pan never remounts a pin
           key: `${layer.key}:${c.cell}`,
@@ -249,7 +268,7 @@ export function MapScreen() {
               // much to the Alpha boss LAYER as it did to a boss you reach by
               // picking that pal. A cluster keeps the crown, because several
               // bosses cannot wear one face.
-              photo={layer.photo ?? (c.count === 1 ? alphaPortrait(layer.key, region, c.index) : undefined)}
+              photo={layer.photo ?? (c.count === 1 ? alphaPortrait(layer.key, region, oi) : undefined)}
               night={layer.night} />
             </View>
           ),
@@ -559,10 +578,11 @@ export function MapScreen() {
     }
 
     const { layer } = best;
+    const origIndex = layer.orig ? layer.orig[best.index] : best.index;
     const lines: string[] = [];
     // a statue's own name beats the layer's name every time
     const own = layer.key.startsWith('poi:')
-      ? poiName(layer.key.slice(4), region, best.index)
+      ? poiName(layer.key.slice(4), region, origIndex)
       : '';
     const palName = layer.key.startsWith('pal:') || layer.key.startsWith('dun:')
       ? layer.key.slice(4) : null;
@@ -608,7 +628,7 @@ export function MapScreen() {
       colour: layer.colour,
       icon: layer.icon,
       mark: layer.key.startsWith('poi:')
-        ? foundKey(layer.key.slice(4), region, best.index)
+        ? foundKey(layer.key.slice(4), region, origIndex)
         : undefined,
       // an alpha pin IS a pal — let the player open it without leaving the map
       pal: palName ?? (own.startsWith('Alpha ') && pals[own.slice(6)]
@@ -1489,6 +1509,10 @@ export function MapScreen() {
           onClearMine={() => { clearPins(region); setOpenPin(null); }}
           myMarks={myPins.length}
           onOpenList={(id) => setSheet({ list: id })}
+          onFoundMode={(m) => {
+            void Haptics.selectionAsync();
+            setFilters((f) => ({ ...f, found: m }));
+          }}
           onClearRoute={() => { clearRoute(region); setOpenStops(null); }}
           onShareRoute={() => {
             const name = MAP_REGIONS.find((r) => r.id === region)?.name ?? region;
@@ -1910,13 +1934,15 @@ function SheetShell({ title, onClear, onClose, children }: {
 
 function LayerSheet({
   filters, onToggle, onClear, onClearFound, onClearMine, myMarks,
-  onClearRoute, onShareRoute, onImportRoute, routeStops, onOpenList, onClose,
+  onClearRoute, onShareRoute, onImportRoute, routeStops, onOpenList,
+  onFoundMode, onClose,
 }: {
   filters: MapFilters; onToggle: (id: string) => void; onClear: () => void;
   onClearFound: () => void; onClearMine: () => void; myMarks: number;
   onClearRoute: () => void; onShareRoute: () => void;
   onImportRoute: () => void; routeStops: number;
   onOpenList: (id: string) => void;
+  onFoundMode: (m: MapFilters['found']) => void;
   onClose: () => void;
 }) {
   const groups = useMemo(() => {
@@ -1957,6 +1983,33 @@ function LayerSheet({
             </Text>
           </Pressable>
         )}
+        {/* All / Still to find / Found — "Still to find" turns the map
+            into a to-do list that clears as you play. Counts on the pill
+            and key follow what is DRAWN; the chips keep total progress. */}
+        <View style={{ flexDirection: 'row', gap: 8 }}>
+          {([['all', 'All spots'], ['todo', 'Still to find'], ['found', 'Found']] as const)
+            .map(([mode, label]) => (
+              <Pressable
+                key={mode}
+                onPress={() => onFoundMode(mode)}
+                accessibilityRole="radio"
+                accessibilityState={{ selected: filters.found === mode }}
+                style={{
+                  paddingHorizontal: 11, paddingVertical: 8, borderRadius: 11,
+                  borderWidth: 1,
+                  borderColor: filters.found === mode ? T.accent : T.line,
+                  backgroundColor: filters.found === mode ? T.accentSoft : T.surface,
+                }}
+              >
+                <Text style={{
+                  color: filters.found === mode ? T.accentInk : T.muted,
+                  fontWeight: '700', fontSize: 12.5,
+                }}>
+                  {label}
+                </Text>
+              </Pressable>
+            ))}
+        </View>
         {routeStops > 0 && (
           <Pressable
             onPress={onShareRoute}

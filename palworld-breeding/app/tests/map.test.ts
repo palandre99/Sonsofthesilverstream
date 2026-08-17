@@ -23,7 +23,7 @@ import { decodeRoute, encodeRoute } from '../../mobile/src/map/routeShare';
 import {
   closeMatches, isNightOnly, poiLayers, poiPoints, searchPlaces, spawnablePals, spawnLevels,
   spawnPoints, spawnSplit,
-  hasNames, listSortKey, namedPoints, whereFrom, whereFromLine, wildBands,
+  emptyFilters, hasNames, listSortKey, namedPoints, subsetWithIndex, whereFrom, whereFromLine, wildBands,
 } from '../src/map/layers';
 import { REGION_SPOTS } from '../src/data/regionSpots.g';
 
@@ -1554,7 +1554,7 @@ describe('the legend key', () => {
 
   it('square is still what a dungeon layer is', () => {
     // the whole guard rests on this, so pin it: only dun: layers set square
-    const built = screen.slice(screen.indexOf('const active'), screen.indexOf('const active') + 2200);
+    const built = screen.slice(screen.indexOf('const active'), screen.indexOf('const active') + 3600);
     expect(built).toContain('square: true');
     const squareAt = built.indexOf('square: true');
     expect(built.slice(0, squareAt)).toContain('key: `dun:${pal}`');
@@ -2831,7 +2831,37 @@ describe('found spots fade on the map (CEO 22:45)', () => {
     const at = screen.indexOf('const done = c.count === 1');
     expect(at, 'the dim branch must exist').toBeGreaterThan(-1);
     const block = screen.slice(at, at + 400);
-    expect(block).toContain("isFound(foundKey(layer.key.slice(4), region, c.index))");
+    expect(block).toContain("isFound(foundKey(layer.key.slice(4), region, oi))");
     expect(screen).toContain('done ? { opacity: 0.4 } : undefined');
+  });
+});
+
+describe('the found filter (All / Still to find / Found)', () => {
+  it('a filtered subset REMEMBERS where each point came from — EXECUTED', () => {
+    const full = poiPoints('syndicate_tower', 'palpagos')!;
+    const keep = [2, 5, 7];
+    const sub = subsetWithIndex(full, keep);
+    expect(sub.set.n).toBe(3);
+    expect(sub.orig).toEqual(keep);
+    // the kept points are byte-identical to their originals
+    for (let i = 0; i < keep.length; i++) {
+      expect(sub.set.xy[i * 2]).toBe(full.xy[keep[i] * 2]);
+      expect(sub.set.xy[i * 2 + 1]).toBe(full.xy[keep[i] * 2 + 1]);
+    }
+  });
+
+  it('defaults to All, and the wiring maps every index home', () => {
+    expect(emptyFilters().found).toBe('all');
+    const screen = readFileSync(
+      join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
+    );
+    // dim + portrait + tap-through + card mark all go through the origin map
+    expect(screen).toContain('const oi = layer.orig ? layer.orig[c.index] : c.index;');
+    expect(screen).toContain('const origIndex = layer.orig ? layer.orig[best.index] : best.index;');
+    expect(screen).toContain("foundKey(layer.key.slice(4), region, origIndex)");
+    // an empty filtered layer disappears rather than pushing a zero-point set
+    expect(screen).toContain('if (keep.length === 0) continue;');
+    // the three-way control exists with player words
+    expect(screen).toContain("'Still to find'");
   });
 });
