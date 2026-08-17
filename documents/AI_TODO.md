@@ -2098,6 +2098,60 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E115. THREE CARDS VANISHED OFF THE PAL CARD, AND ASTRALYM LOST TWO
+## 2026-08-17 (overnight)
+
+Read the pal detail card aloud — the densest data surface in the app, opened
+from every screen, and its copy had never been audited.
+
+**THE FINDING: three cards are gated on the pal HAVING the data, and where the
+data is empty the card silently disappeared.** Measured across all 299:
+
+| card | disappears on | how many |
+|---|---|---|
+| Work suitability | Astralym, Panthalus | 2 of 299 |
+| Drops | Petallia Ignis | 1 of 299 |
+| Partner skill | Astralym | 1 of 299 |
+
+Every OTHER pal shows all three, so the gap read as a broken screen rather than
+as a fact — E114's lesson one screen along. **Astralym lost two cards at once**,
+which is why its card looked the most broken of any pal in the game.
+
+All three now say the same thing in the same words, through one shared
+`NothingListed` component:
+
+*"The game files we read list no work suitabilities for Panthalus — one of only
+2 pals in the Paldex like that. Rather than guess, the app shows that as it
+is."*
+
+**The sentence is about OUR FILES, not about the game — deliberately.** We can
+prove our extraction lists nothing; we cannot prove the pal HAS nothing. "This
+pal has no partner skill" would be inventing a game fact, which the standing
+rule forbids. The guard fails on four such overclaims by name.
+
+The counts are **read from the data** (`countWithout(key, has)` filters `pals`),
+never typed — E114's `sameAsPlainCake()` lesson — and the component handles its
+own singular, since two of the three sit at one today.
+
+Guarded three ways per card: the empty case must be REAL and rare, the card must
+render the explanation, and the affected pals must not be NAMED in the source.
+**Mutation-proven four ways** — deleting either new branch, hard-coding the
+count, or letting one card explain itself in its own words all fail.
+
+Rendered and read on Astralym, Petallia Ignis and Lamball: singular and plural
+both correct, and every pal now shows the same three cards. Console delta
+**zero** — the one "Unexpected text node" fires on Lamball too, which touches
+none of the new branches (open item 5, unchanged).
+
+`pal-detail-copy.test.ts` is new, 10 tests. Gates **517**. Mobile typecheck
+clean. Published to both channels.
+
+**METHOD NOTE — #53: A GATE THAT ALMOST NEVER FIRES IS THE DANGEROUS ONE.**
+A card missing on 150 of 299 pals reads as normal variety. A card missing on
+ONE reads as a bug, because the player has 298 counter-examples. Enumerating
+every gate and counting the empty side found all three in one pass; the two
+beyond the one I was sent to look at came free.
+
 ## E114. TWO CAKES VANISHED BETWEEN ONE CARD AND THE NEXT
 ## 2026-08-17 (overnight)
 

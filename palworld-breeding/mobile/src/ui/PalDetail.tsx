@@ -9,6 +9,7 @@ import { Image } from 'react-native';
 import {
   addPlanTarget, breeding, engine, getPlan, ownedAny, pals, selfOnly, useAppVersion, workLabel,
 } from '../store';
+import type { PalInfo } from '../store';
 import { navigateTo } from '../nav/intent';
 import { wildBands } from '../map/layers';
 import { WORK_ICONS } from '../data/workIcons';
@@ -70,6 +71,41 @@ function statRank(
  * alpha_locations)", and its plain half is already the badge below and the map
  * above — so lines that start that way are dropped and the rest are the
  * dataset's own words, untouched. */
+/** Three cards on this screen are gated on the pal having the data, and on a
+ * handful of species the data is empty — so the card silently vanished. Every
+ * OTHER pal shows it, which makes the gap read as a broken screen rather than
+ * as a fact. E114's lesson, one screen along: an absence nobody explains reads
+ * as a bug.
+ *
+ * The counts are read from the data, never typed, so the sentence cannot go
+ * stale if the files change. */
+const missingCounts = new Map<string, number>();
+function countWithout(key: string, has: (q: PalInfo) => boolean): number {
+  let n = missingCounts.get(key);
+  if (n == null) {
+    n = Object.values(pals).filter((q) => !has(q)).length;
+    missingCounts.set(key, n);
+  }
+  return n;
+}
+
+/** Says what is true of THE FILES WE READ — never that the game intends it.
+ * We can prove our extraction lists nothing; we cannot prove the pal has
+ * nothing. Same words on all three cards, so the app never explains the same
+ * silence two different ways. */
+function NothingListed(
+  { what, name, others }: { what: string; name: string; others: number },
+) {
+  return (
+    <Text style={[s.body, { marginTop: 4 }]}>
+      The game files we read list no {what} for {name} — {others === 1
+        ? 'the only pal in the Paldex like that'
+        : `one of only ${others} pals in the Paldex like that`}.
+      Rather than guess, the app shows that as it is.
+    </Text>
+  );
+}
+
 function otherWays(p: { obtain_notes?: string[] | null }): string[] {
   return (p.obtain_notes ?? []).filter((l) => !l.startsWith('no regular wild spawn'));
 }
@@ -412,6 +448,18 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
           </View>
         </Card>
 
+        {!(p.drops?.length > 0 || (p.ranch_produce?.length ?? 0) > 0) && (
+          <Card style={{ marginTop: 10 }}>
+            <Text style={s.h3}>Drops</Text>
+            <NothingListed
+              what="drops or ranch produce"
+              name={name}
+              others={countWithout('drops', (q) => (q.drops?.length ?? 0) > 0
+                || (q.ranch_produce?.length ?? 0) > 0)}
+            />
+          </Card>
+        )}
+
         {(p.drops?.length > 0 || (p.ranch_produce?.length ?? 0) > 0) && (
           <Card style={{ marginTop: 10 }}>
             <Text style={s.h3}>Drops</Text>
@@ -421,6 +469,17 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
                 <Badge key={`r-${r}`} kind="ok">Ranch: {r}</Badge>
               ))}
             </View>
+          </Card>
+        )}
+
+        {Object.keys(p.work ?? {}).length === 0 && (
+          <Card style={{ marginTop: 10 }}>
+            <Text style={s.h3}>Work suitability</Text>
+            <NothingListed
+              what="work suitabilities"
+              name={name}
+              others={countWithout('work', (q) => Object.keys(q.work ?? {}).length > 0)}
+            />
           </Card>
         )}
 
@@ -490,6 +549,17 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
                 <Badge key={ps} kind="gold">{ps}</Badge>
               ))}
             </View>
+          </Card>
+        )}
+
+        {!p.partner_skill && (
+          <Card style={{ marginTop: 10 }}>
+            <Text style={s.h3}>Partner skill</Text>
+            <NothingListed
+              what="partner skill"
+              name={name}
+              others={countWithout('partner', (q) => !!q.partner_skill)}
+            />
           </Card>
         )}
 
