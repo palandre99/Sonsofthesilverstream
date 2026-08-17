@@ -7408,3 +7408,39 @@ times now.
 "Does it happen on a SLOW SINGLE pinch, with no re-grip and no second pinch?"
   YES -> the double-tap theory is wrong too; look OUTSIDE MapCanvas.
   NO  -> it was the accidental double tap, and 2622440 is the fix.
+
+### M28 — HIS SCREENSHOTS CRACKED IT: two mechanisms — SHIPPED (c682e41, live)
+The 13:12/13:13 screenshots carried what weeks of reports could not: place
+labels CRISP while terrain AND pins inside the transform were soft, and pins
+LARGER at deeper zoom.
+1. **The remaining sideways snap on release = the pinch's own focal jump.**
+   A pinch does NOT end when one of two fingers lifts (RNGH #1214). It keeps
+   tracking with focalX/Y teleported from the centroid to the remaining
+   finger, and one more onUpdate re-anchors the map against the jumped focal.
+   FIX: `if (e.numberOfPointers < 2) return;` before any write — the focal
+   maths is only valid while the pointer set that DEFINED it is still down.
+   CORRECTION TO M27: it cleared pinch.onUpdate as "intentional" without
+   auditing its INPUT discontinuities. Enumerate writers AND their inputs.
+2. **The soft pins = animated styles shared across views.** pinStyle was ONE
+   useAnimatedStyle on ~115 marker views; mapStyle on two containers.
+   Reanimated documents this as unsupported: a view can silently stop
+   receiving updates, and a marker with a stale counter-scale draws at the
+   wrong size, GPU-magnified soft — invisible in the browser where reanimated
+   runs on the JS thread (F35), which is why every QA pass looked fine.
+   FIX: per-marker CounterScaled component owning its own style (one read +
+   one division each); a second identical style for the second container. The
+   old test PINNING the shared-worklet design is rewritten to pin the
+   opposite, with reasoning — the "optimisation" was the bug.
+PROOF HONESTY: pinch guard is mechanism-complete vs documented RNGH
+behaviour; the style fix follows Reanimated's documented limitation and fits
+the screenshots — only his phone confirms. FALSIFIER: if pins still change
+SIZE while zooming, theory 2 is wrong.
+PUBLISH NOTE: went out with the other lane's recommend.ts/SuggestedGoals.tsx
+saved mid-bundle; tsc clean with their files on disk, 559 suite green just
+before. REPUBLISH when their tree settles.
+
+### M7 PARTIAL CORRECTION
+M7 said the pins are "not blurry from the app" based on crisp borders in the
+02:00 screenshot. The 13:12 screenshots show the borders CAN go chunky — the
+shared-style staleness explains both states (fresh style = crisp, stale =
+magnified). M7's downscale arithmetic stands; its conclusion was overbroad.
