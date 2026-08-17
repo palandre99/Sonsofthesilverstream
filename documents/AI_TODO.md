@@ -8068,3 +8068,38 @@ NEEDS live deep zoom, budget time to debug the wheel+ctrl synthesis first.
 NEXT (M42 queue): item 2 — the zoom-bug algebra re-derivation from
 scratch, in writing; then item 3 "exactly where" descriptions; then item 4
 projection residual re-proof.
+
+### M44 — THE FIFTH SNAP CAUSE, derived and shipped (d7b8e9c, both channels) — M42 item 2
+THE DERIVATION (the change of approach — algebra, not writer-enumeration):
+invariant screen = uv·k + t. Walked every phase at RELEASE priority. Pan
+handoff ✓, 2->1 pinch guard ✓, double-tap sequence guard ✓, no momentum
+writers, no clamp-on-end, applyFocus is JS-only. THE HOLE: the pinch's
+`< 2` guard admits 3->2 and 2->3 POINTER-COUNT CHANGES, and RNGH's
+focalX/Y is the centroid of the touches it tracks — so a palm edge or
+resting knuckle lifting mid-pinch teleports the live focal while the
+anchor stays keyed to the old centroid: t = f_live − m_f·k moves by the
+centroid jump, tens of px, sideways, at partial release. "A bit to the
+side" is the 3->2 jump size (the guarded 2->1 jump is half the finger gap
+— hundreds of px). FIX: pinchPointers shared value; on count change with
+>=2 down, re-anchor against the current view (startK = k/e.scale because
+the SCALE BASIS jumps with the pointer set too; anchorK = k separate from
+startK — the divisor of the anchor uv), write NOTHING that frame. Pure
+copy in gesture.ts (rebasePinchAnchor) with EXECUTED invariants: rebase
+frame reproduces the same view to 6 decimals; motion after measures from
+the rebase. Both proven-to-fail by mutation. 634 tests, tsc clean both.
+F35 stands: the QA browser cannot lift one of three fingers — his phone
+is the only true test. If he STILL reports a sideways snap on the NEW
+stamp: ask-free discriminators exhausted for release-time transform math;
+next hypotheses in order: (a) marker re-cluster catch-up at finger-lift
+READ as map movement (discriminator: does it snap with ALL layers off,
+bare terrain?), (b) something ABOVE the map. Also note: if his About
+stamp predates d7b8e9c, he is testing old code — every report must be
+paired with the stamp.
+SECOND HYPOTHESIS LOGGED (not yet built): clustering continuity at
+gesture end — pins rearranging the instant fingers lift can read as a
+lateral snap of the content. If his next report survives the d7b8e9c
+stamp, build cluster-position continuity BEFORE touching transform code.
+NEXT (M42 queue): item 3 "exactly where small stuff is" — focus-card
+distance + compass from nearest fast-travel statue (verify the world-unit
+divisor against mapMeta bounds vs readout; never guess); then item 4
+projection residual re-proof.
