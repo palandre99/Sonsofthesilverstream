@@ -23,6 +23,9 @@ import {
 import { clusterPoints, nearestPoint, pointsInRect, type PointSet } from '../map/points';
 import { uvToReadout, regionOf, type RegionId } from '../map/projection';
 import {
+  addPin, clearPins, loadPins, onPinsChange, pinsIn, removePin, type MapPin,
+} from '../map/pins';
+import {
   GROUP_LABEL, alphaSpots, closeMatches, dungeonPoints, emptyFilters, isNightOnly,
   poiLayer,
   poiLayers, poiPoints, searchPlaces,
@@ -67,10 +70,15 @@ export function MapScreen() {
   } | null>(null);
   const [openPal, setOpenPal] = useState<string | null>(null);
   const [ticks, setTicks] = useState(0);   // bumps when a tick changes
+  /** the player's pin whose card is open, if any */
+  const [openPin, setOpenPin] = useState<MapPin | null>(null);
 
   React.useEffect(() => {
     void loadFound();
-    return onFoundChange(() => setTicks((n) => n + 1));
+    void loadPins();
+    const offFound = onFoundChange(() => setTicks((n) => n + 1));
+    const offPins = onPinsChange(() => setTicks((n) => n + 1));
+    return () => { offFound(); offPins(); };
   }, []);
 
   const region = filters.region;
@@ -329,9 +337,45 @@ export function MapScreen() {
     canvas.current?.focus((u0 + u1) / 2, (v0 + v1) / 2, span);
   }, [bossPins, focusKey]);
 
+  /**
+   * The player's OWN pins.
+   *
+   * Never clustered and never culled by the layer budget: there are a handful
+   * of them, they are the only markers on this map the player put there
+   * themselves, and one of them vanishing into a cluster badge would make the
+   * feature untrustworthy. They ride above everything for the same reason.
+   */
+  const myPins = useMemo<MapMarker[]>(
+    () => pinsIn(region).map((p) => ({
+      key: `mine:${p.id}`,
+      u: p.u,
+      v: p.v,
+      render: () => (
+        <Pressable
+          onPress={() => { void Haptics.selectionAsync(); setOpenPin(p); }}
+          accessibilityRole="button"
+          accessibilityLabel={`Your pin, ${p.label}`}
+          style={{
+            width: 26, height: 26, marginLeft: -13, marginTop: -13,
+            borderRadius: 13, alignItems: 'center', justifyContent: 'center',
+            backgroundColor: 'rgba(10,20,24,0.86)',
+            borderWidth: 2, borderColor: MY_PIN,
+          }}
+        >
+          <Icon name="map-marker-star" size={14} color={MY_PIN} />
+        </Pressable>
+      ),
+    })),
+    // `ticks` is what tells us a pin was added or removed
+    [region, ticks],
+  );
+
   // boss pins ride above the spawn cloud — the guaranteed spot should not be
   // buried under a hundred maybes
-  const allPins = useMemo(() => [...markers, ...bossPins], [bossPins, markers]);
+  const allPins = useMemo(
+    () => [...markers, ...bossPins, ...myPins],
+    [bossPins, markers, myPins],
+  );
 
   // Labels are SCREEN markers now — outside the map's transform, so their text
   // is drawn at true resolution instead of being rasterised small and blown up
@@ -521,6 +565,28 @@ export function MapScreen() {
         ))}
         <View style={{ flex: 1 }} />
         <Pressable
+          onPress={() => {
+            // Deliberately a BUTTON, not a long-press. Composing another
+            // gesture into the existing pan/pinch/tap is what produced the
+            // release-snap bug, and native gesture behaviour cannot be proved
+            // from a browser. You line the map up and press; the pin lands in
+            // the middle of what you are looking at.
+            const u = (vp.u0 + vp.u1) / 2;
+            const v = (vp.v0 + vp.v1) / 2;
+            const at = uvToReadout({ u, v }, regionOf(region));
+            const id = addPin(region, u, v, `${at.x}, ${at.y}`);
+            if (id) void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          }}
+          accessibilityRole="button"
+          accessibilityLabel="Mark this spot"
+          style={{
+            padding: 9, borderRadius: 11, borderWidth: 1, borderColor: T.line,
+            backgroundColor: 'rgba(12,22,24,0.82)', marginRight: 8,
+          }}
+        >
+          <Icon name="map-marker-plus-outline" size={17} color={T.muted} />
+        </Pressable>
+        <Pressable
           onPress={() => canvas.current?.reset()}
           accessibilityRole="button"
           accessibilityLabel="Back to the whole map"
@@ -610,6 +676,60 @@ export function MapScreen() {
             </Pressable>
           )}
         </Pressable>
+      )}
+
+      {/* One of the player's own pins, opened. Its only job is to say where it
+          is and let them take it off again — a mark you cannot remove is a
+          mark you stop trusting. */}
+      {openPin && (
+        <View style={{
+          position: 'absolute', top: 56, left: 12, right: 12,
+          backgroundColor: 'rgba(12,22,24,0.94)', borderRadius: 12,
+          borderWidth: 1, borderColor: MY_PIN, paddingHorizontal: 12,
+          paddingVertical: 10, gap: 8,
+        }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            <Icon name="map-marker-star" size={16} color={MY_PIN} />
+            <Text style={{ color: T.ink, fontWeight: '800', fontSize: 13.5, flex: 1 }}>
+              Your mark
+            </Text>
+            <Text style={{ color: T.muted, fontWeight: '700', fontSize: 12 }}>
+              {openPin.label}
+            </Text>
+          </View>
+          <View style={{ flexDirection: 'row', gap: 8 }}>
+            <Pressable
+              onPress={() => {
+                void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                removePin(openPin.id);
+                setOpenPin(null);
+              }}
+              accessibilityRole="button"
+              style={{
+                flexDirection: 'row', alignItems: 'center', gap: 6,
+                paddingHorizontal: 10, paddingVertical: 7, borderRadius: 10,
+                borderWidth: 1, borderColor: T.line, backgroundColor: T.surface,
+              }}
+            >
+              <Icon name="trash-can-outline" size={14} color={T.muted} />
+              <Text style={{ color: T.muted, fontWeight: '700', fontSize: 12 }}>
+                Remove
+              </Text>
+            </Pressable>
+            <Pressable
+              onPress={() => setOpenPin(null)}
+              accessibilityRole="button"
+              style={{
+                paddingHorizontal: 10, paddingVertical: 7, borderRadius: 10,
+                borderWidth: 1, borderColor: T.line, backgroundColor: T.surface,
+              }}
+            >
+              <Text style={{ color: T.muted, fontWeight: '700', fontSize: 12 }}>
+                Close
+              </Text>
+            </Pressable>
+          </View>
+        </View>
       )}
 
       {/* A pal picked on one map vanishes silently when you switch to the
@@ -914,6 +1034,10 @@ function PlaceName({ name }: { name: string }) {
     </View>
   );
 }
+
+/** The player's own pins. Deliberately a colour NO data layer uses, so a mark
+ *  you made can never be mistaken for something the game files put there. */
+const MY_PIN = '#FF8FB1';
 
 const PIN = 23;
 

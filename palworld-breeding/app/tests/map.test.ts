@@ -19,7 +19,7 @@ import { foundKey } from '../src/map/found';
 import { clusterPoints, decodePoints, pointsInRect } from '../src/map/points';
 import { regionOf, uvToReadout, worldToUv, tileLevelFor } from '../src/map/projection';
 import {
-  closeMatches, isNightOnly, poiPoints, searchPlaces, spawnablePals, spawnLevels,
+  closeMatches, isNightOnly, poiLayers, poiPoints, searchPlaces, spawnablePals, spawnLevels,
   spawnPoints, spawnSplit,
   wildBands,
 } from '../src/map/layers';
@@ -1999,5 +1999,68 @@ describe('the map stamps the build its data came from', () => {
     // and never the raw form in front of a player
     const key = screen.slice(screen.indexOf('estimated or crowd-guessed'));
     expect(key.slice(0, 120)).not.toMatch(/\d{4}-\d{2}-\d{2}/);
+  });
+});
+
+describe("the player's own pins", () => {
+  const store = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'map', 'pins.ts'), 'utf8',
+  );
+  const screen = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
+  );
+
+  it('is its own store, scoped to the save you are on', () => {
+    // Same shape as map/found.ts and for the same reason: store.ts belongs to
+    // another session, and a player's pins have no business loading before
+    // the Paldex does.
+    expect(store).toContain('getActiveProfile');
+    expect(store).toMatch(/`palforge-\$\{profileId\}-mappins`/);
+    expect(store).toContain('AsyncStorage');
+  });
+
+  it('refuses a pin that is not on the map, instead of clamping it', () => {
+    // A pin silently moved to the edge is a pin pointing at the wrong place,
+    // and this fane's one unforgivable bug is stating a place is somewhere it
+    // is not.
+    expect(store).toMatch(/if \(!\(u >= 0 && u <= 1 && v >= 0 && v <= 1\)\) return null;/);
+  });
+
+  it('survives a half-written or hand-edited file', () => {
+    // the map must not go down because one row on disk is malformed
+    expect(store).toContain('parsed.filter(isPin)');
+    expect(store).toMatch(/p\.region === 'palpagos' \|\| p\.region === 'tree'/);
+  });
+
+  it('keeps each map separate', () => {
+    // a mark dropped on Palpagos must never appear on the World Tree
+    expect(store).toMatch(/pins\.filter\(\(p\) => p\.region === region\)/);
+    expect(store).toMatch(/pins\.filter\(\(p\) => p\.region !== region\)/);   // clear one map only
+  });
+
+  it('is placed by a button, NOT by another gesture', () => {
+    // Composing a long-press into the existing pan/pinch/tap is what produced
+    // the release-snap the CEO reported three times, and native gesture
+    // behaviour cannot be proved from a browser. This is deliberate.
+    expect(screen).toContain('Mark this spot');
+    expect(screen).not.toMatch(/Gesture\.LongPress/);
+  });
+
+  it("and the player's pins are never clustered away", () => {
+    // there are a handful, they are the only markers the player put there,
+    // and one vanishing into a cluster badge would make the feature
+    // untrustworthy
+    const block = screen.slice(screen.indexOf('const myPins'), screen.indexOf('const myPins') + 900);
+    expect(block, 'myPins must exist').toContain('pinsIn(region)');
+    expect(block).not.toContain('clusterPoints');
+  });
+
+  it('uses a colour no data layer uses', () => {
+    // a mark you made must never be mistaken for something the game files put
+    // there
+    const mine = /const MY_PIN = '(#[0-9A-Fa-f]{6})'/.exec(screen);
+    expect(mine, 'the pin colour must be named once').not.toBeNull();
+    const used = new Set(poiLayers().map((l) => l.colour.toLowerCase()));
+    expect(used.has(mine![1].toLowerCase())).toBe(false);
   });
 });
