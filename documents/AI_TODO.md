@@ -7984,3 +7984,27 @@ from the clipboard" (expo-clipboard 8.0.8, already in package.json).
 **Guards to prove-fail:** garbage refused; truncated token refused; region
 mismatch refused; round-trip preserves order and labels byte-for-byte.
 This is also the seed of cross-device sync: the wire format exists now.
+
+### M41-BUILD — SHARE/IMPORT SHIPPED AND PUBLISHED (f8e62d7, both channels)
+Built exactly to the M41 design. The codec is pure and the gate EXECUTES it:
+14 behavioural tests — lossless round trip (order, emoji/CJK labels, full
+float precision), chat noise around the message tolerated, garbage/truncated/
+tampered tokens refused in plain language, off-map rows refusing the WHOLE
+import, unknown region/version refused, mid-token '=' refused. Slice 2 also
+published this round (earlier block cleared). 632 tests, tsc clean both.
+MUTATION-TESTING HONESTY: the base64 alphabet check proved behaviourally
+equivalent under mutation (skipping a bad char garbles the stream and the
+JSON parse refuses anyway) — kept as defence-in-depth, NOT claimed as a
+proven guard; the covering test pins the observable refusal.
+F35: Share sheet / Alert dialogs / clipboard read are native surfaces —
+REASONED on core RN + expo-clipboard (8.0.8, already bundled), not
+measurable in the QA browser. The codec feeding them is measured. First
+thing to check if he reports import doing nothing: RN-web Alert is a no-op
+but PHONE Alert is native — and whether the clipboard actually held the
+message (share first, then import).
+The wire format {v:1, region, stops:[[u,v,label]…]} is the seed of
+cross-device sync: same payload, different transport.
+NEXT: the two M38 oddities as eval targets (empty-tap card survives region
+switch; first-run hint returns on a region with no marks — decide RIGHT
+behaviour), then a fresh brutal eval round of the whole fane, then
+cross-device sync design.
