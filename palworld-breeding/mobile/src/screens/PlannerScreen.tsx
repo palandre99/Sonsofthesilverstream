@@ -1082,7 +1082,18 @@ export function PlannerScreen() {
                   ranch already make? */}
               <View style={[s.wrap]}>
                 {cakeSupply.map((c) => (
+                  /* MEASURED at 19 px with no hit area at all, and tapping one
+                     opens that pal's card — so it is a real control, not a
+                     label. Now 29 px with slop, giving 45 tall and 35 wide.
+                     Honest about the trade: when these wrap onto two rows the
+                     rows sit 35 px apart, so the vertical slop overlaps a
+                     neighbour by about 2 px. That is deliberate — a 2 px
+                     ambiguous band that at worst opens the wrong pal's card
+                     beats a 35 px target you keep missing. Sideways the slop
+                     stays inside the 6 px gap, so same-row chips never fight. */
                   <Pressable key={c.label} disabled={!!c.ownedProducer}
+                    hitSlop={{ top: 8, bottom: 8, left: 3, right: 3 }}
+                    style={{ paddingVertical: 5 }}
                     accessibilityRole="button"
                     // a covered ingredient is not tappable — say so rather
                     // than let it read as an available control

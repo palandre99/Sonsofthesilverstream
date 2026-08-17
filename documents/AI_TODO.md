@@ -2098,6 +2098,57 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E95. THIRTEEN PRINTED COUNTS VERIFIED AGAINST THE GAME DATA, AND THE
+## LAST UNSLOPPED CONTROL FOUND 2026-08-17 (overnight)
+
+**THE SUGGESTED GOALS SECTION COUNTS ARE ALL CORRECT.** The sheet prints
+"All N ›" on 30 sections. Read the numbers off the render and checked the 13
+that are computable straight from `pals_1_0.json`:
+
+| section | printed | in the data |
+|---|---|---|
+| Kindling | 44 | 44 |
+| Watering | 46 | 46 |
+| Planting | 45 | 45 |
+| Electricity | 25 | 25 |
+| Handiwork | 109 | 109 |
+| Gathering | 111 | 111 |
+| Lumbering | 64 | 64 |
+| Mining | 57 | 57 |
+| Medicine | 43 | 43 |
+| Cooling | 38 | 38 |
+| Transporting | 148 | 148 |
+| Farming | 29 | 29 |
+| Ranch producers | 29 | 29 |
+
+**Zero mismatches.** The count is `sec.items.length` and the browser opens
+that same array, so the header and the list cannot disagree by construction.
+
+**THE FIND: the cake-supply chips on the Plan tab were 19 px with NO hit area
+at all.** "Eggs ✓ Chikipi", "Honey — Beegarde hatches in Phase 4" — each is a
+`Pressable` wrapping a `Badge`, and tapping one **opens that pal's card**, so
+they are real controls, not labels. They had neither `hitSlop` nor padding.
+**Now 29 px + slop = 45 effective.**
+
+**AND I CORRECTED MY OWN COMMENT (sub-method 8 applied to a claim about
+geometry).** I first wrote that the slop "stays inside the gap so neighbours
+never steal each other's taps". Then I measured the rendered rows: they sit
+**35 px apart**, so the vertical slop overlaps a neighbour by about 2 px. The
+comment now says so, and says why the trade is right: a 2 px ambiguous band
+whose worst outcome is opening the wrong pal's card beats a 35 px target you
+keep missing. Sideways the slop does stay inside the 6 px gap.
+
+**SWEPT FOR THE SAME SHAPE EVERYWHERE:** every `<Pressable>` wrapping a
+`<Badge>` across all six breeding screens, excluding any with `hitSlop`,
+`minHeight` or padding — **that one was the only instance.** So the pattern
+"a badge that is secretly a button" is now exhausted.
+
+Gates: 430 passing, 0 expected failures, 24 files; both trees typecheck; zero
+console errors or warnings.
+
+**NOT PUBLISHED THIS TICK** — the Map lane has `MapScreen.tsx`, `map.test.ts`
+and an untracked `mobile/src/map/pins.ts` in flight. Publish next tick.
+
 ## E94. WALKED THE APP AS A BRAND-NEW PLAYER, AND MEASURED THE SUGGESTED
 ## GOALS SHEET FOR THE FIRST TIME 2026-08-17 (overnight)
 
