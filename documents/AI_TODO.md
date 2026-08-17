@@ -6058,3 +6058,44 @@ in the browser — do not read cover-zoom sharpness there, depth is honest.
 48a4023 snap + 9.6x reach · 3fbe0e3 provenance + double-tap ladder ·
 b1deb58 Reduce Motion + haptics · 8b2d5f8 the wedge in the hint ·
 d3f162c did-you-mean · 41bfda1 + 770d4d1 the game-build stamp.
+
+### M20 — CUSTOM MAP PINS — SHIPPED (764a8bb + ee33cc7, both published)
+The biggest gap versus best-in-class (TH.GL, IMapp both have user pins; we had
+10,943 from the game files and no way to add one).
+- Dropped by a BUTTON at the view centre, never a gesture: composing one into
+  the existing pan/pinch/tap is what caused the release-snap, and native
+  gesture behaviour cannot be proved from a browser.
+- Labelled with the game's own coordinates. Tap -> card with Remove/Close.
+- Store `mobile/src/map/pins.ts` on the found.ts pattern: own file, own key
+  `palforge-<profile>-mappins`, profile-scoped, listener-driven.
+- Key lists "My marks" with a count in MY_PIN, and OPENS for marks alone
+  (it was gated on shownCount, which counts datamined points only).
+- "Clear N of my marks" in the Layers sheet, region-scoped.
+THREE GUARDS, EACH PROVEN TO FAIL BY BREAKING THE CODE: off-map coords are
+REFUSED not clamped; pins are region-scoped; a malformed row is filtered out
+rather than crashing the map. Plus: never clustered/culled, and MY_PIN is
+checked against poiLayers() so it can never collide with a data colour.
+
+### M21 — the feature created a bug within the hour, and it is the SAME bug
+The pill read "0 SPOTS ON THE MAP" while three of the player's marks sat on
+it. That is the Mau banner again in a smaller hat — the map contradicting
+itself. Fixed: "2 of my marks" alone, "1,572 spots on the map · 2 of my marks"
+together, and the two numbers are NEVER summed (1,575 would blend what the
+game files know with what the player put there; a test asserts no addition).
+LESSON, now twice: WHEN YOU ADD A NEW KIND OF THING TO THE MAP, GREP EVERY
+PLACE THAT COUNTS OR DESCRIBES WHAT IS ON IT. Same shape as "when you change a
+constant, grep everything keyed to it".
+
+### M22 — HARNESS: a mutation harness that crashes leaves the code BROKEN
+The Python subprocess loop for proving guards died on a Windows cp1252 decode
+error AFTER disabling the off-map guard, leaving `if (false) return null;` on
+disk. Caught it, restored it, verified BY GREP, then did the rest one at a
+time in the shell.
+RULE: do mutations ONE AT A TIME, and after any mutation run, grep the file to
+prove it is restored. Never trust a loop to clean up after itself.
+
+### PUBLISHED TONIGHT — 9 updates, all verified on both channels
+48a4023 snap + 9.6x reach · 3fbe0e3 provenance + double-tap ladder ·
+b1deb58 Reduce Motion + haptics · 8b2d5f8 the wedge in the hint ·
+d3f162c did-you-mean · 41bfda1/770d4d1 game-build stamp ·
+292b61d custom pins · ee33cc7 marks counted and explained.
