@@ -34,6 +34,7 @@ function CalcStartHelp({ onPick, mode, onBrowseOwned }: {
   onBrowseOwned: () => void;
 }) {
   useAppVersion();
+  const [howOpen, setHowOpen] = useState(false);
   // Pals you have actually used come first. This list used to sit BELOW a
   // second, near-identical "quick start — recent pals" row on the same
   // screen: two chip rows, same tap, different headings. One list now.
@@ -92,7 +93,23 @@ function CalcStartHelp({ onPick, mode, onBrowseOwned }: {
         </Card>
       )}
 
-      <Card style={{ marginTop: 12, gap: 12 }}>
+      {/* This three-step explainer was always open, so the screen led with a
+          wall of text and the parent slots came second. It is a good
+          explanation and it stays — but folded away, because someone who
+          already knows what the Calculator does should see the pals, not the
+          manual. ("can be annoying to users who don't want too much text") */}
+      <Pressable onPress={() => setHowOpen((v) => !v)} hitSlop={6}
+        accessibilityRole="button"
+        accessibilityState={{ expanded: howOpen }}
+        accessibilityLabel={howOpen ? 'Hide how this works' : 'Show how this works'}
+        style={[s.row, { marginTop: 12, gap: 6, paddingVertical: 4 }]}>
+        <Text style={{ color: T.muted, fontSize: 12.5, fontWeight: '800', flex: 1 }}>
+          How this works
+        </Text>
+        <Icon name={howOpen ? 'chevron-up' : 'chevron-down'} size={18} color={T.muted} />
+      </Pressable>
+      {howOpen && (
+      <Card style={{ marginTop: 4, gap: 12 }}>
         {[
           mode === 'pair'
             ? { n: '1', h: 'Pair → child', b: 'Pick any two pals and you get exactly what they make, with the maths shown.' }
@@ -116,7 +133,75 @@ function CalcStartHelp({ onPick, mode, onBrowseOwned }: {
           </View>
         ))}
       </Card>
+      )}
     </>
+  );
+}
+
+/** One of the two parent slots on the Calculator — the primary target on the
+ * whole screen, so it is sized like one. Empty it reads as a place something
+ * goes (dashed ring, a plus, "Tap to choose"); filled it shows the pal's own
+ * portrait and name, with a clear button that does not fight the main tap. */
+function ParentSlot({ which, name, onPick, onClear }: {
+  which: 1 | 2; name: string | null; onPick: () => void; onClear: () => void;
+}) {
+  const filled = !!name;
+  return (
+    <View style={{ flex: 1 }}>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={filled
+          ? `Parent ${which}: ${name}. Tap to choose a different pal.`
+          : `Choose parent ${which}`}
+        onPress={() => { void Haptics.selectionAsync(); onPick(); }}
+        style={({ pressed }) => [{
+          minHeight: 118, borderRadius: 16, paddingVertical: 12, paddingHorizontal: 8,
+          alignItems: 'center', justifyContent: 'center', gap: 7,
+          backgroundColor: filled ? T.surface : T.surface2,
+          borderWidth: filled ? 1.5 : 1.5,
+          borderColor: filled ? T.accent : T.line2,
+          borderStyle: filled ? 'solid' : 'dashed',
+          opacity: pressed ? 0.75 : 1,
+        }]}>
+        {filled ? (
+          <PalIcon name={name!} size={54} />
+        ) : (
+          <View style={{
+            width: 54, height: 54, borderRadius: 27, borderWidth: 1.5,
+            borderColor: T.line2, borderStyle: 'dashed',
+            alignItems: 'center', justifyContent: 'center',
+          }}>
+            <Icon name="plus" size={24} color={T.faint} />
+          </View>
+        )}
+        <Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.75}
+          style={{
+            color: filled ? T.ink : T.muted,
+            fontWeight: '800', fontSize: filled ? 14.5 : 13, textAlign: 'center',
+          }}>
+          {filled ? name : `Parent ${which}`}
+        </Text>
+        {!filled && (
+          <Text style={{ color: T.faint, fontSize: 11, fontWeight: '700' }}>
+            Tap to choose
+          </Text>
+        )}
+      </Pressable>
+      {filled && (
+        <Pressable hitSlop={10} onPress={onClear}
+          accessibilityRole="button"
+          accessibilityLabel={`Clear parent ${which}`}
+          style={{ position: 'absolute', right: -6, top: -6 }}>
+          <View style={{
+            width: 24, height: 24, borderRadius: 12, backgroundColor: T.surface2,
+            borderWidth: 1, borderColor: T.line2,
+            alignItems: 'center', justifyContent: 'center',
+          }}>
+            <Icon name="close" size={14} color={T.muted} />
+          </View>
+        </Pressable>
+      )}
+    </View>
   );
 }
 
@@ -381,54 +466,39 @@ export function CalculatorScreen() {
 
       {mode === 'pair' ? (
         <>
-          <View style={[s.row, { gap: 8 }]}>
-            <View style={{ flex: 1 }}>
-              <Btn label={a ?? 'Parent 1…'} onPress={() => setPicking('a')} />
-              {a && (
-                <Pressable hitSlop={8} onPress={() => setA(null)}
-                  accessibilityRole="button"
-                  accessibilityLabel="Clear parent 1"
-                  style={{ position: 'absolute', right: -6, top: -6 }}>
-                  <View style={{
-                    width: 20, height: 20, borderRadius: 10, backgroundColor: T.surface2,
-                    borderWidth: 1, borderColor: T.line2,
-                    alignItems: 'center', justifyContent: 'center',
-                  }}>
-                    <Icon name="close" size={12} color={T.muted} />
-                  </View>
-                </Pressable>
-              )}
-            </View>
+          {/* PICKING THE TWO PARENTS IS WHAT THIS PAGE IS FOR, and it used to
+              be two small text pills that the explanation cards below them
+              completely out-shouted. The CEO: "the two most important bubbles
+              parent 1/2 are very small; selecting parents is basically the
+              main thing for this page and it kind of drowns in other
+              information" (2026-08-17).
+
+              They are slots now — tall enough to be the obvious target, with
+              the pal's own portrait in them once chosen, and a dashed empty
+              ring saying what goes there when not. */}
+          <View style={[s.row, { gap: 10, marginTop: 2 }]}>
+            <ParentSlot which={1} name={a} onPick={() => setPicking('a')}
+              onClear={() => setA(null)} />
             {/* both picked? one tap swaps them — cheaper than re-picking when
                 you meant the other order (self-found queue item) */}
-            <Pressable hitSlop={6} disabled={!a || !b}
+            <Pressable hitSlop={10} disabled={!a || !b}
               accessibilityRole="button"
-              accessibilityLabel="Swap parents"
+              accessibilityLabel={a && b ? 'Swap the two parents' : 'Pick both parents to swap them'}
               onPress={() => {
                 void Haptics.selectionAsync();
                 setA(b);
                 setB(a);
+              }}
+              style={{
+                width: 34, height: 34, borderRadius: 17, alignSelf: 'center',
+                alignItems: 'center', justifyContent: 'center',
+                backgroundColor: a && b ? T.accentSoft : 'transparent',
               }}>
               <Icon name={a && b ? 'swap-horizontal' : 'plus'} size={20}
                 color={a && b ? T.accentInk : T.faint} />
             </Pressable>
-            <View style={{ flex: 1 }}>
-              <Btn label={b ?? 'Parent 2…'} onPress={() => setPicking('b')} />
-              {b && (
-                <Pressable hitSlop={8} onPress={() => setB(null)}
-                  accessibilityRole="button"
-                  accessibilityLabel="Clear parent 2"
-                  style={{ position: 'absolute', right: -6, top: -6 }}>
-                  <View style={{
-                    width: 20, height: 20, borderRadius: 10, backgroundColor: T.surface2,
-                    borderWidth: 1, borderColor: T.line2,
-                    alignItems: 'center', justifyContent: 'center',
-                  }}>
-                    <Icon name="close" size={12} color={T.muted} />
-                  </View>
-                </Pressable>
-              )}
-            </View>
+            <ParentSlot which={2} name={b} onPick={() => setPicking('b')}
+              onClear={() => setB(null)} />
           </View>
           {a && b ? <PairResult a={a} b={b} /> : (
             <Card style={{ marginTop: 14 }}>

@@ -2098,6 +2098,52 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E87. CEO FEEDBACK: THE MAIN ACTION ON THE CALCULATOR WAS THE SMALLEST
+## THING ON IT 2026-08-17
+
+Verbatim, with a screenshot:
+
+> "The calculation tab is better now than before with less empty space.
+> However the two most important bubbles: parent 1/2 are very small; selecting
+> parents is basically the main thing for this page and it kind of drowns in
+> other information and can be annoying to users who don't want too much text.
+> These buttons should maybe be bigger and more visible? Idk u must design like
+> a professional and decide."
+
+**He is right, and the screenshot proves it by area.** Two text pills roughly
+44 px tall sat above ~900 px of explanation: a "Pick two parents" card, a
+Paldex hint card, and an always-open three-step numbered list. The one control
+the entire screen exists for was the smallest element on it.
+
+**FIXED — the parents are now SLOTS, not labels.** Measured on the render at
+375x812: each is **145 x 126** (was ~145 x 44 — nearly 3x the height, and the
+pair now sits at y=209 instead of being pushed down the page).
+
+- **Empty:** a dashed ring with a plus, "Parent 1", "Tap to choose". It reads
+  as a place something goes, which is what it is.
+- **Filled:** the pal's own 54 px portrait, name below, solid accent border.
+  Verified the art actually loads (`naturalWidth: 128`, not a broken box).
+- **Swap** got a real 34 px circular target that tints only when both slots
+  are filled, instead of a bare 20 px glyph.
+- Clear (✕) grew 20→24 px with a bigger hit slop, positioned so it never
+  competes with the main tap.
+
+**AND THE TEXT STOPPED SHOUTING.** The three-step "how this works" list is a
+good explanation, so it stays — behind a **"How this works"** disclosure,
+closed by default. Someone who already knows what a breeding calculator does
+now sees their pals, not the manual. Confirmed on the render: the wall text is
+absent until the toggle is pressed.
+
+Accessibility reads properly in both states: "Choose parent 1" when empty,
+"Parent 1: Lamball. Tap to choose a different pal." when filled, and the swap
+explains why it is disabled ("Pick both parents to swap them").
+
+**HIS SAVE WAS SNAPSHOTTED AND RESTORED** around the filled-state test — five
+keys back byte for byte, zero mismatches, temp key deleted, reload confirmed 8
+goals / 35 steps / 26 owned. Zero console errors across all five tabs.
+
+Gates green: 390 + 1 expected fail across 23 files, both trees typecheck.
+
 ## E86. CEO FEEDBACK: A FINISHED PLAN LOOKED EXACTLY LIKE AN UNFINISHED
 ## ONE, AND A REOPENED PHASE WAS A ONE-WAY DOOR 2026-08-17
 
