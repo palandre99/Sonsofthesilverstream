@@ -8640,3 +8640,24 @@ REMAINING COLLECTION ROUND: (3) bounty levels + richer cards (extractor
 emits per-point info: level/bountyTitle/partner from pois.json — fields
 verified present); (4) list filters (search box; alphas A-Z/level sort,
 only-missing via ownedAny). Then the SR experiment verdict.
+
+### M59 — the 23:01 ALL-CAPS terrain report: both causes found and fixed (6dcac94, publish queued)
+His lake screenshot finally showed the killer: hard STAIRCASE pixels on
+the water's edge. Two causes:
+1. The deepest level (z4) was GPU-magnified 3-4x with a cheap filter at
+   max zoom. Palpagos now ships z5 — 16384 effective, LANCZOS-2x of the
+   game's native 8192. INTERPOLATION, NOT INVENTION (nothing exists at
+   z5 that is not in the game's texture); staircases become curves and
+   max zoom samples at ~1.7x. This CLOSES the SR question — the honest
+   upscale shipped as interpolation; no AI hallucination was needed or
+   used.
+2. My own bake-time sharpen was AMPLIFYING the source art's aliased
+   shoreline (unsharp on a hard edge raises staircase contrast). Sharpen
+   is now masked to LAND ONLY via the pipeline's trusted sea classifier,
+   widened one step so the waterline itself stays soft.
+Numbers: 886 tiles total, 565 z5 kept of 1024 (ocean skipped); bundle
+11 -> 28 MB, stated plainly to him (one download per update). Depth
+pins updated; 663 tests; tsc clean.
+PUBLISH: queued with e98eb9c (found filter) behind the goals lane
+(boxShare.ts/PaldexScreen.tsx in flight); one raw-Node publish crash
+tonight — rerun on any dump without "publish: done".
