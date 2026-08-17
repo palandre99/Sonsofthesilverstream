@@ -7726,3 +7726,23 @@ NEXT: fresh-eyes ROUND 3 across the whole fane (states not yet critiqued
 this round: the empty World Tree, the Layers sheet itself, the mark-drop
 moment, region switching mid-layers). Then the backlog: shareable routes,
 cross-device sync.
+
+### M36 — EVAL ROUND 3 COMPLETE — four fixes SHIPPED (06d105a, published)
+From the mark-drop frame alone (three defects in one screenshot):
+- "1 of my mark" broken English -> "My mark" / "My 3 marks"; the clear
+  button -> "Clear my 3 marks" (it clears ALL on this map, not a subset).
+- The pill drew ON TOP of the first-run hint (two bottom-anchored cards,
+  both visible with a mark but no layers). The hint now stands down once any
+  mark exists — its job is teaching the controls, and a dropped mark proves
+  they were found.
+From the Layers sheet on the tree:
+- 15 of 23 layers empty there; wide "none here" chips wrapped one-per-line
+  and scattered the useful chips. Non-empty layers now lead each group,
+  empties sink, stable within halves. Verified live.
+Clean passes: the empty World Tree state; region switch with a layer on
+re-counts correctly (1,572 -> 38).
+ROUND 3 TALLY: 4 fixes shipped, 2 clean passes.
+EVAL ROUNDS 1-3 TOTAL: 6 fixes shipped, 5 clean passes, 2 rejections with
+numbers, 2 ledger corrections. The fane has now been hostilely reviewed
+surface by surface. NEXT: the backlog — shareable routes, then cross-device
+sync (whole or not at all, found.ts store pattern).
