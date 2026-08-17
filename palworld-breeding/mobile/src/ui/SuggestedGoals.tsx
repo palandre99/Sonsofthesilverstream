@@ -18,6 +18,7 @@ import {
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { T } from '../theme';
+import { cleanEffect } from '../data/palText';
 import { Btn, Card, PalIcon, SearchInput, s } from './kit';
 import { Icon } from './Icon';
 import { PalDetail } from './PalDetail';
@@ -161,7 +162,7 @@ function fighterItems(): GoalItem[] {
 function effectItems(re: RegExp): GoalItem[] {
   return Object.keys(pals)
     .filter((n) => re.test(pals[n].partner_effect ?? ''))
-    .map((n) => ({ name: n, effect: pals[n].partner_effect ?? undefined }));
+    .map((n) => ({ name: n, effect: cleanEffect(pals[n].partner_effect) || undefined }));
 }
 /** The base-wide aura pals, DERIVED from the game's own partner-effect text
  *  rather than hand-listed.
@@ -181,7 +182,7 @@ const RANCH_RE = /assigned to Ranch/i;
 
 function helperItems(roles: string[]): GoalItem[] {
   return HELPERS.filter((h) => roles.includes(h.role))
-    .map((h) => ({ name: h.name, effect: pals[h.name]?.partner_effect ?? undefined }));
+    .map((h) => ({ name: h.name, effect: cleanEffect(pals[h.name]?.partner_effect) || undefined }));
 }
 
 function utilityItems(role: keyof typeof UTILITY_ROLES): GoalItem[] {
@@ -192,7 +193,7 @@ function mountItems(names: string[]): GoalItem[] {
   return names.map((n) => ({
     name: n,
     note: MOUNT_CALLOUTS[n],
-    effect: pals[n]?.partner_effect ?? undefined,
+    effect: cleanEffect(pals[n]?.partner_effect) || undefined,
   }));
 }
 

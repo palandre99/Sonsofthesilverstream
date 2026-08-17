@@ -5,6 +5,7 @@ import { T } from '../theme';
 import { Badge, Btn, Card, PageHead, s } from '../ui/kit';
 import { Icon } from '../ui/Icon';
 import { pals, passives } from '../store';
+import { cleanEffect } from '../data/palText';
 import {
   attemptsFor, CAKES, cakeById, ivOdds, mutationPlan, oddsTable, passiveOdds,
   type CakeId,
@@ -737,7 +738,7 @@ function CakesTab() {
  * arrive sooner. Their own words from the game files, not a paraphrase. */
 const EGG_HELPERS = Object.entries(pals)
   .filter(([, p]) => p.base_support?.type === 'egg_speed' || p.base_support?.type === 'incubation')
-  .map(([name, p]) => ({ name, skill: p.partner_skill ?? '', effect: p.partner_effect ?? '' }))
+  .map(([name, p]) => ({ name, skill: p.partner_skill ?? '', effect: cleanEffect(p.partner_effect) }))
   .filter((h) => h.effect)
   .sort((a, b) => a.name.localeCompare(b.name));
 

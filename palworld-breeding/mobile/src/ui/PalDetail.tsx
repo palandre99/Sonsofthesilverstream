@@ -14,6 +14,7 @@ import { navigateTo } from '../nav/intent';
 import { wildBands } from '../map/layers';
 import { WORK_ICONS } from '../data/workIcons';
 import { PalMap } from './PalMap';
+import { cleanEffect } from '../data/palText';
 import { STAT_ICONS } from '../data/statIcons';
 import {
   rarityGrade, rarityTint, wildLevelRange, type RarityGrade,
@@ -577,7 +578,7 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
                 }}>LEVEL {stars + 1} OF 5</Text>
               </View>
             </View>
-            <Text style={[s.body, { marginTop: 4 }]}>{p.partner_effect}</Text>
+            <Text style={[s.body, { marginTop: 4 }]}>{cleanEffect(p.partner_effect)}</Text>
           </Card>
         )}
 

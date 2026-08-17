@@ -2098,6 +2098,62 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E116. THE GAME TEXT WAS ARRIVING CUT IN HALF, ON THREE SCREENS
+## 2026-08-17 (overnight)
+
+Kept reading the pal card. Method #4 says scan datamined text for field names;
+this scan found worse. Swept all 3,050 datamined strings the card can print
+(obtain notes, partner effects, drop names, work labels) — 842 distinct.
+
+**TWO REAL DEFECTS, both reaching the player verbatim on THREE screens** (the
+pal card, the Odds Lab's partner list, and the Suggested Goals sections):
+
+**1. 17 of 297 partner effects arrive CUT OFF.** The knowledge-base source we
+extract from caps them near 200 characters, so sentences stop mid-word. Five
+ended with a half-written aside — the app printed **"(Does not s"**. Majex was
+cut before its first full stop, so there was no whole sentence in it at all.
+
+**2. Two effects carry a RAW GAME VARIABLE** where a number belongs. Leezpunk
+and Leezpunk Ignis both read *"...undetectable to enemies for
+{ActiveSkillOverWriteEffectTime} seconds."*
+
+Neither hole can be filled — the words and the number are in no file we have,
+and inventing them is forbidden. So `cleanEffect` (new, `mobile/src/data/
+palText.ts`) does the two honest things: it never prints a developer's
+variable, and it never presents a cut sentence as finished.
+
+- `{ActiveSkillOverWriteEffectTime}` → **"for a number of seconds"** — true,
+  reads as English, claims nothing about the value.
+- A cut effect keeps every word we DID get and ends in **…**. Beakon still
+  says *"for each other Electric Pal in …"* — a cut clause is still
+  information. Only a half-written aside is dropped, because it carries none.
+
+**THE RULE MATTERS AS MUCH AS THE FIX, AND MY FIRST ONE WAS WRONG.** I was
+about to trim on "ends without terminal punctuation" — which would have thrown
+away good text on **139 pals** whose effects legitimately end
+"(Does not stack)", to fix 17. Measuring before writing caught it; the rule
+shipped is "ends in neither terminal punctuation NOR a closing bracket", and
+**mutation 3 is the rejected rule** — the most valuable guard in the file,
+because it is the mistake I nearly shipped.
+
+Deriving the set from the TEXT rather than from the 200-character cap also
+turned out to be more correct: the cap caught 13, the rule catches **17** —
+Beakon, Croajiro Noct, Dupin and Ribbuny Botan are cut at 197–199 and the
+magic number missed all four. Method #2, earning its place again.
+
+`pal-text.test.ts` is new, **14 tests, and behavioural** — a plain `.ts` in
+mobile CAN be imported by the app's vitest (`sampleBox` proved it), so these
+run the real function over all 297 effects rather than reading source. Three
+of them check the three screens actually route through it (method #38).
+
+**Mutation-proven five ways.** Gates **531**. Mobile typecheck clean. Rendered
+and read on Leezpunk, Slowatt, Beakon and Majex. Published to both channels.
+
+**Not a defect, already handled:** `obtain_notes` contains one line that leaks
+a field name — *"(see alpha_locations)"* — and `otherWays()` has filtered it
+since an earlier tick, with a comment saying why. Method #21: check whether the
+guard already exists. It did.
+
 ## E115. THREE CARDS VANISHED OFF THE PAL CARD, AND ASTRALYM LOST TWO
 ## 2026-08-17 (overnight)
 
