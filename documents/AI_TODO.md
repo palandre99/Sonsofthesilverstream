@@ -2130,7 +2130,10 @@ lane's `MapPreview` but edits none of their files):
 `pal-map-return.test.ts` is new, 5 tests. Gates **643** (count includes the
 Map lane's in-flight test edits). Mobile typecheck clean.
 
-**RENDER CHECK PENDING:** the QA Metro on 8086 (PID 62320) DIED mid-
+**RENDER CHECK DONE (next tick, as promised):** QA Metro restarted; verified
+end-to-end — preview tap opens the enlarged modal, both labelled exits
+present, Back lands on the card with the modal gone. PUBLISHED to both
+channels. (Original note: the QA Metro on 8086, PID 62320, DIED mid-
 verification — page served nothing, `curl` 000, process gone. Restarted in the
 background; the next tick verifies the modal open/close on the render and
 publishes (tree also currently carries the Map lane's uncommitted work, so
