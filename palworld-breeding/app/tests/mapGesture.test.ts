@@ -354,6 +354,69 @@ describe('how far in it can actually go', () => {
   });
 });
 
+describe('the pointer count is what moves the reference point', () => {
+  /**
+   * "Seems like it snaps over in the zoom to where my first finger who hit the
+   * screen was" — CEO, 2026-08-17, and that sentence is the whole diagnosis.
+   * The pan's ORIGIN is captured when finger one lands. Its translation is
+   * measured from whatever set of pointers RNGH is tracking. The moment that
+   * SET changes, the two stop referring to the same thing, and origin +
+   * translation lands on where finger one was.
+   *
+   * Keying the rebase off pinch-end alone was not enough: the count can change
+   * without the pinch starting or ending — a third finger, a finger lifting
+   * and coming back, a palm touching the glass. Any change must rebase.
+   *
+   * Confirmed by the RNGH issue tracker: a Pinch does NOT end when one of two
+   * fingers lifts (software-mansion/react-native-gesture-handler#1214), so the
+   * app cannot rely on pinch-end firing at the moment the reading jumps.
+   */
+  const canvas = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'map', 'MapCanvas.tsx'), 'utf8',
+  );
+
+  it('rebases whenever the number of fingers changes', () => {
+    expect(canvas).toMatch(/const panPointers = useSharedValue\(0\)/);
+    expect(canvas).toMatch(/e\.numberOfPointers !== panPointers\.value/);
+  });
+
+  it('and does that BEFORE it writes a position', () => {
+    const update = canvas.slice(canvas.indexOf('e.numberOfPointers !== panPointers.value'));
+    const guardEnds = update.indexOf('return;');
+    const writes = update.indexOf('const c = clamp(');
+    expect(guardEnds).toBeGreaterThan(-1);
+    expect(writes).toBeGreaterThan(-1);
+    expect(guardEnds).toBeLessThan(writes);
+  });
+
+  it('two fingers to one lands the map where the pinch left it, not on finger one', () => {
+    // finger one touched at x=100; the pinch then moved the map far away
+    const afterPinch = { k: FLOOR * 2.5, tx: -700, ty: -500 };
+    const FINGER_ONE_ORIGIN = 100;
+    const twoFingerReading = 60;
+    const oneFingerReading = twoFingerReading + 130;   // the set changed
+
+    // WITHOUT the rebase: origin captured against finger one, applied to a
+    // reading that now means something else
+    const stale = reanchorPan(afterPinch, twoFingerReading, 0);
+    const wrong = panStep({
+      startTx: stale.startTx, startTy: stale.startTy,
+      dx: oneFingerReading, dy: 0, k: afterPinch.k, w: W, h: H,
+    });
+    expect(wrong.tx).not.toBeCloseTo(afterPinch.tx, 3);
+
+    // WITH it: rebase on the new reading, write nothing that frame
+    const fresh = reanchorPan(afterPinch, oneFingerReading, 0);
+    const right = panStep({
+      startTx: fresh.startTx, startTy: fresh.startTy,
+      dx: oneFingerReading, dy: 0, k: afterPinch.k, w: W, h: H,
+    });
+    expect(right.tx).toBeCloseTo(afterPinch.tx, 6);
+    expect(right.ty).toBeCloseTo(afterPinch.ty, 6);
+    expect(FINGER_ONE_ORIGIN).toBe(100);   // documents the scenario
+  });
+});
+
 describe('the worklet copy matches this one', () => {
   const canvas = readFileSync(
     join(__dirname, '..', '..', 'mobile', 'src', 'map', 'MapCanvas.tsx'), 'utf8',

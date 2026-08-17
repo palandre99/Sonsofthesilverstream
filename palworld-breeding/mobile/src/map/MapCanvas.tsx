@@ -242,6 +242,19 @@ export function MapCanvas({
    * gestures that measure from different points.
    */
   const rebase = useSharedValue(0);
+  /**
+   * How many pointers the pan saw on its previous frame.
+   *
+   * The CEO pinned the symptom exactly: "it snaps over in the zoom to where my
+   * first finger who hit the screen was". That is the pan's ORIGIN — captured
+   * when finger one landed — being applied against a translation that is no
+   * longer measured from finger one. Keying the rebase off pinch-end alone was
+   * not enough, because the count can change without the pinch ending or
+   * starting (a third finger, a finger lifting and landing again, a palm).
+   * ANY change in the pointer count moves the reference point, so any change
+   * must rebase.
+   */
+  const panPointers = useSharedValue(0);
 
   const [win, setWin] = useState<TileWindow>({ z: 0, x0: 0, x1: 0, y0: 0, y1: 0 });
 
@@ -299,6 +312,7 @@ export function MapCanvas({
       // a pan that begins cleanly has a valid origin already; a leftover
       // rebase flag here would swallow its first frame of movement
       rebase.value = 0;
+      panPointers.value = 1;
       runOnJS(markTouched)();
     })
     .onUpdate((e) => {
@@ -312,6 +326,14 @@ export function MapCanvas({
       if (pinching.value) {
         startTx.value = tx.value - e.translationX;
         startTy.value = ty.value - e.translationY;
+        return;
+      }
+      if (e.numberOfPointers !== panPointers.value) {
+        // the reference point just moved — rebase against the NEW reading
+        panPointers.value = e.numberOfPointers;
+        startTx.value = tx.value - e.translationX;
+        startTy.value = ty.value - e.translationY;
+        rebase.value = 0;
         return;
       }
       if (rebase.value) {
@@ -331,7 +353,9 @@ export function MapCanvas({
     })
     .onEnd(() => {
       gesturing.value = 0;
-    }), [clamp, gesturing, k, markTouched, pinching, rebase, startTx, startTy, tx, ty]);
+      panPointers.value = 0;
+    }), [clamp, gesturing, k, markTouched, panPointers, pinching, rebase, startTx, startTy,
+    tx, ty]);
 
   const pinch = useMemo(() => Gesture.Pinch()
     .onStart((e) => {
