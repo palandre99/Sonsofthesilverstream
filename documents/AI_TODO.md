@@ -2098,6 +2098,86 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E122. CEO FEATURE — "CAUGHT IT, COULDN'T TELL THE GENDER"
+## 2026-08-17
+
+**Verbatim:**
+
+> "Sometimes when I'm out catching one pal I can't see if it's male or female,
+> cool if paldex adds a tick option for not sure of gender? And it's easily
+> filterable so I can identify later when back at base ? A good way to
+> implement this ?"
+
+Built. A **"?"** box now sits beside ♂ and ♀ on every pal row and on the pal
+card.
+
+**The design, and why.** Stored as a third flag on the existing box entry
+(`{m, f, u}`) rather than a separate list, so it persists, exports and follows
+profile switching with everything else, and **no save written before today
+needs migrating** — `u` is optional and `undefined` is falsy.
+
+**THE RULE THAT MATTERS:** a "?" pal counts as **CAUGHT** but never as a
+**KNOWN GENDER**.
+
+- `ownedAny` → true. He has it; the Paldex count, "HAVE IT" and planner
+  reachability should all say so.
+- `hasGender` → false. Breeding needs a specific male and a specific female.
+  If an unresolved pal counted as a parent, the planner would build a route
+  around a pal he cannot supply and the plan would be a lie. **That is
+  mutation 1 in the guard, and it is the dangerous one.**
+
+**The round trip.** Ticking ♂ or ♀ later clears the "?" in the same tap — the
+question is answered, so the reminder tidies itself. Ticking "?" clears any
+gender, since holding both would be a contradiction. An entry with nothing left
+leaves the box. On import, a known gender always beats an unresolved question.
+
+**Finding them again** — the half he asked for explicitly:
+- new **"Gender to check"** filter in the shared Filter sheet;
+- the Paldex header shows **"3 pals to check the gender of — show them"**, one
+  tap to the filtered list, and it disappears when nothing is waiting. A mark
+  nobody can find again is just a mark (method #11).
+
+**Verified on the render, on his save, under the snapshot protocol.** Marked
+Lifmunk "?": entry `{m:false,f:false,u:true}`, owned went 26 → 27, nudge read
+"1 pal to check the gender of — show it" (singular correct). Tapped ♂: entry
+became `{m:true,u:false}` and the nudge vanished. **Save restored and
+re-verified: 26 owned, 258/299 reachable, Lv 42, 2 profiles, 8 goals, test pal
+gone.**
+
+`gender-unsure.test.ts` is new, 12 tests. **Mutation-proven four ways** — the
+worst being a "?" pal counting as a real parent.
+
+---
+
+**A BUG IN MY OWN TEST HARNESS, FOUND BY THIS WORK (method #31 again).**
+
+Adding a JSX comment to `kit.tsx` broke three `data-stamp` guards. The cause was
+not the app: the shared comment-stripper every source-reading test uses,
+
+```
+.replace(/\{\s*\/\*[\s\S]*?\*\/\s*\}/g, '')
+```
+
+lets its non-greedy body **cross a `*/`**. When a function body opens with `{`
+followed by a doc comment whose `*/` is not followed by `}`, the match runs on
+to the next `*/}` ANYWHERE later in the file. In `kit.tsx` it ate **6,672 of
+18,244 characters**, including the whole `DataStamp` component — so three
+guards were asserting against text that had been deleted from what they read.
+
+Fixed in **16 test files** with a body that cannot cross a terminator:
+`\{\s*\/\*(?:(?!\*\/)[\s\S])*\*\/\s*\}`. The Map lane's `map.test.ts`
+and `mapGesture.test.ts` were deliberately left alone — not mine to edit.
+
+**Worth stating plainly: a `toContain` against truncated source FAILS loudly,
+but a `not.toContain` PASSES VACUOUSLY.** Any negative assertion in an affected
+file was weaker than it looked until now. Gates **581** with the stripper
+correct.
+
+**METHOD NOTE — #57: THE HARNESS THAT READS THE SOURCE IS PART OF THE SOURCE.**
+A source-reading guard has two failure modes, and the quiet one is that it read
+less than it thought. When a guard breaks after an unrelated edit, suspect the
+reader before the code.
+
 ## E121. CEO'S OWN IDEA — LET HIM PICK THE ORDER
 ## 2026-08-17 13:26
 

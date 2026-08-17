@@ -1,6 +1,6 @@
 /** Shared filter + sort logic for pal lists (Paldex AND the picker) —
  * pure functions, no UI, imports store only (no import cycles). */
-import { hasGender, ownedAny, palNumberSort, pals } from '../store';
+import { genderUnsure, hasGender, ownedAny, palNumberSort, pals } from '../store';
 
 export type SortKey = 'number' | 'name' | 'rarity_desc' | 'rarity_asc'
   | 'hp' | 'atk' | 'def' | `work:${string}`;
@@ -35,7 +35,7 @@ export function sortedPals(list: string[], key: SortKey): string[] {
 }
 
 export interface Filters {
-  own: 'all' | 'owned' | 'missing' | 'pairready' | 'onegender';
+  own: 'all' | 'owned' | 'missing' | 'pairready' | 'onegender' | 'unsure';
   elements: string[];
   work: string | null;
 }
@@ -54,6 +54,8 @@ export function applyFilters(list: string[], f: Filters): string[] {
     case 'pairready': return out.filter((n) => hasGender(n, 'm') && hasGender(n, 'f'));
     case 'onegender':
       return out.filter((n) => ownedAny(n) && !(hasGender(n, 'm') && hasGender(n, 'f')));
+    // the whole point of the "?" mark: catch now, find them again at base
+    case 'unsure': return out.filter(genderUnsure);
     default: return out;
   }
 }

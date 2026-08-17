@@ -7,7 +7,8 @@ import { PAL_ICONS } from '../data/icons.g';
 import { WORK_ICONS } from '../data/workIcons';
 import { ELEMENT_ICONS } from '../data/statIcons';
 import {
-  breeding, hasGender, pals, setOwnedGender, topWork, useAppVersion, workLabel,
+  breeding, genderUnsure, hasGender, pals, setGenderUnsure, setOwnedGender, topWork,
+  useAppVersion, workLabel,
 } from '../store';
 import { navigateTo } from '../nav/intent';
 import { Icon } from './Icon';
@@ -348,8 +349,35 @@ export function BackToCardChip({ name, onOpen, onDismiss }: {
 
 export function GenderToggles({ name, size = 30 }: { name: string; size?: number }) {
   useAppVersion();
+  const unsure = genderUnsure(name);
   return (
     <View style={{ flexDirection: 'row', gap: 5 }}>
+      {/* "Caught it, could not tell which" — the CEO catches pals in the field
+          where the gender is not visible, and wants to sort it out back at
+          base. It sits WITH the gender boxes because it answers the same
+          question; tapping a gender clears it. */}
+      <Pressable
+        onPress={() => {
+          void Haptics.selectionAsync();
+          setGenderUnsure(name, !unsure);
+        }}
+        hitSlop={8}
+        accessibilityRole="checkbox"
+        accessibilityState={{ checked: unsure }}
+        accessibilityLabel={`${name}: caught, gender not checked yet — ${
+          unsure ? 'on' : 'off'}`}
+        style={{
+          width: size, height: size, borderRadius: size * 0.3,
+          borderWidth: 1.5,
+          borderColor: unsure ? T.gold : T.line2,
+          backgroundColor: unsure ? T.goldSoft : T.surface2,
+          alignItems: 'center', justifyContent: 'center',
+        }}>
+        <Text style={{
+          color: unsure ? T.goldInk : T.faint,
+          fontSize: size * 0.5, fontWeight: '900',
+        }}>?</Text>
+      </Pressable>
       {(['m', 'f'] as const).map((g) => {
         const on = hasGender(name, g);
         const color = g === 'm' ? T.male : T.female;

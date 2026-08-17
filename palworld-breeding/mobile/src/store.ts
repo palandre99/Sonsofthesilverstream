@@ -119,7 +119,16 @@ export function topWork(p: PalInfo, n = 3): [string, number][] {
 
 /* ---------------- persisted state ---------------- */
 
-export interface OwnedGenders { m: boolean; f: boolean }
+/** What the player has of a species.
+ *
+ * `u` = caught it, but could not tell the gender — the CEO, 2026-08-17:
+ * "Sometimes when I'm out catching one pal I can't see if it's male or
+ * female". It counts as CAUGHT everywhere, because he has it, but it never
+ * counts as a known male or female: breeding needs a specific parent of a
+ * specific gender, and claiming one he does not have would put a route in the
+ * plan that cannot be run. Optional, so every save written before today keeps
+ * working untouched. */
+export interface OwnedGenders { m: boolean; f: boolean; u?: boolean }
 
 export interface SavedPlan {
   targets: string[];
@@ -379,7 +388,13 @@ export async function loadPersisted(): Promise<void> {
 /* ---------------- box ---------------- */
 
 export const getBox = () => state.box;
-export const ownedAny = (n: string) => !!(state.box[n]?.m || state.box[n]?.f);
+export const ownedAny = (n: string) =>
+  !!(state.box[n]?.m || state.box[n]?.f || state.box[n]?.u);
+/** Caught, gender still to be checked. */
+export const genderUnsure = (n: string) =>
+  !!state.box[n]?.u && !state.box[n]?.m && !state.box[n]?.f;
+export const unsureCount = () =>
+  Object.keys(state.box).filter(genderUnsure).length;
 export const hasGender = (n: string, g: 'm' | 'f') => !!state.box[n]?.[g];
 export const ownedCount = () => Object.keys(state.box).length;
 export const pairReadyCount = () =>
@@ -387,9 +402,26 @@ export const pairReadyCount = () =>
 
 export function setOwnedGender(name: string, g: 'm' | 'f', val: boolean): void {
   const cur = state.box[name] ?? { m: false, f: false };
-  const entry = { ...cur, [g]: val };
+  // naming a gender ANSWERS the question — that is the whole point of the
+  // "?" mark: catch it now, identify it back at base, and the reminder clears
+  // itself rather than needing a second tap to tidy up
+  const entry = { ...cur, [g]: val, u: false };
   const next = { ...state.box };
-  if (!entry.m && !entry.f) delete next[name];
+  if (!entry.m && !entry.f && !entry.u) delete next[name];
+  else next[name] = entry;
+  state.box = next;
+  void persist('box');
+  emit();
+}
+
+/** Mark (or unmark) "caught it, gender unknown". Turning it ON clears any
+ * gender already recorded — the two states are answers to the same question,
+ * so holding both would be a contradiction on screen. */
+export function setGenderUnsure(name: string, val: boolean): void {
+  const cur = state.box[name] ?? { m: false, f: false };
+  const entry = val ? { m: false, f: false, u: true } : { ...cur, u: false };
+  const next = { ...state.box };
+  if (!entry.m && !entry.f && !entry.u) delete next[name];
   else next[name] = entry;
   state.box = next;
   void persist('box');
@@ -411,7 +443,12 @@ export function importNames(entries: [string, OwnedGenders][], replace: boolean)
   for (const [name, g] of entries) {
     if (!Object.hasOwn(pals, name)) continue;
     const cur = next[name];
-    next[name] = cur ? { m: cur.m || g.m, f: cur.f || g.f } : g;
+    // a known gender always beats an unresolved question mark
+    const merged = cur
+      ? { m: cur.m || g.m, f: cur.f || g.f, u: !!(cur.u || g.u) }
+      : { ...g };
+    if (merged.m || merged.f) merged.u = false;
+    next[name] = merged;
     added++;
   }
   state.box = next;

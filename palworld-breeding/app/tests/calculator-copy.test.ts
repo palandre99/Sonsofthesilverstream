@@ -30,7 +30,7 @@ const engine = new BreedingEngine(breedingJson as unknown as BreedingData);
 const raw = readFileSync(
   join(__dirname, '../../mobile/src/screens/CalculatorScreen.tsx'), 'utf8');
 const code = raw
-  .replace(/\{\s*\/\*[\s\S]*?\*\/\s*\}/g, '')
+  .replace(/\{\s*\/\*(?:(?!\*\/)[\s\S])*\*\/\s*\}/g, '')
   .replace(/\/\*[\s\S]*?\*\//g, '')
   .replace(/^\s*\/\/.*$/gm, '');
 

@@ -41,7 +41,7 @@ const files: [string, string][] = [
 /** drop comments so a rule that only survives in prose never counts as shipped */
 function code(text: string): string {
   return text
-    .replace(/\{\s*\/\*[\s\S]*?\*\/\s*\}/g, '')
+    .replace(/\{\s*\/\*(?:(?!\*\/)[\s\S])*\*\/\s*\}/g, '')
     .replace(/\/\*[\s\S]*?\*\//g, '')
     .replace(/^\s*\/\/.*$/gm, '');
 }

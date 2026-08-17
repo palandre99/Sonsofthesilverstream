@@ -132,6 +132,7 @@ export function FilterSheet({ filters, sort, onApply, onClose, base }: {
             <Chip on={f.own === 'missing'} label="Missing" onPress={() => pickOwn('missing')} />
             <Chip on={f.own === 'pairready'} label="Have ♂ + ♀" onPress={() => pickOwn('pairready')} />
             <Chip on={f.own === 'onegender'} label="One gender" onPress={() => pickOwn('onegender')} />
+            <Chip on={f.own === 'unsure'} label="Gender to check" onPress={() => pickOwn('unsure')} />
           </Section>
           <Section title="Order">
             {sk.startsWith('work:') && (

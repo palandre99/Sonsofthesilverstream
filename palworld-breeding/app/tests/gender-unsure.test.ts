@@ -1,0 +1,115 @@
+/**
+ * "Caught it, but I couldn't tell the gender."
+ *
+ * CEO, 2026-08-17: *"Sometimes when I'm out catching one pal I can't see if
+ * it's male or female, cool if paldex adds a tick option for not sure of
+ * gender? And it's easily filterable so I can identify later when back at
+ * base?"*
+ *
+ * Stored as a third flag on the box entry (`{m, f, u}`) rather than a separate
+ * list, so it persists, exports and follows profile switching with everything
+ * else, and every save written before today keeps working — `u` is optional
+ * and `undefined` is falsy.
+ *
+ * THE RULE THAT MATTERS, and the reason this file exists: a "?" pal counts as
+ * CAUGHT but never as a KNOWN GENDER. Breeding needs a specific male and a
+ * specific female; if `hasGender` ever answered true for an unresolved pal,
+ * the planner would build a route around a parent he cannot supply, and the
+ * plan would be a lie. `ownedAny` says yes, `hasGender` says no.
+ *
+ * `mobile/src/store.ts` reaches AsyncStorage and cannot be imported here, so
+ * these are precise source assertions. Comments are stripped.
+ */
+import { describe, expect, it } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+
+const read = (f: string) => readFileSync(join(__dirname, '../../mobile/src', f), 'utf8')
+  .replace(/\{\s*\/\*(?:(?!\*\/)[\s\S])*\*\/\s*\}/g, '')
+  .replace(/\/\*[\s\S]*?\*\//g, '')
+  .replace(/^\s*\/\/.*$/gm, '');
+
+const store = read('store.ts');
+const kit = read('ui/kit.tsx');
+const filters = read('ui/palFilters.tsx');
+const sheet = read('ui/FilterSheet.tsx');
+const paldex = read('screens/PaldexScreen.tsx');
+
+describe('a pal you caught but could not identify', () => {
+  it('is recorded on the box entry, not somewhere separate', () => {
+    expect(store).toContain('export interface OwnedGenders { m: boolean; f: boolean; u?: boolean }');
+    expect(store, 'u must stay OPTIONAL or every save written before today breaks')
+      .toContain('u?: boolean');
+  });
+
+  it('counts as caught', () => {
+    expect(store).toContain('state.box[n]?.m || state.box[n]?.f || state.box[n]?.u');
+  });
+
+  it('NEVER counts as a known male or female', () => {
+    // the load-bearing rule: hasGender reads the specific flag and nothing
+    // else, so an unresolved pal can never be planned as a parent
+    expect(store).toContain("export const hasGender = (n: string, g: 'm' | 'f') => !!state.box[n]?.[g];");
+    expect(store, 'hasGender must not consult the unsure flag')
+      .not.toMatch(/hasGender[\s\S]{0,120}\?\.u/);
+  });
+
+  it('is not counted as a breeding-ready pair', () => {
+    expect(store).toContain('(o) => o.m && o.f');
+  });
+});
+
+describe('answering the question clears it', () => {
+  it('naming a gender resolves the mark in the same tap', () => {
+    expect(store, 'setting a gender leaves the question mark behind, so the '
+      + 'reminder never clears and the list never empties')
+      .toContain("const entry = { ...cur, [g]: val, u: false };");
+  });
+
+  it('marking unsure clears any gender already recorded', () => {
+    // holding both would be a contradiction on screen
+    expect(store).toContain('const entry = val ? { m: false, f: false, u: true } : { ...cur, u: false };');
+  });
+
+  it('an entry with nothing left is removed from the box', () => {
+    expect(store).toContain('if (!entry.m && !entry.f && !entry.u) delete next[name];');
+  });
+
+  it('importing a known gender beats an unresolved question', () => {
+    expect(store).toContain('if (merged.m || merged.f) merged.u = false;');
+    expect(store, 'import drops the unsure flag entirely')
+      .toContain('u: !!(cur.u || g.u)');
+  });
+});
+
+describe('you can find them again at base', () => {
+  it('the filter exists and uses the real predicate', () => {
+    expect(filters).toContain("| 'unsure'");
+    expect(filters).toContain("case 'unsure': return out.filter(genderUnsure);");
+    expect(store).toContain('export const genderUnsure =');
+    // unresolved means the flag is set AND no gender is known
+    expect(store).toContain("!!state.box[n]?.u && !state.box[n]?.m && !state.box[n]?.f");
+  });
+
+  it('the filter is offered in the sheet, and labelled', () => {
+    expect(sheet).toContain('label="Gender to check"');
+    expect(paldex).toContain("unsure: 'Gender to check'");
+  });
+
+  it('the Paldex says how many are waiting, and one tap shows them', () => {
+    // a mark nobody can find again is just a mark
+    expect(paldex).toContain('unsureCount()');
+    expect(paldex).toContain("own: 'unsure'");
+    expect(paldex, 'the count would read "1 pals"')
+      .toContain("'1 pal to check the gender of — show it'");
+  });
+});
+
+describe('the control itself', () => {
+  it('sits with the gender boxes and says what it means', () => {
+    expect(kit).toContain('setGenderUnsure(name, !unsure)');
+    expect(kit).toContain('caught, gender not checked yet');
+    expect(kit, 'the toggle must report its state to a screen reader')
+      .toMatch(/accessibilityState=\{\{ checked: unsure \}\}/);
+  });
+});

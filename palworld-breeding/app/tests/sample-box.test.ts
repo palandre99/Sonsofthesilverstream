@@ -36,7 +36,7 @@ const pals = (palsJson as { pals: Record<string, { wild?: boolean }> }).pals;
 const raw = readFileSync(
   join(__dirname, '../../mobile/src/screens/PaldexScreen.tsx'), 'utf8');
 const code = raw
-  .replace(/\{\s*\/\*[\s\S]*?\*\/\s*\}/g, '')
+  .replace(/\{\s*\/\*(?:(?!\*\/)[\s\S])*\*\/\s*\}/g, '')
   .replace(/\/\*[\s\S]*?\*\//g, '')
   .replace(/^\s*\/\/.*$/gm, '');
 

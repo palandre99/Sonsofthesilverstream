@@ -39,7 +39,7 @@ const pals = (palsJson as { pals: Record<string, unknown> }).pals;
 const raw = readFileSync(
   join(__dirname, '../../mobile/src/ui/PalDetail.tsx'), 'utf8');
 const code = raw
-  .replace(/\{\s*\/\*[\s\S]*?\*\/\s*\}/g, '')
+  .replace(/\{\s*\/\*(?:(?!\*\/)[\s\S])*\*\/\s*\}/g, '')
   .replace(/\/\*[\s\S]*?\*\//g, '')
   .replace(/^\s*\/\/.*$/gm, '');
 

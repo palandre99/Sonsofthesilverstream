@@ -26,7 +26,7 @@ import { join } from 'node:path';
 
 const M = join(__dirname, '../../mobile/src');
 const read = (p: string) => readFileSync(join(M, p), 'utf8')
-  .replace(/\{\s*\/\*[\s\S]*?\*\/\s*\}/g, '')
+  .replace(/\{\s*\/\*(?:(?!\*\/)[\s\S])*\*\/\s*\}/g, '')
   .replace(/\/\*[\s\S]*?\*\//g, '')
   .replace(/^\s*\/\/.*$/gm, '');
 

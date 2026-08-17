@@ -28,7 +28,7 @@ const src = readFileSync(SCREEN, 'utf8');
 
 /** strip comments — this file's own prose names the shorthand it bans */
 const code = src
-  .replace(/\{\s*\/\*[\s\S]*?\*\/\s*\}/g, '')
+  .replace(/\{\s*\/\*(?:(?!\*\/)[\s\S])*\*\/\s*\}/g, '')
   .replace(/\/\*[\s\S]*?\*\//g, '')
   .replace(/^\s*\/\/.*$/gm, '');
 

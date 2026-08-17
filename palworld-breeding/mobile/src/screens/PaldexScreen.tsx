@@ -9,7 +9,7 @@ import {
   WorkChips, s,
 } from '../ui/kit';
 import {
-  clearBox, engine, getBox, importNames, ownedAny, pals, setOwnedGender,
+  clearBox, engine, getBox, importNames, ownedAny, pals, setOwnedGender, unsureCount,
   useAppVersion, workLabel, type OwnedGenders,
 } from '../store';
 import { Icon } from '../ui/Icon';
@@ -263,10 +263,12 @@ export function PaldexScreen() {
   // the job the list is currently about — highlighted on every row so a
   // filtered list is visibly still that filter as you scroll
   const focusJob = filters.work ?? (sort.startsWith('work:') ? sort.slice(5) : null);
+  const toCheck = unsureCount();
 
   const OWN_LABELS: Record<Filters['own'], string> = {
     all: 'All', owned: 'Owned', missing: 'Missing',
     pairready: 'Have ♂+♀', onegender: 'One gender',
+    unsure: 'Gender to check',
   };
   const activeBits: string[] = [];
   if (filters.own !== 'all') activeBits.push(OWN_LABELS[filters.own]);
@@ -289,6 +291,22 @@ export function PaldexScreen() {
         <Text style={{ color: T.muted, fontSize: 12.5, fontWeight: '700', flex: 1 }}>
           {ownedNames.length} owned · {reachable}/{Object.keys(pals).length} reachable
         </Text>
+        {/* A mark nobody can find again is just a mark. One tap filters the
+            list to the pals whose gender is still a question — the "back at
+            base" half of the CEO's request. */}
+        {toCheck > 0 && (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={`Show the ${toCheck} pal${toCheck === 1 ? '' : 's'} whose gender you have not checked`}
+            onPress={() => setFilters({ ...filters, own: 'unsure' })}
+            style={{ alignSelf: 'flex-start', marginTop: 6 }}>
+            <Text style={{ color: T.goldInk, fontSize: 12, fontWeight: '800' }}>
+              {toCheck === 1
+                ? '1 pal to check the gender of — show it'
+                : `${toCheck} pals to check the gender of — show them`}
+            </Text>
+          </Pressable>
+        )}
       </View>
       {/* the Paldex has its own compact header rather than PageHead, so the
           data stamp is placed by hand — every screen that prints datamined
