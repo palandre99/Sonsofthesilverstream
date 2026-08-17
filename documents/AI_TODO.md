@@ -2098,6 +2098,53 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E101. THE SAMPLE BOX — AAA CRITERION #10 CLOSED 2026-08-17 (overnight)
+
+**Criterion #10 of the CEO's own 15-point bar: "empty states teach the killer
+feature".** The empty Paldex taught nothing. A player who had just installed
+the app met 299 rows, a footer full of disabled buttons, and no sentence
+saying that ticking pals is the thing that makes every other screen work.
+The only way to find out was to type a list first — the blueprint's named
+model (Dododex's presets) exists precisely because that is too high a price
+for a first tap.
+
+**SHIPPED:** an empty box now shows a card above the list — *"Nothing ticked
+yet"*, what ticking buys you, and two ways in: **Import my list…** and **Try
+a sample box**.
+
+**The sample is twelve pals, and every one of them is a fact, not a taste:**
+Lamball, Cattiva, Chikipi, Lifmunk, Foxparks, Fuack, Tanzee, Pengullet,
+Rooby, Vixy, Depresso, Gumoss — all wild-catchable, all spawning at level 6
+or below, read out of `palcalcFacts.g.ts` (`minWild`). The card claims
+"pals you'd have in your first hour" and that claim is checked by a test.
+
+**MEASURED: one tap takes the Paldex to 12 owned · 258 of 299 reachable** —
+the *same* closure the CEO's own 26-pal box reaches, because twelve early
+commons already open the whole generic pool. The Planner is useful on the
+very first tap, which was the entire point.
+
+**It can never quietly become someone's save — three properties, all
+guarded:** it is only ever offered on an EMPTY box; it keeps calling itself
+a sample for exactly as long as the box IS the sample (derived, not a
+persisted flag — no migration, no stale bit); and "Remove the 12 sample
+pals" removes those twelve and nothing else, never `clearBox`. Tick a pal of
+your own on top and the app stops calling it a sample, because it isn't one.
+
+**Verified on the render, not by reading:** empty card → tap → 12 owned /
+258 reachable → remove → 0 owned with the plan untouched; the 13-pal state
+(sample + one caught Anubis) shows no card at all; his real 26-pal box shows
+no card. The flask glyph resolves to U+F0096 at 15 px — a real icon, not
+tofu. Console clean under my own hooks. His data snapshotted and restored
+key-by-key, re-verified at 26 owned / 8 goals / 35 steps / 3 checks / Lv 42.
+
+**`app/tests/sample-box.test.ts` (7)** pins the levels against the data, the
+258-species closure as a floor, and all three safety properties.
+**Mutation-proven**: swapping Gumoss for Jetragon fails the level test;
+deleting the empty-box gate fails the safety test. Gates 448 / tsc clean.
+Published to both channels.
+
+**AAA bar now: #1, #4, #5, #6, #7, #8, #10, #11, #13 met.**
+
 ## E100. THE DATA STAMP — AAA CRITERION #1 CLOSED, AND THREE MORE MINED
 ## FIELDS SPENT 2026-08-17 (overnight)
 
