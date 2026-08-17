@@ -8888,3 +8888,19 @@ seam + sharpen chain, found dim + three-way filter, bounty posters,
 adaptive clustering, layer lists + round 2, chip progress, resizable
 sheets, the 0.0 m placement audit, five zoom causes, and the publish
 pipeline lessons (1000-asset cap, guard-respect precedents).
+
+### M63 — list filters shipped (a87f73e, both channels) — HIS QUEUE IS CLEAR
+Search box on every layer list; alpha list adds Sort by level + "Only
+ones I am missing" (ownedAny — the paldex link he named). Filters reset
+on open; the progress line counts the FULL list (never lies while
+filters narrow); the sort toggle labels the ACTION (eye-caught: "A to
+Z" while sorted A-Z read as a dead button). Element-type chips NOT
+built: at half-height the control row is full, and level+search+missing
+cover the finding jobs he listed — revisit only if he asks by name.
+Verified live: "noct" -> the 5 Nocts, level sort 11->70. 694 tests.
+EVERY CEO ASK FROM THE 22:3x-23:2x STORM IS NOW SHIPPED OR ROUTED:
+icons/terrain/zoom chain, found dim + filter, bounty posters, lists +
+filters, resizable sheets, adaptive clustering, wanted posters;
+alpha-variant stats logged for the GOALS lane (M60). WATCH STATE: hold
+for his reports; no manufactured work; the M37-M63 ledger is the
+handover.
