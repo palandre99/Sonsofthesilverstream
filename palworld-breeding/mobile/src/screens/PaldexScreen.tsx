@@ -351,13 +351,22 @@ export function PaldexScreen() {
                 smaller than the whole dex — otherwise the button would be a
                 trap that owns all 299. The un-own arms first and then names
                 the exact number, the same two-step the website uses. */}
+            {/* Searching one pal by name is the commonest way to reach these
+                buttons, and at one result they read "Own all 1 shown" and
+                "Really un-own 1?" — "all" of a single thing, and a DESTRUCTIVE
+                confirm that counts instead of naming what disappears. At one,
+                say which pal. That is the CEO's own rule from the goal tray:
+                name the thing, so the label is the whole answer. */}
             {(activeBits.length > 0 || !!q) && names.length > 0 && (() => {
-              const shownOwned = names.filter((n) => ownedAny(n)).length;
+              const ownedShown = names.filter((n) => ownedAny(n));
+              const shownOwned = ownedShown.length;
               return (
                 <>
                   {shownOwned < names.length && (
                     <Btn small
-                      label={`Own all ${names.length} shown`}
+                      label={names.length === 1
+                        ? `Own ${names[0]}`
+                        : `Own all ${names.length} shown`}
                       onPress={() => {
                         for (const n of names) {
                           setOwnedGender(n, 'm', true);
@@ -368,9 +377,13 @@ export function PaldexScreen() {
                   )}
                   {shownOwned > 0 && (
                     <Btn small danger
-                      label={armUnown
-                        ? `Really un-own ${shownOwned}?`
-                        : `Un-own ${shownOwned} shown`}
+                      label={shownOwned === 1
+                        ? (armUnown
+                          ? `Really un-own ${ownedShown[0]}?`
+                          : `Un-own ${ownedShown[0]}`)
+                        : (armUnown
+                          ? `Really un-own ${shownOwned}?`
+                          : `Un-own ${shownOwned} shown`)}
                       onPress={() => {
                         if (!armUnown) { setArmUnown(true); return; }
                         for (const n of names) {

@@ -60,7 +60,31 @@ describe('the phone Paldex’s bulk actions cannot become a footgun', () => {
   it('counts what is SHOWN, not what is owned overall', () => {
     // shownOwned must be derived from the filtered `names`, or the button
     // promises to un-own pals that are not on screen
-    expect(code).toMatch(/const shownOwned = names\.filter\(\(n\) => ownedAny\(n\)\)\.length/);
+    expect(code).toMatch(/const ownedShown = names\.filter\(\(n\) => ownedAny\(n\)\)/);
+    expect(code).toContain('const shownOwned = ownedShown.length;');
+  });
+
+  /* Found by setting the state up for real on 2026-08-17: searching a single
+   * pal by name — the commonest way anybody reaches these buttons — produced
+   *
+   *     "Own all 1 shown"      "Un-own 1 shown"      "Really un-own 1?"
+   *
+   * "All" of one thing, and a DESTRUCTIVE confirm that counts to one instead
+   * of naming what disappears. At one result the buttons now say which pal. */
+  it('names the pal instead of counting to one', () => {
+    expect(code, '"Own all 1 shown" is back')
+      .toContain('names.length === 1');
+    expect(code).toContain('`Own ${names[0]}`');
+    expect(code, 'the un-own no longer names the single pal')
+      .toContain('`Un-own ${ownedShown[0]}`');
+    expect(code, 'the DESTRUCTIVE confirm counts to one instead of naming it')
+      .toContain('`Really un-own ${ownedShown[0]}?`');
+  });
+
+  it('still counts when there is more than one', () => {
+    expect(code).toContain('`Own all ${names.length} shown`');
+    expect(code).toContain('`Un-own ${shownOwned} shown`');
+    expect(code).toContain('`Really un-own ${shownOwned}?`');
   });
 
   it('still keeps the whole-collection clear behind its own confirm', () => {
