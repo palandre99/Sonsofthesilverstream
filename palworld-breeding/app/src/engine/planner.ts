@@ -2,7 +2,16 @@
  *
  * Port of the Python reference (../../planner.py). Cost of a derivation is the
  * number of DISTINCT steps (a shared intermediate counts once); the fixpoint
- * is deterministic, so it reproduces the reference plans exactly.
+ * is deterministic, so it reproduces the reference derivations exactly.
+ *
+ * `planFor` then goes FURTHER than the reference. The fixpoint chooses each
+ * pal's recipe in isolation, which leaves plans longer than they need to be
+ * once several pals are being bred together, so two repair passes run over the
+ * assembled plan: one pal, one recipe (2026-08-17), and reuse what the plan is
+ * already making (2026-08-17). Both are strictly-shrinking and buildability-
+ * checked, so a plan can only get shorter. On the acceptance roster this is 45
+ * steps against the reference's 48 — see `tests/oracle.test.ts`. The Python
+ * keeps the older routes until someone ports the passes to it.
  */
 import type { BreedingEngine } from './formula';
 import type { PlanStep } from './types';
@@ -160,23 +169,42 @@ export function planFor(
   }
   const contested = [...recipesFor].filter(([, v]) => v.length > 1);
 
-  if (contested.length) {
-    /** steps still needed once each pal is made exactly one way */
-    const reachedFrom = (seeds: Iterable<string>, choice: Map<string, StepId>) => {
-      const keep = new Set<StepId>();
-      const stack = [...seeds];
-      while (stack.length) {
-        const name = stack.pop()!;
-        if (rosterSet.has(name)) continue;
-        const id = choice.get(name);
-        if (!id || keep.has(id)) continue;
-        keep.add(id);
-        const p = parseStep(id);
-        stack.push(p.a, p.b);
-      }
-      return keep;
-    };
+  /** steps still needed once each pal is made exactly one way */
+  const reachedFrom = (seeds: Iterable<string>, choice: Map<string, StepId>) => {
+    const keep = new Set<StepId>();
+    const stack = [...seeds];
+    while (stack.length) {
+      const name = stack.pop()!;
+      if (rosterSet.has(name)) continue;
+      const id = choice.get(name);
+      if (!id || keep.has(id)) continue;
+      keep.add(id);
+      const p = parseStep(id);
+      stack.push(p.a, p.b);
+    }
+    return keep;
+  };
 
+  /** Can this set of steps actually be carried out, starting from the pals in
+   * the box? Mixing recipes can in principle ask for A to make B while B makes
+   * A, and the wave builder below THROWS on that — so every candidate swap is
+   * checked before it is accepted. */
+  const buildable = (kept: Set<StepId>) => {
+    const have = new Set(rosterSet);
+    let left = [...kept];
+    for (;;) {
+      const stuck: StepId[] = [];
+      for (const id of left) {
+        const p = parseStep(id);
+        if (have.has(p.a) && have.has(p.b)) have.add(p.c);
+        else stuck.push(id);
+      }
+      if (stuck.length === left.length) return stuck.length === 0;
+      left = stuck;
+    }
+  };
+
+  if (contested.length) {
     // start from the cheapest-looking recipe for each contested pal, then try
     // the alternatives one pal at a time and keep whichever shrinks the plan.
     // Ties break on the sorted step id so the plan stays deterministic.
@@ -202,6 +230,96 @@ export function planFor(
         let n = neededBy.get(s);
         if (!n) neededBy.set(s, (n = new Set()));
         n.add(t);
+      }
+    }
+  }
+
+  // ---- reuse what the plan is already making ------------------------------
+  //
+  // `derivations` picks each pal's cheapest recipe IN ISOLATION and never
+  // revisits it once the rest of the plan is known. Measured 2026-08-17 on the
+  // box Lamball + Cattiva + Chikipi + Lifmunk with Pengullet Lux as the goal:
+  // the true shortest route is four steps, and the planner gave six. Both
+  // routes need Sparkit — but the planner derived Sparkit on its own (Nox,
+  // then Depresso, then Sparkit) while the plan was ALREADY producing
+  // Pengullet, and Lamball + Pengullet makes Sparkit in one step. A
+  // breadth-first search over owned-sets found three such species out of 119
+  // across five small boxes, routed long by up to two steps each.
+  //
+  // So, once the plan exists, offer every pal in it a recipe built out of what
+  // the plan already has. A swap is adopted only when the WHOLE plan gets
+  // strictly shorter and still builds from the box — so this can never
+  // lengthen a plan, never adds a species that was not already there, and
+  // never produces a cycle. Same discipline as the pass above.
+  const produced = new Set<string>();
+  for (const s of all) produced.add(parseStep(s).c);
+
+  if (produced.size > 1) {
+    const choice = new Map<string, StepId>();
+    for (const s of all) choice.set(parseStep(s).c, s);
+
+    // every one-step recipe reachable from the box plus the plan's own output
+    const pool = [...new Set([...rosterSet, ...produced])].sort();
+    const offers = new Map<string, StepId[]>();
+    for (let i = 0; i < pool.length; i++) {
+      for (let j = i; j < pool.length; j++) {
+        for (const ch of engine.childrenOf(pool[i], pool[j])) {
+          if (!produced.has(ch.species)) continue;
+          const id = stepId(pool[i], pool[j], ch.species);
+          const list = offers.get(ch.species);
+          if (!list) offers.set(ch.species, [id]);
+          else if (!list.includes(id)) list.push(id);
+        }
+      }
+    }
+
+    let size = all.size;
+    let swapped = false;
+    // sorted so the plan is identical on every device and every run
+    const order = [...offers].sort((x, y) => (x[0] < y[0] ? -1 : 1));
+
+    // Take the BEST swap available each round, not the first one that helps.
+    // Measured 2026-08-17: taking the first improvement on the Pengullet Lux
+    // box swapped Pengullet's recipe for a one-step saving, which then blocked
+    // the two-step saving on Sparkit and left the plan at five. Weighing every
+    // swap against the same plan and applying only the winner finds the four.
+    // Every accepted round removes at least one step, so this cannot run more
+    // times than the plan has steps — the bound is a safety net, not a limit
+    // on how much can be saved.
+    for (let round = 0; round < all.size; round++) {
+      let bestFor: string | null = null;
+      let bestStep: StepId | null = null;
+      let bestSize = size;
+      for (const [c, list] of order) {
+        const cur = choice.get(c);
+        if (!cur) continue;
+        for (const cand of [...list].sort()) {
+          if (cand === cur) continue;
+          choice.set(c, cand);
+          const kept = reachedFrom(wanted, choice);
+          if (kept.size < bestSize && buildable(kept)) {
+            bestSize = kept.size;
+            bestFor = c;
+            bestStep = cand;
+          }
+          choice.set(c, cur);
+        }
+      }
+      if (!bestFor || !bestStep) break;
+      choice.set(bestFor, bestStep);
+      size = bestSize;
+      swapped = true;
+    }
+
+    if (swapped) {
+      all = reachedFrom(wanted, choice);
+      neededBy = new Map<StepId, Set<string>>();
+      for (const t of wanted) {
+        for (const s of reachedFrom([t], choice)) {
+          let n = neededBy.get(s);
+          if (!n) neededBy.set(s, (n = new Set()));
+          n.add(t);
+        }
       }
     }
   }

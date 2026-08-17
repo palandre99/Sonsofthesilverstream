@@ -126,17 +126,22 @@ describe('a phase never contains a step that waits on that same phase', () => {
    * recipes it discarded were often the ones two goals shared. Nobody would
    * have noticed from a green suite; the plan would just have grown.
    *
-   * So the step counts are pinned. These are the measured sizes with the fix
-   * in place, identical to the sizes before it for the mid-game box and one
-   * step SHORTER for the wide box (36 → 35, where Whalaska was the pal being
-   * bred twice). If a future change moves either number, it is trading the
-   * player's time for something and that trade needs a human.
+   * So the step counts are pinned. If a future change moves either number, it
+   * is trading the player's time for something and that trade needs a human.
+   *
+   * Both numbers moved DOWN on 2026-08-17 and the trade was taken: 14 → 12 and
+   * 35 → 26. That is the "reuse what the plan is already making" pass in
+   * planner.ts — once the plan exists, every pal in it is re-offered a recipe
+   * built from what the plan already produces, and the swap is kept only when
+   * the whole plan gets strictly shorter. Measured across twelve boxes it took
+   * 152 steps to 127 with no box getting longer, which is the property that
+   * matters: the earlier rejected fix failed exactly here.
    */
   it('does not buy the fix with extra steps', () => {
     const sizes = Object.fromEntries(PLANS.map((p) => [p.name, p.steps.length]));
     expect(sizes).toEqual({
-      'mid-game box, three goals': 14,
-      'wide box, four distant goals': 35,
+      'mid-game box, three goals': 12,
+      'wide box, four distant goals': 26,
     });
   });
 
