@@ -5192,3 +5192,65 @@ checkbox state, class names) stay valid either way. ALWAYS print the stage
 rect alongside any layout claim so a collapsed pane cannot be mistaken for a
 defect. The L45 legend-clipping numbers were taken with a real 343x503 stage
 and stand.
+
+## CEO ROUND — 2026-08-17 02:00. "Zoom feature is still bugged... research
+## properly how to fix this as u keep failing"
+
+### M1 — THE SNAP, ROOT CAUSE FOUND AT LAST — SHIPPED (c6ffa3f, live)
+Reported THREE times. Each time I checked the pinch formulas, which are
+correct, and each time that was the wrong place. It is the HAND-OFF.
+Pan and Pinch run simultaneously. RNGH measures a Pan's translation from the
+CENTROID of the pointers it tracks. When one of two fingers lifts,
+translationX/Y JUMP by ~half the finger gap in a single frame with no hand
+movement at all. The pan had re-anchored against the OLD two-finger reading,
+so the first frame after the pinch added that jump straight into the map.
+FIX: a `rebase` shared value, raised in pinch.onEnd, consumed by the FIRST
+pan frame afterwards — it rebases and writes nothing that frame.
+Three tests: one reproduces the snap and measures it at exactly half the
+finger gap, one shows the map holding still, one shows a later drag working.
+LESSON: when a gesture bug survives three fixes to the maths, the bug is in
+the COMPOSITION — which gesture owns the pointer, and what each one measures
+from. I wrote that lead in the ledger and then did not follow it for days.
+
+### M2 — REACH 3.2x -> 9.6x — SHIPPED (same commit)
+`OVERZOOM = 3` in maxScaleFor. I had CLOSED this (K7) on the grounds that he
+twice reported pixelation; that was wrong, because sharpness and reach are
+different complaints with different fixes:
+  - pins, counts and place names are FIXED SIZE and stay crisp at any zoom
+  - clustering is by SCREEN DISTANCE, so only more zoom separates markers
+MEASURED against the real 1,572 chests: at 3.2x under 75% resolve to their own
+pin; at 9.6x over 90% do and 85%+ stand alone. Past one texture pixel per
+device pixel the ground is magnified and does soften — stated in the code.
+
+### M3 — RULED OUT BY MEASUREMENT, so nobody re-chases them
+- The 8192 texture is REAL detail, not an upscale: halve-and-restore RMSE
+  4.23 (an upscale scores near 1.0). tools/.cache/T_WorldMap_hi.png.
+- The 76 z4 tiles the builder omits as open ocean ARE empty: worst fallback
+  error 0.18 RMSE vs 4.23 for the texture. The omission rule (std < 3.2) is
+  sound.
+- The tile-level maths is correct GIVEN a correct dpr. On his phone at cover:
+  852 CSS * 3 = 2556 device px -> z3 (4096) -> a 1.6x DOWNSCALE. Sharp.
+
+### M4 — QA-ONLY ARTEFACT, DO NOT "FIX" IT FROM THE BROWSER (F35)
+In the RN-web QA build the map renders only z0+z1 at cover — a 1.5x UPSCALE —
+because react-native-web's `Dimensions` defaults to `scale: 1` until its first
+_update, so `PixelRatio.get()` can return 1 even while devicePixelRatio is 2.
+Native iOS gets 3 from the platform, so the device picks z3 correctly. This
+makes the QA build look BLURRIER THAN THE PHONE, which is a trap for anyone
+judging map sharpness in the browser: measure the chosen level, never eyeball
+it there.
+
+### M5 — STILL OPEN after this round
+- The pin PORTRAITS may be the soft thing in his screenshot: 128px source
+  drawn at 23 CSS px (69 device px at 3x) is a 1.85x downscale and should be
+  crisp, and the pin BORDERS are sharp in his shot while the faces are not.
+  Not yet explained. DO NOT GUESS AT IT — get evidence.
+- He asked for IN-GAME IMAGES of locations. Needs a source; none identified.
+- He asked whether the data is even accurate. It is, and the answer is the
+  four proofs in verification.json — worth surfacing IN THE APP where he can
+  see it, not just in the Reference tab.
+
+### M6 — BLOCKED: the other session had a SYNTAX ERROR in
+`mobile/src/screens/CalculatorScreen.tsx` (tsc: "')' expected"), so the bundle
+would not compile. No publish while that stands. The zoom fixes were published
+BEFORE it, from a tree that type-checked clean.
