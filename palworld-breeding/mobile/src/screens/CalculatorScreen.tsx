@@ -468,7 +468,8 @@ export function CalculatorScreen() {
             accessibilityLabel={`${label}${mode === id ? ', showing now' : ''}`}
             onPress={() => setMode(id)}
             style={{
-              paddingVertical: 8, paddingHorizontal: 16, borderRadius: 9,
+              // 8 rendered these tabs 34 px tall, under the 44 pt minimum
+              paddingVertical: 12, paddingHorizontal: 16, borderRadius: 9,
               fontWeight: '700', fontSize: 13.5, overflow: 'hidden',
               color: mode === id ? T.ink : T.muted,
               backgroundColor: mode === id ? T.surface : 'transparent',

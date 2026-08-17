@@ -3,6 +3,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { FlatList, Modal, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import { T } from '../theme';
 import { Badge, Btn, Card, PageHead, s } from '../ui/kit';
+import { Icon } from '../ui/Icon';
 import { pals, passives } from '../store';
 import {
   attemptsFor, CAKES, cakeById, ivOdds, mutationPlan, oddsTable, passiveOdds,
@@ -222,21 +223,56 @@ function ParentCard({ list, setList, label, onAdd }: {
         <Text style={[s.h3, { flex: 1 }]}>{label}</Text>
         <Text style={{ color: T.faint, fontSize: 11, fontWeight: '700' }}>{list.length}/{SLOTS}</Text>
       </View>
-      <View style={s.wrap}>
-        {list.map((n) => (
-          <Text key={n}
-            accessibilityRole="button"
-            accessibilityLabel={`Remove ${n}`}
-            onPress={() => setList(list.filter((x) => x !== n))}
-            style={{
-              color: T.ink, backgroundColor: T.surface2, borderRadius: 9,
-              paddingHorizontal: 9, paddingVertical: 4, fontSize: 12, fontWeight: '700',
-              overflow: 'hidden',
-            }}>{n} ✕</Text>
-        ))}
-        {list.length === 0 && <Text style={{ color: T.faint, fontSize: 12 }}>No passives yet</Text>}
-      </View>
-      {list.length < SLOTS && <Btn small label="+ Add" onPress={onAdd} />}
+      {/* CHOOSING THE PASSIVES IS WHAT THE ODDS LAB IS FOR, and measuring the
+          render showed the only way to do it was a 30 px "+ Add" pill — the
+          smallest control on a screen with five controls on it. Same defect
+          the CEO named on the Calculator ("the two most important bubbles are
+          very small... it kind of drowns"), found this time by measuring
+          instead of waiting for him to say it. An empty parent is now a big
+          dashed target you cannot miss. */}
+      {list.length === 0 ? (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={`Add a passive to ${label}`}
+          onPress={onAdd}
+          style={({ pressed }) => [{
+            minHeight: 88, borderRadius: 12, borderWidth: 1.5,
+            borderColor: T.line2, borderStyle: 'dashed',
+            alignItems: 'center', justifyContent: 'center', gap: 6, padding: 10,
+            opacity: pressed ? 0.75 : 1,
+          }]}>
+          <Icon name="plus-circle-outline" size={26} color={T.faint} />
+          <Text style={{ color: T.muted, fontWeight: '800', fontSize: 12.5 }}>
+            Add a passive
+          </Text>
+          <Text style={{ color: T.faint, fontSize: 11, fontWeight: '700' }}>
+            up to {SLOTS}
+          </Text>
+        </Pressable>
+      ) : (
+        <>
+          <View style={s.wrap}>
+            {list.map((n) => (
+              <Pressable key={n}
+                accessibilityRole="button"
+                accessibilityLabel={`Remove ${n} from ${label}`}
+                hitSlop={8}
+                onPress={() => setList(list.filter((x) => x !== n))}
+                style={{
+                  backgroundColor: T.surface2, borderRadius: 9,
+                  paddingHorizontal: 9, minHeight: 30,
+                  flexDirection: 'row', alignItems: 'center', gap: 5,
+                }}>
+                <Text style={{ color: T.ink, fontSize: 12, fontWeight: '700' }}>{n}</Text>
+                <Icon name="close" size={13} color={T.muted} />
+              </Pressable>
+            ))}
+          </View>
+          {list.length < SLOTS && (
+            <Btn label={`Add another (${SLOTS - list.length} left)`} onPress={onAdd} />
+          )}
+        </>
+      )}
     </Card>
   );
 }
@@ -624,7 +660,8 @@ export function OddsScreen() {
             accessibilityLabel={`${label}${mode === id ? ', showing now' : ''}`}
             onPress={() => setMode(id)}
             style={{
-              paddingVertical: 8, paddingHorizontal: 16, borderRadius: 9,
+              // 8 rendered these tabs 34 px tall, under the 44 pt minimum
+              paddingVertical: 12, paddingHorizontal: 16, borderRadius: 9,
               fontWeight: '700', fontSize: 13.5, overflow: 'hidden',
               color: mode === id ? T.ink : T.muted,
               backgroundColor: mode === id ? T.surface : 'transparent',

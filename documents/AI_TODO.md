@@ -2098,6 +2098,53 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E89. EVERY BUTTON IN THE APP WAS BELOW THE MINIMUM TOUCH SIZE, AND THE
+## ODDS LAB HAD THE CALCULATOR'S DISEASE 2026-08-17 (overnight)
+
+The CEO's Calculator complaint — *"the two most important bubbles are very
+small... it kind of drowns in other information"* — generalised into a
+measurement instead of an opinion. Measured every on-screen control on every
+breeding tab with `getBoundingClientRect` at 375x812.
+
+**FINDING 1 — the whole app was under Apple's 44 pt minimum touch target.**
+A normal `Btn` rendered **37 px**; a `small` one **30 px**. Every button, every
+screen, since launch. Fixed at the source in `kit.tsx`: `minHeight: 44` on the
+base style, small buttons to 36 px plus a hit slop that carries them to 44
+without growing enough to reflow the rows they sit in. The segmented tabs on
+the Calculator and Odds Lab were 34 px (padding 8 → 12). The goal-row pal
+icons draw 26 px and now carry `hitSlop={9}` → 44 effective.
+
+**FINDING 2 — the Odds Lab had exactly the Calculator's defect.** Its entire
+purpose is choosing which passives you want on each parent, and the only way
+in was a **30 px "+ Add" pill** — the smallest control on a screen that had
+five controls total. An empty parent is now a **91 px dashed target** reading
+"Add a passive / up to 4", which measures as the biggest thing on the screen.
+Once it holds passives the chips became real `Pressable`s with a 30 px
+min-height and slop (they were `<Text onPress>` at ~20 px), and the follow-up
+button says how many slots are left rather than "+ Add".
+
+**MEASURED AFTER, all five tabs, panel closed and off-canvas at x=-294:**
+Odds primary action **30 px → 91 px** (area 4,215 → 12,786, now rank 1 on the
+screen); Plan's smallest button 30 → 36; **zero controls under 34 px anywhere**
+except the goal-row icons whose slop the DOM cannot report; **zero horizontal
+overflow on any tab; zero console errors.**
+
+**PALDEX NEEDED NOTHING — checked, not assumed.** Its pal rows measure
+343x101 and are both the biggest AND the highest thing on the screen, so the
+primary action already dominates. Recorded so nobody "fixes" it.
+
+**A CHECK OF MINE WAS WRONG AGAIN (26th):** my first sweep reported the side
+panel's domain buttons as the biggest controls on every tab. The panel is
+CLOSED and parked at **x = -294**, off-canvas — my filter simply did not
+exclude negative x. The app was right; the measurement was not. Filter on
+`x >= 0 && right <= innerWidth` when measuring RN-web.
+
+**ALSO: `CLAUDE.md` said the suite was "278 tests" — stale since E82.** The
+law's own rule is "never guess a value you can read". Corrected to 404 with a
+note that the number moves and must be read from the runner.
+
+Gates: 404 passing, 0 expected failures, 23 files; both trees typecheck.
+
 ## E88. THE PLANNER NO LONGER BREEDS THE SAME PAL TWICE — E75 IS CLOSED,
 ## AND THE OBVIOUS FIX WAS MEASURED AND THROWN AWAY 2026-08-17 (overnight)
 

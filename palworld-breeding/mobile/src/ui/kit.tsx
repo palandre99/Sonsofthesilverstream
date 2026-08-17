@@ -204,9 +204,17 @@ export function Btn({ label, onPress, primary, danger, disabled, small }: {
       accessibilityRole="button"
       accessibilityLabel={label}
       accessibilityState={{ disabled: !!disabled }}
+      // MEASURED ON THE RENDER, not assumed: a normal button was 37 px tall
+      // and a small one 30 px, against Apple's 44 pt minimum touch target —
+      // every button in the app, on every screen. The CEO had already said
+      // the parent slots on the Calculator were "very small"; this is the
+      // same complaint with a number on it. Normal buttons now reach 44 and
+      // small ones 36 plus a slop that carries them to 44 without growing
+      // enough to reflow the rows they sit in.
+      hitSlop={small ? { top: 4, bottom: 4, left: 3, right: 3 } : undefined}
       style={({ pressed }) => [
         s.btn,
-        small && { paddingVertical: 6, paddingHorizontal: 12 },
+        small && { paddingVertical: 7, paddingHorizontal: 13, minHeight: 36 },
         primary && { backgroundColor: T.accent, borderColor: T.accent },
         danger && { backgroundColor: T.badSoft, borderColor: T.bad },
         disabled && { opacity: 0.45 },
@@ -364,6 +372,8 @@ export const s = StyleSheet.create({
   btn: {
     borderWidth: 1, borderColor: T.line, backgroundColor: T.surface,
     borderRadius: 11, paddingVertical: 9, paddingHorizontal: 16,
+    // 44 is the minimum touch target Apple asks for; these were rendering 37
+    minHeight: 44,
     alignItems: 'center', justifyContent: 'center',
   },
   btnText: { color: T.ink, fontWeight: '700', fontSize: 14 },

@@ -135,9 +135,11 @@ The CEO ships nothing average, and he judges by looking at it. The bar is
 ## THE WORK LOOP (non-negotiable)
 
 1. WORK one queue item (queue: `documents/AI_TODO.md`).
-2. VERIFY — `npx vitest run` in `app/` (278 tests incl. the 44,851-row
-   oracle replay) and `npx tsc --noEmit` in `mobile/` must be green.
-   Both verified green 2026-08-15. Full gate list: `08_TOOLS_AND_COMMANDS.md`.
+2. VERIFY — `npx vitest run` in `app/` (404 tests incl. the 44,851-row
+   oracle replay) and `npx tsc --noEmit` in BOTH trees must be green.
+   Verified green 2026-08-17. Full gate list: `08_TOOLS_AND_COMMANDS.md`.
+   The count moves as work lands — read it from the runner, never quote this
+   line back as fact. It said 278 for two days after it stopped being true.
 3. SELF-REVIEW your diff like a hostile senior engineer.
 4. **COMMIT, THEN PUBLISH** — see THE PUBLISH RITUAL below. A finished item
    that is not on the CEO's phone is not finished.

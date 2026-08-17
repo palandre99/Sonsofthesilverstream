@@ -983,7 +983,8 @@ export function PlannerScreen() {
                   return (
                     <View key={g.name} style={{ gap: 3 }}>
                       <View style={[s.row, { gap: 8 }]}>
-                        <Pressable onPress={() => setViewing(g.name)} hitSlop={4}
+                        {/* the icon draws 26 px; slop carries it to 44 */}
+                        <Pressable onPress={() => setViewing(g.name)} hitSlop={9}
                           accessibilityRole="button"
                           accessibilityLabel={`Open ${g.name}`}>
                           <PalIcon name={g.name} size={26} />
