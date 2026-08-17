@@ -32,13 +32,27 @@ function pct(p: number): string {
   if (!isFinite(p) || p <= 0) return '0%';
   if (p >= 0.99995) return '100%';
   if (p >= 0.01) return `${(p * 100).toFixed(1)}%`;
+  // Four wanted passives out of a pool of twenty is 1 in 48,450 — a long shot,
+  // but not impossible, and this used to round it to a flat "0.00%". The big
+  // number on the card said the thing could never happen while the line under
+  // it said "1 in 48450 eggs". Rare is not the same as never.
+  if (p < 0.0001) return '<0.01%';
   return `${(p * 100).toFixed(2)}%`;
 }
 
 function oneIn(p: number): string {
   if (!isFinite(p) || p <= 0) return 'not possible';
+  // when the parents carry nothing but what you want, every egg is a hit —
+  // "1 in 1.0 eggs" is a sentence no player would say out loud
+  if (p >= 0.99995) return 'every egg';
   const n = 1 / p;
   return `1 in ${n < 10 ? n.toFixed(1) : Math.round(n)} eggs`;
+}
+
+/** "1 cycles on Cake" — the counted labels here are read by someone deciding
+ * how many cakes to bake, and one cycle is the commonest answer of all. */
+function cycles(n: number): string {
+  return `${n} cycle${n === 1 ? '' : 's'}`;
 }
 
 /* ---------------- passive picker modal ---------------- */
@@ -451,14 +465,23 @@ function PassivesTab() {
             numbers.
           </Text>
           <View style={[s.wrap, { marginTop: 10 }]}>
-            <OddsCard hero label={`All ${desired.length} wanted`}
+            {/* Hunting ONE passive is the commonest thing anybody does here,
+                and these three cards used to greet them with "All 1 wanted"
+                and "Eggs for 90% of all 1 wanted". Counting works from two
+                upwards; at one, say it the way a person would. */}
+            <OddsCard hero
+              label={desired.length === 1 ? 'The one you want' : `All ${desired.length} wanted`}
               big={pct(odds.allDesired)} sub={oneIn(odds.allDesired)} />
-            <OddsCard label="Exactly those, no junk"
+            <OddsCard
+              label={desired.length === 1 ? 'Just that, no junk' : 'Exactly those, no junk'}
               big={pct(odds.exactlyDesired)} sub={oneIn(odds.exactlyDesired)} />
-            <OddsCard label={`Eggs for 90% of all ${desired.length} wanted`}
+            <OddsCard
+              label={desired.length === 1
+                ? 'Eggs for a 90% chance'
+                : `Eggs for a 90% chance at all ${desired.length}`}
               big={isFinite(odds.eggsFor90) ? String(odds.eggsFor90) : '—'}
               sub={isFinite(odds.eggsFor90)
-                ? `${Math.ceil(odds.eggsFor90 / c.eggsPerCycle)} cycles on ${c.name}`
+                ? `${cycles(Math.ceil(odds.eggsFor90 / c.eggsPerCycle))} on ${c.name}`
                 : 'not reachable'} />
           </View>
         </>
