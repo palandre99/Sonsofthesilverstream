@@ -8572,3 +8572,20 @@ softness half awaits the super-resolution experiment (deepest level
 only, verified against the original by downscale-diff before any ship;
 if SR proves dishonest or impractical, the honest answer is the reach
 cap, stated plainly).
+
+### M58 — the found FILTER built + verified (e98eb9c) — publish queued
+Collection round item 2 done: All / Still to find / Found segmented row
+at the top of the Layers sheet. Mechanism: subsetWithIndex (byte-parity
+layers.ts, EXECUTED test — points byte-identical, orig[] preserved)
+because found-ticks key on FULL-layer indices; dim/portrait/tap-through/
+card-mark all map through layer.orig. Empty filtered layers vanish
+rather than pushing zero-point sets. Counts follow what is DRAWN
+(verified: 4 of 9 towers ticked -> "Still to find" leaves 5 loud pins,
+pill says 5); chips keep total progress. active deps now include
+filters.found AND ticks (found changes recompute the pipeline).
+663 tests, tsc clean both. Publish BLOCKED by the goals lane at commit
+time — e98eb9c + queue retries next tick.
+REMAINING COLLECTION ROUND: (3) bounty levels + richer cards (extractor
+emits per-point info: level/bountyTitle/partner from pois.json — fields
+verified present); (4) list filters (search box; alphas A-Z/level sort,
+only-missing via ownedAny). Then the SR experiment verdict.
