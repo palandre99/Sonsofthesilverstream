@@ -31,7 +31,11 @@ WEB_OUT = ROOT / "app" / "public" / "map"
 DATA_OUTS = [ROOT / "mobile" / "src" / "data", ROOT / "app" / "src" / "data"]
 
 TILE = 512
-QUALITY = 82
+# 92, up from 82 (CEO: "fixing the low resolution", 2026-08-17). Measured on
+# the three most detailed z4 tiles at 2x, columns side by side: 82 smears the
+# dark rock striations, 92 keeps them, 96 adds nothing visible for +1.7 MB.
+# Whole-pyramid cost of 92: ~+2.5 MB on a ~7 MB bundle.
+QUALITY = 92
 FLAT_TOLERANCE = 3.2  # a tile this uniform is indistinguishable from its parent
 
 # region -> (source file, deepest zoom level)
