@@ -8771,3 +8771,33 @@ stale (M58 found filter, M59 sharpness, bounty cards, breeding E128-E130)
 and every hour widens the gap. Queued publish message when the pipeline
 is back: sharper max zoom, Still-to-find filter, bounty levels, Paldex
 home tab, spawn-map sheet fix, gender-"?" durability.
+
+### M60 — THE BIG STACK IS LIVE (578f7a9, both channels CONFIRMED)
+Shipped in one update: z5 terrain (M59), the found filter (M58), bounty
+wanted posters (level/crime/partner, executed tests over all 32).
+INCIDENT, resolved: THREE publish crashes (raw Node dumps) before running
+eas-cli directly surfaced the real error — EAS HARD-CAPS 1000 ASSETS PER
+UPDATE and full z5 hit 1254. Fix: Z5_KEEP=250 ranked by high-frequency
+energy (settlements/ridges/paths keep double density; smooth terrain
+falls back to z4 invisibly); 632 stale z5 files purged from both trees;
+z5 pin now expects exactly 250. LESSON for the next worker: any publish
+dump without "publish: done" -> rerun; TWO dumps -> run npx eas-cli
+update DIRECTLY for the raw server error.
+HIS 23:2x QUEUE, next builds in order:
+1. SMOKIE NOISE (23:21 screenshot: picking one pal drew ~300 cluster
+   bubbles over the southwest — true data, terrible read): adaptive
+   cluster cell for dense SPAWN layers — cell scales with the layer's
+   on-screen point count so 1,638 spawns collapse to a handful of big
+   area bubbles at low zoom and break apart on the way in. Judgment:
+   needed; his screenshot IS the mandate.
+2. DRAGGABLE SHEETS (23:22): Layers/Find should drag taller, maybe
+   fullscreen. A drag handle on the SHEET header is safe (not the map's
+   gestures). Design: three snap heights (current half, tall, full),
+   spring-free simple; the sheet content already scrolls.
+3. ALPHA CARD VARIANT (23:24 question "should show alpha version? Does
+   it not have different stats?"): honest answer — the Paldex card shows
+   SPECIES data; the game's own tables DO carry separate BOSS_ variant
+   stat rows (753 params rows incl. BOSS_). Surfacing alpha-variant
+   stats is a PALDEX-side feature — PalDetail/Paldex are OUT OF THE MAP
+   LANE. LOGGED HERE FOR THE GOALS LANE / shared backlog; the map lane
+   will not edit PalDetail.
