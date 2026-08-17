@@ -779,7 +779,7 @@ export function MapScreen() {
                     nothing when he is using it. */}
                 <Text style={{ color: T.faint, fontSize: 10.5 }}>
                   Every spot is read from the game&apos;s own files — none of it
-                  is estimated or crowd-guessed.
+                  is estimated or crowd-guessed. Game build 24575149, 12 August 2026.
                 </Text>
               </View>
             )}

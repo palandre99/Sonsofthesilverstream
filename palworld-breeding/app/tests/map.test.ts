@@ -1965,3 +1965,39 @@ describe('a mistyped pal name gets rescued', () => {
     expect(screen).toContain('Did you mean');
   });
 });
+
+describe('the map stamps the build its data came from', () => {
+  const screen = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
+  );
+  const meta = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'data', 'mapMeta.g.ts'), 'utf8',
+  );
+
+  it('and the stamp is the one the data was actually generated from', () => {
+    // Blueprint §5 criterion 1 wants build number AND proof together, and says
+    // that combination is ours — nobody else does both. The key claimed the
+    // data is datamined without ever saying WHICH build, which is the half
+    // that tells you it is not two patches stale.
+    //
+    // The build id lives in a GENERATED header ("DO NOT EDIT"), so the UI
+    // string is written by hand — which makes it exactly the kind of claim
+    // that rots silently. This reads the real value out of the generator's
+    // own output and fails if the two ever disagree.
+    const fromData = /build (\d+)/.exec(meta);
+    expect(fromData, 'mapMeta.g.ts must state the build it came from').not.toBeNull();
+    expect(screen).toContain(`Game build ${fromData![1]}`);
+  });
+
+  it('and states the date in a form a player reads, not an ISO stamp', () => {
+    const iso = /(\d{4})-(\d{2})-(\d{2})/.exec(meta);
+    expect(iso, 'mapMeta.g.ts must carry a generation date').not.toBeNull();
+    const [, y, mo, d] = iso!;
+    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
+      'August', 'September', 'October', 'November', 'December'];
+    expect(screen).toContain(`${Number(d)} ${months[Number(mo) - 1]} ${y}`);
+    // and never the raw form in front of a player
+    const key = screen.slice(screen.indexOf('estimated or crowd-guessed'));
+    expect(key.slice(0, 120)).not.toMatch(/\d{4}-\d{2}-\d{2}/);
+  });
+});
