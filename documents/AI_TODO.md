@@ -5311,3 +5311,52 @@ it there.
 `mobile/src/screens/CalculatorScreen.tsx` (tsc: "')' expected"), so the bundle
 would not compile. No publish while that stands. The zoom fixes were published
 BEFORE it, from a tree that type-checked clean.
+
+### M7 — the pin-portrait blur: CLOSED by his own screenshot, not by a guess
+M5 said "get evidence, do not guess". The evidence was in the picture all
+along, in the asymmetry I first noticed and then talked myself out of:
+
+  THE CYAN PIN BORDER IS CRISP. THE PORTRAIT INSIDE IT IS SOFT.
+
+That single fact rules out the theory I was about to act on. If the pin's
+layer were being rasterised at its pre-scale size and magnified — the thing
+that genuinely happened to the place-name TEXT, and the reason ScreenMarker
+exists — then a 2px border magnified ~1.65x would come out as a 3.3px soft
+edge. It does not. The border is drawn at final scale, so the subtree is not
+being magnified as a bitmap, so the pins are NOT suffering the text bug.
+
+And the numbers say the portraits cannot be resolution-starved either:
+  source portrait          128 x 128 (all 298, verified)
+  largest a pin ever draws 27 CSS px  (boss: PIN+9=32, image = size-5)
+  on his 3x phone          81 device px
+That is a 1.6x DOWNSCALE at the very biggest. There is no path by which the
+phone shows fewer pixels than the asset has.
+
+MOST LIKELY EXPLANATION, and it is not the app: his screenshot arrived
+919px wide against an iPhone's 1179 — a 0.78x downscale for upload. Small,
+high-detail elements lose the most in that resize; large high-contrast ones
+(white place names, 2px borders) survive it. That is exactly the pattern the
+image shows.
+
+SO: do not "fix" pin sharpness. If he reports softness again, ask for the
+signal that would actually discriminate — does it look soft ON THE GLASS, and
+does it get worse as he zooms in? Worse-with-zoom would mean magnification;
+constant would mean size, not resolution.
+
+WHAT WOULD ACTUALLY HELP "difficult to see exactly where stuff is": it is not
+resolution, it is SEPARATION and SIZE. Separation is shipped (9.6x reach:
+90%+ of the 1,572 chests now resolve to their own pin, 85%+ stand alone).
+Size is the remaining lever — pins are 23-32pt — but bigger pins change how
+the whole map reads, which is H17 territory and WAITS FOR HIM.
+
+### M8 — provenance moved onto the map — DONE (cb5bf49), pending publish
+"idk if it's accurate even?" The key now ends with: "Every spot is read from
+the game's own files — none of it is estimated or crowd-guessed." Only while
+the key is open. A test ties the sentence to the data, so the claim cannot
+outlive what makes it true.
+
+### NOTE — the gate baseline changed
+The suite no longer reports an expected fail: the other lane resolved their
+`it.fails` known-defect marker in plan-waves.test.ts. A clean run is now
+397 passed, 0 expected failures. If you see "1 expected fail" again, it came
+back and is theirs.
