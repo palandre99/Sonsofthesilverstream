@@ -2098,6 +2098,61 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E103. THE ODDS LAB GAVE ADVICE IN A ROBOT'S VOICE ON ITS MOST
+## COMMON SCREEN 2026-08-17 (overnight)
+
+METHOD #3 says treat ADVICE as a claim. The Odds Lab is nothing but advice, so
+every sentence and every counted label it can print was swept at zero, one and
+many. **Everything that came back wrong was on the commonest path in the whole
+app — a player hunting ONE passive.**
+
+| it said | it says now |
+|---|---|
+| "All 1 wanted" | "The one you want" |
+| "Exactly those, no junk" | "Just that, no junk" |
+| "Eggs for 90% of all 1 wanted" | "Eggs for a 90% chance" |
+| "1 cycles on Cake" | "1 cycle on Cake" |
+| "1 in 1.0 eggs" at a certainty | "every egg" |
+
+**And one that was worse than wording.** Four wanted passives out of a pool of
+twenty is 1 in 48,450 — a long shot, not an impossibility — and the card's big
+number rounded it to a flat **"0.00%"** while the line directly underneath said
+"1 in 48450 eggs". The app contradicted itself and told the player something
+achievable could never happen. It now reads **"<0.01%"**. Rare is not never.
+
+**THE ARITHMETIC CLAIMS WERE ALL TRUE — which is its own risk.** "The game
+inherits one category half the time, two a third of the time, all three one
+time in six" is exactly 3/6, 2/6, 1/6 from `IV_INHERIT_WEIGHTS`, and the coin
+flip is exactly the `0.5^n` the engine applies. But NOTHING tied that sentence
+to those weights: change the weights and the copy silently becomes a lie. The
+new guard reads the screen's own copy and checks it against `ivInheritP`, so
+changing either one alone fails the suite. Same for "at least one hidden
+potential is always taken from a parent" and "why you can't force all three".
+
+**VERIFIED ON THE RENDER, NOT BY READING** (the fix is JSX; the suite cannot
+render RN). With one passive ticked the three cards now read: THE ONE YOU WANT
+/ 100% / every egg · JUST THAT, NO JUNK / 40.0% / 1 in 2.5 eggs · EGGS FOR A
+90% CHANCE / 1 / 1 cycle on Cake. Console clean under my own hooks.
+
+**A FALSE ALARM CAUGHT BEFORE IT BECAME A "FINDING" (METHOD #31).** My first
+scratch read `mutationRate` — a field that does not exist — and reported "no
+mutation rate" for all five cakes. The field is `mutationPerEgg`. The same
+scratch made Vegetable Cake look like a dead duplicate of plain Cake; it is
+not — it lays TWO eggs per cycle, which is why it shows 115 cycles where Cake
+shows 230, and `eggsPerCycle` is a real differentiator. Both "findings" were my
+scanner, not the app.
+
+`odds-copy.test.ts` (11). Gates 464. Mobile typecheck clean. Mutation-proven:
+reverting any of the three fixes fails its own guard. Published to both
+channels.
+
+**BROWSER NOTE FOR THE NEXT SESSION:** the passive picker's rows respond to
+`.click()`, but the POOL row's tick does NOT — it needs a full synthetic
+pointer sequence dispatched at `document.elementFromPoint(x, y)`. Its "Close"
+button ignores synthetic events entirely; reload instead. And RN-web keeps the
+picker's search input in the DOM after it closes, so "is the modal open" cannot
+be answered by looking for that input.
+
 ## E102. THE PLANNER WAS NOT ACTUALLY GIVING THE SHORTEST ROUTE —
 ## PROVED IT, FIXED IT, MEASURED IT 2026-08-17 (overnight)
 
