@@ -30,6 +30,47 @@ const code = raw
   .replace(/\/\*[\s\S]*?\*\//g, '')
   .replace(/^\s*\/\/.*$/gm, '');
 
+describe('the player can choose the order (his idea)', () => {
+  /* CEO, 2026-08-17: "Maybe add to the filter there «nearest one» «best one»
+   * etc idk". It only became a real choice once mounts had a quality
+   * gradient — before that every list was nearest-first and the two orders
+   * would have produced the same list.
+   *
+   * NOT in the shared FilterSheet: that sheet is also the Paldex's and the
+   * picker's, and "best" is a category-specific idea that means nothing on a
+   * list of every pal. */
+  it('offers both orders', () => {
+    expect(code).toContain('Best first');
+    expect(code).toContain('Closest first');
+    expect(code).toContain("useState<GoalOrder>('best')");
+  });
+
+  it('only offers it where "best" means something', () => {
+    // on a membership list (the four cake ranch pals) both orders are the
+    // same list, and a control that does nothing is a lie
+    expect(code).toMatch(/sec\.scored && \(/);
+  });
+
+  it('“closest” means closest in ACTIONS, not the capped sort key', () => {
+    // caught on the render: attainScore caps breeding at 9, so it ranked a
+    // 32-step breed above a pal you could just walk out and catch
+    expect(code, 'the near order is back on attainScore, which caps at 9 and '
+      + 'calls a 32-step breed closer than a one-action catch')
+      .toContain('effortSteps(x)');
+    expect(code).toContain("order === 'near'");
+  });
+
+  it('a pal you own is never "closest" either', () => {
+    expect(code).toContain("x.kind === 'have' ? Number.MAX_SAFE_INTEGER");
+  });
+
+  it('re-sorts when the choice changes', () => {
+    expect(code, 'order is missing from the memo deps — the toggle would do '
+      + 'nothing until something else changed')
+      .toContain('[sec.id, q, filters, sort, order, bctx.targets]');
+  });
+});
+
 describe('mounts are ranked, not just listed', () => {
   it('mount items carry a quality value', () => {
     expect(code, 'mountItems has no value again — the sections fall back to '

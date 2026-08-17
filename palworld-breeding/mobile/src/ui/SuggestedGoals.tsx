@@ -34,7 +34,7 @@ import {
 import { FilterSheet } from './FilterSheet';
 import { HELPERS } from '../engine/helpers';
 import {
-  attainLabel, attainScore, boxKeyOf, cachedDerivations, derivationsReady,
+  attainLabel, attainScore, boxKeyOf, cachedDerivations, derivationsReady, effortSteps,
   getAttainContext, recommendedSet, saddleGap, scoreOf, type Attain,
 } from '../logic/recommend';
 import { onNavIntent } from '../nav/intent';
@@ -319,8 +319,29 @@ interface BrowseCtx {
   onView: (n: string) => void;
 }
 
-function orderItems(sec: SectionDef, attain: (n: string) => Attain): GoalItem[] {
+/** How the player wants the category ordered.
+ *
+ * "Best" and "nearest" only became different answers once mounts got a real
+ * quality gradient — before that every list was nearest-first and there was
+ * nothing to choose between. His idea, 2026-08-17: "Maybe add to the filter
+ * there «nearest one» «best one» etc idk". */
+export type GoalOrder = 'best' | 'near';
+
+function orderItems(
+  sec: SectionDef, attain: (n: string) => Attain, order: GoalOrder = 'best',
+): GoalItem[] {
   const items = [...sec.items];
+  if (order === 'near') {
+    // Real distance in ACTIONS, not `attainScore` — that caps breeding at 9,
+    // so it ranked a 32-step breed above a pal you could simply go and catch.
+    // Caught on the render the first time this toggle ran, and a control whose
+    // label is wrong is worse than no control. Owned pals sink here too: they
+    // are not something to go and get.
+    return items.sort((a, b) => {
+      const rank = (x: Attain) => (x.kind === 'have' ? Number.MAX_SAFE_INTEGER : effortSteps(x));
+      return rank(attain(a.name)) - rank(attain(b.name));
+    });
+  }
   if (sec.scored) {
     // the scoring model: quality vs closeness — a level-6 worker one breed
     // away outranks a level-7 worker 83 breeds away
@@ -575,7 +596,8 @@ function CategoryBrowser({ sec, bctx, onClose }: {
   const [filters, setFilters] = useState<Filters>(NO_FILTERS);
   const [sort, setSort] = useState<SortKey>('number');
   const [sheetOpen, setSheetOpen] = useState(false);
-  const ranked = orderItems(sec, bctx.attain);
+  const [order, setOrder] = useState<GoalOrder>('best');
+  const ranked = orderItems(sec, bctx.attain, order);
   const rec = sec.scored
     ? recommendedSet(ranked.map((x) => ({ name: x.name, value: x.value ?? 0 })), bctx.attain)
     : new Set<string>();
@@ -590,7 +612,7 @@ function CategoryBrowser({ sec, bctx, onClose }: {
     if (q) names = names.filter((n) => n.toLowerCase().includes(q.toLowerCase()));
     return names.map((n) => byName.get(n)!).filter(Boolean);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sec.id, q, filters, sort, bctx.targets]);
+  }, [sec.id, q, filters, sort, order, bctx.targets]);
   const missing = rows
     .filter((x) => !bctx.targets.includes(x.name) && !ownedAny(x.name))
     .map((x) => x.name);
@@ -627,6 +649,18 @@ function CategoryBrowser({ sec, bctx, onClose }: {
               <Btn small label={`Add ${missing.length}`} onPress={() => bctx.onAdd(missing)} />
             )}
           </View>
+          {/* Only a SCORED category has a "best" to sort by — on a membership
+              list (the four cake ranch pals) the two orders are the same list
+              and the choice would be a lie. */}
+          {sec.scored && (
+            <View style={{ flexDirection: 'row', gap: 8, alignItems: 'center' }}>
+              <Text style={{ color: T.faint, fontSize: 11, fontWeight: '800' }}>Order</Text>
+              <Btn small label="Best first" primary={order === 'best'}
+                onPress={() => setOrder('best')} />
+              <Btn small label="Closest first" primary={order === 'near'}
+                onPress={() => setOrder('near')} />
+            </View>
+          )}
           {/* say what the list is narrowed to, and give one tap back out */}
           {(filtersActive || sort !== 'number' || !!q) && (
             <View style={[s.wrap, { alignItems: 'center' }]}>

@@ -2098,6 +2098,45 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E121. CEO'S OWN IDEA — LET HIM PICK THE ORDER
+## 2026-08-17 13:26
+
+**Verbatim:** *"Maybe add to the filter there «nearest one» «best one» etc idk"*
+
+Built. Every scored category browser now has **Best first / Closest first**
+in its header.
+
+It is worth having only BECAUSE of E120: until mounts had a quality gradient,
+every list was nearest-first and the two orders would have returned the same
+list. Now they genuinely differ — measured on the render, Flying mounts:
+
+| order | leads with |
+|---|---|
+| Best first | Suzaku Aqua — catch at Lv 42, or breed in 34 steps |
+| Closest first | Elphidran — catch at Lv 20, or breed in 10 steps |
+
+**NOT in the shared `FilterSheet`.** That sheet is also the Paldex's and the
+picker's, and "best" is a category-specific idea that means nothing on a list
+of all 299. It lives in the browser header instead, and **only on scored
+sections** — on a membership list (the four cake ranch pals) both orders are
+the same list, and a control that does nothing is a lie.
+
+**A FINDING IN MY OWN NEW WORK, caught on the FIRST render of the toggle
+(method #8).** "Closest first" put a **32-step breed above a pal catchable at
+Lv 24**, because it sorted on `attainScore` — which caps breeding at 9, so any
+breed outranks any catch. The label was wrong, and a control whose label is
+wrong is worse than no control. It now sorts on `effortSteps` (a catch is one
+action), with owned pals sinking there too. Guarded by name.
+
+`mobile-goals-rank.test.ts` +5 (8 total). Gates **569**. Mobile typecheck
+clean. Verified on the render, both orders. Published to both channels.
+
+**METHOD NOTE — #56: A NEW CONTROL IS A CLAIM ABOUT ITSELF.** "Closest first"
+promised an ordering the code did not implement. The bug existed in
+`attainScore` all along; it only became visible when a label promised
+something specific. Exposing a choice is a good way to discover that the thing
+you were sorting by never meant what you thought.
+
 ## E120. CEO FEEDBACK — "ENGINE IS NOT ACTUALLY THINKING?"
 ## 2026-08-17 13:24, three screenshots: Lv 80 / 37 pals, and Flying mounts
 
