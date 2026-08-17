@@ -2098,6 +2098,63 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E99. AUDITED THE APP AGAINST THE CEO'S OWN 15-POINT AAA BAR — AND
+## CORRECTED MY OWN DIAGNOSIS OF THE ONE-SECOND FREEZE 2026-08-17 (overnight)
+
+The measured sweep ran out of targets, so I used `04_PRODUCT_BLUEPRINT.md` §5
+— **his own 15 criteria separating AAA from fan-made** — as a checklist for
+the first time. It found a real violation immediately, and forced me to
+re-diagnose something I had already written down wrong.
+
+**CRITERION 12 — "Nothing blocks >300 ms without a skeleton" — IS VIOLATED,
+but NOT for the reason I recorded at E96.**
+
+E96 blamed the 1055 ms freeze on the planner. **That was wrong.** Measured
+`getAttainContext` directly on his real 26-pal box, four calls in a row:
+
+    ATTAIN_MS [2564, 0, 0, 0]
+
+So the recommendation engine costs 2564 ms **once** and **0 ms every call
+after** — it is properly cached, and the existing "Reading your save…"
+placeholder correctly covers that first computation. That machinery is right.
+
+But the 1055 ms I measured in the browser was on a **RE-OPEN**, with the cache
+already warm. So the remaining second is **not the engine at all — it is the
+sheet rendering roughly 180 pal tiles across 30 sections synchronously**, and
+the placeholder does not cover it because `ready` is already true.
+
+**That changes who fixes it and how.** Not a planner re-architecture: lazy or
+virtualised section rendering, or a skeleton that also covers the render pass.
+Handed to Fable with the corrected cause and both numbers.
+
+**THE OTHER 14 CRITERIA, honestly scored against the breeding fane:**
+
+- **Met:** #4 one fixed pal-card anatomy (verified tonight); #5 no dead-end
+  facts (pal card → all parent pairs → Calculator; goal rows and cake chips
+  both open pal cards); #6 numbers carry context ("#249 of 299 · 32 tied",
+  "1 in 1.8 eggs"); #7 offline-complete (the privacy test proves zero network
+  calls anywhere in mobile/src); #8 zero ads; #11 decision-grade list rows
+  (icon + number + elements + three work chips + gender toggles, virtualised);
+  #13 community content fenced (condensing figures, cake numbers and the
+  unmodelled Special Cake all labelled).
+- **Partly met:** #1 the "verified against 44,851 outcomes" proof line is on
+  the Calculator but the build stamp lives only on About — it is not one tap
+  from every data screen. #10 empty states teach the next step (Plan hands you
+  an "Open the Paldex" button) but there is no "try a sample box".
+- **Not built:** #2 global search from anywhere (each screen has its own);
+  #9 a true designed light theme on the phone (the "Look" tab is a designed
+  coming-soon); #14 the patch-day news row; #15 widgets and Handoff (share
+  sheet and haptics ARE done).
+- **Deliberate deviation:** #3 says no hamburger, and we have a side panel —
+  but that navigation is CEO-final, so it stays.
+
+**None of the not-builts are defects** — they are unbuilt scope, and the
+blueprint is a roadmap, not a bug list. Recorded here so the gap between "the
+breeding fane is polished" and "the app hits all 15" is written down honestly
+rather than implied away.
+
+Gates: 441 passing, 0 expected failures; both trees typecheck.
+
 ## E98. HALF-DONE STEPS COUNT CORRECTLY EVERYWHERE, AND THE CAKE MATHS
 ## MULTIPLIES OUT 2026-08-17 (overnight)
 
