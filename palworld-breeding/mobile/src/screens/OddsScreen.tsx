@@ -552,12 +552,12 @@ function IvTab() {
             taps IVs and reads "hidden potential" is left to work that out.
             Both names now appear together, once, at the top. */}
         <Text style={[s.body, { marginTop: 4 }]}>
-          IVs are your pal's hidden potential in HP, Attack and Defence — a
+          IVs are your pal's hidden potential in HP, Attack and Defense — a
           roll the game never shows you. At least one of the three is always
           taken from a parent; the rest roll fresh.
         </Text>
         <View style={[s.wrap, { marginTop: 10 }]}>
-          {([['hp', 'HP'], ['atk', 'Attack'], ['def', 'Defence']] as const).map(([id, label]) => {
+          {([['hp', 'HP'], ['atk', 'Attack'], ['def', 'Defense']] as const).map(([id, label]) => {
             const on = picked.includes(id);
             return (
               <Text key={id}

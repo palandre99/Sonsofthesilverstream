@@ -97,6 +97,11 @@ export function PalPicker({ visible, onClose, onPick, title, exclude, initialOwn
   const inputRef = useRef<TextInput>(null);
   const version = useAppVersion();
 
+  /** is a FILTER narrowing the list, as opposed to the search box? */
+  const filtering = filters.own !== NO_FILTERS.own
+    || filters.elements.length > 0
+    || filters.work != null;
+
   const names = useMemo(() => {
     let list = Object.keys(pals);
     if (q) {
@@ -275,11 +280,20 @@ export function PalPicker({ visible, onClose, onPick, title, exclude, initialOwn
           ListEmptyComponent={
             <View style={{ alignItems: 'center', marginTop: 40, gap: 6 }}>
               <Icon name="magnify" size={34} color={T.faint} />
+              {/* The Paldex hit this exact bug and fixed it: with a search AND a
+                  filter both narrowing, saying "No pal matches X" blames the
+                  search alone and sends the player to re-type a word that was
+                  never the problem. The fix was never carried across to the
+                  picker. Same three branches, same words. */}
               <Text style={{ color: T.muted, fontWeight: '700' }}>
-                {q ? `No pal matches “${q}”` : 'Nothing matches those filters'}
+                {q && filtering ? `Nothing matches “${q}” with those filters.`
+                  : q ? `No pal matches “${q}”.`
+                  : 'Nothing matches those filters.'}
               </Text>
               <Text style={{ color: T.faint, fontSize: 12.5 }}>
-                {q ? 'Check the spelling — or clear a filter.' : 'Tap a filter again to clear it.'}
+                {q && filtering ? 'Clear a filter, or check the spelling.'
+                  : q ? 'Check the spelling.'
+                  : 'Tap a filter again to clear it.'}
               </Text>
             </View>
           }
