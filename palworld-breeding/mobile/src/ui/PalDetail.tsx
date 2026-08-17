@@ -754,7 +754,7 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
             })}
             {gendered.filter((g) => g.child !== name).map((g) => (
               <View key={g.child} style={[s.row, { gap: 6, flexWrap: 'wrap' }]}>
-                <Badge kind="warn">♀♂</Badge>
+                <Badge kind="warn">genders as shown</Badge>
                 <PalIcon name={g.mother} size={24} gender="f" />
                 <Text style={s.body}>{g.mother} +</Text>
                 <PalIcon name={g.father} size={24} gender="m" />

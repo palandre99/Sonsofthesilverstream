@@ -29,6 +29,7 @@ import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import palsJson from '../public/data/pals_1_0.json';
+import breedingJson from '../../data/breeding_1_0.json';
 
 interface Row {
   work?: Record<string, number>;
@@ -69,6 +70,49 @@ const GATES = [
     what: 'partner skill',
   },
 ];
+
+describe('“Special recipes as a parent”, read aloud', () => {
+  /* Measured 2026-08-17 across all 299: 133 pals have the section, 166 do
+   * not — a MAJORITY-empty gate, so its absence reads as normal variety, not
+   * E115's rare-gate pattern (#53 checked, clear). The largest section is 10
+   * rows (the Terraria crossover pals), so no card scrolls forever (#44).
+   *
+   * The finding: gendered recipes-as-parent exist for EXACTLY TWO pals in the
+   * whole game — Katress and Wixen — and on those two rarest of cards the
+   * badge was a bare "♀♂" glyph, while the SAME fact one section up says
+   * "genders as shown" in words. Same screen, same fact, two languages
+   * (#46) — and the two cards a player is least likely to have seen before
+   * were the two that explained themselves least. */
+  it('the gendered badge uses the same words as the sibling section', () => {
+    expect((code.match(/genders as shown/g) ?? []).length,
+      'the two sections describe the same fact differently again')
+      .toBeGreaterThanOrEqual(2);
+    expect(code, 'the bare glyph badge is back — a screen reader announces '
+      + '"female male" with no meaning, on the two rarest cards in the game')
+      .not.toContain('>♀♂</');
+  });
+
+  it('the gendered-as-parent case really is that rare', () => {
+    // if the data ever adds more, the section (and this reasoning) should be
+    // revisited rather than silently drifting
+    const gendered = (breedingJson as {
+      gendered_combos: { child: string; mother: string; father: string }[];
+    }).gendered_combos;
+    const parents = new Set(gendered.flatMap((g) => [g.mother, g.father]));
+    expect([...parents].sort()).toEqual(['Katress', 'Wixen']);
+  });
+
+  it('no card can scroll forever — the largest section is bounded', () => {
+    const uniq = (breedingJson as {
+      unique_combos: { parents: [string, string]; child: string }[];
+    }).unique_combos;
+    const counts = new Map<string, number>();
+    for (const c of uniq) {
+      for (const par of c.parents) counts.set(par, (counts.get(par) ?? 0) + 1);
+    }
+    expect(Math.max(...counts.values())).toBeLessThanOrEqual(12);
+  });
+});
 
 describe('the stat ranks are honest at every extreme', () => {
   /* Read aloud 2026-08-17, every branch measured against the data:

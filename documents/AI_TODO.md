@@ -2098,6 +2098,47 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E126. THE PAL CARD READ-ALOUD IS COMPLETE — LAST TWO SECTIONS
+## 2026-08-17 (night) — ALSO: THE LOOP MOVED TO A CRON
+
+**The loop:** ScheduleWakeup confirmed scheduling six times today and the
+firing never arrived — turns ended correctly and the wakeup was simply lost.
+Replaced with a RECURRING CRON (job 055d305f, every 2 minutes, auto-expires in
+7 days): it re-fires on its own, so a lost firing costs one tick, not the
+night.
+
+**Star surfaces (#20/#43): CHECKED, THEY AGREE (method #44).** Both the stats
+footnote and the partner card read the same `stars` state ("partner skill
+level {stars+1} of 5" / "LEVEL {stars+1} OF 5"); the 4★ sentence and the work
+card's boost both say +1; the community-measured separation sentence is
+present in both places it belongs. No defect — verdict logged, moving on.
+
+**"Special recipes as a parent", measured across all 299:**
+
+- 133 pals have the section, 166 do not — a MAJORITY-empty gate, so absence
+  reads as normal variety, NOT E115's rare-gate pattern (#53 checked, clear).
+- Largest section: **10 rows** (the crossover pals) — nothing scrolls forever
+  (#44). 92 pals have exactly one row.
+- **THE FINDING:** gendered recipes-as-parent exist for EXACTLY TWO pals in
+  the game — Katress and Wixen — and on those two rarest of cards the badge
+  was a bare **"♀♂"** glyph, while the SAME fact one section up says
+  **"genders as shown"** in words. Same screen, same fact, two languages
+  (#46) — and a screen reader announced "female male" with no meaning. The
+  two cards a player is LEAST likely to have seen before were the two that
+  explained themselves least. Badge unified to the sibling's words.
+
+Guarded three ways: both sections use the same words, the glyph badge fails by
+name, and the Katress+Wixen rarity is pinned so growth in the data revisits
+the reasoning. Largest-section bound pinned at ≤12.
+
+`pal-detail-copy.test.ts` now 18. Gates **647**. Mobile typecheck clean.
+Published to both channels.
+
+**THE PAL CARD READ-ALOUD IS NOW COMPLETE** — every section covered across
+E115 (vanishing gates), E116 (effect text), E117 (ABOUT), E118 (breed pairs),
+E124 (stats/ranks/stars), E125 (map return), E126 (special recipes). Next
+surface: the hatching flow.
+
 ## E125. CEO FEEDBACK — THE MAP PREVIEW WAS A ONE-WAY DOOR
 ## 2026-08-17 (evening)
 
