@@ -203,13 +203,12 @@ export const pairReadyCount = computed(
   () => Object.values(box.value).filter((o) => o.m && o.f).length,
 );
 
-export const verification = signal<{ claim: string; verdict: string; evidence: string }[]>([]);
-/** the game's own Paldex text (tools/fetch_paldex_text.py) */
-export const aboutText = signal<Record<string, string>>({});
-
 export interface VerifiedClaim {
   claim: string; verdict: string; evidence: string; sources?: string[];
 }
+export const verification = signal<VerifiedClaim[]>([]);
+/** the game's own Paldex text (tools/fetch_paldex_text.py) */
+export const aboutText = signal<Record<string, string>>({});
 /** The day the claims table was last checked — in the file all along, shown
  * nowhere. A "verified claims" list with no date is a weaker promise. */
 export const claimsCheckedOn = signal<string | null>(null);

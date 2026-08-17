@@ -35,7 +35,7 @@ function Claims() {
                   paragraph early and hoists the div out, so the sources line
                   escaped the evidence block. A block-level span nests legally
                   and looks identical. (My own E66 bug, caught by the console.) */}
-              {(c.sources?.length ?? 0) > 0 && (
+              {c.sources && c.sources.length > 0 && (
                 <span class="dim small" style="display:block;margin-top:5px">
                   Checked against: {c.sources.join(' · ')}
                 </span>
