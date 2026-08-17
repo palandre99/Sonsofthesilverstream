@@ -12,6 +12,7 @@ import {
   clearBox, engine, getBox, importNames, ownedAny, pals, setOwnedGender,
   useAppVersion, workLabel, type OwnedGenders,
 } from '../store';
+import { Icon } from '../ui/Icon';
 import { closure } from '../engine/planner';
 import { PalDetail } from '../ui/PalDetail';
 import { rarityTint } from '../data/rarity';
@@ -19,6 +20,75 @@ import { FilterSheet } from '../ui/FilterSheet';
 import {
   applyFilters, NO_FILTERS, sortedPals, type Filters, type SortKey,
 } from '../ui/palFilters';
+import { SAMPLE_BOX } from '../data/sampleBox';
+
+/** The empty Paldex used to be 299 untickable-looking rows and a footer
+ * button — nothing on it said that ticking pals is what makes every other
+ * screen work, and nothing let you find out without typing a list first.
+ *
+ * So: one tap fills the box with twelve first-hour pals and the Planner
+ * starts answering questions immediately. It is only ever offered on an
+ * EMPTY box, and it names itself as a sample for as long as the box is
+ * exactly the sample — so it can never quietly become someone's real
+ * collection, and removing it takes one tap. */
+function StarterCard({ onImport }: { onImport: () => void }) {
+  const box = getBox();
+  const owned = Object.keys(box);
+  const isSample = owned.length === SAMPLE_BOX.length
+    && SAMPLE_BOX.every((n) => box[n]);
+
+  if (isSample) {
+    return (
+      <Card style={{ marginBottom: 10, borderColor: T.accent }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+          <Icon name="flask-outline" size={15} color={T.accentInk} />
+          <Text style={[s.h3, { color: T.accentInk }]}>You're trying the sample box</Text>
+        </View>
+        <Text style={[s.body, { marginTop: 4 }]}>
+          These {SAMPLE_BOX.length} pals are an example, not your save. Tick your
+          own pals over them whenever you like — or take the sample back out and
+          start clean.
+        </Text>
+        <View style={[s.wrap, { marginTop: 10 }]}>
+          <Btn small label="Import my real list…" onPress={onImport} />
+          <Btn small label={`Remove the ${SAMPLE_BOX.length} sample pals`}
+            onPress={() => {
+              for (const n of SAMPLE_BOX) {
+                setOwnedGender(n, 'm', false);
+                setOwnedGender(n, 'f', false);
+              }
+            }} />
+        </View>
+      </Card>
+    );
+  }
+
+  if (owned.length > 0) return null;
+
+  return (
+    <Card style={{ marginBottom: 10 }}>
+      <Text style={s.h3}>Nothing ticked yet</Text>
+      <Text style={[s.body, { marginTop: 4 }]}>
+        Tick the pals you actually have and every other screen starts working
+        from your save — what you can breed, what it costs, what to catch next.
+      </Text>
+      <View style={[s.wrap, { marginTop: 10 }]}>
+        <Btn primary small label="Try a sample box"
+          onPress={() => {
+            importNames(
+              SAMPLE_BOX.map((n) => [n, { m: true, f: true }] as [string, OwnedGenders]),
+              false,
+            );
+          }} />
+        <Btn small label="Import my list…" onPress={onImport} />
+      </View>
+      <Text style={{ color: T.faint, fontSize: 11.5, marginTop: 8 }}>
+        The sample is {SAMPLE_BOX.length} pals you'd have in your first hour —
+        clearly labelled, and one tap to remove.
+      </Text>
+    </Card>
+  );
+}
 
 const Row = memo(function Row({ name, onOpen, focus }: {
   name: string; onOpen: (n: string) => void; focus?: string | null;
@@ -255,6 +325,9 @@ export function PaldexScreen() {
         initialNumToRender={12}
         windowSize={7}
         renderItem={({ item }) => <Row name={item} onOpen={setOpen} focus={focusJob} />}
+        // sits above the list rather than in the footer: a new player should
+        // not have to scroll 299 rows to be told what ticking is for
+        ListHeaderComponent={<StarterCard onImport={() => setSheet('import')} />}
         // this said "Nothing matches those filters." even when no filter was
         // set and the search alone had emptied the list — the message named
         // a cause the player could not act on (self-found on a code read)
