@@ -2085,7 +2085,10 @@ describe('your marks are accounted for like everything else on the map', () => {
   it('and the key OPENS for marks alone, not only for data layers', () => {
     // shownCount counts datamined points, so with only your own marks on the
     // map the key stayed hidden and the pin colour went unexplained.
-    expect(screen).toMatch(/\(shownCount > 0 \|\| myPins\.length > 0\) && \(/);
+    // the guard has since grown a third clause for the route — the claim
+    // here is that MARKS alone still open the key, which the wider guard
+    // keeps true
+    expect(screen).toMatch(/shownCount > 0 \|\| myPins\.length > 0 \|\| myRoute\.length > 0/);
   });
 
   it('never says "0 spots" while your marks are sitting on the map', () => {
@@ -2243,5 +2246,163 @@ describe('round-3 fixes hold', () => {
     // its job is teaching the controls; a dropped mark proves they were
     // found — and the "My mark" pill drew on top of the hint's last line
     expect(screen).toMatch(/!hintOff && myPins\.length === 0/);
+  });
+});
+
+describe("the player's route", () => {
+  const store = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'map', 'routes.ts'), 'utf8',
+  );
+
+  it('is its own store, scoped to the save you are on', () => {
+    // same shape as pins.ts / found.ts and for the same reasons
+    expect(store).toContain('getActiveProfile');
+    expect(store).toMatch(/`palforge-\$\{profileId\}-maproutes`/);
+    expect(store).toContain('AsyncStorage');
+  });
+
+  it('NEVER reorders — the player owns the order', () => {
+    // An "optimal" ordering would be an estimate, and this map does not
+    // estimate. Stops are appended, filtered, or cleared; there is no sort in
+    // this file and there must never be one.
+    expect(store).not.toMatch(/\.sort\(/);
+    expect(store).not.toMatch(/\.reverse\(/);
+    expect(store).toContain('stops = [...stops, { region, u, v, label }];');
+  });
+
+  it('keeps the order through save and load', () => {
+    // `filter` preserves relative order — the property that makes this a
+    // route and not a set of dots — and loading keeps rows IN THE ORDER THEY
+    // APPEAR on disk rather than rebuilding them.
+    expect(store).toMatch(/stops\.filter\(\(s\) => s\.region === region\)/);
+    expect(store).toContain('parsed.filter(isStop)');
+  });
+
+  it('every stop is a self-contained copy, never a pin reference', () => {
+    // deleting a mark must never break a route, and a route of plain
+    // coordinates serialises cleanly for sharing later
+    expect(store).not.toContain('pinId');
+    expect(store).not.toMatch(/from '\.\/pins'/);
+  });
+
+  it('refuses a stop that is not on the map, instead of clamping it', () => {
+    expect(store).toMatch(/if \(!\(u >= 0 && u <= 1 && v >= 0 && v <= 1\)\) return false;/);
+  });
+
+  it('refuses the same spot twice IN A ROW — that is a double-tap', () => {
+    // "base → ore → base" repeats are fine; those are not consecutive
+    expect(store).toMatch(/last\.u === u && last\.v === v\) return false;/);
+  });
+
+  it('survives a half-written or hand-edited file', () => {
+    expect(store).toMatch(/s\.region === 'palpagos' \|\| s\.region === 'tree'/);
+  });
+
+  it('clears THIS map only, leaving the other region alone', () => {
+    expect(store).toMatch(/stops\.filter\(\(s\) => s\.region !== region\)/);
+  });
+});
+
+describe('the route on the screen', () => {
+  const screen = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
+  );
+  const canvas = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'map', 'MapCanvas.tsx'), 'utf8',
+  );
+
+  it('draws the line in SCREEN space, like the place names and for the same reason', () => {
+    // Inside the transformed container the svg is rasterised at pre-zoom size
+    // and GPU-magnified: the line goes soft and its stroke fattens with the
+    // zoom — vectorEffect cannot help against a transform applied OUTSIDE the
+    // svg renderer. Recomputing the geometry per frame on the UI thread keeps
+    // the stroke constant-width and crisp at every zoom by construction.
+    expect(canvas).toContain('function RouteLine');
+    expect(canvas).toMatch(/s\.u \* k\.value \+ tx\.value/);
+    expect(canvas).toContain('useAnimatedProps');
+  });
+
+  it('each polyline owns its OWN animatedProps', () => {
+    // sharing one across views is the documented Reanimated mistake that made
+    // the pins go soft (M28)
+    const block = canvas.slice(canvas.indexOf('function RouteLine'),
+      canvas.indexOf('function RouteLine') + 1600);
+    expect(block.split('useAnimatedProps(').length - 1).toBe(2);
+  });
+
+  it('and the line never eats a touch', () => {
+    const block = canvas.slice(canvas.indexOf('function RouteLine'),
+      canvas.indexOf('function RouteLine') + 1600);
+    expect(block).toContain('pointerEvents="none"');
+  });
+
+  it('one stop draws no line — a route begins when there are two', () => {
+    expect(canvas).toMatch(/route\.stops\.length >= 2/);
+  });
+
+  it('stops are numbered on the map, centred on the true spot', () => {
+    // offsetting the badge to dodge the pin would draw the stop somewhere it
+    // is not, and once the mark is deleted the offset would point at nothing
+    const badges = screen.slice(screen.indexOf('const routeBadges'),
+      screen.indexOf('const routeBadges') + 1200);
+    expect(badges, 'routeBadges must exist').toContain('myRoute.map((s, i)');
+    expect(badges).toContain('{i + 1}');
+    expect(badges).toContain('marginLeft: -10, marginTop: -10');
+    // touch-TRANSPARENT, not merely non-pressable: on web a plain div still
+    // captures the click and the event bubbles past the sibling pin straight
+    // to the map — measured in QA: tapping badge 1 opened the empty-tap card
+    // instead of the mark underneath
+    expect(badges).toContain('pointerEvents="none"');
+    expect(badges).not.toContain('clusterPoints');
+  });
+
+  it('uses a colour no data layer uses, and not the mark colour either', () => {
+    const mine = /const MY_ROUTE = '(#[0-9A-Fa-f]{6})'/.exec(screen);
+    expect(mine, 'the route colour must be named once').not.toBeNull();
+    const used = new Set(poiLayers().map((l) => l.colour.toLowerCase()));
+    expect(used.has(mine![1].toLowerCase())).toBe(false);
+    const pin = /const MY_PIN = '(#[0-9A-Fa-f]{6})'/.exec(screen);
+    expect(mine![1].toLowerCase()).not.toBe(pin![1].toLowerCase());
+  });
+});
+
+describe('the route is accounted for like everything else on the map', () => {
+  const screen = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
+  );
+
+  it('the pill counts it SEPARATELY — never summed with spots or marks', () => {
+    expect(screen).toContain("? 'My route: 1 stop' : `My route: ${myRoute.length} stops`");
+    expect(screen).not.toMatch(/myRoute\.length \+ (shownCount|myPins)/);
+    expect(screen).not.toMatch(/(shownCount|myPins\.length) \+ myRoute\.length/);
+  });
+
+  it('the key lists it, so the chartreuse is never an unexplained colour', () => {
+    const at = screen.indexOf('{myRoute.length > 0 && (');
+    expect(at, 'the key row must exist').toBeGreaterThan(-1);
+    const row = screen.slice(at, at + 1100);
+    expect(row).toContain('MY_ROUTE');
+    expect(row).toContain('myRoute.length');
+  });
+
+  it('and the key OPENS for a route alone', () => {
+    expect(screen).toMatch(
+      /\(shownCount > 0 \|\| myPins\.length > 0 \|\| myRoute\.length > 0\) && \(/,
+    );
+  });
+
+  it('the first-run hint stands down once a route exists', () => {
+    expect(screen).toMatch(/myPins\.length === 0\s*&& myRoute\.length === 0/);
+  });
+
+  it('can be cleared for THIS map only, from the same place as the other clears', () => {
+    expect(screen).toContain("'Clear my route — 1 stop'");
+    expect(screen).toContain('`Clear my route — ${routeStops} stops`');
+    expect(screen).toContain('clearRoute(region)');
+  });
+
+  it('adding a stop is a button on the mark card, NOT another gesture', () => {
+    expect(screen).toContain('addStop(region, openPin.u, openPin.v, openPin.label)');
+    expect(screen).not.toMatch(/Gesture\.LongPress/);
   });
 });

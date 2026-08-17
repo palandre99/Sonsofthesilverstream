@@ -28,6 +28,7 @@ import {
   PIN_LABEL_MAX, addPin, clearPins, loadPins, onPinsChange, pinsIn, removePin,
   renamePin, type MapPin,
 } from '../map/pins';
+import { addStop, clearRoute, loadRoute, onRouteChange, routeIn } from '../map/routes';
 import {
   GROUP_LABEL, alphaSpots, closeMatches, dungeonPoints, emptyFilters, isNightOnly,
   poiLayer,
@@ -81,9 +82,11 @@ export function MapScreen() {
   React.useEffect(() => {
     void loadFound();
     void loadPins();
+    void loadRoute();
     const offFound = onFoundChange(() => setTicks((n) => n + 1));
     const offPins = onPinsChange(() => setTicks((n) => n + 1));
-    return () => { offFound(); offPins(); };
+    const offRoute = onRouteChange(() => setTicks((n) => n + 1));
+    return () => { offFound(); offPins(); offRoute(); };
   }, []);
 
   const region = filters.region;
@@ -383,11 +386,41 @@ export function MapScreen() {
     [region, ticks],
   );
 
+  /** this map's route, in the order the player added the stops */
+  const myRoute = useMemo(() => routeIn(region), [region, ticks]);
+
+  /**
+   * Numbered stop badges. NOT pressable: touches fall through to the mark
+   * underneath, which owns the card. The badge is centred on the true spot —
+   * offsetting it to dodge the pin would draw the stop somewhere it is not,
+   * and the moment the mark is deleted the offset would point at nothing.
+   */
+  const routeBadges = useMemo<MapMarker[]>(
+    () => myRoute.map((s, i) => ({
+      key: `route:${i}`,
+      u: s.u,
+      v: s.v,
+      render: () => (
+        <View pointerEvents="none" style={{
+          width: 20, height: 20, marginLeft: -10, marginTop: -10,
+          borderRadius: 10, alignItems: 'center', justifyContent: 'center',
+          backgroundColor: 'rgba(10,20,24,0.92)',
+          borderWidth: 2, borderColor: MY_ROUTE,
+        }}>
+          <Text style={{ color: MY_ROUTE, fontSize: 9.5, fontWeight: '800' }}>
+            {i + 1}
+          </Text>
+        </View>
+      ),
+    })),
+    [myRoute],
+  );
+
   // boss pins ride above the spawn cloud — the guaranteed spot should not be
   // buried under a hundred maybes
   const allPins = useMemo(
-    () => [...markers, ...bossPins, ...myPins],
-    [bossPins, markers, myPins],
+    () => [...markers, ...bossPins, ...myPins, ...routeBadges],
+    [bossPins, markers, myPins, routeBadges],
   );
 
   // Labels are SCREEN markers now — outside the map's transform, so their text
@@ -530,6 +563,7 @@ export function MapScreen() {
         region={region}
         markers={allPins}
         screenMarkers={labels}
+        route={{ stops: myRoute, colour: MY_ROUTE }}
         canvasRef={canvas}
         onViewport={setVp}
         onPress={onPress}
@@ -736,6 +770,48 @@ export function MapScreen() {
               />
             )}
           </View>
+          {/* The route verb gets its own full-width row: a fourth button in
+              the actions row does not fit 375pt and wraps onto a ragged
+              second line. Hidden while renaming for the same reason Remove
+              is — an edit mode offers exactly the two verbs that end an
+              edit. "Add" only haptics when a stop was actually added: the
+              store refuses a repeat of the LAST stop (a zero-length leg is a
+              double-tap, not a route). */}
+          {draft === null && (() => {
+            const last = myRoute[myRoute.length - 1];
+            const isLast = last != null
+              && last.u === openPin.u && last.v === openPin.v;
+            return (
+              <Pressable
+                onPress={() => {
+                  if (addStop(region, openPin.u, openPin.v, openPin.label)) {
+                    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  }
+                }}
+                accessibilityRole="button"
+                accessibilityState={{ disabled: isLast }}
+                style={{
+                  flexDirection: 'row', alignItems: 'center',
+                  justifyContent: 'center', gap: 6,
+                  paddingHorizontal: 10, paddingVertical: 8, borderRadius: 10,
+                  borderWidth: 1, borderColor: isLast ? T.line : MY_ROUTE,
+                  backgroundColor: T.surface,
+                }}
+              >
+                <Icon name="map-marker-path" size={14}
+                  color={isLast ? T.muted : MY_ROUTE} />
+                <Text style={{
+                  color: isLast ? T.muted : T.ink, fontWeight: '700', fontSize: 12,
+                }}>
+                  {isLast
+                    ? `On my route — stop ${myRoute.length}`
+                    : myRoute.length === 0
+                      ? 'Start my route here'
+                      : `Add to my route — stop ${myRoute.length + 1}`}
+                </Text>
+              </Pressable>
+            );
+          })()}
           <View style={{ flexDirection: 'row', gap: 8 }}>
             {draft !== null ? (
               <>
@@ -873,6 +949,7 @@ export function MapScreen() {
           cluster — the hint's job is done. This also ends the collision where
           the "My mark" pill drew on top of the hint's last line. */}
       {active.length === 0 && !sheet && !hintOff && myPins.length === 0
+        && myRoute.length === 0
         && filters.pals.size === 0 && filters.poi.size === 0 && (
         <Pressable
           onPress={() => setHintOff(true)}
@@ -943,7 +1020,7 @@ export function MapScreen() {
         {/* `shownCount` counts DATA points, so with only your own marks on the
             map the key used to stay hidden and the pin colour went unexplained.
             Your marks are a reason to show the key too. */}
-        {(shownCount > 0 || myPins.length > 0) && (
+        {(shownCount > 0 || myPins.length > 0 || myRoute.length > 0) && (
           <>
             {/* The legend only lists what is ON — a static key to 23 layers
                 would be a wall of colour the player has to filter by eye. */}
@@ -1018,6 +1095,32 @@ export function MapScreen() {
                     </Text>
                   </View>
                 )}
+                {/* The route sits in the key too: a chartreuse dotted
+                    line with numbered stops is otherwise an unexplained
+                    colour, and the key is where you look to find out what a
+                    colour means. */}
+                {myRoute.length > 0 && (
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 9 }}>
+                    <View style={{
+                      width: 19, height: 19, borderRadius: 9.5,
+                      borderWidth: 2, borderColor: MY_ROUTE,
+                      backgroundColor: 'rgba(10,20,24,0.86)',
+                      alignItems: 'center', justifyContent: 'center',
+                    }}>
+                      <Text style={{
+                        color: MY_ROUTE, fontSize: 9, fontWeight: '800',
+                      }}>1</Text>
+                    </View>
+                    <Text style={{
+                      color: T.ink, fontSize: 12.5, fontWeight: '700', flex: 1,
+                    }}>
+                      My route
+                    </Text>
+                    <Text style={{ color: T.faint, fontSize: 11.5, fontWeight: '700' }}>
+                      {myRoute.length === 1 ? '1 stop' : `${myRoute.length} stops`}
+                    </Text>
+                  </View>
+                )}
                 {/* "idk if it's accurate even?" — CEO, 2026-08-17. The answer
                     existed, in four independent proofs, and lived in the
                     Reference tab where he was never going to look for it. A
@@ -1062,6 +1165,11 @@ export function MapScreen() {
                     "N of my marks" implied a subset. It is all of them. */}
                 {myPins.length > 0
                   ? (myPins.length === 1 ? 'My mark' : `My ${myPins.length} marks`)
+                  : ''}
+                {(shownCount > 0 || myPins.length > 0) && myRoute.length > 0 ? ' · ' : ''}
+                {myRoute.length > 0
+                  ? (myRoute.length === 1
+                    ? 'My route: 1 stop' : `My route: ${myRoute.length} stops`)
                   : ''}
               </Text>
             </Pressable>
@@ -1108,6 +1216,8 @@ export function MapScreen() {
           onClearFound={clearFound}
           onClearMine={() => { clearPins(region); setOpenPin(null); }}
           myMarks={myPins.length}
+          onClearRoute={() => clearRoute(region)}
+          routeStops={myRoute.length}
           onClose={() => setSheet(null)}
         />
       )}
@@ -1182,6 +1292,9 @@ function PlaceName({ name }: { name: string }) {
 /** The player's own pins. Deliberately a colour NO data layer uses, so a mark
  *  you made can never be mistaken for something the game files put there. */
 const MY_PIN = '#FF8FB1';
+/** chartreuse: verified absent from all 23 data-layer colours and far from
+ *  MY_PIN — a path you drew must never read as something the game put there */
+const MY_ROUTE = '#C8FF4D';
 
 const PIN = 23;
 
@@ -1478,10 +1591,12 @@ function SheetShell({ title, onClear, onClose, children }: {
 }
 
 function LayerSheet({
-  filters, onToggle, onClear, onClearFound, onClearMine, myMarks, onClose,
+  filters, onToggle, onClear, onClearFound, onClearMine, myMarks,
+  onClearRoute, routeStops, onClose,
 }: {
   filters: MapFilters; onToggle: (id: string) => void; onClear: () => void;
   onClearFound: () => void; onClearMine: () => void; myMarks: number;
+  onClearRoute: () => void; routeStops: number;
   onClose: () => void;
 }) {
   const groups = useMemo(() => {
@@ -1519,6 +1634,24 @@ function LayerSheet({
             <Icon name="map-marker-off-outline" size={15} color={T.muted} />
             <Text style={{ color: T.muted, fontWeight: '700', fontSize: 12.5 }}>
               {myMarks === 1 ? 'Clear my mark' : `Clear my ${myMarks} marks`}
+            </Text>
+          </Pressable>
+        )}
+        {routeStops > 0 && (
+          <Pressable
+            onPress={onClearRoute}
+            accessibilityRole="button"
+            style={{
+              alignSelf: 'flex-start', flexDirection: 'row', alignItems: 'center', gap: 7,
+              paddingHorizontal: 11, paddingVertical: 9, borderRadius: 11,
+              borderWidth: 1, borderColor: T.line, backgroundColor: T.surface,
+            }}
+          >
+            <Icon name="map-marker-path" size={15} color={T.muted} />
+            <Text style={{ color: T.muted, fontWeight: '700', fontSize: 12.5 }}>
+              {routeStops === 1
+                ? 'Clear my route — 1 stop'
+                : `Clear my route — ${routeStops} stops`}
             </Text>
           </Pressable>
         )}

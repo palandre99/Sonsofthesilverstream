@@ -9,9 +9,10 @@
  * rectangle derived on the UI thread and handed over with runOnJS only on
  * change. Panning within a tile costs zero renders.
  *
- * Markers live inside the same container so they track the map exactly, but
- * share ONE inverse-scale animated style, so a pin stays pin-sized at every
- * zoom without N worklets fighting for the frame.
+ * Markers ride a second container on the same transform so they track the map
+ * exactly; each owns its OWN counter-scale worklet (one read and a division).
+ * A single style shared across markers is the documented-unsupported pattern
+ * that made the pins render soft.
  *
  * Deliberately built on react-native-gesture-handler + reanimated + expo-image,
  * all already in the app: no new native module, so the whole Map fane ships as
@@ -25,12 +26,14 @@ import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   type SharedValue,
   runOnJS,
+  useAnimatedProps,
   useAnimatedReaction,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
 import { Image } from 'expo-image';
+import Svg, { Polyline } from 'react-native-svg';
 import { MAP_TILES, MAX_TILE_Z, REGION_MAX_Z, TILE_SIZE } from '../data/tileIndex.g';
 import { type RegionId } from './projection';
 
@@ -191,6 +194,61 @@ function CounterScaled({ u, v, k, children }: {
   );
 }
 
+const AnimatedPolyline = Animated.createAnimatedComponent(Polyline);
+
+/**
+ * The player's route, drawn in SCREEN space for the same reason the place
+ * names are: anything inside the transformed container is rasterised at its
+ * pre-zoom size and GPU-magnified, so a line in there would go soft AND its
+ * stroke would fatten with the zoom — svg's non-scaling-stroke cannot help
+ * against a transform applied outside the svg renderer. Here the geometry
+ * itself is recomputed on the UI thread each frame (screen = u·k + tx, the
+ * same arithmetic ScreenPin uses), so the stroke is constant-width and crisp
+ * at every zoom by construction.
+ *
+ * Two polylines, not one: a dark casing under the colour keeps the dots
+ * readable over snowfields and pale sand. Each owns its own animatedProps —
+ * sharing one across views is the documented Reanimated mistake that made
+ * the pins go soft.
+ */
+function RouteLine({ stops, tx, ty, k, colour, w, h }: {
+  stops: { u: number; v: number }[];
+  tx: SharedValue<number>;
+  ty: SharedValue<number>;
+  k: SharedValue<number>;
+  colour: string;
+  w: number;
+  h: number;
+}) {
+  const casing = useAnimatedProps(() => ({
+    points: stops
+      .map((s) => `${s.u * k.value + tx.value},${s.v * k.value + ty.value}`)
+      .join(' '),
+  }));
+  const core = useAnimatedProps(() => ({
+    points: stops
+      .map((s) => `${s.u * k.value + tx.value},${s.v * k.value + ty.value}`)
+      .join(' '),
+  }));
+  return (
+    // EXPLICIT width/height, not absoluteFill: an <svg> is a replaced element,
+    // and CSS gives an absolutely-positioned replaced element its INTRINSIC
+    // size (300×150) rather than stretching it between opposing offsets — the
+    // route painted fine in the DOM and was invisible on screen, clipped to a
+    // 300×150 box. Measured in the QA browser; explicit size is right on both
+    // renderers.
+    <Svg pointerEvents="none" width={w} height={h}
+      style={{ position: 'absolute', top: 0, left: 0 }}>
+      <AnimatedPolyline animatedProps={casing} fill="none"
+        stroke="rgba(6,12,14,0.85)" strokeWidth={5.5}
+        strokeLinecap="round" strokeLinejoin="round" strokeDasharray="1 9" />
+      <AnimatedPolyline animatedProps={core} fill="none"
+        stroke={colour} strokeWidth={3}
+        strokeLinecap="round" strokeLinejoin="round" strokeDasharray="1 9" />
+    </Svg>
+  );
+}
+
 /**
  * A thing drawn in SCREEN space, tracking the map without being scaled by it.
  *
@@ -243,6 +301,7 @@ export function MapCanvas({
   region,
   markers,
   screenMarkers,
+  route,
   onViewport,
   onPress,
   children,
@@ -252,6 +311,8 @@ export function MapCanvas({
   markers: MapMarker[];
   /** drawn unscaled, above the map — use for text */
   screenMarkers?: ScreenMarker[];
+  /** the player's own path, drawn as a dotted line under names and pins */
+  route?: { stops: { u: number; v: number }[]; colour: string };
   /** called (throttled to real change) with the current px-per-uv scale + rect */
   onViewport?: (v: { scale: number; u0: number; v0: number; u1: number; v1: number }) => void;
   onPress?: (u: number, v: number) => void;
@@ -778,6 +839,15 @@ export function MapCanvas({
             ) : null}
             {tiles}
           </Animated.View>
+
+          {/* The route line sits directly on the terrain: under the place
+              names, under every pin and badge — it is the ground the path
+              crosses, not a thing standing on it. One stop draws nothing;
+              a route begins when there are two. */}
+          {route != null && route.stops.length >= 2 && size.w > 0 && (
+            <RouteLine stops={route.stops} tx={tx} ty={ty} k={k}
+              colour={route.colour} w={size.w} h={size.h} />
+          )}
 
           {/* Place names sit BETWEEN the terrain and the pins.
               They used to be drawn last, so "Twilight Dunes" printed straight
