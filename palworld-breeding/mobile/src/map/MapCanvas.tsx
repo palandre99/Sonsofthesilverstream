@@ -37,50 +37,6 @@ import Svg, { Polyline } from 'react-native-svg';
 import { MAP_TILES, MAX_TILE_Z, REGION_MAX_Z, TILE_SIZE } from '../data/tileIndex.g';
 import { type RegionId } from './projection';
 
-/** One screen-space marker: follows the map on the UI thread, never scaled by
- *  it, so whatever it draws stays at its true resolution. */
-function ScreenPin({ u, v, tx, ty, k, halfWidth, width, children }: {
-  u: number;
-  v: number;
-  tx: SharedValue<number>;
-  ty: SharedValue<number>;
-  k: SharedValue<number>;
-  halfWidth?: number;
-  width: number;
-  children: React.ReactNode;
-}) {
-  const style = useAnimatedStyle(() => {
-    const raw = tx.value + u * k.value;
-    let x = raw;
-    let show = 1;
-    // Slide a wide marker back inside the frame rather than letting it run off
-    // and truncate mid-word. Culling by the viewport could not do this
-    // reliably — that rectangle is pushed on a threshold and lags the view —
-    // and it is what real map apps do with edge labels anyway.
-    //
-    // But ONLY for a marker whose own anchor is on screen. This clamp used to
-    // apply to every marker unconditionally, so a name whose true position was
-    // hundreds of pixels off screen was dragged to the edge and drawn there —
-    // several at once, stacked at the identical x. That is not a decluttering
-    // artefact, it is the map stating a place is somewhere it is not, which on
-    // this fane is the one unforgivable bug. Off-screen anchors now stay off.
-    if (halfWidth && width > halfWidth * 2) {
-      if (raw < 0 || raw > width) show = 0;
-      else x = Math.min(width - halfWidth, Math.max(halfWidth, raw));
-    }
-    return {
-      opacity: show,
-      transform: [{ translateX: x }, { translateY: ty.value + v * k.value }],
-    };
-  });
-  return (
-    <Animated.View pointerEvents="none"
-      style={[{ position: 'absolute', left: 0, top: 0 }, style]}>
-      {children}
-    </Animated.View>
-  );
-}
-
 /** Logical size of the map container. Tiles lay out against this once and are
  *  never re-laid-out; only the container's transform changes. */
 const BASE = 1024;
@@ -124,7 +80,12 @@ const MAX_ZOOM = 14;
  * able to tell two chests apart. That is the trade every map app makes — the
  * imagery stops improving long before the zoom does.
  */
-const OVERZOOM = 3;
+// 5, up from 3 (CEO, with screenshots: "still i want to be able to zoom in
+// closer"). Past ~3.2x the ground magnifies pixels the game does not ship —
+// he knows, he asked anyway, and with markers and labels now drawn in screen
+// space the overlay stays crisp all the way down. MAX_ZOOM (14x the floor)
+// is the binding cap on a dpr-3 phone from here.
+const OVERZOOM = 5;
 
 function maxScaleFor(region: RegionId): number {
   const texture = TILE_PX * (1 << (REGION_MAX_Z[region] ?? MAX_TILE_Z));
@@ -164,30 +125,34 @@ function useReducedMotion(): boolean {
 }
 
 /**
- * One marker, counter-scaled about its own anchor so it keeps its screen size
- * at every zoom.
- *
- * Each instance owns its OWN useAnimatedStyle. It used to be one style object
- * shared across every marker — "one worklet driving every marker" — which is
- * the pattern Reanimated documents as unsupported: a view attached to a
- * shared animated style can stop receiving updates, and a marker with a stale
- * counter-scale draws at the wrong size, magnified and soft. The worklet body
- * is one read and one division; ~115 of these is less work per frame than the
- * ~40 ScreenPin labels already do.
+ * One data pin, drawn in SCREEN space — the same treatment the place names
+ * get, and now for the same PHOTOGRAPHED reason. Pins used to ride a second
+ * container inside the map transform, counter-scaled per marker; the net
+ * scale was 1, but iOS rasterises the subtree at its intermediate (counter-
+ * scaled, tiny) size and the ancestor magnifies that raster — so pins grew
+ * blurrier the deeper the zoom while the screen-space labels beside them
+ * stayed sharp. The CEO's 20:05 screenshots show exactly that pair. Since
+ * M28 every marker owns a worklet anyway, so drawing position instead of
+ * counter-scale costs the same frame budget and renders at true resolution.
  */
-function CounterScaled({ u, v, k, children }: {
+function MarkerPin({ u, v, tx, ty, k, children }: {
   u: number;
   v: number;
+  tx: SharedValue<number>;
+  ty: SharedValue<number>;
   k: SharedValue<number>;
   children: React.ReactNode;
 }) {
   const style = useAnimatedStyle(() => ({
-    transform: [{ scale: BASE / Math.max(1, k.value) }],
+    transform: [
+      { translateX: tx.value + u * k.value },
+      { translateY: ty.value + v * k.value },
+    ],
   }));
   return (
     <Animated.View
       pointerEvents="box-none"
-      style={[{ position: 'absolute', left: u * BASE, top: v * BASE }, style]}
+      style={[{ position: 'absolute', left: 0, top: 0 }, style]}
     >
       {children}
     </Animated.View>
@@ -263,9 +228,6 @@ export interface ScreenMarker {
   u: number;
   v: number;
   render: () => React.ReactNode;
-  /** half the drawn width; set it and the marker slides to stay on screen
-   *  instead of running off the edge mid-word */
-  halfWidth?: number;
 }
 
 export interface MapMarker {
@@ -787,22 +749,6 @@ export function MapCanvas({
     ],
   }));
 
-  // A second, IDENTICAL style for the second container. mapStyle used to be
-  // shared by the tile container and the marker container, and pinStyle by
-  // every marker view — Reanimated documents that an animated style must not
-  // be shared between components: views can silently stop receiving updates.
-  // A marker whose counter-scale goes stale renders at the wrong size and is
-  // GPU-magnified — a soft face inside a chunky border, which is what his
-  // screenshots show while the (screen-space) place labels stay crisp. The
-  // browser never shows it because reanimated runs on the JS thread there.
-  const markerLayerStyle = useAnimatedStyle(() => ({
-    transform: [
-      { translateX: tx.value },
-      { translateY: ty.value },
-      { scale: k.value / BASE },
-    ],
-  }));
-
   const tiles = useMemo(() => {
     const have = MAP_TILES[region] ?? {};
     const n = 1 << win.z;
@@ -892,33 +838,29 @@ export function MapCanvas({
               They stay outside the transform because text inside it is
               rasterised at its pre-zoom size and then magnified, which came
               out jagged on the CEO's phone. */}
+          {/* GLUED to their anchor — no edge-slide. Wide names used to be
+              clamped inside the frame so they never clipped mid-word, and
+              during a pan the clamped ones visibly detached from the terrain:
+              "Location names move sometimes when I move around the map"
+              (CEO, 20:10, with a screenshot). Real maps let edge labels clip
+              and re-enter whole; a name that moves relative to its place
+              spends the map's accuracy trust to save a truncation. */}
           {screenMarkers?.map((m) => (
-            <ScreenPin key={m.key} u={m.u} v={m.v} tx={tx} ty={ty} k={k}
-              halfWidth={m.halfWidth} width={size.w}>
+            <MarkerPin key={m.key} u={m.u} v={m.v} tx={tx} ty={ty} k={k}>
               {m.render()}
-            </ScreenPin>
+            </MarkerPin>
           ))}
 
-          {/* Pins ride a SECOND container on the same transform rather than
-              becoming screen-space markers themselves. Making each pin its own
-              ScreenPin would have given ~200 markers ~200 worklets all
-              recomputing every frame — precisely the "N worklets fighting for
-              the frame" this file was built to avoid, and the CEO has just
-              finished reporting the map as laggy. Two containers sharing two
-              worklets costs nothing and gets the same stacking order. */}
-          <Animated.View
-            pointerEvents="box-none"
-            style={[
-              { position: 'absolute', width: BASE, height: BASE, transformOrigin: 'top left' },
-              markerLayerStyle,
-            ]}
-          >
-            {markers.map((m) => (
-              <CounterScaled key={m.key} u={m.u} v={m.v} k={k}>
-                {m.render()}
-              </CounterScaled>
-            ))}
-          </Animated.View>
+          {/* Data pins draw ABOVE the names, in screen space like them.
+              The old second-container rationale (worklet budget) died with
+              M28: every marker owns a worklet either way, and inside the
+              transform iOS rasterises pins small and magnifies them — the
+              photographed blur. */}
+          {markers.map((m) => (
+            <MarkerPin key={m.key} u={m.u} v={m.v} tx={tx} ty={ty} k={k}>
+              {m.render()}
+            </MarkerPin>
+          ))}
         </Animated.View>
       </GestureDetector>
       {children}

@@ -322,7 +322,10 @@ describe('how far in it can actually go', () => {
     // pins and labels are fixed-size so they stay crisp at any zoom, and
     // clustering is by screen distance, so only more zoom separates markers
     // that sit on top of each other.
-    expect(canvas).toMatch(/const OVERZOOM = 3;/);
+    // 5 since his 20:0x screenshots round: "still i want to be able to
+    // zoom in closer" — with pins and labels in screen space the overlay
+    // stays crisp all the way down, and MAX_ZOOM (14x floor) is the cap.
+    expect(canvas).toMatch(/const OVERZOOM = 5;/);
     expect(canvas).toMatch(/return \(texture \* OVERZOOM\) \/ PixelRatio\.get\(\);/);
   });
 
@@ -552,14 +555,13 @@ describe('what his 13:12 screenshots finally pinned down', () => {
     // size and is GPU-magnified soft, which is what the screenshots show
     // while screen-space labels stay crisp. Invisible in the browser, where
     // reanimated runs on the JS thread (F35).
-    // the DEFINITION must be gone; a comment may still tell its story
+    // the DEFINITIONS must be gone; comments may still tell their story
     expect(canvas).not.toMatch(/const pinStyle = useAnimatedStyle/);
-    expect(canvas).toContain('function CounterScaled');
-    // each marker gets its own style hook, inside the component
-    const cs = canvas.slice(canvas.indexOf('function CounterScaled'), canvas.indexOf('function CounterScaled') + 700);
-    expect(cs).toContain('useAnimatedStyle');
-    // and the two containers no longer share one style object
-    expect(canvas).toContain('markerLayerStyle');
+    expect(canvas).not.toMatch(/const markerLayerStyle = useAnimatedStyle/);
+    // each marker owns its style hook, inside the component
+    const cs = canvas.slice(canvas.indexOf('function MarkerPin'),
+      canvas.indexOf('function MarkerPin') + 800);
+    expect(cs, 'MarkerPin must exist').toContain('useAnimatedStyle');
     const uses = canvas.match(/\bmapStyle,/g) ?? [];
     expect(uses.length, 'mapStyle must be attached to exactly one view').toBe(1);
   });

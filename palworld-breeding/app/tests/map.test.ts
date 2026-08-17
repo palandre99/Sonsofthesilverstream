@@ -425,36 +425,32 @@ describe('a cluster still says what it is', () => {
   });
 });
 
-/* A place name must appear where that place IS. The edge clamp used to apply
- * to every screen marker unconditionally, so names whose true position was far
- * off screen were dragged to the frame edge and drawn there, several stacked
- * at the identical x. Measured before the fix: 6 overlapping pairs among 31
- * on-screen names; after: 0 among 25, the 6 that vanished being exactly the
- * ones drawn at a false position. */
-describe('place names are not dragged in from off screen', () => {
+/* A place name must appear where that place IS — and STAY there while the
+ * finger moves. The edge-slide era (labels clamped inside the frame so they
+ * never clipped mid-word) ended with the CEO's 20:10 report: during a pan
+ * the clamped names visibly detached from the terrain. Labels are glued to
+ * their anchor now; at the frame edge they clip and re-enter whole, the way
+ * every real map behaves. The old "dragged in from off screen" fault class
+ * is structurally impossible without a clamp. */
+describe('place names are GLUED to their places', () => {
   const canvas = readFileSync(
     join(__dirname, '..', '..', 'mobile', 'src', 'map', 'MapCanvas.tsx'), 'utf8',
   );
+  const screen = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
+  );
 
-  it('hides a marker whose own anchor is outside the frame', () => {
-    expect(canvas).toMatch(/function ScreenPin\(/);   // pointed at real code
-    expect(canvas).toMatch(/raw < 0 \|\| raw > width/);
-    expect(canvas).toMatch(/opacity: show/);
+  it('no slide, no clamp, no separate label component', () => {
+    expect(canvas).not.toMatch(/function ScreenPin\(/);
+    expect(canvas).not.toMatch(/Math\.max\(halfWidth, raw\)/);
+    expect(canvas).not.toContain('halfWidth');
+    expect(screen).not.toContain('halfWidth');
   });
 
-  it('clamps against the untouched anchor, not a value already clamped', () => {
-    // clamping `x` in place would compound across frames; the slide must be
-    // derived from `raw` every time
-    expect(canvas).toMatch(/Math\.max\(halfWidth, raw\)/);
-  });
-
-  it('sizes the slide from the ink, not from the label box', () => {
-    const screen = readFileSync(
-      join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
-    );
-    // halfWidth: LABEL_W / 2 shoved a short name up to 75px off its own spot
-    expect(screen).not.toMatch(/halfWidth: LABEL_W \/ 2/);
-    expect(screen).toMatch(/halfWidth: Math\.min\(LABEL_W, textWidth\(name\)\) \/ 2/);
+  it('labels ride the same screen-space anchor as every pin', () => {
+    const at = canvas.indexOf('screenMarkers?.map');
+    expect(at, 'labels must render').toBeGreaterThan(-1);
+    expect(canvas.slice(at, at + 300)).toContain('<MarkerPin');
   });
 });
 
@@ -575,7 +571,7 @@ describe('zoom never asks for pixels that do not exist', () => {
     // are fixed-size so they stay crisp, and only more zoom pulls overlapping
     // markers apart. Reach went 3.2x -> 9.6x on his phone.
     expect(canvas).toMatch(/PixelRatio/);
-    expect(canvas).toMatch(/const OVERZOOM = 3;/);
+    expect(canvas).toMatch(/const OVERZOOM = 5;/);
     expect(canvas).toMatch(/\(texture \* OVERZOOM\) \/ PixelRatio\.get\(\)/);
     // the honest half: past that point the ground is magnified, and the
     // comment has to keep saying so
@@ -640,16 +636,15 @@ describe('a place name never covers a pin', () => {
     expect(names).toBeLessThan(pins);
   });
 
-  it('gives every pin its OWN counter-scale style', () => {
-    // This test used to pin the OPPOSITE: one shared worklet driving every
-    // marker, on the theory that per-pin worklets would fight for the frame.
-    // Reanimated documents that an animated style must not be attached to
-    // more than one component — a view can silently stop receiving updates,
-    // and a marker with a stale counter-scale draws at the wrong size and is
-    // GPU-magnified soft. His 13:12 screenshots showed exactly that. The
-    // worklet body is one read and one division; correctness beats a
-    // micro-optimisation that breaks rendering.
-    expect(canvas).toContain('function CounterScaled');
+  it('draws every pin in SCREEN space, like the labels', () => {
+    // The counter-scale era ended with his 20:05 screenshots: place names
+    // (screen space) razor-sharp beside pins (inside the transform) that
+    // blurred deeper with every zoom level. iOS rasterises the subtree at
+    // its intermediate counter-scaled size and magnifies that raster, so
+    // net-scale-1 still renders soft. MarkerPin translates in screen space
+    // — same worklet count since M28, true resolution at every zoom.
+    expect(canvas).toContain('function MarkerPin');
+    expect(canvas).not.toContain('function CounterScaled');
     expect(canvas).not.toMatch(/const pinStyle = useAnimatedStyle/);
     // and the tile container's style is attached to exactly one view
     expect(canvas.split('mapStyle,').length - 1).toBe(1);
@@ -657,8 +652,8 @@ describe('a place name never covers a pin', () => {
 
   it('leaves the text outside the transform, where it stays crisp', () => {
     // text inside the transform is rasterised pre-zoom then magnified, which
-    // came out jagged on the phone
-    expect(canvas).toMatch(/<ScreenPin key=\{m\.key\}/);
+    // came out jagged on the phone; labels ride MarkerPin since the glue fix
+    expect(canvas).toMatch(/<MarkerPin key=\{m\.key\}/);
   });
 });
 
@@ -2699,5 +2694,22 @@ describe('"exactly where small hidden stuff is" — EXECUTED', () => {
     // both kinds of name exist in the data, so both branches really ran
     expect(sawBare).toBeGreaterThan(0);
     expect(sawSuffixed).toBeGreaterThan(0);
+  });
+});
+
+describe('a boss card says its level (CEO, 20:13)', () => {
+  const screen = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
+  );
+
+  it('matches the tapped pin back to its datamined AlphaSpot', () => {
+    const at = screen.indexOf("own.startsWith('Alpha ')");
+    expect(at, 'the alpha branch must exist in onPress').toBeGreaterThan(-1);
+    const block = screen.slice(at, at + 600);
+    expect(block).toContain('MAP_ALPHAS[own.slice(6)]');
+    expect(block).toContain('Level ${spot.lv}');
+    // matched by region AND position — a species with two spots must not
+    // show the other island's level
+    expect(block).toContain('a.m === mi');
   });
 });

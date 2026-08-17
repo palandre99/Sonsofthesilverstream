@@ -43,6 +43,7 @@ import {
   type LayerGroup, type MapFilters,
 } from '../map/layers';
 import { MAP_REGIONS } from '../data/mapMeta.g';
+import { MAP_ALPHAS } from '../data/mapSpawns.g';
 import { MAP_ICONS } from '../data/mapIcons.g';
 import { PAL_ICONS } from '../data/icons.g';
 import { REGION_SPOTS } from '../data/regionSpots.g';
@@ -304,7 +305,6 @@ export function MapScreen() {
         // half the INK, not half the 150px box the ink is centred in: a short
         // name near the edge should barely move, and clamping it by the box
         // shoved "Arena" 75px from where Arena is
-        halfWidth: Math.min(LABEL_W, textWidth(name)) / 2,
         render: () => <PlaceName name={name} />,
       });
     }
@@ -566,6 +566,18 @@ export function MapScreen() {
       if (ownedAny(palName)) lines.push('Already in your box');
       // no "N spots on the map" here — the pill at the bottom already says it
     } else {
+      // A boss card without its level made the CEO tap through to the Paldex
+      // just to know if he would be flattened (20:13, with a screenshot).
+      // Alpha levels are datamined per spot; match this pin back to its
+      // AlphaSpot by region and position.
+      if (own.startsWith('Alpha ')) {
+        const mi = region === 'palpagos' ? 0 : 1;
+        const pu = layer.set.xy[best.index * 2];
+        const pv = layer.set.xy[best.index * 2 + 1];
+        const spot = MAP_ALPHAS[own.slice(6)]?.find((a) => a.m === mi
+          && Math.abs(a.u - pu) < 0.002 && Math.abs(a.v - pv) < 0.002);
+        if (spot) lines.push(`Level ${spot.lv}`);
+      }
       // formatted: this line sits directly above a pill that says "1,572
       // spots on the map", and the same number in two formats one line apart
       // reads as a bug even when it is not
