@@ -110,6 +110,28 @@ export function addPin(region: RegionId, u: number, v: number, label: string): s
   return id;
 }
 
+/**
+ * Give a mark your own name.
+ *
+ * The label is PLAYER TEXT, which is the one kind of string this app does not
+ * control, so it is trimmed and capped here rather than trusting every caller
+ * to remember. An empty name is not stored: the caller passes the coordinate
+ * label as the fallback, so a mark can never end up nameless.
+ */
+export const PIN_LABEL_MAX = 40;
+
+export function renamePin(id: string, label: string): void {
+  const clean = label.trim().slice(0, PIN_LABEL_MAX);
+  if (!clean) return;
+  let changed = false;
+  pins = pins.map((p) => {
+    if (p.id !== id || p.label === clean) return p;
+    changed = true;
+    return { ...p, label: clean };
+  });
+  if (changed) persist();
+}
+
 export function removePin(id: string): void {
   const before = pins.length;
   pins = pins.filter((p) => p.id !== id);

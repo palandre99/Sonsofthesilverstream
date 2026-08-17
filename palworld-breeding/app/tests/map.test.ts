@@ -2102,3 +2102,52 @@ describe('your marks are accounted for like everything else on the map', () => {
     expect(screen).toContain('clearPins(region)');
   });
 });
+
+describe('naming a mark', () => {
+  const store = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'map', 'pins.ts'), 'utf8',
+  );
+  const screen = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
+  );
+
+  it('caps and trims in the STORE, not in whichever caller remembers to', () => {
+    // The label is player text — the one kind of string this app does not
+    // control. Measured: 72 characters typed in, 40 stored, and the card
+    // truncates with an ellipsis instead of growing past the screen.
+    expect(store).toContain('export const PIN_LABEL_MAX = 40;');
+    expect(store).toMatch(/label\.trim\(\)\.slice\(0, PIN_LABEL_MAX\)/);
+  });
+
+  it('refuses to store an empty name at all', () => {
+    // a nameless mark is a mark you cannot tell from any other
+    expect(store).toMatch(/if \(!clean\) return;/);
+  });
+
+  it('and the screen falls back to WHERE THE MARK IS when you clear the name', () => {
+    // so clearing the box gives you the coordinates back, never a blank pin
+    const save = screen.slice(screen.indexOf('const next = draft.trim()') - 400,
+      screen.indexOf('const next = draft.trim()') + 120);
+    expect(save, 'the save handler must exist').toContain('uvToReadout');
+    expect(save).toMatch(/draft\.trim\(\) \|\| `\$\{at\.x\}, \$\{at\.y\}`/);
+  });
+
+  it('cancel writes NOTHING — the mark is exactly as it was', () => {
+    // measured: typed a new name, cancelled, the stored label was unchanged
+    const cancel = screen.slice(screen.indexOf('// Cancel must leave the mark'),
+      screen.indexOf('// Cancel must leave the mark') + 260);
+    expect(cancel, 'the cancel branch must exist').toContain('setDraft(null)');
+    expect(cancel).not.toContain('renamePin');
+  });
+
+  it('closing the card throws a half-typed name away too', () => {
+    expect(screen).toMatch(/setOpenPin\(null\); setDraft\(null\);/);
+  });
+
+  it('and a long name truncates rather than widening the card', () => {
+    const row = screen.slice(screen.indexOf('{openPin.label}') - 420,
+      screen.indexOf('{openPin.label}') + 30);
+    expect(row, 'the label row must exist').toContain('numberOfLines={1}');
+    expect(row).toContain('maxWidth');
+  });
+});

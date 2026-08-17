@@ -11,7 +11,9 @@
  * reaching out into the map rather than the map being a separate product.
  */
 import React, { useCallback, useMemo, useRef, useState } from 'react';
-import { FlatList, Image, Pressable, ScrollView, Text, View } from 'react-native';
+import {
+  FlatList, Image, Pressable, ScrollView, Text, TextInput, View,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 import { T } from '../theme';
@@ -23,7 +25,8 @@ import {
 import { clusterPoints, nearestPoint, pointsInRect, type PointSet } from '../map/points';
 import { uvToReadout, regionOf, type RegionId } from '../map/projection';
 import {
-  addPin, clearPins, loadPins, onPinsChange, pinsIn, removePin, type MapPin,
+  PIN_LABEL_MAX, addPin, clearPins, loadPins, onPinsChange, pinsIn, removePin,
+  renamePin, type MapPin,
 } from '../map/pins';
 import {
   GROUP_LABEL, alphaSpots, closeMatches, dungeonPoints, emptyFilters, isNightOnly,
@@ -72,6 +75,8 @@ export function MapScreen() {
   const [ticks, setTicks] = useState(0);   // bumps when a tick changes
   /** the player's pin whose card is open, if any */
   const [openPin, setOpenPin] = useState<MapPin | null>(null);
+  /** the draft name while renaming that pin — null when not renaming */
+  const [draft, setDraft] = useState<string | null>(null);
 
   React.useEffect(() => {
     void loadFound();
@@ -690,14 +695,90 @@ export function MapScreen() {
         }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
             <Icon name="map-marker-star" size={16} color={MY_PIN} />
-            <Text style={{ color: T.ink, fontWeight: '800', fontSize: 13.5, flex: 1 }}>
-              Your mark
-            </Text>
-            <Text style={{ color: T.muted, fontWeight: '700', fontSize: 12 }}>
-              {openPin.label}
-            </Text>
+            {draft === null ? (
+              <>
+                <Text style={{ color: T.ink, fontWeight: '800', fontSize: 13.5, flex: 1 }}>
+                  Your mark
+                </Text>
+                {/* the name can be long, so it gets the room and truncates
+                    rather than pushing the card wider than the screen */}
+                <Text
+                  numberOfLines={1}
+                  style={{
+                    color: T.muted, fontWeight: '700', fontSize: 12,
+                    flexShrink: 1, maxWidth: '55%', textAlign: 'right',
+                  }}
+                >
+                  {openPin.label}
+                </Text>
+              </>
+            ) : (
+              <TextInput
+                value={draft}
+                onChangeText={setDraft}
+                maxLength={PIN_LABEL_MAX}
+                autoFocus
+                placeholder="Name this spot"
+                placeholderTextColor={T.faint}
+                style={{
+                  flex: 1, color: T.ink, fontSize: 13.5, fontWeight: '700',
+                  paddingHorizontal: 10, paddingVertical: 7, borderRadius: 9,
+                  borderWidth: 1, borderColor: MY_PIN, backgroundColor: T.surface,
+                }}
+              />
+            )}
           </View>
           <View style={{ flexDirection: 'row', gap: 8 }}>
+            {draft !== null ? (
+              <>
+                <Pressable
+                  onPress={() => {
+                    // An empty name must not leave a nameless mark, so it
+                    // falls back to where the mark actually is.
+                    const at = uvToReadout(
+                      { u: openPin.u, v: openPin.v }, regionOf(region),
+                    );
+                    const next = draft.trim() || `${at.x}, ${at.y}`;
+                    void Haptics.selectionAsync();
+                    renamePin(openPin.id, next);
+                    setOpenPin({ ...openPin, label: next.slice(0, PIN_LABEL_MAX) });
+                    setDraft(null);
+                  }}
+                  accessibilityRole="button"
+                  style={{
+                    paddingHorizontal: 10, paddingVertical: 7, borderRadius: 10,
+                    borderWidth: 1, borderColor: MY_PIN, backgroundColor: T.surface,
+                  }}
+                >
+                  <Text style={{ color: T.ink, fontWeight: '700', fontSize: 12 }}>Save</Text>
+                </Pressable>
+                <Pressable
+                  // Cancel must leave the mark EXACTLY as it was — the draft is
+                  // thrown away and nothing is written.
+                  onPress={() => setDraft(null)}
+                  accessibilityRole="button"
+                  style={{
+                    paddingHorizontal: 10, paddingVertical: 7, borderRadius: 10,
+                    borderWidth: 1, borderColor: T.line, backgroundColor: T.surface,
+                  }}
+                >
+                  <Text style={{ color: T.muted, fontWeight: '700', fontSize: 12 }}>Cancel</Text>
+                </Pressable>
+              </>
+            ) : (
+              <Pressable
+                onPress={() => { void Haptics.selectionAsync(); setDraft(openPin.label); }}
+                accessibilityRole="button"
+                style={{
+                  flexDirection: 'row', alignItems: 'center', gap: 6,
+                  paddingHorizontal: 10, paddingVertical: 7, borderRadius: 10,
+                  borderWidth: 1, borderColor: T.line, backgroundColor: T.surface,
+                }}
+              >
+                <Icon name="pencil-outline" size={14} color={T.muted} />
+                <Text style={{ color: T.muted, fontWeight: '700', fontSize: 12 }}>Rename</Text>
+              </Pressable>
+            )}
             <Pressable
               onPress={() => {
                 void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -717,7 +798,7 @@ export function MapScreen() {
               </Text>
             </Pressable>
             <Pressable
-              onPress={() => setOpenPin(null)}
+              onPress={() => { setOpenPin(null); setDraft(null); }}
               accessibilityRole="button"
               style={{
                 paddingHorizontal: 10, paddingVertical: 7, borderRadius: 10,
