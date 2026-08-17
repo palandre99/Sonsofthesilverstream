@@ -628,7 +628,7 @@ export function PlannerScreen() {
       ) : (
         <View style={[s.wrap, { marginBottom: 10 }]}>
           <Btn small primary label="Suggested goals…" onPress={() => setSuggesting(true)} />
-          <Btn small label="+ Add target…" onPress={() => setPicking(true)} />
+          <Btn small label="+ Add a goal…" onPress={() => setPicking(true)} />
         </View>
       )}
 
@@ -742,7 +742,9 @@ export function PlannerScreen() {
           primary
           disabled={!ownedNames.length || busy}
           label={busy ? 'Planning…'
-            : `Plan ${targets.length} target${targets.length > 1 ? 's' : ''}`}
+            : targets.length === 1
+              ? 'Plan this goal'
+              : `Plan these ${targets.length} goals`}
           onPress={confirmRun}
         />
       )}
@@ -1043,7 +1045,7 @@ export function PlannerScreen() {
               <Text style={s.h3}>Nothing left to breed</Text>
               <Text style={[s.body, { marginTop: 4 }]}>
                 Every goal in this plan is already in your Paldex. Add another
-                target above, or clear the plan.
+                goal above, or clear the plan.
               </Text>
             </Card>
           )}
