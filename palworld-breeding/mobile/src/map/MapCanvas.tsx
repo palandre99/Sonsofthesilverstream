@@ -408,9 +408,17 @@ export function MapCanvas({
       // different place when I release fingers" the CEO reported: a jump the
       // map makes on purpose, in entirely the wrong circumstances.
       if (e.numberOfPointers > 1 || pinching.value) return;
-      const next = k.value > zoomFloor * 3.5
-        ? zoomFloor
-        : Math.min(MAX_SCALE, Math.min(zoomFloor * MAX_ZOOM, k.value * 2.5));
+      // Double tap walks IN, and only goes home once there is nowhere left to
+      // go. The threshold used to be a flat `zoomFloor * 3.5`, which was dead
+      // code while the ceiling was 3.2x — it could never be reached, so the
+      // handler only ever zoomed in. Raising the ceiling to 9.6x brought it to
+      // life in the worst way: from 6.25x a double tap flung the map all the
+      // way back to the whole island, so you could never tap your way to the
+      // deepest zoom and the gesture looked broken. Tie it to the ceiling
+      // instead of a number tuned for a ceiling that no longer exists.
+      const ceiling = Math.min(MAX_SCALE, zoomFloor * MAX_ZOOM);
+      const atCeiling = k.value >= ceiling - 0.5;
+      const next = atCeiling ? zoomFloor : Math.min(ceiling, k.value * 2.5);
       const ratio = next / k.value;
       const nx = e.x - (e.x - tx.value) * ratio;
       const ny = e.y - (e.y - ty.value) * ratio;

@@ -417,6 +417,68 @@ describe('the pointer count is what moves the reference point', () => {
   });
 });
 
+describe('the double-tap zoom ladder', () => {
+  /**
+   * A regression I introduced myself by raising the ceiling.
+   *
+   * The handler went home when `k > zoomFloor * 3.5`. While the ceiling was
+   * 3.2x that branch could NEVER run — 3.2 < 3.5 — so double tap only ever
+   * zoomed in. Raising the ceiling to 9.6x brought the dead code to life at
+   * the worst moment: from 6.25x a double tap flung the map back to the whole
+   * island, so you could not tap your way to the deepest zoom.
+   *
+   * The rule is now tied to the ceiling, not to a number tuned for a ceiling
+   * that no longer exists: walk in, and go home only from the very top.
+   */
+  const ceiling = Math.min(CEIL, FLOOR * 14);
+
+  /** the app's rule, mirrored — the source test below pins them together */
+  const step = (k: number) => (k >= ceiling - 0.5 ? FLOOR : Math.min(ceiling, k * 2.5));
+
+  it('walks all the way in before it ever goes home', () => {
+    const seen: number[] = [];
+    let k = FLOOR;
+    for (let i = 0; i < 6; i++) {
+      k = step(k);
+      seen.push(Math.round((k / FLOOR) * 10) / 10);
+      if (k === FLOOR) break;
+    }
+    // in, in, in until the ceiling, and only THEN back to 1x
+    expect(seen).toEqual([2.5, 6.3, 9.6, 1]);
+  });
+
+  it('reaches the true ceiling, which the old rule could not', () => {
+    let k = FLOOR;
+    let best = k;
+    for (let i = 0; i < 5; i++) {
+      k = step(k);
+      if (k > best) best = k;
+    }
+    expect(best).toBeCloseTo(ceiling, 6);
+
+    // the old rule capped out at 6.25x and bounced
+    const oldStep = (v: number) => (v > FLOOR * 3.5 ? FLOOR : Math.min(ceiling, v * 2.5));
+    let o = FLOOR;
+    let oldBest = o;
+    for (let i = 0; i < 5; i++) {
+      o = oldStep(o);
+      if (o > oldBest) oldBest = o;
+    }
+    expect(oldBest).toBeLessThan(ceiling);
+    expect(oldBest / FLOOR).toBeCloseTo(6.25, 2);
+  });
+
+  it('and the canvas uses that rule, not the old constant', () => {
+    const canvas = readFileSync(
+      join(__dirname, '..', '..', 'mobile', 'src', 'map', 'MapCanvas.tsx'), 'utf8',
+    );
+    expect(canvas).toMatch(/const atCeiling = k\.value >= ceiling - 0\.5;/);
+    expect(canvas).toMatch(/const next = atCeiling \? zoomFloor : Math\.min\(ceiling, k\.value \* 2\.5\);/);
+    expect(canvas, 'the dead threshold must be gone')
+      .not.toMatch(/k\.value > zoomFloor \* 3\.5/);
+  });
+});
+
 describe('the worklet copy matches this one', () => {
   const canvas = readFileSync(
     join(__dirname, '..', '..', 'mobile', 'src', 'map', 'MapCanvas.tsx'), 'utf8',
