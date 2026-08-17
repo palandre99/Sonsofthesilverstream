@@ -34,7 +34,9 @@ import Animated, {
 } from 'react-native-reanimated';
 import { Image } from 'expo-image';
 import Svg, { Polyline } from 'react-native-svg';
-import { MAP_TILES, MAX_TILE_Z, REGION_MAX_Z, TILE_SIZE } from '../data/tileIndex.g';
+import {
+  MAP_TILES, MAX_TILE_Z, REGION_MAX_Z, TILE_GUTTER, TILE_SIZE,
+} from '../data/tileIndex.g';
 import { type RegionId } from './projection';
 
 /** Logical size of the map container. Tiles lay out against this once and are
@@ -756,11 +758,13 @@ export function MapCanvas({
     const have = MAP_TILES[region] ?? {};
     const n = 1 << win.z;
     const step = BASE / n;
-    // Half a SCREEN pixel, whatever the zoom. A flat 0.5 in container units is
-    // half a pixel when the map is drawn at 1:1 and a four-pixel band of
-    // stretched edge pixels at full zoom — which is exactly the straight lines
-    // the CEO photographed cutting his map into quadrants.
-    const bleed = (0.5 * BASE) / (TILE_PX * n);
+    // Tiles are baked with a 2-real-pixel gutter of their NEIGHBOURS' art on
+    // every edge (build_map_tiles.py), so adjacent tiles overlap with
+    // identical pixels and a seam is physically impossible at any zoom. The
+    // old runtime "bleed" stretched each tile's own edge instead, and at 7x
+    // overzoom that stretch was a visible band — the hard vertical line in
+    // the CEO's 22:39 screenshot. g is the gutter in container units.
+    const g = (TILE_GUTTER * BASE) / (TILE_PX * n);
     const out: React.ReactNode[] = [];
     for (let y = win.y0; y <= win.y1; y++) {
       for (let x = win.x0; x <= win.x1; x++) {
@@ -772,11 +776,10 @@ export function MapCanvas({
             source={src}
             style={{
               position: 'absolute',
-              left: x * step,
-              top: y * step,
-              // bleed kills the hairline seams between tiles at every zoom
-              width: step + bleed,
-              height: step + bleed,
+              left: x * step - g,
+              top: y * step - g,
+              width: step + 2 * g,
+              height: step + 2 * g,
             }}
             contentFit="fill"
             // DISK, not memory-disk. Only ~6 tiles are ever on screen, but a

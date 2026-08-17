@@ -859,13 +859,21 @@ describe('deep zoom is sharp, seamless and stays put', () => {
     join(__dirname, '..', '..', 'mobile', 'src', 'map', 'MapCanvas.tsx'), 'utf8',
   );
 
-  it('keeps the tile seam bleed a constant size ON SCREEN', () => {
-    // a flat 0.5 in container units is half a pixel at 1:1 and a four-pixel
-    // band of stretched edge pixels at full zoom — the straight lines that cut
-    // his map into quadrants
-    expect(canvas).not.toMatch(/width: step \+ 0\.5/);
-    expect(canvas).toMatch(/const bleed = \(0\.5 \* BASE\) \/ \(TILE_PX \* n\)/);
-    expect(canvas).toMatch(/width: step \+ bleed/);
+  it('tiles overlap with their neighbours REAL pixels, not a stretched bleed', () => {
+    // The bleed era stretched a tile's own edge to cover hairline gaps; at
+    // 7x overzoom that stretch was a visible band — the hard vertical seam
+    // in his 22:39 screenshot. Tiles are baked with a 2-real-pixel gutter of
+    // neighbour art now, so adjacent tiles overlap with identical pixels
+    // and a seam is physically impossible at any zoom.
+    expect(canvas).not.toContain('const bleed');
+    expect(canvas).toContain('const g = (TILE_GUTTER * BASE) / (TILE_PX * n)');
+    expect(canvas).toContain('left: x * step - g');
+    expect(canvas).toContain('width: step + 2 * g');
+    const tools = readFileSync(
+      join(__dirname, '..', '..', 'tools', 'build_map_tiles.py'), 'utf8',
+    );
+    expect(tools).toContain('GUTTER = 2');
+    expect(tools).toContain('mode="edge"');
   });
 
   it('stops the pan writing a position while a pinch owns the map', () => {

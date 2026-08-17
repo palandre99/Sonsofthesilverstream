@@ -6,6 +6,7 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 
 export const TILE_SIZE = 512;
+export const TILE_GUTTER = 2;
 export const MAX_TILE_Z = 4;
 
 /** deepest level each region actually HAS. The World Tree has no
