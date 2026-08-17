@@ -2098,6 +2098,56 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E113. THE PICKER BLAMED YOUR SPELLING FOR A FILTER
+## 2026-08-17 (overnight)
+
+Read `PalPicker` and `FilterSheet` aloud — two surfaces the player passes
+through constantly (every parent choice, every Paldex filter) whose copy had
+never been audited.
+
+**THE FILTER SHEET CAME BACK CLEAN**, and that is worth recording so nobody
+re-audits it: "Have ♂ + ♀", "One gender", "Rarest first", "Paldex number",
+"Common first" are all player words; the internal ids `pairready` and
+`onegender` never surface; and its Show button **already** says "1 pal" and
+never "1 pals", with a comment saying why.
+
+**FINDING 1 — THE PICKER REPEATED A BUG THE PALDEX HAD ALREADY FIXED.** With a
+search AND a filter both narrowing, it printed *"No pal matches "zzzz""* —
+blaming the search alone and sending the player off to re-check a word that was
+never the problem. **The Paldex hit exactly this, fixed it with three branches,
+and left a comment saying the old message "named a cause the player could not
+act on". The fix was never carried across.** METHOD #18: structural fixes port
+too — and nobody had checked.
+
+    search only       No pal matches “zzzz”. Check the spelling.
+    search + filter   Nothing matches “zzzz” with those filters.
+                      Clear a filter, or check the spelling.
+    filter only       Nothing matches those filters.
+
+All three verified on the render.
+
+**FINDING 2 — THE APP SPELLED ONE STAT TWO WAYS.** The Odds Lab said
+**"Defence"**; the Paldex sort and the filter chip said **"Defense"**. The
+game's own datamined text says "Defense", and the stat icon asset is literally
+`Defense.png`, so the Odds Lab was the outlier. One spelling now, matching the
+game. (`engine/odds.ts` still says Defence in two internal COMMENTS — not
+user-visible, and it is a sacred mirrored file, so it was left alone.)
+
+**A TESTING NOTE THAT COST TWO ATTEMPTS:** `FilterSheet` keeps DRAFT state and
+only calls `onApply` when you press **"Show N pals"**. Ticking a chip and
+reading the list back tests nothing — the picker's filters have not changed
+yet. My first two runs "disproved" a fix that was working correctly.
+
+**DELIBERATELY NOT CHANGED:** the app says "Health" on the pal card and the
+sort chip, but "HP" in the Odds Lab's IV chips. Both are clear, the game uses
+both, and the compact chip row is a fair reason for the short form — unlike
+Defence/Defense, which was one word spelled two ways. Logged rather than
+"fixed".
+
+`picker-filter-copy.test.ts` (7). Gates 504. Mobile typecheck clean.
+Mutation-proven — dropping the combined branch or reverting the spelling each
+fails. Published to both channels.
+
 ## E112. SHARE A RESULT OR A ROUTE — AAA #15's ACTIONABLE HALF
 ## 2026-08-17 (overnight)
 
