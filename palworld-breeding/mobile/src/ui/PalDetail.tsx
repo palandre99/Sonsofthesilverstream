@@ -653,25 +653,36 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
               {inPool && !selfOnly.has(name) && (() => {
                 // show real example pairs INLINE — competitors do, and a
                 // cross-tab homework assignment is not a feature
+                // The scan runs to the END now. It used to stop at 40 hits,
+                // which cost two things: the card could only say "many" when
+                // it could have said 1,270, and a pair the player ALREADY OWNS
+                // sitting past the 40th was never found — the one example
+                // worth showing, missed. Measured: a full scan is ~11 ms per
+                // pal in node and moved card-open time by nothing you can see.
                 const pairs: [string, string][] = [];
                 const names = Object.keys(pals);
-                outer: for (let i = 0; i < names.length; i++) {
+                let total = 0;
+                for (let i = 0; i < names.length; i++) {
                   for (let j = i; j < names.length; j++) {
                     const kids = engine.childrenOf(names[i], names[j]);
                     if (kids.length === 1 && kids[0].species === name
                       && kids[0].kind === 'generic') {
+                      total++;
                       const bothOwned = ownedAny(names[i]) && ownedAny(names[j]);
+                      // keep the display shortlist small; owned pairs first
                       if (bothOwned) pairs.unshift([names[i], names[j]]);
-                      else pairs.push([names[i], names[j]]);
-                      if (pairs.length >= 40) break outer;
+                      else if (pairs.length < 8) pairs.push([names[i], names[j]]);
                     }
                   }
                 }
                 const show = pairs.slice(0, 3);
+                const some = show.length === 3 ? 'Three of them'
+                  : show.length === 2 ? 'Two of them' : 'One of them';
                 return (
                   <View style={{ gap: 6 }}>
                     <Text style={s.body}>
-                      No fixed recipe — many parent pairs work. For example:
+                      No fixed recipe — {total.toLocaleString()} different pairs
+                      make {name}. {some}:
                     </Text>
                     {show.map(([pa, pb]) => (
                       <View key={`${pa}+${pb}`}

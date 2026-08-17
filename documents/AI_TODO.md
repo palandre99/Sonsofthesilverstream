@@ -2098,6 +2098,47 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E118. "MANY PARENT PAIRS WORK" WAS HIDING A NUMBER — AND A PAL HE OWNS
+## 2026-08-17 (overnight)
+
+Still reading the pal card. "How to breed it", for a pal with no fixed recipe,
+said: *"No fixed recipe — many parent pairs work. For example:"* and showed
+three.
+
+**"Many" was hiding a real number.** Measured with the engine across the **183
+pals** that reach this branch, the true counts run **25 to 1,270, median 205**.
+One word was doing duty for both ends of that range. The CEO's bar is that
+every number carries meaning; "many" carries none.
+
+**The cause cost something worse than vagueness.** The scan stopped at the 40th
+hit — so the card could never know the total, and **a pair the player ALREADY
+OWNS sitting past the 40th was never found.** Owned pairs are floated to the
+front precisely because they are the most useful example; the cap could hide the
+best one and show three the player cannot make. **174 of the 183 have more than
+40 pairs** (measured, after I nearly wrote 171 from memory — method #8), so this
+was the normal case, not an edge.
+
+The scan runs to the end now:
+
+*"No fixed recipe — 235 different pairs make Anubis. Three of them:"*
+
+**Paid for in nothing (method #26).** Measured on the render, before and after:
+Lamball 1006 → 1004 ms, Anubis 1004 → 1000 ms. A full scan is ~11 ms per pal in
+node, and it disappears inside a card open. A correctness fix that costs the
+player nothing is the easy half of this rule — E88 and E108 are the other half.
+
+**Checked and CLEARED (method #16, method #47):** a list built from derived data
+drops the empty case in silence, so I looked — **no pal reaches this branch with
+zero pairs, and none with fewer than three**, so "Three of them:" is never a lie.
+The wording still derives itself anyway, because that is a DATA fact and data
+facts move (method #49).
+
+`pal-breed-pairs.test.ts` is new, 7 tests, **behavioural** — it rebuilds the
+card's exact predicate on the engine rather than trusting the screen. **Mutation-
+proven four ways**: going back to "many", re-introducing the cap, dropping the
+thousands separator, and hard-coding "Three of them" all fail. Gates **546**.
+Mobile typecheck clean. Published to both channels.
+
 ## E117. THE PAL'S OWN DESCRIPTION WAS CUT SHORT WITH NOTHING OFFERING TO SHOW IT
 ## 2026-08-17 (overnight)
 
