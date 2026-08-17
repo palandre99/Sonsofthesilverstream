@@ -8178,3 +8178,31 @@ Type pass over the NEW controls (route verbs on cards, share/import
 buttons, where-lines at larger text sizes) — the one surface the eval
 rounds have not yet walked with the new features in place. Then the zoom
 watch (M44 discriminators) and keep looping.
+
+### M48 — A11Y + LARGE TEXT over the new controls: CLEAN, nothing changed
+Targeted audit of every control added since routes began: route verb
+(role + accessibilityState disabled-when-last ✓), per-stop remove rows
+(role + self-labelling text ✓), bare-stop card (role + Close text ✓),
+share/import/clear cluster in the sheet (all three roles ✓), stop badges
+(icon-only, explicit accessibilityLabel with JOINED numbers ✓). RN
+Pressables with text children announce their text — explicit labels are
+only owed to icon-only controls, and both of those have them.
+DYNAMIC TYPE (REASONED, F35): all new rows are padding-based and grow;
+numberOfLines={1} only truncates decorative context (mark name on the
+card header — by design, M35 measured the base pattern); the where-line
+and stop rows wrap freely; the pill wraps to a second line at large
+sizes rather than clipping; the 20px stop badges are MAP GRAPHICS
+(counter-scaled map space), exempt from text scaling like every map
+app's pins.
+AUDIT-SCRIPT TRAP for the next worker: a regex Pressable audit that
+slices the tag with indexOf('>') truncates at the first '>' INSIDE an
+onPress arrow function and false-reports missing a11y props — it claimed
+26 of 35 Pressables lacked roles when the code was right. Probe by the
+control's visible text instead. (The "a NEW test can be wrong" rule
+applies to audit scripts too.)
+NOTHING PUBLISHED — no changes. STANDING STATE: all four M42 items
+shipped; eval rounds 1-4 done (6 fixes, 10 clean passes); zoom watch
+armed (About stamp + all-layers-off discriminator; cluster continuity
+is the queued hypothesis). NEXT: hold the loop — his testing feedback
+is the highest-value input now; between reports, remaining polish
+surfaces are minor (per-POI names for more layers, key ordering).
