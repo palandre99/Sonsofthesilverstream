@@ -28,6 +28,9 @@ import { join } from 'node:path';
 import {
   CAKES, IV_CATEGORIES, ivInheritP, ivOdds, passiveOdds,
 } from '../src/engine/odds';
+import palsJson from '../public/data/pals_1_0.json';
+
+const pals = (palsJson as { pals: Record<string, unknown> }).pals;
 
 const raw = readFileSync(
   join(__dirname, '../../mobile/src/screens/OddsScreen.tsx'), 'utf8');
@@ -155,6 +158,24 @@ describe('counted labels read like a person wrote them', () => {
     expect(veg.eggsPerCycle).toBe(2);
     expect(Math.ceil(passiveOdds({ poolSize: 2, desiredCount: 1 }).eggsFor90 / veg.eggsPerCycle))
       .toBe(1);
+  });
+
+  it('“N pals make eggs arrive faster” cannot become “1 pals”', () => {
+    // that heading counts a list DERIVED FROM THE GAME DATA — pals whose base
+    // support speeds eggs up. It is 2 today (Braloha, Dynamoff) so the plural
+    // is right, but nothing stopped a data update from taking it to 1. Found
+    // by the untruncated counted-label scan on 2026-08-17; the copy is left
+    // alone and the assumption is pinned instead.
+    const helpers = Object.entries(pals)
+      .filter(([, p]) => {
+        const t = (p as { base_support?: { type?: string } }).base_support?.type;
+        return t === 'egg_speed' || t === 'incubation';
+      })
+      .filter(([, p]) => (p as { partner_effect?: string }).partner_effect);
+    expect(helpers.length,
+      `only ${helpers.length} egg helper(s) — the heading would read "1 pals"`)
+      .toBeGreaterThan(1);
+    expect(code).toContain('pals make eggs arrive faster');
   });
 
   it('keeps the plurals that were already right', () => {
