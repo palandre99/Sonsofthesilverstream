@@ -33,6 +33,41 @@ TypeScript engine, three delivery targets:
 3. **Reference implementation** (`palworld-breeding/planner.py` + `guide/`)
    — the Python original; data pipeline lives in `palworld-breeding/tools/`.
 
+## THE WEBSITE IS ON HOLD — PHONE APP ONLY (CEO, 2026-08-17)
+
+**Verbatim:**
+
+> "I want full focus on app only. Put website on hold. We can port app better
+> when we are further along. Update workspace on this temporary stop of website
+> until ceo tells it to get back to work. We focus on app for a long while only
+> so we don't have to do double work before we are happy with results."
+
+**This overrides the "make the website just as good and detailed" half of the
+2026-08-16 directive. That half is SUSPENDED, not cancelled.**
+
+So, until the CEO personally lifts this:
+
+- **Build only in `palworld-breeding/mobile/`.** Every finished item ships to
+  his phone by the PUBLISH RITUAL below. That ritual matters MORE now, not
+  less — it is the only way work reaches him.
+- **Do NOT port anything to `palworld-breeding/app/`.** Not a fix, not a
+  section, not a word of copy. The reason is his: porting now means doing the
+  work twice, because the app is still changing shape. We port ONCE, later,
+  when the phone app is something we are happy with.
+- **The website keeps working and stays green.** Do not delete or break it.
+  `npx vitest run` in `app/` remains a required gate (it owns the oracle, the
+  engine-parity and logic-parity gates, and the shared-logic tests — those
+  guard the PHONE too). Web tests that already exist stay green; just don't
+  add web features.
+- **Web-only findings get LOGGED, not fixed.** If a sweep turns up a website
+  gap, write it in the ledger under a "WEB BACKLOG — ON HOLD" heading so the
+  eventual port has a list, and move on.
+- **The Map lane still owns its files.** Unchanged.
+- Everything already committed for the web (through E84) stays committed and
+  undeployed. Deployment was always his push to `main`; do not chase it.
+
+**When he lifts the hold, the web backlog in `AI_TODO.md` is the port list.**
+
 ## SCOPE — breeding is phase one of something much bigger
 
 **The CEO's framing (2026-08-15), and it governs every decision:**

@@ -1,7 +1,30 @@
 # PROGRESS — audited state, no invented percentages
 
-*Updated 2026-08-16 (breeding lane, late). Update this file whenever a work block lands;
+*Updated 2026-08-17 (breeding lane). Update this file whenever a work block lands;
 date every entry.*
+
+## 2026-08-17 — CEO PUTS THE WEBSITE ON HOLD; PHONE APP ONLY
+
+His words: *"I want full focus on app only. Put website on hold. We can port
+app better when we are further along... We focus on app for a long while only
+so we don't have to do double work before we are happy with results."*
+
+The reasoning is his and it is sound: the phone app is still changing shape,
+so every port is work done twice. We port ONCE, later.
+
+**What this changes:** all build work happens in `palworld-breeding/mobile/`.
+Nothing is ported to `app/`. Web-only findings are logged to the WEB BACKLOG
+in `AI_TODO.md` rather than fixed.
+
+**What it does NOT change:** the web test suite stays a required gate — it
+owns the 44,851-row oracle replay and the engine/logic parity gates, and those
+guard the PHONE. The website itself keeps working; it is frozen, not
+abandoned. Everything already committed for the web (through E84) stays
+committed and undeployed.
+
+**State at the freeze:** web committed through E84, never deployed (that was
+always the CEO's push to `main`). Mobile published through the E77 commit.
+Tests 372 green + 1 expected fail, 22 files; both trees `tsc --noEmit` clean.
 
 ## 2026-08-16 — THE BREEDING FANE: HIS FEEDBACK ROUND, THEN A HUNT FOR
 ## THINGS THE APP SAID THAT WERE NOT TRUE (breeding lane)

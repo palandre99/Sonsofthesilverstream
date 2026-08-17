@@ -139,6 +139,12 @@ Files ending `.g.ts` are **generated**. Never hand-edit them.
 
 ## Deploying the website + install pages
 
+> **⛔ ON HOLD since 2026-08-17 (CEO).** The website is frozen — no new web
+> features, no ports from the phone, no deploy. See the banner at the top of
+> `AI_TODO.md`. The commands below stay documented for when he lifts it.
+> The web TEST SUITE is unaffected and remains a required gate: it owns the
+> oracle replay and the engine/logic parity gates, which guard the PHONE.
+
 No CI deploys Pages — it updates only when someone pushes to `main`.
 **Pushing to `main` needs the CEO's explicit go-ahead** (asked and granted
 2026-08-15 for the install pages).

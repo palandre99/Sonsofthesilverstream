@@ -1,5 +1,28 @@
 # AI TODO — the shared backlog
 
+> ## ⛔ WEBSITE ON HOLD — PHONE APP ONLY (CEO, 2026-08-17)
+>
+> "I want full focus on app only. Put website on hold. We can port app better
+> when we are further along... We focus on app for a long while only so we
+> don't have to do double work before we are happy with results."
+>
+> Build ONLY in `palworld-breeding/mobile/`. Do NOT port anything to `app/`.
+> The web test suite stays a required gate (it owns the oracle and the parity
+> gates, which guard the PHONE). Web-only findings go to **WEB BACKLOG — ON
+> HOLD** below instead of being fixed. Lifted only by the CEO.
+
+## WEB BACKLOG — ON HOLD (the port list for when the hold lifts)
+
+*Nothing here gets built until the CEO lifts the hold. Add to it freely — a
+logged gap costs nothing and saves the eventual port from re-discovery.*
+
+- Nothing outstanding as of 2026-08-17. The website was brought level with the
+  phone's pal card at E83/E84 (work levels at 4 stars, partner-skill level
+  badge, Drops section, food gauge, Born-with section) immediately before the
+  hold, and `app/tests/palcard-parity.test.ts` will fail loudly if the phone
+  gains a pal-card section the website lacks — **that failure is now EXPECTED
+  and is the signal to add a line here, not to go fix the website.**
+
 *Take from the top unless the CEO redirects. Tick with a date when done.
 Add everything you find; finding nothing means you didn't look.*
 
