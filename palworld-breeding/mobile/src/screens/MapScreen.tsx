@@ -840,7 +840,10 @@ export function MapScreen() {
       <View style={{
         position: 'absolute', left: 12, right: 12, bottom: insets.bottom + 14, gap: 8,
       }}>
-        {shownCount > 0 && (
+        {/* `shownCount` counts DATA points, so with only your own marks on the
+            map the key used to stay hidden and the pin colour went unexplained.
+            Your marks are a reason to show the key too. */}
+        {(shownCount > 0 || myPins.length > 0) && (
           <>
             {/* The legend only lists what is ON — a static key to 23 layers
                 would be a wall of colour the player has to filter by eye. */}
@@ -891,6 +894,30 @@ export function MapScreen() {
                       : 'Square pins are inside dungeons — none of these are on the surface'}
                   </Text>
                 )}
+                {/* The player's own marks sit in the key like everything
+                    else. Without this, dropping five pins changed the map and
+                    the key said nothing about them — and the key is where you
+                    look to find out what a colour means. */}
+                {myPins.length > 0 && (
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 9 }}>
+                    <View style={{
+                      width: 19, height: 19, borderRadius: 9.5,
+                      borderWidth: 2, borderColor: MY_PIN,
+                      backgroundColor: 'rgba(10,20,24,0.86)',
+                      alignItems: 'center', justifyContent: 'center',
+                    }}>
+                      <Icon name="map-marker-star" size={10} color={MY_PIN} />
+                    </View>
+                    <Text style={{
+                      color: T.ink, fontSize: 12.5, fontWeight: '700', flex: 1,
+                    }}>
+                      My marks
+                    </Text>
+                    <Text style={{ color: T.faint, fontSize: 11.5, fontWeight: '700' }}>
+                      {myPins.length}
+                    </Text>
+                  </View>
+                )}
                 {/* "idk if it's accurate even?" — CEO, 2026-08-17. The answer
                     existed, in four independent proofs, and lived in the
                     Reference tab where he was never going to look for it. A
@@ -920,7 +947,20 @@ export function MapScreen() {
               <Text style={{
                 color: legend ? T.accentInk : T.muted, fontSize: 11.5, fontWeight: '700',
               }}>
-                {shownCount.toLocaleString()} {shownCount === 1 ? 'spot' : 'spots'} on the map
+                {/* Your own marks are on the map too, so the pill must not
+                    say "0 spots on the map" while three of them are sitting
+                    there — the map contradicting itself is the exact bug this
+                    fane keeps getting caught by. They are counted SEPARATELY
+                    from the datamined spots, never added to them: "1,575"
+                    would quietly blend what the game files know with what you
+                    put there yourself. */}
+                {shownCount > 0
+                  ? `${shownCount.toLocaleString()} ${shownCount === 1 ? 'spot' : 'spots'} on the map`
+                  : ''}
+                {shownCount > 0 && myPins.length > 0 ? ' · ' : ''}
+                {myPins.length > 0
+                  ? `${myPins.length} of my ${myPins.length === 1 ? 'mark' : 'marks'}`
+                  : ''}
               </Text>
             </Pressable>
           </>
@@ -964,6 +1004,8 @@ export function MapScreen() {
           onToggle={togglePoi}
           onClear={() => patch({ poi: new Set() })}
           onClearFound={clearFound}
+          onClearMine={() => { clearPins(region); setOpenPin(null); }}
+          myMarks={myPins.length}
           onClose={() => setSheet(null)}
         />
       )}
@@ -1333,9 +1375,12 @@ function SheetShell({ title, onClear, onClose, children }: {
   );
 }
 
-function LayerSheet({ filters, onToggle, onClear, onClearFound, onClose }: {
+function LayerSheet({
+  filters, onToggle, onClear, onClearFound, onClearMine, myMarks, onClose,
+}: {
   filters: MapFilters; onToggle: (id: string) => void; onClear: () => void;
-  onClearFound: () => void; onClose: () => void;
+  onClearFound: () => void; onClearMine: () => void; myMarks: number;
+  onClose: () => void;
 }) {
   const groups = useMemo(() => {
     const by = new Map<LayerGroup, ReturnType<typeof poiLayers>>();
@@ -1350,6 +1395,22 @@ function LayerSheet({ filters, onToggle, onClear, onClearFound, onClose }: {
   return (
     <SheetShell title="What to show" onClear={onClear} onClose={onClose}>
       <ScrollView contentContainerStyle={{ padding: 14, gap: 16 }}>
+        {myMarks > 0 && (
+          <Pressable
+            onPress={onClearMine}
+            accessibilityRole="button"
+            style={{
+              alignSelf: 'flex-start', flexDirection: 'row', alignItems: 'center', gap: 7,
+              paddingHorizontal: 11, paddingVertical: 9, borderRadius: 11,
+              borderWidth: 1, borderColor: T.line, backgroundColor: T.surface,
+            }}
+          >
+            <Icon name="map-marker-off-outline" size={15} color={T.muted} />
+            <Text style={{ color: T.muted, fontWeight: '700', fontSize: 12.5 }}>
+              Clear {myMarks} of my {myMarks === 1 ? 'mark' : 'marks'}
+            </Text>
+          </Pressable>
+        )}
         {foundCount() > 0 && (
           <Pressable
             onPress={onClearFound}

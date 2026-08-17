@@ -2064,3 +2064,41 @@ describe("the player's own pins", () => {
     expect(used.has(mine![1].toLowerCase())).toBe(false);
   });
 });
+
+describe('your marks are accounted for like everything else on the map', () => {
+  const screen = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
+  );
+
+  it('the key lists them, so the pink is never an unexplained colour', () => {
+    expect(screen).toContain('My marks');
+    const row = screen.slice(screen.indexOf('My marks') - 900, screen.indexOf('My marks') + 200);
+    expect(row).toContain('MY_PIN');
+    expect(row).toContain('myPins.length');
+  });
+
+  it('and the key OPENS for marks alone, not only for data layers', () => {
+    // shownCount counts datamined points, so with only your own marks on the
+    // map the key stayed hidden and the pin colour went unexplained.
+    expect(screen).toMatch(/\(shownCount > 0 \|\| myPins\.length > 0\) && \(/);
+  });
+
+  it('never says "0 spots" while your marks are sitting on the map', () => {
+    // the map contradicting itself is the exact bug this fane keeps getting
+    // caught by (cf. the Mau banner)
+    expect(screen).toMatch(/shownCount > 0\s*\n?\s*\? `\$\{shownCount\.toLocaleString\(\)\}/);
+    expect(screen).toMatch(/of my \$\{myPins\.length === 1 \? 'mark' : 'marks'\}/);
+  });
+
+  it('and counts them SEPARATELY from the datamined spots', () => {
+    // "1,575" would quietly blend what the game files know with what the
+    // player put there. The two numbers must never be summed.
+    expect(screen).not.toMatch(/shownCount \+ myPins\.length/);
+    expect(screen).not.toMatch(/myPins\.length \+ shownCount/);
+  });
+
+  it('can be cleared for THIS map only, without touching the other one', () => {
+    expect(screen).toMatch(/Clear \{myMarks\} of my \{myMarks === 1 \? 'mark' : 'marks'\}/);
+    expect(screen).toContain('clearPins(region)');
+  });
+});
