@@ -18,6 +18,11 @@ export interface PoiLayer {
   /** present only where the name carries information (a dungeon's
    *  name helps; 1,405 markers all called "Ore" do not) */
   names?: string[];
+  /** per-point level, present only where the game data has one */
+  lvs?: (number | null)[];
+  /** one extra line per point, in player words, straight from the
+   *  game data (bounties: wanted title + partner) */
+  info?: (string | null)[];
 }
 
 export const MAP_POIS: PoiLayer[] = [
@@ -81,6 +86,8 @@ export const MAP_POIS: PoiLayer[] = [
     maps: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=',
     pts: '5GuyZlBE9JwRotlLaisTzIx+2DlihBWGpLEnZV9Xh7s2uB9U7prGWrtx3pALqcxTz18QpWmGj2gfoD59tYEgXXiWGWQmOxTeaHEfSyLH2UjFPBG3F4ygLFY3a7Owmrp63nhgeFWGl3OGlOBHvpvxcj5l+0DbtaE1F5JVOma9ySM=',
     names: ["Aloha", "Billy", "Brick", "Cache", "Clint", "Crash", "Dart", "Dazzle", "Dyna and Mite", "Ego", "Flare", "Fumble", "Gnaw", "Grill", "Hawk", "Jade", "Lasso", "Mimic", "Nimble", "Phantom", "Pinch", "Quill", "Ram", "Scoot", "Shadow", "Siren", "Skim", "Turncoat", "Urchin", "Whip", "Whisk", "Whisper"],
+    lvs: [39, 57, 30, 58, 49, 15, 23, 56, 26, 23, 38, 28, 57, 20, 12, 19, 21, 57, 52, 36, 57, 43, 59, 10, 41, 16, 42, 15, 53, 40, 45, 37],
+    info: ["Wanted: Pineapple Pizza Enthusiast · fights with Wixen", "Wanted: Horse Rustler · fights with Pyrin", "Wanted: Hostile Defender", "Wanted: Human Collector", "Wanted: Trigger-Happy Gunslinger", "Wanted: Insurance Fraud · fights with Direhowl", "Wanted: Walking Smoker · fights with Incineram", "Wanted: Attention-Seeking Monster", "Wanted: Twin Bombers · fights with Tocotoco", "Wanted: Gloating Narcissist", "Wanted: Pyromaniac", "Wanted: Blundering Klutz", "Wanted: Cannibal", "Wanted: Intimidating Interviewer", "Wanted: Amateur Hunter", "Wanted: Scam Artist", "Wanted: Cattle Rustler · fights with Mozzarina", "Wanted: Counterfeiter", "Wanted: Dango Thief · fights with Chillet Ignis", "Wanted: Escape Artist", "Wanted: Serial Borrower", "Wanted: Well-Meaning Quack · fights with Sibelyx", "Wanted: Breaking and Entering · fights with Omascul", "Wanted: Dine-and-Dasher", "Wanted: Black Magic Fanatic", "Wanted: Serial Cheater", "Wanted: Serial Embezzler", "Wanted: Bounty Hunter Hunter", "Wanted: Street Assassin", "Wanted: Workplace Tyrant · fights with Robinquill Terra", "Wanted: Kidnapper", "Wanted: Chronic Spoiler"],
   },
   {
     id: 'egg', label: "Egg", icon: 'egg-outline',

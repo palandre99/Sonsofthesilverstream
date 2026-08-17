@@ -39,7 +39,7 @@ import {
   poiLayer,
   poiLayers, poiPoints, searchPlaces,
   poiName, spawnLevels, spawnPoints, spawnablePals, wildBands,
-  hasNames, namedPoints, subsetWithIndex, whereFromLine,
+  hasNames, namedPoints, poiInfo, poiLv, subsetWithIndex, whereFromLine,
   type LayerGroup, type MapFilters,
 } from '../map/layers';
 import { MAP_REGIONS } from '../data/mapMeta.g';
@@ -595,6 +595,13 @@ export function MapScreen() {
       if (ownedAny(palName)) lines.push('Already in your box');
       // no "N spots on the map" here — the pill at the bottom already says it
     } else {
+      // Per-point level and info straight from the game data (bounties:
+      // level + wanted title + partner) — "Bounty targets lack levels, and
+      // a lot of stuff has very little information" (CEO, 22:42).
+      const plv = poiLv(layer.key.slice(4), region, origIndex);
+      if (plv != null) lines.unshift(`Level ${plv}`);
+      const pinfo = poiInfo(layer.key.slice(4), region, origIndex);
+      if (pinfo) lines.push(pinfo);
       // A boss card without its level made the CEO tap through to the Paldex
       // just to know if he would be flattened (20:13, with a screenshot).
       // Alpha levels are datamined per spot; match this pin back to its
@@ -1442,11 +1449,12 @@ export function MapScreen() {
                 const found = isFound(foundKey(sheet.list, region, item.index));
                 // an alpha's level is on its card; here it makes the list
                 // scannable for "what can I fight right now"
-                const lv = sheet.list === 'alpha_pals' && item.name.startsWith('Alpha ')
-                  ? MAP_ALPHAS[item.name.slice(6)]?.find((a) =>
-                    a.m === (region === 'palpagos' ? 0 : 1)
-                    && Math.abs(a.u - item.u) < 0.002 && Math.abs(a.v - item.v) < 0.002)?.lv
-                  : undefined;
+                const lv = poiLv(sheet.list, region, item.index)
+                  ?? (sheet.list === 'alpha_pals' && item.name.startsWith('Alpha ')
+                    ? MAP_ALPHAS[item.name.slice(6)]?.find((a) =>
+                      a.m === (region === 'palpagos' ? 0 : 1)
+                      && Math.abs(a.u - item.u) < 0.002 && Math.abs(a.v - item.v) < 0.002)?.lv
+                    : undefined);
                 return (
                   <Pressable
                     onPress={() => {
@@ -1472,7 +1480,13 @@ export function MapScreen() {
                       <Text style={{ color: T.ink, fontWeight: '700', fontSize: 13 }}>
                         {item.name}
                       </Text>
-                      {(nameTally.get(item.name) ?? 0) > 1 && (
+                      {poiInfo(sheet.list, region, item.index) != null && (
+                        <Text style={{ color: T.faint, fontSize: 10.5, fontWeight: '600' }}>
+                          {poiInfo(sheet.list, region, item.index)}
+                        </Text>
+                      )}
+                      {poiInfo(sheet.list, region, item.index) == null
+                        && (nameTally.get(item.name) ?? 0) > 1 && (
                         <Text style={{ color: T.faint, fontSize: 10.5, fontWeight: '600' }}>
                           {/* a row within 30 m of a statue gets no where-line
                               (you are standing on it) — the game's own

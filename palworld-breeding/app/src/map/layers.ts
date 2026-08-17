@@ -105,6 +105,38 @@ export function poiName(layerId: string, region: RegionId, index: number): strin
   return names[index] ?? '';
 }
 
+/** Per-point level for one region, where the game data has one (bounties). */
+const poiLvCache = new Map<string, (number | null)[]>();
+export function poiLv(layerId: string, region: RegionId, index: number): number | null {
+  const key = `${layerId}|${region}`;
+  let lvs = poiLvCache.get(key);
+  if (!lvs) {
+    const layer = poiLayer(layerId);
+    if (!layer?.lvs) return null;
+    const maps = unbase64(layer.maps);
+    const want = region === 'palpagos' ? 0 : 1;
+    lvs = layer.lvs.filter((_, i) => maps[i] === want);
+    poiLvCache.set(key, lvs);
+  }
+  return lvs[index] ?? null;
+}
+
+/** One extra line per point, in player words, where the data has one. */
+const poiInfoCache = new Map<string, (string | null)[]>();
+export function poiInfo(layerId: string, region: RegionId, index: number): string | null {
+  const key = `${layerId}|${region}`;
+  let info = poiInfoCache.get(key);
+  if (!info) {
+    const layer = poiLayer(layerId);
+    if (!layer?.info) return null;
+    const maps = unbase64(layer.maps);
+    const want = region === 'palpagos' ? 0 : 1;
+    info = layer.info.filter((_, i) => maps[i] === want);
+    poiInfoCache.set(key, info);
+  }
+  return info[index] ?? null;
+}
+
 /** Points of a POI layer for one region. Decoded once, then reused. */
 export function poiPoints(layerId: string, region: RegionId): PointSet | null {
   const key = `${layerId}|${region}`;

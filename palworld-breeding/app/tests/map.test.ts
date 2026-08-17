@@ -23,7 +23,7 @@ import { decodeRoute, encodeRoute } from '../../mobile/src/map/routeShare';
 import {
   closeMatches, isNightOnly, poiLayers, poiPoints, searchPlaces, spawnablePals, spawnLevels,
   spawnPoints, spawnSplit,
-  emptyFilters, hasNames, listSortKey, namedPoints, subsetWithIndex, whereFrom, whereFromLine, wildBands,
+  emptyFilters, hasNames, listSortKey, namedPoints, poiInfo, poiLv, subsetWithIndex, whereFrom, whereFromLine, wildBands,
 } from '../src/map/layers';
 import { REGION_SPOTS } from '../src/data/regionSpots.g';
 
@@ -2865,5 +2865,33 @@ describe('the found filter (All / Still to find / Found)', () => {
     expect(screen).toContain('if (keep.length === 0) continue;');
     // the three-way control exists with player words
     expect(screen).toContain("'Still to find'");
+  });
+});
+
+describe('bounties carry their level and wanted poster (CEO 22:42) — EXECUTED', () => {
+  it('every bounty on Palpagos has a level and a Wanted line from the data', () => {
+    const n = poiPoints('bounty_targets', 'palpagos')!.n;
+    expect(n).toBe(32);
+    for (let i = 0; i < n; i++) {
+      const lv = poiLv('bounty_targets', 'palpagos', i);
+      expect(lv, `bounty ${i} level`).not.toBeNull();
+      expect(lv!).toBeGreaterThan(0);
+      expect(poiInfo('bounty_targets', 'palpagos', i)).toMatch(/^Wanted: /);
+    }
+  });
+
+  it('layers without the data answer null, never a guess', () => {
+    expect(poiLv('chest', 'palpagos', 0)).toBeNull();
+    expect(poiInfo('fast_travel', 'palpagos', 0)).toBeNull();
+  });
+
+  it('the card and list surface them (wiring)', () => {
+    const screen = readFileSync(
+      join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
+    );
+    expect(screen).toContain('const plv = poiLv(layer.key.slice(4), region, origIndex);');
+    expect(screen).toContain('lines.unshift(`Level ${plv}`)');
+    expect(screen).toContain('const pinfo = poiInfo(layer.key.slice(4), region, origIndex);');
+    expect(screen).toContain('poiLv(sheet.list, region, item.index)');
   });
 });

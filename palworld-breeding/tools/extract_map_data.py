@@ -330,7 +330,23 @@ def build_pois() -> tuple[str, dict]:
         if uv is None:
             stats["dropped_offmap"] += 1
             continue
-        by_layer[layer].append((region, uv, clean_poi_name(p.get("name"))))
+        # Per-point extras, only where the source REALLY has them ("Bounty
+        # targets lack levels, and a lot of stuff has very little
+        # information" — CEO, 22:42). Bounty rows carry level, a wanted
+        # title and sometimes a partner pal in the notes; all datamined,
+        # all previously dropped on the floor here.
+        lv = p.get("level")
+        info = None
+        title = p.get("bountyTitle")
+        if title:
+            info = f"Wanted: {title}"
+            notes = p.get("notes") or ""
+            if "Partner: " in notes:
+                partner = notes.split("Partner: ", 1)[1].split("\u00b7")[0].strip()
+                partner = partner.split("|")[0].strip()
+                if partner:
+                    info += f" \u00b7 fights with {partner}"
+        by_layer[layer].append((region, uv, clean_poi_name(p.get("name")), lv, info))
         stats["points"] += 1
 
     lines = ts_header("Points of interest, grouped by layer.")
@@ -349,6 +365,11 @@ def build_pois() -> tuple[str, dict]:
         "  /** present only where the name carries information (a dungeon's",
         "   *  name helps; 1,405 markers all called \"Ore\" do not) */",
         "  names?: string[];",
+        "  /** per-point level, present only where the game data has one */",
+        "  lvs?: (number | null)[];",
+        "  /** one extra line per point, in player words, straight from the",
+        "   *  game data (bounties: wanted title + partner) */",
+        "  info?: (string | null)[];",
         "}",
         "",
         "export const MAP_POIS: PoiLayer[] = [",
@@ -357,23 +378,29 @@ def build_pois() -> tuple[str, dict]:
     for layer in sorted(by_layer, key=order.index):
         rows = by_layer[layer]
         label, icon, group, colour = POI_LAYERS[layer]
-        names = [n for _, _, n in rows]
+        names = [n for _, _, n, _, _ in rows]
+        lvs = [lv for _, _, _, lv, _ in rows]
+        infos = [inf for _, _, _, _, inf in rows]
         real = [n for n in names if n]
         # keep names only where they carry information: 1,405 markers all
         # called "Ore" teach nothing, but 149 distinct statue names do
         keep_names = len(set(real)) > max(1, len(names) // 10)
         maps = base64.b64encode(
-            bytes(0 if r == "palpagos" else 1 for r, _, _ in rows)
+            bytes(0 if r == "palpagos" else 1 for r, _, _, _, _ in rows)
         ).decode("ascii")
         entry = [
             "  {",
             f"    id: '{layer}', label: {json.dumps(label)}, icon: '{icon}',",
             f"    group: '{group}', colour: '{colour}', n: {len(rows)},",
             f"    maps: '{maps}',",
-            f"    pts: '{pack([uv for _, uv, _ in rows])}',",
+            f"    pts: '{pack([uv for _, uv, _, _, _ in rows])}',",
         ]
         if keep_names:
             entry.append(f"    names: {json.dumps(names, ensure_ascii=False)},")
+        if any(lv is not None for lv in lvs):
+            entry.append(f"    lvs: {json.dumps(lvs)},")
+        if any(inf for inf in infos):
+            entry.append(f"    info: {json.dumps(infos, ensure_ascii=False)},")
         entry.append("  },")
         lines += entry
     lines.append("];")
