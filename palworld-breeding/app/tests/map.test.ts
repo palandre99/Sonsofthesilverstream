@@ -998,7 +998,7 @@ describe('layers do not stack their pins on each other', () => {
     const screen = readFileSync(
       join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
     );
-    expect(screen).toMatch(/clusterPoints\(layer\.set, hits, vp\.scale, cell, li\)/);
+    expect(screen).toMatch(/clusterPoints\(layer\.set, hits, vp\.scale, layerCell, li\)/);
     expect(screen).toMatch(/for \(const \[li, layer\] of active\.entries\(\)\)/);
   });
 });
@@ -2895,5 +2895,20 @@ describe('bounties carry their level and wanted poster (CEO 22:42) — EXECUTED'
     expect(screen).toContain('lines.unshift(`Level ${plv}`)');
     expect(screen).toContain('const pinfo = poiInfo(layer.key.slice(4), region, origIndex);');
     expect(screen).toContain('poiLv(sheet.list, region, item.index)');
+  });
+});
+
+describe('dense spawn clouds read as areas, not swarms (CEO 23:21)', () => {
+  const screen = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
+  );
+
+  it('each layer clusters on a cell scaled by its OWN density', () => {
+    expect(screen).toContain(
+      'const layerCell = cell * Math.max(1, Math.min(4, Math.sqrt(hits.length / 120)));',
+    );
+    expect(screen).toContain('clusterPoints(layer.set, hits, vp.scale, layerCell, li)');
+    // sparse layers keep factor 1; the cap stops a mega-cell hiding a map
+    // 1,638 on-screen -> sqrt(13.65) ~ 3.7x the cell -> a handful of areas
   });
 });

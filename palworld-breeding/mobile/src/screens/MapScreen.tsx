@@ -242,7 +242,16 @@ export function MapScreen() {
       // of four survived. Measured: with six layers on, the largest berry
       // patch (1,016 points) was being hidden and the biggest badge drawn was
       // 843. If only N pins fit, they should be the N that matter.
-      const clusters = clusterPoints(layer.set, hits, vp.scale, cell, li)
+      // A biome-roaming pal (Smokie: 1,638 spawns) drew ~170 tiny bubbles
+      // at island zoom — true data, unreadable ("smokies fucking everywhere
+      // or what is this? Looks terrible" — CEO 23:21, screenshot). Each
+      // layer's cell now grows with ITS OWN on-screen density, so dense
+      // clouds collapse to a handful of AREA bubbles; zooming in shrinks
+      // the hit count and they break apart naturally. Sparse layers are
+      // untouched (factor 1 below ~120 on-screen points), and the pin
+      // still sits at the centroid of what it counts — never nudged.
+      const layerCell = cell * Math.max(1, Math.min(4, Math.sqrt(hits.length / 120)));
+      const clusters = clusterPoints(layer.set, hits, vp.scale, layerCell, li)
         .sort((a, b) => b.count - a.count)
         .slice(0, budget);
       for (const c of clusters) {
