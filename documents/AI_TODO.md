@@ -22,6 +22,13 @@ logged gap costs nothing and saves the eventual port from re-discovery.*
   hold, and `app/tests/palcard-parity.test.ts` will fail loudly if the phone
   gains a pal-card section the website lacks — **that failure is now EXPECTED
   and is the signal to add a line here, not to go fix the website.**
+- 2026-08-17 (E129): the phone's share/import format now carries the
+  gender-"?" mark (`Name ?`, `Name ♂ ?`) via `mobile/src/boxShare.ts`. The
+  WEBSITE's `parseImport` (app/src/modules/paldex.tsx) cannot read those
+  lines — a phone-shared list shows them as "not recognised" (visible, not
+  silent) — and the web box has no `u` flag at all. Port list: adopt
+  boxShare.ts (or equivalent), add the `u` flag to the web store + Paldex
+  UI (E122's feature), then extend `box-roundtrip.test.ts` to the u-states.
 
 *Take from the top unless the CEO redirects. Tick with a date when done.
 Add everything you find; finding nothing means you didn't look.*
@@ -2097,6 +2104,38 @@ page of plan tab a while back, empty and poor design"
         Reverted to one, reason recorded in the file. The phone's row is
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
+
+## E129. THE SHARE BUTTON WAS INVENTING A FEMALE — THE "?" MARK NOW RIDES
+## THE SHARE/IMPORT FORMAT 2026-08-17 (night)
+
+**Second find of the hunt, same family as E128: paths that predate E122.**
+"Share my list" wrote `Name ♀` for a "?"-only pal — `g.m ? '♂' : '♀'` with
+no third case. An export that INVENTS a gender is the dangerous mutation
+E122 named: imported on another install, the pal counts as a parent he
+cannot supply and the plan is a lie. The import side was as bad: the JSON
+branch dropped `u`, and a species owned only through "?" was skipped
+SILENTLY — neither recognised nor not-recognised, just gone.
+
+**THE FIX.** Writer and parser extracted from PaldexScreen.tsx into
+`mobile/src/boxShare.ts` (plain .ts — importable, so the round trip is
+REALLY tested, not source-asserted). The mark rides as its own token,
+every old list keeps its meaning: bare name = both genders, `Name ♂`,
+`Name ♀` unchanged; new forms `Name ?`, `Name ♂ ?`, `Name ♂ ♀ ?`. JSON
+backups keep `u` and count "?"-only species as owned. Merges carry the
+mark on both paths.
+
+**PROOF.** 9 new tests incl. a round trip of ALL 299 species × ALL 7
+ownership states a box entry can hold (2,093 lines written and re-read
+exactly); 3 mutations proven caught (writer re-invents ♀, JSON drops the
+mark, parser ignores the token). Render walk: `Beakon ? / Lamball ♂ ? /
+Katress ♀` → 3 recognised (was 1); u-only JSON → 1 recognised (was 0,
+silent); legacy list → 3 recognised unchanged; Add never pressed, box
+verified untouched (26, no Beakon). Gates: 672 tests, app build clean,
+mobile tsc clean.
+
+**WEB NOTE (logged, not fixed — hold):** the website's parseImport shows
+`Name ?` lines as "not recognised" (visible, not silent) and its box has
+no `u` at all. Port list entry added under WEB BACKLOG.
 
 ## E128. THE PLAN COULD DELETE A PAL HE STILL OWNS — THE "?" MARK WAS
 ## NOT SURVIVING PLAN TICKS 2026-08-17 (night, new session)

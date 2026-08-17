@@ -21,6 +21,7 @@ import {
   applyFilters, NO_FILTERS, sortedPals, type Filters, type SortKey,
 } from '../ui/palFilters';
 import { SAMPLE_BOX } from '../data/sampleBox';
+import { exportLine, parseImport } from '../boxShare';
 
 /** The empty Paldex used to be 299 untickable-looking rows and a footer
  * button — nothing on it said that ticking pals is what makes every other
@@ -131,57 +132,13 @@ const Row = memo(function Row({ name, onOpen, focus }: {
   );
 });
 
-/* ---------------- import sheet (from the old Box tab) ---------------- */
-
-function parseImport(text: string): { entries: [string, OwnedGenders][]; unknown: string[] } {
-  const lower = new Map(Object.keys(pals).map((n) => [n.toLowerCase(), n]));
-  const byName = new Map<string, OwnedGenders>();
-  const unknown: string[] = [];
-  const trimmed = text.trim();
-
-  // A JSON backup taken on the website used to paste in here as 299
-  // unreadable lines — the site can write AND read one, the phone could do
-  // neither. Same branch as app/src/modules/paldex.tsx: only `true` or an
-  // {m,f} object counts as owned, so a species recorded as false/null is not
-  // resurrected.
-  if (trimmed.startsWith('{')) {
-    try {
-      const obj = JSON.parse(trimmed) as Record<string, unknown>;
-      const source = (obj.box ?? obj) as Record<string, unknown>;
-      for (const [k, v] of Object.entries(source)) {
-        const name = lower.get(k.toLowerCase());
-        if (!name) { unknown.push(k); continue; }
-        let owned: OwnedGenders | null = null;
-        if (v === true) owned = { m: true, f: true };
-        else if (typeof v === 'object' && v !== null) {
-          const g = v as Partial<OwnedGenders>;
-          owned = { m: g.m === true, f: g.f === true };
-        }
-        if (owned && (owned.m || owned.f)) byName.set(name, owned);
-      }
-      return { entries: [...byName], unknown };
-    } catch { /* not valid JSON after all — fall through to line parsing */ }
-  }
-
-  for (const raw of trimmed.split(/\r?\n/)) {
-    const line = raw.trim().replace(/^[-*•]\s*/, '');
-    if (!line || line.startsWith('#')) continue;
-    const m = /^(.*?)(?:\s*[·|,]?\s*(♂|♀|\bm\b|\bf\b))?$/i.exec(line);
-    const name = lower.get((m?.[1] ?? line).trim().toLowerCase());
-    if (!name) { unknown.push(line); continue; }
-    const g = (m?.[2] ?? '').toLowerCase();
-    const add: OwnedGenders = g === '♂' || g === 'm' ? { m: true, f: false }
-      : g === '♀' || g === 'f' ? { m: false, f: true }
-      : { m: true, f: true };
-    const prev = byName.get(name);
-    byName.set(name, prev ? { m: prev.m || add.m, f: prev.f || add.f } : add);
-  }
-  return { entries: [...byName], unknown };
-}
+/* ---------------- import sheet (from the old Box tab) ----------------
+ * The parser (and the share writer it must never drift from) live in
+ * ../boxShare.ts — importable, so the round trip is really tested. */
 
 function ImportSheet({ onClose }: { onClose: () => void }) {
   const [text, setText] = useState('');
-  const parsed = useMemo(() => parseImport(text), [text]);
+  const parsed = useMemo(() => parseImport(text, Object.keys(pals)), [text]);
   return (
     <Modal visible animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
       <View style={{ flex: 1, backgroundColor: T.bg2, padding: 18 }}>
@@ -421,10 +378,8 @@ export function PaldexScreen() {
               onPress={() => {
                 // gender-suffixed lines — the exact format Import understands,
                 // so a collection moves between installs in two taps
-                const text = ownedNames.sort().map((n) => {
-                  const g = box[n];
-                  return n + (g.m && g.f ? '' : g.m ? ' ♂' : ' ♀');
-                }).join('\n');
+                const text = ownedNames.sort()
+                  .map((n) => exportLine(n, box[n])).join('\n');
                 void Share.share({ message: text });
               }} />
             <Btn small danger disabled={!ownedNames.length} label="Clear collection…"
