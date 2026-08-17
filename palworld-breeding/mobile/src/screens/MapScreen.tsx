@@ -56,7 +56,8 @@ import {
 } from '../ui/palFilters';
 import { PalDetail } from '../ui/PalDetail';
 import {
-  clearFound, foundCount, foundKey, isFound, loadFound, onFoundChange, toggleFound,
+  clearFound, foundCount, foundCountFor, foundKey, isFound, loadFound, onFoundChange,
+  toggleFound,
 } from '../map/found';
 
 type Sheet = null | 'layers' | 'pals' | { list: string };
@@ -2059,9 +2060,25 @@ function LayerSheet({
                     <Text style={{ color: on ? T.ink : T.muted, fontWeight: '700', fontSize: 12.5 }}>
                       {l.label}
                     </Text>
-                    <Text style={{ color: T.faint, fontWeight: '700', fontSize: 11 }}>
-                      {here ? here.toLocaleString() : 'none here'}
-                    </Text>
+                    {/* the count becomes progress once you have ticked
+                        anything here — the sheet doubles as a collection
+                        dashboard, green when a layer is complete */}
+                    {(() => {
+                      const got = here ? foundCountFor(l.id, filters.region) : 0;
+                      const done = got > 0 && got === here;
+                      return (
+                        <Text style={{
+                          color: done ? T.ok : T.faint,
+                          fontWeight: '700', fontSize: 11,
+                        }}>
+                          {here
+                            ? (got > 0
+                              ? `${got.toLocaleString()}/${here.toLocaleString()}`
+                              : here.toLocaleString())
+                            : 'none here'}
+                        </Text>
+                      );
+                    })()}
                     {/* "it should be possible to get a list so I can find
                         the one I am looking for" (CEO). Only layers whose
                         points the game NAMED get one — a list of 1,572

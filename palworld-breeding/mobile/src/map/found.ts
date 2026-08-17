@@ -60,6 +60,15 @@ export function isFound(key: FoundKey): boolean {
   return found.has(key);
 }
 
+/** How many of ONE layer's spots on ONE map are ticked found — the chips
+ *  read this so the Layers sheet doubles as a collection dashboard. */
+export function foundCountFor(layerId: string, region: RegionId): number {
+  const prefix = `${layerId}:${region}:`;
+  let n = 0;
+  for (const k of found) if (k.startsWith(prefix)) n += 1;
+  return n;
+}
+
 export function foundCount(): number {
   return found.size;
 }

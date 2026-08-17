@@ -1437,7 +1437,9 @@ describe('the layers sheet agrees with the map', () => {
   });
 
   it('says so before you tap when a layer has nothing here', () => {
-    expect(screen).toMatch(/here \? here\.toLocaleString\(\) : 'none here'/);
+    // the count expression grew a found-progress branch; the claim here is
+    // only that an empty layer says so in words before you tap
+    expect(screen).toContain(": 'none here'");
     expect(screen).toMatch(/opacity: here \? 1 : 0\.45/);
   });
 
@@ -2783,5 +2785,31 @@ describe('the list, round 2 (CEO: "Work")', () => {
     // and the list opens with honest progress
     expect(screen).toContain('`All ${rows.length} found`');
     expect(screen).toContain('`${foundCount2} of ${rows.length} found`');
+  });
+});
+
+describe('chips show collection progress', () => {
+  const store = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'map', 'found.ts'), 'utf8',
+  );
+  const screen = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
+  );
+
+  it('counts ONE layer on ONE map, by key prefix', () => {
+    // keys are `layer:region:index`, so the prefix IS the region scope — a
+    // tick on Palpagos can never count on the World Tree
+    const fn = store.slice(store.indexOf('export function foundCountFor'),
+      store.indexOf('export function foundCountFor') + 400);
+    expect(fn, 'foundCountFor must exist').toContain('`${layerId}:${region}:`');
+    expect(fn).toContain('k.startsWith(prefix)');
+  });
+
+  it('the chip shows progress only once something is ticked', () => {
+    expect(screen).toContain('foundCountFor(l.id, filters.region)');
+    // zero found keeps the plain count - no "0/1,572" noise on every chip
+    expect(screen).toContain('? `${got.toLocaleString()}/${here.toLocaleString()}`');
+    // and a complete layer goes green
+    expect(screen).toContain('const done = got > 0 && got === here;');
   });
 });
