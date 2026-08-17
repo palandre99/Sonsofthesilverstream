@@ -5428,3 +5428,39 @@ The suite no longer reports an expected fail: the other lane resolved their
 `it.fails` known-defect marker in plan-waves.test.ts. A clean run is now
 397 passed, 0 expected failures. If you see "1 expected fail" again, it came
 back and is theirs.
+
+### M9 — PUBLISHED (3fbe0e3): the provenance line + the double-tap ladder.
+
+### M10 — a regression MY OWN reach change caused — FIXED (6d71d26, live)
+The double-tap handler went home when `k > zoomFloor * 3.5`. At the old 3.2x
+ceiling that branch was DEAD CODE and could never run. Raising the ceiling to
+9.6x brought it to life at the worst moment: from 6.25x a double tap flung the
+map back to the whole island, so you could pinch to 9.6x but only TAP to
+6.25x. Now tied to the ceiling: 1x -> 2.5x -> 6.3x -> 9.6x -> home. A test
+pins the new ladder AGAINST the old rule (which tops out at 6.25x).
+THE PATTERN, and it has now paid twice in one night: WHEN YOU CHANGE A
+CONSTANT, GREP EVERYTHING KEYED TO IT. The reach change silently altered the
+pan/pinch hand-off AND this. Nothing else keyed to a hard multiple of
+zoomFloor/MAX_SCALE remains — checked by grep.
+
+### M11 — Reduce Motion is respected now — DONE (82fdd36)
+Audited the map against the BLUEPRINT'S OWN BAR (04_PRODUCT_BLUEPRINT §5, the
+15 checkable criteria) instead of against taste. Criterion 12 — "motion is
+physical and cancelable ... reduced-motion respected" — was failing: nothing
+in the entire app referenced AccessibilityInfo, while the map glides the whole
+world for 220-320ms on double-tap, on framing a species, and on reset.
+`glide` (0 when Reduce Motion is on) multiplies DURATION ONLY, never a target,
+so every destination is identical. Tests: one walks every `duration:` in the
+file and fails if any escapes the switch (all 9 covered); one asserts glide
+never reaches a target value. In the deps of all three worklet closures, so
+toggling it live takes effect.
+ALSO CHECKED from the same criterion: its named anti-example is MapGenie's
+blank-white-map at launch. We cannot have it — tiles are BUNDLED assets and a
+z0 base sits under the pyramid at all times, so there is no network fetch and
+no empty frame.
+
+### THE AAA CHECKLIST IS A GOOD AUDIT INSTRUMENT — use it again
+04_PRODUCT_BLUEPRINT.md §5 is 15 binary criteria. Criterion 12 alone produced
+a real fix tonight. Still unaudited against the MAP specifically: 1 (data
+badge), 2 (search ≤1 tap, ≤1s), 6 (numbers carry context), 10 (empty states
+teach the feature), 11 (rows carry decision-grade scent), 13-15 (unread).
