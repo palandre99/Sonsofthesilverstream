@@ -2098,6 +2098,47 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E98. HALF-DONE STEPS COUNT CORRECTLY EVERYWHERE, AND THE CAKE MATHS
+## MULTIPLIES OUT 2026-08-17 (overnight)
+
+E97 published to both channels on a **clean hash** — the Map lane committed
+seconds before, so nothing unfinished rode along after two ticks of waiting.
+
+**A PARTIALLY TICKED STEP — the state where "N of M" copy usually breaks.**
+Scripted his real plan with one step fully ticked, one ticked for the MALE
+only, and one untouched. Every counter that mentions it is right:
+
+- The tiles read **"35 STEPS · 1/35 DONE · +1 half-done · 6 READY NOW"**. The
+  half-ticked step is counted **separately** and never as done — which is the
+  honest answer, because you cannot breed with one gender.
+- Its goal still reads **"Ribbuny 0/1"** with **"Breed now: Cattiva + Gumoss"**
+  as the next action — so a half-done step does not inflate goal progress, and
+  it still tells you what to do next.
+- The phase containing it is correctly not "complete".
+
+**THE CAKE MATHS, verified by multiplication.** "35 steps means at least 35
+cakes: **175 flour · 280 berries · 245 milk · 280 eggs · 70 honey**". The
+per-cake figures the app states elsewhere are 5 / 8 / 7 / 8 / 2, and
+35 × those is exactly 175 / 280 / 245 / 280 / 70. **All five multiply out.**
+
+**A PUBLISHING JUDGEMENT, recorded because it will recur.** E97 sat unpublished
+for two ticks because the Map lane's tree was continuously dirty — they work
+all night, so "wait for a clean tree" can mean "never publish". Before
+shipping I checked whether their own publishes would carry my committed code
+anyway (they would, from the shared tree) but the timestamps were too close to
+call, so I verified the WHOLE tree first — `mobile tsc --noEmit` clean and
+**441 tests green including their new map tests** — and published. It came
+back clean-hashed regardless. **The rule stands (do not publish over unfinished
+work), but the escape hatch is: verify the whole tree compiles and tests green,
+then ship rather than stall indefinitely.**
+
+Also seen and retried: a NEW `dist` failure shape, `Asset processing timed out
+for assets: …index-*.hbc` — same family as the others, same fix (`rm -rf dist`,
+retry the one branch). That is ten hiccups from the shared build folder.
+
+Gates: 441 passing, 0 expected failures; both trees typecheck; zero console
+errors. His save restored with a zero-mismatch diff.
+
 ## E97. THE LAST UNMEASURED SCREEN, AND A BUTTON THAT SAID "REMOVE ALL…"
 ## WITHOUT SAYING ALL WHAT 2026-08-17 (overnight)
 
