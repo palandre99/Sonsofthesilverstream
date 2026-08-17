@@ -2912,3 +2912,21 @@ describe('dense spawn clouds read as areas, not swarms (CEO 23:21)', () => {
     // 1,638 on-screen -> sqrt(13.65) ~ 3.7x the cell -> a handful of areas
   });
 });
+
+describe('the sheets resize (CEO 23:22)', () => {
+  const screen = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
+  );
+
+  it('three snap heights, drag on the HANDLE only, tap cycles', () => {
+    expect(screen).toContain('const SHEET_SNAPS = [0.4, 0.14, 0] as const;');
+    expect(screen).toContain('PanResponder.create');
+    // the pan handlers live on the handle Pressable, not on the sheet body
+    // or anywhere near the map
+    expect(screen).toContain('{...pan.panHandlers}');
+    expect(screen).toContain('onPress={() => settle((snap + 1) % SHEET_SNAPS.length)}');
+    expect(screen).toContain('Tap to cycle half, tall and full screen');
+    // release snaps to the NEAREST stop — no free-floating heights
+    expect(screen).toContain('SHEET_SNAPS.forEach((f, i) => {');
+  });
+});

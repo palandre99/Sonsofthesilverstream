@@ -12,7 +12,8 @@
  */
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import {
-  Alert, FlatList, Image, Pressable, ScrollView, Share, Text, TextInput, View,
+  Alert, Animated as RNAnimated, Dimensions, FlatList, Image, PanResponder,
+  Pressable, ScrollView, Share, Text, TextInput, View,
 } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -1926,19 +1927,75 @@ function ControlBtn({ icon, label, on, onPress }: {
   );
 }
 
+/** Where the sheet's top edge can rest, as fractions of the screen.
+ *  "I should be able to swipe / drag it so it can go bigger, even maybe
+ *  full screen? Will feel better to use" (CEO, 23:22). Three stops:
+ *  half (the old fixed size), tall, and full. The drag lives on the
+ *  HANDLE only — nowhere near the map's gestures. */
+const SHEET_SNAPS = [0.4, 0.14, 0] as const;
+
 function SheetShell({ title, onClear, onClose, children }: {
   title: string; onClear: () => void; onClose: () => void; children: React.ReactNode;
 }) {
   const insets = useSafeAreaInsets();
+  const winH = Dimensions.get('window').height;
+  const [snap, setSnap] = useState(0);
+  const topAnim = React.useRef(new RNAnimated.Value(SHEET_SNAPS[0] * winH)).current;
+  const dragFrom = React.useRef(SHEET_SNAPS[0] * winH);
+
+  const settle = React.useCallback((idx: number) => {
+    setSnap(idx);
+    RNAnimated.timing(topAnim, {
+      toValue: SHEET_SNAPS[idx] * winH,
+      duration: 160,
+      useNativeDriver: false,   // animating layout `top`; JS driver required
+    }).start();
+  }, [topAnim, winH]);
+
+  const pan = React.useRef(PanResponder.create({
+    onStartShouldSetPanResponder: () => true,
+    onMoveShouldSetPanResponder: (_e, g) => Math.abs(g.dy) > 4,
+    onPanResponderGrant: () => {
+      dragFrom.current = (topAnim as unknown as { _value: number })._value;
+    },
+    onPanResponderMove: (_e, g) => {
+      const next = Math.min(SHEET_SNAPS[0] * winH, Math.max(0, dragFrom.current + g.dy));
+      topAnim.setValue(next);
+    },
+    onPanResponderRelease: (_e, g) => {
+      const at = dragFrom.current + g.dy;
+      let best = 0;
+      let bestD = Infinity;
+      SHEET_SNAPS.forEach((f, i) => {
+        const d = Math.abs(at - f * winH);
+        if (d < bestD) { bestD = d; best = i; }
+      });
+      settle(best);
+    },
+  })).current;
+
   return (
-    <View style={{
-      position: 'absolute', left: 0, right: 0, bottom: 0, top: '40%',
+    <RNAnimated.View style={{
+      position: 'absolute', left: 0, right: 0, bottom: 0, top: topAnim,
       backgroundColor: T.bg2, borderTopLeftRadius: 20, borderTopRightRadius: 20,
       borderTopWidth: 1, borderColor: T.line,
     }}>
+      {/* the grab handle: drag to any of the three heights, or tap to
+          cycle them — the tap is also the screen-reader path */}
+      <Pressable
+        {...pan.panHandlers}
+        onPress={() => settle((snap + 1) % SHEET_SNAPS.length)}
+        accessibilityRole="button"
+        accessibilityLabel="Resize this panel. Tap to cycle half, tall and full screen."
+        style={{ alignItems: 'center', paddingTop: 7, paddingBottom: 2 }}
+      >
+        <View style={{
+          width: 42, height: 5, borderRadius: 3, backgroundColor: T.line,
+        }} />
+      </Pressable>
       <View style={{
         flexDirection: 'row', alignItems: 'center', gap: 10,
-        paddingHorizontal: 16, paddingTop: 14, paddingBottom: 10,
+        paddingHorizontal: 16, paddingTop: 5, paddingBottom: 10,
         borderBottomWidth: 1, borderBottomColor: T.line,
       }}>
         <Text style={{ color: T.ink, fontWeight: '800', fontSize: 16, flex: 1 }}>{title}</Text>
@@ -1951,7 +2008,7 @@ function SheetShell({ title, onClear, onClose, children }: {
         </Pressable>
       </View>
       <View style={{ flex: 1, paddingBottom: insets.bottom }}>{children}</View>
-    </View>
+    </RNAnimated.View>
   );
 }
 
