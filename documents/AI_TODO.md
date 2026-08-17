@@ -2098,6 +2098,53 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E117. THE PAL'S OWN DESCRIPTION WAS CUT SHORT WITH NOTHING OFFERING TO SHOW IT
+## 2026-08-17 (overnight)
+
+Kept reading the pal card. The ABOUT card — the game's own Paldex blurb, clamped
+to two lines under a "tap to read more" hint. Two findings, both about the same
+mismatch: **the hint was gated on a CHARACTER COUNT while the text is clamped by
+LINES.**
+
+**1. Blurbs were losing a line with nothing offering to show it.** Measured on
+the render, not estimated: Vixy's 111-character blurb needs three lines
+(scrollHeight 59 against clientHeight 39) and lost one — but 111 is under the
+hard-coded 120, so no hint appeared. Hoocrates' 91 fits and correctly showed
+none. **15 blurbs sit in that 90-120 gap**, and where the third line begins
+depends on which letters are in the sentence, so no character count can answer
+it. Method #2, again.
+
+**2. Once expanded, nothing said it could be collapsed.** The CEO made exactly
+this point about finished plan phases — *"tapping to open the phase again to
+look at it, then I can't collapse it back again"* — and the same shape was
+sitting on the pal card. It now reads **"tap to show less"** when open.
+Verified on the render: collapsed → expanded → collapsed, labels correct at
+every step.
+
+**THE OR IS LOAD-BEARING, AND THAT IS THE REAL LESSON.** The fix measures the
+true line count with `onTextLayout` — **which react-native-web does not
+implement**, so it cannot be watched working on the QA render. I proved that
+before trusting it: with the length rule removed, the hint vanished for Vixy on
+the render. Dropping the old rule on the strength of an API I cannot verify
+would have taken the hint away from the **272 blurbs it already serves in order
+to fix 15**. So the measurement is OR'd with the length floor: on the phone it
+ADDS the hint where it was missing; anywhere it does not fire, behaviour is
+exactly as before. **Method #54 caught this one within the hour of writing it.**
+
+**Negative result, recorded (method #47/#50):** all 299 pals HAVE a blurb — the
+ABOUT card is not a repeat of E115's vanishing-card pattern. Pinned anyway,
+since the card is gated on it.
+
+`pal-about-copy.test.ts` is new, 8 tests. **Mutation-proven four ways** —
+reverting to the character count, dropping the floor, removing the collapse
+label, and failing to reset the measurement between pals all fail. Gates **539**.
+Mobile typecheck clean. Published to both channels.
+
+**Noted, not claimed:** `accessibilityState={{ expanded }}` on the ABOUT card
+does not surface as `aria-expanded` on the RN-web render. That is a
+react-native-web mapping gap, not proof of anything about iOS, so it is logged
+rather than "fixed".
+
 ## E116. THE GAME TEXT WAS ARRIVING CUT IN HALF, ON THREE SCREENS
 ## 2026-08-17 (overnight)
 

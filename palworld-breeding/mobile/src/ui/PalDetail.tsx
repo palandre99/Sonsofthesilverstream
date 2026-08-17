@@ -237,9 +237,24 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
   // every existing work suitability +1 at 4 stars (1.0, wiki-verified)
   const [stars, setStars] = useState(0);
   const [aboutOpen, setAboutOpen] = useState(false);
+  // Whether the blurb actually overflows two lines — MEASURED at layout time,
+  // not guessed from its length. The old rule showed "tap to read more" past
+  // 120 characters, but the text is clamped by LINES: Vixy's 111-character
+  // blurb lost a whole line with nothing offering to show it, while
+  // Hoocrates' 91 fitted fine. Where the third line begins depends on which
+  // letters are in it, so no character count can answer this.
+  //
+  // The length rule stays as a FLOOR, OR'd with the measurement. onTextLayout
+  // is an iOS/Android prop that react-native-web does not implement, so it
+  // cannot be verified on the QA render — and dropping the old rule on the
+  // strength of an unverifiable API would have taken the hint away from the
+  // 272 blurbs it already serves in order to fix 15. OR'd, the measurement
+  // can only ever ADD the hint where it was missing.
+  const [aboutClipped, setAboutClipped] = useState(false);
   useEffect(() => {
     setStars(0);
     setAboutOpen(false);
+    setAboutClipped(false);
   }, [name]);
   const p = pals[name];
   if (!p) return null;
@@ -300,9 +315,26 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
               numberOfLines={aboutOpen ? undefined : 2}>
               {ABOUT[name]}
             </Text>
-            {!aboutOpen && ABOUT[name].length > 120 && (
+            {/* Laid out unclamped and invisible purely to count the lines the
+                blurb really needs. Absolute, so it takes no space; it sits
+                inside the card's padding box, so its width matches the text
+                above it exactly. */}
+            {!aboutOpen && (
+              <Text
+                style={[s.body, {
+                  fontStyle: 'italic', position: 'absolute',
+                  left: 0, right: 0, opacity: 0,
+                }]}
+                pointerEvents="none"
+                onTextLayout={(e) => setAboutClipped(e.nativeEvent.lines.length > 2)}>
+                {ABOUT[name]}
+              </Text>
+            )}
+            {/* A state you can enter must say how to leave it — the CEO made
+                exactly this point about finished plan phases. */}
+            {(aboutOpen || aboutClipped || ABOUT[name].length > 120) && (
               <Text style={{ color: T.accentInk, fontSize: 11, fontWeight: '700' }}>
-                tap to read more
+                {aboutOpen ? 'tap to show less' : 'tap to read more'}
               </Text>
             )}
           </Pressable>
