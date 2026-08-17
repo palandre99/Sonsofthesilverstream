@@ -544,13 +544,15 @@ describe('zoom never asks for pixels that do not exist', () => {
   );
 
   it('records how deep each region really goes', () => {
-    expect(idx).toMatch(/REGION_MAX_Z[\s\S]*?palpagos: 4/);
+    // palpagos z5 = 16384 effective, Lanczos-2x of the native 8192 —
+    // interpolation for smooth edges at max zoom, not invented detail
+    expect(idx).toMatch(/REGION_MAX_Z[\s\S]*?palpagos: 5/);
     expect(idx).toMatch(/REGION_MAX_Z[\s\S]*?tree: 3/);
   });
 
   it('actually ships the deeper level for Palpagos and not for the tree', () => {
-    const z4 = [...MAP_TILES.palpagos].filter((k) => k.startsWith('4_'));
-    expect(z4.length).toBeGreaterThan(100);          // 180 kept, 76 open ocean
+    const z5 = [...MAP_TILES.palpagos].filter((k) => k.startsWith('5_'));
+    expect(z5.length).toBeGreaterThan(400);          // 565 kept of 1024
     expect([...MAP_TILES.tree].some((k) => k.startsWith('4_'))).toBe(false);
   });
 

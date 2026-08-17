@@ -57,7 +57,13 @@ FLAT_TOLERANCE = 3.2  # a tile this uniform is indistinguishable from its parent
 # told so per region rather than being allowed to ask for a level that would
 # come back empty and fall through to the blurry z0 base.
 REGIONS = {
-    "palpagos": ("T_WorldMap_hi.png", 4),   # z4 = 16x16 tiles = 8192 effective
+    # z5 = 32x32 tiles = 16384 effective, LANCZOS-interpolated 2x from the
+    # native 8192. Interpolation, not invention: no feature exists at z5
+    # that is not in the game's own texture — but the staircase pixels on
+    # hard edges (the blocky lake shore in the CEO's 23:01 screenshot)
+    # become smooth curves, and max zoom now samples at ~1.7x instead of
+    # magnifying z4 by 3-4x with the GPU's cheap filter.
+    "palpagos": ("T_WorldMap_hi.png", 5),
     "tree": ("worldtree.webp", 3),          # z3 = 8x8 tiles  = 4096 effective
 }
 
@@ -137,16 +143,23 @@ def build_region(region: str, src_name: str, max_z: int) -> dict:
         n = 2**z
         level = src.resize((TILE * n, TILE * n), Image.LANCZOS)
         pad = None  # built after the optional sharpen below
-        # The deepest level is the one the GPU magnifies past 1:1 ("the
-        # terrain looks low render quality when zoomed Max in" — CEO, with
-        # screenshots). A light unsharp mask enhances edges that EXIST —
-        # invents nothing — and the magnified result reads visibly cleaner.
-        # Judged on a 3x side-by-side of the three most detailed tiles:
-        # percent=80 wins everywhere, 130 halos on high-contrast coasts.
-        # Deepest level only: lower levels render at or below 1:1, where
-        # sharpening would just alias.
+        # Sharpen the deepest level, but LAND ONLY. Unsharp on the hard
+        # water boundary amplified the source art's aliased shoreline into
+        # the blocky staircase of his 23:01 lake screenshot; the sea and its
+        # edge keep the smooth interpolated look, the rock and paths keep
+        # the pop. Judged on side-by-side crops both rounds.
         if z == max_z:
-            level = level.filter(ImageFilter.UnsharpMask(radius=2, percent=80, threshold=2))
+            arr = np.asarray(level)
+            sharp = np.asarray(
+                level.filter(ImageFilter.UnsharpMask(radius=2, percent=80, threshold=2)))
+            r, gch, b = (arr[..., 0].astype(np.int16), arr[..., 1].astype(np.int16),
+                         arr[..., 2].astype(np.int16))
+            sea = (b > gch + 4) & (gch > r + 6) & (r < 150)
+            # widen the sea mask by one step so the shoreline itself stays soft
+            sea = (sea | np.roll(sea, 1, 0) | np.roll(sea, -1, 0)
+                   | np.roll(sea, 1, 1) | np.roll(sea, -1, 1))
+            out = np.where(sea[..., None], arr, sharp)
+            level = Image.fromarray(out.astype(np.uint8))
         present = []
         for ty in range(n):
             for tx in range(n):
