@@ -7653,3 +7653,11 @@ save). The WARM path — switching saves in Settings and returning to the map
 within one session — rests on loadPins' `loadedFor` check re-running on
 MapScreen mount, which is the same mechanism found.ts uses; reasoned, not
 walked, because driving the Settings UI is another lane's surface.
+
+### M32 — re-gated after the other lane's gender-unsure refactor. CLEAN.
+Their 3f4131a touched store.ts and palFilters — both map imports. Gates:
+581 pass, tsc clean in both. They extended `ownedAny` themselves to count the
+new `u` (caught, gender unchecked) state, so the map's owned-tick, "I'm
+missing" filter and wedge hint inherit the new meaning automatically — the
+reward for importing their helpers instead of forking them. Pins/found stores
+are gender-blind and unaffected. Nothing changed in the lane.
