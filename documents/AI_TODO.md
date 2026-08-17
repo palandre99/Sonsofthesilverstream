@@ -7546,7 +7546,16 @@ CounterScaled own theirs per instance (function components), mapStyle and
 markerLayerStyle sit on one container each — a test pins mapStyle's count.
 No other instance of the pattern that caused the soft pins exists in the lane.
 
-### QUEUED: republish M28 from a settled tree (their recommend.ts /
-SuggestedGoals.tsx were saved mid-bundle; tsc was clean with their files on
-disk and the suite was green, so nothing live is broken — this is only about
-the bundle mapping to a known commit).
+### CLOSED: the M28 republish went out from a settled tree at 6efeba9 —
+both channels verified, bundle maps to a known commit. Also that tick: the
+7-minute cron backstop was recreated (job 20f3faac) with a current prompt
+that defers to THIS LEDGER when they disagree, replacing the stale one.
+
+### M30 — publish.js retries a failed START once — reasoned, not measured
+The first eas spawn of a session dies now and then with a raw Node dump
+before eas even begins — FIVE manual "just run it again" retries on
+2026-08-17. publish.js now retries a branch once, loudly, on failure.
+Safe on both failure shapes: failed-to-START never published anything, and
+failed-PARTWAY is idempotent in effect (same bundle, fresh update id).
+LABELLED REASONED: the transient cannot be triggered on demand, so the retry
+path is verified only by the script parsing and its usage path running.

@@ -53,11 +53,20 @@ console.log(`publish: bundle is clean at ${head}\n`);
 
 for (const branch of ['development', 'preview']) {
   console.log(`--- ${branch} ---`);
-  execSync(
-    `npx eas-cli update --branch ${branch} --message ${JSON.stringify(message)}`
-    + ' --non-interactive',
-    { stdio: 'inherit' },
-  );
+  const cmd = `npx eas-cli update --branch ${branch} --message ${JSON.stringify(message)}`
+    + ' --non-interactive';
+  try {
+    execSync(cmd, { stdio: 'inherit' });
+  } catch (err) {
+    // The first spawn of the night dies now and then with a raw Node dump
+    // before eas even starts — five times on 2026-08-17 alone, and each time
+    // the manual fix was simply "run it again". A publish that failed to
+    // START is safe to retry; a publish that failed PARTWAY is too, because
+    // republishing the same bundle to the same branch is idempotent in
+    // effect (a fresh update id carrying identical code). One retry, loudly.
+    console.error(`\npublish: ${branch} failed to start (${err.message ?? err}); retrying once...`);
+    execSync(cmd, { stdio: 'inherit' });
+  }
 }
 
 const after = bundledDirt();
