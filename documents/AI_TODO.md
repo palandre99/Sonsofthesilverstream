@@ -5865,3 +5865,33 @@ cross-linking, 7 offline (we already win), 8 no ads/free dark mode (policy),
 share sheet / widgets / Handoff.
 NEXT INSTRUMENT: the checklist is exhausted, so go back to WALKING JOURNEYS
 and to the roadmap (custom markers, routes, search by zone).
+
+### M17 — the engine measured at its worst case. No defect. Nothing changed.
+All 23 layers on = 10,943 spots. Rendered: **889 DOM nodes and 115 pin-sized
+views** (baseline empty map: 211 nodes). Clustering + viewport culling + the
+per-layer budget hold the worst case to about a hundred markers. "Better
+engine" was on his list; this is the honest answer that it is already sound at
+the load he can actually create.
+
+### M18 — deep zoom LOOKED AT for the first time since the ceiling moved
+Framing a place (span ~0.07 uv) lands in the new range. At that depth:
+**z0 base + 9 z4 tiles** — the deepest pyramid level, so the ground is at full
+8192 detail — and almost every chest is its OWN pin, with only two clusters
+("2" and "3") left in the entire view. That is the direct answer to "chests,
+small stuff may be hidden". Screenshot sent to him.
+REFINES M4: the QA browser picks z1 at COVER (its PixelRatio reports 1), but
+picks z4 correctly at depth. So the dpr artefact only distorts the shallow end
+in the browser — do not read cover-zoom sharpness there, depth is honest.
+
+### M19 — HARNESS: two traps re-confirmed the hard way this tick
+- `tap:Duneshelter` matched the MAP'S OWN REGION LABEL, not the sheet row, and
+  the click landed on a chest pin underneath. The screenshot showed it; the
+  text probe would have let me believe the framing happened. LOOK AT THE
+  PICTURE — this is the third time that rule has caught a false conclusion.
+- The fix that works: find the row by TWO strings ("Duneshelter" AND "Fast
+  travel"), then `.click()` it through the DOM rather than by coordinate.
+
+### PUBLISHED TONIGHT (7 updates, all verified on both channels)
+48a4023 snap + 9.6x reach · 3fbe0e3 provenance + double-tap ladder ·
+b1deb58 Reduce Motion + haptics · 8b2d5f8 the wedge in the hint ·
+d3f162c did-you-mean · 41bfda1 + 770d4d1 the game-build stamp.
