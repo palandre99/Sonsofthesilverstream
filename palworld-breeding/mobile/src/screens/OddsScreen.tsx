@@ -670,7 +670,8 @@ export function OddsScreen() {
   return (
     <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
       <PageHead title="Odds Lab"
-        sub="What a pairing actually costs in eggs — driven by the game's own inheritance weights." />
+        sub="What a pairing actually costs in eggs — driven by the game's own inheritance weights."
+        stamp />
       <View style={{
         flexDirection: 'row', backgroundColor: T.surface2, borderRadius: 12,
         padding: 3, marginBottom: 14, alignSelf: 'flex-start',

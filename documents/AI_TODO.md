@@ -2098,6 +2098,47 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E100. THE DATA STAMP — AAA CRITERION #1 CLOSED, AND THREE MORE MINED
+## FIELDS SPENT 2026-08-17 (overnight)
+
+The blueprint's **first** quality criterion asks for the build stamp and the
+proof to be **one tap from any data screen**. They were not: the "verified
+against all 44,851 outcomes" line lived only on the Calculator, and the build
+stamp only on About. **Three of the four data screens printed datamined
+numbers with no visible provenance at all.**
+
+**Now every data screen carries it** — Calculator, Route Planner, Paldex and
+Odds Lab all show a quiet line under the title:
+
+> Palworld 1.0 · read from the game files 14 Aug 2026 · where these come from
+
+**Tapping it lands on the Reference tab**, which is where the 36 verified
+claims and their citations already live. Verified on the render: present on
+all four tabs at 34 px (plus slop = 50), and the tap lands on "How 1.0
+breeding actually works".
+
+**AND IT SPENDS MINED DATA THAT WAS GOING TO WASTE.** `breeding_1_0.json`
+carries `game_version` and `extracted`, both already typed on `BreedingData`
+and both **rendered by nothing on the phone** (open item 8, from the E84 field
+diff). The stamp reads them directly, so the date moves by itself the next
+time the data is re-extracted — **no hard-coded string to go stale**, which is
+the whole point of a build stamp.
+
+Date formatting is the only cosmetic: `2026-08-14` is printed as
+"14 Aug 2026", because nobody reads a date backwards.
+
+**TWO OF MY OWN MISTAKES, both caught by the typechecker or the render:**
+- I first wrote `navigateTo({ tab: 'reference' })`. The Reference tab's id is
+  **`'ref'`**, inside the `'breeding'` domain, and `NavIntent` requires
+  `domain` too — `tsc` refused it.
+- The Paldex does not use `PageHead` (it has a compact custom header), so the
+  `stamp` prop could not reach it; its stamp is placed by hand. **A shared
+  component only reaches the screens that actually use it** — worth
+  remembering the next time something is added "everywhere".
+
+Gates: 441 passing, 0 expected failures; both trees typecheck; zero console
+errors across all four tabs.
+
 ## E99. AUDITED THE APP AGAINST THE CEO'S OWN 15-POINT AAA BAR — AND
 ## CORRECTED MY OWN DIAGNOSIS OF THE ONE-SECOND FREEZE 2026-08-17 (overnight)
 

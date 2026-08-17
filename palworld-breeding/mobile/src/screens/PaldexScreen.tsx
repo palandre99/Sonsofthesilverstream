@@ -4,7 +4,10 @@
 import React, { memo, useMemo, useState } from 'react';
 import { FlatList, Modal, Pressable, Share, Text, TextInput, View } from 'react-native';
 import { T } from '../theme';
-import { Badge, Btn, Card, ElementChips, GenderToggles, PalIcon, SearchInput, WorkChips, s } from '../ui/kit';
+import {
+  Badge, Btn, Card, DataStamp, ElementChips, GenderToggles, PalIcon, SearchInput,
+  WorkChips, s,
+} from '../ui/kit';
 import {
   clearBox, engine, getBox, importNames, ownedAny, pals, setOwnedGender,
   useAppVersion, workLabel, type OwnedGenders,
@@ -217,6 +220,10 @@ export function PaldexScreen() {
           {ownedNames.length} owned · {reachable}/{Object.keys(pals).length} reachable
         </Text>
       </View>
+      {/* the Paldex has its own compact header rather than PageHead, so the
+          data stamp is placed by hand — every screen that prints datamined
+          numbers carries it */}
+      <View style={{ marginBottom: 8 }}><DataStamp /></View>
       <View style={{ flexDirection: 'row', gap: 8, marginBottom: 8 }}>
         <View style={{ flex: 1 }}>
           <SearchInput value={q} onChange={setQ} placeholder="Search pals…" />

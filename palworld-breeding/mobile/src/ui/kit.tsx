@@ -6,7 +6,11 @@ import { ELEMENT_COLORS, T } from '../theme';
 import { PAL_ICONS } from '../data/icons.g';
 import { WORK_ICONS } from '../data/workIcons';
 import { ELEMENT_ICONS } from '../data/statIcons';
-import { hasGender, pals, setOwnedGender, topWork, useAppVersion, workLabel } from '../store';
+import {
+  breeding, hasGender, pals, setOwnedGender, topWork, useAppVersion, workLabel,
+} from '../store';
+import { navigateTo } from '../nav/intent';
+import { Icon } from './Icon';
 
 /* ---------------- pal icon ---------------- */
 
@@ -169,11 +173,56 @@ export function Card({ children, style, accessibilityLabel }: {
   );
 }
 
-export function PageHead({ title, sub }: { title: string; sub?: string }) {
+/** Which game build these numbers came from, and when they were read out of
+ * it. Both fields are datamined and both were sitting in `breeding_1_0.json`
+ * rendered by nothing on the phone.
+ *
+ * The blueprint's first quality criterion asks for the data stamp AND the
+ * proof to be one tap from any data screen; until now the proof line lived
+ * only on the Calculator and the build stamp only on About, so three of the
+ * four data screens claimed numbers with no visible provenance at all. */
+export function DataStamp() {
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={`Palworld ${breeding.game_version} data, read from the game files on ${
+        stampDate(breeding.extracted)}. Tap to see where every number comes from.`}
+      hitSlop={8}
+      onPress={() => {
+        void Haptics.selectionAsync();
+        navigateTo({ domain: 'breeding', tab: 'ref' });
+      }}
+      style={({ pressed }) => [{
+        flexDirection: 'row', alignItems: 'center', gap: 5,
+        alignSelf: 'flex-start', marginTop: 4, paddingVertical: 3,
+        opacity: pressed ? 0.6 : 1,
+      }]}>
+      <Icon name="shield-check-outline" size={12} color={T.faint} />
+      <Text style={{ color: T.faint, fontSize: 10.5, fontWeight: '700' }}>
+        Palworld {breeding.game_version} · read from the game files{' '}
+        {stampDate(breeding.extracted)} · where these come from
+      </Text>
+    </Pressable>
+  );
+}
+
+/** "2026-08-14" → "14 Aug 2026", because nobody reads a date backwards */
+function stampDate(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return iso;
+  return `${d.getDate()} ${d.toLocaleString(undefined, { month: 'short' })} ${d.getFullYear()}`;
+}
+
+export function PageHead({ title, sub, stamp }: {
+  title: string; sub?: string;
+  /** show the data-version stamp under the subtitle (data screens only) */
+  stamp?: boolean;
+}) {
   return (
     <View style={{ marginBottom: 14 }}>
       <Text style={s.h1}>{title}</Text>
       {sub ? <Text style={s.pageSub}>{sub}</Text> : null}
+      {stamp ? <DataStamp /> : null}
     </View>
   );
 }

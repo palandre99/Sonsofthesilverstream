@@ -448,7 +448,8 @@ export function CalculatorScreen() {
   return (
     <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
       <PageHead title="Calculator"
-        sub="The exact 1.0 formula, verified against all 44,851 outcomes from the game files." />
+        sub="The exact 1.0 formula, verified against all 44,851 outcomes from the game files."
+        stamp />
 
       {fromCard && (
         <BackToCardChip name={fromCard}

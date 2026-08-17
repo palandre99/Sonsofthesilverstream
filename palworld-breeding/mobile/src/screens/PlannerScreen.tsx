@@ -547,7 +547,8 @@ export function PlannerScreen() {
           in parallel, gender-aware ready-states" — three pieces of engine
           jargon on the first line a player ever reads (CEO 2026-08-16) */}
       <PageHead title="Route Planner"
-        sub="The shortest breeding route to the pals you want, from the pals you already own." />
+        sub="The shortest breeding route to the pals you want, from the pals you already own."
+        stamp />
 
       {fromCard && (
         <BackToCardChip name={fromCard}
