@@ -729,6 +729,16 @@ export function MapScreen() {
                       : 'Square pins are inside dungeons — none of these are on the surface'}
                   </Text>
                 )}
+                {/* "idk if it's accurate even?" — CEO, 2026-08-17. The answer
+                    existed, in four independent proofs, and lived in the
+                    Reference tab where he was never going to look for it. A
+                    map that claims to have no room for error should say so on
+                    the map. One line, only while the key is open, so it costs
+                    nothing when he is using it. */}
+                <Text style={{ color: T.faint, fontSize: 10.5 }}>
+                  Every spot is read from the game&apos;s own files — none of it
+                  is estimated or crowd-guessed.
+                </Text>
               </View>
             )}
             <Pressable

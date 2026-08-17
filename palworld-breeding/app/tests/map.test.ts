@@ -1782,3 +1782,35 @@ describe('does zooming further actually separate the small stuff', () => {
     expect(singles / chests.n).toBeGreaterThan(0.85);
   });
 });
+
+describe('the map answers "is this even accurate"', () => {
+  const screen = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
+  );
+
+  it('says where the spots come from, on the map itself', () => {
+    // "idk if it's accurate even?" — CEO, 2026-08-17. The answer existed in
+    // four independent proofs and lived in the Reference tab, which is not
+    // where anyone doubting a pin is looking. One line in the key.
+    expect(screen).toContain("Every spot is read from the game");
+    expect(screen).toContain('estimated or crowd-guessed');
+  });
+
+  it('and only while the key is open, so it never becomes clutter', () => {
+    const legend = screen.slice(
+      screen.indexOf('{legend && ('),
+      screen.indexOf('onPress={() => setLegend'),
+    );
+    expect(legend, 'the legend block must exist').toContain('active.map');
+    expect(legend).toContain('estimated or crowd-guessed');
+  });
+
+  it('and the claim it makes is one the repo can back', () => {
+    // the line says NOTHING is estimated — that is only true while every
+    // layer carries real datamined points, so tie it to the data
+    for (const id of ['chest', 'ore', 'dungeon', 'fast_travel']) {
+      expect(poiPoints(id, 'palpagos')!.n).toBeGreaterThan(0);
+    }
+    expect(MAP_POIS.length).toBeGreaterThan(20);
+  });
+});
