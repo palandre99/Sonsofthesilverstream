@@ -172,6 +172,14 @@ export function effortSteps(a: Attain): number {
  * breed away beats a level-7 worker 83 breeds away — the CEO's example,
  * locked in as a unit test. */
 export function scoreOf(value: number, a: Attain): number {
+  // Something already in the box is not a recommendation, it is a fact. It
+  // used to keep its FULL value here (owning costs zero effort), so a
+  // mediocre pal he already had outranked an excellent one a few steps away
+  // — measured: owned at value 0.50 scored 0.500 against 0.375 for a perfect
+  // pal five steps out. CEO, 2026-08-17: "Also it recommends pals I have
+  // caught? ... Or maybe not recommend at all?" Owned pals still appear in
+  // the list, at the end, where they read as proof rather than advice.
+  if (a.kind === 'have') return -1;
   return value / (1 + effortSteps(a) / 3);
 }
 

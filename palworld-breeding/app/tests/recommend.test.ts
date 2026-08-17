@@ -96,6 +96,50 @@ describe('attain context', { timeout: 60000 }, () => {
     expect(a.kind === 'breed' && a.steps).toBe(derivs.get(reachable)!.size);
   });
 
+  /* CEO, 2026-08-17 13:24, with three screenshots — level 80, 37 pals, and
+   * the Flying mounts card showing SIX pals all reading "BREED · 1 STEP",
+   * led by Nitewing:
+   *
+   *   "Also it recommends pals I have caught? At least collapse the bubble?
+   *    Or maybe not recommend at all? ... the recomendayions are not dynamic,
+   *    reactive ... I said I'm lvl 80 and my paldex has a lot. Flying mount
+   *    first recommendation is a nitewing ... Engine is not actually
+   *    thinking?"
+   *
+   * Two measured causes:
+   *
+   *   1. Owning a pal costs zero effort, so an owned pal kept its FULL score
+   *      and outranked better pals that cost something. Measured: owned at
+   *      value 0.50 scored 0.500 against 0.375 for a perfect pal five steps
+   *      out. A pal in the box is not advice.
+   *   2. Mount sections had no quality gradient at all, so they sorted on
+   *      nearness alone — and at a full save nearly everything is one step
+   *      away, so the tie was broken by list order. His level-80 list led
+   *      with a 280-stat starter flyer while 395-stat Shaolong sat further
+   *      down, catchable at his level.
+   */
+  describe('a pal you already own is not a recommendation', () => {
+    it('owned sinks below everything you do not have', () => {
+      const owned = { kind: 'have' } as const;
+      // even the worst unowned option outranks a perfect owned one
+      const worst = scoreOf(0.01, { kind: 'later' });
+      expect(scoreOf(1, owned)).toBeLessThan(worst);
+    });
+
+    it('the case that motivated it: mediocre-owned used to beat excellent-far', () => {
+      const mediocreOwned = scoreOf(0.5, { kind: 'have' });
+      const excellentFar = scoreOf(1, { kind: 'breed', steps: 5 });
+      expect(excellentFar).toBeGreaterThan(mediocreOwned);
+    });
+
+    it('does not disturb the ordering of things you can actually get', () => {
+      // the CEO's kindling example must still hold exactly
+      const near = scoreOf(6 / 7, { kind: 'breed', steps: 1 });
+      const far = scoreOf(1, { kind: 'breed', steps: 83 });
+      expect(near).toBeGreaterThan(far);
+    });
+  });
+
   /* The CEO, 2026-08-17, on "The best pals in the game" — the rows told him
    * "Catch one in the wild — spawns from Lv 65" and never said whether he
    * could breed it instead:

@@ -190,10 +190,26 @@ function utilityItems(role: keyof typeof UTILITY_ROLES): GoalItem[] {
 }
 
 function mountItems(names: string[]): GoalItem[] {
-  return names.map((n) => ({
-    name: n,
-    note: MOUNT_CALLOUTS[n],
-    effect: cleanEffect(pals[n]?.partner_effect) || undefined,
+  // Mounts had NO quality gradient, so they were ordered by nearness alone —
+  // and at a full save nearly everything is one step away. The CEO's level-80
+  // list showed six flying mounts all reading "BREED · 1 STEP", led by an
+  // early-game flyer, because nothing broke the tie (2026-08-17: "Flying
+  // mount first recommendation is a nitewing ... what is this? Engine is not
+  // actually thinking?").
+  //
+  // The gradient is the game's own stat block — no invented numbers, and the
+  // blurbs say so. Normalised inside each section so it sits on the same 0..1
+  // scale every other scored section uses.
+  const raw = names.map((n) => {
+    const p = pals[n];
+    return { n, q: (p?.hp ?? 0) + (p?.atk ?? 0) + (p?.def ?? 0) };
+  });
+  const top = Math.max(1, ...raw.map((x) => x.q));
+  return raw.map((x) => ({
+    name: x.n,
+    note: MOUNT_CALLOUTS[x.n],
+    effect: cleanEffect(pals[x.n]?.partner_effect) || undefined,
+    value: x.q / top,
   }));
 }
 
@@ -228,13 +244,13 @@ function buildSections(): SectionDef[] {
       items: fighterItems(),
     },
     {
-      id: 'm-fly', title: 'Flying mounts', icon: 'bird',
-      blurb: 'Every flyable pal in the game data, closest-to-yours first. Speed callouts are community-measured; saddle levels from paldb.',
+      id: 'm-fly', title: 'Flying mounts', icon: 'bird', scored: true,
+      blurb: 'Every flyable pal in the game data, ranked by how strong it is (health + attack + defence) against how close it is to your pals. Speed callouts are community-measured; saddle levels from paldb.',
       items: mountItems(MOUNTS.flying),
     },
     {
-      id: 'm-ground', title: 'Ground mounts', icon: 'horse-variant',
-      blurb: 'Every ground mount, closest-to-yours first — the called-out ones are the community\'s elite.',
+      id: 'm-ground', title: 'Ground mounts', icon: 'horse-variant', scored: true,
+      blurb: 'Every ground mount, ranked by how strong it is (health + attack + defence) against how close it is to your pals — the called-out ones are the community\'s elite.',
       items: mountItems(MOUNTS.ground),
     },
     {

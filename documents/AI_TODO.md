@@ -2098,6 +2098,61 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E120. CEO FEEDBACK — "ENGINE IS NOT ACTUALLY THINKING?"
+## 2026-08-17 13:24, three screenshots: Lv 80 / 37 pals, and Flying mounts
+
+**Verbatim:**
+
+> "Also it recommends pals I have caught? At least collapse the bubble? Or
+> maybe not recommend at all? .. also the recomendayions are not dynamic,
+> reactive,… I said I'm lvl 80 and my paldex has a lot . Flying mount first
+> recommendation is a nitewing… it would be fine if I was low lvl with very
+> few pals but I'm not.. what is this? Engine is not actually thinking ?…"
+
+His screenshot shows the tell plainly: **six flying mounts in a row, every one
+reading "BREED · 1 STEP"**, led by Nitewing. Two measured causes.
+
+**1. Owning a pal made it rank HIGHER.** `effortSteps({have}) = 0`, so an owned
+pal kept its full score while everything else was discounted for distance.
+Measured: **a mediocre pal he owns (value 0.50) scored 0.500 and beat a perfect
+pal five steps away at 0.375.** A pal in the box is not advice, it is a fact.
+`scoreOf` now sinks owned below everything unowned; they still appear, at the
+end, where they read as proof rather than as a suggestion.
+
+**2. Mount sections had NO quality gradient.** They were membership lists, so
+they sorted on nearness alone (`attainScore`) — and at a full save nearly
+everything is one step away, so the tie fell through to whatever order the
+array happened to be in. **The order was identical at level 80, level 42 and
+level-unset** — which is exactly "not dynamic, not reactive". The blurb even
+promised "closest-to-yours first", so a maxed player was guaranteed the
+nearest pals and never the best ones.
+
+Mounts now carry the game's own stat block as their gradient, balanced against
+distance by the same `scoreOf` every other scored section uses. **Measured on
+HIS save (Lv 80, 37 pals):**
+
+| | before | after |
+|---|---|---|
+| top three flyers | Elphidran 280, Vanwyrm 295, Beakon 300 | **Shaolong 395, Shadowbeak 390, Eidrolon Ignis 365** |
+| Nitewing (owned) | **1st** | **29th of 29** |
+
+All three of the new leaders are catchable at Lv 80 — actionable, not
+aspirational. The blurbs now state the formula instead of promising nearness,
+the way the Fighting and crew sections already do.
+
+**No invented numbers**: the gradient is `hp + atk + def` straight from the
+game files, and the sentence on screen says so.
+
+`recommend.ts` stays a **byte-identical mirror** (cmp clean). `recommend.test.ts`
++3, new `mobile-goals-rank.test.ts` +3. Gates **564**. Both trees typecheck.
+Verified on the render. Published to both channels.
+
+**STILL OPEN from the same message — his own suggestion:** *"Maybe add to the
+filter there «nearest one» «best one» etc idk"*. Worth building now that best
+and nearest are genuinely different orders. NOT in the shared `FilterSheet` —
+that sheet is also the Paldex's and the picker's, and "best" is a
+category-specific idea; it belongs as a toggle in the CategoryBrowser header.
+
 ## E119. CEO FEEDBACK — A ROW NAMED ONE ROUTE AND HID THE OTHER
 ## 2026-08-17 13:09, with a screenshot of "The best pals in the game"
 
