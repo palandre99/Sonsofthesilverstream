@@ -8103,3 +8103,29 @@ NEXT (M42 queue): item 3 "exactly where small stuff is" — focus-card
 distance + compass from nearest fast-travel statue (verify the world-unit
 divisor against mapMeta bounds vs readout; never guess); then item 4
 projection residual re-proof.
+
+### M45 — "EXACTLY WHERE" SHIPPED (b6768c3, both channels) — M42 item 3
+Every POI card (chest/egg/ore/effigy/...; pals keep their lines; statues
+skip it — a statue IS the landmark) now carries: "<distance> m <compass>
+of the <nearest fast-travel statue>". Helper `whereFrom`/`whereFromLine`
+lives in the byte-parity layers.ts (mirrored, gate-checked), PURE, so the
+proofs EXECUTE:
+- UNIT: Unreal world units are centimetres (engine standard); proven by a
+  full-population test — every Palpagos chest vs nearest statue, median
+  must sit in 40-1500 m (a wrong unit shifts orders of magnitude). It
+  passed with real data.
+- COMPASS: synthetic offsets from a REAL statue through the real axes swap
+  (u<->worldY, v<->worldX, +v = south); 100 m south measures 100.0 m south.
+- COPY: caught by EYE on QA — "Great Eagle Statue statue"; names already
+  ending in Statue skip the suffix, and the test proves BOTH name kinds
+  exist in the data so both branches really ran.
+- Honesty rails: <30 m says nothing (you are standing on it); rounds to
+  10 m (no fake precision).
+QA notes: tap:Layers can match the FIRST-RUN HINT's text — seed a mark
+first; the Chest chip needs QA_TALL=1700; sheet close X at viewport
+(348,731) tall; probe the card line by textContent filter.
+M42 QUEUE REMAINING: item 4 — projection residual re-proof into the
+ledger (tools/verify_map_projection.py against the current build), then
+the queue is walked; after that, fresh brutal eval of the fane with the
+new features in it, and the zoom watch (M44: next report must carry his
+About stamp; if it survives d7b8e9c, build cluster continuity first).
