@@ -2350,20 +2350,32 @@ describe('the route on the screen', () => {
     expect(canvas).toMatch(/route\.stops\.length >= 2/);
   });
 
-  it('stops are numbered on the map, centred on the true spot', () => {
-    // offsetting the badge to dodge the pin would draw the stop somewhere it
-    // is not, and once the mark is deleted the offset would point at nothing
+  it('stops that share a spot JOIN their numbers instead of stacking', () => {
+    // slice 1 drew one badge per stop, and a route that returned to its
+    // start buried the "1" under the "4" — an understated number. One badge
+    // per SPOT, numbers joined, still centred on the true place whatever
+    // the chip's width.
     const badges = screen.slice(screen.indexOf('const routeBadges'),
-      screen.indexOf('const routeBadges') + 1200);
-    expect(badges, 'routeBadges must exist').toContain('myRoute.map((s, i)');
-    expect(badges).toContain('{i + 1}');
-    expect(badges).toContain('marginLeft: -10, marginTop: -10');
-    // touch-TRANSPARENT, not merely non-pressable: on web a plain div still
-    // captures the click and the event bubbles past the sibling pin straight
-    // to the map — measured in QA: tapping badge 1 opened the empty-tap card
-    // instead of the mark underneath
-    expect(badges).toContain('pointerEvents="none"');
+      screen.indexOf('const routeBadges') + 2400);
+    expect(badges, 'routeBadges must exist').toContain('bySpot');
+    expect(badges).toContain("nums.join(' · ')");
+    expect(badges).toContain('marginLeft: -w / 2');
     expect(badges).not.toContain('clusterPoints');
+  });
+
+  it('tapping a badge opens the card that holds the stop verbs', () => {
+    // Slice 1 made badges touch-transparent so the tap fell through to the
+    // mark. Slice 2 gives stops their own verbs, so the badge OWNS the tap
+    // and routes it: pin card when the mark still exists, bare-stop card
+    // when it was deleted — a stop with no card would be unremovable.
+    const badges = screen.slice(screen.indexOf('const routeBadges'),
+      screen.indexOf('const routeBadges') + 2400);
+    expect(badges).toContain('openSpot(spot.u, spot.v)');
+    expect(badges).not.toContain('pointerEvents="none"');
+    const helper = screen.slice(screen.indexOf('const openSpot'),
+      screen.indexOf('const openSpot') + 500);
+    expect(helper).toContain('if (pin) { setOpenPin(pin); setOpenStops(null); return; }');
+    expect(helper).toContain('setOpenStops({ u, v })');
   });
 
   it('uses a colour MEASURABLY far from every layer AND the mark colour', () => {
@@ -2422,5 +2434,52 @@ describe('the route is accounted for like everything else on the map', () => {
   it('adding a stop is a button on the mark card, NOT another gesture', () => {
     expect(screen).toContain('addStop(region, openPin.u, openPin.v, openPin.label)');
     expect(screen).not.toMatch(/Gesture\.LongPress/);
+  });
+});
+
+describe('removing one stop (slice 2)', () => {
+  const store = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'map', 'routes.ts'), 'utf8',
+  );
+  const screen = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
+  );
+
+  it('identity is the badge number, counted WITHIN this region', () => {
+    // "stop 3" on Palpagos must never delete the third stop of the OTHER
+    // island's route: the index only advances over stops of this region.
+    const fn = store.slice(store.indexOf('export function removeStop'),
+      store.indexOf('export function removeStop') + 500);
+    expect(fn, 'removeStop must exist').toContain(
+      "if (s.region !== region) return true;",
+    );
+    expect(fn).toContain('seen !== index');
+  });
+
+  it('removal never reorders the survivors', () => {
+    // filter, like everywhere else in this store — the no-sort rule is
+    // already enforced file-wide, this pins removal to the same mechanism
+    const fn = store.slice(store.indexOf('export function removeStop'),
+      store.indexOf('export function removeStop') + 500);
+    expect(fn).toContain('stops.filter(');
+  });
+
+  it('a stop whose mark was deleted still has a card', () => {
+    // stops are copies, so the mark can go while the stop stays — and a
+    // stop you cannot reach is a stop you cannot remove
+    expect(screen).toContain('Route stop');
+    expect(screen).toContain('openStops && !openPin');
+    expect(screen).toMatch(/if \(here\.length === 0\) return null;/);
+  });
+
+  it('every stop at a spot is removable on its own', () => {
+    expect(screen).toContain('removeStop(region, n - 1)');
+    expect(screen.split('Remove stop {n}').length - 1).toBe(2);  // both cards
+  });
+
+  it('the stop card is a card about THIS island', () => {
+    // same fault family as the mark card across a region switch (the Mau
+    // banner): switching islands closes it
+    expect(screen).toMatch(/setOpenPin\(null\);\s*\n\s*setOpenStops\(null\);\s*\n\s*setDraft\(null\);/);
   });
 });

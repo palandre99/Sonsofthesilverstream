@@ -115,6 +115,26 @@ export function addStop(region: RegionId, u: number, v: number, label: string): 
   return true;
 }
 
+/**
+ * Remove ONE stop — the index-th stop OF THIS REGION'S route, which is the
+ * number printed on its badge minus one. Position IS identity here: stops
+ * carry no ids on purpose (nothing but a migration to gain), and the player
+ * points at "stop 3", not at a key. Everything else keeps its order —
+ * renumbering happens by position, never by re-sorting.
+ */
+export function removeStop(region: RegionId, index: number): void {
+  let seen = -1;
+  const next = stops.filter((s) => {
+    if (s.region !== region) return true;
+    seen += 1;
+    return seen !== index;
+  });
+  if (next.length !== stops.length) {
+    stops = next;
+    persist();
+  }
+}
+
 /** Clear the route on ONE map, leaving the other region's alone. */
 export function clearRoute(region: RegionId): void {
   const before = stops.length;
