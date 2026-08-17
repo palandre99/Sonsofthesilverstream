@@ -17,6 +17,22 @@ import {
   type ProfileStats,
 } from '../store';
 
+/** What a world actually holds, in words — used by the row under its name
+ * and by the delete confirm, so the two can never disagree.
+ *
+ * Both said "N pals" with no singular ("1 pals"), and the delete confirm
+ * promised "and its plan" whether or not one existed — so deleting an empty,
+ * unplanned world read "Really delete \"X\" — its 0 pals and its plan?".
+ * A confirm has one job: say what disappears. */
+export function worldHolds(owned: number, planTotal: number): string {
+  const bits: string[] = [];
+  if (owned === 1) bits.push('1 pal');
+  else if (owned > 1) bits.push(`${owned} pals`);
+  if (planTotal > 0) bits.push('its plan');
+  if (!bits.length) return '';
+  return bits.length === 1 ? bits[0] : `${bits[0]} and ${bits[1]}`;
+}
+
 export function ProfilesScreen() {
   const version = useAppVersion();
   const [stats, setStats] = useState<Record<string, ProfileStats>>({});
@@ -74,8 +90,8 @@ export function ProfilesScreen() {
                   {stats[p.id] && (
                     <Text style={{ color: T.faint, fontSize: 11 }}>
                       {p.playerLevel != null ? `Lv ${p.playerLevel} · ` : ''}
-                      {stats[p.id].owned
-                        ? `${stats[p.id].owned} pals`
+                      {stats[p.id].owned === 1 ? '1 pal'
+                        : stats[p.id].owned ? `${stats[p.id].owned} pals`
                         : 'empty'}
                       {stats[p.id].planTotal > 0
                         ? ` · plan ${stats[p.id].planDone}/${stats[p.id].planTotal}`
@@ -169,10 +185,13 @@ export function ProfilesScreen() {
                       shows, and says the other worlds are untouched. */}
                   <Btn danger
                     label={armDelete
-                      ? `Really delete "${managing.name}"${
-                        stats[managing.id]
-                          ? ` — its ${stats[managing.id].owned} pals and its plan`
-                          : ''}?`
+                      ? (() => {
+                        const st = stats[managing.id];
+                        const holds = st ? worldHolds(st.owned, st.planTotal) : '';
+                        return holds
+                          ? `Really delete "${managing.name}" — ${holds}?`
+                          : `Really delete "${managing.name}"?`;
+                      })()
                       : 'Delete this world…'}
                     onPress={() => {
                       if (!armDelete) { setArmDelete(true); return; }
