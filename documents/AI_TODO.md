@@ -2098,6 +2098,48 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E110. THE SCAN E108 CLAIMED TO HAVE DONE, ACTUALLY DONE
+## 2026-08-17 (overnight)
+
+E109 proved E108's "counted-label sweep finished app-wide" was false — the
+output had gone through `head -50` and two real defects sat below the cut. This
+tick did the scan properly, so the claim can finally be made honestly.
+
+**HOW IT WAS DIFFERENT THIS TIME:** the scanner self-tests before it runs, it
+blanks comments rather than deleting them (so line numbers match the real
+file), and **it writes every hit to a FILE which was then read in pages**.
+Nothing was piped through `head`.
+
+**COVERAGE, VALIDATED RATHER THAN ASSUMED:** `find` says 52 source files in
+`mobile/src` once the Map lane's are excluded. The scan reports 52. And
+`SettingsScreens.tsx`'s two "pals" labels now appear in the **guarded**
+section — the exact pair E109 fixed. The scan sees the file, classifies it
+correctly, and nothing hid below a cut.
+
+**RESULT: 200 counted labels, ZERO new live defects.** All 157 unguarded lines
+hand-reviewed. Every one is a false positive of a kind worth naming so the next
+reader does not re-check them:
+
+- **JSX props**, not labels — `{onClose} small`, `{24} gender`, `{filters} sort`
+- **names, not counts** — "Legend **only** appears on a mutated pal first"
+- **English that is already correct** — "Add another (1 left)", "and 1 more",
+  "3 of 40 shown", "1 left"
+
+**ONE LATENT RISK FOUND — PINNED, NOT "FIXED".** The Odds Lab heading *"N pals
+make eggs arrive faster"* counts a list **derived from the game data** (pals
+whose base support speeds eggs). It is **2** today — Braloha and Dynamoff — so
+the plural is right. But a data update taking it to 1 would print "1 pals" with
+no code change at all, and no test would have noticed. The copy is untouched;
+the assumption is now an assertion. This is the same shape as the 44,851 and
+"6 categories sum to 114" pins.
+
+`odds-copy.test.ts` now 16. Gates 486. Mobile typecheck clean. **Nothing
+published — no user-facing change**, and an unchanged bundle on his About
+screen is noise.
+
+**THE COUNTED-LABEL SWEEP IS NOW GENUINELY FINISHED** — and unlike E108, that
+sentence is backed by a full read of a complete output.
+
 ## E109. THE DELETE CONFIRM LISTED THINGS THAT DID NOT EXIST —
 ## AND E108's "SWEEP FINISHED" CLAIM WAS WRONG 2026-08-17 (overnight)
 
