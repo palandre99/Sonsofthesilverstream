@@ -5511,3 +5511,33 @@ no empty frame.
 a real fix tonight. Still unaudited against the MAP specifically: 1 (data
 badge), 2 (search ≤1 tap, ≤1s), 6 (numbers carry context), 10 (empty states
 teach the feature), 11 (rows carry decision-grade scent), 13-15 (unread).
+
+### M12 — haptic consistency — DONE (b1deb58, PUBLISHED with M11)
+Criterion 15, "system haptics". I began believing the map had NONE. It has
+three (level cap, layer toggle, picking a pal) and TSC TOLD ME by refusing a
+duplicate import — the premise was wrong and the compiler caught it before the
+claim reached a commit message. Fourth time this session a check of mine was
+wrong while the code was right; the compiler is now part of that safety net.
+REAL finding, narrower: five actions change state, three buzzed and two did
+not. Marking found now gets an IMPACT (it is the only map action that COMMITS
+— writes a tick that survives a restart); switching region gets the same
+selection tick the side panel uses, and ONLY when the region actually changes.
+Tests hold all five together so a sixth silent action cannot slip in.
+
+### AAA AUDIT PROGRESS (04_PRODUCT_BLUEPRINT §5) — the best instrument found
+- **12 motion/skeletons** — FIXED (Reduce Motion, M11). Its anti-example
+  (MapGenie's blank map at launch) is impossible here: bundled tiles + a z0
+  base always under the pyramid.
+- **13 fence estimates from fact** — PASS by construction. The map has no
+  estimates at all, and the key now says so (M8).
+- **15 native citizenship** — haptics FIXED (M12). Dynamic Type already PASSES
+  (no `allowFontScaling={false}` anywhere in the app). Share sheet / widgets /
+  Handoff are NOT map-lane and not started anywhere — worth raising with him
+  as product scope, not doing unilaterally.
+- STILL UNAUDITED against the map: 1 (data-version badge), 2 (search from
+  anywhere <=1 tap <=1s), 6 (numbers carry context, never float), 10 (empty
+  states TEACH the killer feature), 11 (rows carry decision-grade scent).
+
+### PUBLISHED TONIGHT, in order
+48a4023 snap fix + 9.6x reach · 3fbe0e3 provenance line + double-tap ladder ·
+b1deb58 Reduce Motion + haptic consistency. All verified on both channels.
