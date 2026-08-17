@@ -3,6 +3,69 @@
 *Updated 2026-08-17 (breeding lane). Update this file whenever a work block lands;
 date every entry.*
 
+## 2026-08-17 overnight->afternoon — THE MAP'S ZOOM CRACKED, AND A NIGHT OF POLISH (map lane)
+
+He went to sleep saying "work while I sleep, for hours. I expect major
+improvements" and woke up testing. Fourteen-plus updates went to both channels
+overnight; the full detail is AI_TODO.md §M (M1-M31). The short version:
+
+**The zoom snap turned out to be FOUR separate causes, not one.** Each was
+real, each is fixed, and the last two came straight from his 13:12
+screenshots: (1) the pan re-anchoring against a stale origin during a pinch;
+(2) the translation jumping when the finger count changes, because the
+gesture library measures from the CENTROID of whatever fingers remain;
+(3) lifting two fingers off a pinch reading as a double tap, which
+deliberately flies the map; (4) the pinch itself not ending when one finger
+lifts (documented library issue #1214) and re-anchoring against a teleported
+focal point. If he EVER reports a snap again: the question that discriminates
+is whether it happens on a slow single pinch with no re-grip — and every
+writer of the map transform has been enumerated and cleared (M27/M28), so the
+next place to look is ABOVE the map, not in its formulas.
+
+**The soft pins were a documented Reanimated limitation.** One animated style
+was shared across ~115 marker views; the library forbids that — views can
+silently stop updating, and a marker with a stale counter-scale draws at the
+wrong size, magnified soft. Every marker owns its style now. This could never
+show in the browser QA (reanimated runs on the JS thread there), which is why
+his phone kept disagreeing with our checks. Falsifier if pins look soft
+again: do they CHANGE SIZE while zooming?
+
+**Zoom reach went 3.2x -> 9.6x** on his ask ("chests, small stuff may be
+hidden") — measured against the 1,572 chests: over 90% resolve to their own
+pin at the new ceiling. The ground past 3.2x magnifies by design; pins,
+labels and counts stay crisp at every zoom.
+
+**The map answers "is it even accurate" on the map**: the key now ends with
+"Every spot is read from the game's own files — none of it is estimated or
+crowd-guessed. Game build 24575149, 12 August 2026." — with a drift guard
+that reads the build id out of the generated data so the sentence cannot rot.
+
+**New: your own marks.** Drop a pin with a button (never a gesture — gestures
+are what kept biting), name it, rename it, remove it, clear per island;
+counted in the pill SEPARATELY from datamined spots, listed in the key,
+saved per world (profile-scoping walked both ways, M31). Store is
+mobile/src/map/pins.ts on the found.ts pattern, guards proven-to-fail.
+
+**Polish from the blueprint's own AAA checklist** (all 15 criteria now
+audited): fuzzy search that rescues typos ("foxpraks" -> "Did you mean
+Foxparks") and refuses to guess at garbage; the first-run hint teaches "only
+pals I'm missing" once there is a box to filter; Reduce Motion respected on
+all nine map animations; haptics on all five state changes; Dynamic Type
+already passed.
+
+**His asks that closed with an honest NO:** in-game photos of locations have
+no source (the game ships none; community screenshots fail licensing and
+provenance) — the one provable substitute is a map-texture crop, parked for
+his call. Search-by-zone is not being built: region data is label points,
+so zone assignment would be an estimate, and this map does not estimate.
+
+Working agreement notes that paid off repeatedly tonight, written into the
+ledger as rules: prove a new guard can fail; a comment is a claim; when you
+change a constant, grep everything keyed to it; when you add a new KIND of
+thing to the map, grep everything that counts what is on it; confirm the
+state before calling something a defect (seven wrong calls tonight, all
+caught before shipping); and the browser cannot prove native behaviour.
+
 ## 2026-08-17 — CEO PUTS THE WEBSITE ON HOLD; PHONE APP ONLY
 
 His words: *"I want full focus on app only. Put website on hold. We can port
