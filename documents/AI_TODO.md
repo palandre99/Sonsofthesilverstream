@@ -2098,6 +2098,69 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E123. CEO BUG REPORT ON E122 — WRONG SEMANTICS AND A BROKEN HEADER
+## 2026-08-17 18:13, screenshot from his phone ("Main play", 131 owned)
+
+**Verbatim:**
+
+> "Unknown gender and check is buggy.. shows entire screen and also untickd..
+> if I tick male only and I capture one in wild I will add a gender check tick
+> to it but that does not mean u should untick my already selected tick… and
+> it covers almost entire screen as u can see? Find improvements etc, this is
+> not good enough"
+
+Both defects are mine, hours old, and the semantic one was a DESIGN error I
+had reasoned myself into: I treated "?" and a known gender as answers to the
+same question and made them mutually exclusive. **He is right and the model
+was wrong: owning a known male AND catching an unidentified second one is the
+NORMAL case, not a contradiction.** The first version wiped his male tick the
+moment he marked the new catch.
+
+**Corrected semantics, verified on the render both ways:**
+
+| action | before (buggy) | now |
+|---|---|---|
+| tick "?" with ♂ already on | **wiped ♂** | `{m:true, u:true}` — ♂ survives |
+| un-tick a gender | cleared "?" | "?" survives (it says nothing about the unidentified one) |
+| tick a gender ON | cleared "?" | still clears "?" — the question is answered |
+| import merge | force-cleared "?" | "?" survives the merge |
+
+`genderUnsure` is now just `!!box[n]?.u` — the filter shows every species with
+an unchecked catch, whatever else is known about it.
+
+**The header: my nudge was INSIDE the title row.** `"131 owned · 261/299
+reachable"` is a flex-1 Text sharing a row with the nudge's long label; on his
+phone the label won and the stats wrapped ONE CHARACTER PER LINE — the
+"covers almost entire screen" in his screenshot. I had verified the nudge
+APPEARED at 375 pt but never measured the header's height with it present
+(method #8 — my own work is a claim I did not test in the state he met it).
+It now sits on its own row below the title, `numberOfLines={1}`, and the
+render shows stats and nudge each 16 px tall, nudge below stats.
+
+Also shipped in the same commit: the brutal-eval finding from earlier —
+**"Gliders & swimmers" split into "Gliders" (membership, honestly
+closest-first) and "Swim mounts" (scored like Flying and Ground)**. It could
+not simply be marked scored: gliders carry no `value`, so the mixed list would
+have ranked every glider above every swimmer on `value ?? 1` (method #18 —
+E120 fixed a pattern and missed its third instance).
+
+`gender-unsure.test.ts` rewritten to the corrected semantics (13) — the old
+tests PINNED THE BUG, which is its own lesson: a mutation-proven guard proves
+the code matches my model, not that my model matches the player.
+`mobile-goals-rank.test.ts` 9. **Mutation-proven three ways** (his bug back,
+any-tap clearing, nudge back in the title row). Gates **607**. His save
+restored and re-verified after the render test (26 owned / 8 goals / 2
+profiles).
+
+**PUBLISH HELD one tick: the Map lane has `MapScreen.tsx` + `map.test.ts`
+uncommitted. Publishing would bundle their in-flight work onto his phone.
+Ship the moment their tree is clean — this fix is CEO-facing and urgent.**
+
+**METHOD NOTE — #58: MUTUAL EXCLUSION IS A CLAIM ABOUT THE PLAYER, NOT THE
+DATA.** Two flags that cannot both be true in one INDIVIDUAL can easily both
+be true in a COLLECTION. The box tracks species, not individuals; every
+per-species boolean is an aggregate, and aggregates rarely exclude each other.
+
 ## E122. CEO FEATURE — "CAUGHT IT, COULDN'T TELL THE GENDER"
 ## 2026-08-17
 

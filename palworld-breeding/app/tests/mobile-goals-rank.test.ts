@@ -84,11 +84,29 @@ describe('mounts are ranked, not just listed', () => {
     expect(code).toMatch(/id: 'm-ground'[^}]*scored: true/);
   });
 
+  it('swim mounts are scored like their siblings, gliders are not', () => {
+    // E120 scored Flying and Ground and left the combined glide/swim section
+    // behind (method #18 — when you fix a pattern, grep for the pattern).
+    // Gliders must NOT be scored: they carry no `value`, so a mixed scored
+    // list would rank every glider above every swimmer on `value ?? 1`.
+    expect(code).toMatch(/id: 'm-swim'[^}]*scored: true/);
+    expect(code, 'gliders were folded back into a scored list — with no value '
+      + 'of their own they would all outrank every swimmer')
+      .not.toMatch(/id: 'm-glide'[^}]*scored: true/);
+    expect(code, 'the combined section is back').not.toContain('Gliders & swimmers');
+  });
+
   it('the blurbs state the formula rather than promising nearness', () => {
     // the old copy promised "closest-to-yours first", which is exactly what
     // made a level-80 list useless — and a promise is a claim
-    expect(code, 'a mount blurb still promises closest-first ordering')
-      .not.toContain('closest-to-yours first');
+    // scored sections must not promise nearness — but the Gliders section is
+    // NOT scored, genuinely orders nearest-first, and may say so honestly
+    for (const id of ['m-fly', 'm-ground', 'm-swim']) {
+      const start = code.indexOf("id: '" + id + "'");
+      const blurb = code.slice(start, code.indexOf('},', start));
+      expect(blurb, id + ' promises closest-first but ranks by quality')
+        .not.toContain('closest-to-yours first');
+    }
     expect(code).toContain('health + attack + defence');
   });
 });

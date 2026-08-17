@@ -390,9 +390,9 @@ export async function loadPersisted(): Promise<void> {
 export const getBox = () => state.box;
 export const ownedAny = (n: string) =>
   !!(state.box[n]?.m || state.box[n]?.f || state.box[n]?.u);
-/** Caught, gender still to be checked. */
-export const genderUnsure = (n: string) =>
-  !!state.box[n]?.u && !state.box[n]?.m && !state.box[n]?.f;
+/** Has one whose gender is still to be checked — regardless of what else
+ * is known about the species. */
+export const genderUnsure = (n: string) => !!state.box[n]?.u;
 export const unsureCount = () =>
   Object.keys(state.box).filter(genderUnsure).length;
 export const hasGender = (n: string, g: 'm' | 'f') => !!state.box[n]?.[g];
@@ -402,10 +402,10 @@ export const pairReadyCount = () =>
 
 export function setOwnedGender(name: string, g: 'm' | 'f', val: boolean): void {
   const cur = state.box[name] ?? { m: false, f: false };
-  // naming a gender ANSWERS the question — that is the whole point of the
-  // "?" mark: catch it now, identify it back at base, and the reminder clears
-  // itself rather than needing a second tap to tidy up
-  const entry = { ...cur, [g]: val, u: false };
+  // TICKING a gender on answers the question, so the "?" clears itself —
+  // but only on ON. Un-ticking a gender says nothing about the unidentified
+  // one, and the first version cleared the mark on any tap.
+  const entry = val ? { ...cur, [g]: true, u: false } : { ...cur, [g]: false };
   const next = { ...state.box };
   if (!entry.m && !entry.f && !entry.u) delete next[name];
   else next[name] = entry;
@@ -414,12 +414,16 @@ export function setOwnedGender(name: string, g: 'm' | 'f', val: boolean): void {
   emit();
 }
 
-/** Mark (or unmark) "caught it, gender unknown". Turning it ON clears any
- * gender already recorded — the two states are answers to the same question,
- * so holding both would be a contradiction on screen. */
+/** Mark (or unmark) "caught one whose gender I haven't checked".
+ *
+ * It COEXISTS with known genders — the first version wiped them, and the CEO
+ * caught it within hours: "if I tick male only and I capture one in wild I
+ * will add a gender check tick to it but that does not mean u should untick
+ * my already selected tick". Owning a known male AND an unidentified second
+ * catch is the normal case, not a contradiction. */
 export function setGenderUnsure(name: string, val: boolean): void {
   const cur = state.box[name] ?? { m: false, f: false };
-  const entry = val ? { m: false, f: false, u: true } : { ...cur, u: false };
+  const entry = { ...cur, u: val };
   const next = { ...state.box };
   if (!entry.m && !entry.f && !entry.u) delete next[name];
   else next[name] = entry;
@@ -443,12 +447,11 @@ export function importNames(entries: [string, OwnedGenders][], replace: boolean)
   for (const [name, g] of entries) {
     if (!Object.hasOwn(pals, name)) continue;
     const cur = next[name];
-    // a known gender always beats an unresolved question mark
-    const merged = cur
+    // the "?" travels with the entry and survives a merge — it marks a pal
+    // still to be checked, which a merge cannot answer
+    next[name] = cur
       ? { m: cur.m || g.m, f: cur.f || g.f, u: !!(cur.u || g.u) }
       : { ...g };
-    if (merged.m || merged.f) merged.u = false;
-    next[name] = merged;
     added++;
   }
   state.box = next;

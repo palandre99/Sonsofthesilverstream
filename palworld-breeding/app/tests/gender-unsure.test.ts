@@ -17,6 +17,13 @@
  * the planner would build a route around a parent he cannot supply, and the
  * plan would be a lie. `ownedAny` says yes, `hasGender` says no.
  *
+ * CORRECTED THE SAME DAY, from his phone: the first version treated "?" and a
+ * known gender as mutually exclusive and WIPED his male tick when he marked a
+ * new catch — "that does not mean u should untick my already selected tick".
+ * Owning a known male AND an unidentified second catch is the normal case.
+ * The mark now coexists with known genders; ticking a gender ON still clears
+ * it (the question is answered), un-ticking never does.
+ *
  * `mobile/src/store.ts` reaches AsyncStorage and cannot be imported here, so
  * these are precise source assertions. Comments are stripped.
  */
@@ -60,25 +67,29 @@ describe('a pal you caught but could not identify', () => {
 });
 
 describe('answering the question clears it', () => {
-  it('naming a gender resolves the mark in the same tap', () => {
-    expect(store, 'setting a gender leaves the question mark behind, so the '
-      + 'reminder never clears and the list never empties')
-      .toContain("const entry = { ...cur, [g]: val, u: false };");
+  it('TICKING a gender on resolves the mark; un-ticking never does', () => {
+    // un-ticking a gender says nothing about the unidentified catch — the
+    // first version cleared the mark on any tap
+    expect(store)
+      .toContain('const entry = val ? { ...cur, [g]: true, u: false } : { ...cur, [g]: false };');
   });
 
-  it('marking unsure clears any gender already recorded', () => {
-    // holding both would be a contradiction on screen
-    expect(store).toContain('const entry = val ? { m: false, f: false, u: true } : { ...cur, u: false };');
+  it('marking unsure KEEPS the genders already recorded', () => {
+    // his exact bug report: ticking "?" wiped the male he already had
+    expect(store, '"?" wipes known genders again — the CEO\'s 18:13 bug')
+      .toContain('const entry = { ...cur, u: val };');
+    expect(store).not.toContain('val ? { m: false, f: false, u: true }');
   });
 
   it('an entry with nothing left is removed from the box', () => {
     expect(store).toContain('if (!entry.m && !entry.f && !entry.u) delete next[name];');
   });
 
-  it('importing a known gender beats an unresolved question', () => {
-    expect(store).toContain('if (merged.m || merged.f) merged.u = false;');
-    expect(store, 'import drops the unsure flag entirely')
-      .toContain('u: !!(cur.u || g.u)');
+  it('the mark survives an import merge', () => {
+    // a merge cannot answer whether the unidentified pal was checked
+    expect(store).toContain('u: !!(cur.u || g.u)');
+    expect(store, 'import force-clears the mark again')
+      .not.toContain('merged.u = false');
   });
 });
 
@@ -87,8 +98,9 @@ describe('you can find them again at base', () => {
     expect(filters).toContain("| 'unsure'");
     expect(filters).toContain("case 'unsure': return out.filter(genderUnsure);");
     expect(store).toContain('export const genderUnsure =');
-    // unresolved means the flag is set AND no gender is known
-    expect(store).toContain("!!state.box[n]?.u && !state.box[n]?.m && !state.box[n]?.f");
+    // the flag alone decides — a species with a known male can STILL have an
+    // unidentified second catch waiting
+    expect(store).toContain('export const genderUnsure = (n: string) => !!state.box[n]?.u;');
   });
 
   it('the filter is offered in the sheet, and labelled', () => {
@@ -102,6 +114,21 @@ describe('you can find them again at base', () => {
     expect(paldex).toContain("own: 'unsure'");
     expect(paldex, 'the count would read "1 pals"')
       .toContain("'1 pal to check the gender of — show it'");
+  });
+});
+
+describe('the header survives a real phone', () => {
+  it('the nudge is NOT inside the title row', () => {
+    // on his phone the nudge's long label out-muscled the flex-1 stats text
+    // in the shared row — "131 owned" wrapped one character per line and the
+    // header ate half the screen (screenshot, 2026-08-17 18:13)
+    const row = paldex.slice(
+      paldex.indexOf("alignItems: 'baseline'"),
+      paldex.indexOf('</View>', paldex.indexOf("alignItems: 'baseline'")));
+    expect(row, 'the gender nudge is back inside the title row')
+      .not.toContain('toCheck');
+    // and its label is clamped so it can never wrap into a column
+    expect(paldex, 'the nudge label can wrap again').toContain('numberOfLines={1}');
   });
 });
 

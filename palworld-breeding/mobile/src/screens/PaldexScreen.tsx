@@ -291,23 +291,25 @@ export function PaldexScreen() {
         <Text style={{ color: T.muted, fontSize: 12.5, fontWeight: '700', flex: 1 }}>
           {ownedNames.length} owned · {reachable}/{Object.keys(pals).length} reachable
         </Text>
-        {/* A mark nobody can find again is just a mark. One tap filters the
-            list to the pals whose gender is still a question — the "back at
-            base" half of the CEO's request. */}
-        {toCheck > 0 && (
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel={`Show the ${toCheck} pal${toCheck === 1 ? '' : 's'} whose gender you have not checked`}
-            onPress={() => setFilters({ ...filters, own: 'unsure' })}
-            style={{ alignSelf: 'flex-start', marginTop: 6 }}>
-            <Text style={{ color: T.goldInk, fontSize: 12, fontWeight: '800' }}>
-              {toCheck === 1
-                ? '1 pal to check the gender of — show it'
-                : `${toCheck} pals to check the gender of — show them`}
-            </Text>
-          </Pressable>
-        )}
       </View>
+      {/* Its OWN row, below the title. The first version sat inside the title
+          row, where its long label out-muscled the flex-1 stats text on a real
+          phone — "131 owned" wrapped one character per line and the header ate
+          half the screen (CEO screenshot, 2026-08-17 18:13). One tap filters
+          the list to the pals whose gender is still a question. */}
+      {toCheck > 0 && (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={`Show the ${toCheck} pal${toCheck === 1 ? '' : 's'} whose gender you have not checked`}
+          onPress={() => setFilters({ ...filters, own: 'unsure' })}
+          style={{ alignSelf: 'flex-start', marginTop: -4, marginBottom: 8 }}>
+          <Text style={{ color: T.goldInk, fontSize: 12, fontWeight: '800' }} numberOfLines={1}>
+            {toCheck === 1
+              ? '1 pal to check the gender of — show it'
+              : `${toCheck} pals to check the gender of — show them`}
+          </Text>
+        </Pressable>
+      )}
       {/* the Paldex has its own compact header rather than PageHead, so the
           data stamp is placed by hand — every screen that prints datamined
           numbers carries it */}

@@ -253,13 +253,21 @@ function buildSections(): SectionDef[] {
       blurb: 'Every ground mount, ranked by how strong it is (health + attack + defence) against how close it is to your pals — the called-out ones are the community\'s elite.',
       items: mountItems(MOUNTS.ground),
     },
+    /* E120 gave Flying and Ground mounts a quality gradient and left this
+       combined section behind — my own inconsistency, found on the brutal
+       eval. It cannot simply be marked scored: gliders carry no `value`
+       (their worth IS the glide skill, not their stat block), so scoring the
+       mixed list would rank every glider above every swimmer on `value ?? 1`.
+       Two sections, each ordered the way its content deserves. */
     {
-      id: 'm-glide', title: 'Gliders & swimmers', icon: 'weather-windy',
-      blurb: 'Glider partner skills from the game data, plus the swimmers.',
-      items: [
-        ...utilityItems('glider'),
-        ...mountItems(MOUNTS.swim),
-      ],
+      id: 'm-glide', title: 'Gliders', icon: 'weather-windy',
+      blurb: 'Glider partner skills from the game data, closest-to-yours first.',
+      items: utilityItems('glider'),
+    },
+    {
+      id: 'm-swim', title: 'Swim mounts', icon: 'waves',
+      blurb: 'Every water mount, ranked by how strong it is (health + attack + defence) against how close it is to your pals.',
+      items: mountItems(MOUNTS.swim), scored: true,
     },
     {
       id: 'u-catch', title: 'Catching helpers', icon: 'circle-double',
