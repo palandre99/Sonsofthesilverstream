@@ -5746,3 +5746,43 @@ is dungeon-only on Palpagos, so it is not in the searchable list).
 48a4023 snap + 9.6x reach · 3fbe0e3 provenance + double-tap ladder ·
 b1deb58 Reduce Motion + haptics · 8b2d5f8 the wedge in the hint ·
 d3f162c did-you-mean. All verified on both channels.
+
+## WEB BACKLOG — ON HOLD (map lane)
+
+The CEO put the website on hold on 2026-08-17: "I want full focus on app only
+... We focus on app for a long while only so we don't have to do double work
+before we are happy with results." CLAUDE.md carries it verbatim.
+
+Everything below is COMMITTED, green, and UNDEPLOYED. It is the port list for
+when he lifts the hold — not work to chase.
+
+- **L38** — the website's Map fane had the same three defects the phone had:
+  the 25 dungeon-only pals were unlistable despite its own working dungeon
+  checkbox; a dungeon pin quoted the SURFACE level band (so a pal that never
+  surfaces printed no level at all); and the legend explained square pins
+  whether or not any were on screen. Committed befc6cf.
+- **L45** — the website's legend, anchored to the bottom of a 62vh stage, grew
+  to 583px inside 503px with all 23 layers on, and `overflow:hidden` ate its
+  top 91px. FOUR entries invisible with nothing to scroll, the first being
+  Chest at 1,572 — the largest layer on the map. Capped and scrollable now.
+  Desktop unaffected (804px stage). Committed c12ace1.
+- **L47** — the website printed each layer's BOTH-MAPS total: Palpagos offered
+  "Fast travel 170" while showing 155, the World Tree offered the same 170
+  while showing 15. Now per-region, with "none here" at 45% for a layer this
+  map lacks. And a search matching nothing said nothing at all; it names its
+  reason now, one branch per true case. Committed e9d8d7d.
+- **L49** — `app/src/map/found.ts` claimed in its header that its storage key
+  matched the phone's. It does not (`palforge-mapfound` vs
+  `palforge-<profileId>-mapfound`) because the site has no save profiles. The
+  TICK FORMAT does match, and that is what a future sync needs. Committed
+  28af86b.
+- **L16** — the website's PALDEX still uses the old flat map2048.jpg while the
+  phone has the tiled engine. NOT map-lane (another lane owns paldex.tsx), and
+  now doubly parked.
+
+**What is NOT parked:** the byte-parity modules (`layers.ts`, `points.ts`,
+`projection.ts`) must stay identical across both trees, because the gate that
+proves it is one of the tests guarding the PHONE. Keeping them in sync is
+"keeping the website green", which the directive requires — it is not porting
+a feature. `closeMatches` was added to both copies tonight for exactly that
+reason, and that remains the correct handling.
