@@ -161,6 +161,37 @@ function useReducedMotion(): boolean {
 }
 
 /**
+ * One marker, counter-scaled about its own anchor so it keeps its screen size
+ * at every zoom.
+ *
+ * Each instance owns its OWN useAnimatedStyle. It used to be one style object
+ * shared across every marker — "one worklet driving every marker" — which is
+ * the pattern Reanimated documents as unsupported: a view attached to a
+ * shared animated style can stop receiving updates, and a marker with a stale
+ * counter-scale draws at the wrong size, magnified and soft. The worklet body
+ * is one read and one division; ~115 of these is less work per frame than the
+ * ~40 ScreenPin labels already do.
+ */
+function CounterScaled({ u, v, k, children }: {
+  u: number;
+  v: number;
+  k: SharedValue<number>;
+  children: React.ReactNode;
+}) {
+  const style = useAnimatedStyle(() => ({
+    transform: [{ scale: BASE / Math.max(1, k.value) }],
+  }));
+  return (
+    <Animated.View
+      pointerEvents="box-none"
+      style={[{ position: 'absolute', left: u * BASE, top: v * BASE }, style]}
+    >
+      {children}
+    </Animated.View>
+  );
+}
+
+/**
  * A thing drawn in SCREEN space, tracking the map without being scaled by it.
  *
  * Anything inside the transformed container is rasterised by iOS at its
@@ -427,6 +458,15 @@ export function MapCanvas({
       pinching.value = 1;
     })
     .onUpdate((e) => {
+      // A pinch does NOT end when one of two fingers lifts (RNGH #1214 — the
+      // same issue behind the pan hand-off fix). It keeps tracking, with
+      // focalX/Y TELEPORTED from the two-finger centroid to the one finger
+      // still down. One more update then lands here and re-anchors the map
+      // against a focal that jumped half the finger gap sideways — "it still
+      // snap moved a bit to the side when I release my fingers". The maths
+      // below is anchored on the focal captured at onStart, so it is only
+      // valid while the pointer set that DEFINED that focal is still down.
+      if (e.numberOfPointers < 2) return;
       const next = Math.min(MAX_SCALE, Math.min(zoomFloor * MAX_ZOOM,
         Math.max(zoomFloor, startK.value * e.scale)));
       // The map point that was under the fingers when the pinch STARTED has to
@@ -651,9 +691,20 @@ export function MapCanvas({
     ],
   }));
 
-  /** One worklet driving every marker: pins keep their size at any zoom. */
-  const pinStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: BASE / Math.max(1, k.value) }],
+  // A second, IDENTICAL style for the second container. mapStyle used to be
+  // shared by the tile container and the marker container, and pinStyle by
+  // every marker view — Reanimated documents that an animated style must not
+  // be shared between components: views can silently stop receiving updates.
+  // A marker whose counter-scale goes stale renders at the wrong size and is
+  // GPU-magnified — a soft face inside a chunky border, which is what his
+  // screenshots show while the (screen-space) place labels stay crisp. The
+  // browser never shows it because reanimated runs on the JS thread there.
+  const markerLayerStyle = useAnimatedStyle(() => ({
+    transform: [
+      { translateX: tx.value },
+      { translateY: ty.value },
+      { scale: k.value / BASE },
+    ],
   }));
 
   const tiles = useMemo(() => {
@@ -754,20 +805,13 @@ export function MapCanvas({
             pointerEvents="box-none"
             style={[
               { position: 'absolute', width: BASE, height: BASE, transformOrigin: 'top left' },
-              mapStyle,
+              markerLayerStyle,
             ]}
           >
             {markers.map((m) => (
-              <Animated.View
-                key={m.key}
-                pointerEvents="box-none"
-                style={[
-                  { position: 'absolute', left: m.u * BASE, top: m.v * BASE },
-                  pinStyle,
-                ]}
-              >
+              <CounterScaled key={m.key} u={m.u} v={m.v} k={k}>
                 {m.render()}
-              </Animated.View>
+              </CounterScaled>
             ))}
           </Animated.View>
         </Animated.View>

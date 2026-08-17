@@ -519,6 +519,50 @@ describe('a tap that shared a sequence with a pinch cannot move the map', () => 
   });
 });
 
+describe('what his 13:12 screenshots finally pinned down', () => {
+  const canvas = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'map', 'MapCanvas.tsx'), 'utf8',
+  );
+
+  it('the pinch ignores updates once a finger has lifted', () => {
+    // A pinch does NOT end when one of two fingers lifts (RNGH #1214); it
+    // keeps tracking with focalX/Y teleported to the remaining finger, and
+    // one more onUpdate then re-anchors the map against a focal that jumped
+    // half the finger gap — "it still snap moved a bit to the side when I
+    // release my fingers". The focal maths is anchored at onStart, so it is
+    // only valid while the pointer set that defined it is still down.
+    // anchor on the PINCH specifically — the pan has an onUpdate too
+    const at = canvas.indexOf('Gesture.Pinch()');
+    const upd = canvas.slice(canvas.indexOf('.onUpdate((e) => {', at),
+      canvas.indexOf('.onUpdate((e) => {', at) + 1600);
+    expect(upd, 'the pinch onUpdate must exist').toContain('startK.value * e.scale');
+    const guard = upd.indexOf('if (e.numberOfPointers < 2) return;');
+    const write = upd.indexOf('k.value = next');
+    expect(guard, 'the pointer guard must exist').toBeGreaterThan(-1);
+    expect(guard).toBeLessThan(write);
+  });
+
+  it('no animated style is shared between views', () => {
+    // Reanimated documents that an animated style must not be attached to
+    // more than one component — a view can silently stop receiving updates.
+    // pinStyle was shared across ~115 markers and mapStyle across two
+    // containers: a marker with a stale counter-scale draws at the wrong
+    // size and is GPU-magnified soft, which is what the screenshots show
+    // while screen-space labels stay crisp. Invisible in the browser, where
+    // reanimated runs on the JS thread (F35).
+    // the DEFINITION must be gone; a comment may still tell its story
+    expect(canvas).not.toMatch(/const pinStyle = useAnimatedStyle/);
+    expect(canvas).toContain('function CounterScaled');
+    // each marker gets its own style hook, inside the component
+    const cs = canvas.slice(canvas.indexOf('function CounterScaled'), canvas.indexOf('function CounterScaled') + 700);
+    expect(cs).toContain('useAnimatedStyle');
+    // and the two containers no longer share one style object
+    expect(canvas).toContain('markerLayerStyle');
+    const uses = canvas.match(/\bmapStyle,/g) ?? [];
+    expect(uses.length, 'mapStyle must be attached to exactly one view').toBe(1);
+  });
+});
+
 describe('the worklet copy matches this one', () => {
   const canvas = readFileSync(
     join(__dirname, '..', '..', 'mobile', 'src', 'map', 'MapCanvas.tsx'), 'utf8',

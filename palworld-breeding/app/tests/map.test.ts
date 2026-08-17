@@ -638,14 +638,19 @@ describe('a place name never covers a pin', () => {
     expect(names).toBeLessThan(pins);
   });
 
-  it('keeps pins on ONE shared counter-scale worklet', () => {
-    // Making each pin its own screen-space marker would give ~200 markers
-    // ~200 worklets recomputing every frame — the exact thing this file was
-    // built to avoid, and the CEO had just reported the map as laggy. Pins
-    // ride a second container on the same transform instead.
-    expect(canvas).toMatch(/const pinStyle = useAnimatedStyle/);
-    // the shared map transform is applied to two containers now
-    expect(canvas.split('mapStyle,').length - 1).toBeGreaterThanOrEqual(2);
+  it('gives every pin its OWN counter-scale style', () => {
+    // This test used to pin the OPPOSITE: one shared worklet driving every
+    // marker, on the theory that per-pin worklets would fight for the frame.
+    // Reanimated documents that an animated style must not be attached to
+    // more than one component — a view can silently stop receiving updates,
+    // and a marker with a stale counter-scale draws at the wrong size and is
+    // GPU-magnified soft. His 13:12 screenshots showed exactly that. The
+    // worklet body is one read and one division; correctness beats a
+    // micro-optimisation that breaks rendering.
+    expect(canvas).toContain('function CounterScaled');
+    expect(canvas).not.toMatch(/const pinStyle = useAnimatedStyle/);
+    // and the tile container's style is attached to exactly one view
+    expect(canvas.split('mapStyle,').length - 1).toBe(1);
   });
 
   it('leaves the text outside the transform, where it stays crisp', () => {
