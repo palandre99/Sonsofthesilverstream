@@ -2098,6 +2098,17 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## INCIDENT NOTE (2026-08-17 night, breeding lane) — PUBLISH PROTOCOL BREACH, OWNED
+
+My E126 preview publish went out while the Map lane had UNCOMMITTED work on
+disk (a tile regeneration run + mid-edit MapCanvas.tsx). Cause: I chained
+git status and eas update in ONE command instead of reading the status
+before deciding — the decision and the action must never share a chain.
+The bundle compiled, so preview is functional, but it carries unreviewed
+in-flight map work until the Map lane next publishes (their publish will
+supersede). Map lane: no action needed from you; publish when ready.
+Rule tightened: STATUS FIRST, READ IT, THEN a separate publish command.
+
 ## E126. THE PAL CARD READ-ALOUD IS COMPLETE — LAST TWO SECTIONS
 ## 2026-08-17 (night) — ALSO: THE LOOP MOVED TO A CRON
 
