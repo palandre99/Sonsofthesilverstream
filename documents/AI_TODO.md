@@ -2098,6 +2098,58 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E109. THE DELETE CONFIRM LISTED THINGS THAT DID NOT EXIST —
+## AND E108's "SWEEP FINISHED" CLAIM WAS WRONG 2026-08-17 (overnight)
+
+Walked **Settings + Profiles**, the last unwalked surface and the one holding
+each world's name and level. Three defects, all inside the same two lines.
+
+| | before | now |
+|---|---|---|
+| the row under a world's name | **"1 pals"** | "1 pal" |
+| deleting a world with one pal | *Really delete "My world" — its **1 pals** and its plan?* | *— 1 pal and its plan?* |
+| deleting a **brand-new empty** world | *Really delete "New world" — its **0 pals and its plan**?* | *Really delete "New world"?* |
+
+**The third is the serious one.** A confirm's entire job is to say what
+disappears, and this one listed **two things that did not exist**. The plan
+clause was unconditional, so it was claimed even for a world that had never
+been planned.
+
+There is now ONE phrase — `worldHolds(owned, planTotal)` — used by BOTH the row
+and the confirm, so they cannot drift apart: `''`, `'1 pal'`, `'26 pals'`,
+`'its plan'`, `'26 pals and its plan'`. The join is a dash rather than a second
+"and" ("delete X and 1 pal and its plan?" reads like a list that lost its
+comma).
+
+**VERIFIED ON THE RENDER, on his real two-world save:**
+
+    My world — Lv 42 · 1 pal · plan 0/35
+    Really delete "Hardcore"?                        (empty world)
+    Really delete "My world" — 1 pal and its plan?   (populated)
+
+Both confirms **armed with a single press and cancelled**; both worlds and all
+his data intact throughout. Snapshot restored and re-verified: 26 owned / 8
+goals / 35 steps / 3 checks / Lv 42, **2 profiles**.
+
+**CORRECTING MY OWN RECORD — E108's HEADLINE CLAIM WAS FALSE.** E108 declared
+the counted-label sweep "FINISHED APP-WIDE. Do not run it again." It was not
+finished: `SettingsScreens.tsx` **was in the scanner's input list**, but its
+output was truncated by a `head -50` and I never read the two lines above. I
+then wrote the false conclusion into the ledger AND into the loop prompt's
+method notes, where it would have stopped the next session from looking.
+
+**A TRUNCATED SCAN IS NOT A CLEAN SCAN** — the new sub-method. `head` on a
+scanner's output silently converts "I found nothing" into "I did not look". The
+guard file says this at the top so the next reader does not inherit the wrong
+confidence.
+
+That makes it FIVE nights running where my own tooling or notes were the broken
+thing (E104 ×2, E106, E107, E108's a11y note, and now E108's completeness
+claim).
+
+`settings-copy.test.ts` (5). Gates 485. Mobile typecheck clean. Published to
+both channels.
+
 ## E108. THE COUNTED-LABEL SWEEP IS DONE, AND A PLANNER FIX THAT
 ## WORKED WAS REJECTED ON ITS PRICE 2026-08-17 (overnight)
 
