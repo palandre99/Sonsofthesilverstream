@@ -534,14 +534,35 @@ function IvTab() {
             );
           })}
         </View>
-        <Text
+        {/* Measured at 20 px tall — the smallest interactive thing left in the
+            app after the 44 pt sweep, because it was a bare <Text onPress> and
+            so never went through `Btn`. Now a real row with a real box, and
+            the tick is a vector icon rather than the ☐/☑ text glyphs (the
+            chrome rule: vector icons or game art, never a character standing
+            in for a control). */}
+        <Pressable
           accessibilityRole="checkbox"
+          accessibilityState={{ checked: specific }}
           accessibilityLabel={`Must come from one specific parent: ${specific ? 'yes' : 'no'}`}
           onPress={() => setSpecific(!specific)}
-          style={[s.body, { marginTop: 10 }]}
+          hitSlop={6}
+          style={({ pressed }) => [{
+            marginTop: 10, minHeight: 44, flexDirection: 'row',
+            alignItems: 'center', gap: 10, opacity: pressed ? 0.7 : 1,
+          }]}
         >
-          {specific ? '☑' : '☐'}  Must come from one specific parent
-        </Text>
+          <View style={{
+            width: 22, height: 22, borderRadius: 6, borderWidth: 1.5,
+            borderColor: specific ? T.accent : T.line2,
+            backgroundColor: specific ? T.accent : 'transparent',
+            alignItems: 'center', justifyContent: 'center',
+          }}>
+            {specific && <Icon name="check" size={15} color="#08191B" />}
+          </View>
+          <Text style={[s.body, { flex: 1 }]}>
+            Must come from one specific parent
+          </Text>
+        </Pressable>
       </Card>
 
       {odds ? (

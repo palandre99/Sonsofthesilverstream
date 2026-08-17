@@ -65,6 +65,7 @@ function CalcStartHelp({ onPick, mode, onBrowseOwned }: {
                   backgroundColor: pressed ? T.accentSoft : T.surface2,
                   borderWidth: 1, borderColor: pressed ? T.accent : T.line,
                   borderRadius: 10, paddingVertical: 5, paddingHorizontal: 9,
+                  minHeight: 40,
                 }]}>
                 <PalIcon name={n} size={26} />
                 <Text style={{ color: T.ink, fontWeight: '700', fontSize: 12.5 }}>{n}</Text>
@@ -98,7 +99,9 @@ function CalcStartHelp({ onPick, mode, onBrowseOwned }: {
           explanation and it stays — but folded away, because someone who
           already knows what the Calculator does should see the pals, not the
           manual. ("can be annoying to users who don't want too much text") */}
-      <Pressable onPress={() => setHowOpen((v) => !v)} hitSlop={6}
+      {/* my own control from the same night, and it drew 26 px — the 44 pt
+          rule applies to what I add too */}
+      <Pressable onPress={() => setHowOpen((v) => !v)} hitSlop={10}
         accessibilityRole="button"
         accessibilityState={{ expanded: howOpen }}
         accessibilityLabel={howOpen ? 'Hide how this works' : 'Show how this works'}

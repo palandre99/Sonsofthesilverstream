@@ -193,7 +193,9 @@ function Shell() {
             void Haptics.selectionAsync();
             setPanel(true);
           }}
-          hitSlop={10}
+          // the glyph draws 22 px; 12 of slop each side clears the 44 pt
+          // minimum (10 left it at 42 — measured, not guessed)
+          hitSlop={12}
           accessibilityRole="button"
           accessibilityLabel="Open sections"
           style={({ pressed }) => [styles.burger, pressed && { opacity: 0.6 }]}

@@ -305,7 +305,9 @@ export function GenderToggles({ name, size = 30 }: { name: string; size?: number
               void Haptics.selectionAsync();
               setOwnedGender(name, g, !on);
             }}
-            hitSlop={6}
+            // the ♂/♀ boxes draw 28 px and are the most-tapped control in the app;
+            // 6 of slop left them at 40, still under the 44 pt minimum
+            hitSlop={8}
             // the label was the bare glyph, so a screen reader announced
             // "male sign" with no hint of the pal, the meaning or the state.
             // The website had the same bug and was fixed first.

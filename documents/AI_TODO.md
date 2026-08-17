@@ -2098,6 +2098,60 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E90. THE 44 PT SWEEP FINISHED, AND THE ODDS LAB'S IV AND CAKE TABS WERE
+## WALKED FOR THE FIRST TIME 2026-08-17 (overnight)
+
+**E89 fixed every control that went through `Btn`. This tick found the ones
+that did not** — measured again on the render rather than assumed done.
+
+- **The IV tab's "Must come from one specific parent" was 20 px** — the
+  smallest interactive thing left in the app, because it was a bare
+  `<Text onPress>` with `☐`/`☑` text glyphs standing in for a control. It is
+  now a real 44 px row with a real box and a **vector tick**, which is also
+  what the chrome rule asks for (vector icons or game art, never a character
+  pretending to be a widget). `accessibilityState={{ checked }}` added.
+- **The menu button was 22 px with 10 of slop = 42.** Now 12 → 46.
+- **The ♂/♀ toggles on every Paldex row draw 28 px with 6 of slop = 40** —
+  and they are the most-tapped control in the whole app. Now 8 → 44.
+- **Two of my OWN controls from last night were undersized**: the "How this
+  works" disclosure (26 px, slop 6 → now 10) and the owned-pal shortcut chips
+  (38 px → `minHeight: 40`). Sub-method 8 applies to layout, not just copy.
+
+**THE IV AND CAKE TABS WERE NEVER ONCE EXERCISED ON A RENDER. Both are
+correct.** Walked properly this time:
+
+- **IV tab, "from either parent": 55.6%, 1 in 1.8 eggs, 3 eggs for 90%.**
+  Checks out against the datamined distribution by hand: a specific stat is
+  inherited with probability (1/2)(1/3) + (1/3)(2/3) + (1/6)(1) = **5/9 =
+  55.6%**, and 1/0.5556 = 1.8.
+- **Toggling "one specific parent" gives 27.8%, 1 in 3.6, 8 eggs for 90%** —
+  exactly half of 55.6%, which is the coin flip, and matches the value
+  `odds.test.ts` already pins (`(5/9) * 0.5`). `ceil(ln 0.1 / ln 0.7222) = 8`.
+- **Cake tab renders all five and every figure matches `CAKES` in odds.ts**
+  field for field. The Vegetable Cake row is the one worth noting: the badge
+  says **2.0% mut/cycle** while the sentence says **each egg is still 1%** —
+  both true (two eggs per cycle), and the sentence exists precisely so the
+  badge cannot be misread. Special Cake still says its override "is not
+  datamined, so the Odds Lab does not model it" — the HARD RULE, intact.
+
+**CALCULATOR REVERSE MODE, also never rendered on the phone, works.** Anubis →
+"All other pairs · 235", ten shown, "Show all 235". **The one-way door I fixed
+in E88b was verified on the render**: Show all 235 → Show fewer → Show all 235,
+both directions.
+
+**A PRINTED COUNT VERIFIED AGAINST HIS REAL SAVE:** "Show all 26 of your pals"
+— his box holds exactly 26. Correct.
+
+**Zero console errors and zero warnings** across Calc, Plan, Paldex, Odds,
+Odds/IVs, Odds/Cakes and reverse mode.
+
+**Remaining sub-36 controls, all deliberate:** the goal-row pal icons (26 px +
+slop 9 = 44) and the disabled swap button (34 px + slop 10 = 54).
+`getBoundingClientRect` cannot see `hitSlop`, so these will keep showing up in
+the scan — they are NOT defects.
+
+Gates: 410 passing, 0 expected failures, 23 files; both trees typecheck.
+
 ## E89. EVERY BUTTON IN THE APP WAS BELOW THE MINIMUM TOUCH SIZE, AND THE
 ## ODDS LAB HAD THE CALCULATOR'S DISEASE 2026-08-17 (overnight)
 
