@@ -14,7 +14,7 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 import {
-  clampView, panStep, pinchStep, reanchorPan, screenToUv,
+  clampView, panStep, pinchStep, reanchorPan, rebasePinchAnchor, screenToUv,
 } from '../../mobile/src/map/gesture';
 import { tileLevelFor } from '../src/map/projection';
 
@@ -533,8 +533,10 @@ describe('what his 13:12 screenshots finally pinned down', () => {
     // only valid while the pointer set that defined it is still down.
     // anchor on the PINCH specifically — the pan has an onUpdate too
     const at = canvas.indexOf('Gesture.Pinch()');
+    // 3400, not 1600: the fifth-cause rebase branch now sits between the
+    // guard and the write, and the window must hold all of it
     const upd = canvas.slice(canvas.indexOf('.onUpdate((e) => {', at),
-      canvas.indexOf('.onUpdate((e) => {', at) + 1600);
+      canvas.indexOf('.onUpdate((e) => {', at) + 3400);
     expect(upd, 'the pinch onUpdate must exist').toContain('startK.value * e.scale');
     const guard = upd.indexOf('if (e.numberOfPointers < 2) return;');
     const write = upd.indexOf('k.value = next');
@@ -571,9 +573,17 @@ describe('the worklet copy matches this one', () => {
   it('inlines the same focal maths, rather than importing it', () => {
     // importing would be the crash that took this fane down twice on device
     expect(canvas).not.toMatch(/from '\.\/gesture'/);
-    expect(canvas).toMatch(/const u = \(pinchFx\.value - pinchTx\.value\) \/ startK\.value/);
-    expect(canvas).toMatch(/const v = \(pinchFy\.value - pinchTy\.value\) \/ startK\.value/);
+    expect(canvas).toMatch(/const u = \(pinchFx\.value - pinchTx\.value\) \/ anchorK\.value/);
+    expect(canvas).toMatch(/const v = \(pinchFy\.value - pinchTy\.value\) \/ anchorK\.value/);
     expect(canvas).toMatch(/e\.focalX - u \* next/);
+    // the fifth cause: a pointer-count change mid-pinch teleports the focal
+    // centroid, so the inline must rebase and write NOTHING that frame
+    const at = canvas.indexOf('e.numberOfPointers !== pinchPointers.value');
+    expect(at, 'the count-change rebase must exist').toBeGreaterThan(-1);
+    const branch = canvas.slice(at, at + 1600);
+    expect(branch).toContain('startK.value = k.value / e.scale;');
+    expect(branch).toContain('anchorK.value = k.value;');
+    expect(branch).toMatch(/pinchFy\.value = e\.focalY;\s*\n\s*return;/);
   });
 
   it('inlines the same clamp', () => {
@@ -583,5 +593,51 @@ describe('the worklet copy matches this one', () => {
   it('inlines the same re-anchor', () => {
     expect(canvas).toMatch(/startTx\.value = tx\.value - e\.translationX/);
     expect(canvas).toMatch(/startTy\.value = ty\.value - e\.translationY/);
+  });
+});
+
+describe('the fifth cause: pointer count changes MID-pinch (3->2, 2->3)', () => {
+  const W = 375;
+  const H = 812;
+  const FLOOR = Math.max(W, H);
+  const CEIL = FLOOR * 9.6;
+
+  // a pinch mid-flight: started at floor, fingers have spread to 1.7x
+  const flight = pinchStep({
+    startK: FLOOR, startTx: -120, startTy: -300,
+    focalX0: 180, focalY0: 400, focalX: 200, focalY: 420,
+    scale: 1.7, minK: FLOOR, maxK: CEIL, w: W, h: H,
+  });
+
+  it('the rebase frame itself moves NOTHING', () => {
+    // a palm edge lifts: the centroid teleports 80px sideways. The rebase
+    // must hand back an anchor from which the SAME live readings reproduce
+    // the same view — the map holds still while the reference point moves.
+    const jumpedFocal = { x: 280, y: 390 };
+    // RNGH's scale basis can jump with the pointer set too — model that
+    const jumpedScale = 2.3;
+    const a = rebasePinchAnchor(flight, jumpedFocal.x, jumpedFocal.y, jumpedScale);
+    const next = pinchStep({
+      ...a, focalX: jumpedFocal.x, focalY: jumpedFocal.y,
+      scale: jumpedScale, minK: FLOOR, maxK: CEIL, w: W, h: H,
+    });
+    expect(next.k).toBeCloseTo(flight.k, 6);
+    expect(next.tx).toBeCloseTo(flight.tx, 6);
+    expect(next.ty).toBeCloseTo(flight.ty, 6);
+  });
+
+  it('and motion AFTER the rebase is measured from the rebase, not the start', () => {
+    const a = rebasePinchAnchor(flight, 280, 390, 2.3);
+    // fingers keep spreading: live scale grows 10% past the rebase reading
+    const next = pinchStep({
+      ...a, focalX: 280, focalY: 390,
+      scale: 2.3 * 1.1, minK: FLOOR, maxK: CEIL, w: W, h: H,
+    });
+    expect(next.k).toBeCloseTo(flight.k * 1.1, 6);
+    // and the map point under the (new) focal stays under it
+    const before = screenToUv(280, 390, flight);
+    const after = screenToUv(280, 390, next);
+    expect(after.u).toBeCloseTo(before.u, 6);
+    expect(after.v).toBeCloseTo(before.v, 6);
   });
 });

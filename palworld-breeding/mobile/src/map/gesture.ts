@@ -51,6 +51,9 @@ export function clampView(tx: number, ty: number, k: number, w: number, h: numbe
 export function pinchStep(args: {
   /** scale when the pinch began */
   startK: number;
+  /** scale at the moment the CURRENT anchor was captured. Equal to startK
+   *  until a mid-pinch rebase (see rebasePinchAnchor); omitted = startK. */
+  anchorK?: number;
   /** translation when the pinch began */
   startTx: number;
   startTy: number;
@@ -68,11 +71,46 @@ export function pinchStep(args: {
   h: number;
 }): View {
   const next = Math.min(args.maxK, Math.max(args.minK, args.startK * args.scale));
-  // where the starting focal sat on the map, in uv
-  const u = (args.focalX0 - args.startTx) / args.startK;
-  const v = (args.focalY0 - args.startTy) / args.startK;
+  // where the anchoring focal sat on the map, in uv — divided by the scale
+  // AT ANCHOR TIME, which is startK only until a mid-pinch rebase
+  const aK = args.anchorK ?? args.startK;
+  const u = (args.focalX0 - args.startTx) / aK;
+  const v = (args.focalY0 - args.startTy) / aK;
   const c = clampView(args.focalX - u * next, args.focalY - v * next, next, args.w, args.h);
   return { k: next, tx: c.x, ty: c.y };
+}
+
+/**
+ * Re-anchor a pinch when its POINTER COUNT changes while two or more touches
+ * remain — the fifth distinct cause of "it snap moved a bit to the side when
+ * I release my fingers".
+ *
+ * RNGH's focalX/Y is the centroid of whatever touches it is tracking, and
+ * its scale is measured between them. 2 -> 1 is guarded (the update returns),
+ * but 3 -> 2 and 2 -> 3 sail through: the centroid teleports by half the
+ * lifted finger's gap and the old anchor turns that jump into map movement,
+ * tens of pixels sideways at partial release with no hand movement at all.
+ *
+ * The rebase captures a fresh anchor against the CURRENT view and the LIVE
+ * readings, chosen so that the very next pinchStep with unchanged readings
+ * returns the view unchanged — the map holds still while the reference
+ * point moves. A test executes exactly that invariant.
+ */
+export function rebasePinchAnchor(view: View, focalX: number, focalY: number, scale: number): {
+  startK: number; anchorK: number; startTx: number; startTy: number;
+  focalX0: number; focalY0: number;
+} {
+  return {
+    // e.scale keeps counting from the ORIGINAL span basis (and its basis can
+    // itself jump with the pointer set), so fold the current k into a fresh
+    // basis: startK * live-scale must equal k exactly at the rebase frame.
+    startK: view.k / scale,
+    anchorK: view.k,
+    startTx: view.tx,
+    startTy: view.ty,
+    focalX0: focalX,
+    focalY0: focalY,
+  };
 }
 
 /** One frame of a one-finger pan. */

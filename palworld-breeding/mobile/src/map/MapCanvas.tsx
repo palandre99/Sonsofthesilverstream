@@ -351,6 +351,12 @@ export function MapCanvas({
   const pinchTy = useSharedValue(0);
   const pinchFx = useSharedValue(0);
   const pinchFy = useSharedValue(0);
+  /** k at the moment the CURRENT pinch anchor was captured. Distinct from
+   *  startK once a mid-pinch rebase has happened: startK is what e.scale
+   *  multiplies, anchorK is what the anchor's map-point division uses. */
+  const anchorK = useSharedValue(0);
+  /** how many touches defined the current pinch anchor — see onUpdate */
+  const pinchPointers = useSharedValue(0);
   /** 1 while fingers are down: markers stop re-clustering until you let go */
   const gesturing = useSharedValue(0);
   /** 1 while two fingers are on the glass */
@@ -511,6 +517,8 @@ export function MapCanvas({
     .onStart((e) => {
       runOnJS(markTouched)();
       startK.value = k.value;
+      anchorK.value = k.value;
+      pinchPointers.value = e.numberOfPointers;
       pinchTx.value = tx.value;
       pinchTy.value = ty.value;
       pinchFx.value = e.focalX;
@@ -528,15 +536,42 @@ export function MapCanvas({
       // below is anchored on the focal captured at onStart, so it is only
       // valid while the pointer set that DEFINED that focal is still down.
       if (e.numberOfPointers < 2) return;
-      const next = Math.min(MAX_SCALE, Math.min(zoomFloor * MAX_ZOOM,
+      if (e.numberOfPointers !== pinchPointers.value) {
+        // THE FIFTH CAUSE, derived by re-walking the algebra after the CEO's
+        // "it still snap moved a bit to the side when I release my fingers":
+        // the guard above handles 2 fingers -> 1, but the count can also go
+        // 3 -> 2 (a palm edge or resting knuckle lifting) or 2 -> 3, and RNGH
+        // recomputes focalX/Y as the centroid of WHATEVER touches remain. The
+        // anchor below is keyed to the OLD centroid, so the frame the count
+        // changes, `e.focalX - u * next` moves the map by the centroid jump —
+        // tens of pixels, sideways, exactly at (partial) release, with no
+        // hand movement at all. Same medicine as the pan's pointer-count
+        // rebase: re-capture the anchor against the CURRENT reading and write
+        // NOTHING this frame, so the map holds still while the reference
+        // point teleports. e.scale's basis can jump here too (the span is
+        // measured between the remaining touches), which is why startK is
+        // re-derived from the live reading rather than kept.
+        pinchPointers.value = e.numberOfPointers;
+        startK.value = k.value / e.scale;
+        anchorK.value = k.value;
+        pinchTx.value = tx.value;
+        pinchTy.value = ty.value;
+        pinchFx.value = e.focalX;
+        pinchFy.value = e.focalY;
+        return;
+      }
+            const next = Math.min(MAX_SCALE, Math.min(zoomFloor * MAX_ZOOM,
         Math.max(zoomFloor, startK.value * e.scale)));
       // The map point that was under the fingers when the pinch STARTED has to
       // stay under them as they both spread and move. Anchoring on the live
       // focal point instead (the old code) makes the focal its own reference,
       // which cancels out: the map zoomed about wherever the fingers happened
       // to be that frame and threw away two-finger dragging entirely.
-      const u = (pinchFx.value - pinchTx.value) / startK.value;
-      const v = (pinchFy.value - pinchTy.value) / startK.value;
+      // divided by anchorK, NOT startK: they are equal until a mid-pinch
+      // rebase, after which startK is the e.scale basis and anchorK is the
+      // scale the anchor coordinates were captured at
+      const u = (pinchFx.value - pinchTx.value) / anchorK.value;
+      const v = (pinchFy.value - pinchTy.value) / anchorK.value;
       const c = clamp(e.focalX - u * next, e.focalY - v * next, next);
       k.value = next;
       tx.value = c.x;
@@ -548,8 +583,8 @@ export function MapCanvas({
       // whatever the pan reads next is measured from a different point than
       // what it read last — make it rebase before it writes anything
       rebase.value = 1;
-    }), [MAX_SCALE, clamp, gesturing, multiTouch, pinching, rebase, zoomFloor, k, markTouched, pinchFx,
-    pinchFy, pinchTx, pinchTy, startK, tx, ty]);
+    }), [MAX_SCALE, anchorK, clamp, gesturing, multiTouch, pinchPointers, pinching, rebase,
+    zoomFloor, k, markTouched, pinchFx, pinchFy, pinchTx, pinchTy, startK, tx, ty]);
 
   const doubleTap = useMemo(() => Gesture.Tap()
     .onTouchesDown((e) => {
