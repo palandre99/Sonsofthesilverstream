@@ -5786,3 +5786,39 @@ proves it is one of the tests guarding the PHONE. Keeping them in sync is
 "keeping the website green", which the directive requires — it is not porting
 a feature. `closeMatches` was added to both copies tonight for exactly that
 reason, and that remains the correct handling.
+
+### M15 — criterion 1: the key stamps the game build — DONE (41bfda1, published)
+"Every spot is read from the game's own files — none of it is estimated or
+crowd-guessed. Game build 24575149, 12 August 2026."
+The blueprint says stamp + proof together is OURS — Dododex stamps versions,
+paldb stamps a build, nobody does both. We had the proof half and never said
+WHICH build, which is the half that says "not two patches stale".
+THE INTERESTING PART: the build id lives in a GENERATED header marked DO NOT
+EDIT, so the UI string is hand-written — exactly the claim that rots when the
+data is regenerated and nobody retypes it. A test reads the real value out of
+the generator's output and fails if they disagree. PROVED IT FAILS: set the
+stamp to 99999999, watched it go red, restored. A second test keeps the date
+readable ("12 August 2026") and bans the ISO form from the key.
+
+### M16 — criteria 6 and 11 audited, NOTHING CHANGED (correct as they stand)
+- **6 numbers carry context, never float** — every number on the map arrives
+  with its unit or subject: "1,572 spots on the map", "155 on this map",
+  "none here", "Lv 5-7", "93 spots · Lv 5-7 · plus 96 in dungeons". No naked
+  figure exists to fix. PASS.
+- **11 rows carry decision-grade info scent** — the Find row is virtualized
+  and carries portrait + name + level band + night marker + owned tick: four
+  facts beside the icon, which is the criterion's own bar. ELEMENT is the one
+  thing absent, and deliberately: on a map you already know which pal you
+  want, so an element dot would be noise for this task rather than scent.
+  PASS, with the omission recorded as a choice.
+
+### THE AAA AUDIT IS COMPLETE FOR THE MAP — all 15 criteria checked
+FIXED (6): 1 build stamp · 2 fuzzy search · 10 hint teaches the wedge ·
+12 Reduce Motion · 15 haptics.  PASS AS BUILT (4): 6 numbers · 11 rows ·
+13 fencing estimates · 15 Dynamic Type.  NOT MAP-LANE / PRODUCT SCOPE (raise
+with him): 3 nav shape (CEO-final already), 4 detail-sheet anatomy, 5
+cross-linking, 7 offline (we already win), 8 no ads/free dark mode (policy),
+9 theming (token system is law), 14 patch-day ritual, and criterion 15's
+share sheet / widgets / Handoff.
+NEXT INSTRUMENT: the checklist is exhausted, so go back to WALKING JOURNEYS
+and to the roadmap (custom markers, routes, search by zone).
