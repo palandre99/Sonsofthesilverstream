@@ -135,6 +135,22 @@ export function removeStop(region: RegionId, index: number): void {
   }
 }
 
+/**
+ * Replace THIS region's route with imported stops — all or nothing. Every
+ * row passes the same guard a loaded file does; one bad row refuses the
+ * lot, because a route with dropped stops is a DIFFERENT route. The caller
+ * has already confirmed the replace with the player.
+ */
+export function importRoute(
+  region: RegionId, incoming: Omit<RouteStop, 'region'>[],
+): boolean {
+  const rows = incoming.map((s) => ({ region, ...s }));
+  if (rows.length === 0 || !rows.every(isStop)) return false;
+  stops = [...stops.filter((s) => s.region !== region), ...rows];
+  persist();
+  return true;
+}
+
 /** Clear the route on ONE map, leaving the other region's alone. */
 export function clearRoute(region: RegionId): void {
   const before = stops.length;

@@ -18,6 +18,8 @@ import { MAP_TILES } from '../src/data/tileIndex.g';
 import { foundKey } from '../src/map/found';
 import { clusterPoints, decodePoints, pointsInRect } from '../src/map/points';
 import { regionOf, uvToReadout, worldToUv, tileLevelFor } from '../src/map/projection';
+// the share codec is PURE (no react-native imports), so the gate can run it
+import { decodeRoute, encodeRoute } from '../../mobile/src/map/routeShare';
 import {
   closeMatches, isNightOnly, poiLayers, poiPoints, searchPlaces, spawnablePals, spawnLevels,
   spawnPoints, spawnSplit,
@@ -2481,5 +2483,136 @@ describe('removing one stop (slice 2)', () => {
     // same fault family as the mark card across a region switch (the Mau
     // banner): switching islands closes it
     expect(screen).toMatch(/setOpenPin\(null\);\s*\n\s*setOpenStops\(null\);\s*\n\s*setDraft\(null\);/);
+  });
+});
+
+describe('sharing a route (slice 3) — the codec, EXECUTED', () => {
+  const stops = [
+    { region: 'palpagos' as const, u: 0.421356237, v: 0.557106781, label: 'Base camp' },
+    { region: 'palpagos' as const, u: 0.58, v: 0.38, label: 'Ore · ledge "west" 🥚' },
+    { region: 'palpagos' as const, u: 0.5, v: 0.62, label: 'Sulfur run' },
+  ];
+
+  it('round-trips losslessly: order, labels, full float precision', () => {
+    const text = encodeRoute('palpagos', 'Palpagos Islands', stops);
+    const back = decodeRoute(text);
+    expect(back.ok).toBe(true);
+    if (!back.ok) return;
+    expect(back.region).toBe('palpagos');
+    expect(back.stops).toEqual(stops.map(({ region: _r, ...rest }) => rest));
+  });
+
+  it('the message reads like a message, not like data', () => {
+    const text = encodeRoute('palpagos', 'Palpagos Islands', stops);
+    expect(text).toContain('Palforge route — Palpagos Islands — 3 stops');
+    expect(text).toContain('1. Base camp');
+    expect(text).toContain('3. Sulfur run');
+    // the machine token is the LAST line, out of the way of the humans
+    expect(text.trim().split('\n').pop()).toMatch(/^\[palforge-route [A-Za-z0-9+/=]+\]$/);
+  });
+
+  it('survives the text being wrapped in chat noise', () => {
+    const text = encodeRoute('tree', 'The World Tree', [stops[0]]);
+    const wrapped = `check this out!!\n${text}\nsent from my phone`;
+    const back = decodeRoute(wrapped);
+    expect(back.ok).toBe(true);
+    if (back.ok) expect(back.region).toBe('tree');
+  });
+
+  it('plain text without a route is refused in plain language', () => {
+    const back = decodeRoute('hello there, no route here');
+    expect(back.ok).toBe(false);
+    if (!back.ok) expect(back.why).toContain('No Palforge route');
+  });
+
+  it('a damaged token is refused, never half-imported', () => {
+    const text = encodeRoute('palpagos', 'Palpagos Islands', stops);
+    const token = /\[palforge-route ([A-Za-z0-9+/=]+)\]/.exec(text)![1];
+    // chop the payload — a truncated share must not become a shorter route
+    const cut = text.replace(token, token.slice(0, Math.floor(token.length / 2)));
+    const back = decodeRoute(cut);
+    expect(back.ok).toBe(false);
+    if (!back.ok) expect(back.why).toContain('damaged');
+  });
+
+  it('an equals sign smuggled mid-token is refused, not skipped', () => {
+    // the token regex admits '=' anywhere (it is legal padding at the END),
+    // so a corrupted mid-token '=' is the ONE bad character that can reach
+    // the decoder — mutation-testing found this path uncovered
+    const text = encodeRoute('palpagos', 'Palpagos Islands', stops);
+    const token = /\[palforge-route ([A-Za-z0-9+/=]+)\]/.exec(text)![1];
+    const smuggled = token.slice(0, 10) + '=' + token.slice(11);
+    expect(decodeRoute(text.replace(token, smuggled)).ok).toBe(false);
+  });
+
+  it('a row with off-map coordinates refuses the WHOLE import', () => {
+    // forge a v1 payload with one bad row among good ones
+    const bad = { v: 1, region: 'palpagos', stops: [[0.4, 0.5, 'ok'], [1.7, 0.5, 'off the map']] };
+    const b64 = Buffer.from(JSON.stringify(bad), 'utf8').toString('base64');
+    const back = decodeRoute(`[palforge-route ${b64}]`);
+    expect(back.ok).toBe(false);
+  });
+
+  it('an unknown region or version is refused', () => {
+    for (const bad of [
+      { v: 1, region: 'moon', stops: [[0.4, 0.5, 'x']] },
+      { v: 2, region: 'palpagos', stops: [[0.4, 0.5, 'x']] },
+    ]) {
+      const b64 = Buffer.from(JSON.stringify(bad), 'utf8').toString('base64');
+      expect(decodeRoute(`[palforge-route ${b64}]`).ok).toBe(false);
+    }
+  });
+
+  it('handles labels beyond ASCII the way a phone keyboard writes them', () => {
+    const fancy = [{ region: 'tree' as const, u: 0.1, v: 0.9, label: 'Ægir — 基地 🌋' }];
+    const back = decodeRoute(encodeRoute('tree', 'The World Tree', fancy));
+    expect(back.ok).toBe(true);
+    if (back.ok) expect(back.stops[0].label).toBe('Ægir — 基地 🌋');
+  });
+});
+
+describe('importing a route (slice 3) — the wiring', () => {
+  const store = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'map', 'routes.ts'), 'utf8',
+  );
+  const screen = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
+  );
+  const codec = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'map', 'routeShare.ts'), 'utf8',
+  );
+
+  it('the codec stays PURE so these tests stay real', () => {
+    // a react-native import here would break the executed tests above and
+    // turn this feature's guards back into text assertions
+    expect(codec).not.toMatch(/from 'react-native'/);
+    expect(codec).not.toMatch(/from 'expo/);
+    expect(codec).toMatch(/import type .* from '\.\/routes'/);
+  });
+
+  it('import replaces all-or-nothing through the same row guard as disk', () => {
+    const fn = store.slice(store.indexOf('export function importRoute'),
+      store.indexOf('export function importRoute') + 500);
+    expect(fn, 'importRoute must exist').toContain('rows.every(isStop)');
+    expect(fn).toContain("stops.filter((s) => s.region !== region)");
+  });
+
+  it('a route for the other island is refused BY NAME', () => {
+    expect(screen).toContain('switch to that map to import it');
+    expect(screen).toMatch(/parsed\.region !== region/);
+  });
+
+  it('importing over an existing route asks first, and never merges', () => {
+    expect(screen).toContain('Replace your route?');
+    expect(screen).toContain("text: 'Keep mine', style: 'cancel'");
+    // the only combining rule is replace — merging would invent an order
+    expect(screen).not.toMatch(/\.\.\.parsed\.stops, \.\.\.myRoute/);
+    expect(screen).not.toMatch(/\.\.\.myRoute, \.\.\.parsed\.stops/);
+  });
+
+  it('share and import live beside the other route verbs', () => {
+    expect(screen).toContain('Share my route');
+    expect(screen).toContain('Import a route from the clipboard');
+    expect(screen).toContain('Share.share({ message: encodeRoute(region, name, myRoute) })');
   });
 });

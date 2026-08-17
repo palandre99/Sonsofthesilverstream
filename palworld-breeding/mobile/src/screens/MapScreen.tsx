@@ -12,8 +12,9 @@
  */
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import {
-  FlatList, Image, Pressable, ScrollView, Text, TextInput, View,
+  Alert, FlatList, Image, Pressable, ScrollView, Share, Text, TextInput, View,
 } from 'react-native';
+import * as Clipboard from 'expo-clipboard';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 import { T } from '../theme';
@@ -29,8 +30,9 @@ import {
   renamePin, type MapPin,
 } from '../map/pins';
 import {
-  addStop, clearRoute, loadRoute, onRouteChange, removeStop, routeIn,
+  addStop, clearRoute, importRoute, loadRoute, onRouteChange, removeStop, routeIn,
 } from '../map/routes';
+import { decodeRoute, encodeRoute } from '../map/routeShare';
 import {
   GROUP_LABEL, alphaSpots, closeMatches, dungeonPoints, emptyFilters, isNightOnly,
   poiLayer,
@@ -1348,6 +1350,47 @@ export function MapScreen() {
           onClearMine={() => { clearPins(region); setOpenPin(null); }}
           myMarks={myPins.length}
           onClearRoute={() => { clearRoute(region); setOpenStops(null); }}
+          onShareRoute={() => {
+            const name = MAP_REGIONS.find((r) => r.id === region)?.name ?? region;
+            void Share.share({ message: encodeRoute(region, name, myRoute) });
+          }}
+          onImportRoute={async () => {
+            const text = await Clipboard.getStringAsync();
+            const parsed = decodeRoute(text);
+            if (!parsed.ok) {
+              Alert.alert('Nothing to import', parsed.why);
+              return;
+            }
+            if (parsed.region !== region) {
+              const name = MAP_REGIONS.find((r) => r.id === parsed.region)?.name
+                ?? parsed.region;
+              Alert.alert(
+                'Wrong map',
+                `This is a ${name} route — switch to that map to import it.`,
+              );
+              return;
+            }
+            const bring = () => {
+              if (importRoute(region, parsed.stops)) {
+                void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                setOpenStops(null);
+              }
+            };
+            if (myRoute.length > 0) {
+              // replacing is the ONLY combining rule — merging two routes
+              // would invent an order nobody chose
+              Alert.alert(
+                'Replace your route?',
+                `You already have ${myRoute.length === 1 ? '1 stop' : `${myRoute.length} stops`} on this map. Importing replaces them.`,
+                [
+                  { text: 'Keep mine', style: 'cancel' },
+                  { text: 'Replace', style: 'destructive', onPress: bring },
+                ],
+              );
+              return;
+            }
+            bring();
+          }}
           routeStops={myRoute.length}
           onClose={() => setSheet(null)}
         />
@@ -1727,11 +1770,12 @@ function SheetShell({ title, onClear, onClose, children }: {
 
 function LayerSheet({
   filters, onToggle, onClear, onClearFound, onClearMine, myMarks,
-  onClearRoute, routeStops, onClose,
+  onClearRoute, onShareRoute, onImportRoute, routeStops, onClose,
 }: {
   filters: MapFilters; onToggle: (id: string) => void; onClear: () => void;
   onClearFound: () => void; onClearMine: () => void; myMarks: number;
-  onClearRoute: () => void; routeStops: number;
+  onClearRoute: () => void; onShareRoute: () => void;
+  onImportRoute: () => void; routeStops: number;
   onClose: () => void;
 }) {
   const groups = useMemo(() => {
@@ -1772,6 +1816,38 @@ function LayerSheet({
             </Text>
           </Pressable>
         )}
+        {routeStops > 0 && (
+          <Pressable
+            onPress={onShareRoute}
+            accessibilityRole="button"
+            style={{
+              alignSelf: 'flex-start', flexDirection: 'row', alignItems: 'center', gap: 7,
+              paddingHorizontal: 11, paddingVertical: 9, borderRadius: 11,
+              borderWidth: 1, borderColor: T.line, backgroundColor: T.surface,
+            }}
+          >
+            <Icon name="share-variant-outline" size={15} color={T.muted} />
+            <Text style={{ color: T.muted, fontWeight: '700', fontSize: 12.5 }}>
+              {routeStops === 1
+                ? 'Share my route — 1 stop'
+                : `Share my route — ${routeStops} stops`}
+            </Text>
+          </Pressable>
+        )}
+        <Pressable
+          onPress={onImportRoute}
+          accessibilityRole="button"
+          style={{
+            alignSelf: 'flex-start', flexDirection: 'row', alignItems: 'center', gap: 7,
+            paddingHorizontal: 11, paddingVertical: 9, borderRadius: 11,
+            borderWidth: 1, borderColor: T.line, backgroundColor: T.surface,
+          }}
+        >
+          <Icon name="clipboard-arrow-down-outline" size={15} color={T.muted} />
+          <Text style={{ color: T.muted, fontWeight: '700', fontSize: 12.5 }}>
+            Import a route from the clipboard
+          </Text>
+        </Pressable>
         {routeStops > 0 && (
           <Pressable
             onPress={onClearRoute}
