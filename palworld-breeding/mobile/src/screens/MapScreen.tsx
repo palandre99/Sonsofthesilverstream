@@ -1681,7 +1681,16 @@ function PalSheet({
             was no way to ask. An upper bound is the question players have:
             a level 25 player wants to see what is at or under 25, and still
             wants the low ones for breeding stock. */}
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
+        {/* One ROW, scrolling sideways, never wrapping. Five chips do not fit
+            343pt, and flexWrap broke the line as 4+1 — "Up to 60" stranded
+            alone under a ragged gap, which reads as a layout accident rather
+            than a control. A sideways row is the standard phone pattern, and
+            the fifth chip peeking off the edge is its own scroll hint. */}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ flexDirection: 'row', gap: 6 }}
+        >
           {LEVEL_CAPS.map((cap) => {
             const on = filters.level.hi === cap;
             return (
@@ -1706,7 +1715,7 @@ function PalSheet({
               </Pressable>
             );
           })}
-        </View>
+        </ScrollView>
         <Pressable
           onPress={() => setFilterSheet(true)}
           accessibilityRole="button"

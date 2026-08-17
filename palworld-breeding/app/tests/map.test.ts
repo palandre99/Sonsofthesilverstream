@@ -2184,3 +2184,22 @@ describe('a mark card belongs to the map it is on', () => {
     expect(screen).toMatch(/prevRegion\.current !== null && prevRegion\.current !== region/);
   });
 });
+
+describe('the level caps sit on one row', () => {
+  const screen = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
+  );
+
+  it('scroll sideways instead of wrapping 4+1', () => {
+    // Five chips do not fit 343pt, and flexWrap stranded "Up to 60" alone on
+    // a second line — a layout accident, not a control. Found by the brutal
+    // self-eval the CEO ordered; measured after: five chips, one distinct row
+    // top, the fifth peeking past the edge as its own scroll hint.
+    const at = screen.indexOf('{LEVEL_CAPS.map((cap) => {');
+    expect(at, 'the chips block must exist').toBeGreaterThan(-1);
+    const before = screen.slice(at - 700, at);
+    expect(before).toContain('horizontal');
+    expect(before).toContain('showsHorizontalScrollIndicator={false}');
+    expect(before).not.toContain("flexWrap: 'wrap'");
+  });
+});
