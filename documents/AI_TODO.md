@@ -2098,6 +2098,60 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E106. ZERO / ONE / MANY ON PLAN AND PALDEX — A DESTRUCTIVE
+## CONFIRM THAT COUNTED TO ONE 2026-08-17 (overnight)
+
+METHOD #30 found FIVE defects on the Odds Lab at E103 and **every single one
+was at ONE**. It had never been run on Plan or Paldex. Ran it properly — not by
+reading, but by **building the states for real**: a plan with exactly one goal
+and exactly one step, a collection of exactly one pal, a search returning
+exactly one result.
+
+**THE PLAN SCREEN CAME BACK CLEAN, and that is worth recording** so nobody
+re-audits it. It is already carefully guarded: explicit 0/1/2 branches on the
+goal sentence, "1 goal in this plan — tap to edit", "1 step means at least 1
+cake", "1 step needs both genders", "One goal has no route yet", `step${...}`
+plural ternaries, `regions.length > 2` gates, `reusedAsParent >= 2` gates — and
+**"Remove all N goals…" is gated behind `targets.length > 1`**, so it can never
+render "all 1". The ingredient list ("5 flour · 8 berries…") cannot reach 1
+either: every total is an exact multiple of the per-cake cost.
+
+**THE PALDEX WAS NOT.** Searching a single pal by name — *the commonest way
+anybody reaches those buttons* — produced:
+
+    "Own all 1 shown"     "Un-own 1 shown"     "Really un-own 1?"
+
+"All" of one thing. And **the third is a DESTRUCTIVE confirm that counts to one
+instead of naming what disappears**, which is the exact opposite of a confirm's
+job. These were my own buttons, added earlier in this run.
+
+**At one result they now name the pal** — "Own Anubis", "Un-own Lamball",
+"Really un-own Lamball?" — and two-or-more is untouched: "Own all 12 shown",
+"Un-own 2 shown". That is the CEO's own rule, taken from the goal tray: *name
+the thing, so the label is the whole answer.*
+
+**Verified on the render at every count**: 1 result → "Own Anubis"; 2 results →
+"Un-own 2 shown"; one owned pal, armed → "Really un-own Lamball?" **with the box
+still reading 26** (arming does not fire — pressed exactly once, deliberately).
+Console clean. His data snapshotted before the sweep and restored key-by-key
+after: 26 owned / 8 goals / 35 steps / 3 checks / Lv 42, temp key deleted.
+
+**A FALSE ALARM CAUGHT BEFORE IT BECAME A "FINDING" (METHOD #31).** The one-step
+plan rendered *"Worth it: +2 steps against the 35 ahead"* — 35 on a one-step
+plan. That was **my own test artifact**: `advice` is stored inside the plan
+object and I hand-edited `steps` without regenerating it. The app computes both
+together. Not a bug. Also flagged and dismissed: "Berries — Caprity hatches in
+Phase 1" is a NAME plus a verb, not a count.
+
+**MY SCANNER WAS WRONG TWICE AGAIN.** First it required the expression to *look*
+numeric, so it missed `{n} cycles` — the exact shape of every E103 defect; the
+self-test caught that before I trusted a single line of output. Then its line
+numbers were computed on comment-stripped source and did not match the real
+file, which sent me reading the wrong lines until I switched to `grep`.
+
+`mobile-paldex.test.ts` now 8. Gates 476. Mobile typecheck clean.
+Mutation-proven. Published to both channels.
+
 ## E105. THE FLAGSHIP SCREEN EXPLAINED ITSELF IN MATHS NOTATION
 ## 2026-08-17 (overnight)
 
