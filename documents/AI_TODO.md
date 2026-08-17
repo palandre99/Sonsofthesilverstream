@@ -8538,3 +8538,37 @@ eye-verified (towers green at 9/9, chests 3/1,572).
 PUBLISH: guard blocked on the goals lane's in-flight PlannerScreen.tsx
 — d9cead8 queues; retry next tick. HOPPER remains: where-line on the
 pal-card spawn map (verify PalMap data shape first); bounty variants.
+
+### M57 — shipped trio (aace0f6, both channels) + THE COLLECTION ROUND (CEO 22:3x-22:4x)
+SHIPPED and confirmed: chip collection progress (d9cead8), the max-zoom
+SEAM fix (0e26a3e — his 22:39 screenshot showed the old bleed band; tiles
+now bake 2 REAL neighbour pixels per edge, seams physically impossible;
+bleed removed from the canvas; flatness judged on the tile proper), and
+the pal-card fixed-boss where-line (aace0f6).
+HIS THREE NEW ORDERS form one COLLECTION ROUND, in build order:
+1. FOUND-STATE ON THE MAP (his 22:45 ask; judgment delivered: YES):
+   found pins DIM to ~0.4 opacity keeping place and colour — done things
+   recede; no per-pin check badge (noise at 1,572 chests). Requires the
+   marker pipeline to know each drawn point's ORIGINAL index (foundKey
+   space) — verify what clusterPoints emits for singletons BEFORE coding.
+   Clusters unstyled v1 (they break up at the zooms where state matters).
+2. FOUND FILTER, three-way All / Still to find / Found in the Layers
+   sheet: filter points BEFORE clustering, preserving original indices;
+   pill + key + chip counts follow what is DRAWN (the map must not
+   contradict itself); "Still to find" is the wedge twin of "only pals
+   I'm missing".
+3. BOUNTY LEVELS + RICHER CARDS ("Bounty targets lack levels, and a lot
+   of stuff has very little information"): pois.json rows carry level,
+   bountyTitle, partner pals in notes — datamined, dropped by our
+   extractor. Extend extract_map_data to emit per-point info for layers
+   that have it; surface on tapped cards + the layer lists (Level slot
+   like alphas; wanted-title as the subtitle).
+4. LIST FILTERS (his 22:38 ask): search box on every layer list; alphas
+   get element-type chips (pals_1_0 elements field verified: Anubis
+   ["Ground"]), A-Z/by-level sort toggle, and "only missing" via
+   ownedAny — the paldex link he named.
+His texture-at-max-zoom charge stays open: the SEAM half is fixed; the
+softness half awaits the super-resolution experiment (deepest level
+only, verified against the original by downscale-diff before any ship;
+if SR proves dishonest or impractical, the honest answer is the reach
+cap, stated plainly).
