@@ -2203,3 +2203,19 @@ describe('the level caps sit on one row', () => {
     expect(before).not.toContain("flexWrap: 'wrap'");
   });
 });
+
+describe('renaming a mark offers exactly the two verbs that end an edit', () => {
+  const screen = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
+  );
+
+  it('hides Remove and Close while a name is being typed', () => {
+    // Eval round 2: mid-edit the card showed FOUR buttons, one of them Remove
+    // — deleting the whole mark one slip away from Save. Verified live: view
+    // mode shows Rename/Remove/Close, edit mode shows Save/Cancel only.
+    const at = screen.indexOf("removePin(openPin.id)");
+    expect(at, 'the remove handler must exist').toBeGreaterThan(-1);
+    const before = screen.slice(at - 700, at);
+    expect(before).toContain('draft === null && (');
+  });
+});

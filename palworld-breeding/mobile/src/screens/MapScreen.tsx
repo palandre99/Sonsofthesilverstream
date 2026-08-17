@@ -787,6 +787,12 @@ export function MapScreen() {
                 <Text style={{ color: T.muted, fontWeight: '700', fontSize: 12 }}>Rename</Text>
               </Pressable>
             )}
+            {/* While a name is being typed, ONLY Save and Cancel exist.
+                Four buttons showed here mid-edit, and one of them was Remove —
+                deleting the whole mark one slip away from Save. An edit mode
+                offers exactly the two verbs that end an edit. */}
+            {draft === null && (
+            <>
             <Pressable
               onPress={() => {
                 void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -817,6 +823,8 @@ export function MapScreen() {
                 Close
               </Text>
             </Pressable>
+            </>
+            )}
           </View>
         </View>
       )}
