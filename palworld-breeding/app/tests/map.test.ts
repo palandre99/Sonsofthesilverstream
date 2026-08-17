@@ -571,7 +571,7 @@ describe('zoom never asks for pixels that do not exist', () => {
     // are fixed-size so they stay crisp, and only more zoom pulls overlapping
     // markers apart. Reach went 3.2x -> 9.6x on his phone.
     expect(canvas).toMatch(/PixelRatio/);
-    expect(canvas).toMatch(/const OVERZOOM = 5;/);
+    expect(canvas).toMatch(/const OVERZOOM = 7;/);
     expect(canvas).toMatch(/\(texture \* OVERZOOM\) \/ PixelRatio\.get\(\)/);
     // the honest half: past that point the ground is magnified, and the
     // comment has to keep saying so

@@ -314,6 +314,7 @@ export const MAP_TILES: Record<string, Record<string, number>> = {
     '3_4_2': require('../../assets/map/tree/3_4_2.webp'),
     '3_5_2': require('../../assets/map/tree/3_5_2.webp'),
     '3_6_2': require('../../assets/map/tree/3_6_2.webp'),
+    '3_7_2': require('../../assets/map/tree/3_7_2.webp'),
     '3_0_3': require('../../assets/map/tree/3_0_3.webp'),
     '3_1_3': require('../../assets/map/tree/3_1_3.webp'),
     '3_2_3': require('../../assets/map/tree/3_2_3.webp'),

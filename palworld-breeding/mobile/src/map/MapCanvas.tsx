@@ -51,7 +51,10 @@ const TILE_PX = TILE_SIZE;
 const TILE_MAX_Z = MAX_TILE_Z;
 
 /** How far past the zoom floor you may go. */
-const MAX_ZOOM = 14;
+// 20, up from 14 ("I would also like to be able to zoom closer in" — the
+// second ask of its kind, granted knowing the ground magnifies; the deepest
+// tiles now bake an edge-preserving sharpen to carry it).
+const MAX_ZOOM = 20;
 
 /**
  * Zoom is bounded by the pixels that actually EXIST, never by a multiplier —
@@ -85,7 +88,7 @@ const MAX_ZOOM = 14;
 // he knows, he asked anyway, and with markers and labels now drawn in screen
 // space the overlay stays crisp all the way down. MAX_ZOOM (14x the floor)
 // is the binding cap on a dpr-3 phone from here.
-const OVERZOOM = 5;
+const OVERZOOM = 7;
 
 function maxScaleFor(region: RegionId): number {
   const texture = TILE_PX * (1 << (REGION_MAX_Z[region] ?? MAX_TILE_Z));

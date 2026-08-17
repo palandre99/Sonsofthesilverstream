@@ -22,7 +22,7 @@ import json
 from pathlib import Path
 
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageFilter
 
 ROOT = Path(__file__).resolve().parent.parent
 CACHE = ROOT / "tools" / ".cache"
@@ -129,6 +129,16 @@ def build_region(region: str, src_name: str, max_z: int) -> dict:
     for z in range(max_z + 1):
         n = 2**z
         level = src.resize((TILE * n, TILE * n), Image.LANCZOS)
+        # The deepest level is the one the GPU magnifies past 1:1 ("the
+        # terrain looks low render quality when zoomed Max in" — CEO, with
+        # screenshots). A light unsharp mask enhances edges that EXIST —
+        # invents nothing — and the magnified result reads visibly cleaner.
+        # Judged on a 3x side-by-side of the three most detailed tiles:
+        # percent=80 wins everywhere, 130 halos on high-contrast coasts.
+        # Deepest level only: lower levels render at or below 1:1, where
+        # sharpening would just alias.
+        if z == max_z:
+            level = level.filter(ImageFilter.UnsharpMask(radius=2, percent=80, threshold=2))
         present = []
         for ty in range(n):
             for tx in range(n):

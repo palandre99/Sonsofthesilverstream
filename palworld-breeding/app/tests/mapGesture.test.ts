@@ -325,20 +325,23 @@ describe('how far in it can actually go', () => {
     // 5 since his 20:0x screenshots round: "still i want to be able to
     // zoom in closer" — with pins and labels in screen space the overlay
     // stays crisp all the way down, and MAX_ZOOM (14x floor) is the cap.
-    expect(canvas).toMatch(/const OVERZOOM = 5;/);
+    expect(canvas).toMatch(/const OVERZOOM = 7;/);
     expect(canvas).toMatch(/return \(texture \* OVERZOOM\) \/ PixelRatio\.get\(\);/);
   });
 
-  it('which is 9.6x on his phone, up from 3.2x', () => {
+  it('which is ~20x on his phone, and MAX_ZOOM binds ON PURPOSE', () => {
+    // Third reach request granted ("I would also like to be able to zoom
+    // closer in", 21:52, with screenshots). The reach is now chosen as a
+    // floor multiple (20x) with the texture cap ABOVE it — the deepest
+    // tiles bake an edge-preserving sharpen to carry the magnification.
     const TEXTURE = 512 * (1 << 4);      // palpagos z4 = 8192
     const DPR = 3;                        // his iPhone
     const floor = Math.max(393, 852);     // COVER: the long edge
-    const ceil3 = (TEXTURE * 3) / DPR;
-    expect(ceil3).toBe(8192);
-    expect(ceil3 / floor).toBeCloseTo(9.6, 1);
-    // and the other cap must not quietly become the binding one
-    const MAX_ZOOM = 14;
-    expect(floor * MAX_ZOOM).toBeGreaterThan(ceil3);
+    const ceil7 = (TEXTURE * 7) / DPR;
+    const MAX_ZOOM = 20;
+    // the floor-multiple cap is the binding one, and deliberately so
+    expect(floor * MAX_ZOOM).toBeLessThan(ceil7);
+    expect(MAX_ZOOM).toBe(20);
   });
 
   it('never asks for a tile level that does not exist', () => {
