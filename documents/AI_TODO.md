@@ -2098,6 +2098,56 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E119. CEO FEEDBACK — A ROW NAMED ONE ROUTE AND HID THE OTHER
+## 2026-08-17 13:09, with a screenshot of "The best pals in the game"
+
+**Verbatim:**
+
+> "the catch one in the wild text is good and I like it tells me it's level
+> etch, but it doesn't say if I can breed it or not. It's a bit poor design"
+
+He is right, and the cause is worse than an omission: **the brain ALREADY KNEW
+the breeding distance and threw it away.** `attain()` computes the derivation
+size, then picks catch when the breed route is 4+ steps and the pal is in
+reach — and the label only ever described the winner. "Catch one in the wild —
+spawns from Lv 65" was the whole story even when he could breed it instead.
+
+**Measured on a 26-pal mid-game box: 223 of 299 rows have a second route the
+card was hiding.** Only 23 are catch-with-no-breeding-route, and 9 are
+breed-with-no-catch. The silent majority was the common case.
+
+Now every row names every route it knows, in both directions:
+
+| state | before | now |
+|---|---|---|
+| catchable + breedable | "Catch one in the wild — spawns from Lv 65." | "…spawns from Lv 65, **or breed it in 23 steps.**" |
+| catchable, no route | same as above | "…spawns from Lv 76. **No breeding route from your pals yet.**" |
+| breedable + catchable | "Breed it — 2 steps from pals you already have." | "…already have, **or catch one from Lv 12.**" |
+
+**The advice itself did not change** — which `kind` wins is byte-for-byte the
+old decision, so ordering, `attainScore` and the RECOMMENDED tag are untouched.
+A test pins that: no 4+-step breed row may be catchable, because catching
+should have won. Only what the row ADMITS TO changed.
+
+The "no breeding route yet" line is E115's rule again — an absence nobody
+explains reads as a bug. Silence there would read as "maybe there is a way".
+
+**Verified on the render, on HIS OWN SAVE (read-only — no Add or Apply pressed,
+per the safety protocol):** *"Catch one in the wild — spawns from Lv 28, or
+breed it in 15 steps."* Breed rows with no catch stayed exactly as they were.
+The probe also reproduced his screenshot pal-for-pal (Knocklem Ignis Lv 65,
+Eidrolon Ignis Lv 75, Anubis Lv 55, Shaolong Lv 76, Orserk Lv 74, Jetragon out
+of reach) under the box-proxy stage, which is the state his phone was in.
+
+`recommend.ts` is a **byte-identical mirror** — edited in `app/`, copied to
+`mobile/`, `cmp` clean, and the logic-parity gate covers it. `recommend.test.ts`
+gains 5 tests (14 total), including the CEO's quote as the reason. Gates **556**.
+Both trees typecheck. Published to both channels.
+
+**LOOP NOTE:** he opened with *"Loop hasn't fired…"* — correct. The last
+wakeup was set for 08:35 and nothing fired after it, so the overnight run
+stopped roughly four and a half hours before he wrote. Re-armed.
+
 ## E118. "MANY PARENT PAIRS WORK" WAS HIDING A NUMBER — AND A PAL HE OWNS
 ## 2026-08-17 (overnight)
 

@@ -91,8 +91,84 @@ describe('attain context', { timeout: 60000 }, () => {
     const derivs = cachedDerivations(engine, box);
     const reachable = [...derivs.keys()].find((n) => !box.includes(n))!;
     expect(reachable).toBeTruthy();
-    expect(ctx.attain(reachable)).toEqual({
-      kind: 'breed', steps: derivs.get(reachable)!.size,
+    const a = ctx.attain(reachable);
+    expect(a.kind).toBe('breed');
+    expect(a.kind === 'breed' && a.steps).toBe(derivs.get(reachable)!.size);
+  });
+
+  /* The CEO, 2026-08-17, on "The best pals in the game" — the rows told him
+   * "Catch one in the wild — spawns from Lv 65" and never said whether he
+   * could breed it instead:
+   *
+   *   "the catch one in the wild text is good and I like it tells me it's
+   *    level etch, but it doesn't say if I can breed it or not. It's a bit
+   *    poor design"
+   *
+   * The brain always KNEW both routes — it computed the breeding distance,
+   * then threw it away when it decided catching was the better advice. It
+   * still gives the same advice; it just no longer hides the alternative.
+   * Measured on a 26-pal mid-game box: 223 of 299 rows carry a second route. */
+  describe('a row names every route it knows', () => {
+    it('a catchable pal that is also breedable says both', () => {
+      const box = ['Lamball', 'Cattiva'];
+      const ctx = ctxFor(box);
+      const derivs = cachedDerivations(engine, box);
+      const cutoff = ctx.stage + (ctx.explicit ? 0 : 10);
+      const both = [...derivs.keys()].find((n) => {
+        if (box.includes(n)) return false;
+        const f = PALCALC_FACTS[n];
+        return ctx.attain(n).kind === 'catch'
+          && !!pals[n]?.wild && f?.minWild != null && f.minWild <= cutoff;
+      });
+      expect(both, 'no pal is reachable both ways — the case is gone').toBeTruthy();
+      const a = ctx.attain(both!);
+      expect(a.kind).toBe('catch');
+      expect(a.kind === 'catch' && a.steps, 'the breeding distance was thrown away again')
+        .toBe(derivs.get(both!)!.size);
+      const long = attainLabel(a).long;
+      expect(long).toContain('Catch one in the wild');
+      expect(long, 'the row still hides the breeding route').toMatch(/breed it in \d+ steps?\./);
+    });
+
+    it('a catchable pal with NO breeding route says that too', () => {
+      // silence would read as "there might be a way" — an absence nobody
+      // explains reads as a bug
+      const a = { kind: 'catch', lv: 40 } as const;
+      expect(attainLabel(a).long)
+        .toBe('Catch one in the wild — spawns from Lv 40. No breeding route from your pals yet.');
+    });
+
+    it('a breedable pal that is also catchable offers the catch', () => {
+      const a = { kind: 'breed', steps: 2, catchLv: 12 } as const;
+      expect(attainLabel(a).long)
+        .toBe('Breed it — 2 steps from pals you already have, or catch one from Lv 12.');
+    });
+
+    it('reads as a person wrote it at one step, both ways round', () => {
+      expect(attainLabel({ kind: 'breed', steps: 1 }).long)
+        .toBe('Breed it — one step from pals you already have.');
+      expect(attainLabel({ kind: 'catch', lv: 9, steps: 1 }).long)
+        .toBe('Catch one in the wild — spawns from Lv 9, or breed it in one step.');
+    });
+
+    it('the advice itself did not change — only what it admits to', () => {
+      // the recommendation (which kind wins) must be exactly as before, so
+      // ordering and the RECOMMENDED tag are untouched
+      const box = ['Lamball', 'Cattiva'];
+      const ctx = ctxFor(box);
+      const derivs = cachedDerivations(engine, box);
+      for (const n of [...derivs.keys()].slice(0, 40)) {
+        const a = ctx.attain(n);
+        if (a.kind === 'breed' && a.steps >= 4) {
+          const f = PALCALC_FACTS[n];
+          const cutoff = ctx.stage + (ctx.explicit ? 0 : 10);
+          const catchableHere = !!pals[n]?.wild
+            && f?.minWild != null && f.minWild <= cutoff;
+          expect(catchableHere,
+            `${n} is a 4+ step breed AND catchable — catching should have won`)
+            .toBe(false);
+        }
+      }
     });
   });
 

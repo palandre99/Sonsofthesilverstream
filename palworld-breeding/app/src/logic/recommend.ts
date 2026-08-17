@@ -26,8 +26,8 @@ import { SADDLE_LEVELS } from '../data/saddleLevels.g';
  *   later — needs a specific catch first (unlock), or is a long-term goal */
 export type Attain =
   | { kind: 'have' }
-  | { kind: 'breed'; steps: number }
-  | { kind: 'catch'; lv: number }
+  | { kind: 'breed'; steps: number; catchLv?: number }
+  | { kind: 'catch'; lv: number; steps?: number }
   | { kind: 'later'; unlock?: string };
 
 /** the minimal slice of pal data the brain needs — both platforms' pal
@@ -110,8 +110,17 @@ export function getAttainContext(
       // one catch is one action — when the breeding route is long and the
       // pal spawns within reach, catching IS the smart recommendation
       // (same ≥4-step threshold as the planner's catch-instead advice)
-      if (d && (steps < 4 || !catchable(n))) a = { kind: 'breed', steps };
-      else if (catchable(n)) a = { kind: 'catch', lv: PALCALC_FACTS[n]!.minWild! };
+      // A pal can be reachable BOTH ways, and the row used to name only the
+      // one it recommended — so "Catch one in the wild, spawns from Lv 76"
+      // was the whole story even when the player could breed it instead
+      // (CEO, 2026-08-17: "it doesn't say if I can breed it or not"). Pick the
+      // recommendation exactly as before, but carry the other route with it.
+      const canCatch = catchable(n);
+      const catchLv = canCatch ? PALCALC_FACTS[n]!.minWild! : undefined;
+      if (d && (steps < 4 || !canCatch)) a = { kind: 'breed', steps, catchLv };
+      else if (canCatch) {
+        a = { kind: 'catch', lv: PALCALC_FACTS[n]!.minWild!, steps: d ? steps : undefined };
+      }
       else {
         // "catch X to unlock the breeding route": one producing pair where
         // one parent is already breedable and the other is a reachable
@@ -196,18 +205,28 @@ export function attainLabel(a: Attain): { short: string; long: string } {
   switch (a.kind) {
     case 'have':
       return { short: 'HAVE IT', long: 'Already in your Paldex.' };
-    case 'breed':
+    case 'breed': {
+      const base = a.steps === 1
+        ? 'Breed it — one step from pals you already have'
+        : `Breed it — ${a.steps} steps from pals you already have`;
       return {
         short: a.steps === 1 ? 'BREED · 1 STEP' : `BREED · ${a.steps} STEPS`,
-        long: a.steps === 1
-          ? 'Breed it — one step from pals you already have.'
-          : `Breed it — ${a.steps} steps from pals you already have.`,
+        long: a.catchLv != null
+          ? `${base}, or catch one from Lv ${a.catchLv}.`
+          : `${base}.`,
       };
-    case 'catch':
+    }
+    case 'catch': {
+      const base = `Catch one in the wild — spawns from Lv ${a.lv}`;
       return {
         short: `CATCH LV ${a.lv}`,
-        long: `Catch one in the wild — spawns from Lv ${a.lv}.`,
+        long: a.steps == null
+          ? `${base}. No breeding route from your pals yet.`
+          : a.steps === 1
+            ? `${base}, or breed it in one step.`
+            : `${base}, or breed it in ${a.steps} steps.`,
       };
+    }
     case 'later':
       return a.unlock
         ? {
