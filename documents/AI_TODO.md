@@ -8206,3 +8206,17 @@ armed (About stamp + all-layers-off discriminator; cluster continuity
 is the queued hypothesis). NEXT: hold the loop — his testing feedback
 is the highest-value input now; between reports, remaining polish
 surfaces are minor (per-POI names for more layers, key ordering).
+
+### M49 — polish queue walked: three candidates, zero changes, each resolved with data
+(a) Per-POI names: NO GAP. Layers shipping names in the data (fast_travel,
+towers, sealed_realm, merchant, pal_merchant, alpha_pals, bounty_targets,
+skill_fruit) already title their cards via poiName; dungeon/chest/egg/ore
+ship NO names in build 24575149 — the layer-label fallback is the honest
+ceiling. Verified by reading mapPois.g.ts layer blocks, not by assumption.
+(b) Key row order: toggle order (Set insertion) — stable, newest last,
+findable. Re-sorting to sheet group order would churn the key on every
+toggle without a defect behind it. DECISION: stays.
+(c) Sheet headers/empty-state copy: player words, verified live in M36.
+No publish — nothing changed. Zoom watch + his testing feedback remain
+the highest-value inputs; the loop holds on eval/watch until either
+arrives.
