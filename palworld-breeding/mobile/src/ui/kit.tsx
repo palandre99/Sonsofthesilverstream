@@ -181,7 +181,12 @@ export function Card({ children, style, accessibilityLabel }: {
  * proof to be one tap from any data screen; until now the proof line lived
  * only on the Calculator and the build stamp only on About, so three of the
  * four data screens claimed numbers with no visible provenance at all. */
-export function DataStamp() {
+export function DataStamp({ beforeNavigate }: {
+  /** the pal card is a MODAL — navigating to Reference underneath it would
+   * leave the card sitting on top of the answer. Screens pass nothing; the
+   * card passes its own close. */
+  beforeNavigate?: () => void;
+} = {}) {
   return (
     <Pressable
       accessibilityRole="button"
@@ -190,6 +195,7 @@ export function DataStamp() {
       hitSlop={8}
       onPress={() => {
         void Haptics.selectionAsync();
+        beforeNavigate?.();
         navigateTo({ domain: 'breeding', tab: 'ref' });
       }}
       style={({ pressed }) => [{

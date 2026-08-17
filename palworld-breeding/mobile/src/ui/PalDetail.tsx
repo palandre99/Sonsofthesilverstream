@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Animated, Easing, Modal, Pressable, ScrollView, Text, View } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { T } from '../theme';
-import { Badge, Btn, Card, ElementChips, GenderToggles, PalIcon, s } from './kit';
+import { Badge, Btn, Card, DataStamp, ElementChips, GenderToggles, PalIcon, s } from './kit';
 import { Image } from 'react-native';
 import {
   addPlanTarget, breeding, engine, getPlan, ownedAny, pals, selfOnly, useAppVersion, workLabel,
@@ -237,6 +237,12 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
           </View>
           <Btn label="✕" onPress={onClose} small />
         </View>
+        {/* The densest datamined surface in the app — stats, rank, work
+            levels, drops, spawn levels, passives — and it was the one screen
+            with no provenance and no way to reach the proof without closing
+            it first. Criterion #1 asks for the stamp one tap from any RESULT;
+            the card is a result. */}
+        <DataStamp beforeNavigate={onClose} />
 
         {ABOUT[name] && (
           <Pressable onPress={() => setAboutOpen(!aboutOpen)}
