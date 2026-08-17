@@ -7499,3 +7499,15 @@ M7 said the pins are "not blurry from the app" based on crisp borders in the
 02:00 screenshot. The 13:12 screenshots show the borders CAN go chunky — the
 shared-style staleness explains both states (fresh style = crisp, stale =
 magnified). M7's downscale arithmetic stands; its conclusion was overbroad.
+
+### M29 — the shared-style pattern swept across the whole lane. CLEAN.
+After M28, checked every `useAnimatedStyle` in map/*.tsx, MapScreen and
+PalMap: four styles, each attached to exactly ONE view. ScreenPin and
+CounterScaled own theirs per instance (function components), mapStyle and
+markerLayerStyle sit on one container each — a test pins mapStyle's count.
+No other instance of the pattern that caused the soft pins exists in the lane.
+
+### QUEUED: republish M28 from a settled tree (their recommend.ts /
+SuggestedGoals.tsx were saved mid-bundle; tsc was clean with their files on
+disk and the suite was green, so nothing live is broken — this is only about
+the bundle mapping to a known commit).
