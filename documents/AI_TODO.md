@@ -2105,6 +2105,19 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E136. CI GUARDS THE PHONE TREE NOW — GREEN ON THE RUNNER 2026-08-18
+
+The branch's first push in two days (340+ commits) turned CI red and
+exposed the gap: the runner only ever installed the WEBSITE's deps, so
+every test that imports real mobile modules (boxShare, alphaFacts,
+ticks, the map pair) died with TSCONFIG_ERROR — vite resolves mobile's
+tsconfig, which extends expo's, to transform those files. ci.yml now
+runs npm ci in mobile/ (cached) and adds mobile `tsc --noEmit` as a CI
+step. PROVEN: run 32133885886 success (1m13s) — full suite + phone
+typecheck green on the runner, not just this machine. Standing rule
+this creates: PUSH THE BRANCH after landing work; unpushed commits are
+unvalidated and unbacked-up.
+
 ## E135. STORM ROUND 2 — THE REMAINING SURFACES HELD; PUBLISHED; DOCS
 ## CURRENT 2026-08-18 (afternoon)
 
