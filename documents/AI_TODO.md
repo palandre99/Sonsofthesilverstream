@@ -2105,6 +2105,40 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E133. THE FIXED BOSS IS ITS OWN CREATURE, AND THE CARD NOW SAYS HOW
+## 2026-08-18 (~02:20)
+
+**His 23:24 question ("should show alpha version? Does it not have
+different stats?") answered with the game's own numbers.** Every fixed
+boss is a separate row in DT_PalMonsterParameter (753 rows — table
+confirmed by the atlas build manifest; the raw BOSS_ rows published by no
+pinned upstream, so they were fetched from paldb.cc's per-boss pages, the
+project's existing trusted game-table mirror).
+
+**THE PIPELINE** (tools/fetch_alpha_stats.py + gen_alpha_stats.py):
+205/207 titled bosses fetched; every row accepted ONLY if its CombiRank
+equals our oracle-tested value for the species — a renamed or wrong page
+can never ship a number under the wrong pal. The 2 drops, with reasons,
+live in data/alpha_stats_1_0.json: Jolthog's boss page is absent
+upstream; "Legendary Ocean King" is Panthalus's PLAYER-REPORTED line
+(correctly refused — it is not a boss page). First run failed 100% and
+taught two parser lessons now in the tool's docstring: paldb's stat rows
+put the value AFTER a progress bar (pairs must be read per row), and
+boss titles carry level RANGES and legitimate hyphens ("Self-Serving
+Seer Flaracle") that a lazy regex mangles.
+
+**THE CARD**: under the stat bars, "As the fixed boss (Lv N)" prints
+ONLY measured differences — "Health 156 (normal: 130) · size XL (normal:
+L) · in the fight: ×1.9 health, takes 18% of your damage · catch chance
+×0.7" (Paladius, eye-verified) — and when a boss matches its species it
+says "fights with the same stats as a normal one" instead of inventing a
+difference. Even Lamball's boss is real news: HP 84 vs 70, size M vs XS.
+
+Guards: 8 new tests (pure bossLine imported for real; a canary pinning
+the exact boss-Paladius row against silent re-fetch drift; card wiring).
+verification.json claim #43 (canonical) / #37 (shipped copy) with the
+full method. Gates 709, mobile tsc clean. Commit 5dafdaf.
+
 ## E132. THE CALCULATOR GIVES THE SAME GENDER ADVICE AS THE PLAN — ONE
 ## COMPONENT, ONE RULE 2026-08-18 (~02:00)
 
