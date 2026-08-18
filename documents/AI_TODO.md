@@ -2105,6 +2105,22 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E138. THE FIRST LAUNCH RE-WALKED IN THE NEW BOOT ORDER — CLEAN, AND
+## SHORTER 2026-08-18 (loop tick ~16:20)
+
+E107 walked the fresh-install chain when boot landed on the Calculator;
+E130 moved home to the Paldex and nobody had re-walked the product's
+first impression since. Done now, full clear-and-restore protocol:
+fresh player lands DIRECTLY on the Paldex -> "Nothing ticked yet" card
+(no storage written before any action) -> Try a sample box -> "12 owned
+· 258/299 reachable" + the honest sample banner with one-tap removal ->
+Plan offers "Browse suggested goals" -> first suggestion adds ->
+"Plan this goal" -> "1 goal in this plan · 2 STEPS · 0/2 DONE · 1 READY
+NOW". The chain HOLDS and is one screen SHORTER than E107's version —
+the old path needed Plan -> "Open the Paldex" indirection; the new boot
+starts the player where the ticking happens. Nothing shipped (no code
+changed); state restored and re-verified (26/42/8/3).
+
 ## E137. HIS POINTER AT ODDS + REFERENCE — THREE REAL FINDS, SHIPPED
 ## 2026-08-18 (afternoon)
 
