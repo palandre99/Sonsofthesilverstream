@@ -24,6 +24,10 @@ from pathlib import Path
 import numpy as np
 from PIL import Image, ImageFilter
 
+# the 16384 enhanced source trips PIL's decompression-bomb guard; it is our
+# own generated file, not untrusted input
+Image.MAX_IMAGE_PIXELS = None
+
 ROOT = Path(__file__).resolve().parent.parent
 CACHE = ROOT / "tools" / ".cache"
 MOBILE_OUT = ROOT / "mobile" / "assets" / "map"
@@ -71,9 +75,21 @@ REGIONS = {
     # hard edges (the blocky lake shore in the CEO's 23:01 screenshot)
     # become smooth curves, and max zoom now samples at ~1.7x instead of
     # magnifying z4 by 3-4x with the GPU's cheap filter.
-    "palpagos": ("T_WorldMap_hi.png", 5),
+    # z5 = 16384 effective, now REAL detail: the CEO approved a one-time
+    # Real-ESRGAN x4plus enhancement of the game's 8192 art (2026-08-18,
+    # "if u can promise this won't change the map in any way... only image
+    # quality then it's fine"). Cosmetic only: the enhanced file is proven
+    # pixel-aligned to the original (phase correlation, <0.1 px) before it
+    # is allowed here, every pin is projected from coordinates and never
+    # touches the image, and the placement audits keep reading the ORIGINAL
+    # texture. The Reference tab labels the enhancement honestly.
+    "palpagos": ("T_WorldMap_enhanced16k.png", 5),
     "tree": ("worldtree.webp", 3),          # z3 = 8x8 tiles  = 4096 effective
 }
+
+# Sources that are already machine-enhanced arrive edge-crisp; the land
+# unsharp pass would double-sharpen them into halos.
+ENHANCED = {"palpagos"}
 
 # The game draws its map with a noticeably brighter teal sea than the raw
 # texture has (CEO, comparing against an in-game screenshot). We lift the WATER
@@ -157,7 +173,7 @@ def build_region(region: str, src_name: str, max_z: int) -> dict:
         # the blocky staircase of his 23:01 lake screenshot; the sea and its
         # edge keep the smooth interpolated look, the rock and paths keep
         # the pop. Judged on side-by-side crops both rounds.
-        if z == max_z:
+        if z == max_z and region not in ENHANCED:
             arr = np.asarray(level)
             sharp = np.asarray(
                 level.filter(ImageFilter.UnsharpMask(radius=2, percent=80, threshold=2)))
