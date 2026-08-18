@@ -2105,6 +2105,32 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E139. THE 19 CUT-OFF PARTNER EFFECTS ARE WHOLE — THE DEFERRED
+## PIPELINE JOB, DONE AND PUBLISHED 2026-08-18 (loop tick ~17:00)
+
+The E116-era deliberate non-fix is retired: every partner effect the kb
+source delivered cut (16), with a raw variable (2), or stale in one copy
+(1) now carries the full CURRENT game text, fetched from paldb's mirror
+by tools/fetch_partner_effects.py. THE VALIDATION IS THE POINT: a fetch
+is accepted only when our truncated text is a character-prefix of it
+after normalisation — the same string finished, never a different one.
+Four refused that rule honestly and turned out to be 1.0.3 REWORDS
+("inflict Poison 2~6" -> "increase Poison buildup by (2~6)"), shipped as
+a hand-diffed explicit list; the prefix rule also caught a kb MISCOPY
+(base Croajiro carried Croajiro Noct's name). One more was cut only in
+app/public's stale copy — the three pals_1_0.json copies had silently
+diverged; synced from canonical, divergence closed. Leezpunk says
+"(10~20) seconds" now instead of "a number of seconds". cleanEffect
+stays as the guard; pal-text.test.ts pins ZERO cut / ZERO placeholders
+in shipped data with the mechanism pinned on synthetic inputs.
+Render-proven (Majex, Leezpunk whole on the card). PUBLISHED both
+channels. 691 tests, tsc clean.
+
+FOLLOW-UP QUEUED: the 4 rewords imply MORE of our 297 effects may be
+stale 1.0.3 wordings that happen to end cleanly — a full staleness sweep
+(all effects vs paldb og:description, diff report, no auto-accept) is
+the next self-directed data job.
+
 ## E138. THE FIRST LAUNCH RE-WALKED IN THE NEW BOOT ORDER — CLEAN, AND
 ## SHORTER 2026-08-18 (loop tick ~16:20)
 
