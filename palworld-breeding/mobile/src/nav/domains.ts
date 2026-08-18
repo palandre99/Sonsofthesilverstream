@@ -89,14 +89,11 @@ export const DOMAINS: DomainDef[] = [
     title: 'Bosses & Raids',
     short: 'Bosses',
     icon: 'crown-outline',
-    soon: true,
     blurb: 'Tower bosses, alphas and raids — with teams built from YOUR pals.',
     tabs: [
-      {
-        id: 'tower', label: 'Tower', icon: 'chess-rook', soon: true,
-        blurb: 'Tower boss guides with element counters.',
-        planned: ['Boss stats + counters', 'Team suggestions from your Paldex'],
-      },
+      // LIVE 2026-08-18 (Bosses fane phase A): the tower campaign with the
+      // Boss Card — real fight rows, counters from the player's own box
+      { id: 'tower', label: 'Tower', icon: 'chess-rook' },
       {
         id: 'alphas', label: 'Alphas', icon: 'alert-octagram-outline', soon: true,
         blurb: 'Every alpha boss — locations already live in the info cards.',

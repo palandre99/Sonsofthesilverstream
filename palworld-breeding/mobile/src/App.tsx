@@ -25,6 +25,7 @@ import { ReferenceScreen } from './screens/ReferenceScreen';
 import { ComingSoonScreen } from './screens/ComingSoonScreen';
 import { MapScreen } from './screens/MapScreen';
 import { ItemsScreen } from './screens/ItemsScreen';
+import { TowerScreen } from './screens/bosses/TowerScreen';
 import { AboutScreen, ProfilesScreen } from './screens/SettingsScreens';
 
 class Boundary extends Component<{ children: ReactNode }, { err: Error | null }> {
@@ -75,6 +76,7 @@ const LIVE_SCREENS: Record<string, () => React.JSX.Element> = {
   allitems: AllItemsTab,
   food: FoodTab,
   spheres: SpheresTab,
+  tower: TowerScreen,
   calc: CalculatorScreen,
   plan: PlannerScreen,
   paldex: PaldexScreen,
