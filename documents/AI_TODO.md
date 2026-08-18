@@ -2105,6 +2105,26 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## THE ITEMS FANE QUEUE (opened 2026-08-18 — plan: documents/09_ITEMS_PLAN.md)
+
+- [ ] **I1 — Phase 0 pipeline**: fetch_items_index.py (atlas backbone,
+      1,892 items) -> items_1_0.json, three copies + items-data tests +
+      verification claim. THEN fetch_item_params.py (paldb raw cards,
+      atlas-validated identity, per-rarity variants) and
+      fetch_item_recipes.py (recipes/tech/sources, closed over known ids).
+- [ ] **I2 — Phase A**: the Items index screen replaces the domain's
+      coming-soon landing — search, category/rarity filters, item cards
+      with the game's own descriptions. Publish.
+- [ ] **I3 — Phase B**: Weapons tab (per-class ranked tables, per-rarity
+      variants, durability/magazine, recipe + tech). Publish.
+- [ ] **I4 — Phase C**: Armor tab. Publish.
+- [ ] **I5 — Phase D**: Spheres tab (calculator only if the formula is
+      datamined or honestly labelled). Publish.
+- [ ] **I6 — Phase E**: Schematics tab (sources cross-checked vs the map
+      lane's chest extracts, read-only). Publish.
+- [ ] **I7 — Phase F**: cross-links (pal drops <-> items, Paldex/helper
+      card links). Publish.
+
 ## E142. THE CEO OPENS THE ITEMS FANE — BREEDING GOES TO DONE, PENDING
 ## HIS REVIEW 2026-08-18 (~18:40)
 
