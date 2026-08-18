@@ -71,7 +71,11 @@ def slug_for(name: str) -> str:
     # Full percent-encoding of the underscore slug: urllib refuses raw
     # non-ASCII URLs (Sauté) and paldb 404s bare ':' and '[' — probing all
     # three first-run failure classes encoded showed 200 + a recipes block.
-    return urllib.parse.quote(name.replace(" ", "_"), safe="")
+    # Apostrophes are DROPPED by paldb ("Anubis's Talisman" lives at
+    # Anubiss_Talisman; %27 is a 404) — probed 2026-08-19, all 104
+    # second-run errors were this one pattern.
+    return urllib.parse.quote(
+        name.replace("'", "").replace("’", "").replace(" ", "_"), safe="")
 
 
 def fetch(slug: str) -> tuple[str | None, str | None]:
@@ -149,6 +153,7 @@ def sections_of(page: str) -> list[dict]:
 
 
 def main() -> None:
+    import sys
     items = json.loads(
         (ROOT / "data" / "items_1_0.json").read_text(encoding="utf-8"))["items"]
     slugs: dict[str, list[str]] = {}
@@ -158,6 +163,14 @@ def main() -> None:
 
     raw: dict[str, dict] = {}
     errors: dict[str, str] = {}
+    if "--retry-errors" in sys.argv and OUT.exists():
+        # errata mode: keep everything already captured, re-fetch only the
+        # pages whose slugs failed last run (fixed slug_for gives them new
+        # slugs, so "not yet in raw" is exactly the retry set)
+        prev = json.loads(OUT.read_text(encoding="utf-8"))
+        raw = prev["pages"]
+        slugs = {s: ids for s, ids in slugs.items() if s not in raw}
+        print(f"errata mode: {len(slugs)} pages to retry", flush=True)
     for i, (slug, ids) in enumerate(sorted(slugs.items()), 1):
         page, err = fetch(slug)
         if page is None:

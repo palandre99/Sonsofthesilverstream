@@ -32,15 +32,21 @@ SHEET_DIR = ROOT / "mobile" / "assets" / "itemicons"
 MAP_OUT = ROOT / "mobile" / "src" / "data" / "itemIcons.g.ts"
 UA = "PalforgeDataPipeline/1.0 (companion app; contact: palandre.99@gmail.com)"
 OG_IMG = re.compile(r'<meta property="og:image" content="([^"]+)"')
+# some pages (Coal, Dog Coin) serve a generic T_icon_unknown og:image while
+# the page HEADER still shows the real texture — probed 2026-08-19
+HEADER_IMG = re.compile(
+    r'<img[^>]*src="([^"]+)"[^>]*class="align-self-center size128"')
 CELL = 96
 PER_ROW = 21          # 21 * 96 = 2016 <= 2048
 PER_SHEET = PER_ROW * PER_ROW
 
 
 def slug_for(name: str) -> str:
-    # Full percent-encoding of the underscore slug — same fix as the recipe
-    # sweep: raw 'é'/':'/'[' URLs failed, the encoded forms all serve pages.
-    return urllib.parse.quote(name.replace(" ", "_"), safe="")
+    # Full percent-encoding of the underscore slug — same fixes as the page
+    # sweep: raw 'é'/':'/'[' URLs failed, the encoded forms all serve
+    # pages, and paldb DROPS apostrophes (Anubiss_Talisman, not %27).
+    return urllib.parse.quote(
+        name.replace("'", "").replace("’", "").replace(" ", "_"), safe="")
 
 
 def fetch(url: str, referer: bool = False) -> bytes | None:
@@ -82,9 +88,14 @@ def main() -> None:
         page = fetch(f"https://paldb.cc/en/{slug_for(name)}")
         url = None
         if page is not None:
-            m = OG_IMG.search(page.decode("utf-8", "replace"))
+            text = page.decode("utf-8", "replace")
+            m = OG_IMG.search(text)
             if m and "itemicon" in m.group(1).lower():
                 url = m.group(1)
+            else:
+                m = HEADER_IMG.search(text)
+                if m and "InventoryItemIcon" in m.group(1):
+                    url = m.group(1)
         if url:
             img = fetch(url, referer=True)
             if img:
@@ -118,9 +129,13 @@ def main() -> None:
         sheets[sheet_i].paste(img, (dx, dy))
         coords[icon] = (sheet_i, col, row)
 
+    for old in SHEET_DIR.glob("sheet*.png"):
+        old.unlink()  # superseded by the webp sheets
     for i, sheet in enumerate(sheets):
-        p = SHEET_DIR / f"sheet{i}.png"
-        sheet.save(p, optimize=True)
+        p = SHEET_DIR / f"sheet{i}.webp"
+        # webp at q90: the same sheets at roughly a third of the PNG bytes
+        # (the first PNG cut was 6.7 MB of OTA download)
+        sheet.save(p, quality=90, method=6)
         print(f"wrote {p} ({p.stat().st_size // 1024} KB)", flush=True)
 
     lines = [
@@ -136,7 +151,7 @@ def main() -> None:
         f"export const ICON_CELL = {CELL};",
         f"export const ICONS_PER_ROW = {PER_ROW};",
         "export const ITEM_ICON_SHEETS: number[] = [",
-        *(f"  require('../../assets/itemicons/sheet{i}.png')," for i in range(len(sheets))),
+        *(f"  require('../../assets/itemicons/sheet{i}.webp')," for i in range(len(sheets))),
         "];",
         "export const ITEM_ICON_COORDS: Record<string, [number, number, number]> = "
         + json.dumps({k: list(v) for k, v in coords.items()}, separators=(",", ":"))

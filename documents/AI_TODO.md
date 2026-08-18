@@ -2203,6 +2203,58 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E147. THE FULL ITEM CARD, THE PALDEX-CLASS FILTER SHEET, AND EVERY
+## ITEM'S IMAGE SQUARE 2026-08-19 (~23:40-00:30)
+
+**CEO on a phone screenshot: "Looks garbage btw and the filters suck,
+look at paldex pal filter compared to this.. it's even being overlapped.
+Items no images etc ikniw u got lots to do I just hope u are just getting
+barely started."** He was right on all three, and the overlap shipped
+because the eye pass ran at DESKTOP width — standing correction: verify
+at the size the CEO meets it (mobile viewport), every time.
+
+WHAT CHANGED FOR HIM:
+1. **Filters are the Paldex's pattern now** — the stacked chip strips are
+   gone; a Filters button opens the sheet (Group / Kind / Tier / Order,
+   toggle-off chips, honest "Show N items" count) with the active-filter
+   summary + clear line. Rows wear the thin tier-tint left edge.
+2. **Every item wears its image square**: 716 of 722 unique icons resolved
+   exactly (page og:image, with the header-img fallback for pages like
+   Coal where paldb's og lies with T_icon_unknown), packed into TWO webp
+   sprite sheets (2.3 MB total; the PNG cut was 6.7 MB) + a generated
+   coordinate map; ItemIcon crops by coordinate, rarity-tinted backdrop,
+   designed placeholder for the 6 upstream-absent names. Crop proof
+   eye-verified from the shipped sheets (Cake/rifle/sphere/Coal/bread...).
+3. **The card answers everything** (the "proper proper info" order):
+   clean description (1,331 resolved — Bread finally says Bread, not
+   <itemName id=|Pan|/>), stats + Capture Power, WHAT IT DOES (Nutrition/
+   SAN/EXP/tech-point grants...), HOW TO CRAFT IT (tappable ingredient
+   rows with icons; "Unlocks at level N for M technology points", Ancient
+   marked gold), higher-tier schematic costs, WHERE TO FIND IT (dropped-by
+   with probabilities, treasure boxes with drop rates, sold-by), the
+   family tier table, and the provenance footer that says drop rates are
+   the community database's loot-table readings.
+
+THE DATA UNDER IT: one sweep over 1,504 paldb item pages (apostrophe
+slugs fixed — paldb DROPS them: Anubiss_Talisman; 91 of 104 misses
+recovered in an errata pass, 14 pages genuinely absent upstream) +
+/en/Technologies (588 nodes, level 1-80, point cost, 51 Ancient).
+gen_item_facts.py ships 1,871 fact rows at exact identity: 3,766 recipe
+rows with ZERO refusals, 391 tech joins with ZERO mismatches, 8,718
+treasure-box rows, 2,494 drops, 568 shop listings, 10 sphere capture
+powers (the Pal Sphere page's second value proven to be an embedded
+Legendary-variant popup and excluded). Canary cross-gate: the swept Cake
+recipe equals the Reference tab's verified 5/8/7/8/2. items-facts.test.ts
+pins the doctrine (zero refusals, tag-free descriptions, three-copy
+identity); 780 tests green, tsc clean.
+
+ALSO: repaired the share-copy gate the Paldexia rename left red (the
+payload pin still expected "Palforge"). Cross-lane note: fetch_item_
+recipes.py's deletion rode the map lane's aa8b018 by staged-index
+accident; publishing NOW waits only on the bosses lane's uncommitted
+Tower work in the shared tree — the moment it lands, both channels get
+the full Items delivery in one update.
+
 ## E146. ITEMS TAKEOVER — THE TAB LAYOUT REBUILT UNDER THE CEO'S FREEDOM
 ## GRANT; TWO DATA BUGS CAUGHT ON HIS PHONE 2026-08-18 (~23:05-23:30)
 

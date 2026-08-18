@@ -135,6 +135,11 @@ subcategory-aware so skill fruits (93), pal gear (138), eggs (53), meds and
 spheres stopped hiding inside Consume/Essential/Material — the 15 groups
 partition all 1,892 items exactly once, pinned by test.
 
+**Phase E note (probed 2026-08-18 late):** `/en/Schematic` (2.2MB) and
+`/en/Loots` (5.4MB) are fully server-rendered list pages in a different
+markup (no h5/table structure — card grids). Rich cross-check targets for
+the schematic/drop phase; need their own parser when that phase opens.
+
 ## 5. Honest limits recorded up front
 
 - The capture-rate formula and any drop-RATE percentages are NOT in the

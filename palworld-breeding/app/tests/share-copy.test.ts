@@ -73,7 +73,9 @@ describe('the shared text cannot drift from the screen', () => {
 
 describe('what leaves the app carries where it came from', () => {
   it('both payloads end with the build stamp', () => {
-    const stamp = 'read from the game files · Palforge`';
+    // the product is Paldexia since 2026-08-18 (commit 966e063 renamed the
+    // payloads; this pin lagged one commit behind)
+    const stamp = 'read from the game files · Paldexia`';
     expect(calc, 'the pairing payload lost its provenance line').toContain(stamp);
     expect(plan, 'the route payload lost its provenance line').toContain(stamp);
     // read from the data, never typed

@@ -131,8 +131,10 @@ describe('the screen speaks plainly and cites its sources', () => {
 
   it('leads with the honest promise and the provenance footer', () => {
     expect(code).toContain('Every item in the game with its real numbers — nothing estimated.');
-    expect(code).toContain('accepted only');
-    expect(code).toContain('internal id matches it exactly');
+    expect(code).toContain('accepted only at exact internal-id identity');
+    // drop rates come from the community database's loot-table readings —
+    // the footer says so instead of implying they were datamined here
+    expect(code).toContain("community database's");
   });
 
   it('counted labels never say "1 items"', () => {
