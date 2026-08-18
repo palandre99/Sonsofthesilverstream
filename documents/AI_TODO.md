@@ -9184,3 +9184,29 @@ swipe it bigger"). His three follow-ups, all shipped:
 
 Gates: 724 tests green, tsc clean both trees. WATCH: his device verdict
 on shrink/close + the ring is the next signal.
+
+### M66 — hard-testing loop rounds 1-2 (764d527 + e1e6ba2, both channels)
+CEO 14:4x: "Keep testing the app HARD... never stop until u believe its
+perfect fane." Six REAL finds, all fixed, eye-verified, shipped:
+1. Best spots leaked onto chests/eggs (they cluster too) — scoped to the
+   resources group; "farm from one spot" is a mining sentence.
+2. All 15 World Tree statues are NAMELESS in the game data; where-lines
+   printed "of the  statue" with a hole → "of the nearest statue"
+   (byte-parity layers.ts + branch test).
+3. Region switch with an open layer list whose layer is empty there
+   stranded a vanishing sheet → falls back to the layer picker.
+4. Tapping a cluster bubble opened a card for ONE ARBITRARY member —
+   whose Mark-as-found would tick a node the player never saw. Taps now
+   resolve against the DRAWN clusters (same maths+budget as the build);
+   count>1 zooms toward the group until it breaks apart.
+5. Dropping a mark answered with silence → the new mark's card opens at
+   once, rename/remove/route verbs in hand.
+6. Harness: the page-probe's '/map/' filter never matched Metro URLs
+   (tiles:0 every run, taught nothing) → new imgs:<substr> step; MEASURED
+   12 s5_*.webp sheets loading at ring zoom — sheet rendering is proven,
+   no longer reasoned (web renderer; native still F35-reasoned).
+Also walked clean: tree layers sheet (present-first), tree alpha list
+(all 7 leveled, sort works), chest card (altitude hint + readout +
+count), found round-trip (tick → "Got this one" → Found filter → "1 spot
+on the map"), 8-layer stress (7,957 spots, budgeted bubbles, no JS
+errors), pal toggle + Daytime state, drop-card flow. 728 tests green.
