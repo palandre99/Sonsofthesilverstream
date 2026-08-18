@@ -2105,6 +2105,22 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E143. ITEMS I1a — THE BACKBONE LANDED: 1,892 ITEMS, PINNED AND
+## GUARDED 2026-08-18 (loop tick ~21:05)
+
+fetch_items_index.py -> items_1_0.json in all three copies, moved
+together. The game's own names + descriptions over DT_ItemDataTable,
+build 24575149. Categories as shipped: Weapon 310, Armor 264, Blueprint
+490, Essential 217, Consume 206, Material 177, Food 94, Accessory 81,
+Ammo 32, SpecialWeapon 10, CaptureItemModifier 6, Glider 5.
+items-data.test.ts pins count/categories/coverage AND three-copy
+byte-identity (the E139 lesson, structural from day one). Claim added
+(canonical 44 / shipped 38). Gates 698, tsc clean. NOT published —
+nothing user-visible until Phase A. NEXT: I1b fetch_item_params.py
+(paldb raw cards, per-rarity variants, atlas-validated identity).
+NOTE for I1b: "Pal Sphere" items are not a top-level category — find
+them inside Consume/Material during the params probe.
+
 ## THE ITEMS FANE QUEUE (opened 2026-08-18 — plan: documents/09_ITEMS_PLAN.md)
 
 - [ ] **I1 — Phase 0 pipeline**: fetch_items_index.py (atlas backbone,
