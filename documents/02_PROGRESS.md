@@ -1,7 +1,61 @@
 # PROGRESS — audited state, no invented percentages
 
-*Updated 2026-08-17 (breeding lane). Update this file whenever a work block lands;
+*Updated 2026-08-18 (breeding lane). Update this file whenever a work block lands;
 date every entry.*
+
+## 2026-08-17 night -> 08-18 midday — A NEW SESSION'S HUNT, HIS FOUR ORDERS,
+## AND THE BRUTAL EVAL (breeding lane, E128-E134)
+
+**The hunt found two data-loss bugs in the "?" feature's older neighbours
+before he ever hit them** (E128/E129): unticking a plan step could DELETE a
+species owned only through the "?" mark, and "Share my list" exported a
+"?"-only pal as an invented ♀ (a phantom parent on any other install).
+Both fixed through the one shared rule, mutation-proven, walked on the
+render. The share/import format now carries the mark ("Name ?",
+"Name ♂ ?"; JSON keeps `u`) with a 299-species × 7-state round-trip test.
+The web build gate had been silently red for ~22h (vitest doesn't
+typecheck) — repaired; `npm run build` in app/ is part of the gate list,
+run it.
+
+**His orders, all shipped and published same-day:**
+- **Gender gaps say how to close them** (E131/E132): under "need a ♂ X —
+  or a ♂ Y", tappable rows ranked by cheapness from HIS box — check the
+  "?"-marked catch first, breed an owned pair (real datamined egg odds,
+  plan recipe preferred, both Katress/Wixen directions honest), or catch
+  one — each row opening the pal's card. One shared component + one shared
+  rule on the Plan AND the Calculator. Worst-case pair scan measured with
+  the real engine at 131 owned: 12.9ms cold.
+- **Paldex is Breeding's home** (E130): boot and the side panel land there.
+- **The enlarged spawn map is a pageSheet** (E130): his 23:17 screenshot
+  showed the old fullscreen modal under the status bar ("can't even get
+  out"). Labels stopped claiming "leaves the Paldex" from screens that
+  aren't the Paldex. The full map's way BACK is half-built: Paldex opens a
+  card from a nav-intent payload; the map-side chip is requested at the
+  ledger tail.
+- **Alpha bosses have real stats and the card shows them** (E133): every
+  fixed boss is its own row in DT_PalMonsterParameter; 205/207 titled
+  bosses fetched from paldb and each row accepted ONLY when its CombiRank
+  matches our oracle-tested value. The card prints only measured
+  differences ("Health 156 (normal: 130) · size XL · ×1.9 health, takes
+  18% of your damage") — or says the boss matches its species. The 2 drops
+  are documented (one page absent upstream; one line was player-reported).
+
+**The brutal eval at his scale** (E134, his order): a 131-species Lv-80 box
+stormed through every surface. Two finds, both fixed and render-proven: a
+fast double-tap could lose a gender tick (handlers read the store at press
+time now), and the passive picker kept a stale search across opens. What
+held: start-over exact at scale, profile isolation, the import sheet vs
+10k garbage lines / half-JSON / prototype pollution, "?" rules, zero
+console errors. Verdict recorded in E134: the data layer is at the bar;
+the missing proof is one real-device pass, and world-save import remains
+the biggest win (CEO-gated).
+
+**Coordination facts:** EAS hard-caps 1000 assets per update — the map
+lane's first z5 shipment tripped it (publishes fail repo-wide until asset
+count drops; their Z5_KEEP=250 fix landed). Both lanes queue publishes
+behind each other's in-flight trees; read `git status` in its OWN command
+first, always. Gates as of this entry: **722 tests** (43 files), app build
+clean, both typechecks clean, published through 17b45ef/c5f7464.
 
 ## 2026-08-17 overnight->night — THE PAL CARD READ ALOUD END TO END, AND A DAY OF HIS FEEDBACK (breeding lane)
 

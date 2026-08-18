@@ -1,4 +1,15 @@
-# BREEDING FANE — HANDOFF (written 2026-08-17, night)
+# BREEDING FANE — HANDOFF (written 2026-08-17, night; facts refreshed 2026-08-18)
+
+> **2026-08-18 refresh:** E128-E134 landed since this was written — gender-gap
+> advice rows (Plan + Calculator, shared component), Paldex as Breeding's
+> home tab, the spawn-map pageSheet fix, fixed-boss stats on the pal card
+> (205/207 datamined, CombiRank-validated), the "?"-mark durability fixes
+> (plan ticks, share/import), press-time gender-tap reads, and the brutal
+> eval at 131-owned scale. Tests are **722**; `npm run build` in app/ is a
+> REAL gate (it was silently red for a day — vitest does not typecheck).
+> The open queue below is superseded by AI_TODO.md / E134's verdict:
+> on-device measurement pass and world-save import (CEO-gated) are the two
+> big remaining items; the plateau retry stays rejected on E108's numbers.
 
 You are taking over the **breeding fane of the iPhone app**. This file is the
 short orientation; the workspace carries the detail. Read in this order:
