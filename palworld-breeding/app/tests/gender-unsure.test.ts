@@ -157,9 +157,18 @@ describe('the header survives a real phone', () => {
 
 describe('the control itself', () => {
   it('sits with the gender boxes and says what it means', () => {
-    expect(kit).toContain('setGenderUnsure(name, !unsure)');
     expect(kit).toContain('caught, gender not checked yet');
     expect(kit, 'the toggle must report its state to a screen reader')
       .toMatch(/accessibilityState=\{\{ checked: unsure \}\}/);
+  });
+
+  it('every tap reads the store AT PRESS TIME — a fast double-tap must not lose a tick', () => {
+    // two taps inside one long frame both saw the same render-time value,
+    // so the second tap was a no-op (10-tap storm, 2026-08-18). The handler
+    // must derive the next value from the store, never from a stale prop.
+    expect(kit).toContain('setGenderUnsure(name, !genderUnsure(name))');
+    expect(kit).toContain('setOwnedGender(name, g, !hasGender(name, g))');
+    expect(kit, 'a handler is toggling from a render-time value again')
+      .not.toMatch(/setOwnedGender\(name, g, !on\)/);
   });
 });

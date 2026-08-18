@@ -226,3 +226,13 @@ describe('counted labels read like a person wrote them', () => {
     expect(code).toContain("stat${n > 1 ? 's' : ''}");
   });
 });
+
+describe('the passive picker starts fresh on every open', () => {
+  it('resets its query and kind when the sheet becomes visible', () => {
+    // this modal stays mounted (visible prop), so the search used to
+    // survive close/reopen — a later visit met "Nothing here matches"
+    // over a stale filter (storm test, 2026-08-18)
+    expect(code, 'the picker keeps a stale query across opens again')
+      .toMatch(/if \(visible\) \{ setQ\(''\); setKind\(null\); \}/);
+  });
+});

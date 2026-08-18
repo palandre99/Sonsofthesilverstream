@@ -359,7 +359,10 @@ export function GenderToggles({ name, size = 30 }: { name: string; size?: number
       <Pressable
         onPress={() => {
           void Haptics.selectionAsync();
-          setGenderUnsure(name, !unsure);
+          // read the store AT PRESS TIME: two taps inside one long frame both
+          // saw the same render-time value, so the second tap was a no-op —
+          // a fast double-tap lost a tick (found in the 2026-08-18 storm test)
+          setGenderUnsure(name, !genderUnsure(name));
         }}
         hitSlop={8}
         accessibilityRole="checkbox"
@@ -386,7 +389,8 @@ export function GenderToggles({ name, size = 30 }: { name: string; size?: number
             key={g}
             onPress={() => {
               void Haptics.selectionAsync();
-              setOwnedGender(name, g, !on);
+              // press-time read, same reason as the "?" box above
+              setOwnedGender(name, g, !hasGender(name, g));
             }}
             // the ♂/♀ boxes draw 28 px and are the most-tapped control in the app;
             // 6 of slop left them at 40, still under the 44 pt minimum

@@ -101,6 +101,13 @@ function PassivePickerModal({ visible, onClose, onPick, exclude }: {
 }) {
   const [q, setQ] = useState('');
   const [kind, setKind] = useState<string | null>(null);
+  // a fresh open starts a fresh search. This modal stays mounted (visible
+  // prop), so the query survived close/reopen and a later visit met
+  // "Nothing here matches" over a stale filter — the pal picker unmounts
+  // and never had the problem (found in the 2026-08-18 storm test).
+  useEffect(() => {
+    if (visible) { setQ(''); setKind(null); }
+  }, [visible]);
   const available = useMemo(
     () => passives.filter((p) => !exclude.has(p.name)), [exclude],
   );
