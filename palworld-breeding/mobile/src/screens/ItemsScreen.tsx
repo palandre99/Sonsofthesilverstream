@@ -16,7 +16,7 @@ import { Badge, Btn, Card, DataStamp, PageHead, SearchInput, s } from '../ui/kit
 import { Icon } from '../ui/Icon';
 import {
   familyOf, groupOf, idsInGroup, ITEM_GROUPS, ITEM_STATS, ITEMS,
-  searchItems, sortItems, tierWord, type ItemSort,
+  kindWord, searchItems, sortItems, tierWord, type ItemSort,
 } from '../itemsData';
 
 /** Tier tints — presentation colours for the game's own tier words. */
@@ -33,6 +33,12 @@ const SORT_LABELS: Record<ItemSort, string> = {
   name: 'A–Z',
   rarity: 'Rarest first',
 };
+
+/** The chip row: the whole catalogue first, then every player group. */
+const CHIP_GROUPS: { id: string; label: string }[] = [
+  { id: 'all', label: 'Everything' },
+  ...ITEM_GROUPS,
+];
 
 function statLine(id: string): string {
   const st = ITEM_STATS[id];
@@ -76,7 +82,7 @@ function ItemRow({ id, showGroup, onOpen }: {
       </View>
       <View style={[s.row, { gap: 8, marginTop: 2 }]}>
         <Text style={{ color: T.muted, fontSize: 12, flex: 1 }} numberOfLines={1}>
-          {line || it.subcategory || it.category}
+          {line || kindWord(id)}
           {showGroup && groupOf(id) ? `  ·  ${groupOf(id)}` : ''}
         </Text>
         {it.weight != null && it.weight > 0 && (
@@ -102,8 +108,8 @@ function ItemDetail({ id, onClose }: { id: string; onClose: () => void }) {
         <View style={[s.wrap, { marginBottom: 10 }]}>
           <TierChip id={id} size={13} />
           {groupOf(id) && <Badge kind="plain">{groupOf(id)}</Badge>}
-          {it.subcategory && it.subcategory !== it.category && (
-            <Badge kind="plain">{it.subcategory}</Badge>
+          {kindWord(id) !== groupOf(id) && (
+            <Badge kind="plain">{kindWord(id)}</Badge>
           )}
         </View>
 
@@ -141,7 +147,7 @@ function ItemDetail({ id, onClose }: { id: string; onClose: () => void }) {
 
         {family.length > 1 && (
           <Card style={{ marginTop: 10 }}>
-            <Text style={s.h3}>Every tier of this {groupOf(id)?.toLowerCase().replace(/s$/, '') ?? 'item'}</Text>
+            <Text style={s.h3}>Every tier of this {kindWord(id).toLowerCase()}</Text>
             <View style={{ marginTop: 6, gap: 4 }}>
               {family.map((fid) => (
                 <View key={fid} style={[s.row, { gap: 10 }]}>
@@ -200,7 +206,7 @@ export function ItemsScreen({ initialGroup = 'weapons' }: { initialGroup?: strin
       {!searching && (
         <FlatList
           horizontal showsHorizontalScrollIndicator={false}
-          data={ITEM_GROUPS}
+          data={CHIP_GROUPS}
           keyExtractor={(g) => g.id}
           style={{ flexGrow: 0, marginBottom: 8 }}
           renderItem={({ item: g }) => (

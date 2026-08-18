@@ -1,7 +1,8 @@
 /** Palforge — app shell (CEO architecture, 2026-08-15):
  * side panel = main domains; bottom bar = the current domain's tabs with the
- * Paldex anchored in the center slot everywhere; coming-soon sections are
- * real screens so the finished app's shape is visible today. */
+ * Paldex anchored in the center slot — except the Items domain, whose center
+ * anchor is the full item index itself (CEO 2026-08-18). Coming-soon
+ * sections are real screens so the finished app's shape is visible today. */
 import React, { Component, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import {
   ActivityIndicator, PanResponder, Pressable, StatusBar, StyleSheet, Text, View,
@@ -59,14 +60,21 @@ class Boundary extends Component<{ children: ReactNode }, { err: Error | null }>
   }
 }
 
-/** The Weapons tab hosts the shared Items index opened on its group. */
-function WeaponsTab() {
-  return <ItemsScreen initialGroup="weapons" />;
-}
+/** Every Items-domain tab hosts the shared index opened on its group —
+ * the center "Items" tab is the whole catalogue (CEO 2026-08-18 layout). */
+const WeaponsTab = () => <ItemsScreen initialGroup="weapons" />;
+const ArmorTab = () => <ItemsScreen initialGroup="armor" />;
+const AllItemsTab = () => <ItemsScreen initialGroup="all" />;
+const FoodTab = () => <ItemsScreen initialGroup="food" />;
+const SpheresTab = () => <ItemsScreen initialGroup="spheres" />;
 
 const LIVE_SCREENS: Record<string, () => React.JSX.Element> = {
   map: MapScreen,   // fullscreen domain: keyed by domain id, not a tab id
   weapons: WeaponsTab,
+  armor: ArmorTab,
+  allitems: AllItemsTab,
+  food: FoodTab,
+  spheres: SpheresTab,
   calc: CalculatorScreen,
   plan: PlannerScreen,
   paldex: PaldexScreen,

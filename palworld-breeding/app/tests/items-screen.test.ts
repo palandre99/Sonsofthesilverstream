@@ -7,7 +7,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import {
   familyOf, idsInGroup, ITEM_GROUPS, ITEM_STATS, ITEMS,
-  searchItems, sortItems, tierWord,
+  KIND_WORDS, kindWord, searchItems, sortItems, tierWord,
 } from '../../mobile/src/itemsData';
 
 describe('the groups cover the catalogue exactly once', () => {
@@ -23,9 +23,38 @@ describe('the groups cover the catalogue exactly once', () => {
   });
 
   it('the group counts match the shipped categories', () => {
-    expect(idsInGroup('weapons').length).toBe(320);  // Weapon 310 + Special 10
+    // capture balls live under Spheres now, not Weapons (tab rework
+    // 2026-08-18, CEO's layout freedom)
+    expect(idsInGroup('weapons').length).toBe(310);
+    expect(idsInGroup('spheres').length).toBe(16);   // 10 balls + 6 modules
     expect(idsInGroup('armor').length).toBe(264);
     expect(idsInGroup('schematics').length).toBe(490);
+    expect(idsInGroup('fruits').length).toBe(93);    // ConsumeWazaMachine
+    expect(idsInGroup('gear').length).toBe(138);     // Essential_PalGear
+    expect(idsInGroup('eggs').length).toBe(53);      // MaterialPalEgg
+    expect(idsInGroup('meds').length).toBe(14);      // Drug+Medicine+Revive
+  });
+
+  it("'all' is the whole catalogue in one list", () => {
+    expect(idsInGroup('all').length).toBe(Object.keys(ITEMS).length);
+  });
+});
+
+describe('internal names never reach the screen', () => {
+  it('every shipped category/subcategory pair has a player word', () => {
+    const pairs = new Set(Object.values(ITEMS)
+      .map((it) => `${it.category ?? ''}/${it.subcategory ?? ''}`));
+    for (const pair of pairs) {
+      expect(KIND_WORDS[pair], `no player word for ${pair}`).toBeDefined();
+    }
+  });
+
+  it('kind words are plain language, not identifiers', () => {
+    for (const id of Object.keys(ITEMS)) {
+      const w = kindWord(id);
+      expect(w, `${id} leaks jargon: ${w}`)
+        .not.toMatch(/[a-z][A-Z]|_|^SP/);
+    }
   });
 });
 
@@ -90,13 +119,18 @@ describe('the screen speaks plainly and cites its sources', () => {
     expect(code).toContain('The game files carry no description for this item.');
   });
 
-  it('the weapons tab is registered live', () => {
+  it('all five Items tabs are registered live (CEO layout 2026-08-18)', () => {
     const app = readFileSync(
       join(__dirname, '../../mobile/src/App.tsx'), 'utf8');
-    expect(app).toContain('weapons: WeaponsTab');
+    for (const key of ['weapons: WeaponsTab', 'armor: ArmorTab',
+      'allitems: AllItemsTab', 'food: FoodTab', 'spheres: SpheresTab']) {
+      expect(app).toContain(key);
+    }
     const domains = readFileSync(
       join(__dirname, '../../mobile/src/nav/domains.ts'), 'utf8');
-    expect(domains, 'the weapons tab is marked coming-soon again')
-      .toContain("{ id: 'weapons', label: 'Weapons', icon: 'bow-arrow' }");
+    expect(domains, 'a tab went coming-soon again')
+      .not.toMatch(/id: 'items'[\s\S]{0,900}soon: true/);
+    expect(domains, 'the item index must anchor the center slot')
+      .toContain("{ id: 'allitems', label: 'Items', icon: 'view-grid-outline' }");
   });
 });

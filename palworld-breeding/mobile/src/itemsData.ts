@@ -58,34 +58,141 @@ export const tierWord = (rarity: number | null): string =>
   rarity != null && rarity >= 0 && rarity < TIER_WORDS.length
     ? TIER_WORDS[rarity] : 'Common';
 
-/** Player-facing groups over the raw categories. */
-export const ITEM_GROUPS: { id: string; label: string; categories: string[] }[] = [
-  { id: 'weapons', label: 'Weapons', categories: ['Weapon', 'SpecialWeapon'] },
-  { id: 'ammo', label: 'Ammo', categories: ['Ammo'] },
-  { id: 'armor', label: 'Armor', categories: ['Armor'] },
-  { id: 'accessories', label: 'Accessories', categories: ['Accessory'] },
-  { id: 'materials', label: 'Materials', categories: ['Material'] },
-  { id: 'food', label: 'Food', categories: ['Food'] },
-  { id: 'consumables', label: 'Consumables', categories: ['Consume'] },
-  { id: 'key', label: 'Key items', categories: ['Essential'] },
-  { id: 'schematics', label: 'Schematics', categories: ['Blueprint'] },
-  { id: 'gliders', label: 'Gliders', categories: ['Glider'] },
-  { id: 'modules', label: 'Sphere modules', categories: ['CaptureItemModifier'] },
+/** Player-facing groups over the raw categories — subcategory-aware, so
+ * the things players actually hunt for (skill fruits, saddles, meds,
+ * spheres, eggs) get their own front door instead of hiding inside
+ * "Consume"/"Essential"/"Material". A selector is `Category` or
+ * `Category/Subcategory`; the FIRST matching group in this list owns the
+ * item (so specific selectors sit above the broad ones that would
+ * otherwise swallow them). Subcategory names verified against the shipped
+ * backbone 2026-08-18 — the test pins that every item lands in a group. */
+export const ITEM_GROUPS: { id: string; label: string; sel: string[] }[] = [
+  {
+    id: 'spheres', label: 'Spheres',
+    sel: ['SpecialWeapon/SPWeaponCaptureBall', 'CaptureItemModifier'],
+  },
+  { id: 'weapons', label: 'Weapons', sel: ['Weapon', 'SpecialWeapon'] },
+  { id: 'ammo', label: 'Ammo', sel: ['Ammo'] },
+  { id: 'armor', label: 'Armor', sel: ['Armor'] },
+  { id: 'accessories', label: 'Accessories', sel: ['Accessory'] },
+  { id: 'food', label: 'Food', sel: ['Food'] },
+  {
+    id: 'meds', label: 'Meds',
+    sel: ['Consume/Drug', 'Consume/Medicine', 'Consume/ConsumePalRevive', 'Material/Drug'],
+  },
+  { id: 'fruits', label: 'Skill fruits', sel: ['Consume/ConsumeWazaMachine'] },
+  { id: 'gear', label: 'Pal gear', sel: ['Essential/Essential_PalGear'] },
+  { id: 'eggs', label: 'Eggs', sel: ['Material/MaterialPalEgg'] },
+  { id: 'materials', label: 'Materials', sel: ['Material'] },
+  { id: 'consumables', label: 'Consumables', sel: ['Consume'] },
+  { id: 'schematics', label: 'Schematics', sel: ['Blueprint'] },
+  { id: 'gliders', label: 'Gliders', sel: ['Glider'] },
+  { id: 'key', label: 'Key items', sel: ['Essential'] },
 ];
 
-const GROUP_BY_ID = new Map(ITEM_GROUPS.map((g) => [g.id, g]));
+/** id -> owning group, first-match-wins over the ordered selectors */
+const GROUP_OF = new Map<string, { id: string; label: string }>();
+for (const id of ITEM_IDS) {
+  const it = ITEMS[id];
+  const cat = it.category ?? '';
+  const pair = `${cat}/${it.subcategory ?? ''}`;
+  for (const g of ITEM_GROUPS) {
+    if (g.sel.includes(pair) || g.sel.includes(cat)) {
+      GROUP_OF.set(id, g);
+      break;
+    }
+  }
+}
 
+/** 'all' is the Items tab's home: the entire catalogue in one list. */
 export function idsInGroup(groupId: string): string[] {
-  const g = GROUP_BY_ID.get(groupId);
-  if (!g) return [];
-  const cats = new Set(g.categories);
-  return ITEM_IDS.filter((i) => cats.has(ITEMS[i].category ?? ''));
+  if (groupId === 'all') return ITEM_IDS;
+  return ITEM_IDS.filter((i) => GROUP_OF.get(i)?.id === groupId);
 }
 
 export function groupOf(id: string): string | null {
-  const cat = ITEMS[id]?.category;
-  for (const g of ITEM_GROUPS) if (cat && g.categories.includes(cat)) return g.label;
-  return null;
+  return GROUP_OF.get(id)?.label ?? null;
+}
+
+/** Player words for every category/subcategory pair in the backbone —
+ * internal names like "SPWeaponCaptureBall" must never reach the screen
+ * (workspace law: a player's words, never a developer's). The test pins
+ * that every shipped pair has an entry, so a data refresh that adds a new
+ * subcategory fails loudly instead of leaking jargon. */
+export const KIND_WORDS: Record<string, string> = {
+  'Accessory/Accessory': 'Accessory',
+  'Ammo/ConsumeBullet': 'Ammunition',
+  'Armor/ArmorBody': 'Body armor',
+  'Armor/ArmorHead': 'Head gear',
+  'Armor/Shield': 'Shield',
+  'Blueprint/Blueprint': 'Schematic',
+  'CaptureItemModifier/CaptureItemModifier': 'Sphere module',
+  'Consume/ConsumeAncientTechnologyBook': 'Ancient technology manual',
+  'Consume/ConsumeFishingBait': 'Fishing bait',
+  'Consume/ConsumeGainStatusPoints': 'Stat boost',
+  'Consume/ConsumeOther': 'Consumable',
+  'Consume/ConsumePalAwakening': 'Pal awakening item',
+  'Consume/ConsumePalGainExp': 'Pal EXP item',
+  'Consume/ConsumePalGainFriendshipPoint': 'Pal friendship item',
+  'Consume/ConsumePalLevelUp': 'Pal level-up item',
+  'Consume/ConsumePalRankUp': 'Pal rank-up item',
+  'Consume/ConsumePalRevive': 'Pal revival item',
+  'Consume/ConsumePalTalentUp': 'Pal talent item',
+  'Consume/ConsumePalWorkSuitabilityUp': 'Work suitability boost',
+  'Consume/ConsumePassiveSkillChange': 'Passive skill item',
+  'Consume/ConsumeTechnologyBook': 'Technology manual',
+  'Consume/ConsumeTreasureMap': 'Treasure map',
+  'Consume/ConsumeWazaMachine': 'Skill fruit',
+  'Consume/ConsumeWorldTreeHolyWater': 'Holy water',
+  'Consume/Drug': 'Medicine',
+  'Consume/Medicine': 'Medicine',
+  'Consume/ReturnToBaseCamp': 'Base return item',
+  'Essential/Essential': 'Key item',
+  'Essential/Essential_AdditionalInventory': 'Bag upgrade',
+  'Essential/Essential_BossReward': 'Boss trophy',
+  'Essential/Essential_Lamp': 'Lamp',
+  'Essential/Essential_PalGear': 'Pal gear',
+  'Essential/Essential_PassiveSkillChange': 'Passive skill item',
+  'Essential/Essential_UnlockPlayerFuture': 'Ability unlock',
+  'Food/FoodDishFish': 'Cooked fish dish',
+  'Food/FoodDishMeat': 'Cooked meat dish',
+  'Food/FoodDishVegetable': 'Cooked veggie dish',
+  'Food/FoodFish': 'Raw fish',
+  'Food/FoodMeat': 'Raw meat',
+  'Food/FoodVegetable': 'Vegetable',
+  'Glider/Glider': 'Glider',
+  'Material/Drug': 'Medicine ingredient',
+  'Material/MaterialIngot': 'Ingot',
+  'Material/MaterialJewelry': 'Gemstone',
+  'Material/MaterialMonster': 'Pal material',
+  'Material/MaterialOre': 'Ore',
+  'Material/MaterialPalEgg': 'Pal egg',
+  'Material/MaterialProccessing': 'Processed material',
+  'Material/MaterialStone': 'Stone',
+  'Material/MaterialWood': 'Wood',
+  'Material/Money': 'Currency',
+  'SpecialWeapon/SPWeaponCaptureBall': 'Capture sphere',
+  'Weapon/WeaponAssaultRifle': 'Assault rifle',
+  'Weapon/WeaponBow': 'Bow',
+  'Weapon/WeaponCrossbow': 'Crossbow',
+  'Weapon/WeaponFishingRod': 'Fishing rod',
+  'Weapon/WeaponFlameThrower': 'Flamethrower',
+  'Weapon/WeaponGatlingGun': 'Gatling gun',
+  'Weapon/WeaponGrapplingGun': 'Grappling gun',
+  'Weapon/WeaponHandgun': 'Handgun',
+  'Weapon/WeaponMelee': 'Melee weapon',
+  'Weapon/WeaponMetalDetector': 'Metal detector',
+  'Weapon/WeaponRocketLauncher': 'Rocket launcher',
+  'Weapon/WeaponShotgun': 'Shotgun',
+  'Weapon/WeaponThrowObject': 'Thrown weapon',
+};
+
+/** What kind of thing this item is, in a player's words. */
+export function kindWord(id: string): string {
+  const it = ITEMS[id];
+  if (!it) return 'Item';
+  return KIND_WORDS[`${it.category ?? ''}/${it.subcategory ?? ''}`]
+    ?? groupOf(id) ?? 'Item';
 }
 
 export type ItemSort = 'power' | 'name' | 'rarity';

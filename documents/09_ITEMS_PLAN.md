@@ -94,6 +94,47 @@ lesson is law.
 - All existing gates stay mandatory (oracle, parity, mobile tsc, app
   build); publishing ritual unchanged.
 
+## 4b. Second research pass (2026-08-18 late, new session — all probed first-hand)
+
+**The CEO's widened order, verbatim:** "Crafting often requires lvl and
+technology pts etc also. Everything should be here. A proper proper info for
+every single item in the game, perfectly organized and so on, u may have to
+change the tab layout a lot to make it work." And: "i think maybe paldex
+doesnt belong here idk", "every item needs an image also", "NEVER guess."
+
+**Findings that upgrade the pipeline:**
+
+- **Item pages carry far more than recipes.** Header chips hold Attack per
+  tier, Technology level, Capture Power (spheres!), Nutrition / SAN / Work
+  Speed / Recovery Time (food) — a generic `[label, value]` capture gets all
+  of it raw. Titled card tables hold Dropped By (pal, qty, probability),
+  Treasure Box (source, map, qty, DROP RATE %), merchant shops, Production
+  and Research rows. One sweep (`tools/fetch_item_pages.py`) captures
+  everything per page; `fetch_item_recipes.py` is retired into it.
+- **`/en/Technologies` is server-rendered and complete**: 588 nodes, each
+  with level (1–80), POINT COST badge and the BossTechnology class marking
+  Ancient Technology (51). Node ids join EXACTLY to the Technology ids item
+  pages carry. Captured by `tools/fetch_tech_tree.py`.
+- **The two failed recipe sweeps explained**: run 1 was the block-regex bug
+  (fixed and proven on Cake 5/8/7/8/2); run 2 died with its session before
+  writing output. The 173 slug errors were encoding (é, ':', '[') — fixed
+  with full percent-encoding, all three failure classes probed to 200.
+- **The atlas publishes nothing beyond items/index.json** (verified via the
+  GitHub API against build 24575149) — paldb remains the stats/recipes/tech
+  source, exact-identity-validated against the atlas backbone as before.
+- **paldb throttles parallel sweeps** — the icon and page sweeps degraded
+  each other (icon misses 16→37, page errors 3→15 in the overlap window).
+  Run sweeps one at a time; the icon fetch caches per-icon and resumes.
+
+**The tab decision (under the CEO's layout freedom):** the Items domain is
+the one exception to the Paldex-center law — its center anchor is the full
+item index itself. Tabs: Weapons / Armor / **Items** (everything) / Food /
+Spheres, every tab the same index opened on its group. Paldex leaves this
+domain only. Schematics become a chip + item-card sections. Groups went
+subcategory-aware so skill fruits (93), pal gear (138), eggs (53), meds and
+spheres stopped hiding inside Consume/Essential/Material — the 15 groups
+partition all 1,892 items exactly once, pinned by test.
+
 ## 5. Honest limits recorded up front
 
 - The capture-rate formula and any drop-RATE percentages are NOT in the

@@ -20,6 +20,7 @@ import io
 import json
 import re
 import time
+import urllib.parse
 import urllib.request
 from pathlib import Path
 
@@ -37,8 +38,9 @@ PER_SHEET = PER_ROW * PER_ROW
 
 
 def slug_for(name: str) -> str:
-    return (name.replace(" ", "_").replace("&", "%26").replace(",", "%2C")
-            .replace("(", "%28").replace(")", "%29"))
+    # Full percent-encoding of the underscore slug — same fix as the recipe
+    # sweep: raw 'é'/':'/'[' URLs failed, the encoded forms all serve pages.
+    return urllib.parse.quote(name.replace(" ", "_"), safe="")
 
 
 def fetch(url: str, referer: bool = False) -> bytes | None:

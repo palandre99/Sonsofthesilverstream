@@ -7,6 +7,10 @@
  *   EXCEPTION   = the Map domain is FULLSCREEN (CEO 2026-08-15): no bottom
  *                 tabs — layer filters live inside the map itself, like any
  *                 great map app. `tabs: []` encodes that.
+ *   EXCEPTION   = the Items domain anchors its center on the full item
+ *                 index, not the Paldex (CEO 2026-08-18: "u have full
+ *                 freedom over" the tabs; "i think maybe paldex doesnt
+ *                 belong here") — every item thing lives one tap deep.
  *
  * Icons are MaterialCommunityIcons names (rendered via ui/Icon).
  * Domains/tabs we aren't building yet ship as designed coming-soon screens
@@ -31,7 +35,8 @@ export interface DomainDef {
   soon?: boolean;
   blurb?: string;
   planned?: string[];
-  /** 5 tabs with the Paldex at index 2 — or [] for a fullscreen domain */
+  /** 5 tabs with the domain's anchor at index 2 (the Paldex everywhere,
+   *  the item index in the Items domain) — or [] for a fullscreen domain */
   tabs: TabDef[];
 }
 
@@ -66,26 +71,17 @@ export const DOMAINS: DomainDef[] = [
     icon: 'sword-cross',
     blurb: 'Every weapon, armor, tool, sphere, consumable and schematic — '
       + 'ranked worst to best, with stats and where to get them.',
+    // CEO 2026-08-18 ("u have full freedom over" the tabs; "i think maybe
+    // paldex doesnt belong here"): this domain is the ONE exception to the
+    // Paldex-center rule — its center anchor is the full item index
+    // itself. Every tab hosts the same index opened on its group; the
+    // group chips reach everything else (schematics, materials, gear...).
     tabs: [
-      // LIVE 2026-08-18 (Items fane phase A): hosts the full item index,
-      // opened on the Weapons group
       { id: 'weapons', label: 'Weapons', icon: 'bow-arrow' },
-      {
-        id: 'armor', label: 'Armor', icon: 'shield-half-full', soon: true,
-        blurb: 'Armor and accessories with real stats.',
-        planned: ['Defense tables', 'Set comparisons', 'Crafting costs'],
-      },
-      PALDEX,
-      {
-        id: 'schematics', label: 'Schematics', icon: 'script-text-outline', soon: true,
-        blurb: 'Every schematic tier and its source.',
-        planned: ['Tier lists per item', 'Drop sources', 'Dungeon chest tables'],
-      },
-      {
-        id: 'spheres', label: 'Spheres', icon: 'record-circle-outline', soon: true,
-        blurb: 'Capture spheres and capture-rate math.',
-        planned: ['Capture rate calculator', 'Sphere crafting chains'],
-      },
+      { id: 'armor', label: 'Armor', icon: 'shield-half-full' },
+      { id: 'allitems', label: 'Items', icon: 'view-grid-outline' },
+      { id: 'food', label: 'Food', icon: 'food-drumstick-outline' },
+      { id: 'spheres', label: 'Spheres', icon: 'record-circle-outline' },
     ],
   },
   {
