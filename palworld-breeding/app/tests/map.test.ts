@@ -3183,6 +3183,21 @@ describe('the 2026-08-18 report round', () => {
     expect(sawNearest).toBe(true);
   });
 
+  it('dropping a mark opens its card at once', () => {
+    // a silent pin appearing mid-map taught nothing — the drop answers
+    // with the rename and remove verbs in hand
+    expect(screen).toMatch(/const pin = pinsIn\(region\)\.find\(\(p\) => p\.id === id\);/);
+    expect(screen).toMatch(/setOpenPin\(pin\);/);
+  });
+
+  it('tapping a cluster bubble zooms toward it instead of a stray card', () => {
+    // the old nearest-point card on a 127-bubble even offered Mark as
+    // found, which would have ticked a node the player never saw
+    expect(screen).toMatch(/if \(best\.count > 1\) \{/);
+    expect(screen).toMatch(/canvas\.current\?\.focus\(best\.cu, best\.cv,/);
+    expect(screen).not.toMatch(/nearestPoint/);
+  });
+
   it('a region switch never strands an open layer list', () => {
     expect(screen).toMatch(/const gone = namedPoints\(sheet\.list, region\)\.length === 0/);
     expect(screen).toMatch(/if \(gone\) setSheet\('layers'\);/);

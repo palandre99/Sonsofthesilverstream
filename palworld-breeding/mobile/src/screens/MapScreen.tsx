@@ -24,7 +24,7 @@ import { PalIcon, SearchInput, s } from '../ui/kit';
 import {
   MapCanvas, type MapCanvasHandle, type MapMarker, type ScreenMarker,
 } from '../map/MapCanvas';
-import { clusterPoints, nearestPoint, pointsInRect, type PointSet } from '../map/points';
+import { clusterPoints, pointsInRect, type PointSet } from '../map/points';
 import { uvToReadout, regionOf, type RegionId } from '../map/projection';
 import {
   PIN_LABEL_MAX, addPin, clearPins, loadPins, onPinsChange, pinCount, pinsIn, removePin,
@@ -598,14 +598,33 @@ export function MapScreen() {
    */
   const onPress = useCallback((u: number, v: number) => {
     const reach = 26 / Math.max(1, vp.scale);
-    let best: { layer: typeof active[number]; d: number; index: number } | null = null;
-    for (const layer of active) {
-      const p = nearestPoint(layer.set, u, v, reach);
-      if (p == null) continue;
-      const du = layer.set.xy[p * 2] - u;
-      const dv = layer.set.xy[p * 2 + 1] - v;
-      const d = du * du + dv * dv;
-      if (!best || d < best.d) best = { layer, d, index: p };
+    // The tap resolves against the CLUSTERS that are drawn, not the raw
+    // points underneath them. The old nearest-point lookup meant tapping a
+    // 127-count bubble opened a card for one arbitrary member — and its
+    // "Mark as found" would have ticked a node the player never saw
+    // (hard-testing find). Same maths as the pin build, same budget, so
+    // the decision always matches what is on screen.
+    const nAct = Math.max(1, active.length);
+    const budget = Math.max(16, Math.floor(170 / nAct));
+    const cellPx = PIN + 14 + Math.max(0, nAct - 1) * 12;
+    let best: {
+      layer: typeof active[number]; d: number; index: number;
+      count: number; cu: number; cv: number;
+    } | null = null;
+    for (const [li, layer] of active.entries()) {
+      const hits = pointsInRect(layer.set, vp.u0, vp.v0, vp.u1, vp.v1);
+      const layerCell = cellPx * Math.max(1, Math.min(4, Math.sqrt(hits.length / 120)));
+      const clusters = clusterPoints(layer.set, hits, vp.scale, layerCell, li)
+        .sort((a, b) => b.count - a.count)
+        .slice(0, budget);
+      for (const c of clusters) {
+        const du = c.u - u;
+        const dv = c.v - v;
+        const d = du * du + dv * dv;
+        if (d <= reach * reach && (!best || d < best.d)) {
+          best = { layer, d, index: c.index, count: c.count, cu: c.u, cv: c.v };
+        }
+      }
     }
     const r = uvToReadout({ u, v }, regionOf(region));
     const at = `${r.x}, ${r.y}`;
@@ -613,6 +632,14 @@ export function MapScreen() {
       setFocus(active.length
         ? null
         : { title: 'Nothing switched on yet', lines: ['Pick a layer or a pal below.'], at, colour: T.muted, icon: 'map-marker-question-outline' });
+      return;
+    }
+    if (best.count > 1) {
+      // a bubble is a promise of detail below — zoom toward it until it
+      // breaks apart, the gesture every map app teaches
+      void Haptics.selectionAsync();
+      canvas.current?.focus(best.cu, best.cv,
+        Math.max(0.03, (vp.u1 - vp.u0) / 2.6));
       return;
     }
 
@@ -774,7 +801,18 @@ export function MapScreen() {
             const v = (vp.v0 + vp.v1) / 2;
             const at = uvToReadout({ u, v }, regionOf(region));
             const id = addPin(region, u, v, `${at.x}, ${at.y}`);
-            if (id) void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            if (id) {
+              void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              // the drop must ANSWER: the new mark's card opens at once
+              // with the rename and remove verbs in hand — a silent pin
+              // appearing mid-map taught nothing (hard-testing find)
+              const pin = pinsIn(region).find((p) => p.id === id);
+              if (pin) {
+                setDraft(null);
+                setOpenStops(null);
+                setOpenPin(pin);
+              }
+            }
           }}
           accessibilityRole="button"
           accessibilityLabel="Mark this spot"
