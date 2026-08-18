@@ -21,10 +21,24 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: palworld-breeding/app/package-lock.json
+          cache-dependency-path: |
+            palworld-breeding/app/package-lock.json
+            palworld-breeding/mobile/package-lock.json
       - run: npm ci
-      # the correctness gate: 62 tests incl. the exact 44,851-row oracle replay
+      # The MOBILE tree's deps too: many tests import modules from
+      # ../mobile/src for real (boxShare, alphaFacts, ticks…), and vite
+      # resolves mobile's tsconfig ("extends expo/tsconfig.base") to
+      # transform them — without expo installed, every one of those files
+      # fails with TSCONFIG_ERROR. Found 2026-08-18 on the branch's first
+      # push since those tests exist.
+      - run: npm ci
+        working-directory: palworld-breeding/mobile
+      # the correctness gate: the full suite incl. the exact 44,851-row
+      # oracle replay and the app/mobile byte-parity gates
       - run: npm test
+      # the PHONE's own gate — the product ships from this tree
+      - run: npx tsc --noEmit
+        working-directory: palworld-breeding/mobile
       # typecheck + production build + service worker generation
       - run: npm run build
       - run: node --check dist/sw.js
