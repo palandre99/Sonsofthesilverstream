@@ -2105,6 +2105,38 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E145. THE ITEMS FANE IS LIVE ON HIS PHONE — PHASE A SHIPPED AND
+## PUBLISHED; HIS FIRST FEEDBACK ALREADY QUEUED 2026-08-18 (~22:40-23:05)
+
+**"Work" (his one-word re-engage) -> the first visible Items surface.**
+The Tools & Items domain's Weapons tab now hosts the full 1,892-item
+index: search across everything, eleven group chips with real counts
+(Weapons 320 / Armor 264 / Schematics 490...), Strongest-first / A-Z /
+Rarest sorting, and an item card with the game's own description, the
+exact-identity stats, weight/price/stack, and the family's every rarity
+tier in one table. Tier words proven exception-free across all 604 cards
+(0=Common..4=Legendary) and applied catalogue-wide, pinned by test.
+COMING SOON badge gone from the domain. Eye-verified end to end
+(Mechanical Bow Legendary tops Strongest-first; family table renders all
+tiers; search "cake" -> 6 across everything; found + fixed "1 rounds").
+717 tests, tsc clean, PUBLISHED both channels, pushed.
+
+**Recipe sweep post-mortem in the same tick:** run 1 captured ZERO
+recipes — the block regex's `</div>\s*</div>` terminator was the END OF
+THE FIRST ROW in pretty-printed HTML, eating the closing tag the row
+regex needed. Rewritten as contiguous-row matching per recipes segment
+(gap cap 900 chars — also keeps "recipes that USE this item" lists from
+bleeding in), proven on the live Cake page — which reads 5 Flour / 8 Red
+Berries / 7 Milk / 8 Egg / 2 Honey, independently confirming the
+Reference tab's verified recipe. Sweep relaunched; merge on completion.
+
+**CEO 23:0x, verbatim: "Everything needs a square for the image of the
+item."** -> TOP of the Items queue: the icon pipeline. 722 unique icon
+names cover the catalogue; they ship as SPRITE SHEETS (2-3 composed
+images + generated coordinates + an ItemIcon crop component), NOT 722
+individual assets — the EAS 1000-asset cap already broke publishing once
+(E136 area) and the pal-icon one-file-each pattern does not scale here.
+
 ## E144. ITEMS I1b — 604 STAT ROWS AT EXACT IDENTITY, AND 354 BROKEN
 ## NAMES REPAIRED BY DERIVATION 2026-08-18 (loop ticks ~21:25-21:55)
 
