@@ -1,4 +1,7 @@
-# START HERE — Palforge project constitution
+# START HERE — Paldexia project constitution
+
+*Named **Paldexia** since 2026-08-18 (previously Palforge). Identifiers keep
+the old names on purpose — see `11_RENAME_TO_PALDEXIA.md`.*
 
 *You are picking up a live product. Read this, then `02_PROGRESS.md`, then
 take the top item in `AI_TODO.md`. The workspace law in the root
@@ -17,6 +20,9 @@ take the top item in `AI_TODO.md`. The workspace law in the root
 | `06_TROUBLESHOOTING.md` | symptom → cause → fix, with post-mortems | the moment anything "is broken" |
 | `07_WORKING_AGREEMENT.md` | how the CEO works, his mandates, reporting style | before your first reply to him |
 | `08_TOOLS_AND_COMMANDS.md` | every command, gate, script, deploy step | session start, and before shipping |
+| `09_ITEMS_PLAN.md` | the Items fane plan | working the Items lane |
+| `10_BOSSES_PLAN.md` | the Bosses & Raids fane plan | working the Bosses lane |
+| `11_RENAME_TO_PALDEXIA.md` | the rename: done vs. pending a build | before touching app names/ids |
 | `AI_TODO.md` | the live queue + CEO feedback ledger | every work block |
 
 **New here? The 10-minute onboarding is:** `00` (this file) → `07` (how he
@@ -30,7 +36,7 @@ delivery, never the app itself.
 
 ## The product in one paragraph
 
-Palforge answers the only questions a Palworld breeder actually has: *what
+Paldexia answers the only questions a Palworld breeder actually has: *what
 do these two parents make, how do I get species X from what I own, what
 will the passives/IVs cost me in eggs, and in what order do I breed toward
 my goals?* It answers them **provably** — the species engine replays all
@@ -85,7 +91,9 @@ terminals by hand beyond these.
 
 **He has BOTH apps on his phone: "Palforge" (full) and "Palforge DEV" (live,
 orange DEV badge).** They have separate bundle ids since 2026-08-15, so
-installing one no longer deletes the other. That separation lives in
+installing one no longer deletes the other. Those two icon labels still
+read *Palforge* / *Palforge DEV* — the label is compiled into the binary,
+so it changes at the next build, not by update (`11_RENAME_TO_PALDEXIA.md`). That separation lives in
 `mobile/app.config.js` — if a change ever collapses it back to one bundle id,
 the app-deleting bug returns. Re-verify on every DEV build; check in
 `01_LINKS.md`.

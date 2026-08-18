@@ -260,7 +260,7 @@ export function shareTextForPair(a: string, b: string, ch: ChildResult,
     '',
     resultSentence(ch, ra, rb, target),
     '',
-    `Palworld ${breeding.game_version} · read from the game files · Palforge`,
+    `Palworld ${breeding.game_version} · read from the game files · Paldexia`,
   ].join('\n');
 }
 

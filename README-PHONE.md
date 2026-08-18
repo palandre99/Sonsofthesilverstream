@@ -1,4 +1,4 @@
-# Palforge on your iPhone — the three buttons
+# Paldexia on your iPhone — the buttons
 
 Same system as Stride. Double-click, that's it.
 

@@ -43,6 +43,11 @@ reading its `Info.plist`:
 |---|---|---|
 | Bundle id | `com.palandre.hatchlab` | `com.palandre.hatchlab.dev` |
 | Name on phone | Palforge | Palforge DEV |
+
+*Those two labels are the only place the old name still shows to him. They
+are compiled into the binaries and change at the next build, not by update
+— see `11_RENAME_TO_PALDEXIA.md`. The app's own screens already say
+**Paldexia**.*
 | Scheme | `palforge` | `palforge-dev` |
 | Icon | sphere | sphere + orange DEV band |
 

@@ -243,7 +243,7 @@ export function AboutScreen() {
     <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
       <View style={{ alignItems: 'center', marginTop: 30, marginBottom: 18 }}>
         <Image source={LOGO} style={{ width: 64, height: 64 }} />
-        <Text style={[s.h1, { marginTop: 8 }]}>Palforge</Text>
+        <Text style={[s.h1, { marginTop: 8 }]}>Paldexia</Text>
         <Text style={[s.body, { marginTop: 2 }]}>The Palworld companion with receipts</Text>
       </View>
       <Card style={{ marginBottom: 10 }}>

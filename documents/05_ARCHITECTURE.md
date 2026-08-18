@@ -1,4 +1,4 @@
-# ARCHITECTURE — how Palforge is built and how code reaches the phone
+# ARCHITECTURE — how Paldexia is built and how code reaches the phone
 
 *Written 2026-08-15 so nobody has to reconstruct this from the code again.
 Facts here were verified against the repo on that date, not remembered.
@@ -8,7 +8,7 @@ If you change how any of this works, change this file in the same commit.*
 
 ## 1. One engine, three faces
 
-Palforge is a breeding companion whose answers must be **provable**. That
+Paldexia is a breeding companion whose answers must be **provable**. That
 constraint dictates the whole shape: one pure-TypeScript engine, oracle-tested
 against 44,851 precomputed outcomes from the game files, wrapped in three
 different user interfaces.
@@ -153,6 +153,10 @@ The DEV icon is the normal mark with an orange **DEV** band across the bottom
 (full width, so iOS's corner mask never clips the lettering). Regenerate it
 with `python scripts/make-dev-icon.py` after any change to `icon.png`. Icons
 are native — **an OTA update can never change them**, only a rebuild can.
+
+**Pending rename:** the `name` values become Paldexia / Paldexia DEV at the
+next build (`11_RENAME_TO_PALDEXIA.md`). Bundle ids and schemes stay as they
+are — renaming those makes a different app to iOS and loses his saved data.
 
 Local `expo start` deliberately resolves to the DEV identity: the dev server
 must speak the same scheme as the installed dev client or the connect link

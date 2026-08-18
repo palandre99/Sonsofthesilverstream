@@ -1,7 +1,7 @@
-# Palforge — Palworld 1.0 breeding, solved
+# Paldexia — Palworld 1.0 breeding, solved
 
-*"HatchLab" was the working title. The product is **Palforge** (CEO decision,
-2026-08-15). The old name survives only in identifiers that cannot change
+*The product is **Paldexia** (CEO, 2026-08-18); it was Palforge before that,
+and HatchLab before that. The old name survives only in identifiers that cannot change
 without orphaning installed apps: the EAS slug `@palandre99/hatchlab`, the
 bundle id `com.palandre.hatchlab`, and `dist/HatchLab-app.html`. Leave those
 alone. Canonical plan: `../documents/04_PRODUCT_BLUEPRINT.md`.*

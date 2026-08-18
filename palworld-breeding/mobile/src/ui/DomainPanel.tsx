@@ -94,7 +94,7 @@ export function DomainPanel({ open, domain, onSelect, onClose }: {
           <View>
             <Text style={{
               color: T.ink, fontSize: 19, fontWeight: '900', letterSpacing: 0.3,
-            }}>Palforge</Text>
+            }}>Paldexia</Text>
             {full && (
               <Text style={{ color: T.faint, fontSize: 10.5, marginTop: -1 }}>
                 Palworld companion

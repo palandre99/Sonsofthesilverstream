@@ -88,7 +88,7 @@ export function shareTextForPlan(
       + (st.genderNote ? ` (${st.genderNote})` : ''));
   }
   lines.push('');
-  lines.push(`Palworld ${gameVersion} · read from the game files · Palforge`);
+  lines.push(`Palworld ${gameVersion} · read from the game files · Paldexia`);
   return lines.join('\n');
 }
 

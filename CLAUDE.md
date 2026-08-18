@@ -23,7 +23,7 @@ code), `03_MARKET_RESEARCH.md` + `04_PRODUCT_BLUEPRINT.md` (the master plan).
 
 ## WHAT THIS IS
 
-Palforge: **the definitive Palworld companion app.** One oracle-tested
+Paldexia: **the definitive Palworld companion app.** One oracle-tested
 TypeScript engine, three delivery targets:
 
 1. **iPhone app** (`palworld-breeding/mobile/`) — Expo SDK 54 / RN. FIRST
@@ -32,6 +32,23 @@ TypeScript engine, three delivery targets:
    features, live at `/Sonsofthesilverstream/palforge/`.
 3. **Reference implementation** (`palworld-breeding/planner.py` + `guide/`)
    — the Python original; data pipeline lives in `palworld-breeding/tools/`.
+
+## THE NAME IS PALDEXIA (CEO, 2026-08-18)
+
+The product is **Paldexia** — he secured the domain. "Palforge" is the previous
+name; "HatchLab" the one before that.
+
+- **Words inside the app already say Paldexia** (shipped by OTA, no build).
+- **The label under the icon still says Palforge** until the next build — it is
+  compiled into the binary and no update can change it. Do it as part of a build
+  that is happening anyway; don't burn one on the label alone.
+- **Identifiers keep the old names on purpose and MUST NOT be "fixed":** bundle
+  ids `com.palandre.hatchlab(.dev)`, EAS slug `hatchlab`, schemes
+  `palforge`/`palforge-dev`, Pages path `/palforge/`. Renaming a bundle id makes
+  a different app to iOS — he would lose his saved box and plans. A product name
+  and an identifier are different things; only the first is user-facing.
+
+Full status and the exact steps for the build half: `documents/11_RENAME_TO_PALDEXIA.md`.
 
 ## THE WEBSITE IS ON HOLD — PHONE APP ONLY (CEO, 2026-08-17)
 
