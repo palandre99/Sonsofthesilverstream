@@ -9530,3 +9530,27 @@ u." The audit, all measured this session:
 691 tests green, tsc clean, published. What no audit here can reach:
 in-game node offsets within spawner radii (source has no radius column),
 tree-map independent reference, device feel — those are HIS test.
+
+### M71 — the CEO-approved AI enhancement is LIVE (8de7667, both channels)
+His condition verbatim: "If u can promise this won't change the map in
+any way, no accuracy nothing what so ever only image quality then it's
+fine." KEPT AND ENFORCED:
+- T_WorldMap_hi.png (8192) -> Real-ESRGAN x4plus quadrant-wise (64 px
+  overlap) -> assembled 16384 -> tools/.cache/T_WorldMap_enhanced16k.png.
+- ALIGNMENT GATE: phase correlation at 8 landmarks incl. both quadrant
+  seams = ZERO px shift; global texture diff 1.71/255 (the enhancement
+  itself). The gate is BUILT INTO tools/enhance_map_art.py (checked in,
+  reproducible; needs the realesrgan-ncnn-vulkan portable exe, v0.2.5.0).
+- Tiler: palpagos source = enhanced file; z5 = real detail now, not
+  Lanczos interpolation; land-sharpen SKIPPED for enhanced sources
+  (double-sharpen halos); PIL bomb guard lifted (own file).
+- Counts: 180 s5 sheets (unchanged), 567 web z5 singles (was 566 — one
+  formerly-flat tile gained real detail), 26 MB mobile tiles, asset
+  budget unchanged. Sea audit green (reads the untouched ORIGINAL).
+- Reference tab honesty label: geography the game's own, pixel-aligned
+  and verified; finest zoom detail reconstructed; positions never touch
+  the picture. Test pins updated with reasons (567; tiler names the
+  enhanced source while the audit MUST keep naming the original).
+- Eye-verified at the exact zoom of his 22:34 blur screenshot: crisp.
+  Comparison strip sent to him (scratchpad/compare_full.png).
+717 tests green, tsc clean both trees. His device verdict is the gate.
