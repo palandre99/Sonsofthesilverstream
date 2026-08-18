@@ -9210,3 +9210,16 @@ Also walked clean: tree layers sheet (present-first), tree alpha list
 count), found round-trip (tick → "Got this one" → Found filter → "1 spot
 on the map"), 8-layer stress (7,957 spots, budgeted bubbles, no JS
 errors), pal toggle + Daytime state, drop-card flow. 728 tests green.
+
+### M67 — the route feature is GONE (his verdict), publish PENDING the guard
+CEO 15:3x: "The route feature is silly, nobody will add their location I
+think." He is right, and it rhymes with his M42 "route selection is
+overkill". Removed WHOLE: routes.ts + routeShare.ts stores, RouteLine,
+stop badges, stop cards, share/import/clear verbs, legend row, pill
+text, and their ~40 tests. MARKS STAY (he uses those; drop-card intact).
+Revivable from git if a GENERATED route (auto-plotted farm run through a
+Best spot / unfound effigies) ever gets his yes — offered, not built.
+Committed 09fd9cc; publish REFUSED by the guard (goals lane mid-flight
+in OddsScreen/ReferenceScreen/odds-copy tests) — publish on next clean
+tree, message ready. 688 tests green (40 retired with the feature), tsc
+clean both trees, mark card verified clean by eye.
