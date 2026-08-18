@@ -76,16 +76,28 @@ So, until the CEO personally lifts this:
 > will perfect it, then make all other stuff. This is just one small part of a
 > massive project."
 
-So:
+**REDIRECT (CEO, 2026-08-18): the Items fane is now the active front.**
 
-- **NOW: perfect breeding.** Calculator, Route Planner, Odds Lab, Paldex, My
-  Box, Reference. Depth over breadth. A breeding feature that is 90% good is
-  not done — polish it until it is the best in the world, then move on.
-- **LATER: the full companion.** Map (everything in the game, not just pals),
-  Tools & Items, Bosses & Raids, and more. The navigation already reserves
-  these domains; unbuilt ones ship as designed coming-soon screens.
-- **Do NOT start new domains** unless the CEO redirects. Widening the surface
-  while breeding is imperfect is the failure mode this scope exists to prevent.
+> "Maybe u can now begin the big work of the new fane. Items/weapons and so
+> on. Basically amazing every item and thing in the game. Massive task must
+> be done perfect. Deep research first then make the good plan and get to
+> work. Put breeding to done for now, pending ceo review."
+
+So, as of 2026-08-18:
+
+- **BREEDING: DONE, PENDING CEO REVIEW.** E100–E141 in the ledger are the
+  audit trail. It stays green (all gates remain mandatory), bug reports on it
+  outrank everything, and the two CEO-gated items (real-device pass,
+  world-save import) fire the moment he says go — but no new breeding work
+  is self-initiated.
+- **NOW: the Items fane** (`items` domain in `mobile/src/nav/domains.ts`:
+  Weapons / Armor / Paldex / Schematics / Spheres). Same bar as breeding:
+  every number datamined with provenance or labelled community-measured,
+  read-alouds in a player's words, tested, published. The plan lives in
+  `documents/09_ITEMS_PLAN.md`; deep research precedes structure.
+- **LATER: Bosses & Raids and the rest.** Unbuilt domains still ship as
+  designed coming-soon screens.
+- **Do NOT start further domains** unless the CEO redirects again.
 
 **The strategic model is Dododex** (`04_PRODUCT_BLUEPRINT.md` §1, a live
 page-by-page dissection). It launched as an ARK taming calculator in 2016 and

@@ -2105,6 +2105,26 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E142. THE CEO OPENS THE ITEMS FANE — BREEDING GOES TO DONE, PENDING
+## HIS REVIEW 2026-08-18 (~18:40)
+
+**Verbatim:** "Maybe u can now begin the big work of the new fane.
+Items/weapons and so on. Basically amazing every item and thing in the
+game. Massive task must be done perfect. Set up loop. Deep research first
+then make the good plan and get to work. Put breeding to done for now,
+pending ceo review."
+
+STATUS CHANGES, recorded in CLAUDE.md's scope section:
+- **Breeding: DONE, PENDING CEO REVIEW.** The E100-E141 run is the audit
+  trail. Gates stay mandatory; his bug reports on it outrank everything;
+  the device pass + world-save import fire on his word. No new
+  self-initiated breeding work.
+- **Items fane is the active front** (domains.ts already reserves
+  Weapons / Armor / Paldex / Schematics / Spheres). Same bar: datamined
+  with provenance or labelled, player's words, tested, published.
+- Sequencing per his order: deep research -> plan -> build. The plan
+  document is documents/09_ITEMS_PLAN.md (created this tick).
+
 ## E141. THE CLAIMS TABLE CAUGHT UP WITH ITS OWN REPAIRS 2026-08-18
 ## (loop tick ~18:10)
 
