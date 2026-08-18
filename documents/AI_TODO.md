@@ -2105,6 +2105,42 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E135. STORM ROUND 2 — THE REMAINING SURFACES HELD; PUBLISHED; DOCS
+## CURRENT 2026-08-18 (afternoon)
+
+**Published** (both channels, confirmed): the map lane's six-report round
++ E134's two fixes, the moment their tree came clean. Gates on the merged
+tree first: 722 tests, mobile tsc clean.
+
+**Storm round 2, all clean passes (the finding is that there is none):**
+- Level extremes: at Lv 1 the advice stays honest — "Tuned to your level
+  1 — tap to change", spawn level ranges printed so the risk is visible,
+  "+8 steps is a lot — your call" framing unchanged.
+- The suggestions sheet's plan-edit rows at 8 goals: per-goal Add/Remove
+  + "Remove these 5", coherent.
+- Clear collection is properly ARMED: first tap opens "Clear the whole
+  collection?" with "Yes, clear 26" / "Keep my collection" — counts
+  named, nothing wiped early, cancel exact.
+- Step list at 26-box: "waiting on Caprity" on a wave-2 step whose parent
+  is a wave-1 child — correct dependency copy.
+
+**Docs brought current**: 02_PROGRESS.md carries the full E128-E134 run;
+HANDOFF_BREEDING.md facts refreshed (722 tests; app build is a REAL gate;
+open queue superseded by E134's verdict).
+
+**Harness method note (cost ~20 min tonight):** RN-web Pressable on this
+QA build needs a full PointerEvent with `pointerId` + coordinates —
+bare MouseEvent dispatch works only sometimes, and a "modal didn't open"
+read is more often a WRONG MARKER than a broken app. Check
+`[aria-modal="true"]` count, not text guesses. Also: modal text renders
+at the END of body.innerText, and the Badge texts are UPPERCASE there.
+
+**Plateau retry: rejected again without building** — direction (b) (gate
+the widened pass by size) would enable the optimizer only where the
+E108 gains lived (benchmark-sized boxes of 4-6 pals), which no real
+player owns for long; complexity for a case the CEO cannot meet. E108's
+numbers stand; anyone retrying starts by re-running them.
+
 ## E134. THE BRUTAL EVAL — STORM-TESTED AT HIS SCALE; TWO FIXES, FOUR
 ## NOTES, AND AN HONEST VERDICT 2026-08-18 (midday)
 
