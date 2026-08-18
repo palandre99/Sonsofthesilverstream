@@ -314,6 +314,18 @@ async function main() {
       }
       await sleep(500);
     }
+    else if (kind === 'imgs') {
+      // which images the page REALLY loaded — the old page-probe's '/map/'
+      // filter never matched Metro's /assets/ URLs, so it said tiles:0 on
+      // every run and taught nothing
+      const r = await evaluate(`(() => {
+        const m = [...document.querySelectorAll('img')]
+          .map((i) => i.src || '')
+          .filter((s) => s.includes(${JSON.stringify(arg)}));
+        return { n: m.length, sample: m.slice(0, 3).map((s) => s.slice(-70)) };
+      })()`);
+      console.log('  imgs:', JSON.stringify(r));
+    }
     else if (kind === 'shot') await shot(arg);
     else if (kind === 'wait') await sleep(Number(arg));
     else if (kind === 'pinch') await pinch(Number(arg));

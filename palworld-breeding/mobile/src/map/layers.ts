@@ -589,6 +589,10 @@ export function whereFromLine(u: number, v: number, region: RegionId): string | 
   if (!w) return null;
   if (w.metres < 30) return null;   // you are basically standing on it
   const m = Math.round(w.metres / 10) * 10;
+  // the World Tree's 15 statues carry no names in the game data — "of
+  // the  statue" printed a hole where the name should be (caught on a
+  // tree chest card in the hard-testing round)
+  if (!w.name) return `${m} m ${w.dir} of the nearest statue`;
   // some statue names already END in "Statue" (Great Eagle Statue) — caught
   // on screen as "the Great Eagle Statue statue"
   const suffix = /statue$/i.test(w.name) ? '' : ' statue';

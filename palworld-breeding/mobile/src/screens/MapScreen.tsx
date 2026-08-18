@@ -114,6 +114,20 @@ export function MapScreen() {
   const region = filters.region;
   // the ring follows its layer and its map — no orphaned circles
   React.useEffect(() => { setSpotlight(null); }, [region]);
+  // an open layer list whose layer has nothing in the NEW region rendered
+  // null — the sheet silently vanished (hard-testing find). Fall back to
+  // the layer picker, whose "none here" chips explain the situation.
+  React.useEffect(() => {
+    if (typeof sheet === 'object' && sheet !== null) {
+      const l = poiLayers().find((p) => p.id === sheet.list);
+      const gone = namedPoints(sheet.list, region).length === 0
+        && !(l?.group === 'resources' && richSpots(sheet.list, region).length > 0);
+      if (gone) setSheet('layers');
+    }
+    // region is the only trigger on purpose: list emptiness mid-session is
+    // the render's business, the SWITCH is what strands the sheet
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [region]);
   React.useEffect(() => {
     if (spotlight && !filters.poi.has(spotlight.layerId)) setSpotlight(null);
   }, [filters.poi, spotlight]);
@@ -1444,9 +1458,14 @@ export function MapScreen() {
         if (!layer) { return null; }
         const rowsAll = namedPoints(sheet.list, region);
         if (rowsAll.length === 0) {
-          // resource layers have no names — their list is the best FARM
-          // spots: densest node groups first, each a tap from the map
-          const rich = richSpots(sheet.list, region);
+          // MATERIAL layers have no names — their list is the best FARM
+          // spots: densest node groups first, each a tap from the map.
+          // Resources ONLY: chests and eggs cluster too, but "close enough
+          // to farm from one spot" is a mining sentence, and a chest-dense
+          // area is not a farm (caught in the hard-testing round before it
+          // shipped anywhere visible).
+          const rich = layer.group === 'resources'
+            ? richSpots(sheet.list, region) : [];
           if (rich.length === 0) { return null; }
           return (
             <SheetShell
@@ -2467,7 +2486,8 @@ function LayerSheet({
                         1,405 rows saying "Ore" is noise, but "8 nodes close
                         together" is exactly the good-to-farm answer. */}
                     {on && here > 0
-                      && (hasNames(l.id) || richSpots(l.id, filters.region).length > 0) && (
+                      && (hasNames(l.id) || (l.group === 'resources'
+                        && richSpots(l.id, filters.region).length > 0)) && (
                       <Pressable
                         onPress={() => onOpenList(l.id)}
                         accessibilityRole="button"

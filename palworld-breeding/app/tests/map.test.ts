@@ -2810,18 +2810,23 @@ describe('the list behind a layer (CEO: "find the one I am looking for")', () =>
     const screen = readFileSync(
       join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
     );
-    const at = screen.indexOf('typeof sheet === ');
+    // the IIFE opener, not bare "typeof sheet" — the region-switch guard
+    // effect now contains that phrase too and shadowed the anchor
+    const at = screen.indexOf("sheet !== null && (() => {");
     expect(at, 'the list view must exist').toBeGreaterThan(-1);
-    // 14000: the Best-spots block now lives between the anchor and the
-    // named rows — the old 9000 window stopped short of them
-    const view = screen.slice(at, at + 14000);
+    // 16000: the Best-spots block (now group-scoped) lives between the
+    // anchor and the named rows — smaller windows stopped short of them
+    const view = screen.slice(at, at + 16000);
     expect(view).toContain("canvas.current?.focus(item.u, item.v, 0.06)");
     expect(view).toContain('setSheet(null)');
     expect(view).toContain('isFound(foundKey(sheet.list, region, item.index))');
     // the chip affordance exists for layers that are ON and have either
     // names to list or farm spots to rank
     expect(screen).toContain('on && here > 0');
-    expect(screen).toMatch(/hasNames\(l\.id\) \|\| richSpots\(l\.id, filters\.region\)/);
+    // Best spots is a MATERIALS concept: chests and eggs cluster too, but a
+    // chest-dense area is not a farm — the button stays off non-resource
+    // layers (caught in the hard-testing round)
+    expect(screen).toMatch(/hasNames\(l\.id\) \|\| \(l\.group === 'resources'/);
   });
 });
 
@@ -3162,9 +3167,30 @@ describe('the 2026-08-18 report round', () => {
     expect(Math.min(...near)).toBeLessThan(400);
   });
 
+  it('nameless World Tree statues never print a hole in the sentence', () => {
+    // all 15 tree statues have empty names in the game data; the where-line
+    // said "390 m east of the  statue" — caught on a tree chest card
+    const set = poiPoints('chest', 'tree');
+    expect(set && set.n).toBeTruthy();
+    let sawNearest = false;
+    for (let i = 0; i < Math.min(set!.n, 10); i++) {
+      const line = whereFromLine(set!.xy[i * 2], set!.xy[i * 2 + 1], 'tree');
+      if (!line) continue;
+      expect(line).not.toContain('  ');
+      expect(line).toMatch(/nearest statue$/);
+      sawNearest = true;
+    }
+    expect(sawNearest).toBe(true);
+  });
+
+  it('a region switch never strands an open layer list', () => {
+    expect(screen).toMatch(/const gone = namedPoints\(sheet\.list, region\)\.length === 0/);
+    expect(screen).toMatch(/if \(gone\) setSheet\('layers'\);/);
+  });
+
   it('unnamed resource layers open a Best spots list instead of nothing', () => {
-    expect(screen).toContain('richSpots(sheet.list, region)');
+    expect(screen).toMatch(/layer\.group === 'resources'\s*\n?\s*\? richSpots\(sheet\.list, region\) : \[\]/);
     expect(screen).toContain('`Best spots — ${layer.label}`');
-    expect(screen).toMatch(/hasNames\(l\.id\) \|\| richSpots\(l\.id, filters\.region\)/);
+    expect(screen).toMatch(/hasNames\(l\.id\) \|\| \(l\.group === 'resources'/);
   });
 });
