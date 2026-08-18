@@ -24,9 +24,15 @@ ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "tools" / ".cache" / "item_recipes_raw.json"
 UA = "PalforgeDataPipeline/1.0 (companion app; contact: palandre.99@gmail.com)"
 
-RECIPES_BLOCK = re.compile(r'<div class="recipes">(.*?)</div>\s*</div>', re.DOTALL)
+# The first sweep captured ZERO recipes: the old block regex terminated at
+# the FIRST `</div>\s*</div>` — which in the pretty-printed HTML is the end
+# of the first row, eating the count's closing tag the row regex needed.
+# Now: split at each recipes container and take CONTIGUOUS row matches —
+# a gap larger than one row's markup means we left the ingredient list
+# (which also keeps "recipes that USE this item" lists from bleeding in).
 ROW = re.compile(
     r'data-hover="\?s=([^"]+)"[^>]*>(?:<img[^>]*/>)?([^<]*)</a></div>\s*<div>([^<]*)</div>')
+ROW_GAP = 900
 
 
 def slug_for(name: str) -> str:
@@ -52,14 +58,18 @@ def fetch(slug: str) -> tuple[str | None, str | None]:
 
 def recipes_of(page: str) -> list[list[dict]]:
     out = []
-    for block in RECIPES_BLOCK.findall(page):
+    for seg in page.split('<div class="recipes">')[1:]:
         rows = []
-        for hover, name, count in ROW.findall(block):
+        pos = 0
+        for m in ROW.finditer(seg):
+            if m.start() - pos > ROW_GAP:
+                break  # past the ingredient list
             rows.append({
-                "hover": urllib.request.unquote(hover),
-                "name": name.strip(),
-                "count": count.strip(),
+                "hover": urllib.request.unquote(m.group(1)),
+                "name": m.group(2).strip(),
+                "count": m.group(3).strip(),
             })
+            pos = m.end()
         if rows:
             out.append(rows)
     return out

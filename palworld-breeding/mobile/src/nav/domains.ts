@@ -64,15 +64,12 @@ export const DOMAINS: DomainDef[] = [
     title: 'Tools & Items',
     short: 'Items',
     icon: 'sword-cross',
-    soon: true,
     blurb: 'Every weapon, armor, tool, sphere, consumable and schematic — '
       + 'ranked worst to best, with stats and where to get them.',
     tabs: [
-      {
-        id: 'weapons', label: 'Weapons', icon: 'bow-arrow', soon: true,
-        blurb: 'All weapons with stats, ranked worst to best.',
-        planned: ['Damage/stats tables', 'Tech unlock levels', 'Where to find schematics'],
-      },
+      // LIVE 2026-08-18 (Items fane phase A): hosts the full item index,
+      // opened on the Weapons group
+      { id: 'weapons', label: 'Weapons', icon: 'bow-arrow' },
       {
         id: 'armor', label: 'Armor', icon: 'shield-half-full', soon: true,
         blurb: 'Armor and accessories with real stats.',

@@ -127,6 +127,10 @@ def main() -> None:
             refused.append(f"{iid}: price {price} != backbone {b['price']}")
             continue
         row: dict = {}
+        # the card's Rarity WORD (Common..Legendary) — the game's own tier
+        # naming, which the numeric backbone rarity does not carry
+        if card.get("Rarity"):
+            row["tier"] = card["Rarity"]
         for src, dst in [("Attack", "atk"), ("Durability", "durability"),
                          ("MagazineSize", "magazine"), ("Defense", "def"),
                          ("Health", "hp"), ("Shield", "shield"),
