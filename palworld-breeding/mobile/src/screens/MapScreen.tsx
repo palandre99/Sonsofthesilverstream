@@ -30,7 +30,7 @@ import {
   renamePin, type MapPin,
 } from '../map/pins';
 import {
-  GROUP_LABEL, alphaSpots, closeMatches, dungeonPoints, emptyFilters, isNightOnly,
+  GROUP_LABEL, REGION_LABELS, alphaSpots, closeMatches, dungeonPoints, emptyFilters, isNightOnly,
   poiLayer,
   poiLayers, poiPoints, searchPlaces,
   poiName, spawnLevels, spawnPoints, spawnablePals, wildBands,
@@ -41,7 +41,7 @@ import { MAP_REGIONS } from '../data/mapMeta.g';
 import { MAP_ALPHAS } from '../data/mapSpawns.g';
 import { MAP_ICONS } from '../data/mapIcons.g';
 import { PAL_ICONS } from '../data/icons.g';
-import { REGION_SPOTS } from '../data/regionSpots.g';
+
 import { takeIntentPayload } from '../nav/intent';
 import { regionsFor } from '../map/layers';
 import { ownedAny, pals, workLabel } from '../store';
@@ -331,7 +331,7 @@ export function MapScreen() {
     // frame, so a name near the edge slides rather than truncating. Culling
     // for it only ever threw away names that were perfectly showable.
     const inset = 0;
-    const near = Object.entries(REGION_SPOTS).filter(([, at]) => (
+    const near = Object.entries(REGION_LABELS).filter(([, at]) => (
       at.x > vp.u0 + inset && at.x < vp.u1 - inset
       && at.y > vp.v0 && at.y < vp.v1
     ));
@@ -1280,7 +1280,7 @@ export function MapScreen() {
                   <Text style={{
                     color: T.faint, fontSize: 11.5, fontWeight: '600', marginBottom: 2,
                   }}>
-                    Groups of nodes close enough to farm from one spot, densest first.
+                    Groups of nodes close enough to farm together, densest first.
                   </Text>
                 )}
                 renderItem={({ item }) => (

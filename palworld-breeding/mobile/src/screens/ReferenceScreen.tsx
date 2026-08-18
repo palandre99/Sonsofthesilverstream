@@ -153,12 +153,14 @@ export function ReferenceScreen() {
 
       <Card style={{ marginTop: 12 }}>
         <Text style={s.h3}>Where the map comes from</Text>
-        <P>Every spot on the map is datamined, never estimated. The 68,617 wild
+        <P>Every spot on the map is datamined, never estimated. The 68,547 wild
         spawn points, their level ranges and whether a pal only comes out at
         night are extracted from the game&apos;s own spawner tables by
         palworld-atlas-data (MIT), which reads the official dedicated-server
-        package. The 11,097 chests, ore nodes, statues, dungeons and the rest
-        come from pal-atlas (MIT).</P>
+        package. The 10,639 chests, ore nodes, statues, dungeons and the rest
+        come from pal-atlas (MIT). Rows the game files leave unplaced are
+        dropped, not drawn — an object with no real position would be a
+        guess, and the map never guesses.</P>
         <P>The map picture is the game&apos;s own map texture. Palpagos is drawn
         from the full-size 8192 version published by PalMiniMap (MIT); the World
         Tree comes from pal-atlas (MIT) at half that, because no larger copy of

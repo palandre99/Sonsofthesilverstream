@@ -157,7 +157,10 @@ describe('spawn data', () => {
       }
     }
     // the whole datamined set, not a sample
-    expect(checked).toBe(68617);
+    // 68,547 since the origin-sentinel purge: the game parks unplaced
+    // spawner rows at world (0,0) and 70 wild-spawn rows sat there, on
+    // painted open sea ("iron ores in the ocean" round, 2026-08-18)
+    expect(checked).toBe(68547);
   });
 
   it('level bands are ordered and within the game s level cap', () => {
@@ -1074,7 +1077,7 @@ describe('the mislabelled alpha is on the map', () => {
   it('did not disturb the wild spawn count while fixing it', () => {
     let n = 0;
     for (const groups of Object.values(MAP_SPAWNS)) for (const g of groups) n += g.n;
-    expect(n).toBe(68617);
+    expect(n).toBe(68547);   // see the origin-sentinel purge note above
   });
 });
 
@@ -1553,7 +1556,9 @@ describe('the map provenance copy', () => {
   );
 
   it('is there at all', () => {
-    expect(block).toContain('68,617');
+    expect(block).toContain('68,547');
+    expect(block).toContain('10,639');
+    expect(block).toContain('unplaced');
     expect(block.length).toBeGreaterThan(400);
   });
 
@@ -1571,7 +1576,7 @@ describe('the map provenance copy', () => {
     // the numbers are the point of this section - never soften it into prose
     expect(block).toContain('DT_WorldMapUIData');
     expect(block).toContain('58,504');
-    expect(block).toContain('11,097');
+    expect(block).toContain('10,639');
   });
 });
 
@@ -2568,7 +2573,9 @@ describe('the found filter (All / Still to find / Found)', () => {
 describe('bounties carry their level and wanted poster (CEO 22:42) — EXECUTED', () => {
   it('every bounty on Palpagos has a level and a Wanted line from the data', () => {
     const n = poiPoints('bounty_targets', 'palpagos')!.n;
-    expect(n).toBe(32);
+    // 31 since the origin-sentinel purge: one bounty row was parked at
+    // world (0,0), a ghost pin in the Astral sea
+    expect(n).toBe(31);
     for (let i = 0; i < n; i++) {
       const lv = poiLv('bounty_targets', 'palpagos', i);
       expect(lv, `bounty ${i} level`).not.toBeNull();

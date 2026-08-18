@@ -191,6 +191,7 @@ def build_spawns(known: set[str]) -> tuple[str, dict]:
     """
     groups: dict[str, dict[tuple, list]] = defaultdict(lambda: defaultdict(list))
     alphas: dict[str, list] = {}
+    sstats_sentinel = [0]
     field = field_zone_coords()
     stats = {"points": 0, "dropped_unknown": 0, "dropped_offmap": 0,
              "level_swapped": 0, "dungeon": 0, "unknown": set()}
@@ -198,6 +199,12 @@ def build_spawns(known: set[str]) -> tuple[str, dict]:
     for region, fname in (("palpagos", "palpagos_spawns.json"), ("tree", "tree_spawns.json")):
         data = json.loads((CACHE / fname).read_text(encoding="utf-8"))
         for s in data["spawns"]:
+            # spawn rows carry no z, so only the unambiguous sentinel core
+            # is dropped: the stack within 150 m of world origin, on painted
+            # open sea (same unplaced-row convention as the POI purge above)
+            if (s["worldX"] ** 2 + s["worldY"] ** 2) < 15000.0 ** 2:
+                sstats_sentinel[0] += 1
+                continue
             if s["kind"] == "alpha":
                 name = PAL_ID_OVERRIDES.get(s["palId"]) or s.get("palName")
                 got = project(s["worldX"], s["worldY"], region,
@@ -316,8 +323,22 @@ def build_pois() -> tuple[str, dict]:
     by_layer: dict[str, list] = defaultdict(list)
     stats = {"points": 0, "dropped_offmap": 0, "skipped_layers": set()}
 
+    dropped_sentinel = 0
     for p in pois:
         layer = p["layerId"]
+        # THE ORIGIN-SENTINEL PILE ("iron ores in the ocean?? EVERYTHING
+        # MUST BE ACCURATE" - CEO, 2026-08-18 20:1x, with a screenshot).
+        # The game files park unplaced object instances at/near world
+        # origin - the same convention the official boss table uses for its
+        # 18 unplaced sealed-realm rows (M4x audit). Measured: 500+ objects
+        # of every kind stacked within 400 m of (0,0) at sea level
+        # (z -20..+20 m), where the game's own map texture paints OPEN SEA;
+        # the real Astral coast cliffs in the same radius sit at z 60-190 m
+        # and are kept by the z guard. Nothing is moved - unplaced rows are
+        # simply not drawn.
+        if (p["x"] ** 2 + p["y"] ** 2) < 40000.0 ** 2 and p["z"] < 2000.0:
+            dropped_sentinel += 1
+            continue
         if layer not in POI_LAYERS:
             if not layer.startswith("pal_"):  # per-species zones: we use atlas-data instead
                 stats["skipped_layers"].add(layer)
@@ -390,6 +411,7 @@ def build_pois() -> tuple[str, dict]:
             kept.append(row)
         by_layer[rlayer] = kept
     stats["merged_nodes"] = merged
+    stats["dropped_sentinel"] = dropped_sentinel
 
     # Vertical guidance for the hard-to-find smalls. Every poi carries its
     # altitude (Unreal cm, so /100 = metres — the same convention the

@@ -13,6 +13,19 @@
  */
 import { MAP_POIS, type PoiLayer } from '../data/mapPois.g';
 import { REGION_SPOTS } from '../data/regionSpots.g';
+
+/**
+ * Region labels minus the origin-sentinel row. paldb's label list carries
+ * the game's unplaced "No. 1 Wildlife Sanctuary" entry parked at world
+ * origin — the same unplaced-row convention the official boss table uses —
+ * which floated the name over open Astral water (CEO screenshot,
+ * 2026-08-18 20:1x). World origin lands at uv (0.5, 0.2412); the game's
+ * own texture paints open sea there. Absent beats wrong.
+ */
+export const REGION_LABELS: Record<string, { x: number; y: number }> =
+  Object.fromEntries(Object.entries(REGION_SPOTS).filter(
+    ([, at]) => Math.abs(at.x - 0.5) > 0.006 || Math.abs(at.y - 0.2412) > 0.006,
+  ));
 import { MAP_ALPHAS, MAP_SPAWNS, type SpawnGroup } from '../data/mapSpawns.g';
 import { decodePoints, unbase64, type PointSet } from './points';
 import { REGION_BY_INDEX, type RegionId, regionOf } from './projection';
@@ -377,7 +390,7 @@ function buildPlaces(region: RegionId): PlaceHit[] {
   // They carry no layer of their own, so they borrow the fast-travel colour
   // and are labelled for what they are: an area, not a marker you can tick.
   if (region === 'palpagos') {
-    for (const [name, at] of Object.entries(REGION_SPOTS)) {
+    for (const [name, at] of Object.entries(REGION_LABELS)) {
       out.push({
         name,
         layerId: 'region',
@@ -613,13 +626,16 @@ export interface RichSpot {
 const richCache = new Map<string, RichSpot[]>();
 
 /**
- * Where a resource is worth building a farm: tight groups of nodes ("some
- * places on the map are known for being very good to farm since it's close
- * together" — the CEO's ask). Pure geometry over the datamined points:
- * greedy from the densest seed, a group is every node within 100 m of that
- * seed, and only groups of 4+ qualify. The community-famous farm spots fall
- * out of this by themselves, because the density IS what made them famous.
- * Deterministic: ties break on point order.
+ * Where a resource is worth farming: groups of nodes within 100 m of the
+ * densest seed, 4+ each, greedy, deterministic. "66 nodes close together"
+ * (CEO, 2026-08-18 20:1x, screenshot) was NOT this model's fault — it was
+ * counting the origin-sentinel pile, 500+ unplaced spawner rows the game
+ * parks at world (0,0), now purged in the extractor. On clean data the
+ * counts land exactly where the community's own numbers do: ore tops out
+ * at 11, coal at 6, sulfur at 6 — measured, 2026-08-18. A 35 m Palbox
+ * "one base" model was tried and rejected: node positions in game come
+ * from spawner radii this data does not carry, so tighter circles
+ * undercount the famous spots instead of describing them.
  */
 export function richSpots(layerId: string, region: RegionId): RichSpot[] {
   const key = `${layerId}|${region}`;
