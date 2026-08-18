@@ -9251,3 +9251,28 @@ Committed 09fd9cc; publish REFUSED by the guard (goals lane mid-flight
 in OddsScreen/ReferenceScreen/odds-copy tests) — publish on next clean
 tree, message ready. 688 tests green (40 retired with the feature), tsc
 clean both trees, mark card verified clean by eye.
+
+### M68 — hard-testing loop round 3: edges clean, the fane is READY FOR HIS TEST
+Route removal published (f718e06, both channels, riding with the goals
+lane's E137). Round-3 batteries, no app defects found:
+- West-edge deep zoom (Sakurajima, u~0): no seam, no black band, the
+  texture's own decorative border draws clean, pins/counts crisp.
+- Rapid region flip-flop x4: state survives (layer stays on, counts
+  right, no stuck sheets, no JS errors).
+- Harness note: sheet chip coordinates shifted ~48px UP after the
+  route-import row was removed — re-measure from a fresh shot before any
+  click:-based chip run (the (65,1333) "Ore" click now lands on Coal).
+
+DECLARED: every map surface has now been walked with eyes on it at least
+once this loop — layers/chips both regions, lists (search/sort/missing),
+Best spots + ring, found round-trip + three-way filter + explainers,
+cards (chest/alpha/bounty/merchant/statue/mark), band filter incl. list
+pruning, cluster-tap zoom, mark drop/rename/remove, day-night, 8-layer
+stress, edge zoom, flip-flop. 688 tests green incl. the oracle, the
+byte-parity gates, the community farm-spot corroboration, and executed
+codec/cluster/where-line coverage. Remaining REASONED-not-measured (only
+his phone can prove): sheet drag feel on iOS, z5 sheet GPU rendering
+(pixel-proven + web-measured), haptics. Open offers waiting on his word:
+generated farm-run, cross-device found-sync, fishing spots (no source).
+The fane meets the bar I can verify from here — HIS TEST IS THE NEXT
+GATE. Dropping to 30-min watch; his messages outrank everything.
