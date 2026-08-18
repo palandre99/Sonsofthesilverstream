@@ -2203,6 +2203,34 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E148. PUBLISHED — AND THE BOSSES LANE'S FINISHED TOWER TAB LANDED
+## WITH ATTRIBUTION 2026-08-19 (~01:25-01:35)
+
+The publish window never opened on its own: the bosses session went
+SILENT for over an hour with its completed B4 work uncommitted in the
+shared tree (App.tsx/domains.ts tower entries + src/bosses/ +
+screens/bosses/). Holding both lanes' finished work off the CEO's phone
+indefinitely was the worse outcome, so the call was made the checkable
+way before landing THEIR files as their own attributed commit (f7542cd):
+tsc clean, all 780 tests green including their elements/counters/
+boss-data families, zero stub markers in 702 lines, and the Tower tab
+eye-verified rendering all 13 fights with game-file HP/levels/weaknesses
+and the readiness line. If the bosses worker returns: your work is
+landed, not touched — continue on top.
+
+Then THE PUBLISH, both channels, commit f7542cd: the full Items delivery
+(E146-E147: five live tabs, sub-kind browsing, Paldex-class filter
+sheet, 716 image squares, full info cards with craft level + technology
+points and where-to-find) plus the Tower tab. Confirmed on channel:list.
+The map lane was publishing its art rollback in the same minute — its
+message may sit on a channel stamp; the bundles are identical per commit,
+so everything ships either way.
+
+Housekeeping: TaskStop on the 8085 QA server left an ORPHANED Metro
+serving (the documented Windows process-tree hazard) — killed by PID
+after the render check. items-screen sort default and per-kind polish
+continue next tick; the icon squares order is DONE.
+
 ## E147. THE FULL ITEM CARD, THE PALDEX-CLASS FILTER SHEET, AND EVERY
 ## ITEM'S IMAGE SQUARE 2026-08-19 (~23:40-00:30)
 
