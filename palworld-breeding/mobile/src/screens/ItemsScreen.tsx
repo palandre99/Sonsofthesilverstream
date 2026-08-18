@@ -442,7 +442,7 @@ function ItemFilterSheet({ filters, sort, home, onApply, onClose }: {
             ))}
           </Section>
           {kinds.length >= 2 && (
-            <Section title={`Kind of ${groupOf(idsInGroup(f.group)[0])?.toLowerCase() ?? 'item'}`}>
+            <Section title="Kind">
               {kinds.map((k) => (
                 <Chip key={k.kind} on={f.kind === k.kind}
                   label={`${k.kind} · ${k.count}`}

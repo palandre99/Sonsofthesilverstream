@@ -71,7 +71,8 @@ EFFECT_LABELS: dict[str, str] = {
 
 
 def clean_text(s: str) -> str:
-    return html.unescape(TAG.sub("", s)).strip()
+    # the game's strings carry \r\n — normalize like the backbone does
+    return html.unescape(TAG.sub("", s)).replace("\r\n", "\n").replace("\r", "\n").strip()
 
 
 def main() -> None:
