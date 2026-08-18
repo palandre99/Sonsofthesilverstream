@@ -2105,6 +2105,28 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E132. THE CALCULATOR GIVES THE SAME GENDER ADVICE AS THE PLAN — ONE
+## COMPONENT, ONE RULE 2026-08-18 (~02:00)
+
+E131's follow-up, done: the Calculator's pair warning now carries the
+how-to-fix rows. The rows moved to `ui/GenderFixRows.tsx` (one component,
+both screens) and the what's-missing derivation to `needsFor` in shared
+`logic/genderFix.ts` (byte-parity) — the screens CANNOT drift. needsFor
+was also hardened standalone: an already-satisfied direction returns no
+advice (my own test caught the gap before any player did). 701 tests;
+both screens eye-verified in the same-gender scenario, snapshot restored
+(26 owned, pairs whole). Committed 6d4a79b, PUBLISHED both channels
+(confirmed "just now"). NOTE: E131's rows reached his phone inside the
+Map lane's 00:05 list-filters publish — the About message didn't mention
+them; the E132 message names the feature.
+
+IN FLIGHT: the alpha-boss stat pipeline (his 23:24 question, M60 hand-
+off): tools/fetch_alpha_stats.py is fetching all 267 fixed-boss rows
+from paldb (each validated against our oracle-tested CombiRank before
+acceptance); tools/gen_alpha_stats.py generates the app table next.
+Proof already in hand: boss Paladius = HP 156 vs base 130, Size XL vs L,
+×1.855 fight HP, takes 18% damage — his hunch was right.
+
 ## E131. THE GENDER GAP NOW COMES WITH THE WAY TO CLOSE IT — THE ENGINE
 ## THINKS ABOUT WHAT HE OWNS 2026-08-17 (night)
 
