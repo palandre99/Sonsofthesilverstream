@@ -19,6 +19,11 @@ const VERDICT: Record<string, [string, BadgeKind]> = {
   not_found: ['not found', 'warn'],
   'upstream defect, normalised': ['upstream defect, normalised', 'plain'],
   'upstream defect, overridden': ['upstream defect, overridden', 'plain'],
+  // honest-but-not-datamined: two independent wikis in cell-for-cell
+  // agreement (the element chart). Deliberately not the green "verified"
+  // badge — the distinction between game-file fact and measured fact is
+  // the whole point of this screen.
+  'wiki-measured': ['wiki-measured', 'plain'],
 };
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {

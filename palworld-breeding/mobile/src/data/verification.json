@@ -336,6 +336,27 @@
     "Awy64/palworld-atlas-data build 24575149 items index",
     "tools/fetch_items_index.py"
    ]
+  },
+  {
+   "claim": "The element strengths chart (9 elements, 9 strong edges, 2x/0.5x, dual-element multipliers multiply, same-element is neutral) as shipped in elements_1_0.json / elementChart.g.ts",
+   "verdict": "wiki-measured",
+   "evidence": "Not datamined: no pinned raw dump publishes the element table (atlas build-24575149 manifest checked, 11 source tables, none elements; paldb.cc /Elements is prose only). Accepted from two independent wikis ONLY because they agree cell-for-cell (palworld.wiki.gg revid 30073, palworld.fandom.com revid 29952, both fetched 2026-08-18), the table is perfectly antisymmetric (every strong edge mirrors a weak edge in both directions), and its vocabulary equals pals_1_0.json exactly. Also counted from our own data at generation time: 0 of 299 pals can take 4x or 0.25x. elements.test.ts pins every cell and the three-copy identity.",
+   "sources": [
+    "palworld.wiki.gg/wiki/Elements revid 30073",
+    "palworld.fandom.com/wiki/Elements revid 29952",
+    "tools/fetch_element_chart.py"
+   ]
+  },
+  {
+   "claim": "Every tower-boss and summoned-raid encounter per difficulty (22 tower rows incl. Hard modes and the three Lv-78 story fights; 11 raid rows incl. Ultra/Master) with level, fight HP, elements, fight multipliers and the boss variant’s own move list, as shipped in tower_raid_1_0.json / towerRaid.g.ts",
+   "verdict": "verified",
+   "evidence": "paldb.cc /en/Tower + /en/Raid encounter tables joined to each boss page’s per-variant raw DT_PalMonsterParameter section (fetched 2026-08-18). A row shipped only when the variant section’s own Code row equals the list entry’s data-pal-id, the IsTowerBoss/IsRaidBoss flag state was recorded, and the element agreed between the list icon tooltip and the raw row enum after mapping; every skill element maps into our nine. 33 of 33 rows accepted, 0 refusals, 10 recorded notes (story fights lacking the tower flag; Zenara/Moon Lord genuinely element-less; Moon Lord has no pal species or skill list). Internal consistency spot-proof: Zoe Normal fight HP 12,900 = Lv-10 HP 1,075 x EnemyMaxHPRate 12 exactly. Species resolved from Tribe via our own icon codenames (e.g. GYM_ElecPanda -> Grizzbolt).",
+   "sources": [
+    "paldb.cc /en/Tower",
+    "paldb.cc /en/Raid",
+    "per-boss paldb.cc pages (variant sections)",
+    "tools/fetch_tower_raid_stats.py"
+   ]
   }
  ]
 }

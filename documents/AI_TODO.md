@@ -29,6 +29,11 @@ logged gap costs nothing and saves the eventual port from re-discovery.*
   silent) — and the web box has no `u` flag at all. Port list: adopt
   boxShare.ts (or equivalent), add the `u` flag to the web store + Paldex
   UI (E122's feature), then extend `box-roundtrip.test.ts` to the u-states.
+- 2026-08-18 (bosses lane): the new 'wiki-measured' claim verdict (element
+  chart) renders on the WEBSITE's reference page with the amber fallback
+  style (`app/src/modules/misc.tsx` verdict map lacks the key). Visible,
+  not silent; the PHONE's map got the designed badge. Port: add
+  'wiki-measured' to the web verdict map with a neutral style.
 
 *Take from the top unless the CEO redirects. Tick with a date when done.
 Add everything you find; finding nothing means you didn't look.*
@@ -389,11 +394,28 @@ and the one missing dataset identified: the element chart.*
       (+ both tree mirrors). Datamined first, wiki-labelled fallback with
       two recorded cross-checked mirrors; +20% same-element bonus only if
       found in data. verification.json claim.
-- [ ] B2 Phase 0b: `tools/fetch_tower_raid_stats.py` → GYM_ + RAID_ rows
-      (identity cross-checked on element+level+name, refusals counted);
-      `tools/fetch_boss_movesets.py` → boss-variant attacks, every skill
-      resolving against a skills index or refused. Hard Mode rows if the
-      table carries them.
+- [x] B2 DONE 2026-08-18 late: 22 tower + 11 raid encounter rows shipped,
+      0 refusals, 10 honest notes. paldb's /Tower + /Raid tables joined
+      to each boss page's PER-VARIANT raw section (pages carry one
+      section per difficulty, each with its own Code row and its own
+      move list — Hard kits really differ: Zoe Normal 5 attacks, Hard
+      9). Validation: section Code == list data-pal-id, element agrees
+      between both renderings, every skill element maps into our nine.
+      Spot-proof kept: Zoe Normal fight HP 12,900 = Lv-10 HP 1,075 x
+      EnemyMaxHPRate 12 exactly. Species resolved via our icon codenames
+      (GYM_ElecPanda -> Grizzbolt; all tower pals resolve). Facts the
+      data settled: Panthalus is a Lv-70 TOWER-type fight (the ledger's
+      old "raid-only" note); Zenara & Astralym and Moon Lord are
+      genuinely element-less; three Lv-78 story fights sit on the tower
+      list without IsTowerBoss. Raid rows carry damage reduction, attack
+      %, and their summoning slab item codes (Phase C's cross-link).
+      data/tower_raid_1_0.json + towerRaid.g.ts BOTH trees + claim in
+      all three verification copies. A separate fetch_boss_movesets.py
+      became unnecessary for towers/raids (moves came with the rows);
+      ALPHA move lists are deferred to Phase B and will extend this
+      fetcher. NOTE for the eventual web guide audit: web guides state
+      wrong tower levels (game8-class say Lily 25 / Axel 40 / Marcus 45;
+      the raw table says 20 / 30 / 40).
 - [ ] B3 Phase 0c: `src/logic/counters.ts` parity pair + new test families
       (`elements.test.ts`, `counters.test.ts`, `boss-data.test.ts`).
 - [ ] B4 Phase A: Tower tab + the Boss Card (fixed anatomy, counters from
@@ -408,6 +430,24 @@ and the one missing dataset identified: the element chart.*
 - [ ] B8 Phase E: cross-links (pal-card strong/weak chips, NavIntent
       payload extension, map-side "Prep this fight" — REQUEST to the map
       lane, not an edit; Suggested Goals fighting → Teams).
+- [x] B1 DONE 2026-08-18 late: the element chart ships. Two wikis in
+      cell-for-cell agreement (wiki.gg revid 30073 + fandom revid 29952),
+      antisymmetry proven, vocabulary equals pals_1_0.json, and 0 of our
+      299 pals can take 4x/0.25x (counted from our own data, not copied).
+      data/elements_1_0.json + elementChart.g.ts in BOTH trees
+      (byte-identical) + verification claim in all three copies.
+      CORRECTION recorded: an early research summary claimed a "+20%
+      same-element skill bonus" — both wikis explicitly say same-element
+      is 1x, so no such number ships anywhere.
+- [ ] B9 FINDING (2026-08-18, this lane, needs an owner): the three
+      verification.json copies disagree on claim count — data/ 45,
+      mobile/src/data/ 39, app/public/data/ 37 (counts AFTER my +1 to
+      each). Copies are supposed to move together (E139). Possibly
+      benign per-platform lag (web frozen at the hold; canonical carrying
+      map-lane claims the apps don't render) — but somebody should diff
+      the claim lists and either sync or record WHY they differ. Not done
+      in this lane's block: the items lane was mid-flight in the tree and
+      verification.json may be part of their in-progress work.
 
 ## F. CEO DIRECTIVE ~22:45 2026-08-15 — THE MAP FANE (second worker)
 ## (verbatim intake: "the map needs to look exactly like the map when i open
@@ -2162,6 +2202,68 @@ page of plan tab a while back, empty and poor design"
         Reverted to one, reason recorded in the file. The phone's row is
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
+
+## E146. ITEMS TAKEOVER — THE TAB LAYOUT REBUILT UNDER THE CEO'S FREEDOM
+## GRANT; TWO DATA BUGS CAUGHT ON HIS PHONE 2026-08-18 (~23:05-23:30)
+
+**LANE CLAIM (Items fane, this session): ItemsScreen.tsx, itemsData.ts,
+itemIcons/ItemIcon (coming), items entries in nav/domains.ts + App.tsx
+LIVE_SCREENS, tools/fetch_item_*.py + fetch_tech_tree.py + the items/tech
+data files and their tests. NOT mine: map/, bosses/, engine/, Plan tab.**
+
+**CEO (verbatim): "u take over the items fane... i want all items, all
+consumebls like food potions, all weapons, armors, etc etc etc...
+schematics, and where to find them bla bla. tappable for a full info card
+on EVERYTHING. which tells stats, how to craft/where to find and so on.
+how u set up the tabs below in the fane u have full freedom over. i think
+maybe paldex doesnt belong here idk... every item needs an image also...
+NEVER guess." Then: "Crafting often requires lvl and technology pts etc
+also. Everything should be here. A proper proper info for every single
+item in the game, perfectly organized... u may have to change the tab
+layout a lot to make it work."**
+
+WHAT CHANGED FOR HIM: the Items fane's bottom bar is now Weapons / Armor
+/ **Items** / Food / Spheres — five LIVE tabs, no coming-soon left, each
+opening the full index on its group. The center anchor is the whole
+catalogue (the one sanctioned exception to Paldex-center, recorded in
+CLAUDE.md + domains.ts). Groups went subcategory-aware: Spheres (16),
+Meds (14), Skill fruits (93), Pal gear (138), Eggs (53) stopped hiding
+inside Consume/Essential/Material — 15 groups partition all 1,892 items
+exactly once, pinned by test. Raw internal words ("SPWeaponCaptureBall")
+are BANISHED from the screen: a KIND_WORDS map covers every category/
+subcategory pair, tests pin full coverage + no identifier patterns.
+Eye-verified in the browser: chips with true counts, Spheres/Food tabs
+reading in player words, center tab = Everything.
+
+CAUGHT ON HIS PHONE (shipped in Phase A, now fixed/queued):
+1. **1,306 of 1,892 descriptions render the game's raw placeholder tags**
+   (Bread: "<itemName id=|Pan|/> made from baked <itemName id=|Flour|/>").
+   Fix designed and in flight: paldb renders every tag substituted AND
+   keeps each substitution's internal id in data-hover (Items/Pan ->
+   Bread; MapObjects/WeaponFactory_Dirty_02 -> Weapon Assembly Line), so
+   the page sweep now captures rendered descriptions for a validated,
+   exact-identity resolution at the merge.
+2. The card shows "Weight 0" on weightless items (rows already hide it).
+   Fix rides with the card build-out.
+
+PIPELINE THIS TICK: fetch_item_recipes.py retired into fetch_item_pages.py
+— ONE sweep captures chips (Attack/Nutrition/SAN/Capture Power...), tech
+node id + level, recipes (parser proven on live Cake = the verified
+5/8/7/8/2), every titled source table (Treasure Box rows carry DROP RATE
+%s; Dropped By; merchant shops; Production; Research) and rendered
+descriptions. fetch_tech_tree.py captured /en/Technologies: 588 nodes,
+level 1-80, POINT COST each, 51 Ancient (BossTechnology class), 0 dup ids
+— the tech id joins item pages exactly (probed both directions). Slug
+encoding fixed (é/':'/'[' all 200 now); fetch() backs off on 429/5xx.
+Learned: paldb throttles parallel sweeps — run them one at a time (icon
+misses 16->37 and page errors 3->15 in the overlap window, both healthy
+before it).
+
+Gates: 718 tests green (incl. new group-partition, kind-words and
+five-tabs-live pins), tsc clean both trees. Committed; NOT published —
+the map lane has ~1,250 uncommitted tile files incl. mobile/assets/map,
+and publishing would bundle their mid-feature work (publish ritual law).
+Publish fires the moment the tree is clean of foreign work.
 
 ## E145. THE ITEMS FANE IS LIVE ON HIS PHONE — PHASE A SHIPPED AND
 ## PUBLISHED; HIS FIRST FEEDBACK ALREADY QUEUED 2026-08-18 (~22:40-23:05)

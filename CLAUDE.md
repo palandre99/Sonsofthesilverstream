@@ -95,8 +95,16 @@ So, as of 2026-08-18:
   every number datamined with provenance or labelled community-measured,
   read-alouds in a player's words, tested, published. The plan lives in
   `documents/09_ITEMS_PLAN.md`; deep research precedes structure.
-- **LATER: Bosses & Raids and the rest.** Unbuilt domains still ship as
-  designed coming-soon screens.
+- **ALSO NOW (CEO redirect, 2026-08-18 late): the Bosses & Raids fane**, a
+  second parallel lane. His order: all raids and bosses, what is strong
+  against what, special attacks, boss info cards, map locations, which pals
+  are strong against each boss pulled from the Paldex, recommended pals to
+  catch/breed weighted by player level and what's owned, "Where to catch" /
+  "Create breeding plan" buttons, recommended level. "10/10 masterpiece
+  quality AAA studio level is minimum." The plan lives in
+  `documents/10_BOSSES_PLAN.md`; the lane's area lock is in `AI_TODO.md`.
+- **LATER: the rest.** Unbuilt domains still ship as designed coming-soon
+  screens.
 - **Do NOT start further domains** unless the CEO redirects again.
 
 **The strategic model is Dododex** (`04_PRODUCT_BLUEPRINT.md` §1, a live
@@ -226,6 +234,11 @@ update reaches him within one launch, not two.
   ALWAYS in the center slot — it is the app's anchor. EXCEPTION (CEO,
   2026-08-15): the Map domain is FULLSCREEN — no bottom tabs; layer
   filters live inside the map itself (`tabs: []` in the registry).
+  EXCEPTION (CEO, 2026-08-18, layout freedom for the Items fane: "u have
+  full freedom over" the tabs, "i think maybe paldex doesnt belong here"):
+  the Items domain's center anchor is the full item index, not the Paldex —
+  tabs Weapons / Armor / Items / Food / Spheres, every tab the same index
+  opened on its group.
   The Map's scope is EVERYTHING in the game, not just pals: materials,
   hackable towers, fishing spots, bosses, eggs, dungeons, statues,
   supply drops, merchants, chests. Registry: `mobile/src/nav/domains.ts`.
