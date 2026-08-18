@@ -2105,6 +2105,61 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E134. THE BRUTAL EVAL — STORM-TESTED AT HIS SCALE; TWO FIXES, FOUR
+## NOTES, AND AN HONEST VERDICT 2026-08-18 (midday)
+
+**His order verbatim: "brutally evaluate, and test everything on the
+breeding fane. Use it like a user, look for bugs… try to break it… Is it
+close to being done?"** Method: a synthetic box at HIS scale (131 species,
+Lv 80, 28 single-gender, 14 "?"-marked), snapshot protocol, every surface
+driven through the real UI plus hostile input.
+
+**WHAT BROKE (both fixed, guarded, render-proven — 17b45ef):**
+1. **A fast double-tap lost a gender tick.** Every ♂/♀/"?" tap computed
+   its next value from the RENDER-TIME prop; two taps inside one long
+   frame sent the same value and the second was a no-op (10-tap storm
+   left Lamball ♂ off). Handlers now read the store at press time; the
+   storm round-trips exactly.
+2. **The Odds Lab's passive picker kept a stale search across opens**
+   (it stays mounted, unlike the pal picker) — a later visit met
+   "Nothing here matches" over a forgotten query. Resets on open now.
+
+**WHAT HELD UNDER FIRE:** Start-over at scale (131→133→131 exact, ticks
+cleared, plan intact); profile switching (0-owned Hardcore both ways, no
+bleed, per-profile stats correct); the import sheet against 10k junk
+lines, half-JSON, prototype-pollution JSON, control characters (counts
+honest, box untouched, ({}).hacked undefined); "?"-interplay rules;
+plan build correct (2 one-step routes from owned pairs); Odds math (the
+40/24 derived table); reverse lookup; boss blocks (Incineram's shows
+Attack 100 vs 150 — the game really nerfs it; printed faithfully); zero
+console errors through the whole storm.
+
+**MEASURED, NOT FIXED (DEV-harness numbers; the record says real device
+≈ 17× faster — do not restructure on these):** first interaction after
+boot ~1.0s; suggested-goals sheet 1.6s at 131 owned (parked surface, was
+6.6s at 26 — it got FASTER with more owned); plan build ~1.0s; reverse
+lookup ~1.0s; a 10,000-line paste re-parses per keystroke (~1.2s each,
+adversarial only). All logged for the on-device pass.
+
+**THE VERDICT, honestly: the core is done; the edges are not.**
+- DONE to the bar: the engine (oracle-exact), planner, Paldex/collection,
+  pal card, odds math, share/import round trip, gender-"?" system,
+  advice rows, boss stats. Every CEO ask through 23:24 shipped.
+- NOT done: (a) the on-device measurement pass — every perf number above
+  is harness-only and TWO bugs this week existed only on his phone;
+  (b) world-save import (CEO-gated) — the single biggest win, suggestions
+  still read box ticks, not his real Paldex; (c) the full map's way back
+  (map-lane chip pending); (d) the website port (on hold, backlog
+  current); (e) polish debt: cold-start first-tap jank on DEV.
+- Rating against "best Palworld companion by an insane margin": the
+  BREEDING data layer is there — nothing else replays 44,851 outcomes or
+  validates boss rows against an oracle. The experience layer is one
+  device-pass short of provably matching it.
+
+PUBLISH QUEUED: the Map lane is mid-flight (tile-atlas conversion,
+MapCanvas/tileIndex + tile deletions uncommitted; their map.test red on
+their own WIP). 17b45ef ships with the next clean-tree publish.
+
 ## E133. THE FIXED BOSS IS ITS OWN CREATURE, AND THE CARD NOW SAYS HOW
 ## 2026-08-18 (~02:20)
 
