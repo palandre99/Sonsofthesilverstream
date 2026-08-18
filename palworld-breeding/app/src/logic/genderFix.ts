@@ -57,6 +57,66 @@ export function findPair(
   return { pair: null, fromPlan: false };
 }
 
+/** One missing parent option: the gender and the species that would do. */
+export interface Need { g: 'm' | 'f'; s: string }
+
+/**
+ * The ♂/♀ options that would unlock a pair you own both species of, from
+ * what is actually missing. `combos` lists the cheapest alternatives (each
+ * inner list must be satisfied TOGETHER, outer lists are alternatives);
+ * `flat` is the deduped option list capped at two, for advice rows — so a
+ * two-way gap never becomes a wall of advice. One rule, both screens.
+ */
+export function needsFor(
+  a: string,
+  b: string,
+  haveA: { m: boolean; f: boolean },
+  haveB: { m: boolean; f: boolean },
+  need: { mother: string; father: string } | null,
+): { combos: Need[][]; flat: Need[] } {
+  const combos: Need[][] = [];
+  if (need) {
+    const motherIsA = need.mother === a;
+    const c: Need[] = [];
+    if (motherIsA) {
+      if (!haveA.f) c.push({ g: 'f', s: a });
+      if (!haveB.m) c.push({ g: 'm', s: b });
+    } else {
+      if (!haveB.f) c.push({ g: 'f', s: b });
+      if (!haveA.m) c.push({ g: 'm', s: a });
+    }
+    combos.push(c);
+  } else if (a === b) {
+    const c: Need[] = [];
+    if (!haveA.m) c.push({ g: 'm', s: a });
+    if (!haveA.f) c.push({ g: 'f', s: a });
+    combos.push(c);
+  } else {
+    const n1: Need[] = [];
+    if (!haveA.m) n1.push({ g: 'm', s: a });
+    if (!haveB.f) n1.push({ g: 'f', s: b });
+    const n2: Need[] = [];
+    if (!haveA.f) n2.push({ g: 'f', s: a });
+    if (!haveB.m) n2.push({ g: 'm', s: b });
+    combos.push(n1, n2);
+  }
+  const real = combos.filter((c) => c.length);
+  // an EMPTY alternative is one that is already satisfied — the pair can
+  // breed and nothing is missing, whatever the other direction still lacks.
+  // Callers gate on readiness anyway; this makes the rule safe on its own.
+  if (real.length < combos.length || !real.length) return { combos: [], flat: [] };
+  const min = Math.min(...real.map((c) => c.length));
+  const best = real.filter((c) => c.length === min);
+  const flat: Need[] = [];
+  for (const c of best) {
+    for (const n of c) {
+      if (flat.length < 2
+        && !flat.some((x) => x.g === n.g && x.s === n.s)) flat.push(n);
+    }
+  }
+  return { combos: best, flat };
+}
+
 const WORD = { m: 'male', f: 'female' } as const;
 
 /** The odds phrase for one egg of this species hatching the needed gender —

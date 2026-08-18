@@ -65,25 +65,43 @@ describe('the Plan tab calls a goal a goal', () => {
 
 describe('a gender gap comes with a way to close it', () => {
   // CEO 2026-08-17: "it should give more info to be smarter… tells me how
-  // to fix this step". The hint names the gap; these rows say how to close
-  // it, and each one opens the named pal's card. The advice text itself is
-  // pinned behaviourally in genderFix.test.ts — this pins the WIRING.
-  it('every option the hint names gets a how-to-fix row', () => {
+  // to fix this step". The hint names the gap; the shared GenderFixRows
+  // component says how to close it, on the Plan AND the Calculator. The
+  // advice text itself is pinned behaviourally in genderFix.test.ts —
+  // this pins the WIRING.
+  const rows = readFileSync(
+    join(__dirname, '../../mobile/src/ui/GenderFixRows.tsx'), 'utf8')
+    .replace(/\{\s*\/\*(?:(?!\*\/)[\s\S])*\*\/\s*\}/g, '')
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/^\s*\/\/.*$/gm, '');
+  const calc = readFileSync(
+    join(__dirname, '../../mobile/src/screens/CalculatorScreen.tsx'), 'utf8')
+    .replace(/\{\s*\/\*(?:(?!\*\/)[\s\S])*\*\/\s*\}/g, '')
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/^\s*\/\/.*$/gm, '');
+
+  it('every option a step hint names gets a how-to-fix row', () => {
     expect(code, 'the fix rows are gone from the step card')
-      .toContain('m.needs.map((n) => {');
-    expect(code, 'the row no longer computes real advice')
-      .toContain('const fix = fixFor(n.s, n.g);');
-    expect(code).toContain('{fixLine(fix)}');
+      .toContain('<GenderFixRows needs={m.needs} onView={setViewing} />');
   });
 
-  it('the row opens the pal it names, and says so to a screen reader', () => {
-    expect(code).toContain('onPress={() => setViewing(n.s)}');
-    expect(code).toContain('opens its card');
+  it("the Calculator's pair warning offers the same rows", () => {
+    expect(calc, 'the Calculator lost its how-to-fix rows')
+      .toContain('<GenderFixRows onView={onView}');
+    expect(calc, "the Calculator's rows must derive needs through the one shared rule")
+      .toContain('needs={needsFor(');
+  });
+
+  it('the row computes real advice and opens the pal it names', () => {
+    expect(rows).toContain('const { pair, fromPlan } = findPair(');
+    expect(rows).toContain('{fixLine(fix)}');
+    expect(rows).toContain('onPress={() => onView(n.s)}');
+    expect(rows).toContain('opens its card');
   });
 
   it("the advice pair check uses the engine's full answer, both gendered directions", () => {
     // childOf(a,b)[0] would miss the second Katress/Wixen direction
-    expect(code, 'the pair scan stopped checking every child of a pair')
+    expect(rows, 'the pair scan stopped checking every child of a pair')
       .toContain('engine.childrenOf(x, y).some(');
   });
 });

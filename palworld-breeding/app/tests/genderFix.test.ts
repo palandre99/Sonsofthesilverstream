@@ -11,7 +11,9 @@ import { describe, expect, it } from 'vitest';
 import { writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { findPair, fixLine, oddsPhrase, type NeedFix } from '../src/logic/genderFix';
+import {
+  findPair, fixLine, needsFor, oddsPhrase, type NeedFix,
+} from '../src/logic/genderFix';
 
 const fix = (over: Partial<NeedFix>): NeedFix => ({
   species: 'Relaxaurus', gender: 'm', unsure: false, pair: null,
@@ -34,6 +36,46 @@ describe('which pair gets suggested', () => {
   it('reports no pair honestly', () => {
     expect(findPair(['A', 'B'], null, () => false))
       .toEqual({ pair: null, fromPlan: false });
+  });
+});
+
+describe('what is actually missing (needsFor)', () => {
+  const F = { m: false, f: true };   // female only
+  const M = { m: true, f: false };   // male only
+  const BOTH = { m: true, f: true };
+
+  it('two all-female parents: a male of either species closes the gap', () => {
+    const r = needsFor('Cattiva', 'Gumoss', F, F, null);
+    expect(r.flat).toEqual([{ g: 'm', s: 'Cattiva' }, { g: 'm', s: 'Gumoss' }]);
+    expect(r.combos).toEqual([[{ g: 'm', s: 'Cattiva' }], [{ g: 'm', s: 'Gumoss' }]]);
+  });
+
+  it('a workable pair needs nothing', () => {
+    expect(needsFor('Cattiva', 'Gumoss', M, F, null))
+      .toEqual({ combos: [], flat: [] });
+  });
+
+  it('the gender-locked pair names the exact mother and father missing', () => {
+    // Katress must be the mother: owning only males of both means BOTH a
+    // female Katress and (already-owned) male Wixen are checked properly
+    const r = needsFor('Katress', 'Wixen', M, M,
+      { mother: 'Katress', father: 'Wixen' });
+    expect(r.flat).toEqual([{ g: 'f', s: 'Katress' }]);
+  });
+
+  it('same species owned only through "?": both genders still to get', () => {
+    const r = needsFor('Lamball', 'Lamball', { m: false, f: false }, { m: false, f: false }, null);
+    expect(r.flat).toEqual([{ g: 'm', s: 'Lamball' }, { g: 'f', s: 'Lamball' }]);
+  });
+
+  it('never more than two rows of advice', () => {
+    const r = needsFor('Katress', 'Wixen', { m: false, f: false }, { m: false, f: false },
+      { mother: 'Katress', father: 'Wixen' });
+    expect(r.flat.length).toBeLessThanOrEqual(2);
+  });
+
+  it('sanity: both fully owned, no note', () => {
+    expect(needsFor('A', 'B', BOTH, BOTH, null).flat).toEqual([]);
   });
 });
 

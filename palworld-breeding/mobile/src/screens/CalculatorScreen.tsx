@@ -10,6 +10,8 @@ import {
 } from '../store';
 import { parseGenderNote } from '../engine/formula';
 import { genderGap } from '../logic/genderGap';
+import { needsFor } from '../logic/genderFix';
+import { GenderFixRows } from '../ui/GenderFixRows';
 import { onNavIntent, takeIntentPayload } from '../nav/intent';
 import { PalDetail } from '../ui/PalDetail';
 import { Icon } from '../ui/Icon';
@@ -262,7 +264,9 @@ export function shareTextForPair(a: string, b: string, ch: ChildResult,
   ].join('\n');
 }
 
-function PairResult({ a, b }: { a: string; b: string }) {
+function PairResult({ a, b, onView }: {
+  a: string; b: string; onView: (name: string) => void;
+}) {
   useAppVersion();
   const results = engine.childrenOf(a, b);
   const ra = engine.ranks.get(a)!;
@@ -334,12 +338,21 @@ function PairResult({ a, b }: { a: string; b: string }) {
                 }} />
             </View>
             {bothOwned && !canPairNow(a, b, ch.genderNote) && (
-              <Text style={[s.body, { marginTop: 8, color: T.warn }]}>
-                ⚠ You have both species, but not a pair that can breed.{' '}
-                {genderGap(a, b, getBox()[a] ?? NONE, getBox()[b] ?? NONE,
-                  ch.genderNote ? parseGenderNote(ch.genderNote) : null)}{' '}
-                Swap a gender with the Pal Reverser, or breed another copy.
-              </Text>
+              <>
+                <Text style={[s.body, { marginTop: 8, color: T.warn }]}>
+                  ⚠ You have both species, but not a pair that can breed.{' '}
+                  {genderGap(a, b, getBox()[a] ?? NONE, getBox()[b] ?? NONE,
+                    ch.genderNote ? parseGenderNote(ch.genderNote) : null)}{' '}
+                  Swap a gender with the Pal Reverser, or breed another copy.
+                </Text>
+                {/* and HOW to get that missing ♂/♀ — same advice rows as the
+                    Plan's step cards, one shared component */}
+                <View style={{ marginTop: 4 }}>
+                  <GenderFixRows onView={onView}
+                    needs={needsFor(a, b, getBox()[a] ?? NONE, getBox()[b] ?? NONE,
+                      ch.genderNote ? parseGenderNote(ch.genderNote) : null).flat} />
+                </View>
+              </>
             )}
           </Card>
         );
@@ -569,7 +582,7 @@ export function CalculatorScreen() {
             <ParentSlot which={2} name={b} onPick={() => setPicking('b')}
               onClear={() => setB(null)} />
           </View>
-          {a && b ? <PairResult a={a} b={b} /> : (
+          {a && b ? <PairResult a={a} b={b} onView={setViewing} /> : (
             <Card style={{ marginTop: 14 }}>
               <Text style={s.h2}>Pick two parents</Text>
               <Text style={[s.body, { marginTop: 6 }]}>
