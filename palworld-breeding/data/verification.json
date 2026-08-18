@@ -256,11 +256,12 @@
    "evidence": "paldb.cc/en/Mutation lists all five with inheritability; cross-checked against beliarance/palworld-kb passives dataset (mutation_exclusive flags)."
   },
   {
-   "claim": "Ribbuny Botan partner_effect completed: kb dump truncates after 'Weapon Assembly Line, or'; full sentence ends 'or other related facilities.'",
-   "verdict": "confirmed",
-   "evidence": "kb extraction truncated mid-sentence; full text fetched from paldb.cc/en/Ribbuny_Botan 2026-08-15 and patched into both dataset copies.",
+   "claim": "Partner-effect texts are complete and current across all 297 species (checked 2026-08-18)",
+   "verdict": "verified",
+   "evidence": "Every partner_effect diffed against paldb.cc's live game-table mirror by tools/fetch_partner_effects.py + the E140 sweep: 19 truncated/placeholder entries completed under a strict prefix rule (our text must be a character-prefix of the fetched text), 28 stale pre-1.0.3 wordings refreshed after per-entry hand review — including three real errors (Pengullet Lux's mechanic printed backwards, Tetroise Primo's durability effect, Mimog's missing limit sentence). 169 formatting-only differences left as-is. Snock Lux could not be re-verified (its paldb page carries no description tag) and stands as delivered. Diffs recorded in the ledger, E139-E140.",
    "sources": [
-    "paldb.cc/en/Ribbuny_Botan"
+    "paldb.cc per-pal pages (live game-table mirror, fetched 2026-08-18)",
+    "tools/fetch_partner_effects.py (prefix-validation rule)"
    ]
   },
   {
