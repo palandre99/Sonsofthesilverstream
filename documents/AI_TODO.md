@@ -9809,3 +9809,19 @@ rollback commit aa8b018 (shared-index race — they staged it while I was
 committing); the deletion looks intentional on their side, only the
 commit label is mine. Micro-UX hunt shots (sealed list, bounty poster)
 from the interrupted round sit in scratchpad qa29 — review next tick.
+
+### M73 — rollback PUBLISHED, both channels (2026-08-19 ~01:28)
+The guard held for ~3 hours while the bosses lane kept WIP on disk
+(App.tsx/domains.ts + untracked bosses/ dirs). I sent their session a
+cross-session commit request at ~00:47; at ~01:25 the tree came clean:
+f7542cd landed their finished Tower tab ("their session ended before its
+own commit") and a sibling session published both channels with ledger
+E148 (9b608a8). My rollback publish then fired clean: message "Map: the
+AI-enhanced art is rolled back - the original game map is live again,
+exactly as before", preview group 2a61317f, development group 62b23007,
+both channels verified via channel:list (fresh timestamps, my message).
+His phone now gets the ORIGINAL map art on next launch. Note: the bundle
+also carries the Tower tab (whole-tree bundle); the About stamp shows my
+message because mine superseded E148's by minutes. Reported to the CEO;
+holding the watch for his verdict. Open offers unchanged: cap-zoom,
+generated farm-run, found-sync.
