@@ -38,12 +38,14 @@ TILE = 512
 # pixels are the neighbour's actual art, so a seam is physically impossible
 # at any zoom.
 GUTTER = 2
-# EAS updates hard-cap at 1000 assets; all 565 kept z5 tiles blew it (1254
-# total, publish refused by the server). z5 is a LUXURY level — its fallback
-# is the same content at z4 — so only the tiles with the most real detail
-# ship, ranked by high-frequency energy. Smooth terrain upscales from z4
-# indistinguishably; settlements, ridges and paths keep double density.
-Z5_KEEP = 250
+# EAS updates hard-cap at 1000 assets; all 565 z5 tiles as singles blew it
+# (1254 total, publish refused by the server). Shipping only the 250 most
+# detailed was the stopgap, and the CEO photographed the gaps three times.
+# The phone now gets z5 packed into 2x2 SPRITE SHEETS — full coverage in a
+# quarter of the asset count — while the web (no asset cap) keeps singles.
+# Each sheet cell is a whole gutter-carrying tile, so the renderer clips a
+# cell out and every seam rule still holds.
+SHEET = 2
 # 92, up from 82 (CEO: "fixing the low resolution", 2026-08-17). Measured on
 # the three most detailed z4 tiles at 2x, columns side by side: 82 smears the
 # dark rock striations, 92 keeps them, 96 adds nothing visible for +1.7 MB.
@@ -185,11 +187,13 @@ def build_region(region: str, src_name: str, max_z: int) -> dict:
                     skipped += 1
                     continue
                 if z == 5:
-                    # rank now, save later — only the Z5_KEEP most detailed ship
-                    a = np.asarray(flat_probe.convert("L")).astype(np.float32)
-                    detail = float(np.abs(np.diff(a, axis=0)).mean()
-                                   + np.abs(np.diff(a, axis=1)).mean())
-                    z5_candidates.append((detail, tx, ty, tile))
+                    # the web serves from public/ with no asset cap: it gets
+                    # every non-flat single; the phone gets sheets (below)
+                    name = f"5_{tx}_{ty}.webp"
+                    (WEB_OUT / region).mkdir(parents=True, exist_ok=True)
+                    tile.save(WEB_OUT / region / name, "WEBP",
+                              quality=QUALITY, method=6)
+                    z5_candidates.append((tx, ty))
                     continue
                 name = f"{z}_{tx}_{ty}.webp"
                 for out in (MOBILE_OUT / region, WEB_OUT / region):
@@ -198,15 +202,31 @@ def build_region(region: str, src_name: str, max_z: int) -> dict:
                 total_bytes += (MOBILE_OUT / region / name).stat().st_size
                 present.append(f"{tx}_{ty}")
         if z == 5 and z5_candidates:
-            z5_candidates.sort(key=lambda r: -r[0])
-            for detail, tx, ty, tile in z5_candidates[:Z5_KEEP]:
-                name = f"5_{tx}_{ty}.webp"
-                for out in (MOBILE_OUT / region, WEB_OUT / region):
-                    out.mkdir(parents=True, exist_ok=True)
-                    tile.save(out / name, "WEBP", quality=QUALITY, method=6)
+            # A sheet is kept when ANY of its four tiles has real detail.
+            # The flat cells are filled with their true art anyway (near-free
+            # in WebP), so a kept sheet is always complete and the renderer
+            # needs no per-cell presence map.
+            cell = TILE + 2 * GUTTER
+            sheet_keys = sorted({(tx // SHEET, ty // SHEET)
+                                 for tx, ty in z5_candidates})
+            for sx, sy in sheet_keys:
+                img = Image.new("RGB", (SHEET * cell, SHEET * cell))
+                for cy in range(SHEET):
+                    for cx in range(SHEET):
+                        tx2, ty2 = sx * SHEET + cx, sy * SHEET + cy
+                        if tx2 >= n or ty2 >= n:
+                            continue
+                        img.paste(pad.crop((tx2 * TILE, ty2 * TILE,
+                                            (tx2 + 1) * TILE + 2 * GUTTER,
+                                            (ty2 + 1) * TILE + 2 * GUTTER)),
+                                  (cx * cell, cy * cell))
+                name = f"s5_{sx}_{sy}.webp"
+                (MOBILE_OUT / region).mkdir(parents=True, exist_ok=True)
+                img.save(MOBILE_OUT / region / name, "WEBP",
+                         quality=QUALITY, method=6)
                 total_bytes += (MOBILE_OUT / region / name).stat().st_size
-                present.append(f"{tx}_{ty}")
-            skipped += len(z5_candidates) - min(Z5_KEEP, len(z5_candidates))
+            manifest["s5"] = [f"{sx}_{sy}" for sx, sy in sheet_keys]
+            present.extend(f"{tx}_{ty}" for tx, ty in sorted(z5_candidates))
             z5_candidates.clear()
         manifest[str(z)] = present
         print(f"  {region} z{z}: {len(present):>3}/{n * n:<3} tiles kept")
@@ -242,10 +262,30 @@ def write_index(manifests: dict[str, dict]) -> None:
     for region, manifest in manifests.items():
         lines.append(f"  {region}: {{")
         for z, keys in manifest.items():
+            if z in ("5", "s5"):
+                continue  # z5 reaches the phone as sheets, never singles
             for key in keys:
                 lines.append(
                     f"    '{z}_{key}': require('../../assets/map/{region}/{z}_{key}.webp'),"
                 )
+        lines.append("  },")
+    lines += [
+        "};",
+        "",
+        "/** Deepest-level sprite sheets (phone only). EAS hard-caps an update",
+        " * at 1000 assets; packing z5 four-to-a-sheet ships FULL double-density",
+        " * coverage in a quarter of the asset count. Key is 'sheetX_sheetY';",
+        " * each sheet holds SHEET_CELLS x SHEET_CELLS gutter-carrying tiles,",
+        " * tile (x, y) at cell (x % SHEET_CELLS, y % SHEET_CELLS). */",
+        "export const SHEET_CELLS = 2;",
+        "export const MAP_SHEETS: Record<string, Record<string, number>> = {",
+    ]
+    for region, manifest in manifests.items():
+        lines.append(f"  {region}: {{")
+        for key in manifest.get("s5", []):
+            lines.append(
+                f"    '{key}': require('../../assets/map/{region}/s5_{key}.webp'),"
+            )
         lines.append("  },")
     lines += ["};", ""]
     (DATA_OUTS[0] / "tileIndex.g.ts").write_text("\n".join(lines) + "\n", encoding="utf-8")
@@ -267,7 +307,8 @@ def write_index(manifests: dict[str, dict]) -> None:
         "export const MAP_TILES: Record<string, Set<string>> = {",
     ]
     for region, manifest in manifests.items():
-        keys = [f"'{z}_{k}'" for z, ks in manifest.items() for k in ks]
+        keys = [f"'{z}_{k}'" for z, ks in manifest.items() if z != "s5"
+                for k in ks]
         web.append(f"  {region}: new Set([{', '.join(keys)}]),")
     web += ["};", ""]
     (DATA_OUTS[1] / "tileIndex.g.ts").write_text("\n".join(web) + "\n", encoding="utf-8")

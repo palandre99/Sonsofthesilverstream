@@ -35,7 +35,7 @@ import Animated, {
 import { Image } from 'expo-image';
 import Svg, { Polyline } from 'react-native-svg';
 import {
-  MAP_TILES, MAX_TILE_Z, REGION_MAX_Z, TILE_GUTTER, TILE_SIZE,
+  MAP_SHEETS, MAP_TILES, MAX_TILE_Z, REGION_MAX_Z, TILE_GUTTER, TILE_SIZE,
 } from '../data/tileIndex.g';
 import { type RegionId } from './projection';
 
@@ -765,11 +765,90 @@ export function MapCanvas({
     // overzoom that stretch was a visible band — the hard vertical line in
     // the CEO's 22:39 screenshot. g is the gutter in container units.
     const g = (TILE_GUTTER * BASE) / (TILE_PX * n);
+    // The deepest level is SPARSE (the OTA asset cap keeps only the most
+    // detailed tiles), so a missing tile no longer means open ocean. It used
+    // to fall straight through to the z0 base — the whole map at 512px,
+    // which is the pixelated terrain the CEO photographed three times. A
+    // missing tile now paints its nearest existing ANCESTOR under the
+    // window, so the worst any spot can look is the deepest art that exists
+    // there, never the thumbnail. Ancestors go first: same-parent paint
+    // order keeps them under the sharper tiles.
+    const under = new Map<string, React.ReactNode>();
+    // The deepest level ships as 2x2 SPRITE SHEETS (the OTA asset cap counts
+    // files, so four tiles per file bought FULL z5 coverage). Each sheet cell
+    // is a whole gutter-carrying tile; a clipping View shows exactly one
+    // cell, so every seam rule holds unchanged.
+    const sheets = win.z === (REGION_MAX_Z[region] ?? MAX_TILE_Z)
+      ? (MAP_SHEETS[region] ?? {}) : null;
     const out: React.ReactNode[] = [];
     for (let y = win.y0; y <= win.y1; y++) {
       for (let x = win.x0; x <= win.x1; x++) {
         const src = have[`${win.z}_${x}_${y}`];
-        if (!src) continue;   // open ocean: the z0 base below is identical
+        if (!src) {
+          const sh = sheets?.[`${x >> 1}_${y >> 1}`];
+          if (sh) {
+            const cw = step + 2 * g;   // one cell, gutter included
+            out.push(
+              <View
+                key={`${win.z}_${x}_${y}`}
+                style={{
+                  position: 'absolute',
+                  left: x * step - g,
+                  top: y * step - g,
+                  width: cw,
+                  height: cw,
+                  overflow: 'hidden',
+                }}
+              >
+                <Image
+                  source={sh}
+                  style={{
+                    position: 'absolute',
+                    left: -(x & 1) * cw,
+                    top: -(y & 1) * cw,
+                    width: 2 * cw,
+                    height: 2 * cw,
+                  }}
+                  contentFit="fill"
+                  cachePolicy="disk"
+                  recyclingKey={`s5_${x >> 1}_${y >> 1}`}
+                  transition={0}
+                />
+              </View>,
+            );
+            continue;
+          }
+          for (let az = win.z - 1; az >= 1; az--) {
+            const d = win.z - az;
+            const akey = `${az}_${x >> d}_${y >> d}`;
+            const asrc = have[akey];
+            if (!asrc) continue;
+            if (!under.has(akey)) {
+              const an = 1 << az;
+              const astep = BASE / an;
+              const ag = (TILE_GUTTER * BASE) / (TILE_PX * an);
+              under.set(akey, (
+                <Image
+                  key={`u${akey}`}
+                  source={asrc}
+                  style={{
+                    position: 'absolute',
+                    left: (x >> d) * astep - ag,
+                    top: (y >> d) * astep - ag,
+                    width: astep + 2 * ag,
+                    height: astep + 2 * ag,
+                  }}
+                  contentFit="fill"
+                  cachePolicy="disk"
+                  recyclingKey={`u${akey}`}
+                  transition={0}
+                />
+              ));
+            }
+            break;
+          }
+          continue;
+        }
         out.push(
           <Image
             key={`${win.z}_${x}_${y}`}
@@ -795,7 +874,7 @@ export function MapCanvas({
         );
       }
     }
-    return out;
+    return [...under.values(), ...out];
   }, [region, win]);
 
   const base = (MAP_TILES[region] ?? {})['0_0_0'];

@@ -346,8 +346,76 @@ def build_pois() -> tuple[str, dict]:
                 partner = partner.split("|")[0].strip()
                 if partner:
                     info += f" \u00b7 fights with {partner}"
-        by_layer[layer].append((region, uv, clean_poi_name(p.get("name")), lv, info))
+        pid = p.get("id") or ""
+        if layer == "chest":
+            # the spawner class names the chest's own tier — a real datamined
+            # fact that was sitting unread in the id string
+            gm = re.search(r"Grade_?0?(\d)", pid)
+            if gm:
+                info = f"Grade {int(gm.group(1))} of 3 chest"
+            elif "Oilrig" in pid:
+                info = "Oil rig chest"
+        if lv is None:
+            # alphas and merchants carry their level in the notes column
+            # ("... | Lv 79-79"), never in the level field
+            m = re.search(r"\bLv (\d+)(?:-(\d+))?\b", p.get("notes") or "")
+            if m:
+                lv = int(m.group(2) or m.group(1))
+        by_layer[layer].append(
+            (region, uv, clean_poi_name(p.get("name")), lv, info,
+             p["x"], p["y"], p.get("z") or 0.0))
         stats["points"] += 1
+
+    # One pin per physical node. The upstream table carries several spawner
+    # entries for the same rock (182 resource pairs sit within ONE metre of
+    # each other; two rocks cannot physically overlap), which drew stacked
+    # icons at deep zoom and inflated every count — "the ore spawns are not
+    # accurate" (CEO, 2026-08-18). Only impossible pairs are merged: 3 m is
+    # under half a node's own footprint, and the measured pair-distance
+    # histogram shows real neighbours living 10-20 m apart, so genuine dense
+    # fields survive untouched.
+    resource_layers = {
+        lid for lid, (_, _, grp, _) in POI_LAYERS.items() if grp == "resources"
+    }
+    merged = 0
+    for rlayer in resource_layers & set(by_layer):
+        kept: list = []
+        for row in by_layer[rlayer]:
+            rx, ry = row[5], row[6]
+            if any(k[0] == row[0]
+                   and (k[5] - rx) ** 2 + (k[6] - ry) ** 2 <= 90000.0
+                   for k in kept):
+                merged += 1
+                continue
+            kept.append(row)
+        by_layer[rlayer] = kept
+    stats["merged_nodes"] = merged
+
+    # Vertical guidance for the hard-to-find smalls. Every poi carries its
+    # altitude (Unreal cm, so /100 = metres — the same convention the
+    # where-line distances already proved out); so does every statue.
+    # "40 m above the nearest statue" is the difference between circling a
+    # cliff and climbing it. Nearest is chosen by plain world distance,
+    # exactly like the runtime where-line, so the two sentences always talk
+    # about the same statue.
+    statues: dict[str, list[tuple[float, float, float]]] = defaultdict(list)
+    for sregion, _uv2, _n, _lv, _inf, sx, sy, sz in by_layer.get("fast_travel", []):
+        statues[sregion].append((sx, sy, sz))
+    hint_layers = {"chest", "pal_effigy", "skill_fruit", "egg", "note"}
+    for hlayer in hint_layers & set(by_layer):
+        fixed = []
+        for hregion, uv, name, lv, info, hx, hy, hz in by_layer[hlayer]:
+            near = statues.get(hregion)
+            if near:
+                nsx, nsy, nsz = min(
+                    near, key=lambda s: (s[0] - hx) ** 2 + (s[1] - hy) ** 2)
+                dz = (hz - nsz) / 100.0
+                if abs(dz) >= 20:
+                    hint = (f"about {int(round(abs(dz) / 5) * 5)} m "
+                            f"{'above' if dz > 0 else 'below'} the nearest statue")
+                    info = f"{info} \u00b7 {hint}" if info else hint
+            fixed.append((hregion, uv, name, lv, info, hx, hy, hz))
+        by_layer[hlayer] = fixed
 
     lines = ts_header("Points of interest, grouped by layer.")
     lines += [
@@ -378,22 +446,22 @@ def build_pois() -> tuple[str, dict]:
     for layer in sorted(by_layer, key=order.index):
         rows = by_layer[layer]
         label, icon, group, colour = POI_LAYERS[layer]
-        names = [n for _, _, n, _, _ in rows]
-        lvs = [lv for _, _, _, lv, _ in rows]
-        infos = [inf for _, _, _, _, inf in rows]
+        names = [n for _, _, n, *_ in rows]
+        lvs = [lv for _, _, _, lv, *_ in rows]
+        infos = [inf for _, _, _, _, inf, *_ in rows]
         real = [n for n in names if n]
         # keep names only where they carry information: 1,405 markers all
         # called "Ore" teach nothing, but 149 distinct statue names do
         keep_names = len(set(real)) > max(1, len(names) // 10)
         maps = base64.b64encode(
-            bytes(0 if r == "palpagos" else 1 for r, _, _, _, _ in rows)
+            bytes(0 if r == "palpagos" else 1 for r, *_ in rows)
         ).decode("ascii")
         entry = [
             "  {",
             f"    id: '{layer}', label: {json.dumps(label)}, icon: '{icon}',",
             f"    group: '{group}', colour: '{colour}', n: {len(rows)},",
             f"    maps: '{maps}',",
-            f"    pts: '{pack([uv for _, uv, _, _, _ in rows])}',",
+            f"    pts: '{pack([uv for _, uv, *_ in rows])}',",
         ]
         if keep_names:
             entry.append(f"    names: {json.dumps(names, ensure_ascii=False)},")

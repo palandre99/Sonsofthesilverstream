@@ -595,6 +595,63 @@ export function whereFromLine(u: number, v: number, region: RegionId): string | 
   return `${m} m ${w.dir} of the ${w.name}${suffix}`;
 }
 
+/* ------------------------------------------------ where to build a farm */
+
+export interface RichSpot { u: number; v: number; count: number }
+
+const richCache = new Map<string, RichSpot[]>();
+
+/**
+ * Where a resource is worth building a farm: tight groups of nodes ("some
+ * places on the map are known for being very good to farm since it's close
+ * together" — the CEO's ask). Pure geometry over the datamined points:
+ * greedy from the densest seed, a group is every node within 100 m of that
+ * seed, and only groups of 4+ qualify. The community-famous farm spots fall
+ * out of this by themselves, because the density IS what made them famous.
+ * Deterministic: ties break on point order.
+ */
+export function richSpots(layerId: string, region: RegionId): RichSpot[] {
+  const key = `${layerId}|${region}`;
+  const got = richCache.get(key);
+  if (got) return got;
+  const set = poiPoints(layerId, region);
+  const out: RichSpot[] = [];
+  if (set && set.n >= 4) {
+    const r = regionOf(region);
+    const spanU = r.maxY - r.minY;   // u maps worldY — same as whereFrom
+    const spanV = r.maxX - r.minX;
+    const R2 = (100 * 100) ** 2;     // 100 m in Unreal cm, squared
+    const n = set.n;
+    const nb: number[][] = Array.from({ length: n }, () => []);
+    for (let i = 0; i < n; i++) {
+      for (let j = i + 1; j < n; j++) {
+        const dx = (set.xy[i * 2] - set.xy[j * 2]) * spanU;
+        const dy = (set.xy[i * 2 + 1] - set.xy[j * 2 + 1]) * spanV;
+        if (dx * dx + dy * dy <= R2) { nb[i].push(j); nb[j].push(i); }
+      }
+    }
+    const order = Array.from({ length: n }, (_, i) => i)
+      .sort((a, b) => nb[b].length - nb[a].length || a - b);
+    const used = new Uint8Array(n);
+    for (const seed of order) {
+      if (used[seed] || nb[seed].length < 3) continue;
+      const group = [seed, ...nb[seed].filter((j) => !used[j])];
+      if (group.length < 4) continue;
+      let cu = 0;
+      let cv = 0;
+      for (const i of group) {
+        used[i] = 1;
+        cu += set.xy[i * 2];
+        cv += set.xy[i * 2 + 1];
+      }
+      out.push({ u: cu / group.length, v: cv / group.length, count: group.length });
+    }
+    out.sort((a, b) => b.count - a.count || a.u - b.u);
+  }
+  richCache.set(key, out);
+  return out;
+}
+
 /* --------------------------------------------- the list behind a layer */
 
 /** Does this layer carry a real name per point? (The list feature only

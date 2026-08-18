@@ -9015,3 +9015,78 @@ filters, resizable sheets, adaptive clustering, wanted posters;
 alpha-variant stats logged for the GOALS lane (M60). WATCH STATE: hold
 for his reports; no manufactured work; the M37-M63 ledger is the
 handover.
+
+### M64 — the 12:11 six-report storm, all six built in one round
+His reports, in his order, with the real root causes:
+
+1. **"Still doesn't look high quality when zooming in"** — FOUND THE BUG,
+   and it was mine: MapCanvas skipped missing tiles as "open ocean" (true
+   when levels were complete), but Z5_KEEP=250 made z5 SPARSE — so most
+   land at deep zoom fell through to the **z0 base, the whole map at
+   512px**, magnified ~30x. That is every pixelated screenshot he sent
+   since the z5 update. Two fixes, both shipped:
+   - **Ancestor fallback**: a missing tile paints its nearest existing
+     ancestor (native-res z4) under the window — the thumbnail can never
+     show through again.
+   - **Full z5 via 2x2 sprite sheets**: EAS caps an update at 1000 ASSETS
+     (files, not bytes) — so all 566 z5 tiles now pack into 180 sheet
+     files (s5_*.webp; each 516px cell is a whole gutter-carrying tile,
+     clipped out by an overflow-hidden View). The web (no cap) gets all
+     566 as singles — its sparse-z5 gap healed for free, zero web code
+     changed. Sheets proven cell-by-cell against the singles: worst mean
+     abs diff 2.36/255 over 46 sampled cells = WebP re-encode noise only.
+     NOTE for the next publish: sheet render on DEVICE is reasoned +
+     test-pinned, not yet eye-measured (QA browser is dpr=1, deepest it
+     draws is z4; harness pinch is dead — see traps below).
+2. **"I still can't swipe the window"** — the drag handlers were spread
+   onto a Pressable, whose internal responder plumbing swallows them on
+   native (QA browser lied by working). Rebuilt: plain-View responders,
+   the WHOLE header band drags both ways, and swiping UP anywhere in the
+   sheet grows it until fullscreen (Apple Maps feel) — content taps and
+   fullscreen scrolling untouched. Native drag = reasoned (F35), the
+   structure is test-pinned.
+3. **"Sort by level is buggy"** — two real defects: (a) alpha_pals had NO
+   baked levels ('Lv 79-79' sat unparsed in the source notes column; the
+   list fuzzy-matched MAP_ALPHAS at render), (b) the sort was
+   ascending-only with a 999 fallback. Now: extractor parses "Lv X-Y"
+   from notes (alphas + 12 merchants), lvs baked for all 72 alpha pins
+   (test: every pin has a level), sort cycles Sort by level (highest
+   first) -> Lowest first -> Sort A to Z, unknown levels always sink.
+   EYE-VERIFIED: 70,70,70,70,69,69,68... and 11,11,11,14,17... live.
+4. **"Up to lvl 60 still shows all lvl 1s — bad filter design"** — he is
+   right. Caps are gone: LEVEL_BANDS Any/1-10/11-20/.../51-60/61+ chips,
+   band intersection already existed in layers.ts, AND the Find list rows
+   now prune by band too (his complaint was about the ROWS — caught in
+   QA: chip selected, list unchanged; fixed, re-shot: 21-30 shows only
+   intersecting pals, Lamball and Fuack Ignis gone).
+5. **"Chests don't have enough info / in-game screenshots?"** — real
+   screenshots are impossible honestly (no asset source; we do not
+   fabricate). What the game data DOES have, now shipped: **chest tier
+   from the spawner class** (289 Grade 1, 242 Grade 2, 16 Grade 3 of
+   1,610 — the rest carry no tier and honestly say nothing), "Oil rig
+   chest" for the 51 rig ones, and **altitude hints** — every poi + every
+   statue carries z (Unreal cm): chests/effigies/skill fruits/eggs/notes
+   >=20 m off the nearest statue's height say "about 40 m above/below the
+   nearest statue" — the vertical half of finding hidden things.
+6. **"Ore not accurate + mark the good farm spots"** — probed: the
+   upstream table has MULTIPLE spawner entries per physical rock (182
+   resource pairs within ONE metre; histogram smooth 10-20 m for real
+   neighbours). Extractor now merges only physically-impossible pairs
+   (<=3 m): ore 1405->1292, red berries 1939->1462, coal 525->426 — the
+   stacked double-pins that read as "not accurate" at deep zoom are gone.
+   And **Best spots**: richSpots() in byte-parity layers.ts (greedy
+   100 m-radius grouping, 4+ nodes, deterministic, cached) + a "Best
+   spots — Ore" list behind every resource chip: "8 nodes close together
+   · 130 m west of the Desolate Church statue" — which is THE
+   community-famous ore run, found by pure geometry (executed test pins
+   it within 400 m). If he still sees a specific wrong node, that
+   screenshot becomes its own case.
+
+Gates: 722 tests green (was 694; +28 this round incl. sheet/coverage/
+probe pins), tsc clean both trees, byte-parity mirrored. QA traps
+learned: harness pinch:/drag: no longer move the map (synthetic events
+dead vs RNGH) — drive zoom via list fly-to instead; the first-run hint
+catches tap:Layers AND tap:Ore ("...chests, ore and dungeons") — dismiss
+at click:343,1570 first; map label "Isle of the Glacial C**ore**"
+shadows tap:Ore. Asset math: 869 files < 1000 cap (320 z0-4 + 66 tree +
+180 sheets + ~300 other).

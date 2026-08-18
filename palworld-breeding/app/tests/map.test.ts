@@ -23,7 +23,8 @@ import { decodeRoute, encodeRoute } from '../../mobile/src/map/routeShare';
 import {
   closeMatches, isNightOnly, poiLayers, poiPoints, searchPlaces, spawnablePals, spawnLevels,
   spawnPoints, spawnSplit,
-  emptyFilters, hasNames, listSortKey, namedPoints, poiInfo, poiLv, subsetWithIndex, whereFrom, whereFromLine, wildBands,
+  emptyFilters, hasNames, listSortKey, namedPoints, poiInfo, poiLv, richSpots,
+  subsetWithIndex, whereFrom, whereFromLine, wildBands,
 } from '../src/map/layers';
 import { REGION_SPOTS } from '../src/data/regionSpots.g';
 
@@ -502,8 +503,12 @@ describe('the map search is the Paldex search', () => {
     // without `base` the sheet promises "Show 298 pals" and then hands back
     // the ~224 that actually spawn here
     expect(screen).toMatch(/base=\{base\}/);
+    // the gate is spawnLevels, and since 2026-08-18 the level BAND prunes
+    // these rows too — "Up to 60 still shows all lvl 1s" was about the list
     expect(screen).toMatch(
-      /spawnablePals\(\)\.filter\(\(n\) => spawnLevels\(n, region, filters\.dungeons\) !== null\)/);
+      /const lv = spawnLevels\(n, region, filters\.dungeons\);/);
+    expect(screen).toMatch(
+      /return lv\.hi >= filters\.level\.lo && lv\.lo <= filters\.level\.hi;/);
   });
 
   it('and includes the dungeon-only pals once the dungeon box is ticked', () => {
@@ -521,7 +526,7 @@ describe('the map search is the Paldex search', () => {
     // and the default stays surface-only, so a level band still means
     // "walk out and meet one"
     expect(spawnLevels('Mau', 'palpagos')).toBeNull();
-    expect(screen).toMatch(/\[region, filters\.dungeons\]/);
+    expect(screen).toMatch(/\[region, filters\.dungeons, filters\.level\]/);
   });
 
   it('has no second, private "missing" toggle beside the shared one', () => {
@@ -552,10 +557,48 @@ describe('zoom never asks for pixels that do not exist', () => {
 
   it('actually ships the deeper level for Palpagos and not for the tree', () => {
     const z5 = [...MAP_TILES.palpagos].filter((k) => k.startsWith('5_'));
-    // 250 exactly: EAS hard-caps updates at 1000 assets, so only the 250
-    // most detailed z5 tiles ship; the rest fall back to z4 invisibly
-    expect(z5.length).toBe(250);
+    // 566 = EVERY non-flat z5 tile. The web serves from public/ with no
+    // asset cap; the phone gets the same full coverage as 2x2 sprite
+    // sheets, because EAS hard-caps an update at 1000 assets and 566
+    // singles blew it. The sparse-250 era put the CEO's screenshots on z0.
+    expect(z5.length).toBe(566);
     expect([...MAP_TILES.tree].some((k) => k.startsWith('4_'))).toBe(false);
+  });
+
+  it('the phone gets full z5 as sprite sheets, never singles', () => {
+    const midx = readFileSync(
+      join(__dirname, '..', '..', 'mobile', 'src', 'data', 'tileIndex.g.ts'), 'utf8',
+    );
+    expect(midx).toContain('export const SHEET_CELLS = 2;');
+    // no z5 single ever reaches the phone bundle
+    expect(midx).not.toMatch(/require\('\.\.\/\.\.\/assets\/map\/palpagos\/5_/);
+    const keys = [...midx.matchAll(
+      /'(\d+_\d+)': require\('\.\.\/\.\.\/assets\/map\/palpagos\/s5_(\d+_\d+)\.webp'\)/g,
+    )];
+    expect(keys.length).toBeGreaterThan(0);
+    for (const [, k, f] of keys) expect(k).toBe(f);
+    // every sheet the index promises is really on disk, and nothing extra
+    const disk = readdirSync(
+      join(__dirname, '..', '..', 'mobile', 'assets', 'map', 'palpagos'),
+    ).filter((f) => f.startsWith('s5_'));
+    expect(disk.length).toBe(keys.length);
+    // the phone's sheet coverage equals the web's single coverage exactly
+    const sheets = new Set(keys.map(([, k]) => k));
+    for (const s of [...MAP_TILES.palpagos].filter((k) => k.startsWith('5_'))) {
+      const [, x, y] = s.split('_').map(Number);
+      expect(sheets.has(`${x >> 1}_${y >> 1}`)).toBe(true);
+    }
+  });
+
+  it('a missing deep tile shows its ancestor, never the 512px thumbnail', () => {
+    // the old code skipped missing tiles as "open ocean"; once z5 went
+    // sparse that painted whole regions with the z0 base at 30x — the
+    // pixelated terrain the CEO photographed three times
+    expect(canvas).toContain('under.values()');
+    expect(canvas).toMatch(/for \(let az = win\.z - 1; az >= 1; az--\)/);
+    // sheet cells clip out of the 2x2 sprite: one cell = tile + own gutters
+    expect(canvas).toContain('-(x & 1) * cw');
+    expect(canvas).toContain('MAP_SHEETS[region]');
   });
 
   it('selects the deepest level once the map is magnified past 4096', () => {
@@ -904,21 +947,22 @@ describe('the level cap is reachable', () => {
   );
 
   it('has a control that actually writes the filter', () => {
-    expect(screen).toMatch(/const setLevelCap = useCallback/);
-    expect(screen).toMatch(/level: \{ lo: 1, hi \}/);
-    expect(screen).toMatch(/onPress=\{\(\) => onSetLevel\(cap\)\}/);
+    expect(screen).toMatch(/const setLevelBand = useCallback/);
+    expect(screen).toMatch(/level: \{ lo, hi \}/);
+    expect(screen).toMatch(/onPress=\{\(\) => onSetLevel\(b\.lo, b\.hi\)\}/);
   });
 
-  it('offers Any level plus real upper bounds', () => {
-    expect(screen).toMatch(/const LEVEL_CAPS = \[ALL_LEVEL_CAP, 15, 30, 45, 60\]/);
+  it('offers Any level plus real BANDS, not caps', () => {
+    // "Up to 60 still shows all lvl 1s so it's a bad filter design"
+    // (CEO, 2026-08-18) — the caps era is pinned out for good
+    expect(screen).toMatch(/const LEVEL_BANDS/);
     expect(screen).toMatch(/const ALL_LEVEL_CAP = 80/);
+    expect(screen).not.toMatch(/const LEVEL_CAPS/);
   });
 
-  it('explains an empty map by naming the cap the player set', () => {
-    // "between those levels" described a two-ended range; the control is an
-    // upper bound, so the sentence has to read like one
+  it('explains an empty map by naming the band the player set', () => {
     expect(screen).not.toMatch(/spawns between those levels/);
-    expect(screen).toMatch(/Nothing at level \$\{f\.level\.hi\} or under/);
+    expect(screen).toMatch(/Nothing at level \$\{band\}/);
   });
 
   it('drives the same range the spawn lookup already took', () => {
@@ -1878,7 +1922,7 @@ describe('the map feels the same everywhere you change something', () => {
     // the level cap, a layer toggle and picking a pal — but was silent on
     // marking a spot found and on switching region. Same class of action,
     // inconsistent by accident rather than by choice.
-    for (const fn of ['setLevelCap', 'togglePoi', 'togglePal']) {
+    for (const fn of ['setLevelBand', 'togglePoi', 'togglePal']) {
       const body = screen.slice(screen.indexOf(`const ${fn} =`), screen.indexOf(`const ${fn} =`) + 260);
       expect(body, `${fn} must exist`).toContain('setFilters');
       expect(body, `${fn} lost its haptic`).toContain('Haptics.');
@@ -2229,7 +2273,7 @@ describe('the level caps sit on one row', () => {
     // a second line — a layout accident, not a control. Found by the brutal
     // self-eval the CEO ordered; measured after: five chips, one distinct row
     // top, the fifth peeking past the edge as its own scroll hint.
-    const at = screen.indexOf('{LEVEL_CAPS.map((cap) => {');
+    const at = screen.indexOf('{LEVEL_BANDS.map((b) => {');
     expect(at, 'the chips block must exist').toBeGreaterThan(-1);
     const before = screen.slice(at - 700, at);
     expect(before).toContain('horizontal');
@@ -2772,8 +2816,10 @@ describe('the list behind a layer (CEO: "find the one I am looking for")', () =>
     expect(view).toContain("canvas.current?.focus(item.u, item.v, 0.06)");
     expect(view).toContain('setSheet(null)');
     expect(view).toContain('isFound(foundKey(sheet.list, region, item.index))');
-    // the chip affordance exists and only for named layers that are ON
-    expect(screen).toContain('on && here > 0 && hasNames(l.id)');
+    // the chip affordance exists for layers that are ON and have either
+    // names to list or farm spots to rank
+    expect(screen).toContain('on && here > 0');
+    expect(screen).toMatch(/hasNames\(l\.id\) \|\| richSpots\(l\.id, filters\.region\)/);
   });
 });
 
@@ -2919,12 +2965,12 @@ describe('the sheets resize (CEO 23:22)', () => {
     join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
   );
 
-  it('three snap heights, drag on the HANDLE only, tap cycles', () => {
+  it('three snap heights, header drags, content grows, tap cycles', () => {
     expect(screen).toContain('const SHEET_SNAPS = [0.4, 0.14, 0] as const;');
     expect(screen).toContain('PanResponder.create');
-    // the pan handlers live on the handle Pressable, not on the sheet body
-    // or anywhere near the map
-    expect(screen).toContain('{...pan.panHandlers}');
+    // the pan handlers live on plain Views ("I still can't swipe the
+    // window" — a Pressable swallowed them on device), never near the map
+    expect(screen).toContain('<View {...headerPan.panHandlers}>');
     expect(screen).toContain('onPress={() => settle((snap + 1) % SHEET_SNAPS.length)}');
     expect(screen).toContain('Tap to cycle half, tall and full screen');
     // release snaps to the NEAREST stop — no free-floating heights
@@ -2939,11 +2985,107 @@ describe('list filters (CEO 22:38: search, level, paldex link)', () => {
 
   it('search, level sort and only-missing are wired, and reset on open', () => {
     expect(screen).toContain("rows.filter((r) => r.name.toLowerCase().includes(needle))");
-    expect(screen).toContain("(lvOf(a) ?? 999) - (lvOf(b) ?? 999)");
+    expect(screen).toContain("listSort === 'hi' ? lb - la : la - lb");
     expect(screen).toContain("!ownedAny(r.name.slice(6))");
     // stale filters must not leak into the next list
     expect(screen).toContain("setListQ(''); setListSort('name'); setListMissing(false);");
     // the progress line stays honest against the FULL list, not the filtered
     expect(screen).toContain('foundCount2 === rowsAll.length');
+  });
+});
+
+/* CEO round, 2026-08-18: level sort "doesn't show highest in order or lowest
+ * in order", the level filter "Up to 60 still shows all lvl 1s", the sheet
+ * cannot be swiped bigger, chests "don't have enough info", and ore farm
+ * spots should be findable. Each fix is pinned here. */
+describe('the 2026-08-18 report round', () => {
+  const screen = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
+  );
+
+  it('every alpha pin carries a baked level, so the sort can never lie', () => {
+    const alpha = MAP_POIS.find((l) => l.id === 'alpha_pals');
+    expect(alpha?.lvs?.length).toBe(alpha?.n);
+    expect(alpha?.lvs?.every((lv) => typeof lv === 'number' && lv >= 1)).toBe(true);
+  });
+
+  it('level sort has both directions and unknown levels always sink', () => {
+    expect(screen).toContain("listSort === 'hi' ? lb - la : la - lb");
+    expect(screen).toMatch(/la === null \|\| lb === null/);
+    // the button names the NEXT action through the whole cycle
+    expect(screen).toContain("'Lowest first'");
+  });
+
+  it('the level filter is bands, not caps', () => {
+    expect(screen).not.toContain('`Up to ${cap}`');
+    expect(screen).toContain("{ lo: 11, hi: 20, label: '11–20' }");
+    expect(screen).toContain("{ lo: 61, hi: ALL_LEVEL_CAP, label: '61+' }");
+    // the empty-map explainer knows about bands, not just caps
+    expect(screen).toContain('f.level.lo > 1 || f.level.hi < ALL_LEVEL_CAP');
+  });
+
+  it('the sheet drags from the whole header and grows from anywhere', () => {
+    // plain Views carry the responders — spreading panHandlers onto a
+    // Pressable let its own responder plumbing swallow them on device
+    expect(screen).toContain('<View {...headerPan.panHandlers}>');
+    expect(screen).toMatch(/\{\.\.\.growPan\.panHandlers\}/);
+    expect(screen).toMatch(/const headerPan[\s\S]{0,200}onMoveShouldSetPanResponderCapture/);
+    // grow captures only upward drags, and never once fullscreen
+    expect(screen).toMatch(/snapRef\.current !== SHEET_SNAPS\.length - 1[\s\S]{0,40}g\.dy < -6/);
+  });
+
+  it('chests say their grade where the game data really has one', () => {
+    const chest = MAP_POIS.find((l) => l.id === 'chest');
+    const graded = (chest?.info ?? []).filter(
+      (i) => i && /Grade [123] of 3 chest/.test(i),
+    );
+    // 289 + 242 + 16: the spawner class names its own tier for these; the
+    // rest carry no tier in the game files and honestly say nothing
+    expect(graded.length).toBe(547);
+    expect((chest?.info ?? []).some((i) => i && /Oil rig chest/.test(i))).toBe(true);
+  });
+
+  it('hidden smalls carry altitude hints in metres', () => {
+    const layers = ['chest', 'pal_effigy', 'skill_fruit', 'egg', 'note'];
+    for (const id of layers) {
+      const l = MAP_POIS.find((p) => p.id === id);
+      expect(
+        (l?.info ?? []).some((i) => i && / m (above|below) the nearest statue/.test(i)),
+        `${id} should have at least one altitude hint`,
+      ).toBe(true);
+    }
+  });
+
+  it('farm spots: groups of 4+, densest first, cached', () => {
+    const spots = richSpots('ore', 'palpagos');
+    expect(spots.length).toBeGreaterThan(0);
+    expect(spots.every((s) => s.count >= 4)).toBe(true);
+    for (let i = 1; i < spots.length; i++) {
+      expect(spots[i - 1].count).toBeGreaterThanOrEqual(spots[i].count);
+    }
+    expect(richSpots('ore', 'palpagos')).toBe(spots);
+  });
+
+  it('finds the community-famous ore run by the Desolate Church', () => {
+    // Community knowledge, not datamined: every early-game guide names the
+    // ore patch beside the Desolate Church statue. If our datamined points
+    // form a dense group there too, the pipeline agrees with what players
+    // see standing in the game — the accuracy check the CEO asked for.
+    const statues = namedPoints('fast_travel', 'palpagos');
+    const church = statues.find((s) => s.name.includes('Desolate Church'));
+    expect(church).toBeTruthy();
+    const r = regionOf('palpagos');
+    const spanU = r.maxY - r.minY;
+    const spanV = r.maxX - r.minX;
+    const near = richSpots('ore', 'palpagos').map((s) => Math.hypot(
+      (s.u - church!.u) * spanU, (s.v - church!.v) * spanV,
+    ) / 100);
+    expect(Math.min(...near)).toBeLessThan(400);
+  });
+
+  it('unnamed resource layers open a Best spots list instead of nothing', () => {
+    expect(screen).toContain('richSpots(sheet.list, region)');
+    expect(screen).toContain('`Best spots — ${layer.label}`');
+    expect(screen).toMatch(/hasNames\(l\.id\) \|\| richSpots\(l\.id, filters\.region\)/);
   });
 });

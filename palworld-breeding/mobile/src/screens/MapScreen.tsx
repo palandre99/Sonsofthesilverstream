@@ -40,7 +40,7 @@ import {
   poiLayer,
   poiLayers, poiPoints, searchPlaces,
   poiName, spawnLevels, spawnPoints, spawnablePals, wildBands,
-  hasNames, namedPoints, poiInfo, poiLv, subsetWithIndex, whereFromLine,
+  hasNames, namedPoints, poiInfo, poiLv, richSpots, subsetWithIndex, whereFromLine,
   type LayerGroup, type MapFilters,
 } from '../map/layers';
 import { MAP_REGIONS } from '../data/mapMeta.g';
@@ -91,7 +91,7 @@ export function MapScreen() {
   /** layer-list controls — "more filters, like paldex, type, level, search
    *  for name" (CEO, 22:38). Reset each time a list opens. */
   const [listQ, setListQ] = useState('');
-  const [listSort, setListSort] = useState<'name' | 'level'>('name');
+  const [listSort, setListSort] = useState<'name' | 'hi' | 'lo'>('name');
   const [listMissing, setListMissing] = useState(false);
   /** the draft name while renaming that pin — null when not renaming */
   const [draft, setDraft] = useState<string | null>(null);
@@ -659,9 +659,9 @@ export function MapScreen() {
     });
   }, [active, region, vp.scale]);
 
-  const setLevelCap = useCallback((hi: number) => {
+  const setLevelBand = useCallback((lo: number, hi: number) => {
     void Haptics.selectionAsync();
-    setFilters((f) => ({ ...f, level: { lo: 1, hi } }));
+    setFilters((f) => ({ ...f, level: { lo, hi } }));
   }, []);
 
   const togglePoi = useCallback((id: string) => {
@@ -1430,8 +1430,61 @@ export function MapScreen() {
 
       {typeof sheet === 'object' && sheet !== null && (() => {
         const layer = poiLayers().find((l) => l.id === sheet.list);
+        if (!layer) { return null; }
         const rowsAll = namedPoints(sheet.list, region);
-        if (!layer || rowsAll.length === 0) { return null; }
+        if (rowsAll.length === 0) {
+          // resource layers have no names — their list is the best FARM
+          // spots: densest node groups first, each a tap from the map
+          const rich = richSpots(sheet.list, region);
+          if (rich.length === 0) { return null; }
+          return (
+            <SheetShell
+              title={`Best spots — ${layer.label}`}
+              onClear={() => setSheet('layers')}
+              onClose={() => setSheet(null)}
+            >
+              <FlatList
+                data={rich}
+                initialNumToRender={16}
+                keyExtractor={(r, i) => `${r.count}_${i}`}
+                contentContainerStyle={{ padding: 14, gap: 8 }}
+                ListHeaderComponent={(
+                  <Text style={{
+                    color: T.faint, fontSize: 11.5, fontWeight: '600', marginBottom: 2,
+                  }}>
+                    Groups of nodes close enough to farm from one spot, densest first.
+                  </Text>
+                )}
+                renderItem={({ item }) => (
+                  <Pressable
+                    onPress={() => {
+                      void Haptics.selectionAsync();
+                      setSheet(null);
+                      canvas.current?.focus(item.u, item.v, 0.06);
+                    }}
+                    accessibilityRole="button"
+                    style={{
+                      flexDirection: 'row', alignItems: 'center', gap: 9,
+                      paddingHorizontal: 11, paddingVertical: 9, borderRadius: 11,
+                      borderWidth: 1, borderColor: T.line, backgroundColor: T.surface,
+                    }}
+                  >
+                    <Icon name={layer.icon} size={15} color={layer.colour} />
+                    <View style={{ flex: 1, gap: 1 }}>
+                      <Text style={{ color: T.ink, fontWeight: '700', fontSize: 13 }}>
+                        {`${item.count} nodes close together`}
+                      </Text>
+                      <Text style={{ color: T.faint, fontSize: 10.5, fontWeight: '600' }}>
+                        {whereFromLine(item.u, item.v, region) ?? ''}
+                      </Text>
+                    </View>
+                    <Icon name="chevron-right" size={16} color={T.faint} />
+                  </Pressable>
+                )}
+              />
+            </SheetShell>
+          );
+        }
         const isAlphaList = sheet.list === 'alpha_pals';
         const lvOf = (r: { name: string; u: number; v: number; index: number }) =>
           poiLv(sheet.list, region, r.index)
@@ -1448,8 +1501,18 @@ export function MapScreen() {
           rows = rows.filter((r) => r.name.startsWith('Alpha ')
             && !ownedAny(r.name.slice(6)));
         }
-        if (listSort === 'level') {
-          rows = [...rows].sort((a, b) => (lvOf(a) ?? 999) - (lvOf(b) ?? 999));
+        if (listSort !== 'name') {
+          // both directions on demand ("doesn't show highest in order or
+          // lowest in order" — CEO, 2026-08-18), and a row without a level
+          // sinks to the end in EITHER direction, never outranking a real one
+          rows = [...rows].sort((a, b) => {
+            const la = lvOf(a);
+            const lb = lvOf(b);
+            if (la === null || lb === null) {
+              return (la === null ? 1 : 0) - (lb === null ? 1 : 0);
+            }
+            return listSort === 'hi' ? lb - la : la - lb;
+          });
         }
         const foundCount2 = rowsAll.filter(
           (r) => isFound(foundKey(sheet.list, region, r.index)),
@@ -1473,10 +1536,12 @@ export function MapScreen() {
                 <View style={{ gap: 8, marginBottom: 4 }}>
                   <SearchInput value={listQ} onChange={setListQ}
                     placeholder={`Search ${layer.label.toLowerCase()}…`} />
-                  {isAlphaList && (
+                  {(isAlphaList || rowsAll.some((r) => lvOf(r) !== null)) && (
                     <View style={{ flexDirection: 'row', gap: 8 }}>
                       <Pressable
-                        onPress={() => setListSort(listSort === 'name' ? 'level' : 'name')}
+                        onPress={() => setListSort(
+                          listSort === 'name' ? 'hi' : listSort === 'hi' ? 'lo' : 'name',
+                        )}
                         accessibilityRole="button"
                         style={{
                           paddingHorizontal: 10, paddingVertical: 6, borderRadius: 10,
@@ -1485,10 +1550,16 @@ export function MapScreen() {
                       >
                         <Text style={{ color: T.muted, fontWeight: '700', fontSize: 12 }}>
                           {/* the label is the ACTION, not the state — "A to
-                              Z" while sorted A-Z read as a dead button */}
-                          {listSort === 'name' ? 'Sort by level' : 'Sort A to Z'}
+                              Z" while sorted A-Z read as a dead button. The
+                              cycle covers both directions: highest first is
+                              what "sort by level" means to a player staring
+                              down a boss list, lowest first is the catch
+                              route, A to Z is finding one by name. */}
+                          {listSort === 'name' ? 'Sort by level'
+                            : listSort === 'hi' ? 'Lowest first' : 'Sort A to Z'}
                         </Text>
                       </Pressable>
+                      {isAlphaList && (
                       <Pressable
                         onPress={() => setListMissing(!listMissing)}
                         accessibilityRole="checkbox"
@@ -1507,6 +1578,7 @@ export function MapScreen() {
                           Only ones I am missing
                         </Text>
                       </Pressable>
+                      )}
                     </View>
                   )}
                   <Text style={{
@@ -1651,7 +1723,7 @@ export function MapScreen() {
           region={region}
           onToggle={togglePal}
           onTogglePoi={togglePoi}
-          onSetLevel={setLevelCap}
+          onSetLevel={setLevelBand}
           onGoToPlace={(u, v) => {
             setSheet(null);
             canvas.current?.focus(u, v, 0.07);
@@ -1741,8 +1813,19 @@ function alphaPortrait(layerKey: string, region: RegionId, index: number): numbe
 
 /** the game's level cap — "Any level" is this, so no spawn is ever excluded */
 const ALL_LEVEL_CAP = 80;
-/** upper bounds a player actually thinks in, roughly the game's own pacing */
-const LEVEL_CAPS = [ALL_LEVEL_CAP, 15, 30, 45, 60];
+/** BANDS, not caps: "Up to 60 still shows all lvl 1s so it's a bad filter
+ *  design" (CEO, 2026-08-18). A band answers the question players actually
+ *  have — what is AROUND my level — and Any level stays one tap away. */
+const LEVEL_BANDS: { lo: number; hi: number; label: string }[] = [
+  { lo: 1, hi: ALL_LEVEL_CAP, label: 'Any level' },
+  { lo: 1, hi: 10, label: '1–10' },
+  { lo: 11, hi: 20, label: '11–20' },
+  { lo: 21, hi: 30, label: '21–30' },
+  { lo: 31, hi: 40, label: '31–40' },
+  { lo: 41, hi: 50, label: '41–50' },
+  { lo: 51, hi: 60, label: '51–60' },
+  { lo: 61, hi: ALL_LEVEL_CAP, label: '61+' },
+];
 
 /**
  * Why the map is empty when the player HAS switched something on.
@@ -1767,13 +1850,14 @@ function emptyReason(f: MapFilters, region: RegionId): { kind: 'time' | 'level' 
       };
     }
   }
-  if (f.level.hi < ALL_LEVEL_CAP) {
-    // name the cap the player actually set, rather than "those levels" — the
-    // control is an upper bound, so the sentence should read like one
+  if (f.level.lo > 1 || f.level.hi < ALL_LEVEL_CAP) {
+    // name the band the player actually set, rather than "those levels"
+    const band = f.level.hi >= ALL_LEVEL_CAP
+      ? `${f.level.lo}+` : `${f.level.lo}–${f.level.hi}`;
     return {
       kind: 'level',
-      title: `Nothing at level ${f.level.hi} or under`,
-      body: `What you switched on only spawns above level ${f.level.hi} on this `
+      title: `Nothing at level ${band}`,
+      body: 'What you switched on has no spawns in that level band on this '
         + 'map. Tap Any level to see all of it.',
     };
   }
@@ -2005,8 +2089,10 @@ function SheetShell({ title, onClear, onClose, children }: {
   const topAnim = React.useRef(new RNAnimated.Value(SHEET_SNAPS[0] * winH)).current;
   const dragFrom = React.useRef(SHEET_SNAPS[0] * winH);
 
+  const snapRef = React.useRef(0);
   const settle = React.useCallback((idx: number) => {
     setSnap(idx);
+    snapRef.current = idx;
     RNAnimated.timing(topAnim, {
       toValue: SHEET_SNAPS[idx] * winH,
       duration: 160,
@@ -2014,26 +2100,49 @@ function SheetShell({ title, onClear, onClose, children }: {
     }).start();
   }, [topAnim, winH]);
 
-  const pan = React.useRef(PanResponder.create({
-    onStartShouldSetPanResponder: () => true,
-    onMoveShouldSetPanResponder: (_e, g) => Math.abs(g.dy) > 4,
-    onPanResponderGrant: () => {
-      dragFrom.current = (topAnim as unknown as { _value: number })._value;
-    },
-    onPanResponderMove: (_e, g) => {
-      const next = Math.min(SHEET_SNAPS[0] * winH, Math.max(0, dragFrom.current + g.dy));
-      topAnim.setValue(next);
-    },
-    onPanResponderRelease: (_e, g) => {
-      const at = dragFrom.current + g.dy;
-      let best = 0;
-      let bestD = Infinity;
-      SHEET_SNAPS.forEach((f, i) => {
-        const d = Math.abs(at - f * winH);
-        if (d < bestD) { bestD = d; best = i; }
-      });
-      settle(best);
-    },
+  // Two drag surfaces, one shared drag. The header band (grab handle AND the
+  // title row) drags both ways — and it is a plain View on purpose:
+  // spreading panHandlers onto a Pressable let the Pressable's own responder
+  // plumbing swallow them on device, which is why "I still can't swipe the
+  // window" (CEO, 2026-08-18) while the QA browser looked fine. The content
+  // area captures UPWARD drags while the sheet is not yet fullscreen — swipe
+  // up anywhere to make it bigger, the Apple Maps sheet feel — and leaves
+  // every tap, and once fullscreen every scroll, to the list underneath.
+  const onGrant = () => {
+    dragFrom.current = (topAnim as unknown as { _value: number })._value;
+  };
+  const onMove = (_e: unknown, g: { dy: number }) => {
+    const next = Math.min(SHEET_SNAPS[0] * winH, Math.max(0, dragFrom.current + g.dy));
+    topAnim.setValue(next);
+  };
+  const onRelease = (_e: unknown, g: { dy: number }) => {
+    const at = dragFrom.current + g.dy;
+    let best = 0;
+    let bestD = Infinity;
+    SHEET_SNAPS.forEach((f, i) => {
+      const d = Math.abs(at - f * winH);
+      if (d < bestD) { bestD = d; best = i; }
+    });
+    settle(best);
+  };
+  const headerPan = React.useRef(PanResponder.create({
+    onStartShouldSetPanResponder: () => false,   // taps reach Clear and X
+    onMoveShouldSetPanResponderCapture: (_e, g) =>
+      Math.abs(g.dy) > 6 && Math.abs(g.dy) > Math.abs(g.dx),
+    onPanResponderTerminationRequest: () => false,
+    onPanResponderGrant: onGrant,
+    onPanResponderMove: onMove,
+    onPanResponderRelease: onRelease,
+  })).current;
+  const growPan = React.useRef(PanResponder.create({
+    onStartShouldSetPanResponder: () => false,
+    onMoveShouldSetPanResponderCapture: (_e, g) =>
+      snapRef.current !== SHEET_SNAPS.length - 1
+      && g.dy < -6 && Math.abs(g.dy) > Math.abs(g.dx),
+    onPanResponderTerminationRequest: () => false,
+    onPanResponderGrant: onGrant,
+    onPanResponderMove: onMove,
+    onPanResponderRelease: onRelease,
   })).current;
 
   return (
@@ -2042,34 +2151,37 @@ function SheetShell({ title, onClear, onClose, children }: {
       backgroundColor: T.bg2, borderTopLeftRadius: 20, borderTopRightRadius: 20,
       borderTopWidth: 1, borderColor: T.line,
     }}>
-      {/* the grab handle: drag to any of the three heights, or tap to
-          cycle them — the tap is also the screen-reader path */}
-      <Pressable
-        {...pan.panHandlers}
-        onPress={() => settle((snap + 1) % SHEET_SNAPS.length)}
-        accessibilityRole="button"
-        accessibilityLabel="Resize this panel. Tap to cycle half, tall and full screen."
-        style={{ alignItems: 'center', paddingTop: 7, paddingBottom: 2 }}
-      >
+      {/* the whole header band drags the sheet; the pill also cycles the
+          three heights on tap — the tap is the screen-reader path too */}
+      <View {...headerPan.panHandlers}>
+        <Pressable
+          onPress={() => settle((snap + 1) % SHEET_SNAPS.length)}
+          accessibilityRole="button"
+          accessibilityLabel="Resize this panel. Tap to cycle half, tall and full screen."
+          style={{ alignItems: 'center', paddingTop: 7, paddingBottom: 2 }}
+        >
+          <View style={{
+            width: 42, height: 5, borderRadius: 3, backgroundColor: T.line,
+          }} />
+        </Pressable>
         <View style={{
-          width: 42, height: 5, borderRadius: 3, backgroundColor: T.line,
-        }} />
-      </Pressable>
-      <View style={{
-        flexDirection: 'row', alignItems: 'center', gap: 10,
-        paddingHorizontal: 16, paddingTop: 5, paddingBottom: 10,
-        borderBottomWidth: 1, borderBottomColor: T.line,
-      }}>
-        <Text style={{ color: T.ink, fontWeight: '800', fontSize: 16, flex: 1 }}>{title}</Text>
-        <Pressable onPress={onClear} hitSlop={8} accessibilityRole="button">
-          <Text style={{ color: T.muted, fontWeight: '700', fontSize: 12.5 }}>Clear</Text>
-        </Pressable>
-        <Pressable onPress={onClose} hitSlop={10} accessibilityRole="button"
-          accessibilityLabel="Close">
-          <Icon name="close" size={22} color={T.muted} />
-        </Pressable>
+          flexDirection: 'row', alignItems: 'center', gap: 10,
+          paddingHorizontal: 16, paddingTop: 5, paddingBottom: 10,
+          borderBottomWidth: 1, borderBottomColor: T.line,
+        }}>
+          <Text style={{ color: T.ink, fontWeight: '800', fontSize: 16, flex: 1 }}>{title}</Text>
+          <Pressable onPress={onClear} hitSlop={8} accessibilityRole="button">
+            <Text style={{ color: T.muted, fontWeight: '700', fontSize: 12.5 }}>Clear</Text>
+          </Pressable>
+          <Pressable onPress={onClose} hitSlop={10} accessibilityRole="button"
+            accessibilityLabel="Close">
+            <Icon name="close" size={22} color={T.muted} />
+          </Pressable>
+        </View>
       </View>
-      <View style={{ flex: 1, paddingBottom: insets.bottom }}>{children}</View>
+      <View style={{ flex: 1, paddingBottom: insets.bottom }} {...growPan.panHandlers}>
+        {children}
+      </View>
     </RNAnimated.View>
   );
 }
@@ -2283,14 +2395,18 @@ function LayerSheet({
                       );
                     })()}
                     {/* "it should be possible to get a list so I can find
-                        the one I am looking for" (CEO). Only layers whose
-                        points the game NAMED get one — a list of 1,572
-                        rows saying "Chest" is noise, not information. */}
-                    {on && here > 0 && hasNames(l.id) && (
+                        the one I am looking for" (CEO). Layers whose points
+                        the game NAMED list those names; unnamed RESOURCE
+                        layers list their best farm spots instead — a list of
+                        1,405 rows saying "Ore" is noise, but "8 nodes close
+                        together" is exactly the good-to-farm answer. */}
+                    {on && here > 0
+                      && (hasNames(l.id) || richSpots(l.id, filters.region).length > 0) && (
                       <Pressable
                         onPress={() => onOpenList(l.id)}
                         accessibilityRole="button"
-                        accessibilityLabel={`List all ${l.label}`}
+                        accessibilityLabel={hasNames(l.id)
+                          ? `List all ${l.label}` : `Best ${l.label} spots`}
                         hitSlop={6}
                         style={{
                           marginLeft: 2, paddingLeft: 8, paddingVertical: 2,
@@ -2319,7 +2435,7 @@ function PalSheet({
   onToggle: (name: string) => void;
   onTogglePoi: (id: string) => void;
   onToggleDungeons: () => void;
-  onSetLevel: (hi: number) => void;
+  onSetLevel: (lo: number, hi: number) => void;
   onGoToPlace: (u: number, v: number) => void;
   onClear: () => void; onClose: () => void;
 }) {
@@ -2357,8 +2473,15 @@ function PalSheet({
     // live underground — otherwise the checkbox promises spawns it will not
     // let you ask for. 25 species on Palpagos are dungeon-only, Mau with 174
     // spawns among them, and every one of them was unsearchable.
-    () => spawnablePals().filter((n) => spawnLevels(n, region, filters.dungeons) !== null),
-    [region, filters.dungeons],
+    () => spawnablePals().filter((n) => {
+      const lv = spawnLevels(n, region, filters.dungeons);
+      if (lv === null) return false;
+      // the level band prunes the LIST too — "Up to 60 still shows all
+      // lvl 1s" (CEO, 2026-08-18) was reported about these rows, not just
+      // the pins; a row outside the band is exactly the noise he named
+      return lv.hi >= filters.level.lo && lv.lo <= filters.level.hi;
+    }),
+    [region, filters.dungeons, filters.level],
   );
 
   const list = useMemo(() => {
@@ -2412,31 +2535,25 @@ function PalSheet({
             Also show dungeon spawns
           </Text>
         </Pressable>
-        {/* "What can I actually catch at my level" — the map has known every
-            spawn's level band since the pipeline landed, and until now there
-            was no way to ask. An upper bound is the question players have:
-            a level 25 player wants to see what is at or under 25, and still
-            wants the low ones for breeding stock. */}
-        {/* One ROW, scrolling sideways, never wrapping. Five chips do not fit
-            343pt, and flexWrap broke the line as 4+1 — "Up to 60" stranded
-            alone under a ragged gap, which reads as a layout accident rather
-            than a control. A sideways row is the standard phone pattern, and
-            the fifth chip peeking off the edge is its own scroll hint. */}
+        {/* "What is around MY level" — bands, not upper bounds: "Up to 60
+            still shows all lvl 1s so it's a bad filter design" (CEO,
+            2026-08-18). One ROW, scrolling sideways, never wrapping; the
+            chips peeking off the edge are their own scroll hint. */}
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{ flexDirection: 'row', gap: 6 }}
         >
-          {LEVEL_CAPS.map((cap) => {
-            const on = filters.level.hi === cap;
+          {LEVEL_BANDS.map((b) => {
+            const on = filters.level.lo === b.lo && filters.level.hi === b.hi;
             return (
               <Pressable
-                key={cap}
-                onPress={() => onSetLevel(cap)}
+                key={b.label}
+                onPress={() => onSetLevel(b.lo, b.hi)}
                 accessibilityRole="button"
                 accessibilityState={{ selected: on }}
-                accessibilityLabel={cap === ALL_LEVEL_CAP
-                  ? 'Any level' : `Only pals up to level ${cap}`}
+                accessibilityLabel={b.label === 'Any level'
+                  ? 'Any level' : `Only spawns at level ${b.label}`}
                 style={{
                   paddingHorizontal: 11, paddingVertical: 7, borderRadius: 10,
                   borderWidth: 1, borderColor: on ? T.accent : T.line,
@@ -2446,7 +2563,7 @@ function PalSheet({
                 <Text style={{
                   color: on ? T.accentInk : T.muted, fontWeight: '700', fontSize: 12,
                 }}>
-                  {cap === ALL_LEVEL_CAP ? 'Any level' : `Up to ${cap}`}
+                  {b.label}
                 </Text>
               </Pressable>
             );
