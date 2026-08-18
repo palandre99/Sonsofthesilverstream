@@ -83,13 +83,17 @@ REGIONS = {
     # is allowed here, every pin is projected from coordinates and never
     # touches the image, and the placement audits keep reading the ORIGINAL
     # texture. The Reference tab labels the enhancement honestly.
-    "palpagos": ("T_WorldMap_enhanced16k.png", 5),
+    "palpagos": ("T_WorldMap_hi.png", 5),
     "tree": ("worldtree.webp", 3),          # z3 = 8x8 tiles  = 4096 effective
 }
 
 # Sources that are already machine-enhanced arrive edge-crisp; the land
 # unsharp pass would double-sharpen them into halos.
-ENHANCED = {"palpagos"}
+# EMPTY since 2026-08-18 23:2x: the CEO looked at the enhanced art on his
+# phone and judged it WORSE ("Ur scaling with ai made it worse in my
+# opinion"). His eye is the bar; the original game art ships. The pipeline
+# (tools/enhance_map_art.py, alignment gate included) stays for the record.
+ENHANCED: set[str] = set()
 
 # The game draws its map with a noticeably brighter teal sea than the raw
 # texture has (CEO, comparing against an in-game screenshot). We lift the WATER

@@ -162,12 +162,7 @@ export function ReferenceScreen() {
         dropped, not drawn — an object with no real position would be a
         guess, and the map never guesses.</P>
         <P>The map picture is the game&apos;s own map texture. Palpagos is drawn
-        from the full-size 8192 version published by PalMiniMap (MIT), enhanced
-        once with an AI upscaler (Real-ESRGAN) so it stays sharp at full zoom
-        — the geography is the game&apos;s, pixel-aligned and verified, but
-        the finest texture detail at extreme zoom is reconstructed rather than
-        original. Positions never touch the picture: every marker is placed
-        from datamined coordinates. The World
+        from the full-size 8192 version published by PalMiniMap (MIT); the World
         Tree comes from pal-atlas (MIT) at half that, because no larger copy of
         it has been published. Most of the map symbols are the game&apos;s
         own too — eight of them at full size from PalMiniMap, the rest from

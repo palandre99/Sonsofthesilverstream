@@ -563,9 +563,7 @@ describe('zoom never asks for pixels that do not exist', () => {
     // asset cap; the phone gets the same full coverage as 2x2 sprite
     // sheets, because EAS hard-caps an update at 1000 assets and 566
     // singles blew it. The sparse-250 era put the CEO's screenshots on z0.
-    // 567 since the AI enhancement: one previously-flat tile gained real
-    // detail and crossed the flatness threshold
-    expect(z5.length).toBe(567);
+    expect(z5.length).toBe(566);
     expect([...MAP_TILES.tree].some((k) => k.startsWith('4_'))).toBe(false);
   });
 
@@ -848,9 +846,9 @@ describe('the map credit matches the real sources', () => {
   );
 
   it('names PalMiniMap, now that the Palpagos texture comes from it', () => {
-    // the tiler draws from the CEO-approved enhanced art; the AUDITS keep
-    // reading the untouched original — both facts pinned
-    expect(tiles).toMatch(/T_WorldMap_enhanced16k\.png/);
+    // the CEO judged the AI-enhanced art WORSE by eye (2026-08-18 23:2x);
+    // the original game art ships, and the audit reads the same file
+    expect(tiles).toMatch(/T_WorldMap_hi\.png/);
     const audit = readFileSync(
       join(__dirname, '..', '..', 'tools', 'audit_map_sea.py'), 'utf8',
     );
