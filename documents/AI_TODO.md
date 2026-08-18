@@ -2105,6 +2105,35 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E140. THE STALENESS SWEEP — ALL 297 EFFECTS CHECKED, 28 REFRESHED,
+## THREE OF OURS WERE PLAIN WRONG 2026-08-18 (loop tick ~17:45)
+
+E139's follow-up, done and PUBLISHED (f99240b). Every partner effect
+diffed against paldb's current og text: 99 identical, 169 formatting-only
+(left alone — parens/spacing carry no meaning), 28 REWORDED, 1 page
+tagless (Snock Lux — ours is whole, left as delivered, documented).
+All 28 hand-reviewed before acceptance. Three were genuine errors in our
+July snapshot, live on his phone until tonight:
+- Pengullet Lux described its mechanic BACKWARDS ("equips Pengullet Lux
+  to fire Rocket Launcher as ammunition") — the game fires the penguin
+  FROM the launcher;
+- Tetroise Primo claimed "increases the durability" where the game says
+  "reduces durability loss" — different mechanic;
+- Mimog's text lacked the game's own limit ("Does not apply to chests
+  that require a specific Work Suitability").
+The rest: the 1.0.3 buildup-rewords, trigger fixes (Dualith "When
+activated" -> "While mounted"), typo fixes (Eidrolon Ignis "or each
+other"), and range-order normalisations. The sweep report with every
+diff is preserved in the session scratchpad; the ACCEPTANCE rationale is
+this entry. Gates 691, tsc clean, Pengullet Lux render-proven, published
+both channels, all three data copies moved together.
+
+DATA-LAYER STATUS after E139+E140: partner-effect text is now CURRENT
+and WHOLE across all 297 species — the last known text-quality debt in
+the breeding data is retired. Remaining known data gaps: Special/
+Mushroom Cake bonuses (not datamined, unmodelled by policy), Jolthog's
+boss page (absent upstream), Snock Lux og tag (absent upstream).
+
 ## E139. THE 19 CUT-OFF PARTNER EFFECTS ARE WHOLE — THE DEFERRED
 ## PIPELINE JOB, DONE AND PUBLISHED 2026-08-18 (loop tick ~17:00)
 
