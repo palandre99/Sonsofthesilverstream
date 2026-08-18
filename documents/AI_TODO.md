@@ -350,6 +350,64 @@ node scripts/publish.js "what changed, in the CEO's language"
   `git status` is not a gate and a bundle takes ~30s during which they can
   save a file. Both cross-lane incidents are self-reported above.
 
+- 2026-08-18 late CLAIMED (BOSSES & RAIDS lane, new worker, CEO redirect):
+  the bosses fane — new `mobile/src/screens/bosses/` (all screens + the
+  Boss Card), new `mobile/src/logic/counters.ts` + `app/src/logic/
+  counters.ts` (parity pair), a bosses slice in the store (new file or a
+  clearly-bounded `store.ts` addition), new `tools/fetch_element_chart.py`
+  / `fetch_tower_raid_stats.py` / `fetch_boss_movesets.py`, new
+  `data/elements_1_0.json` + `data/tower_raid_1_0.json` + moveset data
+  (+ their generated `.g.ts` mirrors in both trees), new `app/tests/
+  elements.test.ts` / `counters.test.ts` / `boss-data.test.ts`, and the
+  `bosses` entry ONLY in `mobile/src/nav/domains.ts`. I stay OUT of the
+  map lane's files (map/, MapScreen, tiles, their tools), the Items
+  lane's files (ItemsScreen, itemsData, fetch_item_*), the engine, and
+  the Plan-tab surface. Plan of record: `documents/10_BOSSES_PLAN.md`.
+
+
+## B. CEO DIRECTIVE 2026-08-18 late — THE BOSSES & RAIDS FANE (new worker)
+## (verbatim intake: "u will be the worker that starts the bosses and raids
+## tab. deep research other apps, other competitors, apps from other games…
+## find the best design, best layout, all features we want for this fane.
+## Perfected tabs… all raids and bosses, what is strong against what,
+## potential special attacks, info card of the bosses… map location… which
+## pals are strong against it, pulling from paldex… recomended pals to
+## catch/breed for the tower and how to. clean 'where to catch' or 'create
+## breeding plan' button… showing recomended level… weighing what u already
+## have… do not dissapoint. 10/10 masterpiece quality AAA studio level is
+## minimum")
+
+*Plan of record: `documents/10_BOSSES_PLAN.md` (research findings, tab
+design, the Boss Card anatomy, the counter model, the data pipeline, the
+phase order). Research done at intake 2026-08-18: competitors probed
+(Game8-class guides, paldb.cc, Dododex, Pokebattler, Paltopia/MapGenie/MHW
+patterns), game content inventoried (9 towers + Hard Mode, raid roster
+provable from our own slab items, 205 alphas already datamined at E133),
+and the one missing dataset identified: the element chart.*
+
+- [ ] B1 Phase 0a: `tools/fetch_element_chart.py` → `data/elements_1_0.json`
+      (+ both tree mirrors). Datamined first, wiki-labelled fallback with
+      two recorded cross-checked mirrors; +20% same-element bonus only if
+      found in data. verification.json claim.
+- [ ] B2 Phase 0b: `tools/fetch_tower_raid_stats.py` → GYM_ + RAID_ rows
+      (identity cross-checked on element+level+name, refusals counted);
+      `tools/fetch_boss_movesets.py` → boss-variant attacks, every skill
+      resolving against a skills index or refused. Hard Mode rows if the
+      table carries them.
+- [ ] B3 Phase 0c: `src/logic/counters.ts` parity pair + new test families
+      (`elements.test.ts`, `counters.test.ts`, `boss-data.test.ts`).
+- [ ] B4 Phase A: Tower tab + the Boss Card (fixed anatomy, counters from
+      the box, catch/breed deep links, PalMap preview, Normal/Hard beaten
+      ticks per profile). Eye-verified, gates green, committed, PUBLISHED.
+- [ ] B5 Phase B: Alphas tab (205+ browse, filters, beaten/caught ticks,
+      respawn note community-labelled).
+- [ ] B6 Phase C: Raids tab (roster from data, summoning prep checklist
+      with item cross-links, fight card + Ultra toggle, rewards).
+- [ ] B7 Phase D: Teams tab (element-coverage matrix, ranked squads,
+      gap→catch/breed rows; saved-squad editor deferred, logged here).
+- [ ] B8 Phase E: cross-links (pal-card strong/weak chips, NavIntent
+      payload extension, map-side "Prep this fight" — REQUEST to the map
+      lane, not an edit; Suggested Goals fighting → Teams).
 
 ## F. CEO DIRECTIVE ~22:45 2026-08-15 — THE MAP FANE (second worker)
 ## (verbatim intake: "the map needs to look exactly like the map when i open
@@ -9554,3 +9612,18 @@ fine." KEPT AND ENFORCED:
 - Eye-verified at the exact zoom of his 22:34 blur screenshot: crisp.
   Comparison strip sent to him (scratchpad/compare_full.png).
 717 tests green, tsc clean both trees. His device verdict is the gate.
+
+### M72 — enhancement ROLLED BACK on his eye (aa8b018); publish QUEUED
+His verdict on the phone: "Ur scaling with ai made it worse in my
+opinion." His eye is the bar — reverted whole: tiles/index restored from
+9f648ec, tiler back to T_WorldMap_hi.png (ENHANCED set emptied with the
+verdict documented beside it), Reference honesty label removed, pins
+back to 566/original. enhance_map_art.py STAYS in the repo for the
+record. 717 tests green, tsc clean. PUBLISH REFUSED by the guard — the
+goals lane is mid-flight (App.tsx/itemsData/domains/ItemsScreen/CLAUDE.md
+dirty); retry when their tree settles. COORDINATION NOTE for the goals
+lane: their STAGED deletion of tools/fetch_item_recipes.py rode into my
+rollback commit aa8b018 (shared-index race — they staged it while I was
+committing); the deletion looks intentional on their side, only the
+commit label is mine. Micro-UX hunt shots (sealed list, bounty poster)
+from the interrupted round sit in scratchpad qa29 — review next tick.
