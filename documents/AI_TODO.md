@@ -2105,6 +2105,34 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E137. HIS POINTER AT ODDS + REFERENCE — THREE REAL FINDS, SHIPPED
+## 2026-08-18 (afternoon)
+
+"The odds and reference tabs might also need some work idk" — hunted
+both, full hostile read + render drive. THREE real finds, all shipped
+and PUBLISHED (171a308):
+1. **The proof screen doubted its own proofs**: the verdict->badge map
+   lacked 'verified' and both 'upstream defect' verdicts, so three
+   claims (incl. the boss-stats one) wore the amber fallback. Now
+   mapped; reference-copy.test.ts DERIVES the required keys from the
+   shipped claims file — an unmapped future verdict fails CI, not his
+   screen.
+2. **Floor brackets survived on the Reference** (screen prose AND claim
+   #0's own text) after E105 banned them from the Calculator. Both now
+   use the Calculator's sentence: "average them, rounding up" — meaning
+   bit-identical, raw field named once in parens.
+3. **The IV tab forgot picked stats on tab switches** while the
+   passives tab remembered via oddsSession — the exact wipe that cache
+   exists to prevent, per its own comment. IV picks + the
+   specific-parent toggle now live in the session too.
+Clean bill otherwise: the Odds Lab's math surface, cake honesty labels,
+warnings (mutation-only/native/World-Tree), pool-cap loophole copy and
+egg-helper card all read correctly on the drive. NOTE for the lane map:
+ReferenceScreen is listed as a Map-lane file in the handoff, but its
+content is the breeding handbook + claims table (the map credits card
+is the map lane's one paragraph) — edited on the CEO's direct order,
+their card untouched.
+
 ## E136. CI GUARDS THE PHONE TREE NOW — GREEN ON THE RUNNER 2026-08-18
 
 The branch's first push in two days (340+ commits) turned CI red and
