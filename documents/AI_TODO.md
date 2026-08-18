@@ -2105,6 +2105,20 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E141. THE CLAIMS TABLE CAUGHT UP WITH ITS OWN REPAIRS 2026-08-18
+## (loop tick ~18:10)
+
+Small and real: shipped claim 29 was a 2026-08-15 one-pal patch note
+("Ribbuny Botan ... patched into both dataset copies" — BOTH, which is
+exactly why the third copy diverged and E139 had to find it). Replaced
+in canonical + shipped copies with one verified claim covering the
+current state of all 297 partner effects: the prefix rule, the 28
+hand-reviewed refreshes with the three named errors, the 169 formatting
+diffs left alone, Snock Lux's honest limit. Also checked: no screen
+consumes isCutOff (the explainer copy went with an earlier design), so
+nothing in the UI still describes the retired debt. Gates 691, tsc
+clean, PUBLISHED both channels, pushed.
+
 ## E140. THE STALENESS SWEEP — ALL 297 EFFECTS CHECKED, 28 REFRESHED,
 ## THREE OF OURS WERE PLAIN WRONG 2026-08-18 (loop tick ~17:45)
 
