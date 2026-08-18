@@ -388,6 +388,15 @@
     "paldb.cc per-boss pages, fetched 2026-08-18 (raw game-table mirror)",
     "Awy64/palworld-atlas-data manifest: DT_PalMonsterParameter, 753 rows, build 24575149"
    ]
+  },
+  {
+   "claim": "The items backbone covers all 1,892 shipped items with the game's own names and descriptions (fetched 2026-08-18)",
+   "verdict": "verified",
+   "evidence": "Awy64/palworld-atlas-data published items index, steam build 24575149 — the official dedicated-server package, extracted and schema-validated upstream from DT_ItemDataTable (2,466 raw rows, 1,892 shipped) with names/descriptions from DT_ItemNameText/DT_ItemDescriptionText. Validated on fetch: unique non-empty ids, every item named, 12 categories (Weapon 310, Armor 264, Blueprint 490, Essential 217, Consume 206, Material 177, Food 94, Accessory 81, Ammo 32, SpecialWeapon 10, CaptureItemModifier 6, Glider 5). items-data.test.ts pins count, categories and three-copy identity.",
+   "sources": [
+    "Awy64/palworld-atlas-data build 24575149 items index",
+    "tools/fetch_items_index.py"
+   ]
   }
  ]
 }
