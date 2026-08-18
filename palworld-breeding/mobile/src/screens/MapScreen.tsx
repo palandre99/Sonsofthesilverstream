@@ -13,9 +13,8 @@
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import {
   Alert, Animated as RNAnimated, Dimensions, FlatList, Image, PanResponder,
-  Pressable, ScrollView, Share, Text, TextInput, View,
+  Pressable, ScrollView, Text, TextInput, View,
 } from 'react-native';
-import * as Clipboard from 'expo-clipboard';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 import { T } from '../theme';
@@ -30,11 +29,6 @@ import {
   PIN_LABEL_MAX, addPin, clearPins, loadPins, onPinsChange, pinCount, pinsIn, removePin,
   renamePin, type MapPin,
 } from '../map/pins';
-import {
-  addStop, clearRoute, importRoute, loadRoute, onRouteChange, removeStop,
-  routeIn, stopCount,
-} from '../map/routes';
-import { decodeRoute, encodeRoute } from '../map/routeShare';
 import {
   GROUP_LABEL, alphaSpots, closeMatches, dungeonPoints, emptyFilters, isNightOnly,
   poiLayer,
@@ -90,9 +84,6 @@ export function MapScreen() {
   const [ticks, setTicks] = useState(0);   // bumps when a tick changes
   /** the player's pin whose card is open, if any */
   const [openPin, setOpenPin] = useState<MapPin | null>(null);
-  /** a route spot whose card is open and has NO pin under it (the mark was
-   *  deleted after the stop was added) — the stop must stay reachable */
-  const [openStops, setOpenStops] = useState<{ u: number; v: number } | null>(null);
   /** layer-list controls — "more filters, like paldex, type, level, search
    *  for name" (CEO, 22:38). Reset each time a list opens. */
   const [listQ, setListQ] = useState('');
@@ -104,11 +95,9 @@ export function MapScreen() {
   React.useEffect(() => {
     void loadFound();
     void loadPins();
-    void loadRoute();
     const offFound = onFoundChange(() => setTicks((n) => n + 1));
     const offPins = onPinsChange(() => setTicks((n) => n + 1));
-    const offRoute = onRouteChange(() => setTicks((n) => n + 1));
-    return () => { offFound(); offPins(); offRoute(); };
+    return () => { offFound(); offPins(); };
   }, []);
 
   const region = filters.region;
@@ -400,7 +389,6 @@ export function MapScreen() {
       // just left. Same fault as the Mau banner: the map asserting something
       // about a place that is not here.
       setOpenPin(null);
-      setOpenStops(null);
       // the focus card too: it names a POI or a coordinate readout of the
       // island you just LEFT — same fault family, found surviving the
       // switch in QA while walking the routes work
@@ -449,7 +437,7 @@ export function MapScreen() {
       v: p.v,
       render: () => (
         <Pressable
-          onPress={() => { void Haptics.selectionAsync(); setOpenPin(p); setOpenStops(null); }}
+          onPress={() => { void Haptics.selectionAsync(); setOpenPin(p); }}
           accessibilityRole="button"
           accessibilityLabel={`Your pin, ${p.label}`}
           style={{
@@ -467,82 +455,20 @@ export function MapScreen() {
     [region, ticks],
   );
 
-  /** this map's route, in the order the player added the stops */
-  const myRoute = useMemo(() => routeIn(region), [region, ticks]);
 
-  /** Has this player EVER marked or routed anything, on either island?
-   *  The first-run hint teaches the controls; proof of learning is global,
-   *  and asking the region-scoped question made the hint reappear on the
-   *  World Tree for a player with four stops on Palpagos. */
+  /** Has this player EVER marked anything, on either island? The
+   *  first-run hint teaches the controls; proof of learning is global. */
   const neverMarked = useMemo(
-    () => pinCount('palpagos') + pinCount('tree')
-      + stopCount('palpagos') + stopCount('tree') === 0,
+    () => pinCount('palpagos') + pinCount('tree') === 0,
     [ticks],
   );
 
-  /** Open whatever is at a route spot: the mark's card when a pin is still
-   *  there (it carries the route verbs), or the bare-stop card when the mark
-   *  was deleted — a stop with no card would be a stop you cannot remove. */
-  const openSpot = useCallback((u: number, v: number) => {
-    const pin = pinsIn(region).find((p) => p.u === u && p.v === v);
-    setDraft(null);
-    if (pin) { setOpenPin(pin); setOpenStops(null); return; }
-    setOpenPin(null);
-    setOpenStops({ u, v });
-  }, [region]);
-
-  /**
-   * Stop badges: one per SPOT, so stops that share a place JOIN their
-   * numbers ("1 · 4") instead of the later badge burying the earlier one.
-   * Pressable since slice 2 — the badge owns the tap and routes it to the
-   * card that holds the stop verbs (the pin card when the mark still
-   * exists, the bare-stop card when it does not). Centred on the true spot:
-   * width is estimated from the label (digits at this size are ~6px) — a
-   * couple of px off-centre on a wide chip is invisible; REASONED, checked
-   * by eye in QA, not measured per-frame.
-   */
-  const routeBadges = useMemo<MapMarker[]>(() => {
-    const bySpot = new Map<string, { u: number; v: number; nums: number[] }>();
-    myRoute.forEach((s, i) => {
-      const key = `${s.u},${s.v}`;
-      const hit = bySpot.get(key);
-      if (hit) hit.nums.push(i + 1);
-      else bySpot.set(key, { u: s.u, v: s.v, nums: [i + 1] });
-    });
-    return [...bySpot.values()].map((spot) => {
-      const label = spot.nums.join(' · ');
-      const w = Math.max(20, label.length * 6 + 12);
-      return {
-        key: `route:${spot.nums.join('-')}`,
-        u: spot.u,
-        v: spot.v,
-        render: () => (
-          <Pressable
-            onPress={() => { void Haptics.selectionAsync(); openSpot(spot.u, spot.v); }}
-            accessibilityRole="button"
-            accessibilityLabel={`Route stop ${spot.nums.join(' and ')}`}
-            style={{
-              minWidth: 20, height: 20, width: w,
-              marginLeft: -w / 2, marginTop: -10,
-              borderRadius: 10, alignItems: 'center', justifyContent: 'center',
-              backgroundColor: 'rgba(10,20,24,0.92)',
-              borderWidth: 2, borderColor: MY_ROUTE,
-            }}
-          >
-            <Text style={{ color: MY_ROUTE, fontSize: 9.5, fontWeight: '800' }}>
-              {label}
-            </Text>
-          </Pressable>
-        ),
-      };
-    });
-  }, [myRoute, openSpot]);
 
   // boss pins ride above the spawn cloud — the guaranteed spot should not be
   // buried under a hundred maybes
   const allPins = useMemo(
-    () => [...markers, ...bossPins, ...myPins, ...routeBadges],
-    [bossPins, markers, myPins, routeBadges],
+    () => [...markers, ...bossPins, ...myPins],
+    [bossPins, markers, myPins],
   );
 
   // Labels are SCREEN markers now — outside the map's transform, so their text
@@ -741,7 +667,6 @@ export function MapScreen() {
         region={region}
         markers={allPins}
         screenMarkers={labels}
-        route={{ stops: myRoute, colour: MY_ROUTE }}
         spotlight={spotlight}
         canvasRef={canvas}
         onViewport={setVp}
@@ -809,7 +734,6 @@ export function MapScreen() {
               const pin = pinsIn(region).find((p) => p.id === id);
               if (pin) {
                 setDraft(null);
-                setOpenStops(null);
                 setOpenPin(pin);
               }
             }
@@ -960,76 +884,6 @@ export function MapScreen() {
               />
             )}
           </View>
-          {/* The route verb gets its own full-width row: a fourth button in
-              the actions row does not fit 375pt and wraps onto a ragged
-              second line. Hidden while renaming for the same reason Remove
-              is — an edit mode offers exactly the two verbs that end an
-              edit. "Add" only haptics when a stop was actually added: the
-              store refuses a repeat of the LAST stop (a zero-length leg is a
-              double-tap, not a route). */}
-          {draft === null && (() => {
-            const last = myRoute[myRoute.length - 1];
-            const isLast = last != null
-              && last.u === openPin.u && last.v === openPin.v;
-            return (
-              <Pressable
-                onPress={() => {
-                  if (addStop(region, openPin.u, openPin.v, openPin.label)) {
-                    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                  }
-                }}
-                accessibilityRole="button"
-                accessibilityState={{ disabled: isLast }}
-                style={{
-                  flexDirection: 'row', alignItems: 'center',
-                  justifyContent: 'center', gap: 6,
-                  paddingHorizontal: 10, paddingVertical: 8, borderRadius: 10,
-                  borderWidth: 1, borderColor: isLast ? T.line : MY_ROUTE,
-                  backgroundColor: T.surface,
-                }}
-              >
-                <Icon name="map-marker-path" size={14}
-                  color={isLast ? T.muted : MY_ROUTE} />
-                <Text style={{
-                  color: isLast ? T.muted : T.ink, fontWeight: '700', fontSize: 12,
-                }}>
-                  {isLast
-                    ? `On my route — stop ${myRoute.length}`
-                    : myRoute.length === 0
-                      ? 'Start my route here'
-                      : `Add to my route — stop ${myRoute.length + 1}`}
-                </Text>
-              </Pressable>
-            );
-          })()}
-          {/* Every stop AT THIS SPOT, each removable on its own. The route
-              verb above adds; these rows subtract. Hidden while renaming,
-              like every verb that is not Save or Cancel. */}
-          {draft === null && myRoute.map((s, i) => ({ s, n: i + 1 }))
-            .filter(({ s }) => s.u === openPin.u && s.v === openPin.v)
-            .map(({ n }) => (
-              <View key={n}
-                style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                <Text style={{ color: T.muted, fontSize: 12, fontWeight: '700', flex: 1 }}>
-                  Stop {n} of {myRoute.length}
-                </Text>
-                <Pressable
-                  onPress={() => {
-                    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                    removeStop(region, n - 1);
-                  }}
-                  accessibilityRole="button"
-                  style={{
-                    paddingHorizontal: 10, paddingVertical: 6, borderRadius: 10,
-                    borderWidth: 1, borderColor: T.line, backgroundColor: T.surface,
-                  }}
-                >
-                  <Text style={{ color: T.muted, fontWeight: '700', fontSize: 12 }}>
-                    Remove stop {n}
-                  </Text>
-                </Pressable>
-              </View>
-            ))}
           <View style={{ flexDirection: 'row', gap: 8 }}>
             {draft !== null ? (
               <>
@@ -1123,71 +977,6 @@ export function MapScreen() {
         </View>
       )}
 
-      {/* A route stop whose mark was deleted still needs a card — a stop you
-          cannot reach is a stop you cannot remove. Same chrome as the mark
-          card, chartreuse edge, only the stop verbs. */}
-      {openStops && !openPin && (() => {
-        const here = myRoute.map((s, i) => ({ s, n: i + 1 }))
-          .filter(({ s }) => s.u === openStops.u && s.v === openStops.v);
-        if (here.length === 0) return null;
-        return (
-          <View style={{
-            position: 'absolute', top: 56, left: 12, right: 12,
-            backgroundColor: 'rgba(12,22,24,0.94)', borderRadius: 12,
-            borderWidth: 1, borderColor: MY_ROUTE, paddingHorizontal: 12,
-            paddingVertical: 10, gap: 8,
-          }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-              <Icon name="map-marker-path" size={16} color={MY_ROUTE} />
-              <Text style={{ color: T.ink, fontWeight: '800', fontSize: 13.5, flex: 1 }}>
-                Route stop
-              </Text>
-              <Text numberOfLines={1} style={{
-                color: T.muted, fontWeight: '700', fontSize: 12,
-                flexShrink: 1, maxWidth: '55%', textAlign: 'right',
-              }}>
-                {here[0].s.label}
-              </Text>
-            </View>
-            {here.map(({ n }) => (
-              <View key={n}
-                style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                <Text style={{ color: T.muted, fontSize: 12, fontWeight: '700', flex: 1 }}>
-                  Stop {n} of {myRoute.length}
-                </Text>
-                <Pressable
-                  onPress={() => {
-                    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                    removeStop(region, n - 1);
-                  }}
-                  accessibilityRole="button"
-                  style={{
-                    paddingHorizontal: 10, paddingVertical: 6, borderRadius: 10,
-                    borderWidth: 1, borderColor: T.line, backgroundColor: T.surface,
-                  }}
-                >
-                  <Text style={{ color: T.muted, fontWeight: '700', fontSize: 12 }}>
-                    Remove stop {n}
-                  </Text>
-                </Pressable>
-              </View>
-            ))}
-            <Pressable
-              onPress={() => setOpenStops(null)}
-              accessibilityRole="button"
-              style={{
-                alignSelf: 'flex-start',
-                paddingHorizontal: 10, paddingVertical: 7, borderRadius: 10,
-                borderWidth: 1, borderColor: T.line, backgroundColor: T.surface,
-              }}
-            >
-              <Text style={{ color: T.muted, fontWeight: '700', fontSize: 12 }}>
-                Close
-              </Text>
-            </Pressable>
-          </View>
-        );
-      })()}
 
       {/* A pal picked on one map vanishes silently when you switch to the
           other. Say so, and say where it does live, instead of showing an
@@ -1303,7 +1092,7 @@ export function MapScreen() {
         {/* `shownCount` counts DATA points, so with only your own marks on the
             map the key used to stay hidden and the pin colour went unexplained.
             Your marks are a reason to show the key too. */}
-        {(shownCount > 0 || myPins.length > 0 || myRoute.length > 0) && (
+        {(shownCount > 0 || myPins.length > 0) && (
           <>
             {/* The legend only lists what is ON — a static key to 23 layers
                 would be a wall of colour the player has to filter by eye. */}
@@ -1378,32 +1167,6 @@ export function MapScreen() {
                     </Text>
                   </View>
                 )}
-                {/* The route sits in the key too: a chartreuse dotted
-                    line with numbered stops is otherwise an unexplained
-                    colour, and the key is where you look to find out what a
-                    colour means. */}
-                {myRoute.length > 0 && (
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 9 }}>
-                    <View style={{
-                      width: 19, height: 19, borderRadius: 9.5,
-                      borderWidth: 2, borderColor: MY_ROUTE,
-                      backgroundColor: 'rgba(10,20,24,0.86)',
-                      alignItems: 'center', justifyContent: 'center',
-                    }}>
-                      <Text style={{
-                        color: MY_ROUTE, fontSize: 9, fontWeight: '800',
-                      }}>1</Text>
-                    </View>
-                    <Text style={{
-                      color: T.ink, fontSize: 12.5, fontWeight: '700', flex: 1,
-                    }}>
-                      My route
-                    </Text>
-                    <Text style={{ color: T.faint, fontSize: 11.5, fontWeight: '700' }}>
-                      {myRoute.length === 1 ? '1 stop' : `${myRoute.length} stops`}
-                    </Text>
-                  </View>
-                )}
                 {/* "idk if it's accurate even?" — CEO, 2026-08-17. The answer
                     existed, in four independent proofs, and lived in the
                     Reference tab where he was never going to look for it. A
@@ -1448,11 +1211,6 @@ export function MapScreen() {
                     "N of my marks" implied a subset. It is all of them. */}
                 {myPins.length > 0
                   ? (myPins.length === 1 ? 'My mark' : `My ${myPins.length} marks`)
-                  : ''}
-                {(shownCount > 0 || myPins.length > 0) && myRoute.length > 0 ? ' · ' : ''}
-                {myRoute.length > 0
-                  ? (myRoute.length === 1
-                    ? 'My route: 1 stop' : `My route: ${myRoute.length} stops`)
                   : ''}
               </Text>
             </Pressable>
@@ -1755,49 +1513,6 @@ export function MapScreen() {
             void Haptics.selectionAsync();
             setFilters((f) => ({ ...f, found: m }));
           }}
-          onClearRoute={() => { clearRoute(region); setOpenStops(null); }}
-          onShareRoute={() => {
-            const name = MAP_REGIONS.find((r) => r.id === region)?.name ?? region;
-            void Share.share({ message: encodeRoute(region, name, myRoute) });
-          }}
-          onImportRoute={async () => {
-            const text = await Clipboard.getStringAsync();
-            const parsed = decodeRoute(text);
-            if (!parsed.ok) {
-              Alert.alert('Nothing to import', parsed.why);
-              return;
-            }
-            if (parsed.region !== region) {
-              const name = MAP_REGIONS.find((r) => r.id === parsed.region)?.name
-                ?? parsed.region;
-              Alert.alert(
-                'Wrong map',
-                `This is a ${name} route — switch to that map to import it.`,
-              );
-              return;
-            }
-            const bring = () => {
-              if (importRoute(region, parsed.stops)) {
-                void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                setOpenStops(null);
-              }
-            };
-            if (myRoute.length > 0) {
-              // replacing is the ONLY combining rule — merging two routes
-              // would invent an order nobody chose
-              Alert.alert(
-                'Replace your route?',
-                `You already have ${myRoute.length === 1 ? '1 stop' : `${myRoute.length} stops`} on this map. Importing replaces them.`,
-                [
-                  { text: 'Keep mine', style: 'cancel' },
-                  { text: 'Replace', style: 'destructive', onPress: bring },
-                ],
-              );
-              return;
-            }
-            bring();
-          }}
-          routeStops={myRoute.length}
           onClose={() => setSheet(null)}
         />
       )}
@@ -1878,7 +1593,6 @@ function PlaceName({ name }: { name: string }) {
 const MY_PIN = '#F050FF';
 /** chartreuse: verified absent from all 23 data-layer colours and far from
  *  MY_PIN — a path you drew must never read as something the game put there */
-const MY_ROUTE = '#C8FF4D';
 
 const PIN = 23;
 
@@ -2310,13 +2024,11 @@ function SheetShell({ title, onClear, onClose, children }: {
 
 function LayerSheet({
   filters, onToggle, onClear, onClearFound, onClearMine, myMarks,
-  onClearRoute, onShareRoute, onImportRoute, routeStops, onOpenList,
+  onOpenList,
   onFoundMode, onClose,
 }: {
   filters: MapFilters; onToggle: (id: string) => void; onClear: () => void;
   onClearFound: () => void; onClearMine: () => void; myMarks: number;
-  onClearRoute: () => void; onShareRoute: () => void;
-  onImportRoute: () => void; routeStops: number;
   onOpenList: (id: string) => void;
   onFoundMode: (m: MapFilters['found']) => void;
   onClose: () => void;
@@ -2387,56 +2099,6 @@ function LayerSheet({
               </Pressable>
             ))}
         </View>
-        {routeStops > 0 && (
-          <Pressable
-            onPress={onShareRoute}
-            accessibilityRole="button"
-            style={{
-              alignSelf: 'flex-start', flexDirection: 'row', alignItems: 'center', gap: 7,
-              paddingHorizontal: 11, paddingVertical: 9, borderRadius: 11,
-              borderWidth: 1, borderColor: T.line, backgroundColor: T.surface,
-            }}
-          >
-            <Icon name="share-variant-outline" size={15} color={T.muted} />
-            <Text style={{ color: T.muted, fontWeight: '700', fontSize: 12.5 }}>
-              {routeStops === 1
-                ? 'Share my route — 1 stop'
-                : `Share my route — ${routeStops} stops`}
-            </Text>
-          </Pressable>
-        )}
-        <Pressable
-          onPress={onImportRoute}
-          accessibilityRole="button"
-          style={{
-            alignSelf: 'flex-start', flexDirection: 'row', alignItems: 'center', gap: 7,
-            paddingHorizontal: 11, paddingVertical: 9, borderRadius: 11,
-            borderWidth: 1, borderColor: T.line, backgroundColor: T.surface,
-          }}
-        >
-          <Icon name="clipboard-arrow-down-outline" size={15} color={T.muted} />
-          <Text style={{ color: T.muted, fontWeight: '700', fontSize: 12.5 }}>
-            Import a route from the clipboard
-          </Text>
-        </Pressable>
-        {routeStops > 0 && (
-          <Pressable
-            onPress={onClearRoute}
-            accessibilityRole="button"
-            style={{
-              alignSelf: 'flex-start', flexDirection: 'row', alignItems: 'center', gap: 7,
-              paddingHorizontal: 11, paddingVertical: 9, borderRadius: 11,
-              borderWidth: 1, borderColor: T.line, backgroundColor: T.surface,
-            }}
-          >
-            <Icon name="map-marker-path" size={15} color={T.muted} />
-            <Text style={{ color: T.muted, fontWeight: '700', fontSize: 12.5 }}>
-              {routeStops === 1
-                ? 'Clear my route — 1 stop'
-                : `Clear my route — ${routeStops} stops`}
-            </Text>
-          </Pressable>
-        )}
         {foundCount() > 0 && (
           <Pressable
             onPress={onClearFound}

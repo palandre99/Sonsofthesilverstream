@@ -33,7 +33,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { Image } from 'expo-image';
-import Svg, { Circle, Polyline } from 'react-native-svg';
+import Svg, { Circle } from 'react-native-svg';
 import {
   MAP_SHEETS, MAP_TILES, MAX_TILE_Z, REGION_MAX_Z, TILE_GUTTER, TILE_SIZE,
 } from '../data/tileIndex.g';
@@ -164,65 +164,11 @@ function MarkerPin({ u, v, tx, ty, k, children }: {
   );
 }
 
-const AnimatedPolyline = Animated.createAnimatedComponent(Polyline);
-
-/**
- * The player's route, drawn in SCREEN space for the same reason the place
- * names are: anything inside the transformed container is rasterised at its
- * pre-zoom size and GPU-magnified, so a line in there would go soft AND its
- * stroke would fatten with the zoom — svg's non-scaling-stroke cannot help
- * against a transform applied outside the svg renderer. Here the geometry
- * itself is recomputed on the UI thread each frame (screen = u·k + tx, the
- * same arithmetic ScreenPin uses), so the stroke is constant-width and crisp
- * at every zoom by construction.
- *
- * Two polylines, not one: a dark casing under the colour keeps the dots
- * readable over snowfields and pale sand. Each owns its own animatedProps —
- * sharing one across views is the documented Reanimated mistake that made
- * the pins go soft.
- */
-function RouteLine({ stops, tx, ty, k, colour, w, h }: {
-  stops: { u: number; v: number }[];
-  tx: SharedValue<number>;
-  ty: SharedValue<number>;
-  k: SharedValue<number>;
-  colour: string;
-  w: number;
-  h: number;
-}) {
-  const casing = useAnimatedProps(() => ({
-    points: stops
-      .map((s) => `${s.u * k.value + tx.value},${s.v * k.value + ty.value}`)
-      .join(' '),
-  }));
-  const core = useAnimatedProps(() => ({
-    points: stops
-      .map((s) => `${s.u * k.value + tx.value},${s.v * k.value + ty.value}`)
-      .join(' '),
-  }));
-  return (
-    // EXPLICIT width/height, not absoluteFill: an <svg> is a replaced element,
-    // and CSS gives an absolutely-positioned replaced element its INTRINSIC
-    // size (300×150) rather than stretching it between opposing offsets — the
-    // route painted fine in the DOM and was invisible on screen, clipped to a
-    // 300×150 box. Measured in the QA browser; explicit size is right on both
-    // renderers.
-    <Svg pointerEvents="none" width={w} height={h}
-      style={{ position: 'absolute', top: 0, left: 0 }}>
-      <AnimatedPolyline animatedProps={casing} fill="none"
-        stroke="rgba(6,12,14,0.85)" strokeWidth={5.5}
-        strokeLinecap="round" strokeLinejoin="round" strokeDasharray="1 9" />
-      <AnimatedPolyline animatedProps={core} fill="none"
-        stroke={colour} strokeWidth={3}
-        strokeLinecap="round" strokeLinejoin="round" strokeDasharray="1 9" />
-    </Svg>
-  );
-}
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 /**
- * The Best-spots ring, screen-space for the same reason RouteLine is: inside
+ * The Best-spots ring, screen-space because inside
  * the transform the stroke would fatten with the zoom. The radius is in uv
  * units — the ring hugs the same patch of ground at every zoom — with a
  * 26px floor so it can never collapse into the pin it is ringing when the
@@ -309,7 +255,6 @@ export function MapCanvas({
   region,
   markers,
   screenMarkers,
-  route,
   spotlight,
   onViewport,
   onPress,
@@ -321,7 +266,6 @@ export function MapCanvas({
   /** drawn unscaled, above the map — use for text */
   screenMarkers?: ScreenMarker[];
   /** the player's own path, drawn as a dotted line under names and pins */
-  route?: { stops: { u: number; v: number }[]; colour: string };
   /** ring a Best-spots farm group so it stands out from the node soup;
    *  r is the group radius in uv units */
   spotlight?: { u: number; v: number; r: number } | null;
@@ -950,15 +894,6 @@ export function MapCanvas({
             ) : null}
             {tiles}
           </Animated.View>
-
-          {/* The route line sits directly on the terrain: under the place
-              names, under every pin and badge — it is the ground the path
-              crosses, not a thing standing on it. One stop draws nothing;
-              a route begins when there are two. */}
-          {route != null && route.stops.length >= 2 && size.w > 0 && (
-            <RouteLine stops={route.stops} tx={tx} ty={ty} k={k}
-              colour={route.colour} w={size.w} h={size.h} />
-          )}
 
           {/* The Best-spots ring: circles the farm group so it stands out
               from a map where the nodes are everywhere — "it just says 10
