@@ -9361,3 +9361,29 @@ his phone can prove): sheet drag feel on iOS, z5 sheet GPU rendering
 generated farm-run, cross-device found-sync, fishing spots (no source).
 The fane meets the bar I can verify from here — HIS TEST IS THE NEXT
 GATE. Dropping to 30-min watch; his messages outrank everything.
+
+### M69 — the origin-sentinel purge (f1bfa64, both channels): his two accuracy
+### reports were ONE bug, and it is dead
+CEO 20:1x, with a screenshot: "66 nodes close together... just wrong" +
+"iron ores in the ocean?? EVERYTHING MUST BE ACCURATE AND NOT GUESSED".
+Evidence-first verdict: the game files park UNPLACED object instances at
+world (0,0) — the exact convention the official boss table uses for its
+18 unplaced sealed realms (the M4x audit saw it first). World origin
+lands at uv (0.5, 0.2412) = readout (-344, 270), open Astral water on
+the game's own texture — and our pipeline was drawing the pile: 458 POI
+rows across every layer (227 ore, 171 coal, 139 quartz, chests, eggs,
+one ghost bounty, one ghost alpha), 70 wild-spawn rows, and a sentinel
+"No. 1 Wildlife Sanctuary" label from paldb's list. That pile WAS his
+"66 nodes" (my Best-spots top hit) and WAS his "ores in the ocean".
+Fixes, all shipped: extractor drops sentinel POIs (<=400 m of origin at
+sea level; the real coast cliffs at z 60-190 m are kept by the z guard)
+and sentinel spawns (<=150 m core); REGION_LABELS filters the label
+everywhere (layers.ts, byte-parity); provenance copy in Reference tells
+the truth (68,547 / 10,639 + why). Best spots VINDICATED on clean data:
+ore tops 11/9/8 with "8 nodes... 130 m west of the Desolate Church
+statue" — the community's own famous run; a 35 m one-base model was
+tried and REJECTED with reasoning in the code (spawner radii unknown).
+ALSO poisoned and now healed: my quartz corroboration test had blessed
+the origin pile as "the Astral consensus cluster" — re-measured against
+the real field. 691 tests green; QA eye pass: sea empty, label gone,
+list community-shaped. WATCH resumes for his next verdict.
