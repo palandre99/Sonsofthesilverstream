@@ -1893,6 +1893,27 @@ function emptyReason(f: MapFilters, region: RegionId): { kind: 'time' | 'level' 
   // `region` is the bare fallback, which says only what the banner already
   // said and in vaguer words.
   const named = namedLayers(f, region);
+  // The found filter can empty the map all by itself, and blaming the
+  // region for it would be a lie the player cannot debug. Found in the
+  // brutal-test round: "Found" with zero ticks showed the vague fallback.
+  // Layer-absence outranks it — when the layer has nothing HERE, "tap All
+  // spots" would be advice that changes nothing.
+  if (f.found === 'found' && !named) {
+    return {
+      kind: 'layers',
+      title: 'Nothing marked as found yet',
+      body: 'You are showing only the spots you have ticked off. Tap All '
+        + 'spots in Layers to see everything again.',
+    };
+  }
+  if (f.found === 'todo' && !named) {
+    return {
+      kind: 'layers',
+      title: 'All found — nothing left to find here',
+      body: 'Everything you switched on is already ticked off on this map. '
+        + 'Tap All spots in Layers to see it all again.',
+    };
+  }
   return {
     kind: named ? 'layers' : 'region',
     title: 'Nothing here on this map',

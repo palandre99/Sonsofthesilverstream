@@ -3096,6 +3096,55 @@ describe('the 2026-08-18 report round', () => {
     expect(richSpots('ore', 'palpagos')).toBe(spots);
   });
 
+  it('the community-famous farm spots fall out of our data by themselves', () => {
+    // COMMUNITY-SOURCED landmarks (game8, TheGamer, Steam guides,
+    // 2026-08-18 research round), not datamined: the canonical farm spots
+    // the guides name, in the game's own map-readout coordinates. If our
+    // datamined clusters sit where players say the farms are, the pipeline
+    // agrees with the game on the ground — the accuracy check the CEO
+    // asked for, kept in the gate forever.
+    const reg = regionOf('palpagos');
+    const toUv = (x: number, y: number) => {
+      // exact inverse of uvToReadout: worldY = x*scale + translY,
+      // worldX = y*scale - translX (readout rounds to whole metres — that
+      // rounding is metres of slack, far under the tolerances here)
+      const r00 = uvToReadout({ u: 0, v: 0 }, reg);
+      const r11 = uvToReadout({ u: 1, v: 1 }, reg);
+      return {
+        u: (x - r00.x) / (r11.x - r00.x),
+        v: (y - r00.y) / (r11.y - r00.y),
+      };
+    };
+    const spanU = reg.maxY - reg.minY;
+    const spanV = reg.maxX - reg.minX;
+    const cases: [string, number, number, number, string][] = [
+      ['ore', 67, -402, 350, 'behind the Desolate Church'],
+      ['ore', 150, -395, 350, 'west of Fort Ruins'],
+      // 500: the guide's coordinate is "the volcano's peak behind the
+      // tower" — a landmark, not a survey point; measured 456 m from our
+      // nearest cluster. A projection break would miss by kilometres.
+      ['sulfur', -594, -525, 500, 'Mount Obsidian, behind the Eternal Pyre tower'],
+    ];
+    for (const [layer, x, y, tol, name] of cases) {
+      const at = toUv(x, y);
+      const near = richSpots(layer, 'palpagos').map((s) => Math.hypot(
+        (s.u - at.u) * spanU, (s.v - at.v) * spanV,
+      ) / 100);
+      expect(Math.min(...near), name).toBeLessThan(tol);
+    }
+    // Quartz consensus is an AREA, not a point ("the Astral Mountains to
+    // the north, the snowy areas in particular" — every guide agrees; one
+    // blog's "approx 203,101" claim matched nothing and was dropped as the
+    // outlier it is). Our biggest quartz cluster must sit in that northern
+    // snow: readout west of -100, north of 200. Measured today: 29 nodes
+    // at (-345, 271).
+    const topQuartz = richSpots('pure_quartz', 'palpagos')[0];
+    expect(topQuartz.count).toBeGreaterThanOrEqual(15);
+    const qr = uvToReadout({ u: topQuartz.u, v: topQuartz.v }, reg);
+    expect(qr.x).toBeLessThan(-100);
+    expect(qr.y).toBeGreaterThan(200);
+  });
+
   it('finds the community-famous ore run by the Desolate Church', () => {
     // Community knowledge, not datamined: every early-game guide names the
     // ore patch beside the Desolate Church statue. If our datamined points

@@ -9139,3 +9139,48 @@ catches tap:Layers AND tap:Ore ("...chests, ore and dungeons") — dismiss
 at click:343,1570 first; map label "Isle of the Glacial C**ore**"
 shadows tap:Ore. Asset math: 869 files < 1000 cap (320 z0-4 + 66 tree +
 180 sheets + ~300 other).
+
+### M65 — his 13:35 verdicts + the research/brutal round (d8b5cb8 + this)
+Swipe-up-to-grow CONFIRMED WORKING on device (his words: "I can now
+swipe it bigger"). His three follow-ups, all shipped:
+
+1. **Sheet mechanics v2** (d8b5cb8, published): content drags shrink the
+   sheet ONLY when its list sits at scroll top (module-level sheetScrollY
+   fed by every vertical list; a context provider could not reach
+   elements built above SheetShell); the grow-from-anywhere capture is
+   DEAD — it ate his scrolls ("scrolling down the filter stuff makes the
+   menu bigger"). Dragging past the smallest height follows the finger
+   (clamp 0.85·winH) and CLOSES on release (+90px past the 0.4 snap).
+   Header still drags both ways. Native drag remains F35-reasoned; the
+   pattern is the one he already confirmed working.
+2. **Best spots v2** (d8b5cb8, published): tapping a spot RINGS the group
+   — screen-space dashed SVG circle (SpotRing, RouteLine pattern, own
+   animatedProps per circle), radius = the group's MEASURED reach
+   (RichSpot.rm = max node dist from centroid + 8 m footprint, 25 m
+   floor, 26px screen floor), landing at focus 0.035 so the ring fills
+   the view. Ring clears on region switch and when its layer goes off.
+   Eye-verified: golden ring around the 8-node group south of Twilight
+   Dunes, unmistakable against the node soup.
+3. **"Research the internet for best mining locations"** — done and
+   turned into a PERMANENT accuracy gate: community-canonical spots
+   (game8/TheGamer/Steam guides) converted from in-game readout coords
+   via the exact uvToReadout inverse and asserted against richSpots:
+   Desolate Church ore <350 m ✔, Fort Ruins ore <350 m ✔, Mount Obsidian
+   sulfur <500 m ✔ (guide names "the peak", measured 456 m), and the top
+   quartz cluster (29 nodes) must sit in the northern snow ✔ readout
+   (-345, 271) — matching "Astral Mountains, snowy areas" consensus. One
+   blog's "approx (203,101)" quartz claim matched nothing and was
+   dropped as the outlier it is.
+4. **Brutal-test findings**: (a) REAL BUG — the empty-map explainer did
+   not know the found filter: "Found" with zero ticks blamed the region.
+   Fixed with two honest cases (nothing-found-yet / all-found), both
+   OUTRANKED by layer-absence so the advice never lies; eye-verified.
+   (b) Competitor sweep (pindrop/palworld.gg/th.gl/MapGenie): we ship
+   every layer the datamined source HAS — pindrop's fishing spots have
+   no datamined table (they hand-place; our provable rule says no until
+   a source exists). Remaining real gaps, both CEO-decision-sized:
+   cross-device found-sync (needs accounts) and a live-overlay concept
+   (th.gl) that is out of scope for a phone companion. Logged, not built.
+
+Gates: 724 tests green, tsc clean both trees. WATCH: his device verdict
+on shrink/close + the ring is the next signal.
