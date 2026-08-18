@@ -9427,3 +9427,32 @@ ALSO poisoned and now healed: my quartz corroboration test had blessed
 the origin pile as "the Astral consensus cluster" — re-measured against
 the real field. 691 tests green; QA eye pass: sea empty, label gone,
 list community-shaped. WATCH resumes for his next verdict.
+
+### M70 — the trust audit (9f648ec, both channels): full-population, two
+### independent references, receipts attached
+CEO: "MAKE FUCKING SURE EVERYTHING IS WHERE U SAY IT IS. I don't trust
+u." The audit, all measured this session:
+1. PROJECTION, cross-verified: upstream ships its OWN image coords for
+   every spawn (their code, not ours). Least-squares over all 64,753
+   Palpagos rows: both transforms perfectly affine; sole divergence =
+   their rounded /725,000 vs our datamined /724,400 => 6 m worst case at
+   the map edge; OURS is the constant that hits the official boss table
+   at 0.0 m on all 82 alphas. Readout parity: worst 10 m over the full
+   population, same cause. Tree: upstream passes raw world coords (no
+   independent reference exists) — recorded, not hidden.
+2. PLACEMENT, every shipped point vs the game's own texture: 2 of 10,636
+   over painted open water, BOTH REAL (Sky-Island chest at z 266 m — a
+   flying island the flat art cannot paint; Sanctuary-1 island-edge ore
+   beside its proven-real boss, notes sanctuary_1_forest_FBOSS — which
+   also fixes the REAL sanctuary-1 location at readout (56,-698)).
+3. Two more ghosts dropped: origin-adjacent "ore" hovering 30 m over
+   open sea beat the z guard; the origin rule now takes the painted-sea
+   witness at any height.
+4. REJECTED rule, reasoning recorded in code: z<-20 m "underwater junk"
+   would have wrongly killed 598 paldium rows that live in painted
+   RIVERS (riverbed z, not error). Provable-only survives.
+5. PERMANENT GUARD: tools/audit_map_sea.py — decodes the SHIPPED data,
+   exits nonzero on any unexplained open-sea row; run after every regen.
+691 tests green, tsc clean, published. What no audit here can reach:
+in-game node offsets within spawner radii (source has no radius column),
+tree-map independent reference, device feel — those are HIS test.
