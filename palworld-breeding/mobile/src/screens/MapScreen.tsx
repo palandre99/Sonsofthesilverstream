@@ -70,6 +70,11 @@ export function MapScreen() {
   const canvas = useRef<MapCanvasHandle | null>(null);
   const [filters, setFilters] = useState<MapFilters>(() => emptyFilters());
   const [sheet, setSheet] = useState<Sheet>(null);
+  /** the ringed Best-spots group; layerId so switching that layer off
+   *  takes its ring with it */
+  const [spotlight, setSpotlight] = useState<{
+    u: number; v: number; r: number; layerId: string;
+  } | null>(null);
   const [legend, setLegend] = useState(false);
   /** the first-run hint, once dismissed, stays dismissed */
   const [hintOff, setHintOff] = useState(false);
@@ -107,6 +112,11 @@ export function MapScreen() {
   }, []);
 
   const region = filters.region;
+  // the ring follows its layer and its map — no orphaned circles
+  React.useEffect(() => { setSpotlight(null); }, [region]);
+  React.useEffect(() => {
+    if (spotlight && !filters.poi.has(spotlight.layerId)) setSpotlight(null);
+  }, [filters.poi, spotlight]);
 
   // A pal card can hand us a species ("show me where this lives"). Take it
   // once, switch to a map it actually appears on, and frame it — arriving on
@@ -691,6 +701,7 @@ export function MapScreen() {
         markers={allPins}
         screenMarkers={labels}
         route={{ stops: myRoute, colour: MY_ROUTE }}
+        spotlight={spotlight}
         canvasRef={canvas}
         onViewport={setVp}
         onPress={onPress}
@@ -1447,6 +1458,8 @@ export function MapScreen() {
                 data={rich}
                 initialNumToRender={16}
                 keyExtractor={(r, i) => `${r.count}_${i}`}
+                onScroll={onSheetScroll}
+                scrollEventThrottle={32}
                 contentContainerStyle={{ padding: 14, gap: 8 }}
                 ListHeaderComponent={(
                   <Text style={{
@@ -1460,7 +1473,19 @@ export function MapScreen() {
                     onPress={() => {
                       void Haptics.selectionAsync();
                       setSheet(null);
-                      canvas.current?.focus(item.u, item.v, 0.06);
+                      // ring the group, then land close enough that the
+                      // ringed nodes fill the screen — the plain fly-to
+                      // dropped him "some place that is just the regular
+                      // map with nodes everywhere" (CEO, 13:35)
+                      const reg = regionOf(region);
+                      setSpotlight({
+                        u: item.u,
+                        v: item.v,
+                        // rm is the group's REAL reach in metres; uv = cm/span
+                        r: (item.rm * 100) / (reg.maxY - reg.minY),
+                        layerId: sheet.list,
+                      });
+                      canvas.current?.focus(item.u, item.v, 0.035);
                     }}
                     accessibilityRole="button"
                     style={{
@@ -1531,6 +1556,8 @@ export function MapScreen() {
               data={rows}
               initialNumToRender={16}
               keyExtractor={(r) => `${r.index}`}
+              onScroll={onSheetScroll}
+              scrollEventThrottle={32}
               contentContainerStyle={{ padding: 14, gap: 8 }}
               ListHeaderComponent={(
                 <View style={{ gap: 8, marginBottom: 4 }}>
@@ -2080,6 +2107,18 @@ function ControlBtn({ icon, label, on, onPress }: {
  *  HANDLE only — nowhere near the map's gestures. */
 const SHEET_SNAPS = [0.4, 0.14, 0] as const;
 
+/** The current sheet's list scroll offset. The content area only turns a
+ *  drag into a resize when the list is AT ITS TOP — otherwise the drag is
+ *  a scroll and the sheet must hold still. Module-level on purpose: the
+ *  list elements are built above SheetShell in the tree (a context provider
+ *  inside it could never reach them), and only ONE sheet is ever mounted
+ *  at a time, so a single cell is unambiguous. SheetShell zeroes it on
+ *  mount. */
+const sheetScrollY = { current: 0 };
+function onSheetScroll(e: { nativeEvent: { contentOffset: { y: number } } }) {
+  sheetScrollY.current = e.nativeEvent.contentOffset.y;
+}
+
 function SheetShell({ title, onClear, onClose, children }: {
   title: string; onClear: () => void; onClose: () => void; children: React.ReactNode;
 }) {
@@ -2100,23 +2139,29 @@ function SheetShell({ title, onClear, onClose, children }: {
     }).start();
   }, [topAnim, winH]);
 
-  // Two drag surfaces, one shared drag. The header band (grab handle AND the
-  // title row) drags both ways — and it is a plain View on purpose:
-  // spreading panHandlers onto a Pressable let the Pressable's own responder
-  // plumbing swallow them on device, which is why "I still can't swipe the
-  // window" (CEO, 2026-08-18) while the QA browser looked fine. The content
-  // area captures UPWARD drags while the sheet is not yet fullscreen — swipe
-  // up anywhere to make it bigger, the Apple Maps sheet feel — and leaves
-  // every tap, and once fullscreen every scroll, to the list underneath.
+  // Two drag surfaces, one shared drag, and scrolling NEVER resizes.
+  // The header band (grab handle AND the title row) drags both ways — a
+  // plain View on purpose: spreading panHandlers onto a Pressable let the
+  // Pressable's own responder plumbing swallow them on device. The content
+  // area captures only a DOWNWARD drag while its list sits at the top —
+  // the native sheet gesture — because the first grow-from-anywhere cut
+  // both ways: "scrolling down the filter stuff makes the menu bigger …
+  // should not extend the size" (CEO, 2026-08-18 13:35). Growing is the
+  // header's job; and dragging past the smallest height CLOSES the sheet
+  // ("even maybe swipe all way down to close it").
+  React.useEffect(() => { sheetScrollY.current = 0; }, []);
   const onGrant = () => {
     dragFrom.current = (topAnim as unknown as { _value: number })._value;
   };
   const onMove = (_e: unknown, g: { dy: number }) => {
-    const next = Math.min(SHEET_SNAPS[0] * winH, Math.max(0, dragFrom.current + g.dy));
+    // 0.85: past the smallest snap the sheet visibly follows the finger
+    // toward closed, so the release is never a surprise
+    const next = Math.min(0.85 * winH, Math.max(0, dragFrom.current + g.dy));
     topAnim.setValue(next);
   };
   const onRelease = (_e: unknown, g: { dy: number }) => {
     const at = dragFrom.current + g.dy;
+    if (at > SHEET_SNAPS[0] * winH + 90) { onClose(); return; }
     let best = 0;
     let bestD = Infinity;
     SHEET_SNAPS.forEach((f, i) => {
@@ -2134,11 +2179,10 @@ function SheetShell({ title, onClear, onClose, children }: {
     onPanResponderMove: onMove,
     onPanResponderRelease: onRelease,
   })).current;
-  const growPan = React.useRef(PanResponder.create({
+  const contentPan = React.useRef(PanResponder.create({
     onStartShouldSetPanResponder: () => false,
     onMoveShouldSetPanResponderCapture: (_e, g) =>
-      snapRef.current !== SHEET_SNAPS.length - 1
-      && g.dy < -6 && Math.abs(g.dy) > Math.abs(g.dx),
+      g.dy > 6 && Math.abs(g.dy) > Math.abs(g.dx) && sheetScrollY.current <= 2,
     onPanResponderTerminationRequest: () => false,
     onPanResponderGrant: onGrant,
     onPanResponderMove: onMove,
@@ -2179,7 +2223,7 @@ function SheetShell({ title, onClear, onClose, children }: {
           </Pressable>
         </View>
       </View>
-      <View style={{ flex: 1, paddingBottom: insets.bottom }} {...growPan.panHandlers}>
+      <View style={{ flex: 1, paddingBottom: insets.bottom }} {...contentPan.panHandlers}>
         {children}
       </View>
     </RNAnimated.View>
@@ -2220,7 +2264,8 @@ function LayerSheet({
 
   return (
     <SheetShell title="What to show" onClear={onClear} onClose={onClose}>
-      <ScrollView contentContainerStyle={{ padding: 14, gap: 16 }}>
+      <ScrollView contentContainerStyle={{ padding: 14, gap: 16 }}
+        onScroll={onSheetScroll} scrollEventThrottle={32}>
         {myMarks > 0 && (
           <Pressable
             onPress={onClearMine}
@@ -2600,6 +2645,8 @@ function PalSheet({
       <FlatList
         data={list}
         keyExtractor={(n) => n}
+        onScroll={onSheetScroll}
+        scrollEventThrottle={32}
         contentContainerStyle={{ padding: 14, gap: 7 }}
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode="on-drag"

@@ -597,7 +597,14 @@ export function whereFromLine(u: number, v: number, region: RegionId): string | 
 
 /* ------------------------------------------------ where to build a farm */
 
-export interface RichSpot { u: number; v: number; count: number }
+export interface RichSpot {
+  u: number;
+  v: number;
+  count: number;
+  /** how far the group really reaches from its centre, in METRES (plus a
+   *  node's own footprint), so a ring drawn with it encloses every node */
+  rm: number;
+}
 
 const richCache = new Map<string, RichSpot[]>();
 
@@ -644,7 +651,21 @@ export function richSpots(layerId: string, region: RegionId): RichSpot[] {
         cu += set.xy[i * 2];
         cv += set.xy[i * 2 + 1];
       }
-      out.push({ u: cu / group.length, v: cv / group.length, count: group.length });
+      cu /= group.length;
+      cv /= group.length;
+      let far = 0;
+      for (const i of group) {
+        const dx = (set.xy[i * 2] - cu) * spanU;
+        const dy = (set.xy[i * 2 + 1] - cv) * spanV;
+        far = Math.max(far, dx * dx + dy * dy);
+      }
+      out.push({
+        u: cu,
+        v: cv,
+        count: group.length,
+        // +8 m: a node is a rock, not a point — the ring holds the whole rock
+        rm: Math.max(25, Math.sqrt(far) / 100 + 8),
+      });
     }
     out.sort((a, b) => b.count - a.count || a.u - b.u);
   }

@@ -33,7 +33,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { Image } from 'expo-image';
-import Svg, { Polyline } from 'react-native-svg';
+import Svg, { Circle, Polyline } from 'react-native-svg';
 import {
   MAP_SHEETS, MAP_TILES, MAX_TILE_Z, REGION_MAX_Z, TILE_GUTTER, TILE_SIZE,
 } from '../data/tileIndex.g';
@@ -219,6 +219,47 @@ function RouteLine({ stops, tx, ty, k, colour, w, h }: {
   );
 }
 
+const AnimatedCircle = Animated.createAnimatedComponent(Circle);
+
+/**
+ * The Best-spots ring, screen-space for the same reason RouteLine is: inside
+ * the transform the stroke would fatten with the zoom. The radius is in uv
+ * units — the ring hugs the same patch of ground at every zoom — with a
+ * 26px floor so it can never collapse into the pin it is ringing when the
+ * map is zoomed far out. Each circle owns its animatedProps (the documented
+ * Reanimated sharing mistake made the pins go soft once already).
+ */
+function SpotRing({ at, tx, ty, k, w, h }: {
+  at: { u: number; v: number; r: number };
+  tx: SharedValue<number>;
+  ty: SharedValue<number>;
+  k: SharedValue<number>;
+  w: number;
+  h: number;
+}) {
+  const casing = useAnimatedProps(() => ({
+    cx: at.u * k.value + tx.value,
+    cy: at.v * k.value + ty.value,
+    r: Math.max(26, at.r * k.value),
+  }));
+  const core = useAnimatedProps(() => ({
+    cx: at.u * k.value + tx.value,
+    cy: at.v * k.value + ty.value,
+    r: Math.max(26, at.r * k.value),
+  }));
+  return (
+    <Svg pointerEvents="none" width={w} height={h}
+      style={{ position: 'absolute', top: 0, left: 0 }}>
+      <AnimatedCircle animatedProps={casing} fill="rgba(240,180,65,0.08)"
+        stroke="rgba(6,12,14,0.85)" strokeWidth={5}
+        strokeDasharray="4 7" strokeLinecap="round" />
+      <AnimatedCircle animatedProps={core} fill="none"
+        stroke="#F0B441" strokeWidth={2.5}
+        strokeDasharray="4 7" strokeLinecap="round" />
+    </Svg>
+  );
+}
+
 /**
  * A thing drawn in SCREEN space, tracking the map without being scaled by it.
  *
@@ -269,6 +310,7 @@ export function MapCanvas({
   markers,
   screenMarkers,
   route,
+  spotlight,
   onViewport,
   onPress,
   children,
@@ -280,6 +322,9 @@ export function MapCanvas({
   screenMarkers?: ScreenMarker[];
   /** the player's own path, drawn as a dotted line under names and pins */
   route?: { stops: { u: number; v: number }[]; colour: string };
+  /** ring a Best-spots farm group so it stands out from the node soup;
+   *  r is the group radius in uv units */
+  spotlight?: { u: number; v: number; r: number } | null;
   /** called (throttled to real change) with the current px-per-uv scale + rect */
   onViewport?: (v: { scale: number; u0: number; v0: number; u1: number; v1: number }) => void;
   onPress?: (u: number, v: number) => void;
@@ -913,6 +958,16 @@ export function MapCanvas({
           {route != null && route.stops.length >= 2 && size.w > 0 && (
             <RouteLine stops={route.stops} tx={tx} ty={ty} k={k}
               colour={route.colour} w={size.w} h={size.h} />
+          )}
+
+          {/* The Best-spots ring: circles the farm group so it stands out
+              from a map where the nodes are everywhere — "it just says 10
+              nodes close together, I tap and it moves me to some place that
+              is just the regular map" (CEO, 13:35). Ground-level like the
+              route: under names, under pins. */}
+          {spotlight != null && size.w > 0 && (
+            <SpotRing at={spotlight} tx={tx} ty={ty} k={k}
+              w={size.w} h={size.h} />
           )}
 
           {/* Place names sit BETWEEN the terrain and the pins.

@@ -2812,7 +2812,9 @@ describe('the list behind a layer (CEO: "find the one I am looking for")', () =>
     );
     const at = screen.indexOf('typeof sheet === ');
     expect(at, 'the list view must exist').toBeGreaterThan(-1);
-    const view = screen.slice(at, at + 9000);
+    // 14000: the Best-spots block now lives between the anchor and the
+    // named rows — the old 9000 window stopped short of them
+    const view = screen.slice(at, at + 14000);
     expect(view).toContain("canvas.current?.focus(item.u, item.v, 0.06)");
     expect(view).toContain('setSheet(null)');
     expect(view).toContain('isFound(foundKey(sheet.list, region, item.index))');
@@ -3002,6 +3004,9 @@ describe('the 2026-08-18 report round', () => {
   const screen = readFileSync(
     join(__dirname, '..', '..', 'mobile', 'src', 'screens', 'MapScreen.tsx'), 'utf8',
   );
+  const canvas = readFileSync(
+    join(__dirname, '..', '..', 'mobile', 'src', 'map', 'MapCanvas.tsx'), 'utf8',
+  );
 
   it('every alpha pin carries a baked level, so the sort can never lie', () => {
     const alpha = MAP_POIS.find((l) => l.id === 'alpha_pals');
@@ -3024,14 +3029,39 @@ describe('the 2026-08-18 report round', () => {
     expect(screen).toContain('f.level.lo > 1 || f.level.hi < ALL_LEVEL_CAP');
   });
 
-  it('the sheet drags from the whole header and grows from anywhere', () => {
+  it('the sheet drags both ways, closes on overshoot, and scroll never resizes', () => {
     // plain Views carry the responders — spreading panHandlers onto a
     // Pressable let its own responder plumbing swallow them on device
     expect(screen).toContain('<View {...headerPan.panHandlers}>');
-    expect(screen).toMatch(/\{\.\.\.growPan\.panHandlers\}/);
+    expect(screen).toMatch(/\{\.\.\.contentPan\.panHandlers\}/);
     expect(screen).toMatch(/const headerPan[\s\S]{0,200}onMoveShouldSetPanResponderCapture/);
-    // grow captures only upward drags, and never once fullscreen
-    expect(screen).toMatch(/snapRef\.current !== SHEET_SNAPS\.length - 1[\s\S]{0,40}g\.dy < -6/);
+    // 13:35 round: content turns a drag into a resize ONLY when the list is
+    // at its top AND the drag is downward — scrolling must never resize
+    expect(screen).toMatch(/g\.dy > 6 && Math\.abs\(g\.dy\) > Math\.abs\(g\.dx\) && sheetScrollY\.current <= 2/);
+    expect(screen).not.toMatch(/growPan/);
+    // dragging past the smallest height closes the sheet, and the drag can
+    // visibly overshoot toward closed so the release is never a surprise
+    expect(screen).toMatch(/if \(at > SHEET_SNAPS\[0\] \* winH \+ 90\) \{ onClose\(\); return; \}/);
+    expect(screen).toMatch(/Math\.min\(0\.85 \* winH/);
+    // every vertical list inside a sheet reports its scroll position
+    expect((screen.match(/onScroll=\{onSheetScroll\}/g) ?? []).length)
+      .toBe(4);
+  });
+
+  it('a Best spot is ringed on the map, not just flown to', () => {
+    // "it just says 10 nodes close together, I tap and it moves me to some
+    // place that is just the regular map with nodes everywhere" — the ring
+    // plus a tighter landing make the group unmistakable
+    expect(screen).toContain('setSpotlight({');
+    expect(screen).toContain("canvas.current?.focus(item.u, item.v, 0.035)");
+    // the ring follows its layer and its map
+    expect(screen).toMatch(/useEffect\(\(\) => \{ setSpotlight\(null\); \}, \[region\]\)/);
+    expect(screen).toMatch(/!filters\.poi\.has\(spotlight\.layerId\)/);
+    expect(canvas).toContain('function SpotRing');
+    expect(canvas).toMatch(/r: Math\.max\(26, at\.r \* k\.value\)/);
+    // and the ring's radius is the group's measured reach, not a guess
+    const spots = richSpots('ore', 'palpagos');
+    expect(spots.every((s) => s.rm >= 25)).toBe(true);
   });
 
   it('chests say their grade where the game data really has one', () => {
