@@ -236,3 +236,16 @@ describe('the passive picker starts fresh on every open', () => {
       .toMatch(/if \(visible\) \{ setQ\(''\); setKind\(null\); \}/);
   });
 });
+
+describe('the IV tab remembers like the passives tab does', () => {
+  it('picked stats and the specific-parent toggle live in the session cache', () => {
+    // the passives tab kept carefully-picked parents across tab switches
+    // while the IV tab silently reset — the exact wipe the session cache
+    // exists to prevent, by the file's own comment (found 2026-08-18)
+    expect(code).toContain('ivPicked: [');
+    expect(code).toContain('oddsSession.ivPicked = picked;');
+    expect(code).toContain('oddsSession.ivSpecific = specific;');
+    expect(code, 'the IV tab boots from a hard-coded default again')
+      .toContain('useState<string[]>(oddsSession.ivPicked)');
+  });
+});

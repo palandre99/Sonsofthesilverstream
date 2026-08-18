@@ -6,11 +6,19 @@ import { Badge, Btn, Card, PageHead, PalIcon, s, type BadgeKind } from '../ui/ki
 import { HELPERS } from '../engine/helpers';
 import { claims, claimsCheckedOn } from '../store';
 
+/** Every verdict the claims file actually uses must be mapped, or it falls
+ * to an amber badge — which read as DOUBT on three claims that deserve the
+ * opposite ("verified" and the two upstream defects we corrected), on the
+ * one screen whose whole job is proof. A test derives the required keys
+ * from the shipped claims file, so a new verdict can never slip through. */
 const VERDICT: Record<string, [string, BadgeKind]> = {
   confirmed: ['confirmed', 'ok'],
+  verified: ['verified', 'ok'],
   plausible: ['likely', 'warn'],
   contradicted: ['contradicted', 'bad'],
   not_found: ['not found', 'warn'],
+  'upstream defect, normalised': ['upstream defect, normalised', 'plain'],
+  'upstream defect, overridden': ['upstream defect, overridden', 'plain'],
 };
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
@@ -35,11 +43,14 @@ export function ReferenceScreen() {
         sub="How 1.0 breeding actually works — with receipts. Community-measured numbers are labelled as such." />
 
       <Section title="The species formula">
+        {/* said "⌊(A + B + 1)/2⌋" — floor brackets, the exact notation shape
+            E105 banned from the Calculator. Same mechanic, same words as the
+            Calculator's own sentence: average them, rounding up. */}
         <P>134 pairs have a fixed recipe and one pair (Katress/Wixen) is gender-locked:
         female Katress + male Wixen gives Katress Ignis, the reverse gives Wixen Noct.
-        Every other pair averages the parents' hidden CombiRanks — ⌊(A + B + 1)/2⌋ —
+        Every other pair averages the parents' hidden breeding numbers, rounding up,
         and the child is the species closest to that target among the 183 in the
-        generic pool. Exact ties go to the higher CombiRank. This engine replays all
+        generic pool. Exact ties go to the higher number. This engine replays all
         44,851 precomputed game-file results with zero mismatches.</P>
       </Section>
 

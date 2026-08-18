@@ -2,7 +2,7 @@
  "checked": "2026-08-15",
  "claims": [
   {
-   "claim": "Species formula: the child is the species with CombiRank closest to ⌊(rankA+rankB+1)/2⌋",
+   "claim": "Species formula: the child is the species whose hidden breeding number (CombiRank) is closest to the parents' average, rounded up; exact ties go to the higher number",
    "verdict": "confirmed",
    "evidence": "Verified at code level in palcalc (open-source solver generated from the game files) and replayed here against all 44,851 precomputed 1.0 results with zero mismatches.",
    "sources": [

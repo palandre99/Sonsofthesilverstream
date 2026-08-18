@@ -237,6 +237,10 @@ function OddsCard({ label, big, sub, hero }: {
 const oddsSession = {
   a: [] as string[], b: [] as string[], want: [] as string[],
   cake: 'cake' as CakeId,
+  // the IV tab's picks live here too — they used to reset on every tab
+  // switch while the passives tab remembered, which is exactly the wipe
+  // this cache exists to prevent
+  ivPicked: ['atk'] as string[], ivSpecific: false,
 };
 
 /** A pal has four passive slots — the game's own limit. */
@@ -544,8 +548,12 @@ function PassivesTab() {
 /* ---------------- IVs ---------------- */
 
 function IvTab() {
-  const [picked, setPicked] = useState<string[]>(['atk']);
-  const [specific, setSpecific] = useState(false);
+  const [picked, setPicked] = useState<string[]>(oddsSession.ivPicked);
+  const [specific, setSpecific] = useState(oddsSession.ivSpecific);
+  useEffect(() => {
+    oddsSession.ivPicked = picked;
+    oddsSession.ivSpecific = specific;
+  }, [picked, specific]);
   const n = picked.length;
   const odds = n >= 1 && n <= 3 ? ivOdds(n) : null;
   const p = odds ? (specific ? odds.fromChosenParent : odds.categoriesInherited) : 0;
