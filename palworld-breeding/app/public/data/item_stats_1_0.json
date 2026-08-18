@@ -1,0 +1,3114 @@
+{
+ "source": "paldb.cc per-item raw parameter cards (live game-table mirror, fetched 2026-08-18); each row shipped only when the card's own Code equals the atlas backbone id AND its Rank/price agree with build 24575149. Refusals are counted, never shipped.",
+ "count": 604,
+ "refused": [],
+ "stillMissing": [
+  "Glider_Tera",
+  "GrapplingGun2",
+  "GrapplingGun3",
+  "GrapplingGun4",
+  "GrapplingGun5",
+  "Shield_Ultra"
+ ],
+ "stats": {
+  "AncientArmor": {
+   "durability": 25000,
+   "def": 800,
+   "hp": 2400,
+   "sneak": 1,
+   "passives": [
+    "TemperatureResist_Cold2",
+    "TemperatureResist_Heat2"
+   ]
+  },
+  "AncientArmorCold": {
+   "durability": 25000,
+   "def": 840,
+   "hp": 2400,
+   "sneak": 1,
+   "passives": [
+    "TemperatureResist_Cold3",
+    "TemperatureResist_Heat2",
+    "ElementResist_Ice_1"
+   ]
+  },
+  "AncientArmorCold_2": {
+   "durability": 37500,
+   "def": 924,
+   "hp": 2640
+  },
+  "AncientArmorCold_3": {
+   "durability": 50000,
+   "def": 966,
+   "hp": 2760
+  },
+  "AncientArmorCold_4": {
+   "durability": 75000,
+   "def": 1008,
+   "hp": 2880
+  },
+  "AncientArmorCold_5": {
+   "durability": 100000,
+   "def": 1092,
+   "hp": 3120
+  },
+  "AncientArmorHeat": {
+   "durability": 25000,
+   "def": 840,
+   "hp": 2400,
+   "sneak": 1,
+   "passives": [
+    "TemperatureResist_Cold2",
+    "TemperatureResist_Heat3",
+    "ElementResist_Fire_1"
+   ]
+  },
+  "AncientArmorHeat_2": {
+   "durability": 37500,
+   "def": 924,
+   "hp": 2640
+  },
+  "AncientArmorHeat_3": {
+   "durability": 50000,
+   "def": 966,
+   "hp": 2760
+  },
+  "AncientArmorHeat_4": {
+   "durability": 75000,
+   "def": 1008,
+   "hp": 2880
+  },
+  "AncientArmorHeat_5": {
+   "durability": 100000,
+   "def": 1092,
+   "hp": 3120
+  },
+  "AncientArmorWeight": {
+   "durability": 25000,
+   "def": 840,
+   "hp": 2400,
+   "sneak": 1,
+   "passives": [
+    "TemperatureResist_Cold2",
+    "TemperatureResist_Heat2",
+    "MaxInventoryWeight_up_Equip_4"
+   ]
+  },
+  "AncientArmorWeight_2": {
+   "durability": 37500,
+   "def": 924,
+   "hp": 2640
+  },
+  "AncientArmorWeight_3": {
+   "durability": 50000,
+   "def": 966,
+   "hp": 2760
+  },
+  "AncientArmorWeight_4": {
+   "durability": 75000,
+   "def": 1008,
+   "hp": 2880
+  },
+  "AncientArmorWeight_5": {
+   "durability": 100000,
+   "def": 1092,
+   "hp": 3120
+  },
+  "AncientArmor_2": {
+   "durability": 37500,
+   "def": 880,
+   "hp": 2640
+  },
+  "AncientArmor_3": {
+   "durability": 50000,
+   "def": 920,
+   "hp": 2760
+  },
+  "AncientArmor_4": {
+   "durability": 75000,
+   "def": 960,
+   "hp": 2880
+  },
+  "AncientArmor_5": {
+   "durability": 100000,
+   "def": 1040,
+   "hp": 3120
+  },
+  "AncientHelmet": {
+   "durability": 25000,
+   "def": 500,
+   "hp": 1200,
+   "sneak": 1,
+   "passives": [
+    "ElementResist_Normal_1",
+    "ElementResist_Dragon_1"
+   ]
+  },
+  "AncientHelmet_2": {
+   "durability": 37500,
+   "def": 550,
+   "hp": 1320
+  },
+  "AncientHelmet_3": {
+   "durability": 50000,
+   "def": 575,
+   "hp": 1380
+  },
+  "AncientHelmet_4": {
+   "durability": 75000,
+   "def": 600,
+   "hp": 1440
+  },
+  "AncientHelmet_5": {
+   "durability": 100000,
+   "def": 650,
+   "hp": 1560
+  },
+  "Arrow": {
+   "sneak": 1
+  },
+  "Arrow_Fire": {
+   "sneak": 1
+  },
+  "Arrow_Poison": {
+   "sneak": 1
+  },
+  "AssaultRifleBullet": {
+   "sneak": 1
+  },
+  "AssaultRifle_Default1": {
+   "atk": 320,
+   "durability": 3000,
+   "magazine": 20,
+   "sneak": 1
+  },
+  "AssaultRifle_Default2": {
+   "atk": 400,
+   "durability": 3000
+  },
+  "AssaultRifle_Default3": {
+   "atk": 448,
+   "durability": 4000
+  },
+  "AssaultRifle_Default4": {
+   "atk": 512,
+   "durability": 5000
+  },
+  "AssaultRifle_Default5": {
+   "atk": 560,
+   "durability": 6000
+  },
+  "Axe_Steal": {
+   "atk": 120,
+   "durability": 400
+  },
+  "Axe_Tier_00": {
+   "atk": 20,
+   "durability": 150,
+   "sneak": 1
+  },
+  "Axe_Tier_01": {
+   "atk": 30,
+   "durability": 250
+  },
+  "Axe_Tier_02": {
+   "atk": 60,
+   "durability": 300
+  },
+  "Bat": {
+   "atk": 25,
+   "durability": 150,
+   "sneak": 1
+  },
+  "Bat2": {
+   "atk": 50,
+   "durability": 150,
+   "sneak": 1
+  },
+  "Bat3": {
+   "atk": 500,
+   "durability": 500,
+   "sneak": 1
+  },
+  "Bat3_2": {
+   "atk": 550,
+   "durability": 750
+  },
+  "Bat3_3": {
+   "atk": 600,
+   "durability": 1000
+  },
+  "Bat3_4": {
+   "atk": 650,
+   "durability": 1500
+  },
+  "Bat3_5": {
+   "atk": 750,
+   "durability": 2000
+  },
+  "BeamLauncher": {
+   "atk": 14000,
+   "durability": 3500,
+   "sneak": 1
+  },
+  "BeamLauncherBullet": {
+   "sneak": 1
+  },
+  "BeamLauncher_2": {
+   "atk": 14700,
+   "durability": 5250
+  },
+  "BeamLauncher_3": {
+   "atk": 15400,
+   "durability": 7000
+  },
+  "BeamLauncher_4": {
+   "atk": 16100,
+   "durability": 10500
+  },
+  "BeamLauncher_5": {
+   "atk": 16800,
+   "durability": 14000
+  },
+  "BeamSword": {
+   "atk": 930,
+   "durability": 500,
+   "sneak": 1
+  },
+  "BeamSword_2": {
+   "atk": 1023,
+   "durability": 750
+  },
+  "BeamSword_3": {
+   "atk": 1116,
+   "durability": 1000
+  },
+  "BeamSword_4": {
+   "atk": 1209,
+   "durability": 1500
+  },
+  "BeamSword_5": {
+   "atk": 1395,
+   "durability": 2000
+  },
+  "BowGun": {
+   "atk": 280,
+   "durability": 300,
+   "magazine": 1,
+   "sneak": 1
+  },
+  "BowGun_2": {
+   "atk": 364,
+   "durability": 800
+  },
+  "BowGun_3": {
+   "atk": 406,
+   "durability": 1000
+  },
+  "BowGun_4": {
+   "atk": 448,
+   "durability": 1200
+  },
+  "BowGun_5": {
+   "atk": 490,
+   "durability": 1400
+  },
+  "Bow_Triple": {
+   "atk": 40,
+   "durability": 250,
+   "magazine": 1,
+   "sneak": 1
+  },
+  "BronzeSword": {
+   "atk": 180,
+   "durability": 500,
+   "sneak": 1
+  },
+  "ChargeLaserRifle": {
+   "atk": 12500,
+   "durability": 200,
+   "magazine": 6,
+   "sneak": 1
+  },
+  "ChargeLaserRifleBullet": {
+   "sneak": 1
+  },
+  "ChargeLaserRifle_2": {
+   "atk": 13125,
+   "durability": 300
+  },
+  "ChargeLaserRifle_3": {
+   "atk": 13750,
+   "durability": 400
+  },
+  "ChargeLaserRifle_4": {
+   "atk": 14375,
+   "durability": 600
+  },
+  "ChargeLaserRifle_5": {
+   "atk": 15000,
+   "durability": 800
+  },
+  "ClothArmor": {
+   "durability": 150,
+   "def": 15,
+   "hp": 70,
+   "sneak": 1,
+   "passives": [
+    "TemperatureResist_Cold1"
+   ]
+  },
+  "ClothArmorCold": {
+   "durability": 300,
+   "def": 25,
+   "hp": 70,
+   "sneak": 1,
+   "passives": [
+    "TemperatureResist_Cold2"
+   ]
+  },
+  "ClothArmorCold_2": {
+   "durability": 450,
+   "def": 32,
+   "hp": 91
+  },
+  "ClothArmorCold_3": {
+   "durability": 600,
+   "def": 35,
+   "hp": 98
+  },
+  "ClothArmorCold_4": {
+   "durability": 900,
+   "def": 37,
+   "hp": 105
+  },
+  "ClothArmorCold_5": {
+   "durability": 1200,
+   "def": 40,
+   "hp": 112
+  },
+  "ClothArmorHeat": {
+   "durability": 300,
+   "def": 25,
+   "hp": 70,
+   "sneak": 1,
+   "passives": [
+    "TemperatureResist_Heat2"
+   ]
+  },
+  "ClothArmorHeat_2": {
+   "durability": 450,
+   "def": 32,
+   "hp": 91
+  },
+  "ClothArmorHeat_3": {
+   "durability": 600,
+   "def": 35,
+   "hp": 98
+  },
+  "ClothArmorHeat_4": {
+   "durability": 900,
+   "def": 37,
+   "hp": 105
+  },
+  "ClothArmorHeat_5": {
+   "durability": 1200,
+   "def": 40,
+   "hp": 112
+  },
+  "ClothArmor_2": {
+   "durability": 400,
+   "def": 19,
+   "hp": 91
+  },
+  "ClothArmor_3": {
+   "durability": 500,
+   "def": 21,
+   "hp": 98
+  },
+  "ClothArmor_4": {
+   "durability": 600,
+   "def": 22,
+   "hp": 105
+  },
+  "ClothArmor_5": {
+   "durability": 700,
+   "def": 24,
+   "hp": 112
+  },
+  "CompoundBow": {
+   "atk": 1100,
+   "durability": 400,
+   "magazine": 1,
+   "sneak": 1
+  },
+  "CompoundBow_2": {
+   "atk": 1265,
+   "durability": 600
+  },
+  "CompoundBow_3": {
+   "atk": 1375,
+   "durability": 800
+  },
+  "CompoundBow_4": {
+   "atk": 1485,
+   "durability": 1200
+  },
+  "CompoundBow_5": {
+   "atk": 1650,
+   "durability": 1600
+  },
+  "CopperArmor": {
+   "durability": 700,
+   "def": 70,
+   "hp": 250,
+   "sneak": 1,
+   "passives": [
+    "TemperatureResist_Cold1",
+    "TemperatureResist_Heat1"
+   ]
+  },
+  "CopperArmorCold": {
+   "durability": 1400,
+   "def": 105,
+   "hp": 250,
+   "sneak": 1,
+   "passives": [
+    "TemperatureResist_Cold2",
+    "TemperatureResist_Heat1",
+    "ElementResist_Ice_1"
+   ]
+  },
+  "CopperArmorCold_2": {
+   "durability": 2100,
+   "def": 136,
+   "hp": 325
+  },
+  "CopperArmorCold_3": {
+   "durability": 2800,
+   "def": 147,
+   "hp": 350
+  },
+  "CopperArmorCold_4": {
+   "durability": 4200,
+   "def": 157,
+   "hp": 375
+  },
+  "CopperArmorCold_5": {
+   "durability": 5600,
+   "def": 168,
+   "hp": 400
+  },
+  "CopperArmorHeat": {
+   "durability": 1400,
+   "def": 105,
+   "hp": 250,
+   "sneak": 1,
+   "passives": [
+    "TemperatureResist_Heat2",
+    "TemperatureResist_Cold1",
+    "ElementResist_Fire_1"
+   ]
+  },
+  "CopperArmorHeat_2": {
+   "durability": 2100,
+   "def": 136,
+   "hp": 325
+  },
+  "CopperArmorHeat_3": {
+   "durability": 2800,
+   "def": 147,
+   "hp": 350
+  },
+  "CopperArmorHeat_4": {
+   "durability": 4200,
+   "def": 157,
+   "hp": 375
+  },
+  "CopperArmorHeat_5": {
+   "durability": 5600,
+   "def": 168,
+   "hp": 400
+  },
+  "CopperArmor_2": {
+   "durability": 1800,
+   "def": 91,
+   "hp": 325
+  },
+  "CopperArmor_3": {
+   "durability": 2200,
+   "def": 98,
+   "hp": 350
+  },
+  "CopperArmor_4": {
+   "durability": 2600,
+   "def": 105,
+   "hp": 375
+  },
+  "CopperArmor_5": {
+   "durability": 3000,
+   "def": 112,
+   "hp": 400
+  },
+  "CopperHelmet": {
+   "durability": 700,
+   "def": 50,
+   "hp": 100,
+   "sneak": 1
+  },
+  "CopperHelmet_2": {
+   "durability": 1820,
+   "def": 65,
+   "hp": 130
+  },
+  "CopperHelmet_3": {
+   "durability": 2100,
+   "def": 70,
+   "hp": 140
+  },
+  "CopperHelmet_4": {
+   "durability": 2380,
+   "def": 75,
+   "hp": 150
+  },
+  "CopperHelmet_5": {
+   "durability": 2800,
+   "def": 80,
+   "hp": 160
+  },
+  "DecalGun_1": {
+   "magazine": 99,
+   "sneak": 1
+  },
+  "DecalGun_2": {
+   "magazine": 99,
+   "sneak": 1
+  },
+  "DecalGun_3": {
+   "magazine": 99,
+   "sneak": 1
+  },
+  "DecalGun_4": {
+   "magazine": 99,
+   "sneak": 1
+  },
+  "DecalGun_5": {
+   "magazine": 99,
+   "sneak": 1
+  },
+  "DoubleBarrelShotgun": {
+   "atk": 190,
+   "durability": 200,
+   "magazine": 2,
+   "sneak": 1
+  },
+  "DoubleBarrelShotgun_2": {
+   "atk": 285,
+   "durability": 400
+  },
+  "DoubleBarrelShotgun_3": {
+   "atk": 323,
+   "durability": 500
+  },
+  "DoubleBarrelShotgun_4": {
+   "atk": 361,
+   "durability": 600
+  },
+  "DoubleBarrelShotgun_5": {
+   "atk": 399,
+   "durability": 800
+  },
+  "DroneLauncher": {
+   "atk": 200,
+   "durability": 6500,
+   "sneak": 1
+  },
+  "DroneLauncher_2": {
+   "atk": 210,
+   "durability": 9750
+  },
+  "DroneLauncher_3": {
+   "atk": 220,
+   "durability": 13000
+  },
+  "DroneLauncher_4": {
+   "atk": 230,
+   "durability": 19500
+  },
+  "DroneLauncher_5": {
+   "atk": 240,
+   "durability": 26000
+  },
+  "ElecBaton": {
+   "atk": 10,
+   "durability": 300,
+   "sneak": 1
+  },
+  "ElectricArcAssaultRifle": {
+   "atk": 1860,
+   "durability": 25000,
+   "magazine": 38,
+   "sneak": 1
+  },
+  "ElectricArcAssaultRifleBullet": {
+   "sneak": 1
+  },
+  "ElectricArcAssaultRifle_2": {
+   "atk": 1953,
+   "durability": 37500
+  },
+  "ElectricArcAssaultRifle_3": {
+   "atk": 2046,
+   "durability": 50000
+  },
+  "ElectricArcAssaultRifle_4": {
+   "atk": 2139,
+   "durability": 75000
+  },
+  "ElectricArcAssaultRifle_5": {
+   "atk": 2232,
+   "durability": 100000
+  },
+  "EnergyLauncherBullet": {
+   "sneak": 1
+  },
+  "EnergyRocketLauncher": {
+   "atk": 10000,
+   "durability": 300,
+   "magazine": 2,
+   "sneak": 1
+  },
+  "EnergyRocketLauncher_2": {
+   "atk": 11000,
+   "durability": 450
+  },
+  "EnergyRocketLauncher_3": {
+   "atk": 11500,
+   "durability": 600
+  },
+  "EnergyRocketLauncher_4": {
+   "atk": 12000,
+   "durability": 900
+  },
+  "EnergyRocketLauncher_5": {
+   "atk": 13000,
+   "durability": 1200
+  },
+  "EnergyShotgun": {
+   "atk": 402,
+   "durability": 300,
+   "magazine": 10,
+   "sneak": 1
+  },
+  "EnergyShotgunBullet": {
+   "sneak": 1
+  },
+  "EnergyShotgun_2": {
+   "atk": 422,
+   "durability": 450
+  },
+  "EnergyShotgun_3": {
+   "atk": 442,
+   "durability": 600
+  },
+  "EnergyShotgun_4": {
+   "atk": 462,
+   "durability": 900
+  },
+  "EnergyShotgun_5": {
+   "atk": 482,
+   "durability": 1200
+  },
+  "ExplosiveBullet": {
+   "sneak": 1
+  },
+  "FishingRod_01_1": {
+   "atk": 25,
+   "durability": 120,
+   "sneak": 1
+  },
+  "FishingRod_01_2": {
+   "atk": 25,
+   "durability": 180,
+   "sneak": 1
+  },
+  "FishingRod_02_1": {
+   "atk": 25,
+   "durability": 240
+  },
+  "FishingRod_02_2": {
+   "atk": 25,
+   "durability": 360
+  },
+  "FishingRod_03_1": {
+   "atk": 25,
+   "durability": 480
+  },
+  "FishingRod_03_2": {
+   "atk": 25,
+   "durability": 720
+  },
+  "FlameThrower": {
+   "atk": 636,
+   "durability": 6000,
+   "magazine": 100,
+   "sneak": 1
+  },
+  "FlameThrower_2": {
+   "atk": 731,
+   "durability": 9000
+  },
+  "FlameThrower_3": {
+   "atk": 795,
+   "durability": 12000
+  },
+  "FlameThrower_4": {
+   "atk": 858,
+   "durability": 18000
+  },
+  "FlameThrower_5": {
+   "atk": 954,
+   "durability": 24000
+  },
+  "FlamethrowerBullet": {
+   "sneak": 1
+  },
+  "FragGrenade": {
+   "atk": 750,
+   "sneak": 1
+  },
+  "FragGrenade_Dark": {
+   "atk": 750,
+   "sneak": 1
+  },
+  "FragGrenade_Dragon": {
+   "atk": 750,
+   "sneak": 1
+  },
+  "FragGrenade_Elec": {
+   "atk": 750,
+   "sneak": 1
+  },
+  "FragGrenade_Fire": {
+   "atk": 750,
+   "sneak": 1
+  },
+  "FragGrenade_Ground": {
+   "atk": 750,
+   "sneak": 1
+  },
+  "FragGrenade_Ice": {
+   "atk": 750,
+   "sneak": 1
+  },
+  "FragGrenade_Leaf": {
+   "atk": 750,
+   "sneak": 1
+  },
+  "FragGrenade_Super": {
+   "atk": 4000,
+   "sneak": 1
+  },
+  "FragGrenade_Water": {
+   "atk": 750,
+   "sneak": 1
+  },
+  "FurArmor": {
+   "durability": 300,
+   "def": 35,
+   "hp": 140,
+   "sneak": 1,
+   "passives": [
+    "TemperatureResist_Cold1"
+   ]
+  },
+  "FurArmorCold": {
+   "durability": 600,
+   "def": 45,
+   "hp": 140,
+   "sneak": 1,
+   "passives": [
+    "TemperatureResist_Cold2",
+    "ElementResist_Ice_1"
+   ]
+  },
+  "FurArmorCold_2": {
+   "durability": 900,
+   "def": 58,
+   "hp": 182
+  },
+  "FurArmorCold_3": {
+   "durability": 1200,
+   "def": 63,
+   "hp": 196
+  },
+  "FurArmorCold_4": {
+   "durability": 1800,
+   "def": 67,
+   "hp": 210
+  },
+  "FurArmorCold_5": {
+   "durability": 2400,
+   "def": 72,
+   "hp": 224
+  },
+  "FurArmorHeat": {
+   "durability": 600,
+   "def": 45,
+   "hp": 140,
+   "sneak": 1,
+   "passives": [
+    "TemperatureResist_Heat2",
+    "ElementResist_Fire_1"
+   ]
+  },
+  "FurArmorHeat_2": {
+   "durability": 900,
+   "def": 58,
+   "hp": 182
+  },
+  "FurArmorHeat_3": {
+   "durability": 1200,
+   "def": 63,
+   "hp": 196
+  },
+  "FurArmorHeat_4": {
+   "durability": 1800,
+   "def": 67,
+   "hp": 210
+  },
+  "FurArmorHeat_5": {
+   "durability": 2400,
+   "def": 72,
+   "hp": 224
+  },
+  "FurArmor_2": {
+   "durability": 800,
+   "def": 45,
+   "hp": 182
+  },
+  "FurArmor_3": {
+   "durability": 1000,
+   "def": 49,
+   "hp": 196
+  },
+  "FurArmor_4": {
+   "durability": 1200,
+   "def": 52,
+   "hp": 210
+  },
+  "FurArmor_5": {
+   "durability": 1400,
+   "def": 56,
+   "hp": 224
+  },
+  "FurHelmet": {
+   "durability": 200,
+   "def": 15,
+   "hp": 60,
+   "sneak": 1,
+   "passives": [
+    "MaxInventoryWeight_up_Equip_1"
+   ]
+  },
+  "FurHelmet_2": {
+   "durability": 520,
+   "def": 19,
+   "hp": 78
+  },
+  "FurHelmet_3": {
+   "durability": 600,
+   "def": 21,
+   "hp": 84
+  },
+  "FurHelmet_4": {
+   "durability": 680,
+   "def": 22,
+   "hp": 90
+  },
+  "FurHelmet_5": {
+   "durability": 800,
+   "def": 24,
+   "hp": 96
+  },
+  "GYM_Head_Desert": {
+   "durability": 5000,
+   "def": 20,
+   "hp": 60
+  },
+  "GYM_Head_Electric": {
+   "durability": 5000,
+   "def": 20,
+   "hp": 60
+  },
+  "GYM_Head_Forest": {
+   "durability": 5000,
+   "def": 20,
+   "hp": 60
+  },
+  "GYM_Head_Grass": {
+   "durability": 5000,
+   "def": 20,
+   "hp": 60
+  },
+  "GYM_Head_Sakurajima": {
+   "durability": 5000,
+   "def": 20,
+   "hp": 60
+  },
+  "GYM_Head_Snow": {
+   "durability": 5000,
+   "def": 20,
+   "hp": 60
+  },
+  "GYM_Head_Viking": {
+   "durability": 5000,
+   "def": 20,
+   "hp": 60
+  },
+  "GatlingBullet": {
+   "sneak": 1
+  },
+  "GatlingGun": {
+   "atk": 375,
+   "durability": 6000,
+   "magazine": 100,
+   "sneak": 1
+  },
+  "GatlingGun_2": {
+   "atk": 431,
+   "durability": 9000
+  },
+  "GatlingGun_3": {
+   "atk": 468,
+   "durability": 12000
+  },
+  "GatlingGun_4": {
+   "atk": 506,
+   "durability": 18000
+  },
+  "GatlingGun_5": {
+   "atk": 562,
+   "durability": 24000
+  },
+  "Glider_Good": {
+   "sneak": 1
+  },
+  "Glider_Old": {
+   "sneak": 1
+  },
+  "GrapplingGun": {
+   "sneak": 1
+  },
+  "GrenadeBullet": {
+   "sneak": 1
+  },
+  "GrenadeLauncher": {
+   "atk": 3000,
+   "durability": 600,
+   "magazine": 5,
+   "sneak": 1
+  },
+  "GrenadeLauncher_2": {
+   "atk": 3450,
+   "durability": 900
+  },
+  "GrenadeLauncher_3": {
+   "atk": 3750,
+   "durability": 1200
+  },
+  "GrenadeLauncher_4": {
+   "atk": 4050,
+   "durability": 1800
+  },
+  "GrenadeLauncher_5": {
+   "atk": 4500,
+   "durability": 2400
+  },
+  "GuidedMissileLauncher": {
+   "atk": 5900,
+   "durability": 300,
+   "magazine": 1,
+   "sneak": 1
+  },
+  "GuidedMissileLauncher_2": {
+   "atk": 6785,
+   "durability": 450
+  },
+  "GuidedMissileLauncher_3": {
+   "atk": 7375,
+   "durability": 600
+  },
+  "GuidedMissileLauncher_4": {
+   "atk": 7965,
+   "durability": 900
+  },
+  "GuidedMissileLauncher_5": {
+   "atk": 8850,
+   "durability": 1200
+  },
+  "HandGun_Default": {
+   "atk": 250,
+   "durability": 400,
+   "magazine": 8,
+   "sneak": 1
+  },
+  "HandGun_Default_2": {
+   "atk": 437,
+   "durability": 1200
+  },
+  "HandGun_Default_3": {
+   "atk": 500,
+   "durability": 1600
+  },
+  "HandGun_Default_4": {
+   "atk": 562,
+   "durability": 2000
+  },
+  "HandGun_Default_5": {
+   "atk": 625,
+   "durability": 2400
+  },
+  "HandgunBullet": {
+   "sneak": 1
+  },
+  "Head001": {
+   "durability": 525,
+   "def": 30,
+   "hp": 80,
+   "sneak": 1,
+   "passives": [
+    "ElementResist_Dragon_1"
+   ]
+  },
+  "Head002": {
+   "durability": 450,
+   "def": 30,
+   "hp": 80,
+   "sneak": 1,
+   "passives": [
+    "ElementResist_Ice_1"
+   ]
+  },
+  "Head003": {
+   "durability": 225,
+   "def": 20,
+   "hp": 60,
+   "sneak": 1,
+   "passives": [
+    "ElementResist_Leaf_1"
+   ]
+  },
+  "Head004": {
+   "durability": 300,
+   "def": 20,
+   "hp": 60,
+   "sneak": 1,
+   "passives": [
+    "ElementResist_Dark_1"
+   ]
+  },
+  "Head005": {
+   "durability": 270,
+   "def": 25,
+   "hp": 70,
+   "sneak": 1,
+   "passives": [
+    "ElementResist_Earth_1"
+   ]
+  },
+  "Head006": {
+   "durability": 600,
+   "def": 30,
+   "hp": 80,
+   "sneak": 1,
+   "passives": [
+    "ElementResist_Thunder_1"
+   ]
+  },
+  "Head007": {
+   "durability": 300,
+   "def": 25,
+   "hp": 70,
+   "sneak": 1,
+   "passives": [
+    "ElementResist_Fire_1"
+   ]
+  },
+  "Head008": {
+   "durability": 375,
+   "def": 25,
+   "hp": 70,
+   "sneak": 1,
+   "passives": [
+    "ElementResist_Aqua_1"
+   ]
+  },
+  "Head009": {
+   "durability": 270,
+   "def": 25,
+   "hp": 70,
+   "sneak": 1,
+   "passives": [
+    "TemperatureResist_Heat1"
+   ]
+  },
+  "Head010": {
+   "durability": 300,
+   "def": 30,
+   "hp": 80,
+   "sneak": 1,
+   "passives": [
+    "WorkSpeed_ACC_up1"
+   ]
+  },
+  "Head011": {
+   "durability": 270,
+   "def": 10,
+   "hp": 30,
+   "sneak": 1,
+   "passives": [
+    "TemperatureResist_Heat1"
+   ]
+  },
+  "Head012": {
+   "durability": 300,
+   "def": 20,
+   "hp": 60,
+   "sneak": 1,
+   "passives": [
+    "ElementResist_Normal_1"
+   ]
+  },
+  "Head013": {
+   "durability": 300,
+   "def": 20,
+   "hp": 60,
+   "sneak": 1,
+   "passives": [
+    "ElementResist_Normal_1"
+   ]
+  },
+  "Head014": {
+   "durability": 300,
+   "def": 20,
+   "hp": 60,
+   "sneak": 1,
+   "passives": [
+    "ElementResist_Normal_1"
+   ]
+  },
+  "Head015": {
+   "durability": 300,
+   "def": 20,
+   "hp": 60,
+   "sneak": 1,
+   "passives": [
+    "ElementResist_Leaf_1"
+   ]
+  },
+  "Head016": {
+   "durability": 300,
+   "def": 20,
+   "hp": 60,
+   "sneak": 1,
+   "passives": [
+    "ElementResist_Ice_1"
+   ]
+  },
+  "Head017": {
+   "durability": 300,
+   "def": 20,
+   "hp": 60,
+   "sneak": 1,
+   "passives": [
+    "ElementResist_Dark_1"
+   ]
+  },
+  "HeadEquip001_purple": {
+   "durability": 5000,
+   "def": 30,
+   "hp": 80
+  },
+  "HeadEquip023": {
+   "durability": 300,
+   "def": 20,
+   "hp": 60,
+   "sneak": 1,
+   "passives": [
+    "ElementResist_Leaf_1"
+   ]
+  },
+  "HeadEquip024": {
+   "durability": 300,
+   "def": 20,
+   "hp": 60,
+   "sneak": 1,
+   "passives": [
+    "ElementResist_Ice_1"
+   ]
+  },
+  "HeadEquip025": {
+   "durability": 300,
+   "def": 20,
+   "hp": 60,
+   "sneak": 1,
+   "passives": [
+    "ElementResist_Dark_1"
+   ]
+  },
+  "HeadEquip026": {
+   "durability": 300,
+   "def": 20,
+   "hp": 60,
+   "sneak": 1,
+   "passives": [
+    "ElementResist_Dark_1"
+   ]
+  },
+  "HeadEquip027": {
+   "durability": 300,
+   "def": 20,
+   "hp": 60,
+   "sneak": 1,
+   "passives": [
+    "ElementResist_Dark_1"
+   ]
+  },
+  "HeadEquip028": {
+   "durability": 300,
+   "def": 20,
+   "hp": 60,
+   "sneak": 1,
+   "passives": [
+    "ElementResist_Normal_1"
+   ]
+  },
+  "HeadEquip029": {
+   "durability": 300,
+   "def": 20,
+   "hp": 60,
+   "sneak": 1,
+   "passives": [
+    "ElementResist_Normal_1"
+   ]
+  },
+  "HeadEquip030": {
+   "durability": 300,
+   "def": 20,
+   "hp": 60,
+   "sneak": 1,
+   "passives": [
+    "ElementResist_Earth_1"
+   ]
+  },
+  "HeadEquip031": {
+   "durability": 300,
+   "def": 20,
+   "hp": 60,
+   "sneak": 1,
+   "passives": [
+    "ElementResist_Ice_1"
+   ]
+  },
+  "HeadEquip032": {
+   "durability": 300,
+   "def": 20,
+   "hp": 60,
+   "sneak": 1,
+   "passives": [
+    "ElementResist_Thunder_1"
+   ]
+  },
+  "HeadEquip033": {
+   "durability": 300,
+   "def": 20,
+   "hp": 60,
+   "sneak": 1,
+   "passives": [
+    "ElementResist_Normal_1"
+   ]
+  },
+  "HeadEquip041": {
+   "durability": 5000,
+   "def": 30,
+   "hp": 80
+  },
+  "HeadEquip044": {
+   "durability": 5000,
+   "def": 30,
+   "hp": 80
+  },
+  "HeadEquip045": {
+   "durability": 700,
+   "def": 70,
+   "hp": 250
+  },
+  "HeadEquip046": {
+   "durability": 5000,
+   "def": 30,
+   "hp": 80
+  },
+  "HeadEquip048": {
+   "durability": 5000,
+   "def": 20,
+   "hp": 60
+  },
+  "HeadEquip049": {
+   "durability": 5000,
+   "def": 20,
+   "hp": 60
+  },
+  "HeadEquip050": {
+   "durability": 300,
+   "def": 20,
+   "hp": 60,
+   "sneak": 1,
+   "passives": [
+    "ElementResist_Leaf_1"
+   ]
+  },
+  "HeadEquip051": {
+   "durability": 300,
+   "def": 20,
+   "hp": 60,
+   "sneak": 1,
+   "passives": [
+    "ElementResist_Normal_1"
+   ]
+  },
+  "HeadEquip052": {
+   "durability": 300,
+   "def": 20,
+   "hp": 60,
+   "sneak": 1,
+   "passives": [
+    "ElementResist_Aqua_1"
+   ]
+  },
+  "HeadEquip053": {
+   "durability": 300,
+   "def": 20,
+   "hp": 60,
+   "sneak": 1,
+   "passives": [
+    "ElementResist_Aqua_1"
+   ]
+  },
+  "HeadEquip054": {
+   "durability": 300,
+   "def": 20,
+   "hp": 60,
+   "sneak": 1,
+   "passives": [
+    "ElementResist_Aqua_1"
+   ]
+  },
+  "HeadEquip055": {
+   "durability": 300,
+   "def": 20,
+   "hp": 60,
+   "sneak": 1,
+   "passives": [
+    "ElementResist_Aqua_1"
+   ]
+  },
+  "HeadEquip056": {
+   "durability": 300,
+   "def": 20,
+   "hp": 60,
+   "sneak": 1,
+   "passives": [
+    "ElementResist_Normal_1"
+   ]
+  },
+  "HeadEquip057": {
+   "durability": 300,
+   "def": 30,
+   "hp": 80,
+   "sneak": 1,
+   "passives": [
+    "ElementResist_Dark_1"
+   ]
+  },
+  "HeadEquip058": {
+   "durability": 300,
+   "def": 20,
+   "hp": 60,
+   "sneak": 1,
+   "passives": [
+    "ElementResist_Leaf_1"
+   ]
+  },
+  "HeadEquip059": {
+   "durability": 300,
+   "def": 20,
+   "hp": 60,
+   "sneak": 1,
+   "passives": [
+    "ElementResist_Aqua_1"
+   ]
+  },
+  "HeadEquip060": {
+   "durability": 300,
+   "def": 20,
+   "hp": 60,
+   "sneak": 1,
+   "passives": [
+    "ElementResist_Ice_1"
+   ]
+  },
+  "HeadEquip061": {
+   "durability": 300,
+   "def": 20,
+   "hp": 60,
+   "sneak": 1,
+   "passives": [
+    "ElementResist_Dark_1"
+   ]
+  },
+  "HeadEquip062": {
+   "durability": 300,
+   "def": 20,
+   "hp": 60,
+   "sneak": 1,
+   "passives": [
+    "ElementResist_Dark_1"
+   ]
+  },
+  "InkBullet": {
+   "sneak": 1
+  },
+  "IronArmor": {
+   "durability": 1500,
+   "def": 150,
+   "hp": 500,
+   "sneak": 1,
+   "passives": [
+    "TemperatureResist_Cold1",
+    "TemperatureResist_Heat1"
+   ]
+  },
+  "IronArmorCold": {
+   "durability": 3000,
+   "def": 180,
+   "hp": 500,
+   "sneak": 1,
+   "passives": [
+    "TemperatureResist_Cold2",
+    "TemperatureResist_Heat1",
+    "ElementResist_Ice_1"
+   ]
+  },
+  "IronArmorCold_2": {
+   "durability": 4500,
+   "def": 234,
+   "hp": 650
+  },
+  "IronArmorCold_3": {
+   "durability": 6000,
+   "def": 252,
+   "hp": 700
+  },
+  "IronArmorCold_4": {
+   "durability": 9000,
+   "def": 270,
+   "hp": 750
+  },
+  "IronArmorCold_5": {
+   "durability": 12000,
+   "def": 288,
+   "hp": 800
+  },
+  "IronArmorHeat": {
+   "durability": 3000,
+   "def": 180,
+   "hp": 500,
+   "sneak": 1,
+   "passives": [
+    "TemperatureResist_Heat2",
+    "TemperatureResist_Cold1",
+    "ElementResist_Fire_1"
+   ]
+  },
+  "IronArmorHeat_2": {
+   "durability": 4500,
+   "def": 234,
+   "hp": 650
+  },
+  "IronArmorHeat_3": {
+   "durability": 6000,
+   "def": 252,
+   "hp": 700
+  },
+  "IronArmorHeat_4": {
+   "durability": 9000,
+   "def": 270,
+   "hp": 750
+  },
+  "IronArmorHeat_5": {
+   "durability": 12000,
+   "def": 288,
+   "hp": 800
+  },
+  "IronArmor_2": {
+   "durability": 4000,
+   "def": 195,
+   "hp": 650
+  },
+  "IronArmor_3": {
+   "durability": 5000,
+   "def": 210,
+   "hp": 700
+  },
+  "IronArmor_4": {
+   "durability": 6000,
+   "def": 225,
+   "hp": 750
+  },
+  "IronArmor_5": {
+   "durability": 7000,
+   "def": 240,
+   "hp": 800
+  },
+  "IronHelmet": {
+   "durability": 1500,
+   "def": 100,
+   "hp": 250,
+   "sneak": 1
+  },
+  "IronHelmet_2": {
+   "durability": 3900,
+   "def": 130,
+   "hp": 325
+  },
+  "IronHelmet_3": {
+   "durability": 4500,
+   "def": 140,
+   "hp": 350
+  },
+  "IronHelmet_4": {
+   "durability": 5100,
+   "def": 150,
+   "hp": 375
+  },
+  "IronHelmet_5": {
+   "durability": 6000,
+   "def": 160,
+   "hp": 400
+  },
+  "Katana": {
+   "atk": 780,
+   "durability": 500,
+   "sneak": 1
+  },
+  "Katana_2": {
+   "atk": 858,
+   "durability": 750
+  },
+  "Katana_3": {
+   "atk": 936,
+   "durability": 1000
+  },
+  "Katana_4": {
+   "atk": 1014,
+   "durability": 1500
+  },
+  "Katana_5": {
+   "atk": 1170,
+   "durability": 2000
+  },
+  "LaserBullet": {
+   "sneak": 1
+  },
+  "LaserGatlingBullet": {
+   "sneak": 1
+  },
+  "LaserGatlingGun": {
+   "atk": 530,
+   "durability": 8000,
+   "magazine": 100,
+   "sneak": 1
+  },
+  "LaserGatlingGun_2": {
+   "atk": 583,
+   "durability": 12000
+  },
+  "LaserGatlingGun_3": {
+   "atk": 609,
+   "durability": 16000
+  },
+  "LaserGatlingGun_4": {
+   "atk": 636,
+   "durability": 24000
+  },
+  "LaserGatlingGun_5": {
+   "atk": 689,
+   "durability": 32000
+  },
+  "LaserMiningTool": {
+   "atk": 250,
+   "durability": 850
+  },
+  "LaserRifle": {
+   "atk": 1250,
+   "durability": 3000,
+   "magazine": 30,
+   "sneak": 1
+  },
+  "LaserRifle_2": {
+   "atk": 1437,
+   "durability": 4500
+  },
+  "LaserRifle_3": {
+   "atk": 1562,
+   "durability": 6000
+  },
+  "LaserRifle_4": {
+   "atk": 1687,
+   "durability": 9000
+  },
+  "LaserRifle_5": {
+   "atk": 1875,
+   "durability": 12000
+  },
+  "Launcher_Default": {
+   "atk": 10000,
+   "durability": 300,
+   "magazine": 1,
+   "sneak": 1
+  },
+  "Launcher_Default_2": {
+   "atk": 11000,
+   "durability": 800
+  },
+  "Launcher_Default_3": {
+   "atk": 12000,
+   "durability": 1000
+  },
+  "Launcher_Default_4": {
+   "atk": 13000,
+   "durability": 1200
+  },
+  "Launcher_Default_5": {
+   "atk": 14000,
+   "durability": 1400
+  },
+  "Launcher_Meteor": {
+   "atk": 2000,
+   "durability": 300,
+   "magazine": 1,
+   "sneak": 1
+  },
+  "Launcher_Meteor_5": {
+   "atk": 10500,
+   "durability": 450
+  },
+  "MakeshiftAssaultRifle": {
+   "atk": 170,
+   "durability": 1500,
+   "magazine": 15,
+   "sneak": 1
+  },
+  "MakeshiftAssaultRifle_2": {
+   "atk": 204,
+   "durability": 2250
+  },
+  "MakeshiftAssaultRifle_3": {
+   "atk": 229,
+   "durability": 3000
+  },
+  "MakeshiftAssaultRifle_4": {
+   "atk": 255,
+   "durability": 4500
+  },
+  "MakeshiftAssaultRifle_5": {
+   "atk": 297,
+   "durability": 6000
+  },
+  "MakeshiftHandgun": {
+   "atk": 320,
+   "durability": 300,
+   "magazine": 6,
+   "sneak": 1
+  },
+  "MakeshiftHandgun_2": {
+   "atk": 560,
+   "durability": 600
+  },
+  "MakeshiftHandgun_3": {
+   "atk": 640,
+   "durability": 900
+  },
+  "MakeshiftHandgun_4": {
+   "atk": 720,
+   "durability": 1200
+  },
+  "MakeshiftHandgun_5": {
+   "atk": 800,
+   "durability": 1500
+  },
+  "MakeshiftShotgun": {
+   "atk": 215,
+   "durability": 200,
+   "magazine": 1,
+   "sneak": 1
+  },
+  "MakeshiftShotgun_2": {
+   "atk": 258,
+   "durability": 300
+  },
+  "MakeshiftShotgun_3": {
+   "atk": 290,
+   "durability": 400
+  },
+  "MakeshiftShotgun_4": {
+   "atk": 322,
+   "durability": 600
+  },
+  "MakeshiftShotgun_5": {
+   "atk": 376,
+   "durability": 800
+  },
+  "MakeshiftSubmachineGun": {
+   "atk": 100,
+   "durability": 1000,
+   "magazine": 24,
+   "sneak": 1
+  },
+  "MakeshiftSubmachineGun_2": {
+   "atk": 120,
+   "durability": 1500
+  },
+  "MakeshiftSubmachineGun_3": {
+   "atk": 135,
+   "durability": 2000
+  },
+  "MakeshiftSubmachineGun_4": {
+   "atk": 150,
+   "durability": 3000
+  },
+  "MakeshiftSubmachineGun_5": {
+   "atk": 175,
+   "durability": 4000
+  },
+  "MeatCutterKnife": {
+   "atk": 25,
+   "durability": 300,
+   "sneak": 1
+  },
+  "MetalDetector": {
+   "durability": 400
+  },
+  "MeteorBullet": {
+   "sneak": 1
+  },
+  "MissileBullet": {
+   "sneak": 1
+  },
+  "MultiGuidedMissileLauncher": {
+   "atk": 5900,
+   "durability": 300,
+   "magazine": 4,
+   "sneak": 1
+  },
+  "MultiGuidedMissileLauncher_2": {
+   "atk": 6785,
+   "durability": 450
+  },
+  "MultiGuidedMissileLauncher_3": {
+   "atk": 7375,
+   "durability": 600
+  },
+  "MultiGuidedMissileLauncher_4": {
+   "atk": 7965,
+   "durability": 900
+  },
+  "MultiGuidedMissileLauncher_5": {
+   "atk": 8850,
+   "durability": 1200
+  },
+  "Musket": {
+   "atk": 1000,
+   "durability": 200,
+   "magazine": 1,
+   "sneak": 1
+  },
+  "Musket_2": {
+   "atk": 1400,
+   "durability": 400
+  },
+  "Musket_3": {
+   "atk": 1600,
+   "durability": 500
+  },
+  "Musket_4": {
+   "atk": 1800,
+   "durability": 600
+  },
+  "Musket_5": {
+   "atk": 2000,
+   "durability": 800
+  },
+  "Octavia001_Armor": {
+   "durability": 1450,
+   "def": 51,
+   "hp": 806,
+   "sneak": 1,
+   "passives": [
+    "TemperatureResist_Cold1",
+    "TemperatureResist_Heat1",
+    "OctaviaArmorVampire"
+   ]
+  },
+  "Octavia001_Armor_5": {
+   "durability": 72000,
+   "def": 608,
+   "hp": 2112
+  },
+  "Octavia002_Armor": {
+   "durability": 19000,
+   "def": 600,
+   "hp": 215,
+   "sneak": 1,
+   "passives": [
+    "TemperatureResist_Cold2",
+    "TemperatureResist_Heat2"
+   ]
+  },
+  "Octavia002_Armor_5": {
+   "durability": 72000,
+   "def": 750,
+   "hp": 1900
+  },
+  "OctaviaRevolver": {
+   "atk": 250,
+   "durability": 400,
+   "sneak": 1
+  },
+  "OctaviaRevolver_5": {
+   "atk": 625,
+   "durability": 2400
+  },
+  "OctaviaShotgun": {
+   "atk": 230,
+   "durability": 150,
+   "sneak": 1
+  },
+  "OctaviaShotgun_5": {
+   "atk": 575,
+   "durability": 600
+  },
+  "OldRevolver": {
+   "atk": 600,
+   "durability": 400,
+   "magazine": 6,
+   "sneak": 1
+  },
+  "OldRevolver_2": {
+   "atk": 1050,
+   "durability": 600
+  },
+  "OldRevolver_3": {
+   "atk": 1200,
+   "durability": 800
+  },
+  "OldRevolver_4": {
+   "atk": 1350,
+   "durability": 1200
+  },
+  "OldRevolver_5": {
+   "atk": 1500,
+   "durability": 1600
+  },
+  "OverheatRifle": {
+   "atk": 1225,
+   "durability": 3000,
+   "sneak": 1
+  },
+  "OverheatRifleBullet": {
+   "sneak": 1
+  },
+  "OverheatRifle_2": {
+   "atk": 1286,
+   "durability": 3000
+  },
+  "OverheatRifle_3": {
+   "atk": 1347,
+   "durability": 4000
+  },
+  "OverheatRifle_4": {
+   "atk": 1408,
+   "durability": 5000
+  },
+  "OverheatRifle_5": {
+   "atk": 1470,
+   "durability": 6000
+  },
+  "PalDopingShot": {
+   "atk": 250,
+   "durability": 400,
+   "magazine": 8,
+   "sneak": 1
+  },
+  "PalDopingShotBullet": {
+   "sneak": 1
+  },
+  "PalDopingShot_2": {
+   "atk": 250,
+   "durability": 400,
+   "magazine": 8,
+   "sneak": 1
+  },
+  "PalHealingGrenade": {
+   "sneak": 1
+  },
+  "PalSphere": {
+   "sneak": 100
+  },
+  "PalSphere_Mega": {
+   "sneak": 100
+  },
+  "Pickaxe_Steal": {
+   "atk": 120,
+   "durability": 400
+  },
+  "Pickaxe_Tier_00": {
+   "atk": 20,
+   "durability": 150,
+   "sneak": 1
+  },
+  "Pickaxe_Tier_01": {
+   "atk": 30,
+   "durability": 250
+  },
+  "Pickaxe_Tier_02": {
+   "atk": 60,
+   "durability": 300
+  },
+  "PlasticArmor": {
+   "durability": 18000,
+   "def": 385,
+   "hp": 1300,
+   "sneak": 1,
+   "passives": [
+    "TemperatureResist_Cold1",
+    "TemperatureResist_Heat1"
+   ]
+  },
+  "PlasticArmorCold": {
+   "durability": 18000,
+   "def": 400,
+   "hp": 1300,
+   "sneak": 1,
+   "passives": [
+    "TemperatureResist_Cold2",
+    "TemperatureResist_Heat1",
+    "ElementResist_Ice_1"
+   ]
+  },
+  "PlasticArmorCold_2": {
+   "durability": 27000,
+   "def": 520,
+   "hp": 1560
+  },
+  "PlasticArmorCold_3": {
+   "durability": 36000,
+   "def": 560,
+   "hp": 1690
+  },
+  "PlasticArmorCold_4": {
+   "durability": 54000,
+   "def": 600,
+   "hp": 1820
+  },
+  "PlasticArmorCold_5": {
+   "durability": 72000,
+   "def": 640,
+   "hp": 1950
+  },
+  "PlasticArmorHeat": {
+   "durability": 18000,
+   "def": 400,
+   "hp": 1300,
+   "sneak": 1,
+   "passives": [
+    "TemperatureResist_Cold1",
+    "TemperatureResist_Heat2",
+    "ElementResist_Fire_1"
+   ]
+  },
+  "PlasticArmorHeat_2": {
+   "durability": 27000,
+   "def": 520,
+   "hp": 1560
+  },
+  "PlasticArmorHeat_3": {
+   "durability": 36000,
+   "def": 560,
+   "hp": 1690
+  },
+  "PlasticArmorHeat_4": {
+   "durability": 54000,
+   "def": 600,
+   "hp": 1820
+  },
+  "PlasticArmorHeat_5": {
+   "durability": 72000,
+   "def": 640,
+   "hp": 1950
+  },
+  "PlasticArmorWeight": {
+   "durability": 18000,
+   "def": 400,
+   "hp": 1300,
+   "sneak": 1,
+   "passives": [
+    "TemperatureResist_Cold1",
+    "TemperatureResist_Heat1",
+    "MaxInventoryWeight_up_Equip_3"
+   ]
+  },
+  "PlasticArmorWeight_2": {
+   "durability": 27000,
+   "def": 520,
+   "hp": 1560
+  },
+  "PlasticArmorWeight_3": {
+   "durability": 36000,
+   "def": 560,
+   "hp": 1690
+  },
+  "PlasticArmorWeight_4": {
+   "durability": 54000,
+   "def": 600,
+   "hp": 1820
+  },
+  "PlasticArmorWeight_5": {
+   "durability": 72000,
+   "def": 640,
+   "hp": 1950
+  },
+  "PlasticArmor_2": {
+   "durability": 27000,
+   "def": 500,
+   "hp": 1560
+  },
+  "PlasticArmor_3": {
+   "durability": 36000,
+   "def": 539,
+   "hp": 1690
+  },
+  "PlasticArmor_4": {
+   "durability": 54000,
+   "def": 577,
+   "hp": 1820
+  },
+  "PlasticArmor_5": {
+   "durability": 72000,
+   "def": 616,
+   "hp": 1950
+  },
+  "PlasticHelmet": {
+   "durability": 18000,
+   "def": 260,
+   "hp": 600,
+   "sneak": 1
+  },
+  "PlasticHelmet_2": {
+   "durability": 27000,
+   "def": 312,
+   "hp": 720
+  },
+  "PlasticHelmet_3": {
+   "durability": 36000,
+   "def": 338,
+   "hp": 780
+  },
+  "PlasticHelmet_4": {
+   "durability": 54000,
+   "def": 364,
+   "hp": 840
+  },
+  "PlasticHelmet_5": {
+   "durability": 72000,
+   "def": 390,
+   "hp": 900
+  },
+  "Player_Outfit_Kigurumi001": {
+   "durability": 1800,
+   "def": 50,
+   "hp": 100
+  },
+  "PumpActionShotgun": {
+   "atk": 220,
+   "durability": 150,
+   "magazine": 8,
+   "sneak": 1
+  },
+  "PumpActionShotgun_2": {
+   "atk": 275,
+   "durability": 500
+  },
+  "PumpActionShotgun_3": {
+   "atk": 308,
+   "durability": 600
+  },
+  "PumpActionShotgun_4": {
+   "atk": 352,
+   "durability": 700
+  },
+  "PumpActionShotgun_5": {
+   "atk": 385,
+   "durability": 800
+  },
+  "ReinforcedArrow": {
+   "sneak": 1
+  },
+  "RifleBullet": {
+   "sneak": 1
+  },
+  "RoughBullet": {
+   "sneak": 1
+  },
+  "SFArmor": {
+   "durability": 20000,
+   "def": 580,
+   "hp": 1750,
+   "sneak": 1,
+   "passives": [
+    "TemperatureResist_Cold2",
+    "TemperatureResist_Heat2"
+   ]
+  },
+  "SFArmorCold": {
+   "durability": 18000,
+   "def": 600,
+   "hp": 1750,
+   "sneak": 1,
+   "passives": [
+    "TemperatureResist_Cold3",
+    "TemperatureResist_Heat2",
+    "ElementResist_Ice_1"
+   ]
+  },
+  "SFArmorCold_2": {
+   "durability": 27000,
+   "def": 660,
+   "hp": 1925
+  },
+  "SFArmorCold_3": {
+   "durability": 36000,
+   "def": 690,
+   "hp": 2012
+  },
+  "SFArmorCold_4": {
+   "durability": 54000,
+   "def": 720,
+   "hp": 2100
+  },
+  "SFArmorCold_5": {
+   "durability": 72000,
+   "def": 780,
+   "hp": 2275
+  },
+  "SFArmorHeat": {
+   "durability": 18000,
+   "def": 600,
+   "hp": 1750,
+   "sneak": 1,
+   "passives": [
+    "TemperatureResist_Cold2",
+    "TemperatureResist_Heat3",
+    "ElementResist_Fire_1"
+   ]
+  },
+  "SFArmorHeat_2": {
+   "durability": 27000,
+   "def": 660,
+   "hp": 1925
+  },
+  "SFArmorHeat_3": {
+   "durability": 36000,
+   "def": 690,
+   "hp": 2012
+  },
+  "SFArmorHeat_4": {
+   "durability": 54000,
+   "def": 720,
+   "hp": 2100
+  },
+  "SFArmorHeat_5": {
+   "durability": 72000,
+   "def": 780,
+   "hp": 2275
+  },
+  "SFArmorWeight": {
+   "durability": 18000,
+   "def": 600,
+   "hp": 1750,
+   "sneak": 1,
+   "passives": [
+    "TemperatureResist_Cold2",
+    "TemperatureResist_Heat2",
+    "MaxInventoryWeight_up_Equip_3"
+   ]
+  },
+  "SFArmorWeight_2": {
+   "durability": 27000,
+   "def": 660,
+   "hp": 1925
+  },
+  "SFArmorWeight_3": {
+   "durability": 36000,
+   "def": 690,
+   "hp": 2012
+  },
+  "SFArmorWeight_4": {
+   "durability": 54000,
+   "def": 720,
+   "hp": 2100
+  },
+  "SFArmorWeight_5": {
+   "durability": 72000,
+   "def": 780,
+   "hp": 2275
+  },
+  "SFArmor_2": {
+   "durability": 30000,
+   "def": 638,
+   "hp": 1925
+  },
+  "SFArmor_3": {
+   "durability": 40000,
+   "def": 667,
+   "hp": 2012
+  },
+  "SFArmor_4": {
+   "durability": 60000,
+   "def": 696,
+   "hp": 2100
+  },
+  "SFArmor_5": {
+   "durability": 80000,
+   "def": 754,
+   "hp": 2275
+  },
+  "SFArrow": {
+   "sneak": 1
+  },
+  "SFBow": {
+   "atk": 5800,
+   "durability": 500,
+   "magazine": 1,
+   "sneak": 1
+  },
+  "SFBow_2": {
+   "atk": 6670,
+   "durability": 750
+  },
+  "SFBow_3": {
+   "atk": 7250,
+   "durability": 1000
+  },
+  "SFBow_4": {
+   "atk": 7830,
+   "durability": 1500
+  },
+  "SFBow_5": {
+   "atk": 8700,
+   "durability": 2000
+  },
+  "SFHelmet": {
+   "durability": 20000,
+   "def": 350,
+   "hp": 800,
+   "sneak": 1
+  },
+  "SFHelmet_2": {
+   "durability": 30000,
+   "def": 385,
+   "hp": 880
+  },
+  "SFHelmet_3": {
+   "durability": 40000,
+   "def": 402,
+   "hp": 920
+  },
+  "SFHelmet_4": {
+   "durability": 60000,
+   "def": 420,
+   "hp": 960
+  },
+  "SFHelmet_5": {
+   "durability": 80000,
+   "def": 455,
+   "hp": 1040
+  },
+  "SemiAutoRifle": {
+   "atk": 1150,
+   "durability": 1000,
+   "magazine": 8,
+   "sneak": 1
+  },
+  "SemiAutoRifle_2": {
+   "atk": 1265,
+   "durability": 1500
+  },
+  "SemiAutoRifle_3": {
+   "atk": 1380,
+   "durability": 2000
+  },
+  "SemiAutoRifle_4": {
+   "atk": 1495,
+   "durability": 3000
+  },
+  "SemiAutoRifle_5": {
+   "atk": 1610,
+   "durability": 4000
+  },
+  "SemiAutoShotgun": {
+   "atk": 195,
+   "durability": 300,
+   "magazine": 10,
+   "sneak": 1
+  },
+  "SemiAutoShotgun_2": {
+   "atk": 214,
+   "durability": 450
+  },
+  "SemiAutoShotgun_3": {
+   "atk": 234,
+   "durability": 600
+  },
+  "SemiAutoShotgun_4": {
+   "atk": 253,
+   "durability": 900
+  },
+  "SemiAutoShotgun_5": {
+   "atk": 282,
+   "durability": 1200
+  },
+  "Shield_01": {
+   "durability": 1000,
+   "shield": 100,
+   "sneak": 1
+  },
+  "Shield_02": {
+   "durability": 1500,
+   "shield": 260,
+   "sneak": 1
+  },
+  "Shield_03": {
+   "durability": 2250,
+   "shield": 540
+  },
+  "Shield_04": {
+   "durability": 3500,
+   "shield": 1045
+  },
+  "Shield_07": {
+   "durability": 22000,
+   "shield": 2200
+  },
+  "Shield_SF": {
+   "durability": 21000,
+   "shield": 1800
+  },
+  "ShotgunBullet": {
+   "sneak": 1
+  },
+  "SingleShotRifle": {
+   "atk": 1100,
+   "durability": 1000,
+   "magazine": 1,
+   "sneak": 1
+  },
+  "SingleShotRifle_2": {
+   "atk": 1650,
+   "durability": 2000
+  },
+  "SingleShotRifle_3": {
+   "atk": 1870,
+   "durability": 2500
+  },
+  "SingleShotRifle_4": {
+   "atk": 2090,
+   "durability": 3000
+  },
+  "SingleShotRifle_5": {
+   "atk": 2310,
+   "durability": 4000
+  },
+  "SkyAssaultRifle": {
+   "atk": 1615,
+   "durability": 5500,
+   "magazine": 30,
+   "sneak": 1
+  },
+  "SkyAssaultRifleBullet": {
+   "sneak": 1
+  },
+  "SkyAssaultRifle_2": {
+   "atk": 1695,
+   "durability": 8250
+  },
+  "SkyAssaultRifle_3": {
+   "atk": 1776,
+   "durability": 11000
+  },
+  "SkyAssaultRifle_4": {
+   "atk": 1857,
+   "durability": 16500
+  },
+  "SkyAssaultRifle_5": {
+   "atk": 1938,
+   "durability": 22000
+  },
+  "SkyBeamSword": {
+   "atk": 2000,
+   "durability": 1200,
+   "sneak": 1
+  },
+  "SkyBeamSword_2": {
+   "atk": 2100,
+   "durability": 1800
+  },
+  "SkyBeamSword_3": {
+   "atk": 2200,
+   "durability": 2400
+  },
+  "SkyBeamSword_4": {
+   "atk": 2300,
+   "durability": 3600
+  },
+  "SkyBeamSword_5": {
+   "atk": 2400,
+   "durability": 4800
+  },
+  "SkyBow": {
+   "atk": 20000,
+   "durability": 2000,
+   "magazine": 1,
+   "sneak": 1
+  },
+  "SkyBowArrow": {
+   "sneak": 1
+  },
+  "SkyBow_2": {
+   "atk": 21000,
+   "durability": 3000
+  },
+  "SkyBow_3": {
+   "atk": 22000,
+   "durability": 4000
+  },
+  "SkyBow_4": {
+   "atk": 23000,
+   "durability": 6000
+  },
+  "SkyBow_5": {
+   "atk": 24000,
+   "durability": 8000
+  },
+  "SkyGrenadeLauncher": {
+   "atk": 6722,
+   "durability": 800,
+   "magazine": 8,
+   "sneak": 1
+  },
+  "SkyGrenadeLauncherBullet": {
+   "sneak": 1
+  },
+  "SkyGrenadeLauncher_2": {
+   "atk": 7058,
+   "durability": 1200
+  },
+  "SkyGrenadeLauncher_3": {
+   "atk": 7394,
+   "durability": 1600
+  },
+  "SkyGrenadeLauncher_4": {
+   "atk": 7730,
+   "durability": 2400
+  },
+  "SkyGrenadeLauncher_5": {
+   "atk": 8066,
+   "durability": 3200
+  },
+  "SkyShotgun": {
+   "atk": 1167,
+   "durability": 6000,
+   "magazine": 12,
+   "sneak": 1
+  },
+  "SkyShotgunBullet": {
+   "sneak": 1
+  },
+  "SkyShotgun_2": {
+   "atk": 1225,
+   "durability": 9000
+  },
+  "SkyShotgun_3": {
+   "atk": 1283,
+   "durability": 12000
+  },
+  "SkyShotgun_4": {
+   "atk": 1342,
+   "durability": 18000
+  },
+  "SkyShotgun_5": {
+   "atk": 1400,
+   "durability": 24000
+  },
+  "SkySubmachineGun": {
+   "atk": 907,
+   "durability": 8000,
+   "magazine": 42,
+   "sneak": 1
+  },
+  "SkySubmachineGunBullet": {
+   "sneak": 1
+  },
+  "SkySubmachineGun_2": {
+   "atk": 1088,
+   "durability": 12000
+  },
+  "SkySubmachineGun_3": {
+   "atk": 1224,
+   "durability": 16000
+  },
+  "SkySubmachineGun_4": {
+   "atk": 1360,
+   "durability": 24000
+  },
+  "SkySubmachineGun_5": {
+   "atk": 1587,
+   "durability": 32000
+  },
+  "Spear": {
+   "atk": 35,
+   "durability": 200,
+   "sneak": 1
+  },
+  "Spear_2": {
+   "atk": 80,
+   "durability": 250,
+   "sneak": 1
+  },
+  "Spear_3": {
+   "atk": 310,
+   "durability": 300,
+   "sneak": 1
+  },
+  "Spear_ForestBoss": {
+   "atk": 860,
+   "durability": 500
+  },
+  "Spear_ForestBoss2": {
+   "atk": 1200,
+   "durability": 600
+  },
+  "Spear_ForestBoss2_5": {
+   "atk": 1500,
+   "durability": 2400
+  },
+  "Spear_ForestBoss_5": {
+   "atk": 1075,
+   "durability": 2000
+  },
+  "Spear_QueenBee": {
+   "atk": 150,
+   "durability": 300
+  },
+  "SphereLauncher": {
+   "sneak": 1
+  },
+  "SphereLauncher_Once": {
+   "sneak": 1
+  },
+  "StealArmor": {
+   "durability": 5000,
+   "def": 220,
+   "hp": 750,
+   "sneak": 1,
+   "passives": [
+    "TemperatureResist_Cold1",
+    "TemperatureResist_Heat1"
+   ]
+  },
+  "StealArmorCold": {
+   "durability": 10000,
+   "def": 250,
+   "hp": 750,
+   "sneak": 1,
+   "passives": [
+    "TemperatureResist_Cold2",
+    "TemperatureResist_Heat1",
+    "ElementResist_Ice_1"
+   ]
+  },
+  "StealArmorCold_2": {
+   "durability": 15000,
+   "def": 325,
+   "hp": 975
+  },
+  "StealArmorCold_3": {
+   "durability": 20000,
+   "def": 350,
+   "hp": 1050
+  },
+  "StealArmorCold_4": {
+   "durability": 30000,
+   "def": 375,
+   "hp": 1125
+  },
+  "StealArmorCold_5": {
+   "durability": 40000,
+   "def": 400,
+   "hp": 1200
+  },
+  "StealArmorHeat": {
+   "durability": 10000,
+   "def": 250,
+   "hp": 750,
+   "sneak": 1,
+   "passives": [
+    "TemperatureResist_Heat2",
+    "TemperatureResist_Cold1",
+    "ElementResist_Fire_1"
+   ]
+  },
+  "StealArmorHeat_2": {
+   "durability": 15000,
+   "def": 325,
+   "hp": 975
+  },
+  "StealArmorHeat_3": {
+   "durability": 20000,
+   "def": 350,
+   "hp": 1050
+  },
+  "StealArmorHeat_4": {
+   "durability": 30000,
+   "def": 375,
+   "hp": 1125
+  },
+  "StealArmorHeat_5": {
+   "durability": 40000,
+   "def": 400,
+   "hp": 1200
+  },
+  "StealArmor_2": {
+   "durability": 14000,
+   "def": 286,
+   "hp": 975
+  },
+  "StealArmor_3": {
+   "durability": 18000,
+   "def": 308,
+   "hp": 1050
+  },
+  "StealArmor_4": {
+   "durability": 22000,
+   "def": 330,
+   "hp": 1125
+  },
+  "StealArmor_5": {
+   "durability": 26000,
+   "def": 352,
+   "hp": 1200
+  },
+  "StealHelmet": {
+   "durability": 5000,
+   "def": 150,
+   "hp": 350,
+   "sneak": 1
+  },
+  "StealHelmet_2": {
+   "durability": 13000,
+   "def": 195,
+   "hp": 455
+  },
+  "StealHelmet_3": {
+   "durability": 15000,
+   "def": 210,
+   "hp": 490
+  },
+  "StealHelmet_4": {
+   "durability": 17000,
+   "def": 225,
+   "hp": 525
+  },
+  "StealHelmet_5": {
+   "durability": 20000,
+   "def": 240,
+   "hp": 560
+  },
+  "SubmachineGun": {
+   "atk": 130,
+   "durability": 2000,
+   "magazine": 24,
+   "sneak": 1
+  },
+  "SubmachineGun_2": {
+   "atk": 156,
+   "durability": 3000
+  },
+  "SubmachineGun_3": {
+   "atk": 175,
+   "durability": 4000
+  },
+  "SubmachineGun_4": {
+   "atk": 195,
+   "durability": 6000
+  },
+  "SubmachineGun_5": {
+   "atk": 227,
+   "durability": 8000
+  },
+  "Sword": {
+   "atk": 360,
+   "durability": 500,
+   "sneak": 1
+  },
+  "Sword_2": {
+   "atk": 396,
+   "durability": 750
+  },
+  "Sword_3": {
+   "atk": 432,
+   "durability": 1000
+  },
+  "Sword_4": {
+   "atk": 468,
+   "durability": 1500
+  },
+  "Sword_5": {
+   "atk": 540,
+   "durability": 2000
+  },
+  "Torch": {
+   "atk": 10,
+   "durability": 100,
+   "sneak": 1
+  },
+  "WeakerBow": {
+   "atk": 65,
+   "durability": 150,
+   "magazine": 1,
+   "sneak": 1
+  },
+  "WeakerBow_2": {
+   "atk": 130,
+   "durability": 400
+  },
+  "WeakerBow_3": {
+   "atk": 169,
+   "durability": 500
+  },
+  "WeakerBow_4": {
+   "atk": 208,
+   "durability": 600
+  },
+  "WeakerBow_5": {
+   "atk": 247,
+   "durability": 700
+  },
+  "WidePenetrateShotgun": {
+   "atk": 508,
+   "durability": 950,
+   "magazine": 30,
+   "sneak": 1
+  },
+  "WidePenetrateShotgunBullet": {
+   "sneak": 1
+  },
+  "WidePenetrateShotgun_2": {
+   "atk": 533,
+   "durability": 1425
+  },
+  "WidePenetrateShotgun_3": {
+   "atk": 558,
+   "durability": 1900
+  },
+  "WidePenetrateShotgun_4": {
+   "atk": 584,
+   "durability": 2850
+  },
+  "WidePenetrateShotgun_5": {
+   "atk": 609,
+   "durability": 3800
+  },
+  "YakushimaArmor001": {
+   "durability": 4500,
+   "def": 200,
+   "hp": 650,
+   "sneak": 1,
+   "passives": [
+    "TemperatureResist_Cold1",
+    "TemperatureResist_Heat1",
+    "YakushimaProtection_Equip"
+   ]
+  },
+  "YakushimaArmor001_2": {
+   "durability": 6000,
+   "def": 260,
+   "hp": 845
+  },
+  "YakushimaArmor001_3": {
+   "durability": 7500,
+   "def": 280,
+   "hp": 910
+  },
+  "YakushimaArmor001_4": {
+   "durability": 10500,
+   "def": 300,
+   "hp": 975
+  },
+  "YakushimaArmor001_5": {
+   "durability": 13500,
+   "def": 320,
+   "hp": 1040
+  },
+  "YakushimaBlade": {
+   "atk": 200,
+   "durability": 2222
+  },
+  "YakushimaBlade002": {
+   "atk": 425,
+   "durability": 757,
+   "sneak": 1
+  },
+  "YakushimaBlade002_2": {
+   "atk": 467,
+   "durability": 1135
+  },
+  "YakushimaBlade002_3": {
+   "atk": 510,
+   "durability": 1514
+  },
+  "YakushimaBlade002_4": {
+   "atk": 552,
+   "durability": 2271
+  },
+  "YakushimaBlade002_5": {
+   "atk": 637,
+   "durability": 3028
+  },
+  "YakushimaBlade003": {
+   "atk": 90,
+   "durability": 5000,
+   "sneak": 1
+  },
+  "YakushimaBlade003_2": {
+   "atk": 100,
+   "durability": 6000
+  },
+  "YakushimaBlade003_3": {
+   "atk": 110,
+   "durability": 7200
+  },
+  "YakushimaBlade003_4": {
+   "atk": 125,
+   "durability": 8640
+  },
+  "YakushimaBlade003_5": {
+   "atk": 150,
+   "durability": 10368
+  },
+  "YakushimaBlade004": {
+   "atk": 360,
+   "durability": 600,
+   "sneak": 1
+  },
+  "YakushimaBlade004_2": {
+   "atk": 396,
+   "durability": 900
+  },
+  "YakushimaBlade004_3": {
+   "atk": 432,
+   "durability": 1200
+  },
+  "YakushimaBlade004_4": {
+   "atk": 468,
+   "durability": 1800
+  },
+  "YakushimaBlade004_5": {
+   "atk": 540,
+   "durability": 2400
+  },
+  "YakushimaBlade005": {
+   "atk": 222,
+   "durability": 22222
+  },
+  "YakushimaGun001": {
+   "atk": 300,
+   "durability": 3000,
+   "sneak": 1
+  },
+  "YakushimaGun001_2": {
+   "atk": 330,
+   "durability": 3000
+  },
+  "YakushimaGun001_3": {
+   "atk": 360,
+   "durability": 4000
+  },
+  "YakushimaGun001_4": {
+   "atk": 390,
+   "durability": 5000
+  },
+  "YakushimaGun001_5": {
+   "atk": 450,
+   "durability": 6000
+  },
+  "YakushimaHeadEquip001": {
+   "durability": 4500,
+   "def": 140,
+   "hp": 320,
+   "sneak": 1,
+   "passives": [
+    "YakushimaDagameBoost_Melee_Equip"
+   ]
+  },
+  "YakushimaHeadEquip001_2": {
+   "durability": 6000,
+   "def": 154,
+   "hp": 352
+  },
+  "YakushimaHeadEquip001_3": {
+   "durability": 7500,
+   "def": 161,
+   "hp": 368
+  },
+  "YakushimaHeadEquip001_4": {
+   "durability": 10500,
+   "def": 168,
+   "hp": 384
+  },
+  "YakushimaHeadEquip001_5": {
+   "durability": 13500,
+   "def": 182,
+   "hp": 416
+  },
+  "YakushimaHeadEquip002": {
+   "durability": 4500,
+   "def": 140,
+   "hp": 320,
+   "sneak": 1,
+   "passives": [
+    "YakushimaDagameBoost_Magic_Equip"
+   ]
+  },
+  "YakushimaHeadEquip002_2": {
+   "durability": 6000,
+   "def": 154,
+   "hp": 352
+  },
+  "YakushimaHeadEquip002_3": {
+   "durability": 7500,
+   "def": 161,
+   "hp": 368
+  },
+  "YakushimaHeadEquip002_4": {
+   "durability": 10500,
+   "def": 168,
+   "hp": 384
+  },
+  "YakushimaHeadEquip002_5": {
+   "durability": 13500,
+   "def": 182,
+   "hp": 416
+  },
+  "YakushimaHeadEquip003": {
+   "durability": 4500,
+   "def": 140,
+   "hp": 320,
+   "sneak": 1,
+   "passives": [
+    "YakushimaDagameBoost_Ranged_Equip"
+   ]
+  },
+  "YakushimaHeadEquip003_2": {
+   "durability": 6000,
+   "def": 154,
+   "hp": 352
+  },
+  "YakushimaHeadEquip003_3": {
+   "durability": 7500,
+   "def": 161,
+   "hp": 368
+  },
+  "YakushimaHeadEquip003_4": {
+   "durability": 10500,
+   "def": 168,
+   "hp": 384
+  },
+  "YakushimaHeadEquip003_5": {
+   "durability": 13500,
+   "def": 182,
+   "hp": 416
+  },
+  "YakushimaHeadEquip004": {
+   "durability": 4500,
+   "def": 140,
+   "hp": 320,
+   "sneak": 1,
+   "passives": [
+    "YakushimaDagameBoost_Summon_Equip"
+   ]
+  },
+  "YakushimaHeadEquip004_2": {
+   "durability": 6000,
+   "def": 154,
+   "hp": 352
+  },
+  "YakushimaHeadEquip004_3": {
+   "durability": 7500,
+   "def": 161,
+   "hp": 368
+  },
+  "YakushimaHeadEquip004_4": {
+   "durability": 10500,
+   "def": 168,
+   "hp": 384
+  },
+  "YakushimaHeadEquip004_5": {
+   "durability": 13500,
+   "def": 182,
+   "hp": 416
+  },
+  "YakushimaHeadEquip005": {
+   "durability": 20000,
+   "def": 350,
+   "hp": 800
+  },
+  "YakushimaHeadEquip006": {
+   "durability": 20000,
+   "def": 350,
+   "hp": 800
+  },
+  "YakushimaLantern001": {
+   "atk": 50,
+   "durability": 3000,
+   "sneak": 1
+  },
+  "YakushimaLantern001_2": {
+   "atk": 60,
+   "durability": 3000
+  },
+  "YakushimaLantern001_3": {
+   "atk": 70,
+   "durability": 4000
+  },
+  "YakushimaLantern001_4": {
+   "atk": 80,
+   "durability": 5000
+  },
+  "YakushimaLantern001_5": {
+   "atk": 100,
+   "durability": 6000
+  }
+ }
+}

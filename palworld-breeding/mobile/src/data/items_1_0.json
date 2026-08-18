@@ -1408,7 +1408,7 @@
    "icon": "Shield_07"
   },
   "AncientArmor_2": {
-   "name": "AncientArmor 2",
+   "name": "Ancient Armor",
    "description": "Ancient armor forged from <itemName id=|SkyislandIngot|/>.\nCrafted with the essence of a lost civilization, it boasts overwhelming defensive power and is capable of withstanding cataclysmic threats.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -1417,10 +1417,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 1237460,
-   "icon": "AncientArmor"
+   "icon": "AncientArmor",
+   "nameFromBase": true
   },
   "AncientArmor_3": {
-   "name": "AncientArmor 3",
+   "name": "Ancient Armor",
    "description": "Ancient armor forged from <itemName id=|SkyislandIngot|/>.\nCrafted with the essence of a lost civilization, it boasts overwhelming defensive power and is capable of withstanding cataclysmic threats.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -1429,10 +1430,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 1611310,
-   "icon": "AncientArmor"
+   "icon": "AncientArmor",
+   "nameFromBase": true
   },
   "AncientArmor_4": {
-   "name": "AncientArmor 4",
+   "name": "Ancient Armor",
    "description": "Ancient armor forged from <itemName id=|SkyislandIngot|/>.\nCrafted with the essence of a lost civilization, it boasts overwhelming defensive power and is capable of withstanding cataclysmic threats.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -1441,10 +1443,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 1976520,
-   "icon": "AncientArmor"
+   "icon": "AncientArmor",
+   "nameFromBase": true
   },
   "AncientArmor_5": {
-   "name": "AncientArmor 5",
+   "name": "Ancient Armor",
    "description": "Ancient armor forged from <itemName id=|SkyislandIngot|/>.\nCrafted with the essence of a lost civilization, it boasts overwhelming defensive power and is capable of withstanding cataclysmic threats.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -1453,10 +1456,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 2350370,
-   "icon": "AncientArmor"
+   "icon": "AncientArmor",
+   "nameFromBase": true
   },
   "AncientArmorCold_2": {
-   "name": "AncientArmorCold 2",
+   "name": "Cold-Resistant Ancient Armor",
    "description": "Refined <itemName id=|AncientArmor|/>.\nIts cold resistance has been further enhanced using ancient technology, allowing the wearer to maintain their strength even in extreme cold regions.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -1465,10 +1469,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 2601220,
-   "icon": "AncientArmorCold"
+   "icon": "AncientArmorCold",
+   "nameFromBase": true
   },
   "AncientArmorCold_3": {
-   "name": "AncientArmorCold 3",
+   "name": "Cold-Resistant Ancient Armor",
    "description": "Refined <itemName id=|AncientArmor|/>.\nIts cold resistance has been further enhanced using ancient technology, allowing the wearer to maintain their strength even in extreme cold regions.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -1477,10 +1482,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 3072700,
-   "icon": "AncientArmorCold"
+   "icon": "AncientArmorCold",
+   "nameFromBase": true
   },
   "AncientArmorCold_4": {
-   "name": "AncientArmorCold 4",
+   "name": "Cold-Resistant Ancient Armor",
    "description": "Refined <itemName id=|AncientArmor|/>.\nIts cold resistance has been further enhanced using ancient technology, allowing the wearer to maintain their strength even in extreme cold regions.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -1489,10 +1495,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 3523870,
-   "icon": "AncientArmorCold"
+   "icon": "AncientArmorCold",
+   "nameFromBase": true
   },
   "AncientArmorCold_5": {
-   "name": "AncientArmorCold 5",
+   "name": "Cold-Resistant Ancient Armor",
    "description": "Refined <itemName id=|AncientArmor|/>.\nIts cold resistance has been further enhanced using ancient technology, allowing the wearer to maintain their strength even in extreme cold regions.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -1501,10 +1508,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 4298880,
-   "icon": "AncientArmorCold"
+   "icon": "AncientArmorCold",
+   "nameFromBase": true
   },
   "AncientArmorHeat_2": {
-   "name": "AncientArmorHeat 2",
+   "name": "Heat-Resistant Ancient Armor",
    "description": "Refined <itemName id=|AncientArmor|/>.\nIts heat resistance has been further enhanced using ancient technology, allowing it to endure scorching environments",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -1513,10 +1521,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 2650880,
-   "icon": "AncientArmorHeat"
+   "icon": "AncientArmorHeat",
+   "nameFromBase": true
   },
   "AncientArmorHeat_3": {
-   "name": "AncientArmorHeat 3",
+   "name": "Heat-Resistant Ancient Armor",
    "description": "Refined <itemName id=|AncientArmor|/>.\nIts heat resistance has been further enhanced using ancient technology, allowing it to endure scorching environments",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -1525,10 +1534,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 3140630,
-   "icon": "AncientArmorHeat"
+   "icon": "AncientArmorHeat",
+   "nameFromBase": true
   },
   "AncientArmorHeat_4": {
-   "name": "AncientArmorHeat 4",
+   "name": "Heat-Resistant Ancient Armor",
    "description": "Refined <itemName id=|AncientArmor|/>.\nIts heat resistance has been further enhanced using ancient technology, allowing it to endure scorching environments",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -1537,10 +1547,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 3596180,
-   "icon": "AncientArmorHeat"
+   "icon": "AncientArmorHeat",
+   "nameFromBase": true
   },
   "AncientArmorHeat_5": {
-   "name": "AncientArmorHeat 5",
+   "name": "Heat-Resistant Ancient Armor",
    "description": "Refined <itemName id=|AncientArmor|/>.\nIts heat resistance has been further enhanced using ancient technology, allowing it to endure scorching environments",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -1549,10 +1560,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 4389460,
-   "icon": "AncientArmorHeat"
+   "icon": "AncientArmorHeat",
+   "nameFromBase": true
   },
   "AncientArmorWeight_2": {
-   "name": "AncientArmorWeight 2",
+   "name": "Lightweight Ancient Armor",
    "description": "Refined <itemName id=|AncientArmor|/>.\nIt is equipped with ancient auxiliary mechanisms, allowing the wearer to carry more supplies.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -1561,10 +1573,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 3208270,
-   "icon": "AncientArmorWeight"
+   "icon": "AncientArmorWeight",
+   "nameFromBase": true
   },
   "AncientArmorWeight_3": {
-   "name": "AncientArmorWeight 3",
+   "name": "Lightweight Ancient Armor",
    "description": "Refined <itemName id=|AncientArmor|/>.\nIt is equipped with ancient auxiliary mechanisms, allowing the wearer to carry more supplies.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -1573,10 +1586,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 3983280,
-   "icon": "AncientArmorWeight"
+   "icon": "AncientArmorWeight",
+   "nameFromBase": true
   },
   "AncientArmorWeight_4": {
-   "name": "AncientArmorWeight 4",
+   "name": "Lightweight Ancient Armor",
    "description": "Refined <itemName id=|AncientArmor|/>.\nIt is equipped with ancient auxiliary mechanisms, allowing the wearer to carry more supplies.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -1585,10 +1599,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 4737980,
-   "icon": "AncientArmorWeight"
+   "icon": "AncientArmorWeight",
+   "nameFromBase": true
   },
   "AncientArmorWeight_5": {
-   "name": "AncientArmorWeight 5",
+   "name": "Lightweight Ancient Armor",
    "description": "Refined <itemName id=|AncientArmor|/>.\nIt is equipped with ancient auxiliary mechanisms, allowing the wearer to carry more supplies.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -1597,10 +1612,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 5512990,
-   "icon": "AncientArmorWeight"
+   "icon": "AncientArmorWeight",
+   "nameFromBase": true
   },
   "AncientHelmet_2": {
-   "name": "AncientHelmet 2",
+   "name": "Ancient Helm",
    "description": "An ancient helmet forged from <itemName id=|SkyislandIngot|/>.\nIt is imbued with wisdom passed down through the ages, protecting its wearer with unwavering strength.\nIts defensive capabilities far surpass those of modern equipment.",
    "category": "Armor",
    "subcategory": "ArmorHead",
@@ -1609,10 +1625,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 830260,
-   "icon": "AncientHelmet"
+   "icon": "AncientHelmet",
+   "nameFromBase": true
   },
   "AncientHelmet_3": {
-   "name": "AncientHelmet 3",
+   "name": "Ancient Helm",
    "description": "An ancient helmet forged from <itemName id=|SkyislandIngot|/>.\nIt is imbued with wisdom passed down through the ages, protecting its wearer with unwavering strength.\nIts defensive capabilities far surpass those of modern equipment.",
    "category": "Armor",
    "subcategory": "ArmorHead",
@@ -1621,10 +1638,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 1178180,
-   "icon": "AncientHelmet"
+   "icon": "AncientHelmet",
+   "nameFromBase": true
   },
   "AncientHelmet_4": {
-   "name": "AncientHelmet 4",
+   "name": "Ancient Helm",
    "description": "An ancient helmet forged from <itemName id=|SkyislandIngot|/>.\nIt is imbued with wisdom passed down through the ages, protecting its wearer with unwavering strength.\nIts defensive capabilities far surpass those of modern equipment.",
    "category": "Armor",
    "subcategory": "ArmorHead",
@@ -1633,10 +1651,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 1526110,
-   "icon": "AncientHelmet"
+   "icon": "AncientHelmet",
+   "nameFromBase": true
   },
   "AncientHelmet_5": {
-   "name": "AncientHelmet 5",
+   "name": "Ancient Helm",
    "description": "An ancient helmet forged from <itemName id=|SkyislandIngot|/>.\nIt is imbued with wisdom passed down through the ages, protecting its wearer with unwavering strength.\nIts defensive capabilities far surpass those of modern equipment.",
    "category": "Armor",
    "subcategory": "ArmorHead",
@@ -1645,7 +1664,8 @@
    "maxStack": 1,
    "weight": 0,
    "price": 1874040,
-   "icon": "AncientHelmet"
+   "icon": "AncientHelmet",
+   "nameFromBase": true
   },
   "HeadEquip048": {
    "name": "Auri Hat",
@@ -1744,7 +1764,7 @@
    "icon": "LeatherClothing"
   },
   "ClothArmorCold_2": {
-   "name": "ClothArmorCold 2",
+   "name": "Tundra Outfit",
    "description": "A <itemName id=|ClothArmor|/> produced in cold regions.\nUseful for surviving in cold climates.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -1753,10 +1773,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 3380,
-   "icon": "ClothArmorCold"
+   "icon": "ClothArmorCold",
+   "nameFromBase": true
   },
   "ClothArmorCold_3": {
-   "name": "ClothArmorCold 3",
+   "name": "Tundra Outfit",
    "description": "A <itemName id=|ClothArmor|/> produced in cold regions.\nUseful for surviving in cold climates.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -1765,10 +1786,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 4320,
-   "icon": "ClothArmorCold"
+   "icon": "ClothArmorCold",
+   "nameFromBase": true
   },
   "ClothArmorCold_4": {
-   "name": "ClothArmorCold 4",
+   "name": "Tundra Outfit",
    "description": "A <itemName id=|ClothArmor|/> produced in cold regions.\nUseful for surviving in cold climates.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -1777,10 +1799,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 5260,
-   "icon": "ClothArmorCold"
+   "icon": "ClothArmorCold",
+   "nameFromBase": true
   },
   "ClothArmorCold_5": {
-   "name": "ClothArmorCold 5",
+   "name": "Tundra Outfit",
    "description": "A <itemName id=|ClothArmor|/> produced in cold regions.\nUseful for surviving in cold climates.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -1789,10 +1812,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 7390,
-   "icon": "ClothArmorCold"
+   "icon": "ClothArmorCold",
+   "nameFromBase": true
   },
   "ClothArmorHeat_2": {
-   "name": "ClothArmorHeat 2",
+   "name": "Tropical Outfit",
    "description": "A <itemName id=|ClothArmor|/> produced in hot regions.\nBoasts high heat resistance.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -1801,10 +1825,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 3380,
-   "icon": "ClothArmorHeat"
+   "icon": "ClothArmorHeat",
+   "nameFromBase": true
   },
   "ClothArmorHeat_3": {
-   "name": "ClothArmorHeat 3",
+   "name": "Tropical Outfit",
    "description": "A <itemName id=|ClothArmor|/> produced in hot regions.\nBoasts high heat resistance.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -1813,10 +1838,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 4320,
-   "icon": "ClothArmorHeat"
+   "icon": "ClothArmorHeat",
+   "nameFromBase": true
   },
   "ClothArmorHeat_4": {
-   "name": "ClothArmorHeat 4",
+   "name": "Tropical Outfit",
    "description": "A <itemName id=|ClothArmor|/> produced in hot regions.\nBoasts high heat resistance.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -1825,10 +1851,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 5260,
-   "icon": "ClothArmorHeat"
+   "icon": "ClothArmorHeat",
+   "nameFromBase": true
   },
   "ClothArmorHeat_5": {
-   "name": "ClothArmorHeat 5",
+   "name": "Tropical Outfit",
    "description": "A <itemName id=|ClothArmor|/> produced in hot regions.\nBoasts high heat resistance.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -1837,7 +1864,8 @@
    "maxStack": 1,
    "weight": 0,
    "price": 7390,
-   "icon": "ClothArmorHeat"
+   "icon": "ClothArmorHeat",
+   "nameFromBase": true
   },
   "SFArmorCold": {
    "name": "Cold Resistant Hexolite Armor",
@@ -1936,7 +1964,7 @@
    "icon": "Shield_01"
   },
   "CopperArmorCold_2": {
-   "name": "CopperArmorCold 2",
+   "name": "Cold Resistant Metal Armor",
    "description": "Improved <itemName id=|CopperArmor|/>.\nUseful for surviving in cold climates.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -1945,10 +1973,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 27600,
-   "icon": "CopperArmorCold"
+   "icon": "CopperArmorCold",
+   "nameFromBase": true
   },
   "CopperArmorCold_3": {
-   "name": "CopperArmorCold 3",
+   "name": "Cold Resistant Metal Armor",
    "description": "Improved <itemName id=|CopperArmor|/>.\nUseful for surviving in cold climates.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -1957,10 +1986,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 33070,
-   "icon": "CopperArmorCold"
+   "icon": "CopperArmorCold",
+   "nameFromBase": true
   },
   "CopperArmorCold_4": {
-   "name": "CopperArmorCold 4",
+   "name": "Cold Resistant Metal Armor",
    "description": "Improved <itemName id=|CopperArmor|/>.\nUseful for surviving in cold climates.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -1969,10 +1999,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 39740,
-   "icon": "CopperArmorCold"
+   "icon": "CopperArmorCold",
+   "nameFromBase": true
   },
   "CopperArmorCold_5": {
-   "name": "CopperArmorCold 5",
+   "name": "Cold Resistant Metal Armor",
    "description": "Improved <itemName id=|CopperArmor|/>.\nUseful for surviving in cold climates.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -1981,10 +2012,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 46660,
-   "icon": "CopperArmorCold"
+   "icon": "CopperArmorCold",
+   "nameFromBase": true
   },
   "CopperArmorHeat_2": {
-   "name": "CopperArmorHeat 2",
+   "name": "Heat Resistant Metal Armor",
    "description": "Improved <itemName id=|CopperArmor|/>.\nBoasts high heat resistance.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -1993,10 +2025,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 27600,
-   "icon": "CopperArmorHeat"
+   "icon": "CopperArmorHeat",
+   "nameFromBase": true
   },
   "CopperArmorHeat_3": {
-   "name": "CopperArmorHeat 3",
+   "name": "Heat Resistant Metal Armor",
    "description": "Improved <itemName id=|CopperArmor|/>.\nBoasts high heat resistance.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -2005,10 +2038,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 33070,
-   "icon": "CopperArmorHeat"
+   "icon": "CopperArmorHeat",
+   "nameFromBase": true
   },
   "CopperArmorHeat_4": {
-   "name": "CopperArmorHeat 4",
+   "name": "Heat Resistant Metal Armor",
    "description": "Improved <itemName id=|CopperArmor|/>.\nBoasts high heat resistance.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -2017,10 +2051,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 39740,
-   "icon": "CopperArmorHeat"
+   "icon": "CopperArmorHeat",
+   "nameFromBase": true
   },
   "CopperArmorHeat_5": {
-   "name": "CopperArmorHeat 5",
+   "name": "Heat Resistant Metal Armor",
    "description": "Improved <itemName id=|CopperArmor|/>.\nBoasts high heat resistance.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -2029,10 +2064,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 46660,
-   "icon": "CopperArmorHeat"
+   "icon": "CopperArmorHeat",
+   "nameFromBase": true
   },
   "CopperHelmet_2": {
-   "name": "CopperHelmet 2",
+   "name": "Metal Helm",
    "description": "A helm made of metal.\nA reliable piece of armor that protects your head, and all the thoughts within.",
    "category": "Armor",
    "subcategory": "ArmorHead",
@@ -2041,10 +2077,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 8210,
-   "icon": "CopperHelmet"
+   "icon": "CopperHelmet",
+   "nameFromBase": true
   },
   "CopperHelmet_3": {
-   "name": "CopperHelmet 3",
+   "name": "Metal Helm",
    "description": "A helm made of metal.\nA reliable piece of armor that protects your head, and all the thoughts within.",
    "category": "Armor",
    "subcategory": "ArmorHead",
@@ -2053,10 +2090,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 9900,
-   "icon": "CopperHelmet"
+   "icon": "CopperHelmet",
+   "nameFromBase": true
   },
   "CopperHelmet_4": {
-   "name": "CopperHelmet 4",
+   "name": "Metal Helm",
    "description": "A helm made of metal.\nA reliable piece of armor that protects your head, and all the thoughts within.",
    "category": "Armor",
    "subcategory": "ArmorHead",
@@ -2065,10 +2103,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 12710,
-   "icon": "CopperHelmet"
+   "icon": "CopperHelmet",
+   "nameFromBase": true
   },
   "CopperHelmet_5": {
-   "name": "CopperHelmet 5",
+   "name": "Metal Helm",
    "description": "A helm made of metal.\nA reliable piece of armor that protects your head, and all the thoughts within.",
    "category": "Armor",
    "subcategory": "ArmorHead",
@@ -2077,7 +2116,8 @@
    "maxStack": 1,
    "weight": 0,
    "price": 15600,
-   "icon": "CopperHelmet"
+   "icon": "CopperHelmet",
+   "nameFromBase": true
   },
   "HeadEquip055": {
    "name": "Croajiro Cap",
@@ -2212,7 +2252,7 @@
    "icon": "FurHelmet"
   },
   "FurArmorCold_2": {
-   "name": "FurArmorCold 2",
+   "name": "Cold Resistant Pelt Armor",
    "description": "A <itemName id=|FurArmor|/> produced in cold regions.\nUseful for surviving in cold climates.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -2221,10 +2261,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 9580,
-   "icon": "FurArmorCold"
+   "icon": "FurArmorCold",
+   "nameFromBase": true
   },
   "FurArmorCold_3": {
-   "name": "FurArmorCold 3",
+   "name": "Cold Resistant Pelt Armor",
    "description": "A <itemName id=|FurArmor|/> produced in cold regions.\nUseful for surviving in cold climates.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -2233,10 +2274,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 11760,
-   "icon": "FurArmorCold"
+   "icon": "FurArmorCold",
+   "nameFromBase": true
   },
   "FurArmorCold_4": {
-   "name": "FurArmorCold 4",
+   "name": "Cold Resistant Pelt Armor",
    "description": "A <itemName id=|FurArmor|/> produced in cold regions.\nUseful for surviving in cold climates.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -2245,10 +2287,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 13660,
-   "icon": "FurArmorCold"
+   "icon": "FurArmorCold",
+   "nameFromBase": true
   },
   "FurArmorCold_5": {
-   "name": "FurArmorCold 5",
+   "name": "Cold Resistant Pelt Armor",
    "description": "A <itemName id=|FurArmor|/> produced in cold regions.\nUseful for surviving in cold climates.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -2257,10 +2300,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 17040,
-   "icon": "FurArmorCold"
+   "icon": "FurArmorCold",
+   "nameFromBase": true
   },
   "FurArmorHeat_2": {
-   "name": "FurArmorHeat 2",
+   "name": "Heat Resistant Pelt Armor",
    "description": "A <itemName id=|FurArmor|/> produced in hot regions.\nBoasts high heat resistance.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -2269,10 +2313,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 9580,
-   "icon": "FurArmorHeat"
+   "icon": "FurArmorHeat",
+   "nameFromBase": true
   },
   "FurArmorHeat_3": {
-   "name": "FurArmorHeat 3",
+   "name": "Heat Resistant Pelt Armor",
    "description": "A <itemName id=|FurArmor|/> produced in hot regions.\nBoasts high heat resistance.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -2281,10 +2326,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 11760,
-   "icon": "FurArmorHeat"
+   "icon": "FurArmorHeat",
+   "nameFromBase": true
   },
   "FurArmorHeat_4": {
-   "name": "FurArmorHeat 4",
+   "name": "Heat Resistant Pelt Armor",
    "description": "A <itemName id=|FurArmor|/> produced in hot regions.\nBoasts high heat resistance.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -2293,10 +2339,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 13660,
-   "icon": "FurArmorHeat"
+   "icon": "FurArmorHeat",
+   "nameFromBase": true
   },
   "FurArmorHeat_5": {
-   "name": "FurArmorHeat 5",
+   "name": "Heat Resistant Pelt Armor",
    "description": "A <itemName id=|FurArmor|/> produced in hot regions.\nBoasts high heat resistance.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -2305,10 +2352,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 17040,
-   "icon": "FurArmorHeat"
+   "icon": "FurArmorHeat",
+   "nameFromBase": true
   },
   "FurHelmet_2": {
-   "name": "FurHelmet 2",
+   "name": "Feathered Hair Band",
    "description": "A beautiful feathered headband.\nThough improbable, it somehow seems to protect its wearer from lethal head injuries.",
    "category": "Armor",
    "subcategory": "ArmorHead",
@@ -2317,10 +2365,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 360,
-   "icon": "FurHelmet"
+   "icon": "FurHelmet",
+   "nameFromBase": true
   },
   "FurHelmet_3": {
-   "name": "FurHelmet 3",
+   "name": "Feathered Hair Band",
    "description": "A beautiful feathered headband.\nThough improbable, it somehow seems to protect its wearer from lethal head injuries.",
    "category": "Armor",
    "subcategory": "ArmorHead",
@@ -2329,10 +2378,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 620,
-   "icon": "FurHelmet"
+   "icon": "FurHelmet",
+   "nameFromBase": true
   },
   "FurHelmet_4": {
-   "name": "FurHelmet 4",
+   "name": "Feathered Hair Band",
    "description": "A beautiful feathered headband.\nThough improbable, it somehow seems to protect its wearer from lethal head injuries.",
    "category": "Armor",
    "subcategory": "ArmorHead",
@@ -2341,10 +2391,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 880,
-   "icon": "FurHelmet"
+   "icon": "FurHelmet",
+   "nameFromBase": true
   },
   "FurHelmet_5": {
-   "name": "FurHelmet 5",
+   "name": "Feathered Hair Band",
    "description": "A beautiful feathered headband.\nThough improbable, it somehow seems to protect its wearer from lethal head injuries.",
    "category": "Armor",
    "subcategory": "ArmorHead",
@@ -2353,7 +2404,8 @@
    "maxStack": 1,
    "weight": 0,
    "price": 2350,
-   "icon": "FurHelmet"
+   "icon": "FurHelmet",
+   "nameFromBase": true
   },
   "HeadEquip059": {
    "name": "Ghangler Accessory",
@@ -2668,7 +2720,7 @@
    "icon": "HeadEquip060"
   },
   "IronArmorCold_2": {
-   "name": "IronArmorCold 2",
+   "name": "Cold Resistant Refined Metal Armor",
    "description": "Improved <itemName id=|IronArmor|/>.\nUseful for surviving in cold climates.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -2677,10 +2729,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 61060,
-   "icon": "IronArmorCold"
+   "icon": "IronArmorCold",
+   "nameFromBase": true
   },
   "IronArmorCold_3": {
-   "name": "IronArmorCold 3",
+   "name": "Cold Resistant Refined Metal Armor",
    "description": "Improved <itemName id=|IronArmor|/>.\nUseful for surviving in cold climates.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -2689,10 +2742,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 76130,
-   "icon": "IronArmorCold"
+   "icon": "IronArmorCold",
+   "nameFromBase": true
   },
   "IronArmorCold_4": {
-   "name": "IronArmorCold 4",
+   "name": "Cold Resistant Refined Metal Armor",
    "description": "Improved <itemName id=|IronArmor|/>.\nUseful for surviving in cold climates.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -2701,10 +2755,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 91200,
-   "icon": "IronArmorCold"
+   "icon": "IronArmorCold",
+   "nameFromBase": true
   },
   "IronArmorCold_5": {
-   "name": "IronArmorCold 5",
+   "name": "Cold Resistant Refined Metal Armor",
    "description": "Improved <itemName id=|IronArmor|/>.\nUseful for surviving in cold climates.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -2713,10 +2768,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 106270,
-   "icon": "IronArmorCold"
+   "icon": "IronArmorCold",
+   "nameFromBase": true
   },
   "IronArmorHeat_2": {
-   "name": "IronArmorHeat 2",
+   "name": "Heat Resistant Refined Metal Armor",
    "description": "Improved <itemName id=|IronArmor|/>.\nBoasts high heat resistance.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -2725,10 +2781,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 62140,
-   "icon": "IronArmorHeat"
+   "icon": "IronArmorHeat",
+   "nameFromBase": true
   },
   "IronArmorHeat_3": {
-   "name": "IronArmorHeat 3",
+   "name": "Heat Resistant Refined Metal Armor",
    "description": "Improved <itemName id=|IronArmor|/>.\nBoasts high heat resistance.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -2737,10 +2794,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 77420,
-   "icon": "IronArmorHeat"
+   "icon": "IronArmorHeat",
+   "nameFromBase": true
   },
   "IronArmorHeat_4": {
-   "name": "IronArmorHeat 4",
+   "name": "Heat Resistant Refined Metal Armor",
    "description": "Improved <itemName id=|IronArmor|/>.\nBoasts high heat resistance.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -2749,10 +2807,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 92710,
-   "icon": "IronArmorHeat"
+   "icon": "IronArmorHeat",
+   "nameFromBase": true
   },
   "IronArmorHeat_5": {
-   "name": "IronArmorHeat 5",
+   "name": "Heat Resistant Refined Metal Armor",
    "description": "Improved <itemName id=|IronArmor|/>.\nBoasts high heat resistance.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -2761,10 +2820,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 108000,
-   "icon": "IronArmorHeat"
+   "icon": "IronArmorHeat",
+   "nameFromBase": true
   },
   "IronHelmet_2": {
-   "name": "IronHelmet 2",
+   "name": "Refined Metal Helm",
    "description": "A helm made from high quality metal.\nThe luster from the polished metal gives the wearer that added boost of confidence.",
    "category": "Armor",
    "subcategory": "ArmorHead",
@@ -2773,10 +2833,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 24310,
-   "icon": "IronHelmet"
+   "icon": "IronHelmet",
+   "nameFromBase": true
   },
   "IronHelmet_3": {
-   "name": "IronHelmet 3",
+   "name": "Refined Metal Helm",
    "description": "A helm made from high quality metal.\nThe luster from the polished metal gives the wearer that added boost of confidence.",
    "category": "Armor",
    "subcategory": "ArmorHead",
@@ -2785,10 +2846,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 30170,
-   "icon": "IronHelmet"
+   "icon": "IronHelmet",
+   "nameFromBase": true
   },
   "IronHelmet_4": {
-   "name": "IronHelmet 4",
+   "name": "Refined Metal Helm",
    "description": "A helm made from high quality metal.\nThe luster from the polished metal gives the wearer that added boost of confidence.",
    "category": "Armor",
    "subcategory": "ArmorHead",
@@ -2797,10 +2859,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 36020,
-   "icon": "IronHelmet"
+   "icon": "IronHelmet",
+   "nameFromBase": true
   },
   "IronHelmet_5": {
-   "name": "IronHelmet 5",
+   "name": "Refined Metal Helm",
    "description": "A helm made from high quality metal.\nThe luster from the polished metal gives the wearer that added boost of confidence.",
    "category": "Armor",
    "subcategory": "ArmorHead",
@@ -2809,7 +2872,8 @@
    "maxStack": 1,
    "weight": 0,
    "price": 41880,
-   "icon": "IronHelmet"
+   "icon": "IronHelmet",
+   "nameFromBase": true
   },
   "HeadEquip053": {
    "name": "Jelliette Hat",
@@ -3124,7 +3188,7 @@
    "icon": "PlasticHelmet"
   },
   "PlasticArmor_2": {
-   "name": "PlasticArmor 2",
+   "name": "Plasteel Armor",
    "description": "Armor made of <itemName id=|Plastic|/>.\nIn addition to enhanced defense capabilities, its weight was also reduced.\nEquipment that pushes the limits of technology.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -3133,10 +3197,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 190000,
-   "icon": "PlasticArmor"
+   "icon": "PlasticArmor",
+   "nameFromBase": true
   },
   "PlasticArmor_3": {
-   "name": "PlasticArmor 3",
+   "name": "Plasteel Armor",
    "description": "Armor made of <itemName id=|Plastic|/>.\nIn addition to enhanced defense capabilities, its weight was also reduced.\nEquipment that pushes the limits of technology.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -3145,10 +3210,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 230560,
-   "icon": "PlasticArmor"
+   "icon": "PlasticArmor",
+   "nameFromBase": true
   },
   "PlasticArmor_4": {
-   "name": "PlasticArmor 4",
+   "name": "Plasteel Armor",
    "description": "Armor made of <itemName id=|Plastic|/>.\nIn addition to enhanced defense capabilities, its weight was also reduced.\nEquipment that pushes the limits of technology.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -3157,10 +3223,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 266590,
-   "icon": "PlasticArmor"
+   "icon": "PlasticArmor",
+   "nameFromBase": true
   },
   "PlasticArmor_5": {
-   "name": "PlasticArmor 5",
+   "name": "Plasteel Armor",
    "description": "Armor made of <itemName id=|Plastic|/>.\nIn addition to enhanced defense capabilities, its weight was also reduced.\nEquipment that pushes the limits of technology.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -3169,10 +3236,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 310320,
-   "icon": "PlasticArmor"
+   "icon": "PlasticArmor",
+   "nameFromBase": true
   },
   "PlasticArmorCold_2": {
-   "name": "PlasticArmorCold 2",
+   "name": "Cold Resistant Plasteel Armor",
    "description": "Improved <itemName id=|PlasticArmor|/>. \nUseful for surviving in cold climates.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -3181,10 +3249,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 200360,
-   "icon": "PlasticArmorCold"
+   "icon": "PlasticArmorCold",
+   "nameFromBase": true
   },
   "PlasticArmorCold_3": {
-   "name": "PlasticArmorCold 3",
+   "name": "Cold Resistant Plasteel Armor",
    "description": "Improved <itemName id=|PlasticArmor|/>. \nUseful for surviving in cold climates.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -3193,10 +3262,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 243520,
-   "icon": "PlasticArmorCold"
+   "icon": "PlasticArmorCold",
+   "nameFromBase": true
   },
   "PlasticArmorCold_4": {
-   "name": "PlasticArmorCold 4",
+   "name": "Cold Resistant Plasteel Armor",
    "description": "Improved <itemName id=|PlasticArmor|/>. \nUseful for surviving in cold climates.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -3205,10 +3275,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 281280,
-   "icon": "PlasticArmorCold"
+   "icon": "PlasticArmorCold",
+   "nameFromBase": true
   },
   "PlasticArmorCold_5": {
-   "name": "PlasticArmorCold 5",
+   "name": "Cold Resistant Plasteel Armor",
    "description": "Improved <itemName id=|PlasticArmor|/>. \nUseful for surviving in cold climates.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -3217,10 +3288,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 327600,
-   "icon": "PlasticArmorCold"
+   "icon": "PlasticArmorCold",
+   "nameFromBase": true
   },
   "PlasticArmorHeat_2": {
-   "name": "PlasticArmorHeat 2",
+   "name": "Heat Resistant Plasteel Armor",
    "description": "Improved <itemName id=|PlasticArmor|/>.\nBoasts high heat resistance.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -3229,10 +3301,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 199000,
-   "icon": "PlasticArmorHeat"
+   "icon": "PlasticArmorHeat",
+   "nameFromBase": true
   },
   "PlasticArmorHeat_3": {
-   "name": "PlasticArmorHeat 3",
+   "name": "Heat Resistant Plasteel Armor",
    "description": "Improved <itemName id=|PlasticArmor|/>.\nBoasts high heat resistance.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -3241,10 +3314,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 241360,
-   "icon": "PlasticArmorHeat"
+   "icon": "PlasticArmorHeat",
+   "nameFromBase": true
   },
   "PlasticArmorHeat_4": {
-   "name": "PlasticArmorHeat 4",
+   "name": "Heat Resistant Plasteel Armor",
    "description": "Improved <itemName id=|PlasticArmor|/>.\nBoasts high heat resistance.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -3253,10 +3327,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 279190,
-   "icon": "PlasticArmorHeat"
+   "icon": "PlasticArmorHeat",
+   "nameFromBase": true
   },
   "PlasticArmorHeat_5": {
-   "name": "PlasticArmorHeat 5",
+   "name": "Heat Resistant Plasteel Armor",
    "description": "Improved <itemName id=|PlasticArmor|/>.\nBoasts high heat resistance.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -3265,10 +3340,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 324720,
-   "icon": "PlasticArmorHeat"
+   "icon": "PlasticArmorHeat",
+   "nameFromBase": true
   },
   "PlasticArmorWeight_2": {
-   "name": "PlasticArmorWeight 2",
+   "name": "Lightweight Plasteel Armor",
    "description": "Improved <itemName id=|PlasticArmor|/>.\nIncreases carrying capacity.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -3277,10 +3353,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 198640,
-   "icon": "PlasticArmorWeight"
+   "icon": "PlasticArmorWeight",
+   "nameFromBase": true
   },
   "PlasticArmorWeight_3": {
-   "name": "PlasticArmorWeight 3",
+   "name": "Lightweight Plasteel Armor",
    "description": "Improved <itemName id=|PlasticArmor|/>.\nIncreases carrying capacity.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -3289,10 +3366,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 240920,
-   "icon": "PlasticArmorWeight"
+   "icon": "PlasticArmorWeight",
+   "nameFromBase": true
   },
   "PlasticArmorWeight_4": {
-   "name": "PlasticArmorWeight 4",
+   "name": "Lightweight Plasteel Armor",
    "description": "Improved <itemName id=|PlasticArmor|/>.\nIncreases carrying capacity.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -3301,10 +3379,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 278690,
-   "icon": "PlasticArmorWeight"
+   "icon": "PlasticArmorWeight",
+   "nameFromBase": true
   },
   "PlasticArmorWeight_5": {
-   "name": "PlasticArmorWeight 5",
+   "name": "Lightweight Plasteel Armor",
    "description": "Improved <itemName id=|PlasticArmor|/>.\nIncreases carrying capacity.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -3313,10 +3392,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 324140,
-   "icon": "PlasticArmorWeight"
+   "icon": "PlasticArmorWeight",
+   "nameFromBase": true
   },
   "PlasticHelmet_2": {
-   "name": "PlasticHelmet 2",
+   "name": "Plasteel Helmet",
    "description": "Helmet made of <itemName id=|Plastic|/>.\nIn addition to enhanced defense capabilities, its weight was also reduced.\nEquipment that pushes the limits of technology.",
    "category": "Armor",
    "subcategory": "ArmorHead",
@@ -3325,10 +3405,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 125700,
-   "icon": "PlasticHelmet"
+   "icon": "PlasticHelmet",
+   "nameFromBase": true
   },
   "PlasticHelmet_3": {
-   "name": "PlasticHelmet 3",
+   "name": "Plasteel Helmet",
    "description": "Helmet made of <itemName id=|Plastic|/>.\nIn addition to enhanced defense capabilities, its weight was also reduced.\nEquipment that pushes the limits of technology.",
    "category": "Armor",
    "subcategory": "ArmorHead",
@@ -3337,10 +3418,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 151020,
-   "icon": "PlasticHelmet"
+   "icon": "PlasticHelmet",
+   "nameFromBase": true
   },
   "PlasticHelmet_4": {
-   "name": "PlasticHelmet 4",
+   "name": "Plasteel Helmet",
    "description": "Helmet made of <itemName id=|Plastic|/>.\nIn addition to enhanced defense capabilities, its weight was also reduced.\nEquipment that pushes the limits of technology.",
    "category": "Armor",
    "subcategory": "ArmorHead",
@@ -3349,10 +3431,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 176340,
-   "icon": "PlasticHelmet"
+   "icon": "PlasticHelmet",
+   "nameFromBase": true
   },
   "PlasticHelmet_5": {
-   "name": "PlasticHelmet 5",
+   "name": "Plasteel Helmet",
    "description": "Helmet made of <itemName id=|Plastic|/>.\nIn addition to enhanced defense capabilities, its weight was also reduced.\nEquipment that pushes the limits of technology.",
    "category": "Armor",
    "subcategory": "ArmorHead",
@@ -3361,7 +3444,8 @@
    "maxStack": 1,
    "weight": 0,
    "price": 203160,
-   "icon": "PlasticHelmet"
+   "icon": "PlasticHelmet",
+   "nameFromBase": true
   },
   "IronArmor": {
    "name": "Refined Metal Armor",
@@ -3400,7 +3484,7 @@
    "icon": "HeadEquip028"
   },
   "SFArmor_2": {
-   "name": "SFArmor 2",
+   "name": "Hexolite Armor",
    "description": "Armor made of <itemName id=|StainlessSteel|/>.\nPossesses overwhelming durability and defense.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -3409,10 +3493,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 341620,
-   "icon": "SFArmor"
+   "icon": "SFArmor",
+   "nameFromBase": true
   },
   "SFArmor_3": {
-   "name": "SFArmor 3",
+   "name": "Hexolite Armor",
    "description": "Armor made of <itemName id=|StainlessSteel|/>.\nPossesses overwhelming durability and defense.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -3421,10 +3506,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 414240,
-   "icon": "SFArmor"
+   "icon": "SFArmor",
+   "nameFromBase": true
   },
   "SFArmor_4": {
-   "name": "SFArmor 4",
+   "name": "Hexolite Armor",
    "description": "Armor made of <itemName id=|StainlessSteel|/>.\nPossesses overwhelming durability and defense.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -3433,10 +3519,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 480100,
-   "icon": "SFArmor"
+   "icon": "SFArmor",
+   "nameFromBase": true
   },
   "SFArmor_5": {
-   "name": "SFArmor 5",
+   "name": "Hexolite Armor",
    "description": "Armor made of <itemName id=|StainlessSteel|/>.\nPossesses overwhelming durability and defense.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -3445,10 +3532,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 552720,
-   "icon": "SFArmor"
+   "icon": "SFArmor",
+   "nameFromBase": true
   },
   "SFArmorCold_2": {
-   "name": "SFArmorCold 2",
+   "name": "Cold Resistant Hexolite Armor",
    "description": "Improved <itemName id=|SFArmor|/>.\nUseful for surviving in cold climates.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -3457,10 +3545,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 351980,
-   "icon": "SFArmorCold"
+   "icon": "SFArmorCold",
+   "nameFromBase": true
   },
   "SFArmorCold_3": {
-   "name": "SFArmorCold 3",
+   "name": "Cold Resistant Hexolite Armor",
    "description": "Improved <itemName id=|SFArmor|/>.\nUseful for surviving in cold climates.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -3469,10 +3558,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 427200,
-   "icon": "SFArmorCold"
+   "icon": "SFArmorCold",
+   "nameFromBase": true
   },
   "SFArmorCold_4": {
-   "name": "SFArmorCold 4",
+   "name": "Cold Resistant Hexolite Armor",
    "description": "Improved <itemName id=|SFArmor|/>.\nUseful for surviving in cold climates.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -3481,10 +3571,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 494780,
-   "icon": "SFArmorCold"
+   "icon": "SFArmorCold",
+   "nameFromBase": true
   },
   "SFArmorCold_5": {
-   "name": "SFArmorCold 5",
+   "name": "Cold Resistant Hexolite Armor",
    "description": "Improved <itemName id=|SFArmor|/>.\nUseful for surviving in cold climates.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -3493,10 +3584,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 570000,
-   "icon": "SFArmorCold"
+   "icon": "SFArmorCold",
+   "nameFromBase": true
   },
   "SFArmorHeat_2": {
-   "name": "SFArmorHeat 2",
+   "name": "Heat Resistant Hexolite Armor",
    "description": "Improved <itemName id=|SFArmor|/>.\nBoasts high heat resistance.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -3505,10 +3597,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 371110,
-   "icon": "SFArmorHeat"
+   "icon": "SFArmorHeat",
+   "nameFromBase": true
   },
   "SFArmorHeat_3": {
-   "name": "SFArmorHeat 3",
+   "name": "Heat Resistant Hexolite Armor",
    "description": "Improved <itemName id=|SFArmor|/>.\nBoasts high heat resistance.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -3517,10 +3610,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 458480,
-   "icon": "SFArmorHeat"
+   "icon": "SFArmorHeat",
+   "nameFromBase": true
   },
   "SFArmorHeat_4": {
-   "name": "SFArmorHeat 4",
+   "name": "Heat Resistant Hexolite Armor",
    "description": "Improved <itemName id=|SFArmor|/>.\nBoasts high heat resistance.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -3529,10 +3623,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 539090,
-   "icon": "SFArmorHeat"
+   "icon": "SFArmorHeat",
+   "nameFromBase": true
   },
   "SFArmorHeat_5": {
-   "name": "SFArmorHeat 5",
+   "name": "Heat Resistant Hexolite Armor",
    "description": "Improved <itemName id=|SFArmor|/>.\nBoasts high heat resistance.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -3541,10 +3636,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 626460,
-   "icon": "SFArmorHeat"
+   "icon": "SFArmorHeat",
+   "nameFromBase": true
   },
   "SFArmorWeight_2": {
-   "name": "SFArmorWeight 2",
+   "name": "Lightweight Hexolite Armor",
    "description": "Improved <itemName id=|SFArmor|/>.\nIncreases carrying capacity.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -3553,10 +3649,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 578780,
-   "icon": "SFArmorWeight"
+   "icon": "SFArmorWeight",
+   "nameFromBase": true
   },
   "SFArmorWeight_3": {
-   "name": "SFArmorWeight 3",
+   "name": "Lightweight Hexolite Armor",
    "description": "Improved <itemName id=|SFArmor|/>.\nIncreases carrying capacity.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -3565,10 +3662,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 697200,
-   "icon": "SFArmorWeight"
+   "icon": "SFArmorWeight",
+   "nameFromBase": true
   },
   "SFArmorWeight_4": {
-   "name": "SFArmorWeight 4",
+   "name": "Lightweight Hexolite Armor",
    "description": "Improved <itemName id=|SFArmor|/>.\nIncreases carrying capacity.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -3577,10 +3675,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 811580,
-   "icon": "SFArmorWeight"
+   "icon": "SFArmorWeight",
+   "nameFromBase": true
   },
   "SFArmorWeight_5": {
-   "name": "SFArmorWeight 5",
+   "name": "Lightweight Hexolite Armor",
    "description": "Improved <itemName id=|SFArmor|/>.\nIncreases carrying capacity.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -3589,10 +3688,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 930000,
-   "icon": "SFArmorWeight"
+   "icon": "SFArmorWeight",
+   "nameFromBase": true
   },
   "SFHelmet_2": {
-   "name": "SFHelmet 2",
+   "name": "Hexolite Helmet",
    "description": "Helmet made of <itemName id=|StainlessSteel|/>.\nCombines incredible strength and lightness.",
    "category": "Armor",
    "subcategory": "ArmorHead",
@@ -3601,10 +3701,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 239230,
-   "icon": "SFHelmet"
+   "icon": "SFHelmet",
+   "nameFromBase": true
   },
   "SFHelmet_3": {
-   "name": "SFHelmet 3",
+   "name": "Hexolite Helmet",
    "description": "Helmet made of <itemName id=|StainlessSteel|/>.\nCombines incredible strength and lightness.",
    "category": "Armor",
    "subcategory": "ArmorHead",
@@ -3613,10 +3714,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 288530,
-   "icon": "SFHelmet"
+   "icon": "SFHelmet",
+   "nameFromBase": true
   },
   "SFHelmet_4": {
-   "name": "SFHelmet 4",
+   "name": "Hexolite Helmet",
    "description": "Helmet made of <itemName id=|StainlessSteel|/>.\nCombines incredible strength and lightness.",
    "category": "Armor",
    "subcategory": "ArmorHead",
@@ -3625,10 +3727,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 337820,
-   "icon": "SFHelmet"
+   "icon": "SFHelmet",
+   "nameFromBase": true
   },
   "SFHelmet_5": {
-   "name": "SFHelmet 5",
+   "name": "Hexolite Helmet",
    "description": "Helmet made of <itemName id=|StainlessSteel|/>.\nCombines incredible strength and lightness.",
    "category": "Armor",
    "subcategory": "ArmorHead",
@@ -3637,7 +3740,8 @@
    "maxStack": 1,
    "weight": 0,
    "price": 387120,
-   "icon": "SFHelmet"
+   "icon": "SFHelmet",
+   "nameFromBase": true
   },
   "GYM_Head_Sakurajima": {
    "name": "Saya Hat",
@@ -3724,7 +3828,7 @@
    "icon": "HeadEquip061"
   },
   "StealArmorCold_2": {
-   "name": "StealArmorCold 2",
+   "name": "Cold Resistant Pal Metal Armor",
    "description": "Improved <itemName id=|StealArmor|/>.\nUseful for surviving in cold climates.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -3733,10 +3837,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 81470,
-   "icon": "StealArmorCold"
+   "icon": "StealArmorCold",
+   "nameFromBase": true
   },
   "StealArmorCold_3": {
-   "name": "StealArmorCold 3",
+   "name": "Cold Resistant Pal Metal Armor",
    "description": "Improved <itemName id=|StealArmor|/>.\nUseful for surviving in cold climates.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -3745,10 +3850,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 100620,
-   "icon": "StealArmorCold"
+   "icon": "StealArmorCold",
+   "nameFromBase": true
   },
   "StealArmorCold_4": {
-   "name": "StealArmorCold 4",
+   "name": "Cold Resistant Pal Metal Armor",
    "description": "Improved <itemName id=|StealArmor|/>.\nUseful for surviving in cold climates.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -3757,10 +3863,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 118030,
-   "icon": "StealArmorCold"
+   "icon": "StealArmorCold",
+   "nameFromBase": true
   },
   "StealArmorCold_5": {
-   "name": "StealArmorCold 5",
+   "name": "Cold Resistant Pal Metal Armor",
    "description": "Improved <itemName id=|StealArmor|/>.\nUseful for surviving in cold climates.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -3769,10 +3876,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 138050,
-   "icon": "StealArmorCold"
+   "icon": "StealArmorCold",
+   "nameFromBase": true
   },
   "StealArmorHeat_2": {
-   "name": "StealArmorHeat 2",
+   "name": "Heat Resistant Pal Metal Armor",
    "description": "Improved <itemName id=|StealArmor|/>.\nBoasts high heat resistance.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -3781,10 +3889,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 83480,
-   "icon": "StealArmorHeat"
+   "icon": "StealArmorHeat",
+   "nameFromBase": true
   },
   "StealArmorHeat_3": {
-   "name": "StealArmorHeat 3",
+   "name": "Heat Resistant Pal Metal Armor",
    "description": "Improved <itemName id=|StealArmor|/>.\nBoasts high heat resistance.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -3793,10 +3902,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 103210,
-   "icon": "StealArmorHeat"
+   "icon": "StealArmorHeat",
+   "nameFromBase": true
   },
   "StealArmorHeat_4": {
-   "name": "StealArmorHeat 4",
+   "name": "Heat Resistant Pal Metal Armor",
    "description": "Improved <itemName id=|StealArmor|/>.\nBoasts high heat resistance.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -3805,10 +3915,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 121200,
-   "icon": "StealArmorHeat"
+   "icon": "StealArmorHeat",
+   "nameFromBase": true
   },
   "StealArmorHeat_5": {
-   "name": "StealArmorHeat 5",
+   "name": "Heat Resistant Pal Metal Armor",
    "description": "Improved <itemName id=|StealArmor|/>.\nBoasts high heat resistance.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -3817,10 +3928,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 140930,
-   "icon": "StealArmorHeat"
+   "icon": "StealArmorHeat",
+   "nameFromBase": true
   },
   "StealHelmet_2": {
-   "name": "StealHelmet 2",
+   "name": "Pal Metal Helm",
    "description": "A helm made from <itemName id=|StealIngot|/>.\nEnvied for its immaculate quality, it is proof of a chosen warrior.",
    "category": "Armor",
    "subcategory": "ArmorHead",
@@ -3829,10 +3941,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 42000,
-   "icon": "StealHelmet"
+   "icon": "StealHelmet",
+   "nameFromBase": true
   },
   "StealHelmet_3": {
-   "name": "StealHelmet 3",
+   "name": "Pal Metal Helm",
    "description": "A helm made from <itemName id=|StealIngot|/>.\nEnvied for its immaculate quality, it is proof of a chosen warrior.",
    "category": "Armor",
    "subcategory": "ArmorHead",
@@ -3841,10 +3954,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 51120,
-   "icon": "StealHelmet"
+   "icon": "StealHelmet",
+   "nameFromBase": true
   },
   "StealHelmet_4": {
-   "name": "StealHelmet 4",
+   "name": "Pal Metal Helm",
    "description": "A helm made from <itemName id=|StealIngot|/>.\nEnvied for its immaculate quality, it is proof of a chosen warrior.",
    "category": "Armor",
    "subcategory": "ArmorHead",
@@ -3853,10 +3967,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 60240,
-   "icon": "StealHelmet"
+   "icon": "StealHelmet",
+   "nameFromBase": true
   },
   "StealHelmet_5": {
-   "name": "StealHelmet 5",
+   "name": "Pal Metal Helm",
    "description": "A helm made from <itemName id=|StealIngot|/>.\nEnvied for its immaculate quality, it is proof of a chosen warrior.",
    "category": "Armor",
    "subcategory": "ArmorHead",
@@ -3865,7 +3980,8 @@
    "maxStack": 1,
    "weight": 0,
    "price": 69360,
-   "icon": "StealHelmet"
+   "icon": "StealHelmet",
+   "nameFromBase": true
   },
   "HeadEquip031": {
    "name": "Swee Cap",
@@ -4024,7 +4140,7 @@
    "icon": "HeadEquip044"
   },
   "YakushimaArmor001_2": {
-   "name": "YakushimaArmor001 2",
+   "name": "Hallowed Plate Mail",
    "description": "[Tides of Terraria] \nArmor forged from <itemName id=|YakushimaIngot001|/>. \nEnveloped in divine power, it lessens damage from [Tides of Terraria] monsters.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -4033,10 +4149,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 10800,
-   "icon": "YakushimaArmor001"
+   "icon": "YakushimaArmor001",
+   "nameFromBase": true
   },
   "YakushimaArmor001_3": {
-   "name": "YakushimaArmor001 3",
+   "name": "Hallowed Plate Mail",
    "description": "[Tides of Terraria] \nArmor forged from <itemName id=|YakushimaIngot001|/>. \nEnveloped in divine power, it lessens damage from [Tides of Terraria] monsters.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -4045,10 +4162,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 21600,
-   "icon": "YakushimaArmor001"
+   "icon": "YakushimaArmor001",
+   "nameFromBase": true
   },
   "YakushimaArmor001_4": {
-   "name": "YakushimaArmor001 4",
+   "name": "Hallowed Plate Mail",
    "description": "[Tides of Terraria] \nArmor forged from <itemName id=|YakushimaIngot001|/>. \nEnveloped in divine power, it lessens damage from [Tides of Terraria] monsters.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -4057,10 +4175,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 43200,
-   "icon": "YakushimaArmor001"
+   "icon": "YakushimaArmor001",
+   "nameFromBase": true
   },
   "YakushimaArmor001_5": {
-   "name": "YakushimaArmor001 5",
+   "name": "Hallowed Plate Mail",
    "description": "[Tides of Terraria] \nArmor forged from <itemName id=|YakushimaIngot001|/>. \nEnveloped in divine power, it lessens damage from [Tides of Terraria] monsters.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -4069,10 +4188,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 86400,
-   "icon": "YakushimaArmor001"
+   "icon": "YakushimaArmor001",
+   "nameFromBase": true
   },
   "YakushimaHeadEquip001_2": {
-   "name": "YakushimaHeadEquip001 2",
+   "name": "Hallowed Mask",
    "description": "[Tides of Terraria] \nHelmet forged from <itemName id=|YakushimaIngot001|/>. \nEnveloped in divine power, it increases damage dealt by <itemName id=|YakushimaBlade|/>, <itemName id=|YakushimaBlade004|/>, <itemName id=|YakushimaBlade002|/>, and <itemName id=|YakushimaBlade005|/>.",
    "category": "Armor",
    "subcategory": "ArmorHead",
@@ -4081,10 +4201,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 10800,
-   "icon": "YakushimaHeadEquip001"
+   "icon": "YakushimaHeadEquip001",
+   "nameFromBase": true
   },
   "YakushimaHeadEquip001_3": {
-   "name": "YakushimaHeadEquip001 3",
+   "name": "Hallowed Mask",
    "description": "[Tides of Terraria] \nHelmet forged from <itemName id=|YakushimaIngot001|/>. \nEnveloped in divine power, it increases damage dealt by <itemName id=|YakushimaBlade|/>, <itemName id=|YakushimaBlade004|/>, <itemName id=|YakushimaBlade002|/>, and <itemName id=|YakushimaBlade005|/>.",
    "category": "Armor",
    "subcategory": "ArmorHead",
@@ -4093,10 +4214,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 21600,
-   "icon": "YakushimaHeadEquip001"
+   "icon": "YakushimaHeadEquip001",
+   "nameFromBase": true
   },
   "YakushimaHeadEquip001_4": {
-   "name": "YakushimaHeadEquip001 4",
+   "name": "Hallowed Mask",
    "description": "[Tides of Terraria] \nHelmet forged from <itemName id=|YakushimaIngot001|/>. \nEnveloped in divine power, it increases damage dealt by <itemName id=|YakushimaBlade|/>, <itemName id=|YakushimaBlade004|/>, <itemName id=|YakushimaBlade002|/>, and <itemName id=|YakushimaBlade005|/>.",
    "category": "Armor",
    "subcategory": "ArmorHead",
@@ -4105,10 +4227,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 43200,
-   "icon": "YakushimaHeadEquip001"
+   "icon": "YakushimaHeadEquip001",
+   "nameFromBase": true
   },
   "YakushimaHeadEquip001_5": {
-   "name": "YakushimaHeadEquip001 5",
+   "name": "Hallowed Mask",
    "description": "[Tides of Terraria] \nHelmet forged from <itemName id=|YakushimaIngot001|/>. \nEnveloped in divine power, it increases damage dealt by <itemName id=|YakushimaBlade|/>, <itemName id=|YakushimaBlade004|/>, <itemName id=|YakushimaBlade002|/>, and <itemName id=|YakushimaBlade005|/>.",
    "category": "Armor",
    "subcategory": "ArmorHead",
@@ -4117,10 +4240,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 86400,
-   "icon": "YakushimaHeadEquip001"
+   "icon": "YakushimaHeadEquip001",
+   "nameFromBase": true
   },
   "YakushimaHeadEquip002_2": {
-   "name": "YakushimaHeadEquip002 2",
+   "name": "Hallowed Headgear",
    "description": "[Tides of Terraria] \nHelmet forged from <itemName id=|YakushimaIngot001|/>. \nEnveloped in divine power, it increases damage dealt by <itemName id=|YakushimaLantern001|/>.",
    "category": "Armor",
    "subcategory": "ArmorHead",
@@ -4129,10 +4253,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 10800,
-   "icon": "YakushimaHeadEquip002"
+   "icon": "YakushimaHeadEquip002",
+   "nameFromBase": true
   },
   "YakushimaHeadEquip002_3": {
-   "name": "YakushimaHeadEquip002 3",
+   "name": "Hallowed Headgear",
    "description": "[Tides of Terraria] \nHelmet forged from <itemName id=|YakushimaIngot001|/>. \nEnveloped in divine power, it increases damage dealt by <itemName id=|YakushimaLantern001|/>.",
    "category": "Armor",
    "subcategory": "ArmorHead",
@@ -4141,10 +4266,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 21600,
-   "icon": "YakushimaHeadEquip002"
+   "icon": "YakushimaHeadEquip002",
+   "nameFromBase": true
   },
   "YakushimaHeadEquip002_4": {
-   "name": "YakushimaHeadEquip002 4",
+   "name": "Hallowed Headgear",
    "description": "[Tides of Terraria] \nHelmet forged from <itemName id=|YakushimaIngot001|/>. \nEnveloped in divine power, it increases damage dealt by <itemName id=|YakushimaLantern001|/>.",
    "category": "Armor",
    "subcategory": "ArmorHead",
@@ -4153,10 +4279,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 43200,
-   "icon": "YakushimaHeadEquip002"
+   "icon": "YakushimaHeadEquip002",
+   "nameFromBase": true
   },
   "YakushimaHeadEquip002_5": {
-   "name": "YakushimaHeadEquip002 5",
+   "name": "Hallowed Headgear",
    "description": "[Tides of Terraria] \nHelmet forged from <itemName id=|YakushimaIngot001|/>. \nEnveloped in divine power, it increases damage dealt by <itemName id=|YakushimaLantern001|/>.",
    "category": "Armor",
    "subcategory": "ArmorHead",
@@ -4165,10 +4292,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 86400,
-   "icon": "YakushimaHeadEquip002"
+   "icon": "YakushimaHeadEquip002",
+   "nameFromBase": true
   },
   "YakushimaHeadEquip003_2": {
-   "name": "YakushimaHeadEquip003 2",
+   "name": "Hallowed Helmet",
    "description": "[Tides of Terraria] \nHelmet forged from <itemName id=|YakushimaIngot001|/>. \nEnveloped in divine power, it increases damage dealt by <itemName id=|YakushimaGun001|/>.",
    "category": "Armor",
    "subcategory": "ArmorHead",
@@ -4177,10 +4305,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 10800,
-   "icon": "YakushimaHeadEquip003"
+   "icon": "YakushimaHeadEquip003",
+   "nameFromBase": true
   },
   "YakushimaHeadEquip003_3": {
-   "name": "YakushimaHeadEquip003 3",
+   "name": "Hallowed Helmet",
    "description": "[Tides of Terraria] \nHelmet forged from <itemName id=|YakushimaIngot001|/>. \nEnveloped in divine power, it increases damage dealt by <itemName id=|YakushimaGun001|/>.",
    "category": "Armor",
    "subcategory": "ArmorHead",
@@ -4189,10 +4318,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 21600,
-   "icon": "YakushimaHeadEquip003"
+   "icon": "YakushimaHeadEquip003",
+   "nameFromBase": true
   },
   "YakushimaHeadEquip003_4": {
-   "name": "YakushimaHeadEquip003 4",
+   "name": "Hallowed Helmet",
    "description": "[Tides of Terraria] \nHelmet forged from <itemName id=|YakushimaIngot001|/>. \nEnveloped in divine power, it increases damage dealt by <itemName id=|YakushimaGun001|/>.",
    "category": "Armor",
    "subcategory": "ArmorHead",
@@ -4201,10 +4331,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 43200,
-   "icon": "YakushimaHeadEquip003"
+   "icon": "YakushimaHeadEquip003",
+   "nameFromBase": true
   },
   "YakushimaHeadEquip003_5": {
-   "name": "YakushimaHeadEquip003 5",
+   "name": "Hallowed Helmet",
    "description": "[Tides of Terraria] \nHelmet forged from <itemName id=|YakushimaIngot001|/>. \nEnveloped in divine power, it increases damage dealt by <itemName id=|YakushimaGun001|/>.",
    "category": "Armor",
    "subcategory": "ArmorHead",
@@ -4213,10 +4344,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 86400,
-   "icon": "YakushimaHeadEquip003"
+   "icon": "YakushimaHeadEquip003",
+   "nameFromBase": true
   },
   "YakushimaHeadEquip004_2": {
-   "name": "YakushimaHeadEquip004 2",
+   "name": "Hallowed Hood",
    "description": "[Tides of Terraria] \nHelmet forged from <itemName id=|YakushimaIngot001|/>. \nEnveloped in divine power, it increases damage dealt by <itemName id=|YakushimaBlade003|/>.",
    "category": "Armor",
    "subcategory": "ArmorHead",
@@ -4225,10 +4357,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 10800,
-   "icon": "YakushimaHeadEquip004"
+   "icon": "YakushimaHeadEquip004",
+   "nameFromBase": true
   },
   "YakushimaHeadEquip004_3": {
-   "name": "YakushimaHeadEquip004 3",
+   "name": "Hallowed Hood",
    "description": "[Tides of Terraria] \nHelmet forged from <itemName id=|YakushimaIngot001|/>. \nEnveloped in divine power, it increases damage dealt by <itemName id=|YakushimaBlade003|/>.",
    "category": "Armor",
    "subcategory": "ArmorHead",
@@ -4237,10 +4370,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 21600,
-   "icon": "YakushimaHeadEquip004"
+   "icon": "YakushimaHeadEquip004",
+   "nameFromBase": true
   },
   "YakushimaHeadEquip004_4": {
-   "name": "YakushimaHeadEquip004 4",
+   "name": "Hallowed Hood",
    "description": "[Tides of Terraria] \nHelmet forged from <itemName id=|YakushimaIngot001|/>. \nEnveloped in divine power, it increases damage dealt by <itemName id=|YakushimaBlade003|/>.",
    "category": "Armor",
    "subcategory": "ArmorHead",
@@ -4249,10 +4383,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 43200,
-   "icon": "YakushimaHeadEquip004"
+   "icon": "YakushimaHeadEquip004",
+   "nameFromBase": true
   },
   "YakushimaHeadEquip004_5": {
-   "name": "YakushimaHeadEquip004 5",
+   "name": "Hallowed Hood",
    "description": "[Tides of Terraria] \nHelmet forged from <itemName id=|YakushimaIngot001|/>. \nEnveloped in divine power, it increases damage dealt by <itemName id=|YakushimaBlade003|/>.",
    "category": "Armor",
    "subcategory": "ArmorHead",
@@ -4261,7 +4396,8 @@
    "maxStack": 1,
    "weight": 0,
    "price": 86400,
-   "icon": "YakushimaHeadEquip004"
+   "icon": "YakushimaHeadEquip004",
+   "nameFromBase": true
   },
   "HeadEquip049": {
    "name": "Zenara Hat",
@@ -4288,7 +4424,7 @@
    "icon": "GYM_Head_Grass"
   },
   "ClothArmor_2": {
-   "name": "en Text",
+   "name": "Cloth Outfit",
    "description": "en Text",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -4297,10 +4433,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 1800,
-   "icon": "LeatherClothing"
+   "icon": "LeatherClothing",
+   "nameFromBase": true
   },
   "ClothArmor_3": {
-   "name": "en Text",
+   "name": "Cloth Outfit",
    "description": "en Text",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -4309,10 +4446,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 2400,
-   "icon": "LeatherClothing"
+   "icon": "LeatherClothing",
+   "nameFromBase": true
   },
   "ClothArmor_4": {
-   "name": "en Text",
+   "name": "Cloth Outfit",
    "description": "en Text",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -4321,10 +4459,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 3000,
-   "icon": "LeatherClothing"
+   "icon": "LeatherClothing",
+   "nameFromBase": true
   },
   "ClothArmor_5": {
-   "name": "en Text",
+   "name": "Cloth Outfit",
    "description": "en Text",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -4333,10 +4472,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 4790,
-   "icon": "LeatherClothing"
+   "icon": "LeatherClothing",
+   "nameFromBase": true
   },
   "FurArmor_2": {
-   "name": "en Text",
+   "name": "Pelt Armor",
    "description": "en Text",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -4345,10 +4485,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 6580,
-   "icon": "FurArmor"
+   "icon": "FurArmor",
+   "nameFromBase": true
   },
   "FurArmor_3": {
-   "name": "en Text",
+   "name": "Pelt Armor",
    "description": "en Text",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -4357,10 +4498,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 8210,
-   "icon": "FurArmor"
+   "icon": "FurArmor",
+   "nameFromBase": true
   },
   "FurArmor_4": {
-   "name": "en Text",
+   "name": "Pelt Armor",
    "description": "en Text",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -4369,10 +4511,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 9310,
-   "icon": "FurArmor"
+   "icon": "FurArmor",
+   "nameFromBase": true
   },
   "FurArmor_5": {
-   "name": "en Text",
+   "name": "Pelt Armor",
    "description": "en Text",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -4381,10 +4524,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 12140,
-   "icon": "FurArmor"
+   "icon": "FurArmor",
+   "nameFromBase": true
   },
   "CopperArmor_2": {
-   "name": "en Text",
+   "name": "Metal Armor",
    "description": "en Text",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -4393,10 +4537,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 16990,
-   "icon": "CopperArmor"
+   "icon": "CopperArmor",
+   "nameFromBase": true
   },
   "CopperArmor_3": {
-   "name": "en Text",
+   "name": "Metal Armor",
    "description": "en Text",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -4405,10 +4550,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 20590,
-   "icon": "CopperArmor"
+   "icon": "CopperArmor",
+   "nameFromBase": true
   },
   "CopperArmor_4": {
-   "name": "en Text",
+   "name": "Metal Armor",
    "description": "en Text",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -4417,10 +4563,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 24860,
-   "icon": "CopperArmor"
+   "icon": "CopperArmor",
+   "nameFromBase": true
   },
   "CopperArmor_5": {
-   "name": "en Text",
+   "name": "Metal Armor",
    "description": "en Text",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -4429,10 +4576,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 30240,
-   "icon": "CopperArmor"
+   "icon": "CopperArmor",
+   "nameFromBase": true
   },
   "IronArmor_2": {
-   "name": "en Text",
+   "name": "Refined Metal Armor",
    "description": "en Text",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -4441,10 +4589,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 43060,
-   "icon": "IronArmor"
+   "icon": "IronArmor",
+   "nameFromBase": true
   },
   "IronArmor_3": {
-   "name": "en Text",
+   "name": "Refined Metal Armor",
    "description": "en Text",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -4453,10 +4602,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 55300,
-   "icon": "IronArmor"
+   "icon": "IronArmor",
+   "nameFromBase": true
   },
   "IronArmor_4": {
-   "name": "en Text",
+   "name": "Refined Metal Armor",
    "description": "en Text",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -4465,10 +4615,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 66670,
-   "icon": "IronArmor"
+   "icon": "IronArmor",
+   "nameFromBase": true
   },
   "IronArmor_5": {
-   "name": "en Text",
+   "name": "Refined Metal Armor",
    "description": "en Text",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -4477,10 +4628,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 78910,
-   "icon": "IronArmor"
+   "icon": "IronArmor",
+   "nameFromBase": true
   },
   "StealArmor_2": {
-   "name": "en Text",
+   "name": "Pal Metal Armor",
    "description": "en Text",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -4489,10 +4641,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 52240,
-   "icon": "StealArmor"
+   "icon": "StealArmor",
+   "nameFromBase": true
   },
   "StealArmor_3": {
-   "name": "en Text",
+   "name": "Pal Metal Armor",
    "description": "en Text",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -4501,10 +4654,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 65300,
-   "icon": "StealArmor"
+   "icon": "StealArmor",
+   "nameFromBase": true
   },
   "StealArmor_4": {
-   "name": "en Text",
+   "name": "Pal Metal Armor",
    "description": "en Text",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -4513,10 +4667,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 78370,
-   "icon": "StealArmor"
+   "icon": "StealArmor",
+   "nameFromBase": true
   },
   "StealArmor_5": {
-   "name": "en Text",
+   "name": "Pal Metal Armor",
    "description": "en Text",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -4525,7 +4680,8 @@
    "maxStack": 1,
    "weight": 0,
    "price": 91440,
-   "icon": "StealArmor"
+   "icon": "StealArmor",
+   "nameFromBase": true
   },
   "Blueprint_SFBow_2": {
    "name": "Advanced Bow Schematic 1",
@@ -19048,7 +19204,7 @@
    "icon": "Bat2"
   },
   "Bat3_2": {
-   "name": "Bat3 2",
+   "name": "Metal Bat",
    "description": "A <itemName id=|Bat3|/> that works well in close combat. \nUse it to beat down anyone you don't like.",
    "category": "Weapon",
    "subcategory": "WeaponMelee",
@@ -19057,10 +19213,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 26040,
-   "icon": "Bat3"
+   "icon": "Bat3",
+   "nameFromBase": true
   },
   "Bat3_3": {
-   "name": "Bat3 3",
+   "name": "Metal Bat",
    "description": "A <itemName id=|Bat3|/> that works well in close combat. \nUse it to beat down anyone you don't like.",
    "category": "Weapon",
    "subcategory": "WeaponMelee",
@@ -19069,10 +19226,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 31320,
-   "icon": "Bat3"
+   "icon": "Bat3",
+   "nameFromBase": true
   },
   "Bat3_4": {
-   "name": "Bat3 4",
+   "name": "Metal Bat",
    "description": "A <itemName id=|Bat3|/> that works well in close combat. \nUse it to beat down anyone you don't like.",
    "category": "Weapon",
    "subcategory": "WeaponMelee",
@@ -19081,10 +19239,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 36480,
-   "icon": "Bat3"
+   "icon": "Bat3",
+   "nameFromBase": true
   },
   "Bat3_5": {
-   "name": "Bat3 5",
+   "name": "Metal Bat",
    "description": "A <itemName id=|Bat3|/> that works well in close combat. \nUse it to beat down anyone you don't like.",
    "category": "Weapon",
    "subcategory": "WeaponMelee",
@@ -19093,7 +19252,8 @@
    "maxStack": 1,
    "weight": 0,
    "price": 41760,
-   "icon": "Bat3"
+   "icon": "Bat3",
+   "nameFromBase": true
   },
   "BeamLauncher": {
    "name": "Beam Launcher",
@@ -19132,7 +19292,7 @@
    "icon": "BeamSword"
   },
   "BeamLauncher_2": {
-   "name": "BeamLauncher 2",
+   "name": "Beam Launcher",
    "description": "Fires a high-density beam that causes explosions over a wide area.\nCaution is required to prevent overheating during rapid fire.",
    "category": "Weapon",
    "subcategory": "WeaponRocketLauncher",
@@ -19141,10 +19301,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 6275450,
-   "icon": "BeamLauncher"
+   "icon": "BeamLauncher",
+   "nameFromBase": true
   },
   "BeamLauncher_3": {
-   "name": "BeamLauncher 3",
+   "name": "Beam Launcher",
    "description": "Fires a high-density beam that causes explosions over a wide area.\nCaution is required to prevent overheating during rapid fire.",
    "category": "Weapon",
    "subcategory": "WeaponRocketLauncher",
@@ -19153,10 +19314,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 7715220,
-   "icon": "BeamLauncher"
+   "icon": "BeamLauncher",
+   "nameFromBase": true
   },
   "BeamLauncher_4": {
-   "name": "BeamLauncher 4",
+   "name": "Beam Launcher",
    "description": "Fires a high-density beam that causes explosions over a wide area.\nCaution is required to prevent overheating during rapid fire.",
    "category": "Weapon",
    "subcategory": "WeaponRocketLauncher",
@@ -19165,10 +19327,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 8846390,
-   "icon": "BeamLauncher"
+   "icon": "BeamLauncher",
+   "nameFromBase": true
   },
   "BeamLauncher_5": {
-   "name": "BeamLauncher 5",
+   "name": "Beam Launcher",
    "description": "Fires a high-density beam that causes explosions over a wide area.\nCaution is required to prevent overheating during rapid fire.",
    "category": "Weapon",
    "subcategory": "WeaponRocketLauncher",
@@ -19177,10 +19340,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 10286160,
-   "icon": "BeamLauncher"
+   "icon": "BeamLauncher",
+   "nameFromBase": true
   },
   "BeamSword_2": {
-   "name": "BeamSword 2",
+   "name": "Beam Sword",
    "description": "<itemName id=|BeamSword|/> for close-range combat.\nSlices through opponents, burning them with a high-output laser.",
    "category": "Weapon",
    "subcategory": "WeaponMelee",
@@ -19189,10 +19353,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 182920,
-   "icon": "BeamSword"
+   "icon": "BeamSword",
+   "nameFromBase": true
   },
   "BeamSword_3": {
-   "name": "BeamSword 3",
+   "name": "Beam Sword",
    "description": "<itemName id=|BeamSword|/> for close-range combat.\nSlices through opponents, burning them with a high-output laser.",
    "category": "Weapon",
    "subcategory": "WeaponMelee",
@@ -19201,10 +19366,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 243340,
-   "icon": "BeamSword"
+   "icon": "BeamSword",
+   "nameFromBase": true
   },
   "BeamSword_4": {
-   "name": "BeamSword 4",
+   "name": "Beam Sword",
    "description": "<itemName id=|BeamSword|/> for close-range combat.\nSlices through opponents, burning them with a high-output laser.",
    "category": "Weapon",
    "subcategory": "WeaponMelee",
@@ -19213,10 +19379,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 300730,
-   "icon": "BeamSword"
+   "icon": "BeamSword",
+   "nameFromBase": true
   },
   "BeamSword_5": {
-   "name": "BeamSword 5",
+   "name": "Beam Sword",
    "description": "<itemName id=|BeamSword|/> for close-range combat.\nSlices through opponents, burning them with a high-output laser.",
    "category": "Weapon",
    "subcategory": "WeaponMelee",
@@ -19225,7 +19392,8 @@
    "maxStack": 1,
    "weight": 0,
    "price": 361150,
-   "icon": "BeamSword"
+   "icon": "BeamSword",
+   "nameFromBase": true
   },
   "FishingRod_01_1": {
    "name": "Beginner Fishing Rod (Chillet)",
@@ -19276,7 +19444,7 @@
    "icon": "ChargeLaserRifle"
   },
   "ChargeLaserRifle_2": {
-   "name": "ChargeLaserRifle 2",
+   "name": "Charge Rifle",
    "description": "A beam rifle crafted with advanced technology.\nCharges energy to deliver one powerful shot.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -19285,10 +19453,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 2462150,
-   "icon": "ChargeLaserRifle"
+   "icon": "ChargeLaserRifle",
+   "nameFromBase": true
   },
   "ChargeLaserRifle_3": {
-   "name": "ChargeLaserRifle 3",
+   "name": "Charge Rifle",
    "description": "A beam rifle crafted with advanced technology.\nCharges energy to deliver one powerful shot.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -19297,10 +19466,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 2961860,
-   "icon": "ChargeLaserRifle"
+   "icon": "ChargeLaserRifle",
+   "nameFromBase": true
   },
   "ChargeLaserRifle_4": {
-   "name": "ChargeLaserRifle 4",
+   "name": "Charge Rifle",
    "description": "A beam rifle crafted with advanced technology.\nCharges energy to deliver one powerful shot.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -19309,10 +19479,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 3461580,
-   "icon": "ChargeLaserRifle"
+   "icon": "ChargeLaserRifle",
+   "nameFromBase": true
   },
   "ChargeLaserRifle_5": {
-   "name": "ChargeLaserRifle 5",
+   "name": "Charge Rifle",
    "description": "A beam rifle crafted with advanced technology.\nCharges energy to deliver one powerful shot.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -19321,7 +19492,8 @@
    "maxStack": 1,
    "weight": 0,
    "price": 3978720,
-   "icon": "ChargeLaserRifle"
+   "icon": "ChargeLaserRifle",
+   "nameFromBase": true
   },
   "SkySubmachineGun": {
    "name": "Combat SMG",
@@ -19348,7 +19520,7 @@
    "icon": "CompoundBow"
   },
   "CompoundBow_2": {
-   "name": "CompoundBow 2",
+   "name": "Compound Bow",
    "description": "A modernized bow. \nCapable of firing more powerful arrows.",
    "category": "Weapon",
    "subcategory": "WeaponBow",
@@ -19357,10 +19529,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 56110,
-   "icon": "CompoundBow"
+   "icon": "CompoundBow",
+   "nameFromBase": true
   },
   "CompoundBow_3": {
-   "name": "CompoundBow 3",
+   "name": "Compound Bow",
    "description": "A modernized bow. \nCapable of firing more powerful arrows.",
    "category": "Weapon",
    "subcategory": "WeaponBow",
@@ -19369,10 +19542,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 68860,
-   "icon": "CompoundBow"
+   "icon": "CompoundBow",
+   "nameFromBase": true
   },
   "CompoundBow_4": {
-   "name": "CompoundBow 4",
+   "name": "Compound Bow",
    "description": "A modernized bow. \nCapable of firing more powerful arrows.",
    "category": "Weapon",
    "subcategory": "WeaponBow",
@@ -19381,10 +19555,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 80660,
-   "icon": "CompoundBow"
+   "icon": "CompoundBow",
+   "nameFromBase": true
   },
   "CompoundBow_5": {
-   "name": "CompoundBow 5",
+   "name": "Compound Bow",
    "description": "A modernized bow. \nCapable of firing more powerful arrows.",
    "category": "Weapon",
    "subcategory": "WeaponBow",
@@ -19393,7 +19568,8 @@
    "maxStack": 1,
    "weight": 0,
    "price": 93410,
-   "icon": "CompoundBow"
+   "icon": "CompoundBow",
+   "nameFromBase": true
   },
   "OctaviaShotgun": {
    "name": "Core Eject Shotgun",
@@ -19504,7 +19680,7 @@
    "icon": "DoubleBarrelShotgun"
   },
   "DoubleBarrelShotgun_2": {
-   "name": "DoubleBarrelShotgun 2",
+   "name": "Double-Barreled Shotgun",
    "description": "Wreaks havoc at close range. Can fire twice before reloading.\nDespite the limited load capacity, it still packs a punch.",
    "category": "Weapon",
    "subcategory": "WeaponShotgun",
@@ -19513,10 +19689,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 47260,
-   "icon": "DoubleBarrelShotgun"
+   "icon": "DoubleBarrelShotgun",
+   "nameFromBase": true
   },
   "DoubleBarrelShotgun_3": {
-   "name": "DoubleBarrelShotgun 3",
+   "name": "Double-Barreled Shotgun",
    "description": "Wreaks havoc at close range. Can fire twice before reloading.\nDespite the limited load capacity, it still packs a punch.",
    "category": "Weapon",
    "subcategory": "WeaponShotgun",
@@ -19525,10 +19702,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 58680,
-   "icon": "DoubleBarrelShotgun"
+   "icon": "DoubleBarrelShotgun",
+   "nameFromBase": true
   },
   "DoubleBarrelShotgun_4": {
-   "name": "DoubleBarrelShotgun 4",
+   "name": "Double-Barreled Shotgun",
    "description": "Wreaks havoc at close range. Can fire twice before reloading.\nDespite the limited load capacity, it still packs a punch.",
    "category": "Weapon",
    "subcategory": "WeaponShotgun",
@@ -19537,10 +19715,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 69240,
-   "icon": "DoubleBarrelShotgun"
+   "icon": "DoubleBarrelShotgun",
+   "nameFromBase": true
   },
   "DoubleBarrelShotgun_5": {
-   "name": "DoubleBarrelShotgun 5",
+   "name": "Double-Barreled Shotgun",
    "description": "Wreaks havoc at close range. Can fire twice before reloading.\nDespite the limited load capacity, it still packs a punch.",
    "category": "Weapon",
    "subcategory": "WeaponShotgun",
@@ -19549,7 +19728,8 @@
    "maxStack": 1,
    "weight": 0,
    "price": 80780,
-   "icon": "DoubleBarrelShotgun"
+   "icon": "DoubleBarrelShotgun",
+   "nameFromBase": true
   },
   "FragGrenade_Dragon": {
    "name": "Dragon Grenade",
@@ -19576,7 +19756,7 @@
    "icon": "DroneLauncher"
   },
   "DroneLauncher_2": {
-   "name": "DroneLauncher 2",
+   "name": "Drone Launcher",
    "description": "A launcher that fires drones which perform autonomous attacks.\nCapable of deploying up to 9 units, enabling sustained suppression.",
    "category": "Weapon",
    "subcategory": "WeaponMelee",
@@ -19585,10 +19765,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 5049360,
-   "icon": "DroneLauncher"
+   "icon": "DroneLauncher",
+   "nameFromBase": true
   },
   "DroneLauncher_3": {
-   "name": "DroneLauncher 3",
+   "name": "Drone Launcher",
    "description": "A launcher that fires drones which perform autonomous attacks.\nCapable of deploying up to 9 units, enabling sustained suppression.",
    "category": "Weapon",
    "subcategory": "WeaponMelee",
@@ -19597,10 +19778,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 6069940,
-   "icon": "DroneLauncher"
+   "icon": "DroneLauncher",
+   "nameFromBase": true
   },
   "DroneLauncher_4": {
-   "name": "DroneLauncher 4",
+   "name": "Drone Launcher",
    "description": "A launcher that fires drones which perform autonomous attacks.\nCapable of deploying up to 9 units, enabling sustained suppression.",
    "category": "Weapon",
    "subcategory": "WeaponMelee",
@@ -19609,10 +19791,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 7071070,
-   "icon": "DroneLauncher"
+   "icon": "DroneLauncher",
+   "nameFromBase": true
   },
   "DroneLauncher_5": {
-   "name": "DroneLauncher 5",
+   "name": "Drone Launcher",
    "description": "A launcher that fires drones which perform autonomous attacks.\nCapable of deploying up to 9 units, enabling sustained suppression.",
    "category": "Weapon",
    "subcategory": "WeaponMelee",
@@ -19621,10 +19804,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 8094050,
-   "icon": "DroneLauncher"
+   "icon": "DroneLauncher",
+   "nameFromBase": true
   },
   "ElectricArcAssaultRifle_2": {
-   "name": "ElectricArcAssaultRifle 2",
+   "name": "Plasma Rifle",
    "description": "A rifle that releases an electrical discharge from the point of impact, which chains to multiple enemies.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -19633,10 +19817,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 5172790,
-   "icon": "ElectricArcAssaultRifle"
+   "icon": "ElectricArcAssaultRifle",
+   "nameFromBase": true
   },
   "ElectricArcAssaultRifle_3": {
-   "name": "ElectricArcAssaultRifle 3",
+   "name": "Plasma Rifle",
    "description": "A rifle that releases an electrical discharge from the point of impact, which chains to multiple enemies.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -19645,10 +19830,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 6209440,
-   "icon": "ElectricArcAssaultRifle"
+   "icon": "ElectricArcAssaultRifle",
+   "nameFromBase": true
   },
   "ElectricArcAssaultRifle_4": {
-   "name": "ElectricArcAssaultRifle 4",
+   "name": "Plasma Rifle",
    "description": "A rifle that releases an electrical discharge from the point of impact, which chains to multiple enemies.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -19657,10 +19843,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 7243400,
-   "icon": "ElectricArcAssaultRifle"
+   "icon": "ElectricArcAssaultRifle",
+   "nameFromBase": true
   },
   "ElectricArcAssaultRifle_5": {
-   "name": "ElectricArcAssaultRifle 5",
+   "name": "Plasma Rifle",
    "description": "A rifle that releases an electrical discharge from the point of impact, which chains to multiple enemies.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -19669,7 +19856,8 @@
    "maxStack": 1,
    "weight": 0,
    "price": 8280050,
-   "icon": "ElectricArcAssaultRifle"
+   "icon": "ElectricArcAssaultRifle",
+   "nameFromBase": true
   },
   "Spear_QueenBee": {
    "name": "Elizabee's Staff",
@@ -19696,7 +19884,7 @@
    "icon": "EnergyShotgun"
   },
   "EnergyRocketLauncher_2": {
-   "name": "EnergyRocketLauncher 2",
+   "name": "Plasma Cannon",
    "description": "Fires high-output energy projectiles. \nCauses an energy explosion upon impact.",
    "category": "Weapon",
    "subcategory": "WeaponRocketLauncher",
@@ -19705,10 +19893,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 1497710,
-   "icon": "EnergyRocketLauncher"
+   "icon": "EnergyRocketLauncher",
+   "nameFromBase": true
   },
   "EnergyRocketLauncher_3": {
-   "name": "EnergyRocketLauncher 3",
+   "name": "Plasma Cannon",
    "description": "Fires high-output energy projectiles. \nCauses an energy explosion upon impact.",
    "category": "Weapon",
    "subcategory": "WeaponRocketLauncher",
@@ -19717,10 +19906,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 1801220,
-   "icon": "EnergyRocketLauncher"
+   "icon": "EnergyRocketLauncher",
+   "nameFromBase": true
   },
   "EnergyRocketLauncher_4": {
-   "name": "EnergyRocketLauncher 4",
+   "name": "Plasma Cannon",
    "description": "Fires high-output energy projectiles. \nCauses an energy explosion upon impact.",
    "category": "Weapon",
    "subcategory": "WeaponRocketLauncher",
@@ -19729,10 +19919,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 2098120,
-   "icon": "EnergyRocketLauncher"
+   "icon": "EnergyRocketLauncher",
+   "nameFromBase": true
   },
   "EnergyRocketLauncher_5": {
-   "name": "EnergyRocketLauncher 5",
+   "name": "Plasma Cannon",
    "description": "Fires high-output energy projectiles. \nCauses an energy explosion upon impact.",
    "category": "Weapon",
    "subcategory": "WeaponRocketLauncher",
@@ -19741,10 +19932,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 2401630,
-   "icon": "EnergyRocketLauncher"
+   "icon": "EnergyRocketLauncher",
+   "nameFromBase": true
   },
   "EnergyShotgun_2": {
-   "name": "EnergyShotgun 2",
+   "name": "Energy Shotgun",
    "description": "A shotgun that fires energy rounds.\nExcelling in rapid fire, its close-range firepower is truly otherworldly.",
    "category": "Weapon",
    "subcategory": "WeaponShotgun",
@@ -19753,10 +19945,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 2551990,
-   "icon": "EnergyShotgun"
+   "icon": "EnergyShotgun",
+   "nameFromBase": true
   },
   "EnergyShotgun_3": {
-   "name": "EnergyShotgun 3",
+   "name": "Energy Shotgun",
    "description": "A shotgun that fires energy rounds.\nExcelling in rapid fire, its close-range firepower is truly otherworldly.",
    "category": "Weapon",
    "subcategory": "WeaponShotgun",
@@ -19765,10 +19958,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 3075250,
-   "icon": "EnergyShotgun"
+   "icon": "EnergyShotgun",
+   "nameFromBase": true
   },
   "EnergyShotgun_4": {
-   "name": "EnergyShotgun 4",
+   "name": "Energy Shotgun",
    "description": "A shotgun that fires energy rounds.\nExcelling in rapid fire, its close-range firepower is truly otherworldly.",
    "category": "Weapon",
    "subcategory": "WeaponShotgun",
@@ -19777,10 +19971,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 3594910,
-   "icon": "EnergyShotgun"
+   "icon": "EnergyShotgun",
+   "nameFromBase": true
   },
   "EnergyShotgun_5": {
-   "name": "EnergyShotgun 5",
+   "name": "Energy Shotgun",
    "description": "A shotgun that fires energy rounds.\nExcelling in rapid fire, its close-range firepower is truly otherworldly.",
    "category": "Weapon",
    "subcategory": "WeaponShotgun",
@@ -19789,7 +19984,8 @@
    "maxStack": 1,
    "weight": 0,
    "price": 4132920,
-   "icon": "EnergyShotgun"
+   "icon": "EnergyShotgun",
+   "nameFromBase": true
   },
   "Spear_ForestBoss2": {
    "name": "Enhanced Lily's Spear",
@@ -19816,7 +20012,7 @@
    "icon": "YakushimaBlade004"
   },
   "FlameThrower_2": {
-   "name": "FlameThrower 2",
+   "name": "Flamethrower",
    "description": "<itemName id=|Flamethrower|/> that fires long-range flame.\nCan set the enemy on fire.",
    "category": "Weapon",
    "subcategory": "WeaponFlameThrower",
@@ -19825,10 +20021,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 216430,
-   "icon": "FlameThrower"
+   "icon": "FlameThrower",
+   "nameFromBase": true
   },
   "FlameThrower_3": {
-   "name": "FlameThrower 3",
+   "name": "Flamethrower",
    "description": "<itemName id=|Flamethrower|/> that fires long-range flame.\nCan set the enemy on fire.",
    "category": "Weapon",
    "subcategory": "WeaponFlameThrower",
@@ -19837,10 +20034,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 262300,
-   "icon": "FlameThrower"
+   "icon": "FlameThrower",
+   "nameFromBase": true
   },
   "FlameThrower_4": {
-   "name": "FlameThrower 4",
+   "name": "Flamethrower",
    "description": "<itemName id=|Flamethrower|/> that fires long-range flame.\nCan set the enemy on fire.",
    "category": "Weapon",
    "subcategory": "WeaponFlameThrower",
@@ -19849,10 +20047,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 304780,
-   "icon": "FlameThrower"
+   "icon": "FlameThrower",
+   "nameFromBase": true
   },
   "FlameThrower_5": {
-   "name": "FlameThrower 5",
+   "name": "Flamethrower",
    "description": "<itemName id=|Flamethrower|/> that fires long-range flame.\nCan set the enemy on fire.",
    "category": "Weapon",
    "subcategory": "WeaponFlameThrower",
@@ -19861,7 +20060,8 @@
    "maxStack": 1,
    "weight": 0,
    "price": 351500,
-   "icon": "FlameThrower"
+   "icon": "FlameThrower",
+   "nameFromBase": true
   },
   "FlameThrower": {
    "name": "Flamethrower",
@@ -19912,7 +20112,7 @@
    "icon": "GatlingGun"
   },
   "GatlingGun_2": {
-   "name": "GatlingGun 2",
+   "name": "Gatling Gun",
    "description": "A Gatling Gun capable of rapid fire. \nMows down enemies with suppressive fire.",
    "category": "Weapon",
    "subcategory": "WeaponGatlingGun",
@@ -19921,10 +20121,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 634880,
-   "icon": "GatlingGun"
+   "icon": "GatlingGun",
+   "nameFromBase": true
   },
   "GatlingGun_3": {
-   "name": "GatlingGun 3",
+   "name": "Gatling Gun",
    "description": "A Gatling Gun capable of rapid fire. \nMows down enemies with suppressive fire.",
    "category": "Weapon",
    "subcategory": "WeaponGatlingGun",
@@ -19933,10 +20134,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 765660,
-   "icon": "GatlingGun"
+   "icon": "GatlingGun",
+   "nameFromBase": true
   },
   "GatlingGun_4": {
-   "name": "GatlingGun 4",
+   "name": "Gatling Gun",
    "description": "A Gatling Gun capable of rapid fire. \nMows down enemies with suppressive fire.",
    "category": "Weapon",
    "subcategory": "WeaponGatlingGun",
@@ -19945,10 +20147,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 890900,
-   "icon": "GatlingGun"
+   "icon": "GatlingGun",
+   "nameFromBase": true
   },
   "GatlingGun_5": {
-   "name": "GatlingGun 5",
+   "name": "Gatling Gun",
    "description": "A Gatling Gun capable of rapid fire. \nMows down enemies with suppressive fire.",
    "category": "Weapon",
    "subcategory": "WeaponGatlingGun",
@@ -19957,7 +20160,8 @@
    "maxStack": 1,
    "weight": 0,
    "price": 1021680,
-   "icon": "GatlingGun"
+   "icon": "GatlingGun",
+   "nameFromBase": true
   },
   "GrapplingGun": {
    "name": "GrapplingGun",
@@ -20044,7 +20248,7 @@
    "icon": "GrenadeLauncher"
   },
   "GrenadeLauncher_2": {
-   "name": "GrenadeLauncher 2",
+   "name": "Grenade Launcher",
    "description": "Fires grenades that cause wide-ranging explosions.\nUseful when dealing with a large number of enemies.",
    "category": "Weapon",
    "subcategory": "WeaponRocketLauncher",
@@ -20053,10 +20257,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 386840,
-   "icon": "GrenadeLauncher"
+   "icon": "GrenadeLauncher",
+   "nameFromBase": true
   },
   "GrenadeLauncher_3": {
-   "name": "GrenadeLauncher 3",
+   "name": "Grenade Launcher",
    "description": "Fires grenades that cause wide-ranging explosions.\nUseful when dealing with a large number of enemies.",
    "category": "Weapon",
    "subcategory": "WeaponRocketLauncher",
@@ -20065,10 +20270,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 465940,
-   "icon": "GrenadeLauncher"
+   "icon": "GrenadeLauncher",
+   "nameFromBase": true
   },
   "GrenadeLauncher_4": {
-   "name": "GrenadeLauncher 4",
+   "name": "Grenade Launcher",
    "description": "Fires grenades that cause wide-ranging explosions.\nUseful when dealing with a large number of enemies.",
    "category": "Weapon",
    "subcategory": "WeaponRocketLauncher",
@@ -20077,10 +20283,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 545030,
-   "icon": "GrenadeLauncher"
+   "icon": "GrenadeLauncher",
+   "nameFromBase": true
   },
   "GrenadeLauncher_5": {
-   "name": "GrenadeLauncher 5",
+   "name": "Grenade Launcher",
    "description": "Fires grenades that cause wide-ranging explosions.\nUseful when dealing with a large number of enemies.",
    "category": "Weapon",
    "subcategory": "WeaponRocketLauncher",
@@ -20089,7 +20296,8 @@
    "maxStack": 1,
    "weight": 0,
    "price": 624120,
-   "icon": "GrenadeLauncher"
+   "icon": "GrenadeLauncher",
+   "nameFromBase": true
   },
   "FragGrenade_Ground": {
    "name": "Ground Grenade",
@@ -20116,7 +20324,7 @@
    "icon": "GuidedMissileLauncher"
   },
   "GuidedMissileLauncher_2": {
-   "name": "GuidedMissileLauncher 2",
+   "name": "Guided Missile Launcher",
    "description": "Fires missiles that automatically track and pursue enemies.\nMissiles explode upon impact, causing damage over a wide area.",
    "category": "Weapon",
    "subcategory": "WeaponRocketLauncher",
@@ -20125,10 +20333,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 572600,
-   "icon": "GuidedMissileLauncher"
+   "icon": "GuidedMissileLauncher",
+   "nameFromBase": true
   },
   "GuidedMissileLauncher_3": {
-   "name": "GuidedMissileLauncher 3",
+   "name": "Guided Missile Launcher",
    "description": "Fires missiles that automatically track and pursue enemies.\nMissiles explode upon impact, causing damage over a wide area.",
    "category": "Weapon",
    "subcategory": "WeaponRocketLauncher",
@@ -20137,10 +20346,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 683590,
-   "icon": "GuidedMissileLauncher"
+   "icon": "GuidedMissileLauncher",
+   "nameFromBase": true
   },
   "GuidedMissileLauncher_4": {
-   "name": "GuidedMissileLauncher 4",
+   "name": "Guided Missile Launcher",
    "description": "Fires missiles that automatically track and pursue enemies.\nMissiles explode upon impact, causing damage over a wide area.",
    "category": "Weapon",
    "subcategory": "WeaponRocketLauncher",
@@ -20149,10 +20359,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 791560,
-   "icon": "GuidedMissileLauncher"
+   "icon": "GuidedMissileLauncher",
+   "nameFromBase": true
   },
   "GuidedMissileLauncher_5": {
-   "name": "GuidedMissileLauncher 5",
+   "name": "Guided Missile Launcher",
    "description": "Fires missiles that automatically track and pursue enemies.\nMissiles explode upon impact, causing damage over a wide area.",
    "category": "Weapon",
    "subcategory": "WeaponRocketLauncher",
@@ -20161,7 +20372,8 @@
    "maxStack": 1,
    "weight": 0,
    "price": 930480,
-   "icon": "GuidedMissileLauncher"
+   "icon": "GuidedMissileLauncher",
+   "nameFromBase": true
   },
   "Torch": {
    "name": "Hand-Held Torch",
@@ -20272,7 +20484,7 @@
    "icon": "Katana"
   },
   "Katana_2": {
-   "name": "Katana 2",
+   "name": "Katana",
    "description": "<itemName id=|Katana|/> for close-range combat.\nSlices through with razor-sharp precision, cutting cleanly in one strike.",
    "category": "Weapon",
    "subcategory": "WeaponMelee",
@@ -20281,10 +20493,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 60920,
-   "icon": "Katana"
+   "icon": "Katana",
+   "nameFromBase": true
   },
   "Katana_3": {
-   "name": "Katana 3",
+   "name": "Katana",
    "description": "<itemName id=|Katana|/> for close-range combat.\nSlices through with razor-sharp precision, cutting cleanly in one strike.",
    "category": "Weapon",
    "subcategory": "WeaponMelee",
@@ -20293,10 +20506,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 79700,
-   "icon": "Katana"
+   "icon": "Katana",
+   "nameFromBase": true
   },
   "Katana_4": {
-   "name": "Katana 4",
+   "name": "Katana",
    "description": "<itemName id=|Katana|/> for close-range combat.\nSlices through with razor-sharp precision, cutting cleanly in one strike.",
    "category": "Weapon",
    "subcategory": "WeaponMelee",
@@ -20305,10 +20519,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 98480,
-   "icon": "Katana"
+   "icon": "Katana",
+   "nameFromBase": true
   },
   "Katana_5": {
-   "name": "Katana 5",
+   "name": "Katana",
    "description": "<itemName id=|Katana|/> for close-range combat.\nSlices through with razor-sharp precision, cutting cleanly in one strike.",
    "category": "Weapon",
    "subcategory": "WeaponMelee",
@@ -20317,7 +20532,8 @@
    "maxStack": 1,
    "weight": 0,
    "price": 117260,
-   "icon": "Katana"
+   "icon": "Katana",
+   "nameFromBase": true
   },
   "LaserGatlingGun": {
    "name": "Laser Gatling Gun",
@@ -20356,7 +20572,7 @@
    "icon": "SkyBeamSword"
   },
   "LaserGatlingGun_2": {
-   "name": "LaserGatlingGun 2",
+   "name": "Laser Gatling Gun",
    "description": "Fires beam-like energy blasts at high speed. \nIts overwhelming firepower can take down multiple enemies at once.",
    "category": "Weapon",
    "subcategory": "WeaponGatlingGun",
@@ -20365,10 +20581,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 1236470,
-   "icon": "LaserGatlingGun"
+   "icon": "LaserGatlingGun",
+   "nameFromBase": true
   },
   "LaserGatlingGun_3": {
-   "name": "LaserGatlingGun 3",
+   "name": "Laser Gatling Gun",
    "description": "Fires beam-like energy blasts at high speed. \nIts overwhelming firepower can take down multiple enemies at once.",
    "category": "Weapon",
    "subcategory": "WeaponGatlingGun",
@@ -20377,10 +20594,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 1507870,
-   "icon": "LaserGatlingGun"
+   "icon": "LaserGatlingGun",
+   "nameFromBase": true
   },
   "LaserGatlingGun_4": {
-   "name": "LaserGatlingGun 4",
+   "name": "Laser Gatling Gun",
    "description": "Fires beam-like energy blasts at high speed. \nIts overwhelming firepower can take down multiple enemies at once.",
    "category": "Weapon",
    "subcategory": "WeaponGatlingGun",
@@ -20389,10 +20607,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 1749320,
-   "icon": "LaserGatlingGun"
+   "icon": "LaserGatlingGun",
+   "nameFromBase": true
   },
   "LaserGatlingGun_5": {
-   "name": "LaserGatlingGun 5",
+   "name": "Laser Gatling Gun",
    "description": "Fires beam-like energy blasts at high speed. \nIts overwhelming firepower can take down multiple enemies at once.",
    "category": "Weapon",
    "subcategory": "WeaponGatlingGun",
@@ -20401,10 +20620,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 2020730,
-   "icon": "LaserGatlingGun"
+   "icon": "LaserGatlingGun",
+   "nameFromBase": true
   },
   "LaserRifle_2": {
-   "name": "LaserRifle 2",
+   "name": "Laser Rifle",
    "description": "A weapon that fires high-energy lasers.\nIt has impressive firepower and is easy to handle.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -20413,10 +20633,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 343440,
-   "icon": "LaserRifle"
+   "icon": "LaserRifle",
+   "nameFromBase": true
   },
   "LaserRifle_3": {
-   "name": "LaserRifle 3",
+   "name": "Laser Rifle",
    "description": "A weapon that fires high-energy lasers.\nIt has impressive firepower and is easy to handle.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -20425,10 +20646,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 423980,
-   "icon": "LaserRifle"
+   "icon": "LaserRifle",
+   "nameFromBase": true
   },
   "LaserRifle_4": {
-   "name": "LaserRifle 4",
+   "name": "Laser Rifle",
    "description": "A weapon that fires high-energy lasers.\nIt has impressive firepower and is easy to handle.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -20437,10 +20659,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 503030,
-   "icon": "LaserRifle"
+   "icon": "LaserRifle",
+   "nameFromBase": true
   },
   "LaserRifle_5": {
-   "name": "LaserRifle 5",
+   "name": "Laser Rifle",
    "description": "A weapon that fires high-energy lasers.\nIt has impressive firepower and is easy to handle.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -20449,7 +20672,8 @@
    "maxStack": 1,
    "weight": 0,
    "price": 586250,
-   "icon": "LaserRifle"
+   "icon": "LaserRifle",
+   "nameFromBase": true
   },
   "Launcher_Meteor_5": {
    "name": "Launcher Meteor 5",
@@ -20536,7 +20760,7 @@
    "icon": "MakeshiftShotgun"
   },
   "MakeshiftAssaultRifle_2": {
-   "name": "MakeshiftAssaultRifle 2",
+   "name": "Makeshift Assault Rifle",
    "description": "An assault rifle handmade from scraps. \nIt excels in rate of fire and long range, but its single-shot power is low.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -20545,10 +20769,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 34780,
-   "icon": "MakeshiftAssaultRifle"
+   "icon": "MakeshiftAssaultRifle",
+   "nameFromBase": true
   },
   "MakeshiftAssaultRifle_3": {
-   "name": "MakeshiftAssaultRifle 3",
+   "name": "Makeshift Assault Rifle",
    "description": "An assault rifle handmade from scraps. \nIt excels in rate of fire and long range, but its single-shot power is low.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -20557,10 +20782,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 41900,
-   "icon": "MakeshiftAssaultRifle"
+   "icon": "MakeshiftAssaultRifle",
+   "nameFromBase": true
   },
   "MakeshiftAssaultRifle_4": {
-   "name": "MakeshiftAssaultRifle 4",
+   "name": "Makeshift Assault Rifle",
    "description": "An assault rifle handmade from scraps. \nIt excels in rate of fire and long range, but its single-shot power is low.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -20569,10 +20795,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 49940,
-   "icon": "MakeshiftAssaultRifle"
+   "icon": "MakeshiftAssaultRifle",
+   "nameFromBase": true
   },
   "MakeshiftAssaultRifle_5": {
-   "name": "MakeshiftAssaultRifle 5",
+   "name": "Makeshift Assault Rifle",
    "description": "An assault rifle handmade from scraps. \nIt excels in rate of fire and long range, but its single-shot power is low.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -20581,10 +20808,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 58270,
-   "icon": "MakeshiftAssaultRifle"
+   "icon": "MakeshiftAssaultRifle",
+   "nameFromBase": true
   },
   "MakeshiftHandgun_2": {
-   "name": "MakeshiftHandgun 2",
+   "name": "Makeshift Handgun",
    "description": "A handgun created from spare parts.\nRelatively well suited for close-quarters combat, but fires only one shot at a time.",
    "category": "Weapon",
    "subcategory": "WeaponHandgun",
@@ -20593,10 +20821,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 17060,
-   "icon": "MakeshiftHandgun"
+   "icon": "MakeshiftHandgun",
+   "nameFromBase": true
   },
   "MakeshiftHandgun_3": {
-   "name": "MakeshiftHandgun 3",
+   "name": "Makeshift Handgun",
    "description": "A handgun created from spare parts.\nRelatively well suited for close-quarters combat, but fires only one shot at a time.",
    "category": "Weapon",
    "subcategory": "WeaponHandgun",
@@ -20605,10 +20834,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 20810,
-   "icon": "MakeshiftHandgun"
+   "icon": "MakeshiftHandgun",
+   "nameFromBase": true
   },
   "MakeshiftHandgun_4": {
-   "name": "MakeshiftHandgun 4",
+   "name": "Makeshift Handgun",
    "description": "A handgun created from spare parts.\nRelatively well suited for close-quarters combat, but fires only one shot at a time.",
    "category": "Weapon",
    "subcategory": "WeaponHandgun",
@@ -20617,10 +20847,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 25390,
-   "icon": "MakeshiftHandgun"
+   "icon": "MakeshiftHandgun",
+   "nameFromBase": true
   },
   "MakeshiftHandgun_5": {
-   "name": "MakeshiftHandgun 5",
+   "name": "Makeshift Handgun",
    "description": "A handgun created from spare parts.\nRelatively well suited for close-quarters combat, but fires only one shot at a time.",
    "category": "Weapon",
    "subcategory": "WeaponHandgun",
@@ -20629,10 +20860,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 30340,
-   "icon": "MakeshiftHandgun"
+   "icon": "MakeshiftHandgun",
+   "nameFromBase": true
   },
   "MakeshiftShotgun_2": {
-   "name": "MakeshiftShotgun 2",
+   "name": "Makeshift Shotgun",
    "description": "A shotgun handmade from scraps. \nIt has a short range but excels in close-range combat",
    "category": "Weapon",
    "subcategory": "WeaponShotgun",
@@ -20641,10 +20873,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 28680,
-   "icon": "MakeshiftShotgun"
+   "icon": "MakeshiftShotgun",
+   "nameFromBase": true
   },
   "MakeshiftShotgun_3": {
-   "name": "MakeshiftShotgun 3",
+   "name": "Makeshift Shotgun",
    "description": "A shotgun handmade from scraps. \nIt has a short range but excels in close-range combat",
    "category": "Weapon",
    "subcategory": "WeaponShotgun",
@@ -20653,10 +20886,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 34560,
-   "icon": "MakeshiftShotgun"
+   "icon": "MakeshiftShotgun",
+   "nameFromBase": true
   },
   "MakeshiftShotgun_4": {
-   "name": "MakeshiftShotgun 4",
+   "name": "Makeshift Shotgun",
    "description": "A shotgun handmade from scraps. \nIt has a short range but excels in close-range combat",
    "category": "Weapon",
    "subcategory": "WeaponShotgun",
@@ -20665,10 +20899,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 41640,
-   "icon": "MakeshiftShotgun"
+   "icon": "MakeshiftShotgun",
+   "nameFromBase": true
   },
   "MakeshiftShotgun_5": {
-   "name": "MakeshiftShotgun 5",
+   "name": "Makeshift Shotgun",
    "description": "A shotgun handmade from scraps. \nIt has a short range but excels in close-range combat",
    "category": "Weapon",
    "subcategory": "WeaponShotgun",
@@ -20677,10 +20912,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 48720,
-   "icon": "MakeshiftShotgun"
+   "icon": "MakeshiftShotgun",
+   "nameFromBase": true
   },
   "MakeshiftSubmachineGun_2": {
-   "name": "MakeshiftSubmachineGun 2",
+   "name": "Makeshift SMG",
    "description": "A submachine gun handmade from scraps. \nIt excels in rate of fire, but its single-shot power is low.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -20689,10 +20925,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 19080,
-   "icon": "MakeshiftSubmachineGun"
+   "icon": "MakeshiftSubmachineGun",
+   "nameFromBase": true
   },
   "MakeshiftSubmachineGun_3": {
-   "name": "MakeshiftSubmachineGun 3",
+   "name": "Makeshift SMG",
    "description": "A submachine gun handmade from scraps. \nIt excels in rate of fire, but its single-shot power is low.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -20701,10 +20938,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 23110,
-   "icon": "MakeshiftSubmachineGun"
+   "icon": "MakeshiftSubmachineGun",
+   "nameFromBase": true
   },
   "MakeshiftSubmachineGun_4": {
-   "name": "MakeshiftSubmachineGun 4",
+   "name": "Makeshift SMG",
    "description": "A submachine gun handmade from scraps. \nIt excels in rate of fire, but its single-shot power is low.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -20713,10 +20951,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 27980,
-   "icon": "MakeshiftSubmachineGun"
+   "icon": "MakeshiftSubmachineGun",
+   "nameFromBase": true
   },
   "MakeshiftSubmachineGun_5": {
-   "name": "MakeshiftSubmachineGun 5",
+   "name": "Makeshift SMG",
    "description": "A submachine gun handmade from scraps. \nIt excels in rate of fire, but its single-shot power is low.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -20725,7 +20964,8 @@
    "maxStack": 1,
    "weight": 0,
    "price": 33220,
-   "icon": "MakeshiftSubmachineGun"
+   "icon": "MakeshiftSubmachineGun",
+   "nameFromBase": true
   },
   "OctaviaRevolver": {
    "name": "Marksman Revolver",
@@ -20872,7 +21112,7 @@
    "icon": "MultiGuidedMissileLauncher"
   },
   "MultiGuidedMissileLauncher_2": {
-   "name": "MultiGuidedMissileLauncher 2",
+   "name": "Multi Guided Missile Launcher",
    "description": "A missile launcher that can hold multiple ammo at once.\nFires a series of missiles that automatically track and follow enemies.",
    "category": "Weapon",
    "subcategory": "WeaponRocketLauncher",
@@ -20881,10 +21121,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 894280,
-   "icon": "MultiGuidedMissileLauncher"
+   "icon": "MultiGuidedMissileLauncher",
+   "nameFromBase": true
   },
   "MultiGuidedMissileLauncher_3": {
-   "name": "MultiGuidedMissileLauncher 3",
+   "name": "Multi Guided Missile Launcher",
    "description": "A missile launcher that can hold multiple ammo at once.\nFires a series of missiles that automatically track and follow enemies.",
    "category": "Weapon",
    "subcategory": "WeaponRocketLauncher",
@@ -20893,10 +21134,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 1074880,
-   "icon": "MultiGuidedMissileLauncher"
+   "icon": "MultiGuidedMissileLauncher",
+   "nameFromBase": true
   },
   "MultiGuidedMissileLauncher_4": {
-   "name": "MultiGuidedMissileLauncher 4",
+   "name": "Multi Guided Missile Launcher",
    "description": "A missile launcher that can hold multiple ammo at once.\nFires a series of missiles that automatically track and follow enemies.",
    "category": "Weapon",
    "subcategory": "WeaponRocketLauncher",
@@ -20905,10 +21147,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 1252970,
-   "icon": "MultiGuidedMissileLauncher"
+   "icon": "MultiGuidedMissileLauncher",
+   "nameFromBase": true
   },
   "MultiGuidedMissileLauncher_5": {
-   "name": "MultiGuidedMissileLauncher 5",
+   "name": "Multi Guided Missile Launcher",
    "description": "A missile launcher that can hold multiple ammo at once.\nFires a series of missiles that automatically track and follow enemies.",
    "category": "Weapon",
    "subcategory": "WeaponRocketLauncher",
@@ -20917,7 +21160,8 @@
    "maxStack": 1,
    "weight": 0,
    "price": 1433570,
-   "icon": "MultiGuidedMissileLauncher"
+   "icon": "MultiGuidedMissileLauncher",
+   "nameFromBase": true
   },
   "Musket": {
    "name": "Musket",
@@ -20932,7 +21176,7 @@
    "icon": "Musket"
   },
   "Musket_2": {
-   "name": "Musket 2",
+   "name": "Musket",
    "description": "Simple, old fashioned gun. \nFires a single, powerful shot at the expense of a long reload time.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -20941,10 +21185,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 12020,
-   "icon": "Musket"
+   "icon": "Musket",
+   "nameFromBase": true
   },
   "Musket_3": {
-   "name": "Musket 3",
+   "name": "Musket",
    "description": "Simple, old fashioned gun. \nFires a single, powerful shot at the expense of a long reload time.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -20953,10 +21198,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 14420,
-   "icon": "Musket"
+   "icon": "Musket",
+   "nameFromBase": true
   },
   "Musket_4": {
-   "name": "Musket 4",
+   "name": "Musket",
    "description": "Simple, old fashioned gun. \nFires a single, powerful shot at the expense of a long reload time.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -20965,10 +21211,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 18020,
-   "icon": "Musket"
+   "icon": "Musket",
+   "nameFromBase": true
   },
   "Musket_5": {
-   "name": "Musket 5",
+   "name": "Musket",
    "description": "Simple, old fashioned gun. \nFires a single, powerful shot at the expense of a long reload time.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -20977,7 +21224,8 @@
    "maxStack": 1,
    "weight": 0,
    "price": 22270,
-   "icon": "Musket"
+   "icon": "Musket",
+   "nameFromBase": true
   },
   "YakushimaLantern001": {
    "name": "Nightglow",
@@ -20992,7 +21240,7 @@
    "icon": "YakushimaLantern001"
   },
   "OctaviaRevolver_5": {
-   "name": "OctaviaRevolver 5",
+   "name": "Marksman Revolver",
    "description": "[ULTRAKILL Collab]\nAn electrically powered revolver capable of firing endlessly.\nWhen equipped, Pal Sphere throws are replaced with Coin Toss.\nHitting a coin with the <itemName id=|OctaviaRevolver|/> causes the bullet to ricochet toward enemies.",
    "category": "Weapon",
    "subcategory": "WeaponHandgun",
@@ -21001,10 +21249,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 72960,
-   "icon": "OctaviaRevolver"
+   "icon": "OctaviaRevolver",
+   "nameFromBase": true
   },
   "OctaviaShotgun_5": {
-   "name": "OctaviaShotgun 5",
+   "name": "Core Eject Shotgun",
    "description": "[ULTRAKILL Collab] \nA shotgun powered by heat, capable of firing endlessly. \nWhen equipped, throwing a Pal Sphere is replaced with Core Eject. \nHold to charge and extend its range. Cores hit by shots from <itemName id=|OctaviaRevolver|/> will explode.",
    "category": "Weapon",
    "subcategory": "WeaponShotgun",
@@ -21013,7 +21262,8 @@
    "maxStack": 1,
    "weight": 0,
    "price": 736030,
-   "icon": "OctaviaShotgun"
+   "icon": "OctaviaShotgun",
+   "nameFromBase": true
   },
   "WeakerBow": {
    "name": "Old Bow",
@@ -21040,7 +21290,7 @@
    "icon": "OldRevolver"
   },
   "OldRevolver_2": {
-   "name": "OldRevolver 2",
+   "name": "Old Revolver",
    "description": "A slightly outdated revolving handgun. \nCompared to <itemName id=|Handgun_default|/>, it excels in single-shot power.",
    "category": "Weapon",
    "subcategory": "WeaponHandgun",
@@ -21049,10 +21299,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 30600,
-   "icon": "OldRevolver"
+   "icon": "OldRevolver",
+   "nameFromBase": true
   },
   "OldRevolver_3": {
-   "name": "OldRevolver 3",
+   "name": "Old Revolver",
    "description": "A slightly outdated revolving handgun. \nCompared to <itemName id=|Handgun_default|/>, it excels in single-shot power.",
    "category": "Weapon",
    "subcategory": "WeaponHandgun",
@@ -21061,10 +21312,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 36720,
-   "icon": "OldRevolver"
+   "icon": "OldRevolver",
+   "nameFromBase": true
   },
   "OldRevolver_4": {
-   "name": "OldRevolver 4",
+   "name": "Old Revolver",
    "description": "A slightly outdated revolving handgun. \nCompared to <itemName id=|Handgun_default|/>, it excels in single-shot power.",
    "category": "Weapon",
    "subcategory": "WeaponHandgun",
@@ -21073,10 +21325,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 44040,
-   "icon": "OldRevolver"
+   "icon": "OldRevolver",
+   "nameFromBase": true
   },
   "OldRevolver_5": {
-   "name": "OldRevolver 5",
+   "name": "Old Revolver",
    "description": "A slightly outdated revolving handgun. \nCompared to <itemName id=|Handgun_default|/>, it excels in single-shot power.",
    "category": "Weapon",
    "subcategory": "WeaponHandgun",
@@ -21085,7 +21338,8 @@
    "maxStack": 1,
    "weight": 0,
    "price": 51360,
-   "icon": "OldRevolver"
+   "icon": "OldRevolver",
+   "nameFromBase": true
   },
   "OverheatRifle": {
    "name": "Overheat Rifle",
@@ -21100,7 +21354,7 @@
    "icon": "OverheatRifle"
   },
   "OverheatRifle_2": {
-   "name": "OverheatRifle 2",
+   "name": "Overheat Rifle",
    "description": "An assault rifle capable of firing endlessly without reloading.\nProlonged bursts cause overheating, leaving you exposed.\nUse with caution.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -21109,10 +21363,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 2192860,
-   "icon": "OverheatRifle"
+   "icon": "OverheatRifle",
+   "nameFromBase": true
   },
   "OverheatRifle_3": {
-   "name": "OverheatRifle 3",
+   "name": "Overheat Rifle",
    "description": "An assault rifle capable of firing endlessly without reloading.\nProlonged bursts cause overheating, leaving you exposed.\nUse with caution.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -21121,10 +21376,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 2630440,
-   "icon": "OverheatRifle"
+   "icon": "OverheatRifle",
+   "nameFromBase": true
   },
   "OverheatRifle_4": {
-   "name": "OverheatRifle 4",
+   "name": "Overheat Rifle",
    "description": "An assault rifle capable of firing endlessly without reloading.\nProlonged bursts cause overheating, leaving you exposed.\nUse with caution.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -21133,10 +21389,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 3067150,
-   "icon": "OverheatRifle"
+   "icon": "OverheatRifle",
+   "nameFromBase": true
   },
   "OverheatRifle_5": {
-   "name": "OverheatRifle 5",
+   "name": "Overheat Rifle",
    "description": "An assault rifle capable of firing endlessly without reloading.\nProlonged bursts cause overheating, leaving you exposed.\nUse with caution.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -21145,7 +21402,8 @@
    "maxStack": 1,
    "weight": 0,
    "price": 3519480,
-   "icon": "OverheatRifle"
+   "icon": "OverheatRifle",
+   "nameFromBase": true
   },
   "Axe_Steal": {
    "name": "Pal Metal Axe",
@@ -21304,7 +21562,7 @@
    "icon": "Launcher_Default"
   },
   "SFBow_2": {
-   "name": "SFBow 2",
+   "name": "Advanced Bow",
    "description": "A bow reconstructed with advanced technology. \nCapable of firing extremely powerful arrows.",
    "category": "Weapon",
    "subcategory": "WeaponBow",
@@ -21313,10 +21571,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 216050,
-   "icon": "SFBow"
+   "icon": "SFBow",
+   "nameFromBase": true
   },
   "SFBow_3": {
-   "name": "SFBow 3",
+   "name": "Advanced Bow",
    "description": "A bow reconstructed with advanced technology. \nCapable of firing extremely powerful arrows.",
    "category": "Weapon",
    "subcategory": "WeaponBow",
@@ -21325,10 +21584,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 259540,
-   "icon": "SFBow"
+   "icon": "SFBow",
+   "nameFromBase": true
   },
   "SFBow_4": {
-   "name": "SFBow 4",
+   "name": "Advanced Bow",
    "description": "A bow reconstructed with advanced technology. \nCapable of firing extremely powerful arrows.",
    "category": "Weapon",
    "subcategory": "WeaponBow",
@@ -21337,10 +21597,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 303020,
-   "icon": "SFBow"
+   "icon": "SFBow",
+   "nameFromBase": true
   },
   "SFBow_5": {
-   "name": "SFBow 5",
+   "name": "Advanced Bow",
    "description": "A bow reconstructed with advanced technology. \nCapable of firing extremely powerful arrows.",
    "category": "Weapon",
    "subcategory": "WeaponBow",
@@ -21349,7 +21610,8 @@
    "maxStack": 1,
    "weight": 0,
    "price": 347520,
-   "icon": "SFBow"
+   "icon": "SFBow",
+   "nameFromBase": true
   },
   "SubmachineGun": {
    "name": "SMG",
@@ -21400,7 +21662,7 @@
    "icon": "SemiAutoShotgun"
   },
   "SemiAutoRifle_2": {
-   "name": "SemiAutoRifle 2",
+   "name": "Semi-Auto Rifle",
    "description": "A rifle that allows for a certain degree of rapid fire. \nIt’s easy to aim and has high firepower, making it effective for mid-range combat.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -21409,10 +21671,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 53900,
-   "icon": "SemiAutoRifle"
+   "icon": "SemiAutoRifle",
+   "nameFromBase": true
   },
   "SemiAutoRifle_3": {
-   "name": "SemiAutoRifle 3",
+   "name": "Semi-Auto Rifle",
    "description": "A rifle that allows for a certain degree of rapid fire. \nIt’s easy to aim and has high firepower, making it effective for mid-range combat.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -21421,10 +21684,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 66770,
-   "icon": "SemiAutoRifle"
+   "icon": "SemiAutoRifle",
+   "nameFromBase": true
   },
   "SemiAutoRifle_4": {
-   "name": "SemiAutoRifle 4",
+   "name": "Semi-Auto Rifle",
    "description": "A rifle that allows for a certain degree of rapid fire. \nIt’s easy to aim and has high firepower, making it effective for mid-range combat.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -21433,10 +21697,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 78340,
-   "icon": "SemiAutoRifle"
+   "icon": "SemiAutoRifle",
+   "nameFromBase": true
   },
   "SemiAutoRifle_5": {
-   "name": "SemiAutoRifle 5",
+   "name": "Semi-Auto Rifle",
    "description": "A rifle that allows for a certain degree of rapid fire. \nIt’s easy to aim and has high firepower, making it effective for mid-range combat.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -21445,10 +21710,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 91200,
-   "icon": "SemiAutoRifle"
+   "icon": "SemiAutoRifle",
+   "nameFromBase": true
   },
   "SemiAutoShotgun_2": {
-   "name": "SemiAutoShotgun 2",
+   "name": "Semi-Auto Shotgun",
    "description": "A rapid-fire shotgun with immense power. \nIts close-range damage output is top-notch.",
    "category": "Weapon",
    "subcategory": "WeaponShotgun",
@@ -21457,10 +21723,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 99260,
-   "icon": "SemiAutoShotgun"
+   "icon": "SemiAutoShotgun",
+   "nameFromBase": true
   },
   "SemiAutoShotgun_3": {
-   "name": "SemiAutoShotgun 3",
+   "name": "Semi-Auto Shotgun",
    "description": "A rapid-fire shotgun with immense power. \nIts close-range damage output is top-notch.",
    "category": "Weapon",
    "subcategory": "WeaponShotgun",
@@ -21469,10 +21736,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 121200,
-   "icon": "SemiAutoShotgun"
+   "icon": "SemiAutoShotgun",
+   "nameFromBase": true
   },
   "SemiAutoShotgun_4": {
-   "name": "SemiAutoShotgun 4",
+   "name": "Semi-Auto Shotgun",
    "description": "A rapid-fire shotgun with immense power. \nIts close-range damage output is top-notch.",
    "category": "Weapon",
    "subcategory": "WeaponShotgun",
@@ -21481,10 +21749,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 141260,
-   "icon": "SemiAutoShotgun"
+   "icon": "SemiAutoShotgun",
+   "nameFromBase": true
   },
   "SemiAutoShotgun_5": {
-   "name": "SemiAutoShotgun 5",
+   "name": "Semi-Auto Shotgun",
    "description": "A rapid-fire shotgun with immense power. \nIts close-range damage output is top-notch.",
    "category": "Weapon",
    "subcategory": "WeaponShotgun",
@@ -21493,7 +21762,8 @@
    "maxStack": 1,
    "weight": 0,
    "price": 163200,
-   "icon": "SemiAutoShotgun"
+   "icon": "SemiAutoShotgun",
+   "nameFromBase": true
   },
   "FragGrenade_Elec": {
    "name": "Shock Grenade",
@@ -21532,7 +21802,7 @@
    "icon": "SphereLauncher_Once"
   },
   "SingleShotRifle_2": {
-   "name": "SingleShotRifle 2",
+   "name": "Single-Shot Rifle",
    "description": "A single-shot rifle. Takes time to load.\nWhat it lacks in capacity, it makes up for with sheer power.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -21541,10 +21811,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 33580,
-   "icon": "SingleShotRifle"
+   "icon": "SingleShotRifle",
+   "nameFromBase": true
   },
   "SingleShotRifle_3": {
-   "name": "SingleShotRifle 3",
+   "name": "Single-Shot Rifle",
    "description": "A single-shot rifle. Takes time to load.\nWhat it lacks in capacity, it makes up for with sheer power.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -21553,10 +21824,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 40990,
-   "icon": "SingleShotRifle"
+   "icon": "SingleShotRifle",
+   "nameFromBase": true
   },
   "SingleShotRifle_4": {
-   "name": "SingleShotRifle 4",
+   "name": "Single-Shot Rifle",
    "description": "A single-shot rifle. Takes time to load.\nWhat it lacks in capacity, it makes up for with sheer power.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -21565,10 +21837,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 48410,
-   "icon": "SingleShotRifle"
+   "icon": "SingleShotRifle",
+   "nameFromBase": true
   },
   "SingleShotRifle_5": {
-   "name": "SingleShotRifle 5",
+   "name": "Single-Shot Rifle",
    "description": "A single-shot rifle. Takes time to load.\nWhat it lacks in capacity, it makes up for with sheer power.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -21577,10 +21850,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 57120,
-   "icon": "SingleShotRifle"
+   "icon": "SingleShotRifle",
+   "nameFromBase": true
   },
   "SkyAssaultRifle_2": {
-   "name": "SkyAssaultRifle 2",
+   "name": "Heavy Assault Rifle",
    "description": "An assault rifle made from Soralite Ingots.\nIt has been enhanced to handle powerful ammo while maintaining its versatility.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -21589,10 +21863,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 3069880,
-   "icon": "SkyAssaultRifle"
+   "icon": "SkyAssaultRifle",
+   "nameFromBase": true
   },
   "SkyAssaultRifle_3": {
-   "name": "SkyAssaultRifle 3",
+   "name": "Heavy Assault Rifle",
    "description": "An assault rifle made from Soralite Ingots.\nIt has been enhanced to handle powerful ammo while maintaining its versatility.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -21601,10 +21876,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 3625120,
-   "icon": "SkyAssaultRifle"
+   "icon": "SkyAssaultRifle",
+   "nameFromBase": true
   },
   "SkyAssaultRifle_4": {
-   "name": "SkyAssaultRifle 4",
+   "name": "Heavy Assault Rifle",
    "description": "An assault rifle made from Soralite Ingots.\nIt has been enhanced to handle powerful ammo while maintaining its versatility.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -21613,10 +21889,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 4176670,
-   "icon": "SkyAssaultRifle"
+   "icon": "SkyAssaultRifle",
+   "nameFromBase": true
   },
   "SkyAssaultRifle_5": {
-   "name": "SkyAssaultRifle 5",
+   "name": "Heavy Assault Rifle",
    "description": "An assault rifle made from Soralite Ingots.\nIt has been enhanced to handle powerful ammo while maintaining its versatility.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -21625,10 +21902,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 5035440,
-   "icon": "SkyAssaultRifle"
+   "icon": "SkyAssaultRifle",
+   "nameFromBase": true
   },
   "SkyBeamSword_2": {
-   "name": "SkyBeamSword 2",
+   "name": "Laser Sword",
    "description": "A <itemName id=|BeamSword|/> made from Soralite Ingots. \nA close-range weapon that instantly cuts targets using its high-output energy blade.",
    "category": "Weapon",
    "subcategory": "WeaponMelee",
@@ -21637,10 +21915,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 1578680,
-   "icon": "SkyBeamSword"
+   "icon": "SkyBeamSword",
+   "nameFromBase": true
   },
   "SkyBeamSword_3": {
-   "name": "SkyBeamSword 3",
+   "name": "Laser Sword",
    "description": "A <itemName id=|BeamSword|/> made from Soralite Ingots. \nA close-range weapon that instantly cuts targets using its high-output energy blade.",
    "category": "Weapon",
    "subcategory": "WeaponMelee",
@@ -21649,10 +21928,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 2022430,
-   "icon": "SkyBeamSword"
+   "icon": "SkyBeamSword",
+   "nameFromBase": true
   },
   "SkyBeamSword_4": {
-   "name": "SkyBeamSword 4",
+   "name": "Laser Sword",
    "description": "A <itemName id=|BeamSword|/> made from Soralite Ingots. \nA close-range weapon that instantly cuts targets using its high-output energy blade.",
    "category": "Weapon",
    "subcategory": "WeaponMelee",
@@ -21661,10 +21941,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 2454780,
-   "icon": "SkyBeamSword"
+   "icon": "SkyBeamSword",
+   "nameFromBase": true
   },
   "SkyBeamSword_5": {
-   "name": "SkyBeamSword 5",
+   "name": "Laser Sword",
    "description": "A <itemName id=|BeamSword|/> made from Soralite Ingots. \nA close-range weapon that instantly cuts targets using its high-output energy blade.",
    "category": "Weapon",
    "subcategory": "WeaponMelee",
@@ -21673,10 +21954,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 2898530,
-   "icon": "SkyBeamSword"
+   "icon": "SkyBeamSword",
+   "nameFromBase": true
   },
   "SkyBow_2": {
-   "name": "SkyBow 2",
+   "name": "Mechanical Bow",
    "description": "A bow crafted from Soralite Ingots.\nWith greatly enhanced initial velocity and piercing power, this high-precision weapon excels at ranged combat.",
    "category": "Weapon",
    "subcategory": "WeaponBow",
@@ -21685,10 +21967,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 1395980,
-   "icon": "SkyBow"
+   "icon": "SkyBow",
+   "nameFromBase": true
   },
   "SkyBow_3": {
-   "name": "SkyBow 3",
+   "name": "Mechanical Bow",
    "description": "A bow crafted from Soralite Ingots.\nWith greatly enhanced initial velocity and piercing power, this high-precision weapon excels at ranged combat.",
    "category": "Weapon",
    "subcategory": "WeaponBow",
@@ -21697,10 +21980,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 1796350,
-   "icon": "SkyBow"
+   "icon": "SkyBow",
+   "nameFromBase": true
   },
   "SkyBow_4": {
-   "name": "SkyBow 4",
+   "name": "Mechanical Bow",
    "description": "A bow crafted from Soralite Ingots.\nWith greatly enhanced initial velocity and piercing power, this high-precision weapon excels at ranged combat.",
    "category": "Weapon",
    "subcategory": "WeaponBow",
@@ -21709,10 +21993,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 2196720,
-   "icon": "SkyBow"
+   "icon": "SkyBow",
+   "nameFromBase": true
   },
   "SkyBow_5": {
-   "name": "SkyBow 5",
+   "name": "Mechanical Bow",
    "description": "A bow crafted from Soralite Ingots.\nWith greatly enhanced initial velocity and piercing power, this high-precision weapon excels at ranged combat.",
    "category": "Weapon",
    "subcategory": "WeaponBow",
@@ -21721,10 +22006,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 2597090,
-   "icon": "SkyBow"
+   "icon": "SkyBow",
+   "nameFromBase": true
   },
   "SkyGrenadeLauncher_2": {
-   "name": "SkyGrenadeLauncher 2",
+   "name": "Tactical Grenade Launcher",
    "description": "A grenade launcher made from Soralite Ingots.\nImproved trajectory stability allows for precise long-range bombings.",
    "category": "Weapon",
    "subcategory": "WeaponRocketLauncher",
@@ -21733,10 +22019,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 2796410,
-   "icon": "SkyGrenadeLauncher"
+   "icon": "SkyGrenadeLauncher",
+   "nameFromBase": true
   },
   "SkyGrenadeLauncher_3": {
-   "name": "SkyGrenadeLauncher 3",
+   "name": "Tactical Grenade Launcher",
    "description": "A grenade launcher made from Soralite Ingots.\nImproved trajectory stability allows for precise long-range bombings.",
    "category": "Weapon",
    "subcategory": "WeaponRocketLauncher",
@@ -21745,10 +22032,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 3292140,
-   "icon": "SkyGrenadeLauncher"
+   "icon": "SkyGrenadeLauncher",
+   "nameFromBase": true
   },
   "SkyGrenadeLauncher_4": {
-   "name": "SkyGrenadeLauncher 4",
+   "name": "Tactical Grenade Launcher",
    "description": "A grenade launcher made from Soralite Ingots.\nImproved trajectory stability allows for precise long-range bombings.",
    "category": "Weapon",
    "subcategory": "WeaponRocketLauncher",
@@ -21757,10 +22045,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 3787870,
-   "icon": "SkyGrenadeLauncher"
+   "icon": "SkyGrenadeLauncher",
+   "nameFromBase": true
   },
   "SkyGrenadeLauncher_5": {
-   "name": "SkyGrenadeLauncher 5",
+   "name": "Tactical Grenade Launcher",
    "description": "A grenade launcher made from Soralite Ingots.\nImproved trajectory stability allows for precise long-range bombings.",
    "category": "Weapon",
    "subcategory": "WeaponRocketLauncher",
@@ -21769,10 +22058,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 4601880,
-   "icon": "SkyGrenadeLauncher"
+   "icon": "SkyGrenadeLauncher",
+   "nameFromBase": true
   },
   "SkyShotgun_2": {
-   "name": "SkyShotgun 2",
+   "name": "Prototype Shotgun",
    "description": "A shotgun made from Soralite Ingots.\nIt delivers overwhelming firepower at close range, and its special magazine also provides high sustained combat capability.",
    "category": "Weapon",
    "subcategory": "WeaponShotgun",
@@ -21781,10 +22071,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 2615260,
-   "icon": "SkyShotgun"
+   "icon": "SkyShotgun",
+   "nameFromBase": true
   },
   "SkyShotgun_3": {
-   "name": "SkyShotgun 3",
+   "name": "Prototype Shotgun",
    "description": "A shotgun made from Soralite Ingots.\nIt delivers overwhelming firepower at close range, and its special magazine also provides high sustained combat capability.",
    "category": "Weapon",
    "subcategory": "WeaponShotgun",
@@ -21793,10 +22084,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 3074410,
-   "icon": "SkyShotgun"
+   "icon": "SkyShotgun",
+   "nameFromBase": true
   },
   "SkyShotgun_4": {
-   "name": "SkyShotgun 4",
+   "name": "Prototype Shotgun",
    "description": "A shotgun made from Soralite Ingots.\nIt delivers overwhelming firepower at close range, and its special magazine also provides high sustained combat capability.",
    "category": "Weapon",
    "subcategory": "WeaponShotgun",
@@ -21805,10 +22097,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 3533570,
-   "icon": "SkyShotgun"
+   "icon": "SkyShotgun",
+   "nameFromBase": true
   },
   "SkyShotgun_5": {
-   "name": "SkyShotgun 5",
+   "name": "Prototype Shotgun",
    "description": "A shotgun made from Soralite Ingots.\nIt delivers overwhelming firepower at close range, and its special magazine also provides high sustained combat capability.",
    "category": "Weapon",
    "subcategory": "WeaponShotgun",
@@ -21817,10 +22110,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 4311000,
-   "icon": "SkyShotgun"
+   "icon": "SkyShotgun",
+   "nameFromBase": true
   },
   "SkySubmachineGun_2": {
-   "name": "SkySubmachineGun 2",
+   "name": "Combat SMG",
    "description": "A submachine gun made from Soralite Ingots.\nIts improved magazine and ammunition enhance its suppression power.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -21829,10 +22123,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 2119420,
-   "icon": "SkySubmachineGun"
+   "icon": "SkySubmachineGun",
+   "nameFromBase": true
   },
   "SkySubmachineGun_3": {
-   "name": "SkySubmachineGun 3",
+   "name": "Combat SMG",
    "description": "A submachine gun made from Soralite Ingots.\nIts improved magazine and ammunition enhance its suppression power.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -21841,10 +22136,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 2548850,
-   "icon": "SkySubmachineGun"
+   "icon": "SkySubmachineGun",
+   "nameFromBase": true
   },
   "SkySubmachineGun_4": {
-   "name": "SkySubmachineGun 4",
+   "name": "Combat SMG",
    "description": "A submachine gun made from Soralite Ingots.\nIts improved magazine and ammunition enhance its suppression power.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -21853,10 +22149,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 2968630,
-   "icon": "SkySubmachineGun"
+   "icon": "SkySubmachineGun",
+   "nameFromBase": true
   },
   "SkySubmachineGun_5": {
-   "name": "SkySubmachineGun 5",
+   "name": "Combat SMG",
    "description": "A submachine gun made from Soralite Ingots.\nIts improved magazine and ammunition enhance its suppression power.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -21865,7 +22162,8 @@
    "maxStack": 1,
    "weight": 0,
    "price": 3398060,
-   "icon": "SkySubmachineGun"
+   "icon": "SkySubmachineGun",
+   "nameFromBase": true
   },
   "Spear_ForestBoss_5": {
    "name": "Spear ForestBoss 5",
@@ -21940,7 +22238,7 @@
    "icon": "ElecBaton"
   },
   "SubmachineGun_2": {
-   "name": "SubmachineGun 2",
+   "name": "SMG",
    "description": "A submachine gun with exceptional rate of fire. \nIt’s easy to handle and effective in close-range combat.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -21949,10 +22247,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 37060,
-   "icon": "SubmachineGun"
+   "icon": "SubmachineGun",
+   "nameFromBase": true
   },
   "SubmachineGun_3": {
-   "name": "SubmachineGun 3",
+   "name": "SMG",
    "description": "A submachine gun with exceptional rate of fire. \nIt’s easy to handle and effective in close-range combat.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -21961,10 +22260,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 46030,
-   "icon": "SubmachineGun"
+   "icon": "SubmachineGun",
+   "nameFromBase": true
   },
   "SubmachineGun_4": {
-   "name": "SubmachineGun 4",
+   "name": "SMG",
    "description": "A submachine gun with exceptional rate of fire. \nIt’s easy to handle and effective in close-range combat.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -21973,10 +22273,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 53710,
-   "icon": "SubmachineGun"
+   "icon": "SubmachineGun",
+   "nameFromBase": true
   },
   "SubmachineGun_5": {
-   "name": "SubmachineGun 5",
+   "name": "SMG",
    "description": "A submachine gun with exceptional rate of fire. \nIt’s easy to handle and effective in close-range combat.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -21985,7 +22286,8 @@
    "maxStack": 1,
    "weight": 0,
    "price": 63550,
-   "icon": "SubmachineGun"
+   "icon": "SubmachineGun",
+   "nameFromBase": true
   },
   "Sword": {
    "name": "Sword",
@@ -22000,7 +22302,7 @@
    "icon": "Sword"
   },
   "Sword_2": {
-   "name": "Sword 2",
+   "name": "Sword",
    "description": "<itemName id=|Sword|/> for close-range combat.\nThe blade is extremely sharp! Mightier than a pen, for sure.\nRequires <mapObjectName id=|WeaponFactory_Dirty_01|/> to craft.",
    "category": "Weapon",
    "subcategory": "WeaponMelee",
@@ -22009,10 +22311,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 11640,
-   "icon": "Sword"
+   "icon": "Sword",
+   "nameFromBase": true
   },
   "Sword_3": {
-   "name": "Sword 3",
+   "name": "Sword",
    "description": "<itemName id=|Sword|/> for close-range combat.\nThe blade is extremely sharp! Mightier than a pen, for sure.\nRequires <mapObjectName id=|WeaponFactory_Dirty_01|/> to craft.",
    "category": "Weapon",
    "subcategory": "WeaponMelee",
@@ -22021,10 +22324,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 14330,
-   "icon": "Sword"
+   "icon": "Sword",
+   "nameFromBase": true
   },
   "Sword_4": {
-   "name": "Sword 4",
+   "name": "Sword",
    "description": "<itemName id=|Sword|/> for close-range combat.\nThe blade is extremely sharp! Mightier than a pen, for sure.\nRequires <mapObjectName id=|WeaponFactory_Dirty_01|/> to craft.",
    "category": "Weapon",
    "subcategory": "WeaponMelee",
@@ -22033,10 +22337,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 17930,
-   "icon": "Sword"
+   "icon": "Sword",
+   "nameFromBase": true
   },
   "Sword_5": {
-   "name": "Sword 5",
+   "name": "Sword",
    "description": "<itemName id=|Sword|/> for close-range combat.\nThe blade is extremely sharp! Mightier than a pen, for sure.\nRequires <mapObjectName id=|WeaponFactory_Dirty_01|/> to craft.",
    "category": "Weapon",
    "subcategory": "WeaponMelee",
@@ -22045,7 +22350,8 @@
    "maxStack": 1,
    "weight": 0,
    "price": 21820,
-   "icon": "Sword"
+   "icon": "Sword",
+   "nameFromBase": true
   },
   "SkyGrenadeLauncher": {
    "name": "Tactical Grenade Launcher",
@@ -22120,7 +22426,7 @@
    "icon": "FragGrenade_Water"
   },
   "WidePenetrateShotgun_2": {
-   "name": "WidePenetrateShotgun 2",
+   "name": "Beam Scatter",
    "description": "A specialized beam weapon for close-range combat.\nIt fires compressed energy in a wide, scattering blast.",
    "category": "Weapon",
    "subcategory": "WeaponShotgun",
@@ -22129,10 +22435,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 3584930,
-   "icon": "WidePenetrateShotgun"
+   "icon": "WidePenetrateShotgun",
+   "nameFromBase": true
   },
   "WidePenetrateShotgun_3": {
-   "name": "WidePenetrateShotgun 3",
+   "name": "Beam Scatter",
    "description": "A specialized beam weapon for close-range combat.\nIt fires compressed energy in a wide, scattering blast.",
    "category": "Weapon",
    "subcategory": "WeaponShotgun",
@@ -22141,10 +22448,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 4257100,
-   "icon": "WidePenetrateShotgun"
+   "icon": "WidePenetrateShotgun",
+   "nameFromBase": true
   },
   "WidePenetrateShotgun_4": {
-   "name": "WidePenetrateShotgun 4",
+   "name": "Beam Scatter",
    "description": "A specialized beam weapon for close-range combat.\nIt fires compressed energy in a wide, scattering blast.",
    "category": "Weapon",
    "subcategory": "WeaponShotgun",
@@ -22153,10 +22461,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 4901180,
-   "icon": "WidePenetrateShotgun"
+   "icon": "WidePenetrateShotgun",
+   "nameFromBase": true
   },
   "WidePenetrateShotgun_5": {
-   "name": "WidePenetrateShotgun 5",
+   "name": "Beam Scatter",
    "description": "A specialized beam weapon for close-range combat.\nIt fires compressed energy in a wide, scattering blast.",
    "category": "Weapon",
    "subcategory": "WeaponShotgun",
@@ -22165,7 +22474,8 @@
    "maxStack": 1,
    "weight": 0,
    "price": 5879280,
-   "icon": "WidePenetrateShotgun"
+   "icon": "WidePenetrateShotgun",
+   "nameFromBase": true
   },
   "Bat": {
    "name": "Wooden Club",
@@ -22180,7 +22490,7 @@
    "icon": "Bat"
   },
   "YakushimaBlade002_2": {
-   "name": "YakushimaBlade002 2",
+   "name": "Terra Blade",
    "description": "[Tides of Terraria] \nThis curious sword releases vibrant green shockwaves with each strike, allowing you to hit enemies from afar despite being a melee weapon.",
    "category": "Weapon",
    "subcategory": "WeaponMelee",
@@ -22189,10 +22499,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 66600,
-   "icon": "YakushimaBlade002"
+   "icon": "YakushimaBlade002",
+   "nameFromBase": true
   },
   "YakushimaBlade002_3": {
-   "name": "YakushimaBlade002 3",
+   "name": "Terra Blade",
    "description": "[Tides of Terraria] \nThis curious sword releases vibrant green shockwaves with each strike, allowing you to hit enemies from afar despite being a melee weapon.",
    "category": "Weapon",
    "subcategory": "WeaponMelee",
@@ -22201,10 +22512,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 133200,
-   "icon": "YakushimaBlade002"
+   "icon": "YakushimaBlade002",
+   "nameFromBase": true
   },
   "YakushimaBlade002_4": {
-   "name": "YakushimaBlade002 4",
+   "name": "Terra Blade",
    "description": "[Tides of Terraria] \nThis curious sword releases vibrant green shockwaves with each strike, allowing you to hit enemies from afar despite being a melee weapon.",
    "category": "Weapon",
    "subcategory": "WeaponMelee",
@@ -22213,10 +22525,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 266400,
-   "icon": "YakushimaBlade002"
+   "icon": "YakushimaBlade002",
+   "nameFromBase": true
   },
   "YakushimaBlade002_5": {
-   "name": "YakushimaBlade002 5",
+   "name": "Terra Blade",
    "description": "[Tides of Terraria] \nThis curious sword releases vibrant green shockwaves with each strike, allowing you to hit enemies from afar despite being a melee weapon.",
    "category": "Weapon",
    "subcategory": "WeaponMelee",
@@ -22225,10 +22538,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 532800,
-   "icon": "YakushimaBlade002"
+   "icon": "YakushimaBlade002",
+   "nameFromBase": true
   },
   "YakushimaBlade003_2": {
-   "name": "YakushimaBlade003 2",
+   "name": "Terraprisma",
    "description": "[Tides of Terraria] \nA mystical sword with a rainbow-colored blade. \nWielding it lets you summon up to nine blessed swords to fight alongside you.",
    "category": "Weapon",
    "subcategory": "WeaponMelee",
@@ -22237,10 +22551,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 72600,
-   "icon": "YakushimaBlade003"
+   "icon": "YakushimaBlade003",
+   "nameFromBase": true
   },
   "YakushimaBlade003_3": {
-   "name": "YakushimaBlade003 3",
+   "name": "Terraprisma",
    "description": "[Tides of Terraria] \nA mystical sword with a rainbow-colored blade. \nWielding it lets you summon up to nine blessed swords to fight alongside you.",
    "category": "Weapon",
    "subcategory": "WeaponMelee",
@@ -22249,10 +22564,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 141600,
-   "icon": "YakushimaBlade003"
+   "icon": "YakushimaBlade003",
+   "nameFromBase": true
   },
   "YakushimaBlade003_4": {
-   "name": "YakushimaBlade003 4",
+   "name": "Terraprisma",
    "description": "[Tides of Terraria] \nA mystical sword with a rainbow-colored blade. \nWielding it lets you summon up to nine blessed swords to fight alongside you.",
    "category": "Weapon",
    "subcategory": "WeaponMelee",
@@ -22261,10 +22577,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 278400,
-   "icon": "YakushimaBlade003"
+   "icon": "YakushimaBlade003",
+   "nameFromBase": true
   },
   "YakushimaBlade003_5": {
-   "name": "YakushimaBlade003 5",
+   "name": "Terraprisma",
    "description": "[Tides of Terraria] \nA mystical sword with a rainbow-colored blade. \nWielding it lets you summon up to nine blessed swords to fight alongside you.",
    "category": "Weapon",
    "subcategory": "WeaponMelee",
@@ -22273,10 +22590,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 550800,
-   "icon": "YakushimaBlade003"
+   "icon": "YakushimaBlade003",
+   "nameFromBase": true
   },
   "YakushimaBlade004_2": {
-   "name": "YakushimaBlade004 2",
+   "name": "Excalibur",
    "description": "[Tides of Terraria] \nA sacred sword that gleams with golden light.\nSwinging it unleashes shockwaves around you.",
    "category": "Weapon",
    "subcategory": "WeaponMelee",
@@ -22285,10 +22603,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 16200,
-   "icon": "YakushimaBlade004"
+   "icon": "YakushimaBlade004",
+   "nameFromBase": true
   },
   "YakushimaBlade004_3": {
-   "name": "YakushimaBlade004 3",
+   "name": "Excalibur",
    "description": "[Tides of Terraria] \nA sacred sword that gleams with golden light.\nSwinging it unleashes shockwaves around you.",
    "category": "Weapon",
    "subcategory": "WeaponMelee",
@@ -22297,10 +22616,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 32400,
-   "icon": "YakushimaBlade004"
+   "icon": "YakushimaBlade004",
+   "nameFromBase": true
   },
   "YakushimaBlade004_4": {
-   "name": "YakushimaBlade004 4",
+   "name": "Excalibur",
    "description": "[Tides of Terraria] \nA sacred sword that gleams with golden light.\nSwinging it unleashes shockwaves around you.",
    "category": "Weapon",
    "subcategory": "WeaponMelee",
@@ -22309,10 +22629,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 64800,
-   "icon": "YakushimaBlade004"
+   "icon": "YakushimaBlade004",
+   "nameFromBase": true
   },
   "YakushimaBlade004_5": {
-   "name": "YakushimaBlade004 5",
+   "name": "Excalibur",
    "description": "[Tides of Terraria] \nA sacred sword that gleams with golden light.\nSwinging it unleashes shockwaves around you.",
    "category": "Weapon",
    "subcategory": "WeaponMelee",
@@ -22321,10 +22642,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 129600,
-   "icon": "YakushimaBlade004"
+   "icon": "YakushimaBlade004",
+   "nameFromBase": true
   },
   "YakushimaGun001_2": {
-   "name": "YakushimaGun001 2",
+   "name": "Vortex Beater",
    "description": "[Tides of Terraria]\nA powerful gun fueled by unknown energy.\nFires homing missiles at regular intervals that track enemies and explode on impact.\nHas a 66% chance to not consume ammo when firing.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -22333,10 +22655,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 70200,
-   "icon": "YakushimaGun001"
+   "icon": "YakushimaGun001",
+   "nameFromBase": true
   },
   "YakushimaGun001_3": {
-   "name": "YakushimaGun001 3",
+   "name": "Vortex Beater",
    "description": "[Tides of Terraria]\nA powerful gun fueled by unknown energy.\nFires homing missiles at regular intervals that track enemies and explode on impact.\nHas a 66% chance to not consume ammo when firing.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -22345,10 +22668,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 138600,
-   "icon": "YakushimaGun001"
+   "icon": "YakushimaGun001",
+   "nameFromBase": true
   },
   "YakushimaGun001_4": {
-   "name": "YakushimaGun001 4",
+   "name": "Vortex Beater",
    "description": "[Tides of Terraria]\nA powerful gun fueled by unknown energy.\nFires homing missiles at regular intervals that track enemies and explode on impact.\nHas a 66% chance to not consume ammo when firing.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -22357,10 +22681,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 273600,
-   "icon": "YakushimaGun001"
+   "icon": "YakushimaGun001",
+   "nameFromBase": true
   },
   "YakushimaGun001_5": {
-   "name": "YakushimaGun001 5",
+   "name": "Vortex Beater",
    "description": "[Tides of Terraria]\nA powerful gun fueled by unknown energy.\nFires homing missiles at regular intervals that track enemies and explode on impact.\nHas a 66% chance to not consume ammo when firing.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -22369,10 +22694,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 541800,
-   "icon": "YakushimaGun001"
+   "icon": "YakushimaGun001",
+   "nameFromBase": true
   },
   "YakushimaLantern001_2": {
-   "name": "YakushimaLantern001 2",
+   "name": "Nightglow",
    "description": "[Tides of Terraria] \nA lantern that radiates a rainbow-hued light. \nHolding it aloft releases homing light projectiles that strike enemies multiple times.",
    "category": "Weapon",
    "subcategory": "WeaponMelee",
@@ -22381,10 +22707,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 72600,
-   "icon": "YakushimaLantern001"
+   "icon": "YakushimaLantern001",
+   "nameFromBase": true
   },
   "YakushimaLantern001_3": {
-   "name": "YakushimaLantern001 3",
+   "name": "Nightglow",
    "description": "[Tides of Terraria] \nA lantern that radiates a rainbow-hued light. \nHolding it aloft releases homing light projectiles that strike enemies multiple times.",
    "category": "Weapon",
    "subcategory": "WeaponMelee",
@@ -22393,10 +22720,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 141600,
-   "icon": "YakushimaLantern001"
+   "icon": "YakushimaLantern001",
+   "nameFromBase": true
   },
   "YakushimaLantern001_4": {
-   "name": "YakushimaLantern001 4",
+   "name": "Nightglow",
    "description": "[Tides of Terraria] \nA lantern that radiates a rainbow-hued light. \nHolding it aloft releases homing light projectiles that strike enemies multiple times.",
    "category": "Weapon",
    "subcategory": "WeaponMelee",
@@ -22405,10 +22733,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 278400,
-   "icon": "YakushimaLantern001"
+   "icon": "YakushimaLantern001",
+   "nameFromBase": true
   },
   "YakushimaLantern001_5": {
-   "name": "YakushimaLantern001 5",
+   "name": "Nightglow",
    "description": "[Tides of Terraria] \nA lantern that radiates a rainbow-hued light. \nHolding it aloft releases homing light projectiles that strike enemies multiple times.",
    "category": "Weapon",
    "subcategory": "WeaponMelee",
@@ -22417,10 +22746,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 550800,
-   "icon": "YakushimaLantern001"
+   "icon": "YakushimaLantern001",
+   "nameFromBase": true
   },
   "WeakerBow_2": {
-   "name": "en Text",
+   "name": "Old Bow",
    "description": "en Text",
    "category": "Weapon",
    "subcategory": "WeaponBow",
@@ -22429,10 +22759,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 790,
-   "icon": "Bow"
+   "icon": "Bow",
+   "nameFromBase": true
   },
   "WeakerBow_3": {
-   "name": "en Text",
+   "name": "Old Bow",
    "description": "en Text",
    "category": "Weapon",
    "subcategory": "WeaponBow",
@@ -22441,10 +22772,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 960,
-   "icon": "Bow"
+   "icon": "Bow",
+   "nameFromBase": true
   },
   "WeakerBow_4": {
-   "name": "en Text",
+   "name": "Old Bow",
    "description": "en Text",
    "category": "Weapon",
    "subcategory": "WeaponBow",
@@ -22453,10 +22785,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 1110,
-   "icon": "Bow"
+   "icon": "Bow",
+   "nameFromBase": true
   },
   "WeakerBow_5": {
-   "name": "en Text",
+   "name": "Old Bow",
    "description": "en Text",
    "category": "Weapon",
    "subcategory": "WeaponBow",
@@ -22465,10 +22798,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 2500,
-   "icon": "Bow"
+   "icon": "Bow",
+   "nameFromBase": true
   },
   "BowGun_2": {
-   "name": "en Text",
+   "name": "Crossbow",
    "description": "en Text",
    "category": "Weapon",
    "subcategory": "WeaponCrossbow",
@@ -22477,10 +22811,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 5210,
-   "icon": "BowGun"
+   "icon": "BowGun",
+   "nameFromBase": true
   },
   "BowGun_3": {
-   "name": "en Text",
+   "name": "Crossbow",
    "description": "en Text",
    "category": "Weapon",
    "subcategory": "WeaponCrossbow",
@@ -22489,10 +22824,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 6480,
-   "icon": "BowGun"
+   "icon": "BowGun",
+   "nameFromBase": true
   },
   "BowGun_4": {
-   "name": "en Text",
+   "name": "Crossbow",
    "description": "en Text",
    "category": "Weapon",
    "subcategory": "WeaponCrossbow",
@@ -22501,10 +22837,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 7440,
-   "icon": "BowGun"
+   "icon": "BowGun",
+   "nameFromBase": true
   },
   "BowGun_5": {
-   "name": "en Text",
+   "name": "Crossbow",
    "description": "en Text",
    "category": "Weapon",
    "subcategory": "WeaponCrossbow",
@@ -22513,10 +22850,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 9910,
-   "icon": "BowGun"
+   "icon": "BowGun",
+   "nameFromBase": true
   },
   "AssaultRifle_Default2": {
-   "name": "en Text",
+   "name": "Assault Rifle",
    "description": "en Text",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -22525,10 +22863,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 72050,
-   "icon": "AssaultRifle_Default"
+   "icon": "AssaultRifle_Default",
+   "nameFromBase": true
   },
   "AssaultRifle_Default3": {
-   "name": "en Text",
+   "name": "Assault Rifle",
    "description": "en Text",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -22537,10 +22876,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 88800,
-   "icon": "AssaultRifle_Default"
+   "icon": "AssaultRifle_Default",
+   "nameFromBase": true
   },
   "AssaultRifle_Default4": {
-   "name": "en Text",
+   "name": "Assault Rifle",
    "description": "en Text",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -22549,10 +22889,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 103250,
-   "icon": "AssaultRifle_Default"
+   "icon": "AssaultRifle_Default",
+   "nameFromBase": true
   },
   "AssaultRifle_Default5": {
-   "name": "en Text",
+   "name": "Assault Rifle",
    "description": "en Text",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
@@ -22561,10 +22902,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 120000,
-   "icon": "AssaultRifle_Default"
+   "icon": "AssaultRifle_Default",
+   "nameFromBase": true
   },
   "PumpActionShotgun_2": {
-   "name": "en Text",
+   "name": "Pump-Action Shotgun",
    "description": "en Text",
    "category": "Weapon",
    "subcategory": "WeaponShotgun",
@@ -22573,10 +22915,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 77660,
-   "icon": "ShotGun_Default"
+   "icon": "ShotGun_Default",
+   "nameFromBase": true
   },
   "PumpActionShotgun_3": {
-   "name": "en Text",
+   "name": "Pump-Action Shotgun",
    "description": "en Text",
    "category": "Weapon",
    "subcategory": "WeaponShotgun",
@@ -22585,10 +22928,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 95280,
-   "icon": "ShotGun_Default"
+   "icon": "ShotGun_Default",
+   "nameFromBase": true
   },
   "PumpActionShotgun_4": {
-   "name": "en Text",
+   "name": "Pump-Action Shotgun",
    "description": "en Text",
    "category": "Weapon",
    "subcategory": "WeaponShotgun",
@@ -22597,10 +22941,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 111020,
-   "icon": "ShotGun_Default"
+   "icon": "ShotGun_Default",
+   "nameFromBase": true
   },
   "PumpActionShotgun_5": {
-   "name": "en Text",
+   "name": "Pump-Action Shotgun",
    "description": "en Text",
    "category": "Weapon",
    "subcategory": "WeaponShotgun",
@@ -22609,10 +22954,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 128640,
-   "icon": "ShotGun_Default"
+   "icon": "ShotGun_Default",
+   "nameFromBase": true
   },
   "HandGun_Default_2": {
-   "name": "en Text",
+   "name": "Handgun",
    "description": "en Text",
    "category": "Weapon",
    "subcategory": "WeaponHandgun",
@@ -22621,10 +22967,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 24340,
-   "icon": "HandGun_Default"
+   "icon": "HandGun_Default",
+   "nameFromBase": true
   },
   "HandGun_Default_3": {
-   "name": "en Text",
+   "name": "Handgun",
    "description": "en Text",
    "category": "Weapon",
    "subcategory": "WeaponHandgun",
@@ -22633,10 +22980,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 29520,
-   "icon": "HandGun_Default"
+   "icon": "HandGun_Default",
+   "nameFromBase": true
   },
   "HandGun_Default_4": {
-   "name": "en Text",
+   "name": "Handgun",
    "description": "en Text",
    "category": "Weapon",
    "subcategory": "WeaponHandgun",
@@ -22645,10 +22993,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 35620,
-   "icon": "HandGun_Default"
+   "icon": "HandGun_Default",
+   "nameFromBase": true
   },
   "HandGun_Default_5": {
-   "name": "en Text",
+   "name": "Handgun",
    "description": "en Text",
    "category": "Weapon",
    "subcategory": "WeaponHandgun",
@@ -22657,10 +23006,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 42000,
-   "icon": "HandGun_Default"
+   "icon": "HandGun_Default",
+   "nameFromBase": true
   },
   "Launcher_Default_2": {
-   "name": "en Text",
+   "name": "Rocket Launcher",
    "description": "en Text",
    "category": "Weapon",
    "subcategory": "WeaponRocketLauncher",
@@ -22669,10 +23019,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 1077940,
-   "icon": "Launcher_Default"
+   "icon": "Launcher_Default",
+   "nameFromBase": true
   },
   "Launcher_Default_3": {
-   "name": "en Text",
+   "name": "Rocket Launcher",
    "description": "en Text",
    "category": "Weapon",
    "subcategory": "WeaponRocketLauncher",
@@ -22681,10 +23032,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 1313140,
-   "icon": "Launcher_Default"
+   "icon": "Launcher_Default",
+   "nameFromBase": true
   },
   "Launcher_Default_4": {
-   "name": "en Text",
+   "name": "Rocket Launcher",
    "description": "en Text",
    "category": "Weapon",
    "subcategory": "WeaponRocketLauncher",
@@ -22693,10 +23045,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 1520110,
-   "icon": "Launcher_Default"
+   "icon": "Launcher_Default",
+   "nameFromBase": true
   },
   "Launcher_Default_5": {
-   "name": "en Text",
+   "name": "Rocket Launcher",
    "description": "en Text",
    "category": "Weapon",
    "subcategory": "WeaponRocketLauncher",
@@ -22705,7 +23058,8 @@
    "maxStack": 1,
    "weight": 0,
    "price": 1756320,
-   "icon": "Launcher_Default"
+   "icon": "Launcher_Default",
+   "nameFromBase": true
   }
  }
 }

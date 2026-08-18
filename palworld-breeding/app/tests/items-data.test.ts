@@ -65,6 +65,81 @@ describe('the backbone is what the fetch validated', () => {
   });
 });
 
+describe('names are player-facing, never upstream artifacts', () => {
+  it('no "en Text" parse artifact anywhere', () => {
+    const bad = items.filter(([, it_]) => it_.name === 'en Text').map(([id]) => id);
+    expect(bad, 'the upstream name-table artifact reached the data').toEqual([]);
+  });
+
+  it('no unlocalized "{BaseId} N" names', () => {
+    const bad = items.filter(([id, it_]) =>
+      /^[A-Za-z0-9]+ \d$/.test(it_.name) && it_.name.split(' ')[0] !== ''
+      && id.includes(it_.name.split(' ')[0])).map(([id]) => id);
+    expect(bad, 'unlocalized rarity-variant names reached the data').toEqual([]);
+  });
+
+  it('the derived variants say so, and inherited exactly their family name', () => {
+    const derived = items.filter(([, it_]) =>
+      (it_ as unknown as { nameFromBase?: boolean }).nameFromBase);
+    expect(derived.length).toBe(354);
+    // canary: the Uncommon Assault Rifle wears the family name
+    const ar2 = payload.items['AssaultRifle_Default2'] as unknown as
+      { name: string; nameFromBase?: boolean };
+    expect(ar2.name).toBe('Assault Rifle');
+    expect(ar2.nameFromBase).toBe(true);
+  });
+});
+
+describe('the stats layer is exact-identity, validated', () => {
+  const statsPayload = JSON.parse(readFileSync(
+    join(__dirname, '../public/data/item_stats_1_0.json'), 'utf8'),
+  ) as {
+    count: number; refused: string[]; stillMissing: string[];
+    stats: Record<string, Record<string, number | string[]>>;
+  };
+
+  it('every stat row belongs to a real item, and nothing was refused', () => {
+    for (const id of Object.keys(statsPayload.stats)) {
+      expect(payload.items[id], `${id} has stats but no backbone row`).toBeTruthy();
+    }
+    expect(statsPayload.refused).toEqual([]);
+    // the six upstream-absent pages are known and named, not silent
+    expect(statsPayload.stillMissing.length).toBe(6);
+  });
+
+  it('coverage floors hold per category', () => {
+    const cat = (id: string) => payload.items[id].category;
+    const ids = Object.keys(statsPayload.stats);
+    expect(ids.filter((i) => cat(i) === 'Weapon').length).toBeGreaterThan(280);
+    expect(ids.filter((i) => cat(i) === 'Armor').length).toBeGreaterThan(250);
+  });
+
+  it('the canary row: Assault Rifle reads exactly as fetched 2026-08-18', () => {
+    expect(statsPayload.stats['AssaultRifle_Default1']).toMatchObject({
+      atk: 320, durability: 3000, magazine: 20,
+    });
+  });
+
+  it('every numeric stat is positive', () => {
+    for (const [id, row] of Object.entries(statsPayload.stats)) {
+      for (const [k, v] of Object.entries(row)) {
+        if (typeof v === 'number') expect(v, `${id}.${k}`).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it('the stats copies move together too', () => {
+    const canonical = readFileSync(
+      join(__dirname, '../../data/item_stats_1_0.json'), 'utf8');
+    const mobile = readFileSync(
+      join(__dirname, '../../mobile/src/data/item_stats_1_0.json'), 'utf8');
+    const app = readFileSync(
+      join(__dirname, '../public/data/item_stats_1_0.json'), 'utf8');
+    expect(mobile === canonical, 'mobile stats copy diverged').toBe(true);
+    expect(app === canonical, 'app stats copy diverged').toBe(true);
+  });
+});
+
 describe('the three copies move together', () => {
   it('canonical, mobile and app copies are byte-identical', () => {
     const canonical = readFileSync(

@@ -61,6 +61,45 @@ def main() -> None:
             "icon": rec.get("icon"),
         }
 
+    # The upstream name table is BROKEN for rarity-variant rows: 44 read
+    # "en Text" (a parse artifact) and ~310 read "{BaseId} N" (unlocalized).
+    # The game itself shows every rarity tier under the FAMILY's name,
+    # distinguished by rarity colour — paldb presents them the same way —
+    # so a variant INHERITS its base row's clean name and is flagged
+    # `nameFromBase`. This is derivation from the game's own presentation,
+    # not invention; anything the rule cannot resolve is reported loudly.
+    import re as _re
+
+    def broken(name: str, iid: str) -> bool:
+        if name == "en Text":
+            return True
+        m = _re.fullmatch(r"([A-Za-z0-9]+) \d", name)
+        return bool(m and m.group(1) in iid)
+
+    unresolved = []
+    derived = 0
+    for iid, it in items.items():
+        if not broken(it["name"], iid):
+            continue
+        base_id = _re.sub(r"_?(Default)?\d+$", "", iid)
+        cand = None
+        for c in (base_id, base_id + "_Default1", base_id + "_1", base_id + "1"):
+            hit = items.get(c)
+            if hit and not broken(hit["name"], c):
+                cand = hit
+                break
+        if cand is None:
+            unresolved.append(iid)
+            continue
+        it["name"] = cand["name"]
+        it["nameFromBase"] = True
+        if not it["description"] and cand["description"]:
+            it["description"] = cand["description"]
+            it["descriptionFromBase"] = True
+        derived += 1
+    print(f"derived {derived} variant names from their families; "
+          f"{len(unresolved)} unresolved: {unresolved[:8]}")
+
     cats = {}
     for it in items.values():
         cats[it["category"]] = cats.get(it["category"], 0) + 1
