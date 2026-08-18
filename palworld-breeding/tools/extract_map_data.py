@@ -323,7 +323,58 @@ def build_pois() -> tuple[str, dict]:
     by_layer: dict[str, list] = defaultdict(list)
     stats = {"points": 0, "dropped_offmap": 0, "skipped_layers": set()}
 
+    # The open-sea audit (the CEO's "MAKE SURE EVERYTHING IS WHERE U SAY
+    # IT IS" round, 2026-08-18). Two independent witnesses per dropped row:
+    # the game's own texture paints OPEN WATER there (>42 m from any land
+    # pixel), AND the row sits at sea level or below (z < 20 m). Exempt:
+    # crude_oil (oil rigs stand in the ocean by design) and alpha_pals
+    # (audited 0.0 m against the official boss table; the real Sanctuary 1
+    # boss floats near its island's shore). A z-only underwater rule was
+    # tried and REJECTED: 598 paldium rows sit at z -20..-118 in painted
+    # RIVERS, where low z is the riverbed, not an error.
+    from PIL import Image
+    import numpy as np
+    _tex = np.asarray(Image.open(CACHE / "T_WorldMap_hi.png").convert("RGB"))
+    _r = _tex[..., 0].astype(np.int16)
+    _g = _tex[..., 1].astype(np.int16)
+    _b = _tex[..., 2].astype(np.int16)
+    _land = ~((_b > _g + 4) & (_g > _r + 6) & (_r < 150))
+    _H, _W = _land.shape
+
+    def open_sea_any_z(p) -> bool:
+        if p["mapId"] != "palpagos":
+            return False
+        u = (p["y"] - (-724400.0)) / 1448800.0
+        v = 1.0 - (p["x"] - (-1099400.0)) / 1448800.0
+        px, py = int(u * _W), int(v * _H)
+        if not (0 <= px < _W and 0 <= py < _H):
+            return False
+        for rad in (2, 4, 8, 16, 24):
+            y0, y1 = max(0, py - rad), min(_H, py + rad + 1)
+            x0, x1 = max(0, px - rad), min(_W, px + rad + 1)
+            if _land[y0:y1, x0:x1].any():
+                return False
+        return True
+
+    def open_sea(p) -> bool:
+        if p["mapId"] != "palpagos" or p["layerId"] in ("crude_oil", "alpha_pals"):
+            return False
+        if p["z"] >= 2000.0:
+            return False
+        u = (p["y"] - (-724400.0)) / 1448800.0
+        v = 1.0 - (p["x"] - (-1099400.0)) / 1448800.0
+        px, py = int(u * _W), int(v * _H)
+        if not (0 <= px < _W and 0 <= py < _H):
+            return False
+        for rad in (2, 4, 8, 16, 24):
+            y0, y1 = max(0, py - rad), min(_H, py + rad + 1)
+            x0, x1 = max(0, px - rad), min(_W, px + rad + 1)
+            if _land[y0:y1, x0:x1].any():
+                return False
+        return True
+
     dropped_sentinel = 0
+    dropped_sea = 0
     for p in pois:
         layer = p["layerId"]
         # THE ORIGIN-SENTINEL PILE ("iron ores in the ocean?? EVERYTHING
@@ -336,8 +387,15 @@ def build_pois() -> tuple[str, dict]:
         # the real Astral coast cliffs in the same radius sit at z 60-190 m
         # and are kept by the z guard. Nothing is moved - unplaced rows are
         # simply not drawn.
-        if (p["x"] ** 2 + p["y"] ** 2) < 40000.0 ** 2 and p["z"] < 2000.0:
+        near_origin = (p["x"] ** 2 + p["y"] ** 2) < 40000.0 ** 2
+        if near_origin and (p["z"] < 2000.0 or open_sea_any_z(p)):
+            # near the sentinel spot, EITHER witness condemns a row: sea
+            # level z, or hovering over painted open water (two "ore" rows
+            # sat 30 m above the sea 180 m from origin and beat the z guard)
             dropped_sentinel += 1
+            continue
+        if open_sea(p):
+            dropped_sea += 1
             continue
         if layer not in POI_LAYERS:
             if not layer.startswith("pal_"):  # per-species zones: we use atlas-data instead
@@ -412,6 +470,7 @@ def build_pois() -> tuple[str, dict]:
         by_layer[rlayer] = kept
     stats["merged_nodes"] = merged
     stats["dropped_sentinel"] = dropped_sentinel
+    stats["dropped_sea"] = dropped_sea
 
     # Vertical guidance for the hard-to-find smalls. Every poi carries its
     # altitude (Unreal cm, so /100 = metres — the same convention the
