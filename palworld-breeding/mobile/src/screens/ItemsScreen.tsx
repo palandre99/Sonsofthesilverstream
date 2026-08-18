@@ -16,7 +16,7 @@ import { Badge, Btn, Card, DataStamp, PageHead, SearchInput, s } from '../ui/kit
 import { Icon } from '../ui/Icon';
 import {
   familyOf, groupOf, idsInGroup, ITEM_GROUPS, ITEM_STATS, ITEMS,
-  kindWord, searchItems, sortItems, tierWord, type ItemSort,
+  kindsInGroup, kindWord, searchItems, sortItems, tierWord, type ItemSort,
 } from '../itemsData';
 
 /** Tier tints — presentation colours for the game's own tier words. */
@@ -121,7 +121,8 @@ function ItemDetail({ id, onClose }: { id: string; onClose: () => void }) {
           </Text></Card>
         )}
 
-        {(st || it.weight != null || it.price != null) && (
+        {(st || (it.weight ?? 0) > 0 || (it.price ?? 0) > 0
+          || (it.maxStack ?? 0) > 1) && (
           <Card style={{ marginTop: 10 }}>
             <Text style={s.h3}>The numbers</Text>
             <View style={{ marginTop: 6, gap: 3 }}>
@@ -134,7 +135,9 @@ function ItemDetail({ id, onClose }: { id: string; onClose: () => void }) {
               {st?.passives && st.passives.length > 0 && (
                 <Fact label="Wears the passive" value={st.passives.join(', ')} />
               )}
-              {it.weight != null && <Fact label="Weight" value={String(it.weight)} />}
+              {it.weight != null && it.weight > 0 && (
+                <Fact label="Weight" value={String(it.weight)} />
+              )}
               {it.price != null && it.price > 0 && (
                 <Fact label="Sells for" value={`${it.price} gold`} />
               )}
@@ -181,14 +184,27 @@ const Fact = ({ label, value }: { label: string; value: string }) => (
 export function ItemsScreen({ initialGroup = 'weapons' }: { initialGroup?: string }) {
   const [q, setQ] = useState('');
   const [group, setGroup] = useState(initialGroup);
+  const [kind, setKind] = useState<string | null>(null);
   const [sort, setSort] = useState<ItemSort>('power');
   const [open, setOpen] = useState<string | null>(null);
 
   const searching = q.trim().length > 0;
-  const ids = useMemo(
-    () => sortItems(searching ? searchItems(q) : idsInGroup(group), sort),
-    [q, group, sort, searching],
+  // every kind inside the current group — 2+ means the group has depth
+  // worth its own chip row ("many sub ones" — CEO 2026-08-18)
+  const kinds = useMemo(
+    () => (group === 'all' ? [] : kindsInGroup(group)),
+    [group],
   );
+  const ids = useMemo(() => {
+    let base = searching ? searchItems(q) : idsInGroup(group);
+    if (!searching && kind) base = base.filter((i) => kindWord(i) === kind);
+    return sortItems(base, sort);
+  }, [q, group, kind, sort, searching]);
+
+  const pickGroup = (g: string) => {
+    setGroup(g);
+    setKind(null);
+  };
 
   return (
     <View style={{ flex: 1, paddingHorizontal: 16, paddingTop: 10 }}>
@@ -211,7 +227,7 @@ export function ItemsScreen({ initialGroup = 'weapons' }: { initialGroup?: strin
           style={{ flexGrow: 0, marginBottom: 8 }}
           renderItem={({ item: g }) => (
             <Pressable
-              onPress={() => setGroup(g.id)}
+              onPress={() => pickGroup(g.id)}
               accessibilityRole="button"
               accessibilityLabel={`${g.label}${group === g.id ? ', showing now' : ''}`}
               style={{
@@ -225,6 +241,36 @@ export function ItemsScreen({ initialGroup = 'weapons' }: { initialGroup?: strin
               }}>{g.label} · {idsInGroup(g.id).length}</Text>
             </Pressable>
           )}
+        />
+      )}
+      {!searching && kinds.length >= 2 && (
+        <FlatList
+          horizontal showsHorizontalScrollIndicator={false}
+          data={[{ kind: null as string | null, count: idsInGroup(group).length },
+            ...kinds]}
+          keyExtractor={(k) => k.kind ?? '__all'}
+          style={{ flexGrow: 0, marginBottom: 8 }}
+          renderItem={({ item: k }) => {
+            const on = kind === k.kind;
+            const label = k.kind ?? `All ${groupOf(idsInGroup(group)[0]) ?? ''}`.trim();
+            return (
+              <Pressable
+                onPress={() => setKind(k.kind)}
+                accessibilityRole="button"
+                accessibilityLabel={`${label}${on ? ', showing now' : ''}`}
+                style={{
+                  backgroundColor: on ? T.accentSoft : T.surface,
+                  borderWidth: 1, borderColor: on ? T.accentSoft : T.line,
+                  borderRadius: 14, paddingHorizontal: 10, paddingVertical: 4,
+                  marginRight: 6,
+                }}>
+                <Text style={{
+                  color: on ? T.accentInk : T.muted,
+                  fontSize: 11.5, fontWeight: '700',
+                }}>{label} · {k.count}</Text>
+              </Pressable>
+            );
+          }}
         />
       )}
       {searching && (

@@ -195,6 +195,21 @@ export function kindWord(id: string): string {
     ?? groupOf(id) ?? 'Item';
 }
 
+/** The kinds inside a group, biggest first — the CEO's 2026-08-18 point:
+ * "Consumables are more than food, potions and remedy... many sub ones."
+ * Every group with 2+ kinds gets a sub-chip row so its depth is browsable,
+ * not buried. Counts are real, from the same partition the tests pin. */
+export function kindsInGroup(groupId: string): { kind: string; count: number }[] {
+  const tally = new Map<string, number>();
+  for (const id of idsInGroup(groupId)) {
+    const k = kindWord(id);
+    tally.set(k, (tally.get(k) ?? 0) + 1);
+  }
+  return [...tally.entries()]
+    .map(([kind, count]) => ({ kind, count }))
+    .sort((a, b) => b.count - a.count || a.kind.localeCompare(b.kind));
+}
+
 export type ItemSort = 'power' | 'name' | 'rarity';
 
 /** The strongest number an item carries — attack, else defense. */

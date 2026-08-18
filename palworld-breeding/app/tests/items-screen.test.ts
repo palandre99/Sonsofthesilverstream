@@ -7,7 +7,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import {
   familyOf, idsInGroup, ITEM_GROUPS, ITEM_STATS, ITEMS,
-  KIND_WORDS, kindWord, searchItems, sortItems, tierWord,
+  KIND_WORDS, kindsInGroup, kindWord, searchItems, sortItems, tierWord,
 } from '../../mobile/src/itemsData';
 
 describe('the groups cover the catalogue exactly once', () => {
@@ -37,6 +37,34 @@ describe('the groups cover the catalogue exactly once', () => {
 
   it("'all' is the whole catalogue in one list", () => {
     expect(idsInGroup('all').length).toBe(Object.keys(ITEMS).length);
+  });
+});
+
+describe("groups expose their depth — the CEO's 'many sub ones'", () => {
+  it('every group’s kind counts sum to the group exactly', () => {
+    for (const g of ITEM_GROUPS) {
+      const kinds = kindsInGroup(g.id);
+      const sum = kinds.reduce((a, k) => a + k.count, 0);
+      expect(sum, g.id).toBe(idsInGroup(g.id).length);
+    }
+  });
+
+  it('the grab-bag groups really are subdivided', () => {
+    const kindNames = (g: string) => kindsInGroup(g).map((k) => k.kind);
+    expect(kindsInGroup('consumables').length).toBeGreaterThanOrEqual(10);
+    expect(kindNames('consumables')).toContain('Treasure map');
+    expect(kindNames('consumables')).toContain('Pal awakening item');
+    expect(kindsInGroup('weapons').length).toBeGreaterThanOrEqual(10);
+    expect(kindNames('weapons')).toContain('Assault rifle');
+    expect(kindNames('materials')).toContain('Ingot');
+    expect(kindNames('food')).toContain('Cooked meat dish');
+    expect(kindNames('key')).toContain('Boss trophy');
+  });
+
+  it('single-kind groups get no redundant sub-row', () => {
+    expect(kindsInGroup('fruits').length).toBe(1);
+    expect(kindsInGroup('eggs').length).toBe(1);
+    expect(kindsInGroup('gear').length).toBe(1);
   });
 });
 
