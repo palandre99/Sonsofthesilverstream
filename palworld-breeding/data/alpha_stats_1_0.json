@@ -1,0 +1,3906 @@
+{
+ "source": "paldb.cc per-boss pages (raw DT_PalMonsterParameter row per variant), fetched 2026-08-18; validated per row: page CombiRank must equal our oracle-tested combi_rank or the row is dropped",
+ "fetched": 205,
+ "unparsed_lines": [],
+ "dropped": [
+  "Don't Touch! Jolthog: HTTP 404",
+  "Legendary Ocean King: HTTP 404"
+ ],
+ "bosses": {
+  "Aegidron": [
+   {
+    "title": "Guardian of Luminous Trails Aegidron",
+    "lv": 79,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "126",
+    "melee": "100",
+    "atk": "125",
+    "def": "140",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "30",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Anubis": [
+   {
+    "title": "Guardian of the Dark Sun Anubis",
+    "lv": 55,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "144",
+    "melee": "130",
+    "atk": "130",
+    "def": "100",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "480",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Arsox": [
+   {
+    "title": "Blazing Brute Arsox",
+    "lv": 15,
+    "size": "M",
+    "rarity": "7",
+    "hp": "102",
+    "melee": "100",
+    "atk": "95",
+    "def": "95",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2320",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Astegon": [
+   {
+    "title": "Draconic Monarch of Steel Astegon",
+    "lv": 55,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "120",
+    "melee": "100",
+    "atk": "125",
+    "def": "125",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "490",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Azurmane": [
+   {
+    "title": "Blue Lightning Steed Azurmane",
+    "lv": 57,
+    "size": "L",
+    "rarity": "8",
+    "hp": "156",
+    "melee": "100",
+    "atk": "120",
+    "def": "110",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "420",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Azurobe": [
+   {
+    "title": "Lady of the Lake Azurobe",
+    "lv": 40,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "132",
+    "melee": "70",
+    "atk": "100",
+    "def": "100",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1830",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Beakon": [
+   {
+    "title": "Wings of Thunderbolt Beakon",
+    "lv": 37,
+    "size": "L",
+    "rarity": "8",
+    "hp": "126",
+    "melee": "100",
+    "atk": "115",
+    "def": "80",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1690",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Blazamut": [
+   {
+    "title": "Cursed Tyrant Blazamut",
+    "lv": 52,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "120",
+    "melee": "150",
+    "atk": "125",
+    "def": "120",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "410",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Blazehowl": [
+   {
+    "title": "Crimson Goliath Blazehowl",
+    "lv": 30,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "126",
+    "melee": "100",
+    "atk": "110",
+    "def": "80",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1360",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Blazehowl Noct": [
+   {
+    "title": "Inferno Goliath Blazehowl Noct",
+    "lv": 36,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "126",
+    "melee": "100",
+    "atk": "115",
+    "def": "80",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1270",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Braloha": [
+   {
+    "title": "Ancient Bloombringer Braloha",
+    "lv": 47,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "156",
+    "melee": "100",
+    "atk": "95",
+    "def": "120",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1030",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Bristla": [
+   {
+    "title": "Thorny Rose Bristla",
+    "lv": 27,
+    "size": "S",
+    "rarity": "5",
+    "hp": "96",
+    "melee": "80",
+    "atk": "80",
+    "def": "80",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2690",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Broncherry": [
+   {
+    "title": "Winds of Spring Broncherry",
+    "lv": 23,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "144",
+    "melee": "80",
+    "atk": "90",
+    "def": "100",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1380",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Broncherry Aqua": [
+   {
+    "title": "Waves of Summer Broncherry Aqua",
+    "lv": 30,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "144",
+    "melee": "80",
+    "atk": "95",
+    "def": "100",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1080",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Bushi": [
+   {
+    "title": "Vagrant Warrior Bushi",
+    "lv": 25,
+    "size": "L",
+    "rarity": "8",
+    "hp": "96",
+    "melee": "100",
+    "atk": "125",
+    "def": "80",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1560",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Bushi Noct": [
+   {
+    "title": "Samurai of Darkness Bushi Noct",
+    "lv": 51,
+    "size": "L",
+    "rarity": "8",
+    "hp": "96",
+    "melee": "100",
+    "atk": "130",
+    "def": "80",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "840",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Caprity": [
+   {
+    "title": "Walking Farm Caprity",
+    "lv": 10,
+    "size": "M",
+    "rarity": "5",
+    "hp": "120",
+    "melee": "70",
+    "atk": "70",
+    "def": "90",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2610",
+    "hpRate": "1",
+    "recvRate": "0.48",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Caprity Noct": [
+   {
+    "title": "Tainted Farm Caprity Noct",
+    "lv": 23,
+    "size": "M",
+    "rarity": "5",
+    "hp": "120",
+    "melee": "100",
+    "atk": "75",
+    "def": "90",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1940",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Cattiva": [
+   {
+    "title": "The Cat's Pajamas Cattiva",
+    "lv": 10,
+    "size": "S",
+    "rarity": "5",
+    "hp": "84",
+    "melee": "70",
+    "atk": "70",
+    "def": "70",
+    "capture": "1.05",
+    "maleProb": "50",
+    "combi": "2760",
+    "hpRate": "1",
+    "recvRate": "0.48",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Cawgnito": [
+   {
+    "title": "Shadow-Cloaked Schemer Cawgnito",
+    "lv": 17,
+    "size": "M",
+    "rarity": "7",
+    "hp": "90",
+    "melee": "80",
+    "atk": "95",
+    "def": "80",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2370",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Celaray": [
+   {
+    "title": "Soaring Skyfish Celaray",
+    "lv": 10,
+    "size": "M",
+    "rarity": "5",
+    "hp": "96",
+    "melee": "100",
+    "atk": "70",
+    "def": "80",
+    "capture": "0.77",
+    "maleProb": "50",
+    "combi": "2740",
+    "hpRate": "1",
+    "recvRate": "0.48",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Celesdir": [
+   {
+    "title": "Beast of Salvation Celesdir",
+    "lv": 60,
+    "size": "L",
+    "rarity": "8",
+    "hp": "144",
+    "melee": "100",
+    "atk": "110",
+    "def": "100",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "570",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Celesdir Noct": [
+   {
+    "title": "Beast of Chaos Celesdir Noct",
+    "lv": 79,
+    "size": "L",
+    "rarity": "8",
+    "hp": "144",
+    "melee": "100",
+    "atk": "115",
+    "def": "100",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "270",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Chillet": [
+   {
+    "title": "Dancer on the Steppe Chillet",
+    "lv": 11,
+    "size": "L",
+    "rarity": "7",
+    "hp": "108",
+    "melee": "100",
+    "atk": "80",
+    "def": "80",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2330",
+    "hpRate": "1",
+    "recvRate": "0.48",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Chillet Ignis": [
+   {
+    "title": "Cherry Blossom Dancer Chillet Ignis",
+    "lv": 51,
+    "size": "L",
+    "rarity": "8",
+    "hp": "108",
+    "melee": "100",
+    "atk": "85",
+    "def": "80",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1950",
+    "hpRate": "1",
+    "recvRate": "0.48",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Cinnamoth": [
+   {
+    "title": "Butterfly Promenade Cinnamoth",
+    "lv": 27,
+    "size": "M",
+    "rarity": "5",
+    "hp": "84",
+    "melee": "100",
+    "atk": "80",
+    "def": "80",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2620",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Clovee": [
+   {
+    "title": "Dubiously Lucky Clovee",
+    "lv": 10,
+    "size": "S",
+    "rarity": "5",
+    "hp": "96",
+    "melee": "100",
+    "atk": "65",
+    "def": "65",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2970",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Cremis": [
+   {
+    "title": "Darling Furball Cremis",
+    "lv": 10,
+    "size": "M",
+    "rarity": "5",
+    "hp": "84",
+    "melee": "100",
+    "atk": "70",
+    "def": "75",
+    "capture": "0.91",
+    "maleProb": "50",
+    "combi": "2890",
+    "hpRate": "1",
+    "recvRate": "0.48",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Croajiro": [
+   {
+    "title": "Harakiri Master Croajiro",
+    "lv": 47,
+    "size": "S",
+    "rarity": "5",
+    "hp": "96",
+    "melee": "100",
+    "atk": "100",
+    "def": "85",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2600",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Cryolinx": [
+   {
+    "title": "Predator of Snowy Peaks Cryolinx",
+    "lv": 42,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "120",
+    "melee": "140",
+    "atk": "100",
+    "def": "110",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1040",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Cryolinx Terra": [
+   {
+    "title": "Predator of the Earth Cryolinx Terra",
+    "lv": 58,
+    "size": "L",
+    "rarity": "8",
+    "hp": "120",
+    "melee": "100",
+    "atk": "105",
+    "def": "110",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "470",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Daedream": [
+   {
+    "title": "Dream Eater Daedream",
+    "lv": 10,
+    "size": "S",
+    "rarity": "5",
+    "hp": "84",
+    "melee": "100",
+    "atk": "75",
+    "def": "60",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2910",
+    "hpRate": "1",
+    "recvRate": "0.48",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Dandilord": [
+   {
+    "title": "Bewitching Lurker Dandilord",
+    "lv": 78,
+    "size": "L",
+    "rarity": "8",
+    "hp": "150",
+    "melee": "100",
+    "atk": "135",
+    "def": "110",
+    "capture": "0.7",
+    "maleProb": "60",
+    "combi": "60",
+    "hpRate": "1",
+    "recvRate": "0.04",
+    "dealRate": "1.3",
+    "exp": "10"
+   }
+  ],
+  "Dazemu": [
+   {
+    "title": "Brilliant Steps Dazemu",
+    "lv": 47,
+    "size": "M",
+    "rarity": "8",
+    "hp": "114",
+    "melee": "100",
+    "atk": "90",
+    "def": "80",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2210",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Dazzi": [
+   {
+    "title": "Born of the Storm Dazzi",
+    "lv": 37,
+    "size": "L",
+    "rarity": "5",
+    "hp": "84",
+    "melee": "110",
+    "atk": "80",
+    "def": "70",
+    "capture": "0.7",
+    "maleProb": "20",
+    "combi": "2400",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Dazzi Noct": [
+   {
+    "title": "Born of the Thunderclouds Dazzi Noct",
+    "lv": 53,
+    "size": "S",
+    "rarity": "5",
+    "hp": "84",
+    "melee": "100",
+    "atk": "80",
+    "def": "75",
+    "capture": "0.7",
+    "maleProb": "20",
+    "combi": "1910",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Depresso": [
+   {
+    "title": "Several Sleepless Nights Later Depresso",
+    "lv": 10,
+    "size": "S",
+    "rarity": "5",
+    "hp": "84",
+    "melee": "70",
+    "atk": "70",
+    "def": "70",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "3000",
+    "hpRate": "1",
+    "recvRate": "0.48",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Digtoise": [
+   {
+    "title": "Drilling Machine Digtoise",
+    "lv": 17,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "96",
+    "melee": "80",
+    "atk": "95",
+    "def": "120",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1550",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Dinossom": [
+   {
+    "title": "Guardian of Blossoming Gardens Dinossom",
+    "lv": 10,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "132",
+    "melee": "90",
+    "atk": "85",
+    "def": "90",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2100",
+    "hpRate": "1",
+    "recvRate": "0.48",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Dinossom Lux": [
+   {
+    "title": "Guardian of Lightning Dinossom Lux",
+    "lv": 47,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "132",
+    "melee": "90",
+    "atk": "90",
+    "def": "90",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1890",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Direhowl": [
+   {
+    "title": "Hunter of the Steppe Direhowl",
+    "lv": 10,
+    "size": "M",
+    "rarity": "5",
+    "hp": "96",
+    "melee": "110",
+    "atk": "90",
+    "def": "75",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2680",
+    "hpRate": "1",
+    "recvRate": "0.48",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Dogen": [
+   {
+    "title": "State of Enlightenment Dogen",
+    "lv": 51,
+    "size": "M",
+    "rarity": "8",
+    "hp": "108",
+    "melee": "100",
+    "atk": "100",
+    "def": "100",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1460",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Dualith": [
+   {
+    "title": "Twinhearted Azure Construct Dualith",
+    "lv": 75,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "132",
+    "melee": "100",
+    "atk": "105",
+    "def": "125",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "510",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Dualith Noct": [
+   {
+    "title": "Twinhearted Violet Construct Dualith Noct",
+    "lv": 70,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "132",
+    "melee": "100",
+    "atk": "110",
+    "def": "125",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "250",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Dumud": [
+   {
+    "title": "Perpetual Procrastinator Dumud",
+    "lv": 14,
+    "size": "M",
+    "rarity": "7",
+    "hp": "120",
+    "melee": "100",
+    "atk": "70",
+    "def": "95",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2290",
+    "hpRate": "1",
+    "recvRate": "0.48",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Dynamoff": [
+   {
+    "title": "Buzzy Bundle Dynamoff",
+    "lv": 67,
+    "size": "L",
+    "rarity": "8",
+    "hp": "90",
+    "melee": "100",
+    "atk": "85",
+    "def": "80",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1400",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Eidrolon": [
+   {
+    "title": "Wings of Freedom Eidrolon",
+    "lv": 69,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "138",
+    "melee": "100",
+    "atk": "125",
+    "def": "120",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "300",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Eikthyrdeer": [
+   {
+    "title": "Protector of the Herd Eikthyrdeer",
+    "lv": 10,
+    "size": "L",
+    "rarity": "7",
+    "hp": "114",
+    "melee": "70",
+    "atk": "80",
+    "def": "80",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2710",
+    "hpRate": "1",
+    "recvRate": "0.48",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Elizabee": [
+   {
+    "title": "Empress of the Hive Elizabee",
+    "lv": 39,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "108",
+    "melee": "100",
+    "atk": "105",
+    "def": "100",
+    "capture": "0.7",
+    "maleProb": "10",
+    "combi": "1790",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Elphidran": [
+   {
+    "title": "Gentle Sky Dragon Elphidran",
+    "lv": 30,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "132",
+    "melee": "80",
+    "atk": "80",
+    "def": "90",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2280",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Eye of Cthulhu": [
+   {
+    "title": "Eye of Cthulhu",
+    "lv": 45,
+    "size": "L",
+    "rarity": "6",
+    "hp": "110",
+    "melee": "100",
+    "atk": "105",
+    "def": "95",
+    "capture": "1",
+    "maleProb": "50",
+    "combi": "3100",
+    "hpRate": "1",
+    "recvRate": "1",
+    "dealRate": "1",
+    "exp": "1"
+   }
+  ],
+  "Faleris Aqua": [
+   {
+    "title": "Sentinel of the Tides Faleris Aqua",
+    "lv": 56,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "132",
+    "melee": "100",
+    "atk": "110",
+    "def": "115",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "450",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Felbat": [
+   {
+    "title": "Gloom-Shrouded Bloodsucker Felbat",
+    "lv": 31,
+    "size": "M",
+    "rarity": "8",
+    "hp": "120",
+    "melee": "100",
+    "atk": "105",
+    "def": "110",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1570",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Fenglope": [
+   {
+    "title": "Drifting Cloud Fenglope",
+    "lv": 25,
+    "size": "L",
+    "rarity": "7",
+    "hp": "132",
+    "melee": "110",
+    "atk": "110",
+    "def": "90",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1960",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Fenglope Lux": [
+   {
+    "title": "Drifting Thundercloud Fenglope Lux",
+    "lv": 57,
+    "size": "L",
+    "rarity": "5",
+    "hp": "132",
+    "melee": "100",
+    "atk": "115",
+    "def": "90",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "900",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Finsider": [
+   {
+    "title": "Eyes from the Abyss Finsider",
+    "lv": 37,
+    "size": "M",
+    "rarity": "5",
+    "hp": "90",
+    "melee": "100",
+    "atk": "85",
+    "def": "80",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2450",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Flambelle": [
+   {
+    "title": "Molten Daughter Flambelle",
+    "lv": 36,
+    "size": "S",
+    "rarity": "5",
+    "hp": "72",
+    "melee": "100",
+    "atk": "70",
+    "def": "80",
+    "capture": "0.77",
+    "maleProb": "50",
+    "combi": "2700",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Flaracle": [
+   {
+    "title": "Self-Serving Seer Flaracle",
+    "lv": 68,
+    "size": "L",
+    "rarity": "8",
+    "hp": "132",
+    "melee": "100",
+    "atk": "125",
+    "def": "105",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "390",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Flopie": [
+   {
+    "title": "Star of the Flower Beds Flopie",
+    "lv": 27,
+    "size": "M",
+    "rarity": "5",
+    "hp": "90",
+    "melee": "100",
+    "atk": "65",
+    "def": "70",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2660",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Foxcicle": [
+   {
+    "title": "Frostbound Fox Foxcicle",
+    "lv": 15,
+    "size": "M",
+    "rarity": "8",
+    "hp": "108",
+    "melee": "100",
+    "atk": "95",
+    "def": "105",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1970",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Foxparks": [
+   {
+    "title": "Revealer of Paths Foxparks",
+    "lv": 10,
+    "size": "S",
+    "rarity": "5",
+    "hp": "78",
+    "melee": "70",
+    "atk": "75",
+    "def": "70",
+    "capture": "0.77",
+    "maleProb": "50",
+    "combi": "2990",
+    "hpRate": "1",
+    "recvRate": "0.48",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Foxparks Cryst": [
+   {
+    "title": "Icy Blossom Voyager Foxparks Cryst",
+    "lv": 15,
+    "size": "S",
+    "rarity": "5",
+    "hp": "78",
+    "melee": "100",
+    "atk": "80",
+    "def": "70",
+    "capture": "0.77",
+    "maleProb": "50",
+    "combi": "2500",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Frostallion": [
+   {
+    "title": "Legendary Steed of Ice Frostallion",
+    "lv": 60,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "168",
+    "melee": "100",
+    "atk": "140",
+    "def": "120",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "150",
+    "hpRate": "2.728395",
+    "recvRate": "0.18",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Frostallion Noct": [
+   {
+    "title": "Legendary Steed of Darkness Frostallion Noct",
+    "lv": 65,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "168",
+    "melee": "100",
+    "atk": "140",
+    "def": "135",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "110",
+    "hpRate": "2.728395",
+    "recvRate": "0.18",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Frostplume": [
+   {
+    "title": "Snowlaced Feather Mantle Frostplume",
+    "lv": 42,
+    "size": "L",
+    "rarity": "5",
+    "hp": "132",
+    "melee": "100",
+    "atk": "100",
+    "def": "100",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "860",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Fuack": [
+   {
+    "title": "Rowdy Wave Ripper Fuack",
+    "lv": 10,
+    "size": "S",
+    "rarity": "5",
+    "hp": "72",
+    "melee": "80",
+    "atk": "80",
+    "def": "60",
+    "capture": "0.77",
+    "maleProb": "50",
+    "combi": "2980",
+    "hpRate": "1",
+    "recvRate": "0.48",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Fuddler": [
+   {
+    "title": "Underground Explorer Fuddler",
+    "lv": 10,
+    "size": "M",
+    "rarity": "5",
+    "hp": "78",
+    "melee": "100",
+    "atk": "80",
+    "def": "50",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2790",
+    "hpRate": "1",
+    "recvRate": "0.48",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Galeclaw": [
+   {
+    "title": "Proud Courier Galeclaw",
+    "lv": 17,
+    "size": "L",
+    "rarity": "5",
+    "hp": "90",
+    "melee": "120",
+    "atk": "85",
+    "def": "60",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2570",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Ghangler": [
+   {
+    "title": "Temptation in the Deep Ghangler",
+    "lv": 47,
+    "size": "L",
+    "rarity": "8",
+    "hp": "108",
+    "melee": "100",
+    "atk": "125",
+    "def": "105",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "880",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Gildane": [
+   {
+    "title": "Guardian Beast of Twilight Gildane",
+    "lv": 58,
+    "size": "M",
+    "rarity": "8",
+    "hp": "144",
+    "melee": "100",
+    "atk": "110",
+    "def": "110",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "730",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Gloopie": [
+   {
+    "title": "Trickster of the Sea Gloopie",
+    "lv": 36,
+    "size": "M",
+    "rarity": "8",
+    "hp": "84",
+    "melee": "100",
+    "atk": "85",
+    "def": "70",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2530",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Gobfin": [
+   {
+    "title": "Sea Thug Gobfin",
+    "lv": 27,
+    "size": "M",
+    "rarity": "5",
+    "hp": "108",
+    "melee": "90",
+    "atk": "90",
+    "def": "75",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2550",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Gobfin Ignis": [
+   {
+    "title": "Volcano Thug Gobfin Ignis",
+    "lv": 36,
+    "size": "M",
+    "rarity": "5",
+    "hp": "108",
+    "melee": "90",
+    "atk": "90",
+    "def": "75",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2430",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Gorirat": [
+   {
+    "title": "Jungle Punk Gorirat",
+    "lv": 27,
+    "size": "M",
+    "rarity": "8",
+    "hp": "108",
+    "melee": "110",
+    "atk": "95",
+    "def": "90",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2140",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Gorirat Terra": [
+   {
+    "title": "Up for a Brawl Gorirat Terra",
+    "lv": 51,
+    "size": "M",
+    "rarity": "8",
+    "hp": "108",
+    "melee": "110",
+    "atk": "100",
+    "def": "90",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1880",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Grintale": [
+   {
+    "title": "Marshmallow Body Grintale",
+    "lv": 17,
+    "size": "M",
+    "rarity": "8",
+    "hp": "132",
+    "melee": "100",
+    "atk": "80",
+    "def": "80",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2120",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Grizzbolt": [
+   {
+    "title": "Claws of Lightning Grizzbolt",
+    "lv": 30,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "144",
+    "melee": "120",
+    "atk": "105",
+    "def": "105",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1020",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Gumoss": [
+   {
+    "title": "Suddenly Transformed Gumoss",
+    "lv": 11,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "84",
+    "melee": "100",
+    "atk": "70",
+    "def": "70",
+    "capture": "0.91",
+    "maleProb": "50",
+    "combi": "2950",
+    "hpRate": "1",
+    "recvRate": "0.48",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Hangyu": [
+   {
+    "title": "Bringer of Luck Hangyu",
+    "lv": 17,
+    "size": "M",
+    "rarity": "5",
+    "hp": "96",
+    "melee": "70",
+    "atk": "70",
+    "def": "70",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2780",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Helzephyr Lux": [
+   {
+    "title": "Wings of Netherstorm Helzephyr Lux",
+    "lv": 51,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "126",
+    "melee": "100",
+    "atk": "125",
+    "def": "100",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "960",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Herbil": [
+   {
+    "title": "Percussive Maintenance Herbil",
+    "lv": 27,
+    "size": "S",
+    "rarity": "5",
+    "hp": "96",
+    "melee": "100",
+    "atk": "75",
+    "def": "75",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2630",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Hoocrates": [
+   {
+    "title": "Purveyor of Wisdom Hoocrates",
+    "lv": 10,
+    "size": "M",
+    "rarity": "5",
+    "hp": "84",
+    "melee": "70",
+    "atk": "70",
+    "def": "80",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2940",
+    "hpRate": "1",
+    "recvRate": "0.48",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Icelyn": [
+   {
+    "title": "Icy Smile Icelyn",
+    "lv": 42,
+    "size": "M",
+    "rarity": "5",
+    "hp": "114",
+    "melee": "100",
+    "atk": "115",
+    "def": "105",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1260",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Incineram": [
+   {
+    "title": "Hyena of the Wild Incineram",
+    "lv": 36,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "114",
+    "melee": "150",
+    "atk": "100",
+    "def": "85",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1470",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Jelliette": [
+   {
+    "title": "Sunlight Drifter Jelliette",
+    "lv": 10,
+    "size": "M",
+    "rarity": "5",
+    "hp": "90",
+    "melee": "100",
+    "atk": "90",
+    "def": "70",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2650",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Jellroy": [
+   {
+    "title": "Shade Drifter Jellroy",
+    "lv": 17,
+    "size": "M",
+    "rarity": "5",
+    "hp": "108",
+    "melee": "100",
+    "atk": "75",
+    "def": "75",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2590",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Jetragon": [
+   {
+    "title": "Legendary Celestial Dragon Jetragon",
+    "lv": 60,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "138",
+    "melee": "100",
+    "atk": "140",
+    "def": "120",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "70",
+    "hpRate": "2.6666667",
+    "recvRate": "0.18",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Jormuntide": [
+   {
+    "title": "Emperor of the Sea Jormuntide",
+    "lv": 55,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "156",
+    "melee": "150",
+    "atk": "120",
+    "def": "100",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "590",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Katress": [
+   {
+    "title": "Phantasmal Feline Katress",
+    "lv": 27,
+    "size": "M",
+    "rarity": "8",
+    "hp": "108",
+    "melee": "100",
+    "atk": "105",
+    "def": "90",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2040",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Katress Ignis": [
+   {
+    "title": "Fire-Licked Feline Katress Ignis",
+    "lv": 51,
+    "size": "M",
+    "rarity": "8",
+    "hp": "114",
+    "melee": "100",
+    "atk": "105",
+    "def": "90",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1800",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Kelpsea": [
+   {
+    "title": "Child of the Deep Kelpsea",
+    "lv": 17,
+    "size": "M",
+    "rarity": "5",
+    "hp": "84",
+    "melee": "100",
+    "atk": "70",
+    "def": "70",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2810",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Kelpsea Ignis": [
+   {
+    "title": "Child of the Molten Depths Kelpsea Ignis",
+    "lv": 36,
+    "size": "M",
+    "rarity": "5",
+    "hp": "84",
+    "melee": "100",
+    "atk": "70",
+    "def": "70",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2470",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Kikit": [
+   {
+    "title": "Armored to the Teeth Kikit",
+    "lv": 47,
+    "size": "S",
+    "rarity": "5",
+    "hp": "90",
+    "melee": "100",
+    "atk": "70",
+    "def": "90",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2310",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Killamari": [
+   {
+    "title": "Emotionless Killamari",
+    "lv": 10,
+    "size": "M",
+    "rarity": "5",
+    "hp": "72",
+    "melee": "100",
+    "atk": "60",
+    "def": "70",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2770",
+    "hpRate": "1",
+    "recvRate": "0.48",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Kingpaca": [
+   {
+    "title": "Supreme Fluff Commander Kingpaca",
+    "lv": 23,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "144",
+    "melee": "100",
+    "atk": "85",
+    "def": "90",
+    "capture": "0.7",
+    "maleProb": "90",
+    "combi": "2220",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Kingpaca Cryst": [
+   {
+    "title": "Azure Fluff Commander Kingpaca Cryst",
+    "lv": 46,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "144",
+    "melee": "100",
+    "atk": "85",
+    "def": "90",
+    "capture": "0.7",
+    "maleProb": "90",
+    "combi": "1530",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Kitsun Noct": [
+   {
+    "title": "Guardian of the Dark Flame Kitsun Noct",
+    "lv": 57,
+    "size": "L",
+    "rarity": "8",
+    "hp": "120",
+    "melee": "100",
+    "atk": "115",
+    "def": "105",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "800",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Knocklem": [
+   {
+    "title": "Suit of Armor Knocklem",
+    "lv": 55,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "126",
+    "melee": "100",
+    "atk": "110",
+    "def": "135",
+    "capture": "0.7",
+    "maleProb": "70",
+    "combi": "260",
+    "hpRate": "1",
+    "recvRate": "0.48",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Lamball": [
+   {
+    "title": "Big Floof Lamball",
+    "lv": 10,
+    "size": "M",
+    "rarity": "5",
+    "hp": "84",
+    "melee": "70",
+    "atk": "70",
+    "def": "70",
+    "capture": "1.05",
+    "maleProb": "50",
+    "combi": "3050",
+    "hpRate": "1",
+    "recvRate": "0.48",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Lapiron": [
+   {
+    "title": "Indomitable Racer Lapiron",
+    "lv": 65,
+    "size": "L",
+    "rarity": "5",
+    "hp": "84",
+    "melee": "100",
+    "atk": "75",
+    "def": "80",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1680",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Leezpunk": [
+   {
+    "title": "Self-Proclaimed Genius Leezpunk",
+    "lv": 36,
+    "size": "M",
+    "rarity": "5",
+    "hp": "96",
+    "melee": "90",
+    "atk": "80",
+    "def": "50",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2670",
+    "hpRate": "1",
+    "recvRate": "0.48",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Leezpunk Ignis": [
+   {
+    "title": "Self-Proclaimed Fashionista Leezpunk Ignis",
+    "lv": 36,
+    "size": "M",
+    "rarity": "5",
+    "hp": "96",
+    "melee": "90",
+    "atk": "80",
+    "def": "50",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2640",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Lifmunk": [
+   {
+    "title": "Coward of the Steppe Lifmunk",
+    "lv": 10,
+    "size": "S",
+    "rarity": "5",
+    "hp": "90",
+    "melee": "70",
+    "atk": "70",
+    "def": "70",
+    "capture": "0.63",
+    "maleProb": "50",
+    "combi": "3020",
+    "hpRate": "1",
+    "recvRate": "0.48",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Loupmoon": [
+   {
+    "title": "Enraptured by Moonlight Loupmoon",
+    "lv": 27,
+    "size": "M",
+    "rarity": "7",
+    "hp": "96",
+    "melee": "130",
+    "atk": "100",
+    "def": "80",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2110",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Loupmoon Cryst": [
+   {
+    "title": "Enraptured by the Frozen Moonlight Loupmoon Cryst",
+    "lv": 54,
+    "size": "L",
+    "rarity": "5",
+    "hp": "96",
+    "melee": "100",
+    "atk": "105",
+    "def": "80",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1290",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Lovander": [
+   {
+    "title": "Pal on the Prowl Lovander",
+    "lv": 37,
+    "size": "L",
+    "rarity": "8",
+    "hp": "144",
+    "melee": "70",
+    "atk": "70",
+    "def": "70",
+    "capture": "0.7",
+    "maleProb": "30",
+    "combi": "2090",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Lullu": [
+   {
+    "title": "Primal Source of Hay Fever Lullu",
+    "lv": 47,
+    "size": "M",
+    "rarity": "5",
+    "hp": "108",
+    "melee": "100",
+    "atk": "90",
+    "def": "80",
+    "capture": "0.7",
+    "maleProb": "30",
+    "combi": "1990",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Lunaris": [
+   {
+    "title": "Extraterrestrial Lunaris",
+    "lv": 35,
+    "size": "M",
+    "rarity": "8",
+    "hp": "108",
+    "melee": "80",
+    "atk": "100",
+    "def": "90",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2010",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Lyleen": [
+   {
+    "title": "Empress of Lilies Lyleen",
+    "lv": 58,
+    "size": "L",
+    "rarity": "8",
+    "hp": "144",
+    "melee": "100",
+    "atk": "120",
+    "def": "110",
+    "capture": "0.7",
+    "maleProb": "30",
+    "combi": "240",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Lyleen Noct": [
+   {
+    "title": "Empress of the Abyss Lyleen Noct",
+    "lv": 49,
+    "size": "L",
+    "rarity": "8",
+    "hp": "138",
+    "melee": "100",
+    "atk": "120",
+    "def": "115",
+    "capture": "0.7",
+    "maleProb": "30",
+    "combi": "220",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Mammorest": [
+   {
+    "title": "King of the Forest Mammorest",
+    "lv": 38,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "180",
+    "melee": "100",
+    "atk": "85",
+    "def": "90",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1340",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Mammorest Cryst": [
+   {
+    "title": "King of the Tundra Mammorest Cryst",
+    "lv": 42,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "180",
+    "melee": "100",
+    "atk": "85",
+    "def": "90",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1070",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Maraith": [
+   {
+    "title": "Messenger of Death Maraith",
+    "lv": 42,
+    "size": "L",
+    "rarity": "8",
+    "hp": "90",
+    "melee": "50",
+    "atk": "105",
+    "def": "80",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1710",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Mau": [
+   {
+    "title": "Noble Glimmer Mau",
+    "lv": 10,
+    "size": "S",
+    "rarity": "5",
+    "hp": "84",
+    "melee": "70",
+    "atk": "60",
+    "def": "70",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "3040",
+    "hpRate": "1",
+    "recvRate": "0.48",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Mau Cryst": [
+   {
+    "title": "Serene Glimmer Mau Cryst",
+    "lv": 42,
+    "size": "S",
+    "rarity": "5",
+    "hp": "84",
+    "melee": "70",
+    "atk": "65",
+    "def": "70",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2750",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Melpaca": [
+   {
+    "title": "Pompous Shanks Melpaca",
+    "lv": 10,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "108",
+    "melee": "90",
+    "atk": "75",
+    "def": "90",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2720",
+    "hpRate": "1",
+    "recvRate": "0.48",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Menasting": [
+   {
+    "title": "Unstoppable Stinger Menasting",
+    "lv": 44,
+    "size": "L",
+    "rarity": "8",
+    "hp": "120",
+    "melee": "100",
+    "atk": "100",
+    "def": "130",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1120",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Menasting Terra": [
+   {
+    "title": "Gold-Piercing Spear Menasting Terra",
+    "lv": 54,
+    "size": "L",
+    "rarity": "8",
+    "hp": "120",
+    "melee": "100",
+    "atk": "105",
+    "def": "130",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "640",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Moldron": [
+   {
+    "title": "Scorched Wanderer Moldron",
+    "lv": 70,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "132",
+    "melee": "100",
+    "atk": "125",
+    "def": "115",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "750",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Moldron Cryst": [
+   {
+    "title": "Frigid Voyager Moldron Cryst",
+    "lv": 78,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "132",
+    "melee": "100",
+    "atk": "125",
+    "def": "120",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "380",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Mossanda": [
+   {
+    "title": "Wanderer of the Forest Mossanda",
+    "lv": 27,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "120",
+    "melee": "100",
+    "atk": "90",
+    "def": "90",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2060",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Mossanda Lux": [
+   {
+    "title": "Inheritor of the Storm Mossanda Lux",
+    "lv": 31,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "120",
+    "melee": "100",
+    "atk": "100",
+    "def": "100",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1440",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Mozzarina": [
+   {
+    "title": "Prime Beef Mozzarina",
+    "lv": 17,
+    "size": "L",
+    "rarity": "5",
+    "hp": "108",
+    "melee": "100",
+    "atk": "50",
+    "def": "80",
+    "capture": "0.7",
+    "maleProb": "20",
+    "combi": "2800",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Muffly": [
+   {
+    "title": "Totally Toasty Muffly",
+    "lv": 27,
+    "size": "S",
+    "rarity": "5",
+    "hp": "72",
+    "melee": "100",
+    "atk": "80",
+    "def": "55",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2480",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Munchill": [
+   {
+    "title": "Walking Refrigerator Munchill",
+    "lv": 42,
+    "size": "M",
+    "rarity": "5",
+    "hp": "90",
+    "melee": "100",
+    "atk": "80",
+    "def": "85",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2130",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Mycora": [
+   {
+    "title": "Cute as a Button Mycora",
+    "lv": 78,
+    "size": "L",
+    "rarity": "8",
+    "hp": "126",
+    "melee": "100",
+    "atk": "95",
+    "def": "90",
+    "capture": "0.7",
+    "maleProb": "30",
+    "combi": "760",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Necromus": [
+   {
+    "title": "Dark Knight of Legend Necromus",
+    "lv": 60,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "156",
+    "melee": "100",
+    "atk": "145",
+    "def": "120",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "190",
+    "hpRate": "1.8552631",
+    "recvRate": "0.18",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Needoll": [
+   {
+    "title": "Prickly Welcome Needoll",
+    "lv": 40,
+    "size": "S",
+    "rarity": "5",
+    "hp": "90",
+    "melee": "100",
+    "atk": "85",
+    "def": "70",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2420",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Neptilius": [
+   {
+    "title": "Legend of the Seas Neptilius",
+    "lv": 60,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "126",
+    "melee": "100",
+    "atk": "145",
+    "def": "125",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "160",
+    "hpRate": "3.738395",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Nitemary": [
+   {
+    "title": "Soul of the Dark Rabbit Nitemary",
+    "lv": 60,
+    "size": "M",
+    "rarity": "8",
+    "hp": "126",
+    "melee": "100",
+    "atk": "95",
+    "def": "105",
+    "capture": "0.7",
+    "maleProb": "40",
+    "combi": "1230",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Nitewing": [
+   {
+    "title": "Wings of the Firmament Nitewing",
+    "lv": 18,
+    "size": "L",
+    "rarity": "5",
+    "hp": "120",
+    "melee": "100",
+    "atk": "95",
+    "def": "80",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2560",
+    "hpRate": "1",
+    "recvRate": "0.48",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Nox": [
+   {
+    "title": "Nighttime Prince Nox",
+    "lv": 17,
+    "size": "M",
+    "rarity": "8",
+    "hp": "90",
+    "melee": "70",
+    "atk": "85",
+    "def": "70",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2920",
+    "hpRate": "1",
+    "recvRate": "0.48",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Nyafia": [
+   {
+    "title": "Night Shade Hunter Nyafia",
+    "lv": 57,
+    "size": "L",
+    "rarity": "5",
+    "hp": "132",
+    "melee": "100",
+    "atk": "100",
+    "def": "100",
+    "capture": "0.7",
+    "maleProb": "40",
+    "combi": "1250",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Omascul": [
+   {
+    "title": "Hundred-Faced Apostle Omascul",
+    "lv": 55,
+    "size": "M",
+    "rarity": "5",
+    "hp": "114",
+    "melee": "100",
+    "atk": "105",
+    "def": "100",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1140",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Ophydia": [
+   {
+    "title": "Pure Bloom Dragon Ophydia",
+    "lv": 69,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "156",
+    "melee": "100",
+    "atk": "115",
+    "def": "120",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "230",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Paladius": [
+   {
+    "title": "Holy Knight of Legend Paladius",
+    "lv": 60,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "156",
+    "melee": "110",
+    "atk": "120",
+    "def": "145",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "180",
+    "hpRate": "1.8552631",
+    "recvRate": "0.18",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Pengullet": [
+   {
+    "title": "Ate Too Much Pengullet",
+    "lv": 10,
+    "size": "S",
+    "rarity": "5",
+    "hp": "84",
+    "melee": "70",
+    "atk": "75",
+    "def": "70",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2960",
+    "hpRate": "1",
+    "recvRate": "0.48",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Penking": [
+   {
+    "title": "Pioneer of the Frozen Sea Penking",
+    "lv": 15,
+    "size": "L",
+    "rarity": "8",
+    "hp": "114",
+    "melee": "70",
+    "atk": "95",
+    "def": "95",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2070",
+    "hpRate": "1",
+    "recvRate": "0.48",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Pierdon": [
+   {
+    "title": "Shambling Vein Pierdon",
+    "lv": 50,
+    "size": "M",
+    "rarity": "8",
+    "hp": "120",
+    "melee": "100",
+    "atk": "105",
+    "def": "120",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1110",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Pierdon Cryst": [
+   {
+    "title": "Shuffling Glacier Pierdon Cryst",
+    "lv": 69,
+    "size": "M",
+    "rarity": "8",
+    "hp": "120",
+    "melee": "100",
+    "atk": "110",
+    "def": "120",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "460",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Polapup": [
+   {
+    "title": "Idol on Ice Polapup",
+    "lv": 42,
+    "size": "M",
+    "rarity": "8",
+    "hp": "114",
+    "melee": "100",
+    "atk": "105",
+    "def": "105",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1660",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Prixter Lux": [
+   {
+    "title": "Thunderboy Prixter Lux",
+    "lv": 70,
+    "size": "M",
+    "rarity": "8",
+    "hp": "108",
+    "melee": "100",
+    "atk": "115",
+    "def": "90",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "850",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Prunelia": [
+   {
+    "title": "Indigo Handmaiden Prunelia",
+    "lv": 63,
+    "size": "M",
+    "rarity": "8",
+    "hp": "126",
+    "melee": "100",
+    "atk": "95",
+    "def": "100",
+    "capture": "0.7",
+    "maleProb": "40",
+    "combi": "1390",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Puffolt": [
+   {
+    "title": "Sulky Static Puffolt",
+    "lv": 65,
+    "size": "S",
+    "rarity": "5",
+    "hp": "90",
+    "melee": "100",
+    "atk": "80",
+    "def": "70",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2360",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Pyrin": [
+   {
+    "title": "Steed of Flames Pyrin",
+    "lv": 29,
+    "size": "L",
+    "rarity": "8",
+    "hp": "120",
+    "melee": "110",
+    "atk": "95",
+    "def": "90",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1980",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Pyrin Noct": [
+   {
+    "title": "Steed of Darkness Pyrin Noct",
+    "lv": 36,
+    "size": "L",
+    "rarity": "8",
+    "hp": "120",
+    "melee": "110",
+    "atk": "95",
+    "def": "90",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1870",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Quivern": [
+   {
+    "title": "Snow-White Soarer Quivern",
+    "lv": 42,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "126",
+    "melee": "100",
+    "atk": "100",
+    "def": "100",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1210",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Quivern Botan": [
+   {
+    "title": "Evergreen Flyer Quivern Botan",
+    "lv": 51,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "126",
+    "melee": "100",
+    "atk": "105",
+    "def": "100",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1300",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Ragnahawk": [
+   {
+    "title": "Wings of Inferno Ragnahawk",
+    "lv": 36,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "114",
+    "melee": "100",
+    "atk": "105",
+    "def": "120",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1050",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Rayhound": [
+   {
+    "title": "Electro-Charged Zoomies Rayhound",
+    "lv": 37,
+    "size": "L",
+    "rarity": "8",
+    "hp": "108",
+    "melee": "100",
+    "atk": "100",
+    "def": "80",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1920",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Reindrix": [
+   {
+    "title": "Frosthorn Beast Reindrix",
+    "lv": 42,
+    "size": "L",
+    "rarity": "7",
+    "hp": "120",
+    "melee": "80",
+    "atk": "85",
+    "def": "110",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1930",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Renjishi": [
+   {
+    "title": "Scorching Ovation Renjishi",
+    "lv": 78,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "126",
+    "melee": "100",
+    "atk": "120",
+    "def": "100",
+    "capture": "0.7",
+    "maleProb": "60",
+    "combi": "290",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Reptyro": [
+   {
+    "title": "Lava-Devouring Juggernaut Reptyro",
+    "lv": 50,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "132",
+    "melee": "100",
+    "atk": "105",
+    "def": "120",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1060",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Reptyro Cryst": [
+   {
+    "title": "Ice-Breaking Juggernaut Reptyro Cryst",
+    "lv": 42,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "132",
+    "melee": "100",
+    "atk": "105",
+    "def": "130",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "600",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Ribbuny": [
+   {
+    "title": "Heart-Melting Smile Ribbuny",
+    "lv": 17,
+    "size": "S",
+    "rarity": "5",
+    "hp": "90",
+    "melee": "100",
+    "atk": "65",
+    "def": "70",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2860",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Ribbuny Botan": [
+   {
+    "title": "Sparkling Smile Ribbuny Botan",
+    "lv": 53,
+    "size": "S",
+    "rarity": "5",
+    "hp": "96",
+    "melee": "100",
+    "atk": "65",
+    "def": "70",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2460",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Robinquill": [
+   {
+    "title": "Archer of the Forest Robinquill",
+    "lv": 27,
+    "size": "L",
+    "rarity": "8",
+    "hp": "108",
+    "melee": "100",
+    "atk": "105",
+    "def": "80",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2260",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Robinquill Terra": [
+   {
+    "title": "Archer of the Sands Robinquill Terra",
+    "lv": 37,
+    "size": "L",
+    "rarity": "8",
+    "hp": "108",
+    "melee": "100",
+    "atk": "105",
+    "def": "80",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2050",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Rooby": [
+   {
+    "title": "Chief of the Herd Rooby",
+    "lv": 10,
+    "size": "S",
+    "rarity": "5",
+    "hp": "90",
+    "melee": "100",
+    "atk": "70",
+    "def": "75",
+    "capture": "0.77",
+    "maleProb": "50",
+    "combi": "2870",
+    "hpRate": "1",
+    "recvRate": "0.48",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Rushoar": [
+   {
+    "title": "Woodland Ruffian Rushoar",
+    "lv": 10,
+    "size": "M",
+    "rarity": "5",
+    "hp": "96",
+    "melee": "100",
+    "atk": "70",
+    "def": "70",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2880",
+    "hpRate": "1",
+    "recvRate": "0.48",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Shroomer": [
+   {
+    "title": "Creeping Mushroom Shroomer",
+    "lv": 47,
+    "size": "M",
+    "rarity": "5",
+    "hp": "132",
+    "melee": "100",
+    "atk": "80",
+    "def": "90",
+    "capture": "0.7",
+    "maleProb": "55",
+    "combi": "1520",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Shroomer Noct": [
+   {
+    "title": "Dangerous Mushroom Shroomer Noct",
+    "lv": 51,
+    "size": "M",
+    "rarity": "8",
+    "hp": "132",
+    "melee": "100",
+    "atk": "85",
+    "def": "90",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1450",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Sibelyx": [
+   {
+    "title": "Pallid Lady Sibelyx",
+    "lv": 40,
+    "size": "L",
+    "rarity": "8",
+    "hp": "132",
+    "melee": "90",
+    "atk": "90",
+    "def": "100",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1810",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Silvance": [
+   {
+    "title": "Immortal Shade Silvance",
+    "lv": 78,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "168",
+    "melee": "100",
+    "atk": "120",
+    "def": "110",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "80",
+    "hpRate": "1",
+    "recvRate": "0.04",
+    "dealRate": "1.3",
+    "exp": "10"
+   }
+  ],
+  "Silvegis": [
+   {
+    "title": "Guardian Dragon of Ironclad Silvegis",
+    "lv": 59,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "144",
+    "melee": "100",
+    "atk": "110",
+    "def": "115",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "560",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Slowatt": [
+   {
+    "title": "Shockingly Laid-Back Slowatt",
+    "lv": 66,
+    "size": "M",
+    "rarity": "5",
+    "hp": "96",
+    "melee": "100",
+    "atk": "75",
+    "def": "70",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1750",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Smokie": [
+   {
+    "title": "Jet-Black Little Hero Smokie",
+    "lv": 60,
+    "size": "S",
+    "rarity": "5",
+    "hp": "102",
+    "melee": "100",
+    "atk": "90",
+    "def": "85",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1760",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Snock": [
+   {
+    "title": "Sluggish Blue Bolt Snock",
+    "lv": 65,
+    "size": "M",
+    "rarity": "5",
+    "hp": "78",
+    "melee": "100",
+    "atk": "70",
+    "def": "75",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1780",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Sootseer": [
+   {
+    "title": "Flickering Flame Sootseer",
+    "lv": 51,
+    "size": "L",
+    "rarity": "8",
+    "hp": "126",
+    "melee": "100",
+    "atk": "125",
+    "def": "90",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "980",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Souffline": [
+   {
+    "title": "Windborne Seedling Souffline",
+    "lv": 65,
+    "size": "M",
+    "rarity": "5",
+    "hp": "84",
+    "melee": "100",
+    "atk": "75",
+    "def": "60",
+    "capture": "0.7",
+    "maleProb": "40",
+    "combi": "2000",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Splatterina": [
+   {
+    "title": "Crimson Butcher Splatterina",
+    "lv": 58,
+    "size": "L",
+    "rarity": "5",
+    "hp": "114",
+    "melee": "100",
+    "atk": "115",
+    "def": "105",
+    "capture": "0.7",
+    "maleProb": "38",
+    "combi": "780",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Starryon": [
+   {
+    "title": "Midnight Blue Mane Starryon",
+    "lv": 57,
+    "size": "L",
+    "rarity": "8",
+    "hp": "132",
+    "melee": "100",
+    "atk": "100",
+    "def": "100",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1150",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Surfent": [
+   {
+    "title": "The Ocean's Wrath Surfent",
+    "lv": 17,
+    "size": "L",
+    "rarity": "5",
+    "hp": "108",
+    "melee": "70",
+    "atk": "90",
+    "def": "80",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2440",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Surfent Terra": [
+   {
+    "title": "The Desert's Wrath Surfent Terra",
+    "lv": 37,
+    "size": "L",
+    "rarity": "8",
+    "hp": "108",
+    "melee": "70",
+    "atk": "90",
+    "def": "100",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1840",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Suzaku": [
+   {
+    "title": "Ruler of the Crimson Dawn Suzaku",
+    "lv": 45,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "144",
+    "melee": "100",
+    "atk": "105",
+    "def": "105",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1200",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Suzaku Aqua": [
+   {
+    "title": "Ruler of the Cobalt Dusk Suzaku Aqua",
+    "lv": 42,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "150",
+    "melee": "100",
+    "atk": "105",
+    "def": "105",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "740",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Sweepa": [
+   {
+    "title": "King of the Floof Sweepa",
+    "lv": 11,
+    "size": "L",
+    "rarity": "8",
+    "hp": "120",
+    "melee": "100",
+    "atk": "90",
+    "def": "90",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2150",
+    "hpRate": "1",
+    "recvRate": "0.48",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Tanzee": [
+   {
+    "title": "Dexterous Primate Tanzee",
+    "lv": 10,
+    "size": "S",
+    "rarity": "5",
+    "hp": "96",
+    "melee": "100",
+    "atk": "70",
+    "def": "70",
+    "capture": "0.77",
+    "maleProb": "50",
+    "combi": "2900",
+    "hpRate": "1",
+    "recvRate": "0.48",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Tarantriss": [
+   {
+    "title": "Tactician of the Thread Realm Tarantriss",
+    "lv": 35,
+    "size": "M",
+    "rarity": "5",
+    "hp": "132",
+    "melee": "100",
+    "atk": "100",
+    "def": "100",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1730",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Teafant": [
+   {
+    "title": "Adorable Watering Can Teafant",
+    "lv": 10,
+    "size": "L",
+    "rarity": "5",
+    "hp": "84",
+    "melee": "70",
+    "atk": "60",
+    "def": "70",
+    "capture": "0.91",
+    "maleProb": "50",
+    "combi": "3070",
+    "hpRate": "1",
+    "recvRate": "0.48",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Tetroise": [
+   {
+    "title": "Sandsea Monolith Tetroise",
+    "lv": 55,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "114",
+    "melee": "100",
+    "atk": "100",
+    "def": "135",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "790",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Tetroise Primo": [
+   {
+    "title": "Sandsea Wardenstone Tetroise Primo",
+    "lv": 60,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "114",
+    "melee": "100",
+    "atk": "100",
+    "def": "140",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "200",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Tocotoco": [
+   {
+    "title": "Boom or Bust Tocotoco",
+    "lv": 17,
+    "size": "M",
+    "rarity": "5",
+    "hp": "72",
+    "melee": "80",
+    "atk": "75",
+    "def": "70",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2730",
+    "hpRate": "1",
+    "recvRate": "0.48",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Tombat": [
+   {
+    "title": "Trickster Tombat",
+    "lv": 15,
+    "size": "M",
+    "rarity": "8",
+    "hp": "114",
+    "melee": "100",
+    "atk": "95",
+    "def": "80",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2340",
+    "hpRate": "1",
+    "recvRate": "0.48",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Tropicaw": [
+   {
+    "title": "Blooming Crooner Tropicaw",
+    "lv": 65,
+    "size": "L",
+    "rarity": "8",
+    "hp": "102",
+    "melee": "100",
+    "atk": "85",
+    "def": "90",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1350",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Turtacle": [
+   {
+    "title": "Mini Fortress Turtacle",
+    "lv": 27,
+    "size": "M",
+    "rarity": "5",
+    "hp": "90",
+    "melee": "100",
+    "atk": "75",
+    "def": "115",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2410",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Univolt": [
+   {
+    "title": "Swift Deity Univolt",
+    "lv": 31,
+    "size": "L",
+    "rarity": "8",
+    "hp": "96",
+    "melee": "110",
+    "atk": "105",
+    "def": "105",
+    "capture": "0.63",
+    "maleProb": "50",
+    "combi": "2270",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Vaelet": [
+   {
+    "title": "Voice of the Violets Vaelet",
+    "lv": 27,
+    "size": "M",
+    "rarity": "8",
+    "hp": "120",
+    "melee": "100",
+    "atk": "100",
+    "def": "120",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1480",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Valentail": [
+   {
+    "title": "Plays Both Sides Valentail",
+    "lv": 65,
+    "size": "M",
+    "rarity": "5",
+    "hp": "90",
+    "melee": "100",
+    "atk": "80",
+    "def": "70",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1900",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Vanwyrm": [
+   {
+    "title": "Aerial Marauder Vanwyrm",
+    "lv": 36,
+    "size": "L",
+    "rarity": "7",
+    "hp": "108",
+    "melee": "100",
+    "atk": "115",
+    "def": "90",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1650",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Vanwyrm Cryst": [
+   {
+    "title": "Marauder of Frozen Skies Vanwyrm Cryst",
+    "lv": 42,
+    "size": "L",
+    "rarity": "8",
+    "hp": "108",
+    "melee": "100",
+    "atk": "120",
+    "def": "95",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1430",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Verdash": [
+   {
+    "title": "Gale of the Forest Verdash",
+    "lv": 35,
+    "size": "M",
+    "rarity": "8",
+    "hp": "108",
+    "melee": "100",
+    "atk": "115",
+    "def": "90",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1160",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Vixy": [
+   {
+    "title": "Star of the Steppe Vixy",
+    "lv": 10,
+    "size": "M",
+    "rarity": "5",
+    "hp": "84",
+    "melee": "70",
+    "atk": "70",
+    "def": "70",
+    "capture": "0.91",
+    "maleProb": "50",
+    "combi": "3060",
+    "hpRate": "1",
+    "recvRate": "0.48",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Warsect Terra": [
+   {
+    "title": "Gold-Armored Warrior Warsect Terra",
+    "lv": 59,
+    "size": "L",
+    "rarity": "8",
+    "hp": "144",
+    "melee": "100",
+    "atk": "105",
+    "def": "120",
+    "capture": "0.7",
+    "maleProb": "85",
+    "combi": "630",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Whalaska": [
+   {
+    "title": "Gentle Ice Lance Whalaska",
+    "lv": 55,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "126",
+    "melee": "100",
+    "atk": "115",
+    "def": "110",
+    "capture": "0.7",
+    "maleProb": "58",
+    "combi": "710",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Whalaska Ignis": [
+   {
+    "title": "Gentle Crimson Lance Whalaska Ignis",
+    "lv": 58,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "126",
+    "melee": "100",
+    "atk": "120",
+    "def": "110",
+    "capture": "0.7",
+    "maleProb": "42",
+    "combi": "370",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Wistella": [
+   {
+    "title": "Mantle of the Night Sky Wistella",
+    "lv": 66,
+    "size": "M",
+    "rarity": "5",
+    "hp": "96",
+    "melee": "100",
+    "atk": "90",
+    "def": "60",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1180",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Wixen": [
+   {
+    "title": "Fire-Licked Furball Wixen",
+    "lv": 28,
+    "size": "L",
+    "rarity": "8",
+    "hp": "108",
+    "melee": "50",
+    "atk": "110",
+    "def": "80",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2080",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Wixen Noct": [
+   {
+    "title": "Phantasmal Furball Wixen Noct",
+    "lv": 51,
+    "size": "L",
+    "rarity": "8",
+    "hp": "108",
+    "melee": "50",
+    "atk": "110",
+    "def": "85",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1490",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Woolipop": [
+   {
+    "title": "Giant Cotton Candy Woolipop",
+    "lv": 17,
+    "size": "M",
+    "rarity": "5",
+    "hp": "84",
+    "melee": "70",
+    "atk": "70",
+    "def": "90",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2820",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Wumpo": [
+   {
+    "title": "Guardian of the Snowy Fields Wumpo",
+    "lv": 42,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "168",
+    "melee": "100",
+    "atk": "80",
+    "def": "100",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "830",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Wumpo Botan": [
+   {
+    "title": "Guardian of the Grassy Fields Wumpo Botan",
+    "lv": 38,
+    "size": "XL",
+    "rarity": "8",
+    "hp": "168",
+    "melee": "100",
+    "atk": "80",
+    "def": "110",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "610",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Yakumo": [
+   {
+    "title": "Unwavering Loyalty Yakumo",
+    "lv": 47,
+    "size": "S",
+    "rarity": "5",
+    "hp": "102",
+    "melee": "80",
+    "atk": "85",
+    "def": "85",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "2230",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Chikipi": [
+   {
+    "title": "Plump & Juicy Chikipi",
+    "lv": 10,
+    "size": "S",
+    "rarity": "5",
+    "hp": "72",
+    "melee": "70",
+    "atk": "60",
+    "def": "60",
+    "capture": "1.05",
+    "maleProb": "50",
+    "combi": "3080",
+    "hpRate": "1",
+    "recvRate": "0.48",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ],
+  "Palumba": [
+   {
+    "title": "No Dance, No Life Palumba",
+    "lv": 47,
+    "size": "L",
+    "rarity": "8",
+    "hp": "126",
+    "melee": "100",
+    "atk": "110",
+    "def": "115",
+    "capture": "0.7",
+    "maleProb": "50",
+    "combi": "1240",
+    "hpRate": "1",
+    "recvRate": "0.24",
+    "dealRate": "1",
+    "exp": "10"
+   }
+  ]
+ }
+}

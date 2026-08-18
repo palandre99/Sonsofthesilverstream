@@ -317,6 +317,15 @@
     "game8.co Snock Lux",
     "palworld.fandom.com"
    ]
+  },
+  {
+   "claim": "Each fixed boss is its own row in the game's parameter table with its own stats (e.g. boss Paladius: HP 156 vs 130, size XL vs L, x1.855 fight HP, takes 18% of incoming damage; boss Lamball: HP 84 vs 70, size M vs XS)",
+   "verdict": "verified",
+   "evidence": "205 of 207 titled fixed bosses fetched from paldb.cc per-boss pages (the raw DT_PalMonsterParameter row each; the table's existence and 753-row count confirmed by the palworld-atlas-data build manifest). Every row was accepted only when its CombiRank matched our oracle-tested value for the species; the 2 drops are recorded (Jolthog's boss page absent upstream; the Panthalus line is player-reported, not a boss page). Full capture with drop list: data/alpha_stats_1_0.json.",
+   "sources": [
+    "paldb.cc per-boss pages, fetched 2026-08-18 (raw game-table mirror)",
+    "Awy64/palworld-atlas-data manifest: DT_PalMonsterParameter, 753 rows, build 24575149"
+   ]
   }
  ]
 }

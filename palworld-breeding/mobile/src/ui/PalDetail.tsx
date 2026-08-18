@@ -23,6 +23,8 @@ import { ABOUT } from '../data/about';
 import { Icon } from './Icon';
 import { ALPHA_SPOTS } from '../data/alphaSpots.g';
 import { PALCALC_FACTS } from '../data/palcalcFacts.g';
+import { ALPHA_STATS } from '../data/alphaStats.g';
+import { bossLine } from '../alphaFacts';
 
 /** The real ceiling of each stat, read from the data instead of guessed. The
  * bar used to divide by a hard-coded 150 and clamp, so all nine pals with 150
@@ -400,6 +402,26 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
               </Text>
             </>
           )}
+          {/* The fixed boss is its own creature in the game's parameter
+              table (its own row, per-row validated against our CombiRank).
+              CEO 2026-08-17: "should show alpha version? Does it not have
+              different stats?" — here is exactly how it differs; when a
+              boss happens to match its species, the line says that too
+              rather than inventing a difference. */}
+          {(ALPHA_STATS[name] ?? []).map((a2) => (
+            <View key={a2.title}
+              style={{ borderTopWidth: 1, borderTopColor: T.line, marginTop: 6, paddingTop: 8, gap: 2 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                <Icon name="crown-outline" size={14} color={T.gold} />
+                <Text style={{ color: T.goldInk, fontSize: 12, fontWeight: '800', flex: 1 }}>
+                  As the fixed boss{a2.lv != null ? ` (Lv ${a2.lv})` : ''}
+                </Text>
+              </View>
+              <Text style={[s.body, { fontSize: 12 }]}>
+                {bossLine(a2, { hp: p.hp, atk: p.atk, def: p.def, size: p.size })}
+              </Text>
+            </View>
+          ))}
           {p.food != null && (
             <View style={[s.row, { gap: 8, marginTop: 2 }]}>
               <Image source={STAT_ICONS.food_on} style={{ width: 18, height: 18 }} />
