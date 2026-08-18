@@ -2105,6 +2105,32 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E144. ITEMS I1b — 604 STAT ROWS AT EXACT IDENTITY, AND 354 BROKEN
+## NAMES REPAIRED BY DERIVATION 2026-08-18 (loop ticks ~21:25-21:55)
+
+The paldb card sweep (666 pages) + validating merge landed. THE IDENTITY
+RULE GOT STRONGER THAN PLANNED: the raw cards carry the item's internal
+id in a `Code` field, so matching is EXACT (card.Code == backbone id)
+with rank+price as secondary agreement — 604 rows shipped, ZERO refused,
+702/708 covered. The 6 missing are upstream-absent pages, NAMED in the
+payload (Glider Tera, GrapplingGun2-5 tiers, Shield Ultra — unlocalized
+upstream names with no paldb page; recover via paldb search someday).
+Fishing-rod skins and the base grappling gun recovered via %28%29 slugs.
+
+FOUND AND FIXED ON THE WAY: the atlas name table is BROKEN for rarity
+variants — 44 rows read "en Text" (a parse artifact) and 310 read
+"{BaseId} N". 19% of the catalogue would have shipped garbage names.
+Repaired by DERIVATION: a variant inherits its family's clean name +
+description, flagged nameFromBase/descriptionFromBase — the game's own
+presentation (every tier wears the family name, distinguished by rarity),
+not invention. 354 derived, 0 unresolved, all pinned by test (canary:
+Uncommon Assault Rifle wears "Assault Rifle" + the flag).
+
+Data layer status: backbone (1,892) + stats (604 rows: atk/durability/
+magazine/def/hp/shield/armor passives/sneak) shipped in three identical
+copies each. Gates 706, tsc clean. NEXT: I1c recipes/tech/sources, then
+Phase A (the first visible screen — publish resumes there).
+
 ## E143. ITEMS I1a — THE BACKBONE LANDED: 1,892 ITEMS, PINNED AND
 ## GUARDED 2026-08-18 (loop tick ~21:05)
 
