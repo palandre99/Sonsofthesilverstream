@@ -2334,9 +2334,13 @@ work always"):**
       per family so a bow's five tiers can't crowd the other bows; kinds
       with fewer than three families get no leaderboard. Eye-verified on
       the Makeshift Assault Rifle (#12 of its kind). 828 green.
-- [ ] IL20 "What can I make with this?" — reverse recipes: an item card
-      lists the things it is an ingredient FOR (the recipe data already
-      closes over ids both ways).
+- [x] IL20 2026-08-20: recipes read BOTH ways — every ingredient's card
+      gains "What you can make with it": the products it feeds, one row
+      per family, best first, each tappable. The index inverts the
+      shipped recipes exactly (no name matching); capped at 10 with an
+      honest "…and 17 more things it goes into" because Ancient
+      Civilization Parts alone feeds 1,285 recipes. Eye-verified on
+      Refined Ingot. 831 green.
 - [ ] IL21 Tech-tree surface: 588 nodes with level + cost are shipped
       but only reachable one item at a time — a "what unlocks at my
       level" view (needs a player level input; Settings has profiles).

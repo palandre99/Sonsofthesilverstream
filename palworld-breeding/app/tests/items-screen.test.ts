@@ -10,7 +10,7 @@ import {
   idsInGroup, ITEM_GROUPS, ITEM_STATS, ITEMS, itemIdByName, KIND_WORDS,
   kindsInGroup, kindWord, palsDropping, palsHatchingFrom, rivalsOf,
   schematicsFor, searchItems, sortItems, statRank, TAB_GROUPS, teachesOf,
-  tierWord, weaponsForAmmo,
+  tierWord, usedInOf, weaponsForAmmo,
 } from '../../mobile/src/itemsData';
 import palsJson from '../../mobile/src/data/pals_1_0.json';
 import { shareTextForItem } from '../../mobile/src/itemShare';
@@ -237,6 +237,30 @@ describe('one row per item, tiers inside the card (CEO 2026-08-19)', () => {
     }
     expect(other.length).toBeGreaterThan(1000);
     expect(other.length).toBeLessThan(idsInGroup('all').length);
+  });
+});
+
+describe('recipes read both ways (IL20)', () => {
+  it('an ingredient lists what it goes into, families not tiers', () => {
+    const ingot = itemIdByName('Refined Ingot');
+    expect(ingot).not.toBeNull();
+    const uses = usedInOf(ingot!);
+    expect(uses.length).toBeGreaterThan(5);
+    expect(new Set(uses.map((i) => ITEMS[i].name)).size).toBe(uses.length);
+    // and the join is exact, both directions
+    for (const uid of uses) expect(ITEMS[uid]).toBeDefined();
+  });
+
+  it('the biggest ingredient in the game resolves without exploding', () => {
+    const parts = itemIdByName('Ancient Civilization Parts');
+    const uses = usedInOf(parts!);
+    expect(uses.length).toBeGreaterThan(50);   // it feeds 1,285 recipes
+    expect(uses.length).toBeLessThan(600);     // collapsed to families
+  });
+
+  it('something nothing is crafted from lists nothing', () => {
+    const cake = itemIdByName('Cake');
+    expect(usedInOf(cake!)).toEqual([]);
   });
 });
 

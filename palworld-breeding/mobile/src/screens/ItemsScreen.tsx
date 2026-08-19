@@ -22,7 +22,7 @@ import {
   groupOf, idsInGroup, ITEM_GROUPS, ITEM_STATS, ITEMS, kindsInGroup,
   kindWord, palsDropping, palsHatchingFrom, rivalsOf, schematicsFor,
   searchItems, sortItems, statRank, TAB_GROUPS, teachesOf, TIER_WORDS,
-  tierWord, weaponsForAmmo, type ItemSort,
+  tierWord, usedInOf, weaponsForAmmo, type ItemSort,
 } from '../itemsData';
 import { equipPassiveName, ITEM_FACTS, type CraftRow } from '../itemFacts';
 import { ItemIcon } from '../ui/ItemIcon';
@@ -700,6 +700,46 @@ function ItemDetail({ id, onClose, onOpenItem }: {
               </Text>
             </Card>
           )}
+
+          {(() => {
+            // IL20: the other half of a recipe — what this item is FOR.
+            // Capped at 10 because Ancient Civilization Parts feeds 1,285
+            // recipes; the count tells the honest total.
+            const uses = usedInOf(id);
+            if (!uses.length) return null;
+            const shown = uses.slice(0, 10);
+            return (
+              <Card style={{ marginTop: 10 }}>
+                <Text style={s.h3}>What you can make with it</Text>
+                <View style={{ marginTop: 6 }}>
+                  {shown.map((uid) => (
+                    <Pressable key={uid}
+                      onPress={() => onOpenItem(uid)}
+                      accessibilityRole="button"
+                      accessibilityLabel={`${ITEMS[uid].name}. Open its card`}
+                      style={({ pressed }) => [s.row, {
+                        gap: 10, paddingVertical: 5, paddingHorizontal: 8,
+                        borderRadius: 8,
+                        backgroundColor: pressed ? T.surface2 : 'transparent',
+                      }]}>
+                      <ItemIcon icon={ITEMS[uid].icon} size={22} />
+                      <Text style={{ color: T.accentInk, fontSize: 12.5, fontWeight: '700', flex: 1 }}
+                        numberOfLines={1}>{ITEMS[uid].name}</Text>
+                      <Text style={{ color: T.faint, fontSize: 11.5 }}>
+                        {kindWord(uid)}
+                      </Text>
+                    </Pressable>
+                  ))}
+                  {uses.length > shown.length && (
+                    <Text style={[s.body, { fontSize: 11.5, color: T.faint, marginTop: 3 }]}>
+                      {`…and ${uses.length - shown.length} more `
+                        + `${uses.length - shown.length === 1 ? 'thing' : 'things'} it goes into.`}
+                    </Text>
+                  )}
+                </View>
+              </Card>
+            );
+          })()}
 
           {(() => {
             // IL19 compare: no picker UI on a phone — the card shows the

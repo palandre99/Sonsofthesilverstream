@@ -242,6 +242,32 @@ export const powerOf = (id: string): number =>
   ITEM_STATS[id]?.atk ?? ITEM_STATS[id]?.def
   ?? effectNumber(id, 'Nutrition') ?? -1;
 
+/* ---- reverse recipes: what can I MAKE with this? (IL20) ------------
+ * Every recipe already closes over backbone ids, so the index inverts
+ * exactly — no name matching. Tier crafts fold into their family, so
+ * "Refined Ingot" lists the Assault Rifle once, not five times. */
+const USED_IN = new Map<string, Set<string>>();
+for (const [product, f] of Object.entries(ITEM_FACTS)) {
+  const mats = new Set<string>();
+  for (const r of f.recipe ?? []) mats.add(r.id);
+  for (const c of f.crafts ?? []) for (const m of c.mats) mats.add(m.id);
+  for (const m of mats) {
+    const list = USED_IN.get(m) ?? new Set<string>();
+    list.add(product);
+    USED_IN.set(m, list);
+  }
+}
+
+/** The things this item helps craft — one row per family, best first. */
+export function usedInOf(id: string): string[] {
+  const products = USED_IN.get(id);
+  if (!products) return [];
+  return collapseFamilies([...products])
+    .sort((a, b) => familyPowerOf(b) - familyPowerOf(a)
+      || (ITEMS[b].rarity ?? 0) - (ITEMS[a].rarity ?? 0)
+      || ITEMS[a].name.localeCompare(ITEMS[b].name));
+}
+
 /** The item's own kind, ranked by the best number each family reaches —
  * the compare view (IL19). One row per family so a bow's five tiers do
  * not crowd out the other bows; the caller highlights `id`'s family. */
