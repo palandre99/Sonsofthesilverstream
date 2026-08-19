@@ -23,6 +23,7 @@ export interface ItemFactRow {
   recipe?: CraftRow[];
   recipesMore?: CraftRow[][];
   crafts?: TierCraft[];
+  research?: string[];
   tech?: { level: number; cost?: number; ancient?: boolean };
   capture?: string;
   effects?: [string, string][];

@@ -2323,9 +2323,11 @@ re-evaluation finds nothing — otherwise it ALWAYS has work.
       NEW IL11: craft WORK amount + per-handiwork-level times are in the
       same rows (clipped today) — capture cleanly for a "how long to
       craft" line someday.
-- [ ] IL3 Research entries: the lab Research rows captured per item
-      (High Grade Medical Supplies has 9) are unshipped — a "Research"
-      section on cards that have them.
+- [x] IL3 2026-08-19: "Feeds lab research" on 59 items' cards — the lab
+      bonus names this item goes into ("Handiwork Speed Lv4"...), 360
+      research lines shipped, capped 15/card, no-ids pin catalogue-wide.
+      Eye-verified, 801 green, published. The full per-research material
+      bill stays a future browser surface (noted, not lost).
 - [ ] IL4 Ammo <-> weapon links: ammo cards name the weapons that fire
       them (description anchors already resolve); weapons link their ammo.
 - [ ] IL5 Egg cards: the 53 MaterialPalEgg items — hatch-related facts

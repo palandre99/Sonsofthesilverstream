@@ -320,6 +320,22 @@ def main() -> None:
             f["crafts"] = crafts
             counts["tierCrafts"] += len(crafts)
 
+        # ---- lab research this item feeds (the bonus names — "what is
+        # this item FOR"; the full per-research material bill is a later
+        # browser surface)
+        research: list[str] = []
+        for sec in page.get("sections", []):
+            if sec["title"] != "Research":
+                continue
+            for row in sec["rows"]:
+                bonus = (row.get("c") or [""])[-1].strip()
+                if bonus and bonus not in research:
+                    research.append(bonus)
+        if research:
+            f["research"] = research[:15]
+            counts.setdefault("research", 0)
+            counts["research"] += len(f["research"])
+
         # ---- sections -> where to find
         for sec in page.get("sections", []):
             title = sec["title"]

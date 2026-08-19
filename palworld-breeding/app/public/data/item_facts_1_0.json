@@ -19,6 +19,7 @@
   "capture": 10,
   "tierCrafts": 412,
   "tierCraftRefusals": 498,
+  "research": 360,
   "taggedDescriptions": 1306
  },
  "mapObjectNames": {
@@ -5950,6 +5951,21 @@
    "desc": "An ancient helmet forged from Soralite Ingot.\nIt is imbued with wisdom passed down through the ages, protecting its wearer with unwavering strength.\nIts defensive capabilities far surpass those of modern equipment.Neutral Damage Reduction Lv. 1"
   },
   "AncientParts2": {
+   "research": [
+    "Base Pal Enhancement Lv2",
+    "Base Pal Enhancement Lv3",
+    "Refinement Technique Lv2",
+    "Paldium Crushing Technique Lv2",
+    "Planting Lv5",
+    "Harvest Knowledge Lv3",
+    "Planting Lv6",
+    "Power Saving Mastery Lv3",
+    "Lumbering Lv5",
+    "Lumbering Lv6",
+    "Crude Oil Extraction Efficiency Lv3",
+    "Pals at Base Enhancement Lv2",
+    "Pals at Base Enhancement Lv3"
+   ],
    "drops": [
     {
      "src": "Silvance",
@@ -6116,6 +6132,23 @@
    ]
   },
   "AncientParts3": {
+   "research": [
+    "Large Toolbox Development",
+    "Handiwork Speed Lv3",
+    "Handiwork Speed Lv4",
+    "Handiwork Speed Lv5",
+    "Armor Crafting Optimization Lv1",
+    "Pal Gear Crafting Cost-Saving Technique Lv1",
+    "Weapon Crafting Optimization Technique Lv1",
+    "Armor Crafting Optimization Technique Lv2",
+    "Pal Gear Crafting Optimization Technique Lv2",
+    "Weapon Crafting Optimization Technique Lv2",
+    "Handiwork Research Tips Lv2",
+    "Base Pal Enhancement Lv1",
+    "Base Pal Enhancement Lv2",
+    "Sphere Duplication Technique Lv1",
+    "Ammunition Duplication Technique Lv1"
+   ],
    "boxes": [
     {
      "src": "Expedition: Grass",
@@ -8227,6 +8260,10 @@
      "SAN",
      "1"
     ]
+   ],
+   "research": [
+    "Mass Cooking Technique Lv1",
+    "Mass Cooking Technique Lv2"
    ]
   },
   "Bat": {
@@ -10919,6 +10956,12 @@
      "15"
     ]
    ],
+   "research": [
+    "Planting Lv1",
+    "Crop Knowledge Lv1",
+    "Harvest Knowledge Lv1",
+    "Planting Research Tips Lv1"
+   ],
    "drops": [
     {
      "src": "Caprity",
@@ -11083,6 +11126,10 @@
     "level": 44,
     "cost": 2
    },
+   "research": [
+    "Generating Electricity Lv6",
+    "Base Pal Enhancement Lv3"
+   ],
    "desc": "A device that stores bio-energy as electrical power.\nUsed for equipment requiring high energy density.\nCan be crafted at Production Assembly Line II."
   },
   "Bio_Coolant": {
@@ -11096,6 +11143,12 @@
     "level": 31,
     "cost": 2
    },
+   "research": [
+    "Watering Lv6",
+    "Base Pal Enhancement Lv3",
+    "Cooling Lv5",
+    "Pals at Base Enhancement Lv3"
+   ],
    "desc": "A high-efficiency cooling medium made from special components derived from Pals.\nUsed to regulate temperature in high-output devices.\nCan be crafted at Production Assembly Line."
   },
   "Blueprint_Accessory_AT_1_2": {
@@ -36504,6 +36557,19 @@
     "level": 35,
     "cost": 2
    },
+   "research": [
+    "Lumbering Lv3",
+    "Lumbering Lv4",
+    "Lumbering Lv5",
+    "Mastery of Expeditions Lv1",
+    "Time-Saving Expedition Lv2",
+    "Mastery of Expeditions Lv2",
+    "Time-Saving Expedition Lv3",
+    "Mastery of Expeditions Lv3",
+    "Lumbering Research Tips Lv2",
+    "Base Pal Enhancement Lv1",
+    "Base Pal Enhancement Lv2"
+   ],
    "drops": [
     {
      "src": "Shadowbeak",
@@ -36555,6 +36621,12 @@
      "Nutrition",
      "10"
     ]
+   ],
+   "research": [
+    "Crop Knowledge Lv2",
+    "Planting Lv4",
+    "Harvest Knowledge Lv2",
+    "Base Pal Enhancement Lv3"
    ],
    "drops": [
     {
@@ -36677,6 +36749,12 @@
      "15"
     ]
    ],
+   "research": [
+    "Medicine Production Task Lv1",
+    "Medicine Production Task Lv2",
+    "Witch's Cauldron Development",
+    "Medicine Production Research Tips Lv1"
+   ],
    "shops": [
     "Caravan merchant"
    ],
@@ -36773,6 +36851,16 @@
     "level": 19,
     "cost": 1
    },
+   "research": [
+    "Handiwork Speed Lv2",
+    "Handiwork Speed Lv3",
+    "Handiwork Research Tips Lv1",
+    "Handiwork Research Tips Lv2",
+    "Sphere Duplication Technique Lv1",
+    "Sphere Duplication Technique Lv2",
+    "Flower Bed Development",
+    "Crop Knowledge Lv2"
+   ],
    "boxes": [
     {
      "src": "Junk Dessert",
@@ -36808,6 +36896,14 @@
    "desc": "Cement used for creating structures and more.\nCan be produced in a High Quality Workbench."
   },
   "Charcoal": {
+   "research": [
+    "Kindling Lv1",
+    "Kindling Lv2",
+    "Flame Cauldron Development",
+    "Incubation Acceleration Lv1",
+    "Kindling Research Tips Lv1",
+    "Kindling Research Tips Lv2"
+   ],
    "boxes": [
     {
      "src": "Blacksmith in Training",
@@ -37893,6 +37989,12 @@
     "level": 4,
     "cost": 1
    },
+   "research": [
+    "Handiwork Speed Lv1",
+    "Handiwork Speed Lv2",
+    "Armor Crafting Optimization Lv1",
+    "Handiwork Research Tips Lv1"
+   ],
    "drops": [
     {
      "src": "Azurobe",
@@ -37963,6 +38065,12 @@
     "level": 36,
     "cost": 2
    },
+   "research": [
+    "Armor Crafting Optimization Technique Lv2",
+    "Pal Gear Crafting Optimization Technique Lv2",
+    "Base Pal Enhancement Lv1",
+    "Handiwork Speed Lv6"
+   ],
    "drops": [
     {
      "src": "Sibelyx",
@@ -39329,6 +39437,13 @@
      "-0.15"
     ]
    ],
+   "research": [
+    "Mining Lv2",
+    "Mining Cart Development",
+    "Time-Saving Expedition Lv1",
+    "Mastery of Expeditions Lv1",
+    "Mining Research Tips Lv1"
+   ],
    "drops": [
     {
      "src": "Blazamut",
@@ -40238,6 +40353,10 @@
     "level": 50,
     "cost": 2
    },
+   "research": [
+    "Handiwork Speed Lv6",
+    "Base Pal Enhancement Lv3"
+   ],
    "desc": "A component used in the control of automated equipment and precision machinery.\nIt's a key component forming the foundation of modern technology.\nCan be crafted at Production Assembly Line II."
   },
   "CopperArmor": {
@@ -43157,6 +43276,16 @@
      "n": 2
     }
    ],
+   "research": [
+    "Large Toolbox Development",
+    "Kindling Lv2",
+    "Flame Cauldron Development",
+    "Incubation Acceleration Lv1",
+    "Kindling Research Tips Lv1",
+    "Mass Cooking Technique Lv1",
+    "Generating Electricity Lv1",
+    "Stump and Axe Development"
+   ],
    "drops": [
     {
      "src": "Bushi",
@@ -43184,6 +43313,13 @@
    "desc": "A material required to create metal weapons and armor.\nRefined from Ore using a furnace."
   },
   "CopperOre": {
+   "research": [
+    "Mining Lv1",
+    "Mining Lv2",
+    "Mining Cart Development",
+    "Time-Saving Expedition Lv1",
+    "Mining Research Tips Lv1"
+   ],
    "drops": [
     {
      "src": "Digtoise",
@@ -43342,6 +43478,10 @@
     "level": 37,
     "cost": 2
    },
+   "research": [
+    "Medicine Production Task Lv6",
+    "Pals at Base Enhancement Lv3"
+   ],
    "desc": "A dangerous chemical solvent with strong decomposing properties.\nUsed for precision processing and special treatments.\nCan be crafted at Production Assembly Line."
   },
   "CrudeOil": {
@@ -46981,6 +47121,22 @@
    ]
   },
   "ElectricOrgan": {
+   "research": [
+    "Generating Electricity Lv1",
+    "Generating Electricity Lv2",
+    "Generating Electricity Lv3",
+    "Electric Pylon Development",
+    "Generating Electricity Lv4",
+    "Generating Electricity Lv5",
+    "Power Storage Solutions Lv1",
+    "Power Storage Solutions Lv2",
+    "Power Storage Solutions Lv3",
+    "Generating Electricity Research Tips Lv1",
+    "Generating Electricity Research Tips Lv2",
+    "Base Pal Enhancement Lv1",
+    "Power Saving Mastery Lv1",
+    "Power Saving Mastery Lv2"
+   ],
    "drops": [
     {
      "src": "Sparkit",
@@ -50887,6 +51043,9 @@
    "desc": "Ammo for the Rocket Launcher and similar weapons.\nCan be crafted at Weapon Assembly Line II."
   },
   "Fiber": {
+   "research": [
+    "Silo Development"
+   ],
    "drops": [
     {
      "src": "Hangyu",
@@ -50949,6 +51108,23 @@
    "desc": "Fiber collected from trees. A material used when creating bows, etc.\nCan also be obtained by breaking down Wood at a Crusher."
   },
   "FireOrgan": {
+   "research": [
+    "Kindling Lv1",
+    "Kindling Lv2",
+    "Flame Cauldron Development",
+    "Kindling Lv3",
+    "Kindling Lv4",
+    "Kindling Lv5",
+    "Incubation Acceleration Lv1",
+    "Incubation Acceleration Lv2",
+    "Incubation Acceleration Lv3",
+    "Incubation Acceleration Lv4",
+    "Kindling Research Tips Lv1",
+    "Kindling Research Tips Lv2",
+    "Base Pal Enhancement Lv1",
+    "Mass Cooking Technique Lv1",
+    "Refinement Technique Lv1"
+   ],
    "drops": [
     {
      "src": "Kitsun",
@@ -53251,6 +53427,11 @@
      "Nutrition",
      "3"
     ]
+   ],
+   "research": [
+    "Planting Lv2",
+    "Crop Knowledge Lv2",
+    "Planting Research Tips Lv2"
    ],
    "desc": "Flour made from grinding Wheat.\nIt can be used as an ingredient in making Bread."
   },
@@ -60111,6 +60292,16 @@
     "level": 21,
     "cost": 2
    },
+   "research": [
+    "Handiwork Speed Lv3",
+    "Handiwork Speed Lv4",
+    "Handiwork Speed Lv5",
+    "Weapon Crafting Optimization Technique Lv1",
+    "Weapon Crafting Optimization Technique Lv2",
+    "Handiwork Research Tips Lv2",
+    "Ammunition Duplication Technique Lv1",
+    "Ammunition Duplication Technique Lv2"
+   ],
    "drops": [
     {
      "src": "Tocotoco",
@@ -61990,6 +62181,9 @@
      "1"
     ]
    ],
+   "research": [
+    "Medicine Production Task Lv1"
+   ],
    "drops": [
     {
      "src": "Lifmunk",
@@ -62466,6 +62660,23 @@
    ]
   },
   "IceOrgan": {
+   "research": [
+    "Cooling Storage Lv1",
+    "Cooling Lv1",
+    "Snowman Development",
+    "Cooling Lv2",
+    "Cooling Lv3",
+    "Cooling Lv4",
+    "Incubation Acceleration Lv1",
+    "Incubation Acceleration Lv2",
+    "Incubation Acceleration Lv3",
+    "Incubation Acceleration Lv4",
+    "Cooling Research Tips Lv1",
+    "Cooling Research Tips Lv2",
+    "Pals at Base Enhancement Lv1",
+    "Pals at Base Enhancement Lv2",
+    "Cooling Storage Lv2"
+   ],
    "drops": [
     {
      "src": "Mau Cryst",
@@ -66045,6 +66256,16 @@
      "id": "Coal",
      "n": 2
     }
+   ],
+   "research": [
+    "Kindling Lv3",
+    "Incubation Acceleration Lv2",
+    "Kindling Research Tips Lv2",
+    "Refinement Technique Lv1",
+    "Electric Pylon Development",
+    "Mining Lv3",
+    "Time-Saving Expedition Lv2",
+    "Mining Research Tips Lv2"
    ],
    "boxes": [
     {
@@ -70074,6 +70295,9 @@
    ]
   },
   "Leather": {
+   "research": [
+    "Pal Gear Crafting Cost-Saving Technique Lv1"
+   ],
    "drops": [
     {
      "src": "Melpaca",
@@ -70487,6 +70711,12 @@
      "Nutrition",
      "15"
     ]
+   ],
+   "research": [
+    "Harvest Knowledge Lv1",
+    "Planting Lv3",
+    "Crop Knowledge Lv3",
+    "Base Pal Enhancement Lv1"
    ],
    "shops": [
     "Caravan merchant",
@@ -71610,6 +71840,17 @@
      "1"
     ]
    ],
+   "research": [
+    "Medicine Production Task Lv3",
+    "Medicine Production Task Lv4",
+    "Medicine Production Task Lv5",
+    "Medicine Production Research Tips Lv2",
+    "Pals at Base Enhancement Lv1",
+    "Pharmaceutical Cost-Saving Technique Lv1",
+    "Pharmaceutical Cost-Saving Technique Lv2",
+    "Pharmaceutical Cost-Saving Technique Lv3",
+    "Medicine Production Task Lv6"
+   ],
    "drops": [
     {
      "src": "PAL Genetic Research Unit Executioner",
@@ -71943,6 +72184,15 @@
     "level": 10,
     "cost": 1
    },
+   "research": [
+    "Handiwork Speed Lv2",
+    "Large Toolbox Development",
+    "Armor Crafting Optimization Lv1",
+    "Pal Gear Crafting Cost-Saving Technique Lv1",
+    "Handiwork Research Tips Lv1",
+    "Ammunition Duplication Technique Lv1",
+    "Ammunition Duplication Technique Lv2"
+   ],
    "boxes": [
     {
      "src": "Arrogant Pal Critic Petallia",
@@ -71978,6 +72228,23 @@
     "level": 35,
     "cost": 2
    },
+   "research": [
+    "Handiwork Speed Lv4",
+    "Handiwork Speed Lv5",
+    "Armor Crafting Optimization Technique Lv2",
+    "Pal Gear Crafting Optimization Technique Lv2",
+    "Weapon Crafting Optimization Technique Lv2",
+    "Base Pal Enhancement Lv1",
+    "Base Pal Enhancement Lv2",
+    "Generating Electricity Lv3",
+    "Generating Electricity Lv4",
+    "Generating Electricity Lv5",
+    "Power Storage Solutions Lv2",
+    "Power Storage Solutions Lv3",
+    "Generating Electricity Research Tips Lv2",
+    "Power Saving Mastery Lv1",
+    "Power Saving Mastery Lv2"
+   ],
    "drops": [
     {
      "src": "PAL Genetic Research Unit Executioner",
@@ -75879,6 +76146,10 @@
      "1"
     ]
    ],
+   "research": [
+    "Medicine Production Task Lv2",
+    "Medicine Production Research Tips Lv1"
+   ],
    "drops": [
     {
      "src": "Free Pal Alliance Believer",
@@ -77991,6 +78262,12 @@
      "Nutrition",
      "13"
     ]
+   ],
+   "research": [
+    "Lumbering Lv1",
+    "Lumbering Lv2",
+    "Time-Saving Expedition Lv1",
+    "Lumbering Research Tips Lv1"
    ],
    "drops": [
     {
@@ -80522,6 +80799,14 @@
      "Nutrition",
      "9"
     ]
+   ],
+   "research": [
+    "Harvest Knowledge Lv2",
+    "Base Pal Enhancement Lv1",
+    "Planting Lv5",
+    "Harvest Knowledge Lv3",
+    "Base Pal Enhancement Lv2",
+    "Planting Lv6"
    ],
    "shops": [
     "Caravan merchant"
@@ -85436,6 +85721,23 @@
    "desc": "A crystal formed from condensed World Tree energy.\nIt awakens Water Pals, releasing their hidden power."
   },
   "PalCrystal_Ex": {
+   "research": [
+    "Handiwork Speed Lv4",
+    "Handiwork Speed Lv5",
+    "Armor Crafting Optimization Lv1",
+    "Pal Gear Crafting Cost-Saving Technique Lv1",
+    "Weapon Crafting Optimization Technique Lv1",
+    "Armor Crafting Optimization Technique Lv2",
+    "Pal Gear Crafting Optimization Technique Lv2",
+    "Weapon Crafting Optimization Technique Lv2",
+    "Handiwork Research Tips Lv2",
+    "Base Pal Enhancement Lv1",
+    "Base Pal Enhancement Lv2",
+    "Ammunition Duplication Technique Lv1",
+    "Sphere Duplication Technique Lv2",
+    "Ammunition Duplication Technique Lv2",
+    "Handiwork Speed Lv6"
+   ],
    "drops": [
     {
      "src": "Pompous Shanks Melpaca",
@@ -86089,6 +86391,20 @@
    "desc": "An Huge Ominous Egg.\nA mysterious egg imbued with the energy of the World Tree.\nPlace it in an Egg Incubator to incubate it."
   },
   "PalFluid": {
+   "research": [
+    "Watering Lv1",
+    "Watering Lv2",
+    "Fountain Development",
+    "Watering Lv3",
+    "Watering Lv4",
+    "Watering Lv5",
+    "Crop Knowledge Lv1",
+    "Harvest Knowledge Lv2",
+    "Watering Research Tips Lv1",
+    "Watering Research Tips Lv2",
+    "Base Pal Enhancement Lv1",
+    "Base Pal Enhancement Lv2"
+   ],
    "drops": [
     {
      "src": "Azurobe",
@@ -86753,6 +87069,16 @@
    "desc": "Crest dropped from a Leezpunk.\nSharp and pointy, it is used to make clothing."
   },
   "PalItem_MopBaby": {
+   "research": [
+    "Cooling Lv1",
+    "Cooling Lv3",
+    "Incubation Acceleration Lv1",
+    "Incubation Acceleration Lv3",
+    "Cooling Research Tips Lv1",
+    "Pals at Base Enhancement Lv1",
+    "Cooling Storage Lv2",
+    "Cooling Storage Lv4"
+   ],
    "drops": [
     {
      "src": "Swee",
@@ -86802,6 +87128,12 @@
    "desc": "Ribbon dropped from a Ribbuny.\nCute in color and design, it is used to make clothing."
   },
   "PalItem_PlantSlime": {
+   "research": [
+    "Planting Lv2",
+    "Flower Bed Development",
+    "Harvest Knowledge Lv1",
+    "Planting Research Tips Lv2"
+   ],
    "drops": [
     {
      "src": "Gumoss",
@@ -86818,6 +87150,11 @@
    "tech": {
     "level": 22
    },
+   "research": [
+    "Generating Electricity Lv2",
+    "Power Storage Solutions Lv1",
+    "Generating Electricity Research Tips Lv1"
+   ],
    "drops": [
     {
      "src": "Dazzi",
@@ -88075,6 +88412,16 @@
    ]
   },
   "PalOil": {
+   "research": [
+    "Watering Lv2",
+    "Fountain Development",
+    "Watering Lv3",
+    "Watering Lv4",
+    "Watering Lv5",
+    "Watering Research Tips Lv1",
+    "Watering Research Tips Lv2",
+    "Watering Lv6"
+   ],
    "drops": [
     {
      "src": "Digtoise",
@@ -92789,6 +93136,12 @@
    "desc": "The soul left behind by a highly trained Pal.\nIt can draw out hidden abilities if offered to a Statue of Power."
   },
   "Pal_crystal_S": {
+   "research": [
+    "Sphere Duplication Technique Lv1",
+    "Sphere Duplication Technique Lv2",
+    "Paldium Crushing Technique Lv1",
+    "Paldium Crushing Technique Lv2"
+   ],
    "drops": [
     {
      "src": "Lunaris",
@@ -93128,6 +93481,14 @@
     "level": 50,
     "cost": 2
    },
+   "research": [
+    "Kindling Lv5",
+    "Incubation Acceleration Lv4",
+    "Base Pal Enhancement Lv2",
+    "Refinement Technique Lv2",
+    "Mining Lv5",
+    "Crude Oil Extraction Efficiency Lv3"
+   ],
    "drops": [
     {
      "src": "Shadowbeak",
@@ -97781,6 +98142,11 @@
      "60"
     ]
    ],
+   "research": [
+    "Medicine Production Task Lv3",
+    "Medicine Production Research Tips Lv2",
+    "Pharmaceutical Cost-Saving Technique Lv1"
+   ],
    "drops": [
     {
      "src": "Shroomer Noct",
@@ -97827,6 +98193,9 @@
     "level": 33,
     "cost": 2
    },
+   "research": [
+    "Weapon Crafting Optimization Technique Lv1"
+   ],
    "drops": [
     {
      "src": "Brothers of the Eternal Pyre Martyr",
@@ -97851,6 +98220,16 @@
      "SAN",
      "5"
     ]
+   ],
+   "research": [
+    "Flower Bed Development",
+    "Medicine Production Task Lv1",
+    "Medicine Production Task Lv2",
+    "Witch's Cauldron Development",
+    "Medicine Production Task Lv3",
+    "Medicine Production Research Tips Lv1",
+    "Medicine Production Research Tips Lv2",
+    "Pharmaceutical Cost-Saving Technique Lv1"
    ],
    "drops": [
     {
@@ -97978,6 +98357,11 @@
      "Nutrition",
      "11"
     ]
+   ],
+   "research": [
+    "Crop Knowledge Lv2",
+    "Planting Lv4",
+    "Harvest Knowledge Lv2"
    ],
    "shops": [
     "Caravan merchant"
@@ -98124,6 +98508,11 @@
      "Recovery Time",
      "600"
     ]
+   ],
+   "research": [
+    "Medicine Production Task Lv4",
+    "Pals at Base Enhancement Lv1",
+    "Pharmaceutical Cost-Saving Technique Lv2"
    ],
    "shops": [
     "Caravan merchant"
@@ -98361,6 +98750,11 @@
      "Recovery Time",
      "600"
     ]
+   ],
+   "research": [
+    "Medicine Production Task Lv5",
+    "Pals at Base Enhancement Lv2",
+    "Pharmaceutical Cost-Saving Technique Lv3"
    ],
    "drops": [
     {
@@ -99824,6 +100218,18 @@
      "-0.15"
     ]
    ],
+   "research": [
+    "Mining Lv5",
+    "Mastery of Expeditions Lv2",
+    "Base Pal Enhancement Lv1",
+    "Crude Oil Extraction Efficiency Lv2",
+    "Cooling Lv2",
+    "Cooling Lv4",
+    "Incubation Acceleration Lv2",
+    "Incubation Acceleration Lv4",
+    "Cooling Research Tips Lv2",
+    "Cooling Storage Lv3"
+   ],
    "drops": [
     {
      "src": "Pierdon Cryst",
@@ -99907,6 +100313,10 @@
      "SAN",
      "-0.15"
     ]
+   ],
+   "research": [
+    "Mining Lv6",
+    "Cooling Lv5"
    ],
    "drops": [
     {
@@ -128327,6 +128737,11 @@
     "level": 58,
     "cost": 2
    },
+   "research": [
+    "Kindling  Lv6",
+    "Base Pal Enhancement Lv3",
+    "Mining Lv6"
+   ],
    "drops": [
     {
      "src": "Necromus",
@@ -131776,6 +132191,15 @@
      "id": "CopperOre",
      "n": 4
     }
+   ],
+   "research": [
+    "Kindling Lv4",
+    "Incubation Acceleration Lv3",
+    "Base Pal Enhancement Lv1",
+    "Mining Lv4",
+    "Mastery of Expeditions Lv2",
+    "Crude Oil Extraction Efficiency Lv1",
+    "Crude Oil Extraction Efficiency Lv2"
    ]
   },
   "StewedIceDeer": {
@@ -131857,6 +132281,18 @@
    "desc": "A dish made by stir-frying Carrot and Onion. \nA simple and delicious way to enjoy vegetables. Eating it will slightly increase your work speed and improve your Defense by 10% for a period of time."
   },
   "Stone": {
+   "research": [
+    "Handiwork Speed Lv1",
+    "Silo Development",
+    "Mining Lv1",
+    "Mining Lv2",
+    "Mining Cart Development",
+    "Mining Lv3",
+    "Time-Saving Expedition Lv1",
+    "Mastery of Expeditions Lv1",
+    "Mining Research Tips Lv1",
+    "Mining Research Tips Lv2"
+   ],
    "shops": [
     "Vagrant trader"
    ]
@@ -132517,6 +132953,16 @@
      "SAN",
      "-0.15"
     ]
+   ],
+   "research": [
+    "Mining Lv2",
+    "Mining Lv3",
+    "Mining Lv4",
+    "Time-Saving Expedition Lv1",
+    "Mastery of Expeditions Lv1",
+    "Time-Saving Expedition Lv2",
+    "Mining Research Tips Lv2",
+    "Crude Oil Extraction Efficiency Lv1"
    ],
    "drops": [
     {
@@ -134130,6 +134576,9 @@
     "level": 59,
     "cost": 3
    },
+   "research": [
+    "Kindling  Lv6"
+   ],
    "drops": [
     {
      "src": "Jetragon",
@@ -134160,6 +134609,12 @@
      "Nutrition",
      "15"
     ]
+   ],
+   "research": [
+    "Harvest Knowledge Lv1",
+    "Planting Lv3",
+    "Crop Knowledge Lv3",
+    "Base Pal Enhancement Lv1"
    ],
    "shops": [
     "Caravan merchant",
@@ -135887,6 +136342,9 @@
      "6"
     ]
    ],
+   "research": [
+    "Crop Knowledge Lv1"
+   ],
    "shops": [
     "Caravan merchant",
     "Dungeon merchant",
@@ -137059,6 +137517,23 @@
    "desc": "The fuel required to power the Wing Pack."
   },
   "Wood": {
+   "research": [
+    "Handiwork Speed Lv1",
+    "Handiwork Speed Lv2",
+    "Handiwork Research Tips Lv1",
+    "Sphere Duplication Technique Lv1",
+    "Planting Lv1",
+    "Silo Development",
+    "Crop Knowledge Lv1",
+    "Planting Research Tips Lv1",
+    "Lumbering Lv1",
+    "Lumbering Lv2",
+    "Stump and Axe Development",
+    "Lumbering Lv3",
+    "Lumbering Lv4",
+    "Time-Saving Expedition Lv1",
+    "Mastery of Expeditions Lv1"
+   ],
    "shops": [
     "Vagrant trader"
    ],
@@ -137085,6 +137560,10 @@
    ]
   },
   "Wood_Fine": {
+   "research": [
+    "Lumbering Lv6",
+    "Base Pal Enhancement Lv3"
+   ],
    "drops": [
     {
      "src": "Mossanda",

@@ -467,6 +467,15 @@ function ItemDetail({ id, onClose, onOpenItem }: {
             </Card>
           )}
 
+          {facts?.research && facts.research.length > 0 && (
+            <Card style={{ marginTop: 10 }}>
+              <Text style={s.h3}>Feeds lab research</Text>
+              <Text style={[s.body, { marginTop: 5, fontSize: 12.5 }]}>
+                {facts.research.join(' · ')}
+              </Text>
+            </Card>
+          )}
+
           {family.length > 1 && (
             <Card style={{ marginTop: 10 }}>
               <Text style={s.h3}>Every tier of this {kindWord(id).toLowerCase()}</Text>

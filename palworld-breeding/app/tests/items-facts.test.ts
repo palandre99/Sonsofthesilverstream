@@ -144,6 +144,26 @@ describe('tier crafts prove their own attribution', () => {
   });
 });
 
+describe('research lines say what an item is for', () => {
+  it('Ancient Civilization Parts feeds the lab bonuses by name', () => {
+    const id = Object.keys(ITEMS).find(
+      (i) => ITEMS[i].name === 'Ancient Civilization Parts');
+    expect(id).toBeDefined();
+    const r = (F.facts[id!] as unknown as { research?: string[] }).research;
+    expect(r).toBeDefined();
+    expect(r).toContain('Handiwork Speed Lv4');
+    expect(r!.length).toBeLessThanOrEqual(15);
+  });
+
+  it('research names are plain words, never ids', () => {
+    for (const [id, f] of Object.entries(F.facts)) {
+      for (const r of (f as unknown as { research?: string[] }).research ?? []) {
+        expect(r, `${id} research leaks: ${r}`).not.toMatch(/_|[a-z][A-Z]/);
+      }
+    }
+  });
+});
+
 describe('equipment passives resolve to the game’s names', () => {
   it('every passive id the stats layer uses has a display name', () => {
     const stats = JSON.parse(readFileSync(
