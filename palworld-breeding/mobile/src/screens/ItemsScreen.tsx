@@ -18,9 +18,10 @@ import * as Haptics from 'expo-haptics';
 import { T } from '../theme';
 import { Badge, Btn, Card, PageHead, SearchInput, s } from '../ui/kit';
 import {
-  familyOf, groupOf, idsInGroup, ITEM_GROUPS, ITEM_STATS, ITEMS,
-  kindsInGroup, kindWord, palsDropping, schematicsFor, searchItems,
-  sortItems, statRank, teachesOf, TIER_WORDS, tierWord, type ItemSort,
+  ammoForWeapon, familyOf, groupOf, idsInGroup, ITEM_GROUPS, ITEM_STATS,
+  ITEMS, kindsInGroup, kindWord, palsDropping, schematicsFor, searchItems,
+  sortItems, statRank, teachesOf, TIER_WORDS, tierWord, weaponsForAmmo,
+  type ItemSort,
 } from '../itemsData';
 import { equipPassiveName, ITEM_FACTS, type CraftRow } from '../itemFacts';
 import { ItemIcon } from '../ui/ItemIcon';
@@ -309,6 +310,36 @@ function ItemDetail({ id, onClose, onOpenItem }: {
               )}
             </Card>
           )}
+
+          {(() => {
+            const linked = ITEMS[id].category === 'Ammo'
+              ? { title: 'Fits these weapons', ids: weaponsForAmmo(id) }
+              : { title: 'Fires', ids: ammoForWeapon(id) };
+            if (!linked.ids.length) return null;
+            return (
+              <Card style={{ marginTop: 10 }}>
+                <Text style={s.h3}>{linked.title}</Text>
+                <View style={{ marginTop: 6 }}>
+                  {linked.ids.map((lid) => (
+                    <Pressable key={lid}
+                      onPress={() => onOpenItem(lid)}
+                      accessibilityRole="button"
+                      accessibilityLabel={`${ITEMS[lid].name}. Open its card`}
+                      style={({ pressed }) => [s.row, {
+                        gap: 10, paddingVertical: 5, paddingHorizontal: 8,
+                        borderRadius: 8,
+                        backgroundColor: pressed ? T.surface2 : 'transparent',
+                      }]}>
+                      <ItemIcon icon={ITEMS[lid].icon} size={22} />
+                      <Text style={{ color: T.accentInk, fontSize: 12.5, fontWeight: '700', flex: 1 }}>
+                        {ITEMS[lid].name}
+                      </Text>
+                    </Pressable>
+                  ))}
+                </View>
+              </Card>
+            );
+          })()}
 
           {(() => {
             const teaches = teachesOf(id);

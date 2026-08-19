@@ -6,9 +6,10 @@ import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import {
-  familyOf, idsInGroup, ITEM_GROUPS, ITEM_STATS, ITEMS, itemIdByName,
-  KIND_WORDS, kindsInGroup, kindWord, palsDropping, schematicsFor,
-  searchItems, sortItems, statRank, teachesOf, tierWord,
+  ammoForWeapon, familyOf, idsInGroup, ITEM_GROUPS, ITEM_STATS, ITEMS,
+  itemIdByName, KIND_WORDS, kindsInGroup, kindWord, palsDropping,
+  schematicsFor, searchItems, sortItems, statRank, teachesOf, tierWord,
+  weaponsForAmmo,
 } from '../../mobile/src/itemsData';
 import palsJson from '../../mobile/src/data/pals_1_0.json';
 import { shareTextForItem } from '../../mobile/src/itemShare';
@@ -160,6 +161,25 @@ describe('the item share sheet says what the screen says', () => {
     const code = readFileSync(
       join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
     expect(code).toContain('shareTextForItem(id, breeding.game_version)');
+  });
+});
+
+describe('ammo and weapons join both ways from the game’s own tags', () => {
+  it('the Assault Rifle fires its ammo, and the ammo fits the rifle', () => {
+    expect(ammoForWeapon('AssaultRifle_Default1')).toContain('AssaultRifleBullet');
+    expect(ammoForWeapon('AssaultRifle_Default3')).toContain('AssaultRifleBullet');
+    expect(weaponsForAmmo('AssaultRifleBullet')).toContain('AssaultRifle_Default1');
+  });
+
+  it('coarse ammo fits several weapons', () => {
+    expect(weaponsForAmmo('RoughBullet').length).toBeGreaterThanOrEqual(2);
+  });
+
+  it('most of the ammo catalogue is joined', () => {
+    const ammo = Object.keys(ITEMS).filter((i) => ITEMS[i].category === 'Ammo');
+    const joined = ammo.filter((i) => weaponsForAmmo(i).length > 0);
+    expect(ammo.length).toBe(32);
+    expect(joined.length).toBe(25);
   });
 });
 

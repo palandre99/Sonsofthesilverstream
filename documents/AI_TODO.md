@@ -2328,8 +2328,12 @@ re-evaluation finds nothing — otherwise it ALWAYS has work.
       research lines shipped, capped 15/card, no-ids pin catalogue-wide.
       Eye-verified, 801 green, published. The full per-research material
       bill stays a future browser surface (noted, not lost).
-- [ ] IL4 Ammo <-> weapon links: ammo cards name the weapons that fire
-      them (description anchors already resolve); weapons link their ammo.
+- [x] IL4 2026-08-19: ammo <-> weapons joined from the game's own
+      description tags (25 of 32 ammo items embed their weapon's internal
+      id — exact identity, no name matching). Ammo cards: "Fits these
+      weapons" tappable; weapon cards: "Fires" tappable, matched on any
+      tier via the family base. Eye-verified the full round trip. 804
+      green, published.
 - [ ] IL5 Egg cards: the 53 MaterialPalEgg items — hatch-related facts
       from data we own (which pals come from which egg class, via
       pals_1_0 spawn/egg data if provable; else honest coming-soon copy).

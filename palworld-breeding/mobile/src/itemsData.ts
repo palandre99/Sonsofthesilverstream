@@ -307,6 +307,37 @@ export function palsDropping(id: string): string[] {
   return DROPPED_BY.get(ITEMS[id]?.name ?? '') ?? [];
 }
 
+/* ---- ammo <-> weapon, from the game's own description tags ----------
+ * 25 of 32 ammo descriptions embed their weapon's internal id
+ * (<itemName id=|AssaultRifle_Default1|/>) — exact joins, both ways. */
+const AMMO_REF = /<itemName id=\|([^|]+)\|\/>/g;
+const AMMO_WEAPONS = new Map<string, string[]>();
+const WEAPON_AMMO = new Map<string, string[]>();
+for (const id of ITEM_IDS) {
+  if (ITEMS[id].category !== 'Ammo') continue;
+  const refs = [...(ITEMS[id].description ?? '').matchAll(AMMO_REF)]
+    .map((m) => m[1])
+    .filter((r) => ITEMS[r]
+      && (ITEMS[r].category === 'Weapon' || ITEMS[r].category === 'SpecialWeapon'));
+  if (!refs.length) continue;
+  AMMO_WEAPONS.set(id, refs);
+  for (const w of refs) {
+    const list = WEAPON_AMMO.get(w) ?? [];
+    if (!list.includes(id)) list.push(id);
+    WEAPON_AMMO.set(w, list);
+  }
+}
+
+/** The weapons this ammo fits (base-tier ids), from its own description. */
+export const weaponsForAmmo = (ammoId: string): string[] =>
+  AMMO_WEAPONS.get(ammoId) ?? [];
+
+/** The ammo a weapon fires — matched on any tier via the family base. */
+export function ammoForWeapon(weaponId: string): string[] {
+  const base = familyOf(weaponId)[0];
+  return WEAPON_AMMO.get(base) ?? WEAPON_AMMO.get(weaponId) ?? [];
+}
+
 /** The family's base item id for a display name — the join every
  * cross-link uses (pal drops name items; names resolve here exactly). */
 export function itemIdByName(name: string): string | null {
