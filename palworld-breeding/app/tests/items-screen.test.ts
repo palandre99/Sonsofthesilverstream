@@ -13,6 +13,7 @@ import {
   tierWord, usedInOf, weaponsForAmmo,
 } from '../../mobile/src/itemsData';
 import palsJson from '../../mobile/src/data/pals_1_0.json';
+import FACTS from '../../mobile/src/data/item_facts_1_0.json';
 import { shareTextForItem } from '../../mobile/src/itemShare';
 
 describe('the groups cover the catalogue exactly once', () => {
@@ -419,6 +420,22 @@ describe('sorting and search behave like a player expects', () => {
     const hits = searchItems('assault rifle');
     expect(hits.length).toBeGreaterThanOrEqual(10);  // families + ammo
     expect(searchItems('zzz-no-such-item')).toEqual([]);
+  });
+
+  it('search finds gear by what it GRANTS (IL24)', () => {
+    const cold = searchItems('cold resistance');
+    expect(cold.length).toBeGreaterThan(5);
+    // every hit really carries it — no loose matching
+    for (const id of cold) {
+      const hay = [
+        ITEMS[id].name,
+        ...((FACTS.facts[id] as { grants?: string[] })?.grants ?? []),
+      ].join(' ').toLowerCase();
+      expect(hay, `${id} matched "cold resistance" without carrying it`)
+        .toContain('cold resistance');
+    }
+    // and by effect label
+    expect(searchItems('nutrition').length).toBeGreaterThan(50);
   });
 
   it('search understands kinds, not just name substrings', () => {

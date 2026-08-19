@@ -308,14 +308,32 @@ export function sortItems(ids: string[], sort: ItemSort, byFamily = false): stri
   return out;
 }
 
-/** Search: every word must match somewhere in the name OR the kind word,
- * so "cooked fish" finds the fish dishes and "skill fruit" finds all 93 —
- * not just literal substrings of names (AAA criterion 2). */
+/** Search: every word must match the name, the kind word, or what the
+ * item GRANTS/DOES — so "cooked fish" finds the fish dishes, "skill
+ * fruit" all 93, and "cold resistance" every piece of gear that carries
+ * it (IL24; before this the only way to find those was to open cards
+ * one at a time). AAA criterion 2. */
+const HAYSTACK = new Map<string, string>();
+function haystackFor(id: string): string {
+  let hay = HAYSTACK.get(id);
+  if (hay == null) {
+    const f = ITEM_FACTS[id];
+    hay = [
+      ITEMS[id].name,
+      kindWord(id),
+      ...(f?.grants ?? []),
+      ...(f?.effects ?? []).map(([k]) => k),
+    ].join(' ').toLowerCase();
+    HAYSTACK.set(id, hay);
+  }
+  return hay;
+}
+
 export function searchItems(q: string): string[] {
   const tokens = q.trim().toLowerCase().split(/\s+/).filter(Boolean);
   if (!tokens.length) return [];
   return ITEM_IDS.filter((i) => {
-    const hay = `${ITEMS[i].name} ${kindWord(i)}`.toLowerCase();
+    const hay = haystackFor(i);
     return tokens.every((t) => hay.includes(t));
   });
 }

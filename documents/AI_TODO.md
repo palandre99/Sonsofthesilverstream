@@ -2352,11 +2352,28 @@ work always"):**
       family is judged by its EASIEST tier so a buildable bow never
       hides behind its Legendary tier. No level set says so and points
       at Profiles instead of showing an empty list. 835 green.
-- [ ] IL22 Where-to-find map links: box/chest sources that name a map
-      POI should deep-link into the Map fane (coordinate with that
-      lane's data — REQUEST, not an edit of their files).
-- [ ] IL23 Sphere capture-rate calculator — ONLY if the formula can be
-      datamined or honestly labelled; the plan's §5 limit still stands.
+- [~] IL22 BLOCKED ON EVIDENCE 2026-08-20: measured, not assumed — the
+      map's POI names (216, place names like "Ancient Civilization
+      Ruins") and our box sources (652, chest/mission names like "Lv60
+      Oilrig Normal Chest") share ZERO exact joins. Fuzzy-matching
+      "Ancient Ruin" onto "Ancient Civilization Ruins" would be an
+      invented link, which the hard rules forbid. UNBLOCKS only if the
+      map lane exposes chest POIs keyed by the same source ids the item
+      pages use — that is a REQUEST to their lane, not an edit.
+- [~] IL23 BLOCKED ON EVIDENCE 2026-08-20: paldb's capture calculator
+      posts to a SERVER endpoint (/api/captureRate) — the formula is not
+      in the page, not in the atlas, and not in any dump we hold.
+      Building one would mean either reverse-engineering a black box
+      (an invented model) or calling their API at runtime (breaks
+      offline-complete, blueprint §5 criterion 7). Stays unbuilt until a
+      datamined formula appears. What IS provable already ships: the 10
+      spheres' exact capture powers and the module cross-links.
+- [x] IL24 2026-08-20 (found BY the two blocks above — the tick's job
+      when the queue stalls): search now covers what an item GRANTS and
+      DOES, not just its name and kind. "cold resistance" returns every
+      piece of gear carrying it; "nutrition" returns the food. Before
+      this the only way to find gear by its effect was opening cards one
+      at a time. Haystacks are built once and cached. 836 green.
 
 - [x] IL1 2026-08-19: BIGGER than planned — the card was showing RAW
       EQUIPMENT-PASSIVE IDS ("TemperatureResist_Cold2"; pal-passive
