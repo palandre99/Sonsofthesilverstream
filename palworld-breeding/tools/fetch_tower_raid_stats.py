@@ -199,25 +199,29 @@ def parse_raw_card(page: str) -> dict:
     return out
 
 
-SKILL_RE = re.compile(
-    r'class="card itemPopup activeSkill">.*?Lv\.\s*(\d+)\s*<a[^>]*'
-    r'href="([^"]+)"[^>]*>([^<]+)</a>.*?'
-    r'<span style="padding-left: 35px">([A-Za-z]+)</span>.*?'
-    r'CoolTime[^:]*:\s*<span[^>]*>(\d+)</span>.*?'
-    r'Power:\s*<span[^>]*>(\d+)</span>(.*?)</div>\s*</div>', re.S)
-AGG_RE = re.compile(r'Aggregate.*?<span[^>]*>([^<]+)</span>'
-                    r'(?:\s*<span[^>]*>([^<]+)</span>)?', re.S)
-
-
-def parse_skills(page: str) -> list[dict]:
+def parse_skills(section: str) -> list[dict]:
+    """One skill per `activeSkill` card. Parsed per CHUNK, not one big
+    regex — the first version's tail capture stopped at the row's own
+    closing divs, silently dropping every Aggregate effect (all 269 moves
+    shipped effects: null; caught on the card's first render)."""
     skills = []
-    for m in SKILL_RE.finditer(page):
-        lv, _href, name, element, ct, power, tail = m.groups()
-        agg = AGG_RE.search(tail)
-        effects = " ".join(t.strip() for t in agg.groups() if t) if agg else None
-        skills.append({"lv": int(lv), "name": name.strip(),
-                       "element": element, "ct": int(ct),
-                       "power": int(power), "effects": effects})
+    for chunk in section.split('class="card itemPopup activeSkill"')[1:]:
+        chunk = chunk[:4000]
+        lv = re.search(r"Lv\.\s*(\d+)", chunk)
+        name = re.search(r'href="[^"]+"[^>]*>([^<]+)</a>', chunk)
+        el = re.search(r'padding-left: 35px">([A-Za-z]+)</span>', chunk)
+        ct = re.search(r"CoolTime[^:]*:\s*<span[^>]*>(\d+)</span>", chunk)
+        power = re.search(r"Power:\s*<span[^>]*>(\d+)</span>", chunk)
+        if not (lv and name and el and ct and power):
+            continue
+        effects = None
+        agg = re.search(r"Aggregate:</span>(.*?)</div>", chunk, re.S)
+        if agg:
+            text = re.sub(r"<[^>]+>", " ", agg.group(1))
+            effects = re.sub(r"\s+", " ", text).strip() or None
+        skills.append({"lv": int(lv.group(1)), "name": name.group(1).strip(),
+                       "element": el.group(1), "ct": int(ct.group(1)),
+                       "power": int(power.group(1)), "effects": effects})
     return skills
 
 

@@ -3,11 +3,14 @@
 import type { BossEncounter } from '../data/towerRaid.g';
 
 /** The name a player uses: "Zoe & Grizzbolt", not the full ceremonial
- * title. Paired bosses carry an "A & B" tail; everything else's title is
- * already short enough to BE the name. */
+ * title. Every paired boss in the data is "<one word> & <one word>" at
+ * the title's tail — kept STRICT on purpose: a looser match swallowed
+ * the title word before the name ("Boss Zoe & Grizzbolt", seen on the
+ * first render), and an unmatched future name falls back to the full
+ * title, which is never wrong, only long. */
 export function shortName(title: string): string {
-  const m = title.match(/([A-Z][\w'-]*(?: [A-Z][\w'-]*)? & [A-Z][\w'-]*(?: [A-Z][\w'-]*)?)$/);
-  return m ? m[1] : title;
+  const m = title.match(/([A-Z][\w'-]*) & ([A-Z][\w'-]*)$/);
+  return m ? `${m[1]} & ${m[2]}` : title;
 }
 
 /** "12,900" — a fight HP bar is a big number; make it readable. */

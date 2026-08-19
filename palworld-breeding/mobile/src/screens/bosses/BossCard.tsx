@@ -21,11 +21,12 @@ import { Icon } from '../../ui/Icon';
 import { ELEMENT_ICONS } from '../../data/statIcons';
 import type { BossEncounter } from '../../data/towerRaid.g';
 import {
-  attainLabel, boxKeyOf, cachedDerivations, derivationsReady,
+  attainLabel, boxKeyOf, cachedDerivations, derivationsReady, effortSteps,
   getAttainContext, type Attain,
 } from '../../logic/recommend';
 import {
-  matchupLabel, rankCounters, weaknessLabel, type CounterRow,
+  compareCounters, matchupLabel, rankCounters, weaknessLabel,
+  type CounterRow,
 } from '../../logic/counters';
 import { effectWords, fmtHp, levelFit, shortName } from '../../bosses/format';
 import { isBeaten, loadRecord, onRecordChange, toggleBeaten } from '../../bosses/record';
@@ -65,32 +66,37 @@ function CounterPalRow({ row, why, attain, onOpen, onPlan }: {
   onOpen: () => void; onPlan?: (() => void) | null;
 }) {
   const label = attain ? attainLabel(attain) : null;
+  // "Plan it" sits BESIDE the tappable area, never inside it — a button
+  // nested in a button is invalid on web (the QA render flagged the
+  // hydration error) and a tap-conflict on the phone.
   return (
-    <Pressable
-      onPress={onOpen}
-      accessibilityRole="button"
-      accessibilityLabel={`${row.name}. ${why}${label ? ` ${label.long}` : ''}`}
-      style={({ pressed }) => [{
-        flexDirection: 'row', alignItems: 'center', gap: 10,
-        paddingVertical: 7, opacity: pressed ? 0.6 : 1,
-      }]}
-    >
-      <PalIcon name={row.name} size={40} />
-      <View style={{ flex: 1 }}>
-        <View style={[s.row, { gap: 6, flexWrap: 'wrap' }]}>
-          <Text style={{ color: T.ink, fontWeight: '800', fontSize: 14 }}>
-            {row.name}
+    <View style={[s.row, { gap: 10, paddingVertical: 7 }]}>
+      <Pressable
+        onPress={onOpen}
+        accessibilityRole="button"
+        accessibilityLabel={`${row.name}. ${why}${label ? ` ${label.long}` : ''}`}
+        style={({ pressed }) => [{
+          flexDirection: 'row', alignItems: 'center', gap: 10,
+          flex: 1, opacity: pressed ? 0.6 : 1,
+        }]}
+      >
+        <PalIcon name={row.name} size={40} />
+        <View style={{ flex: 1 }}>
+          <View style={[s.row, { gap: 6, flexWrap: 'wrap' }]}>
+            <Text style={{ color: T.ink, fontWeight: '800', fontSize: 14 }}>
+              {row.name}
+            </Text>
+            {label && <Badge kind="plain">{label.short}</Badge>}
+          </View>
+          <Text style={[s.body, { fontSize: 12, lineHeight: 16, marginTop: 1 }]}>
+            {why}
           </Text>
-          {label && <Badge kind="plain">{label.short}</Badge>}
         </View>
-        <Text style={[s.body, { fontSize: 12, lineHeight: 16, marginTop: 1 }]}>
-          {why}
-        </Text>
-      </View>
+      </Pressable>
       {onPlan && (
         <Btn small label="Plan it" onPress={onPlan} />
       )}
-    </Pressable>
+    </View>
   );
 }
 
@@ -153,9 +159,15 @@ export function BossCard({ base, hard, onClose }: {
       // only actionable advice: something to breed, catch, or unlock
       if (a.kind === 'later' && !a.unlock) continue;
       out.push({ row: r, attain: a });
-      if (out.length >= 5) break;
     }
-    return out;
+    // every row already hits for double, so CLOSENESS to this save leads
+    // — the section's copy promises exactly that, and a two-step breed
+    // beats a 25-step wonder (the kindling rule, applied to fights).
+    // Matchup order breaks effort ties.
+    out.sort((a, b) =>
+      effortSteps(a.attain) - effortSteps(b.attain)
+      || compareCounters(a.row, b.row));
+    return out.slice(0, 5);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ready, boxKeyOf(boxNames), playerLevel, enc]);
 
@@ -334,7 +346,9 @@ export function BossCard({ base, hard, onClose }: {
                   const c = ELEMENT_COLORS[m.element.toLowerCase()] ?? ELEMENT_COLORS.neutral;
                   const eff = effectWords(m.effects);
                   return (
-                    <View key={`${m.lv}-${m.name}`} style={[s.row, { gap: 8 }]}>
+                    <View key={`${m.lv}-${m.name}`} style={[s.row, { gap: 8 }]}
+                      accessible
+                      accessibilityLabel={`${m.name}, ${m.element}, power ${m.power}${eff ? `, causes ${eff}` : ''}`}>
                       <View style={[s.chip, {
                         backgroundColor: c.bg, flexDirection: 'row',
                         alignItems: 'center', gap: 4, paddingHorizontal: 6,
