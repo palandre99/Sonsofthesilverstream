@@ -112,6 +112,29 @@ describe('sources speak in a player’s words', () => {
   });
 });
 
+describe('equipment passives resolve to the game’s names', () => {
+  it('every passive id the stats layer uses has a display name', () => {
+    const stats = JSON.parse(readFileSync(
+      join(__dirname, '../public/data/item_stats_1_0.json'), 'utf8')) as {
+      stats: Record<string, { passives?: string[] }>;
+    };
+    const names = (F as unknown as {
+      equipPassiveNames: Record<string, string>;
+    }).equipPassiveNames;
+    const used = new Set<string>();
+    for (const v of Object.values(stats.stats)) {
+      for (const p of v.passives ?? []) used.add(p);
+    }
+    expect(used.size).toBeGreaterThanOrEqual(20);
+    for (const p of used) {
+      expect(names[p], `no display name for ${p}`).toBeDefined();
+      expect(names[p]).not.toMatch(/_/);
+    }
+    // the probe's own canary
+    expect(names.TemperatureResist_Cold2).toBe('Cold Resistance Lv. 2');
+  });
+});
+
 describe('descriptions shipped clean', () => {
   it('no shipped description carries a raw placeholder tag', () => {
     for (const [id, f] of Object.entries(F.facts)) {

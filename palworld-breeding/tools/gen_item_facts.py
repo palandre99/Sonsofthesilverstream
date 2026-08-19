@@ -54,7 +54,11 @@ GAME_TAG = re.compile(r"<[a-zA-Z]+ id=\|[^|]*\|/>")
 EFFECT_LABELS: dict[str, str] = {
     "Nutrition": "Nutrition", "SAN": "SAN", "Work Speed": "Work Speed",
     "Recovery Time": "Recovery Time", "Weight Reduction": "Weight Reduction",
-    "Restores": "Restores", "Health": "Health", "Stamina": "Stamina",
+    # bare "Health" is deliberately absent: it is the family pages' per-tier
+    # hp chip repeated once per tier, and every carrier already ships hp in
+    # the stats layer (verified 2026-08-19: zero items have the chip
+    # without the stat) — it flooded armor cards with five Health rows
+    "Restores": "Restores", "Stamina": "Stamina",
     "Defense Bonus": "Defense Bonus", "Attack Bonus": "Attack Bonus",
     "Health Recovery": "Health Recovery", "Speed": "Speed",
     "Exp": "EXP", "Exp_Increase": "EXP increase",
@@ -149,6 +153,11 @@ def main() -> None:
         (CACHE / "item_pages_raw.json").read_text(encoding="utf-8"))
     tree = json.loads(
         (CACHE / "tech_tree_raw.json").read_text(encoding="utf-8"))["nodes"]
+    equip_passives: dict[str, str] = {}
+    ep_path = CACHE / "equip_passives_raw.json"
+    if ep_path.exists():
+        equip_passives = json.loads(
+            ep_path.read_text(encoding="utf-8"))["names"]
 
     tech_by_id = {n["id"]: n for n in tree}
     tech_by_name: dict[str, list[dict]] = {}
@@ -340,6 +349,10 @@ def main() -> None:
         },
         "counts": counts | {"taggedDescriptions": tagged},
         "mapObjectNames": dict(sorted(map_objects.items())),
+        # equipment-passive id -> the game's display name ("Cold
+        # Resistance Lv. 2"), from the item pages' skill bars at exact
+        # identity — the stats layer's raw ids resolve through this
+        "equipPassiveNames": dict(sorted(equip_passives.items())),
         "techTreeSize": len(tree),
         "facts": dict(sorted(facts.items())),
     }

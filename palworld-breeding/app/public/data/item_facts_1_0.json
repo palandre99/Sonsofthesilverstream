@@ -57,6 +57,37 @@
   "WorkBench": "Primitive Workbench",
   "YakushimaBoss002_Relic": "Moon Lord Statue"
  },
+ "equipPassiveNames": {
+  "Attack_ACC_up1_Armor": "Attack Up (S) Lv. 1",
+  "Attack_ACC_up2_Armor": "Attack Up (S) Lv. 2",
+  "Attack_ACC_up3_Armor": "Attack Up (S) Lv. 3",
+  "Attack_ACC_up4_Armor": "Attack Up (S) Lv. 4",
+  "ElementResist_Aqua_1": "Water Damage Reduction Lv. 1",
+  "ElementResist_Dark_1": "Dark Damage Reduction Lv. 1",
+  "ElementResist_Dragon_1": "Dragon Damage Reduction Lv. 1",
+  "ElementResist_Earth_1": "Earth Damage Reduction Lv. 1",
+  "ElementResist_Fire_1": "Fire Damage Reduction Lv. 1",
+  "ElementResist_Ice_1": "Ice Damage Reduction Lv. 1",
+  "ElementResist_Leaf_1": "Grass Damage Reduction Lv. 1",
+  "ElementResist_Normal_1": "Neutral Damage Reduction Lv. 1",
+  "ElementResist_Thunder_1": "Electric Damage Reduction Lv. 1",
+  "MaxInventoryWeight_up_Equip_1": "Max Carrying Capacity Lv. 1",
+  "MaxInventoryWeight_up_Equip_3": "Max Carrying Capacity Lv. 3",
+  "MaxInventoryWeight_up_Equip_4": "Max Carrying Capacity Lv. 4",
+  "OctaviaArmorVampire": "Blood Is Fuel",
+  "TemperatureResist_Cold1": "Cold Resistance Lv. 1",
+  "TemperatureResist_Cold2": "Cold Resistance Lv. 2",
+  "TemperatureResist_Cold3": "Cold Resistance Lv. 3",
+  "TemperatureResist_Heat1": "Heat Resistance Lv. 1",
+  "TemperatureResist_Heat2": "Heat Resistance Lv. 2",
+  "TemperatureResist_Heat3": "Heat Resistance Lv. 3",
+  "WorkSpeed_ACC_up1": "Speedy Worker Lv. 1",
+  "YakushimaDagameBoost_Magic_Equip": "Hallowed Power: Magic",
+  "YakushimaDagameBoost_Melee_Equip": "Hallowed Power: Close Range",
+  "YakushimaDagameBoost_Ranged_Equip": "Hallowed Power: Ranged",
+  "YakushimaDagameBoost_Summon_Equip": "Hallowed Power: Summon",
+  "YakushimaProtection_Equip": "Hallowed Guard"
+ },
  "techTreeSize": 588,
  "facts": {
   "AIcore": {
@@ -1496,28 +1527,6 @@
     "level": 68,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "2400"
-    ],
-    [
-     "Health",
-     "2640"
-    ],
-    [
-     "Health",
-     "2760"
-    ],
-    [
-     "Health",
-     "2880"
-    ],
-    [
-     "Health",
-     "3120"
-    ]
-   ],
    "desc": "Ancient armor forged from Soralite Ingot.\nCrafted with the essence of a lost civilization, it boasts overwhelming defensive power and is capable of withstanding cataclysmic threats.Cold Resistance Lv. 2"
   },
   "AncientArmorCold": {
@@ -1613,28 +1622,6 @@
     "level": 77,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "2400"
-    ],
-    [
-     "Health",
-     "2640"
-    ],
-    [
-     "Health",
-     "2760"
-    ],
-    [
-     "Health",
-     "2880"
-    ],
-    [
-     "Health",
-     "3120"
-    ]
-   ],
    "desc": "Refined Ancient Armor.\nIts cold resistance has been further enhanced using ancient technology, allowing the wearer to maintain their strength even in extreme cold regions.Cold Resistance Lv. 3"
   },
   "AncientArmorCold_2": {
@@ -1730,28 +1717,6 @@
     "level": 77,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "2400"
-    ],
-    [
-     "Health",
-     "2640"
-    ],
-    [
-     "Health",
-     "2760"
-    ],
-    [
-     "Health",
-     "2880"
-    ],
-    [
-     "Health",
-     "3120"
-    ]
-   ],
    "desc": "Refined Ancient Armor.\nIts cold resistance has been further enhanced using ancient technology, allowing the wearer to maintain their strength even in extreme cold regions.Cold Resistance Lv. 3"
   },
   "AncientArmorCold_3": {
@@ -1847,28 +1812,6 @@
     "level": 77,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "2400"
-    ],
-    [
-     "Health",
-     "2640"
-    ],
-    [
-     "Health",
-     "2760"
-    ],
-    [
-     "Health",
-     "2880"
-    ],
-    [
-     "Health",
-     "3120"
-    ]
-   ],
    "desc": "Refined Ancient Armor.\nIts cold resistance has been further enhanced using ancient technology, allowing the wearer to maintain their strength even in extreme cold regions.Cold Resistance Lv. 3"
   },
   "AncientArmorCold_4": {
@@ -1964,28 +1907,6 @@
     "level": 77,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "2400"
-    ],
-    [
-     "Health",
-     "2640"
-    ],
-    [
-     "Health",
-     "2760"
-    ],
-    [
-     "Health",
-     "2880"
-    ],
-    [
-     "Health",
-     "3120"
-    ]
-   ],
    "desc": "Refined Ancient Armor.\nIts cold resistance has been further enhanced using ancient technology, allowing the wearer to maintain their strength even in extreme cold regions.Cold Resistance Lv. 3"
   },
   "AncientArmorCold_5": {
@@ -2081,28 +2002,6 @@
     "level": 77,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "2400"
-    ],
-    [
-     "Health",
-     "2640"
-    ],
-    [
-     "Health",
-     "2760"
-    ],
-    [
-     "Health",
-     "2880"
-    ],
-    [
-     "Health",
-     "3120"
-    ]
-   ],
    "desc": "Refined Ancient Armor.\nIts cold resistance has been further enhanced using ancient technology, allowing the wearer to maintain their strength even in extreme cold regions.Cold Resistance Lv. 3"
   },
   "AncientArmorHeat": {
@@ -2178,28 +2077,6 @@
     "level": 75,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "2400"
-    ],
-    [
-     "Health",
-     "2640"
-    ],
-    [
-     "Health",
-     "2760"
-    ],
-    [
-     "Health",
-     "2880"
-    ],
-    [
-     "Health",
-     "3120"
-    ]
-   ],
    "desc": "Refined Ancient Armor.\nIts heat resistance has been further enhanced using ancient technology, allowing it to endure scorching environmentsCold Resistance Lv. 2"
   },
   "AncientArmorHeat_2": {
@@ -2275,28 +2152,6 @@
     "level": 75,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "2400"
-    ],
-    [
-     "Health",
-     "2640"
-    ],
-    [
-     "Health",
-     "2760"
-    ],
-    [
-     "Health",
-     "2880"
-    ],
-    [
-     "Health",
-     "3120"
-    ]
-   ],
    "desc": "Refined Ancient Armor.\nIts heat resistance has been further enhanced using ancient technology, allowing it to endure scorching environmentsCold Resistance Lv. 2"
   },
   "AncientArmorHeat_3": {
@@ -2372,28 +2227,6 @@
     "level": 75,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "2400"
-    ],
-    [
-     "Health",
-     "2640"
-    ],
-    [
-     "Health",
-     "2760"
-    ],
-    [
-     "Health",
-     "2880"
-    ],
-    [
-     "Health",
-     "3120"
-    ]
-   ],
    "desc": "Refined Ancient Armor.\nIts heat resistance has been further enhanced using ancient technology, allowing it to endure scorching environmentsCold Resistance Lv. 2"
   },
   "AncientArmorHeat_4": {
@@ -2469,28 +2302,6 @@
     "level": 75,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "2400"
-    ],
-    [
-     "Health",
-     "2640"
-    ],
-    [
-     "Health",
-     "2760"
-    ],
-    [
-     "Health",
-     "2880"
-    ],
-    [
-     "Health",
-     "3120"
-    ]
-   ],
    "desc": "Refined Ancient Armor.\nIts heat resistance has been further enhanced using ancient technology, allowing it to endure scorching environmentsCold Resistance Lv. 2"
   },
   "AncientArmorHeat_5": {
@@ -2566,28 +2377,6 @@
     "level": 75,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "2400"
-    ],
-    [
-     "Health",
-     "2640"
-    ],
-    [
-     "Health",
-     "2760"
-    ],
-    [
-     "Health",
-     "2880"
-    ],
-    [
-     "Health",
-     "3120"
-    ]
-   ],
    "desc": "Refined Ancient Armor.\nIts heat resistance has been further enhanced using ancient technology, allowing it to endure scorching environmentsCold Resistance Lv. 2"
   },
   "AncientArmorWeight": {
@@ -2683,28 +2472,6 @@
     "level": 79,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "2400"
-    ],
-    [
-     "Health",
-     "2640"
-    ],
-    [
-     "Health",
-     "2760"
-    ],
-    [
-     "Health",
-     "2880"
-    ],
-    [
-     "Health",
-     "3120"
-    ]
-   ],
    "desc": "Refined Ancient Armor.\nIt is equipped with ancient auxiliary mechanisms, allowing the wearer to carry more supplies.Cold Resistance Lv. 2"
   },
   "AncientArmorWeight_2": {
@@ -2800,28 +2567,6 @@
     "level": 79,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "2400"
-    ],
-    [
-     "Health",
-     "2640"
-    ],
-    [
-     "Health",
-     "2760"
-    ],
-    [
-     "Health",
-     "2880"
-    ],
-    [
-     "Health",
-     "3120"
-    ]
-   ],
    "desc": "Refined Ancient Armor.\nIt is equipped with ancient auxiliary mechanisms, allowing the wearer to carry more supplies.Cold Resistance Lv. 2"
   },
   "AncientArmorWeight_3": {
@@ -2917,28 +2662,6 @@
     "level": 79,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "2400"
-    ],
-    [
-     "Health",
-     "2640"
-    ],
-    [
-     "Health",
-     "2760"
-    ],
-    [
-     "Health",
-     "2880"
-    ],
-    [
-     "Health",
-     "3120"
-    ]
-   ],
    "desc": "Refined Ancient Armor.\nIt is equipped with ancient auxiliary mechanisms, allowing the wearer to carry more supplies.Cold Resistance Lv. 2"
   },
   "AncientArmorWeight_4": {
@@ -3034,28 +2757,6 @@
     "level": 79,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "2400"
-    ],
-    [
-     "Health",
-     "2640"
-    ],
-    [
-     "Health",
-     "2760"
-    ],
-    [
-     "Health",
-     "2880"
-    ],
-    [
-     "Health",
-     "3120"
-    ]
-   ],
    "desc": "Refined Ancient Armor.\nIt is equipped with ancient auxiliary mechanisms, allowing the wearer to carry more supplies.Cold Resistance Lv. 2"
   },
   "AncientArmorWeight_5": {
@@ -3151,28 +2852,6 @@
     "level": 79,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "2400"
-    ],
-    [
-     "Health",
-     "2640"
-    ],
-    [
-     "Health",
-     "2760"
-    ],
-    [
-     "Health",
-     "2880"
-    ],
-    [
-     "Health",
-     "3120"
-    ]
-   ],
    "desc": "Refined Ancient Armor.\nIt is equipped with ancient auxiliary mechanisms, allowing the wearer to carry more supplies.Cold Resistance Lv. 2"
   },
   "AncientArmor_2": {
@@ -3248,28 +2927,6 @@
     "level": 68,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "2400"
-    ],
-    [
-     "Health",
-     "2640"
-    ],
-    [
-     "Health",
-     "2760"
-    ],
-    [
-     "Health",
-     "2880"
-    ],
-    [
-     "Health",
-     "3120"
-    ]
-   ],
    "desc": "Ancient armor forged from Soralite Ingot.\nCrafted with the essence of a lost civilization, it boasts overwhelming defensive power and is capable of withstanding cataclysmic threats.Cold Resistance Lv. 2"
   },
   "AncientArmor_3": {
@@ -3345,28 +3002,6 @@
     "level": 68,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "2400"
-    ],
-    [
-     "Health",
-     "2640"
-    ],
-    [
-     "Health",
-     "2760"
-    ],
-    [
-     "Health",
-     "2880"
-    ],
-    [
-     "Health",
-     "3120"
-    ]
-   ],
    "desc": "Ancient armor forged from Soralite Ingot.\nCrafted with the essence of a lost civilization, it boasts overwhelming defensive power and is capable of withstanding cataclysmic threats.Cold Resistance Lv. 2"
   },
   "AncientArmor_4": {
@@ -3442,28 +3077,6 @@
     "level": 68,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "2400"
-    ],
-    [
-     "Health",
-     "2640"
-    ],
-    [
-     "Health",
-     "2760"
-    ],
-    [
-     "Health",
-     "2880"
-    ],
-    [
-     "Health",
-     "3120"
-    ]
-   ],
    "desc": "Ancient armor forged from Soralite Ingot.\nCrafted with the essence of a lost civilization, it boasts overwhelming defensive power and is capable of withstanding cataclysmic threats.Cold Resistance Lv. 2"
   },
   "AncientArmor_5": {
@@ -3539,28 +3152,6 @@
     "level": 68,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "2400"
-    ],
-    [
-     "Health",
-     "2640"
-    ],
-    [
-     "Health",
-     "2760"
-    ],
-    [
-     "Health",
-     "2880"
-    ],
-    [
-     "Health",
-     "3120"
-    ]
-   ],
    "desc": "Ancient armor forged from Soralite Ingot.\nCrafted with the essence of a lost civilization, it boasts overwhelming defensive power and is capable of withstanding cataclysmic threats.Cold Resistance Lv. 2"
   },
   "AncientHelmet": {
@@ -3636,28 +3227,6 @@
     "level": 68,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "1200"
-    ],
-    [
-     "Health",
-     "1320"
-    ],
-    [
-     "Health",
-     "1380"
-    ],
-    [
-     "Health",
-     "1440"
-    ],
-    [
-     "Health",
-     "1560"
-    ]
-   ],
    "desc": "An ancient helmet forged from Soralite Ingot.\nIt is imbued with wisdom passed down through the ages, protecting its wearer with unwavering strength.\nIts defensive capabilities far surpass those of modern equipment.Neutral Damage Reduction Lv. 1"
   },
   "AncientHelmet_2": {
@@ -3733,28 +3302,6 @@
     "level": 68,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "1200"
-    ],
-    [
-     "Health",
-     "1320"
-    ],
-    [
-     "Health",
-     "1380"
-    ],
-    [
-     "Health",
-     "1440"
-    ],
-    [
-     "Health",
-     "1560"
-    ]
-   ],
    "desc": "An ancient helmet forged from Soralite Ingot.\nIt is imbued with wisdom passed down through the ages, protecting its wearer with unwavering strength.\nIts defensive capabilities far surpass those of modern equipment.Neutral Damage Reduction Lv. 1"
   },
   "AncientHelmet_3": {
@@ -3830,28 +3377,6 @@
     "level": 68,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "1200"
-    ],
-    [
-     "Health",
-     "1320"
-    ],
-    [
-     "Health",
-     "1380"
-    ],
-    [
-     "Health",
-     "1440"
-    ],
-    [
-     "Health",
-     "1560"
-    ]
-   ],
    "desc": "An ancient helmet forged from Soralite Ingot.\nIt is imbued with wisdom passed down through the ages, protecting its wearer with unwavering strength.\nIts defensive capabilities far surpass those of modern equipment.Neutral Damage Reduction Lv. 1"
   },
   "AncientHelmet_4": {
@@ -3927,28 +3452,6 @@
     "level": 68,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "1200"
-    ],
-    [
-     "Health",
-     "1320"
-    ],
-    [
-     "Health",
-     "1380"
-    ],
-    [
-     "Health",
-     "1440"
-    ],
-    [
-     "Health",
-     "1560"
-    ]
-   ],
    "desc": "An ancient helmet forged from Soralite Ingot.\nIt is imbued with wisdom passed down through the ages, protecting its wearer with unwavering strength.\nIts defensive capabilities far surpass those of modern equipment.Neutral Damage Reduction Lv. 1"
   },
   "AncientHelmet_5": {
@@ -4024,28 +3527,6 @@
     "level": 68,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "1200"
-    ],
-    [
-     "Health",
-     "1320"
-    ],
-    [
-     "Health",
-     "1380"
-    ],
-    [
-     "Health",
-     "1440"
-    ],
-    [
-     "Health",
-     "1560"
-    ]
-   ],
    "desc": "An ancient helmet forged from Soralite Ingot.\nIt is imbued with wisdom passed down through the ages, protecting its wearer with unwavering strength.\nIts defensive capabilities far surpass those of modern equipment.Neutral Damage Reduction Lv. 1"
   },
   "AncientParts2": {
@@ -33801,28 +33282,6 @@
     "level": 4,
     "cost": 2
    },
-   "effects": [
-    [
-     "Health",
-     "70"
-    ],
-    [
-     "Health",
-     "91"
-    ],
-    [
-     "Health",
-     "98"
-    ],
-    [
-     "Health",
-     "105"
-    ],
-    [
-     "Health",
-     "112"
-    ]
-   ],
    "desc": "Clothes made from Cloth.\nProtects against cold nights.Cold Resistance Lv. 1"
   },
   "ClothArmorCold": {
@@ -33830,28 +33289,6 @@
     "level": 9,
     "cost": 3
    },
-   "effects": [
-    [
-     "Health",
-     "70"
-    ],
-    [
-     "Health",
-     "91"
-    ],
-    [
-     "Health",
-     "98"
-    ],
-    [
-     "Health",
-     "105"
-    ],
-    [
-     "Health",
-     "112"
-    ]
-   ],
    "desc": "A Cloth Outfit produced in cold regions.\nUseful for surviving in cold climates.Cold Resistance Lv. 2"
   },
   "ClothArmorCold_2": {
@@ -33859,28 +33296,6 @@
     "level": 9,
     "cost": 3
    },
-   "effects": [
-    [
-     "Health",
-     "70"
-    ],
-    [
-     "Health",
-     "91"
-    ],
-    [
-     "Health",
-     "98"
-    ],
-    [
-     "Health",
-     "105"
-    ],
-    [
-     "Health",
-     "112"
-    ]
-   ],
    "desc": "A Cloth Outfit produced in cold regions.\nUseful for surviving in cold climates.Cold Resistance Lv. 2"
   },
   "ClothArmorCold_3": {
@@ -33888,28 +33303,6 @@
     "level": 9,
     "cost": 3
    },
-   "effects": [
-    [
-     "Health",
-     "70"
-    ],
-    [
-     "Health",
-     "91"
-    ],
-    [
-     "Health",
-     "98"
-    ],
-    [
-     "Health",
-     "105"
-    ],
-    [
-     "Health",
-     "112"
-    ]
-   ],
    "desc": "A Cloth Outfit produced in cold regions.\nUseful for surviving in cold climates.Cold Resistance Lv. 2"
   },
   "ClothArmorCold_4": {
@@ -33917,28 +33310,6 @@
     "level": 9,
     "cost": 3
    },
-   "effects": [
-    [
-     "Health",
-     "70"
-    ],
-    [
-     "Health",
-     "91"
-    ],
-    [
-     "Health",
-     "98"
-    ],
-    [
-     "Health",
-     "105"
-    ],
-    [
-     "Health",
-     "112"
-    ]
-   ],
    "desc": "A Cloth Outfit produced in cold regions.\nUseful for surviving in cold climates.Cold Resistance Lv. 2"
   },
   "ClothArmorCold_5": {
@@ -33946,28 +33317,6 @@
     "level": 9,
     "cost": 3
    },
-   "effects": [
-    [
-     "Health",
-     "70"
-    ],
-    [
-     "Health",
-     "91"
-    ],
-    [
-     "Health",
-     "98"
-    ],
-    [
-     "Health",
-     "105"
-    ],
-    [
-     "Health",
-     "112"
-    ]
-   ],
    "desc": "A Cloth Outfit produced in cold regions.\nUseful for surviving in cold climates.Cold Resistance Lv. 2"
   },
   "ClothArmorHeat": {
@@ -34011,28 +33360,6 @@
     "level": 9,
     "cost": 3
    },
-   "effects": [
-    [
-     "Health",
-     "70"
-    ],
-    [
-     "Health",
-     "91"
-    ],
-    [
-     "Health",
-     "98"
-    ],
-    [
-     "Health",
-     "105"
-    ],
-    [
-     "Health",
-     "112"
-    ]
-   ],
    "desc": "A Cloth Outfit produced in hot regions.\nBoasts high heat resistance.Heat Resistance Lv. 2"
   },
   "ClothArmorHeat_2": {
@@ -34076,28 +33403,6 @@
     "level": 9,
     "cost": 3
    },
-   "effects": [
-    [
-     "Health",
-     "70"
-    ],
-    [
-     "Health",
-     "91"
-    ],
-    [
-     "Health",
-     "98"
-    ],
-    [
-     "Health",
-     "105"
-    ],
-    [
-     "Health",
-     "112"
-    ]
-   ],
    "desc": "A Cloth Outfit produced in hot regions.\nBoasts high heat resistance.Heat Resistance Lv. 2"
   },
   "ClothArmorHeat_3": {
@@ -34141,28 +33446,6 @@
     "level": 9,
     "cost": 3
    },
-   "effects": [
-    [
-     "Health",
-     "70"
-    ],
-    [
-     "Health",
-     "91"
-    ],
-    [
-     "Health",
-     "98"
-    ],
-    [
-     "Health",
-     "105"
-    ],
-    [
-     "Health",
-     "112"
-    ]
-   ],
    "desc": "A Cloth Outfit produced in hot regions.\nBoasts high heat resistance.Heat Resistance Lv. 2"
   },
   "ClothArmorHeat_4": {
@@ -34206,28 +33489,6 @@
     "level": 9,
     "cost": 3
    },
-   "effects": [
-    [
-     "Health",
-     "70"
-    ],
-    [
-     "Health",
-     "91"
-    ],
-    [
-     "Health",
-     "98"
-    ],
-    [
-     "Health",
-     "105"
-    ],
-    [
-     "Health",
-     "112"
-    ]
-   ],
    "desc": "A Cloth Outfit produced in hot regions.\nBoasts high heat resistance.Heat Resistance Lv. 2"
   },
   "ClothArmorHeat_5": {
@@ -34271,28 +33532,6 @@
     "level": 9,
     "cost": 3
    },
-   "effects": [
-    [
-     "Health",
-     "70"
-    ],
-    [
-     "Health",
-     "91"
-    ],
-    [
-     "Health",
-     "98"
-    ],
-    [
-     "Health",
-     "105"
-    ],
-    [
-     "Health",
-     "112"
-    ]
-   ],
    "desc": "A Cloth Outfit produced in hot regions.\nBoasts high heat resistance.Heat Resistance Lv. 2"
   },
   "ClothArmor_2": {
@@ -34300,28 +33539,6 @@
     "level": 4,
     "cost": 2
    },
-   "effects": [
-    [
-     "Health",
-     "70"
-    ],
-    [
-     "Health",
-     "91"
-    ],
-    [
-     "Health",
-     "98"
-    ],
-    [
-     "Health",
-     "105"
-    ],
-    [
-     "Health",
-     "112"
-    ]
-   ],
    "desc": "Clothes made from Cloth.\nProtects against cold nights.Cold Resistance Lv. 1"
   },
   "ClothArmor_3": {
@@ -34329,28 +33546,6 @@
     "level": 4,
     "cost": 2
    },
-   "effects": [
-    [
-     "Health",
-     "70"
-    ],
-    [
-     "Health",
-     "91"
-    ],
-    [
-     "Health",
-     "98"
-    ],
-    [
-     "Health",
-     "105"
-    ],
-    [
-     "Health",
-     "112"
-    ]
-   ],
    "desc": "Clothes made from Cloth.\nProtects against cold nights.Cold Resistance Lv. 1"
   },
   "ClothArmor_4": {
@@ -34358,28 +33553,6 @@
     "level": 4,
     "cost": 2
    },
-   "effects": [
-    [
-     "Health",
-     "70"
-    ],
-    [
-     "Health",
-     "91"
-    ],
-    [
-     "Health",
-     "98"
-    ],
-    [
-     "Health",
-     "105"
-    ],
-    [
-     "Health",
-     "112"
-    ]
-   ],
    "desc": "Clothes made from Cloth.\nProtects against cold nights.Cold Resistance Lv. 1"
   },
   "ClothArmor_5": {
@@ -34387,28 +33560,6 @@
     "level": 4,
     "cost": 2
    },
-   "effects": [
-    [
-     "Health",
-     "70"
-    ],
-    [
-     "Health",
-     "91"
-    ],
-    [
-     "Health",
-     "98"
-    ],
-    [
-     "Health",
-     "105"
-    ],
-    [
-     "Health",
-     "112"
-    ]
-   ],
    "desc": "Clothes made from Cloth.\nProtects against cold nights.Cold Resistance Lv. 1"
   },
   "Coal": {
@@ -34943,29 +34094,7 @@
    "tech": {
     "level": 23,
     "cost": 2
-   },
-   "effects": [
-    [
-     "Health",
-     "250"
-    ],
-    [
-     "Health",
-     "325"
-    ],
-    [
-     "Health",
-     "350"
-    ],
-    [
-     "Health",
-     "375"
-    ],
-    [
-     "Health",
-     "400"
-    ]
-   ]
+   }
   },
   "CopperArmorCold": {
    "recipe": [
@@ -35024,28 +34153,6 @@
     "level": 27,
     "cost": 2
    },
-   "effects": [
-    [
-     "Health",
-     "250"
-    ],
-    [
-     "Health",
-     "325"
-    ],
-    [
-     "Health",
-     "350"
-    ],
-    [
-     "Health",
-     "375"
-    ],
-    [
-     "Health",
-     "400"
-    ]
-   ],
    "desc": "Improved Metal Armor.\nUseful for surviving in cold climates.Cold Resistance Lv. 2"
   },
   "CopperArmorCold_2": {
@@ -35105,28 +34212,6 @@
     "level": 27,
     "cost": 2
    },
-   "effects": [
-    [
-     "Health",
-     "250"
-    ],
-    [
-     "Health",
-     "325"
-    ],
-    [
-     "Health",
-     "350"
-    ],
-    [
-     "Health",
-     "375"
-    ],
-    [
-     "Health",
-     "400"
-    ]
-   ],
    "desc": "Improved Metal Armor.\nUseful for surviving in cold climates.Cold Resistance Lv. 2"
   },
   "CopperArmorCold_3": {
@@ -35186,28 +34271,6 @@
     "level": 27,
     "cost": 2
    },
-   "effects": [
-    [
-     "Health",
-     "250"
-    ],
-    [
-     "Health",
-     "325"
-    ],
-    [
-     "Health",
-     "350"
-    ],
-    [
-     "Health",
-     "375"
-    ],
-    [
-     "Health",
-     "400"
-    ]
-   ],
    "desc": "Improved Metal Armor.\nUseful for surviving in cold climates.Cold Resistance Lv. 2"
   },
   "CopperArmorCold_4": {
@@ -35267,28 +34330,6 @@
     "level": 27,
     "cost": 2
    },
-   "effects": [
-    [
-     "Health",
-     "250"
-    ],
-    [
-     "Health",
-     "325"
-    ],
-    [
-     "Health",
-     "350"
-    ],
-    [
-     "Health",
-     "375"
-    ],
-    [
-     "Health",
-     "400"
-    ]
-   ],
    "desc": "Improved Metal Armor.\nUseful for surviving in cold climates.Cold Resistance Lv. 2"
   },
   "CopperArmorCold_5": {
@@ -35348,28 +34389,6 @@
     "level": 27,
     "cost": 2
    },
-   "effects": [
-    [
-     "Health",
-     "250"
-    ],
-    [
-     "Health",
-     "325"
-    ],
-    [
-     "Health",
-     "350"
-    ],
-    [
-     "Health",
-     "375"
-    ],
-    [
-     "Health",
-     "400"
-    ]
-   ],
    "desc": "Improved Metal Armor.\nUseful for surviving in cold climates.Cold Resistance Lv. 2"
   },
   "CopperArmorHeat": {
@@ -35457,28 +34476,6 @@
     "level": 25,
     "cost": 2
    },
-   "effects": [
-    [
-     "Health",
-     "250"
-    ],
-    [
-     "Health",
-     "325"
-    ],
-    [
-     "Health",
-     "350"
-    ],
-    [
-     "Health",
-     "375"
-    ],
-    [
-     "Health",
-     "400"
-    ]
-   ],
    "desc": "Improved Metal Armor.\nBoasts high heat resistance.Heat Resistance Lv. 2"
   },
   "CopperArmorHeat_2": {
@@ -35566,28 +34563,6 @@
     "level": 25,
     "cost": 2
    },
-   "effects": [
-    [
-     "Health",
-     "250"
-    ],
-    [
-     "Health",
-     "325"
-    ],
-    [
-     "Health",
-     "350"
-    ],
-    [
-     "Health",
-     "375"
-    ],
-    [
-     "Health",
-     "400"
-    ]
-   ],
    "desc": "Improved Metal Armor.\nBoasts high heat resistance.Heat Resistance Lv. 2"
   },
   "CopperArmorHeat_3": {
@@ -35675,28 +34650,6 @@
     "level": 25,
     "cost": 2
    },
-   "effects": [
-    [
-     "Health",
-     "250"
-    ],
-    [
-     "Health",
-     "325"
-    ],
-    [
-     "Health",
-     "350"
-    ],
-    [
-     "Health",
-     "375"
-    ],
-    [
-     "Health",
-     "400"
-    ]
-   ],
    "desc": "Improved Metal Armor.\nBoasts high heat resistance.Heat Resistance Lv. 2"
   },
   "CopperArmorHeat_4": {
@@ -35784,28 +34737,6 @@
     "level": 25,
     "cost": 2
    },
-   "effects": [
-    [
-     "Health",
-     "250"
-    ],
-    [
-     "Health",
-     "325"
-    ],
-    [
-     "Health",
-     "350"
-    ],
-    [
-     "Health",
-     "375"
-    ],
-    [
-     "Health",
-     "400"
-    ]
-   ],
    "desc": "Improved Metal Armor.\nBoasts high heat resistance.Heat Resistance Lv. 2"
   },
   "CopperArmorHeat_5": {
@@ -35893,28 +34824,6 @@
     "level": 25,
     "cost": 2
    },
-   "effects": [
-    [
-     "Health",
-     "250"
-    ],
-    [
-     "Health",
-     "325"
-    ],
-    [
-     "Health",
-     "350"
-    ],
-    [
-     "Health",
-     "375"
-    ],
-    [
-     "Health",
-     "400"
-    ]
-   ],
    "desc": "Improved Metal Armor.\nBoasts high heat resistance.Heat Resistance Lv. 2"
   },
   "CopperArmor_2": {
@@ -35981,29 +34890,7 @@
    "tech": {
     "level": 23,
     "cost": 2
-   },
-   "effects": [
-    [
-     "Health",
-     "250"
-    ],
-    [
-     "Health",
-     "325"
-    ],
-    [
-     "Health",
-     "350"
-    ],
-    [
-     "Health",
-     "375"
-    ],
-    [
-     "Health",
-     "400"
-    ]
-   ]
+   }
   },
   "CopperArmor_3": {
    "recipe": [
@@ -36069,29 +34956,7 @@
    "tech": {
     "level": 23,
     "cost": 2
-   },
-   "effects": [
-    [
-     "Health",
-     "250"
-    ],
-    [
-     "Health",
-     "325"
-    ],
-    [
-     "Health",
-     "350"
-    ],
-    [
-     "Health",
-     "375"
-    ],
-    [
-     "Health",
-     "400"
-    ]
-   ]
+   }
   },
   "CopperArmor_4": {
    "recipe": [
@@ -36157,29 +35022,7 @@
    "tech": {
     "level": 23,
     "cost": 2
-   },
-   "effects": [
-    [
-     "Health",
-     "250"
-    ],
-    [
-     "Health",
-     "325"
-    ],
-    [
-     "Health",
-     "350"
-    ],
-    [
-     "Health",
-     "375"
-    ],
-    [
-     "Health",
-     "400"
-    ]
-   ]
+   }
   },
   "CopperArmor_5": {
    "recipe": [
@@ -36245,29 +35088,7 @@
    "tech": {
     "level": 23,
     "cost": 2
-   },
-   "effects": [
-    [
-     "Health",
-     "250"
-    ],
-    [
-     "Health",
-     "325"
-    ],
-    [
-     "Health",
-     "350"
-    ],
-    [
-     "Health",
-     "375"
-    ],
-    [
-     "Health",
-     "400"
-    ]
-   ]
+   }
   },
   "CopperHelmet": {
    "recipe": [
@@ -36333,29 +35154,7 @@
    "tech": {
     "level": 23,
     "cost": 2
-   },
-   "effects": [
-    [
-     "Health",
-     "100"
-    ],
-    [
-     "Health",
-     "130"
-    ],
-    [
-     "Health",
-     "140"
-    ],
-    [
-     "Health",
-     "150"
-    ],
-    [
-     "Health",
-     "160"
-    ]
-   ]
+   }
   },
   "CopperHelmet_2": {
    "recipe": [
@@ -36421,29 +35220,7 @@
    "tech": {
     "level": 23,
     "cost": 2
-   },
-   "effects": [
-    [
-     "Health",
-     "100"
-    ],
-    [
-     "Health",
-     "130"
-    ],
-    [
-     "Health",
-     "140"
-    ],
-    [
-     "Health",
-     "150"
-    ],
-    [
-     "Health",
-     "160"
-    ]
-   ]
+   }
   },
   "CopperHelmet_3": {
    "recipe": [
@@ -36509,29 +35286,7 @@
    "tech": {
     "level": 23,
     "cost": 2
-   },
-   "effects": [
-    [
-     "Health",
-     "100"
-    ],
-    [
-     "Health",
-     "130"
-    ],
-    [
-     "Health",
-     "140"
-    ],
-    [
-     "Health",
-     "150"
-    ],
-    [
-     "Health",
-     "160"
-    ]
-   ]
+   }
   },
   "CopperHelmet_4": {
    "recipe": [
@@ -36597,29 +35352,7 @@
    "tech": {
     "level": 23,
     "cost": 2
-   },
-   "effects": [
-    [
-     "Health",
-     "100"
-    ],
-    [
-     "Health",
-     "130"
-    ],
-    [
-     "Health",
-     "140"
-    ],
-    [
-     "Health",
-     "150"
-    ],
-    [
-     "Health",
-     "160"
-    ]
-   ]
+   }
   },
   "CopperHelmet_5": {
    "recipe": [
@@ -36685,29 +35418,7 @@
    "tech": {
     "level": 23,
     "cost": 2
-   },
-   "effects": [
-    [
-     "Health",
-     "100"
-    ],
-    [
-     "Health",
-     "130"
-    ],
-    [
-     "Health",
-     "140"
-    ],
-    [
-     "Health",
-     "150"
-    ],
-    [
-     "Health",
-     "160"
-    ]
-   ]
+   }
   },
   "CopperIngot": {
    "recipe": [
@@ -44923,28 +43634,6 @@
     "level": 12,
     "cost": 2
    },
-   "effects": [
-    [
-     "Health",
-     "140"
-    ],
-    [
-     "Health",
-     "182"
-    ],
-    [
-     "Health",
-     "196"
-    ],
-    [
-     "Health",
-     "210"
-    ],
-    [
-     "Health",
-     "224"
-    ]
-   ],
    "desc": "Armor made from Leather.\nIts warmth and defense have been improved.Cold Resistance Lv. 1"
   },
   "FurArmorCold": {
@@ -45008,28 +43697,6 @@
     "level": 18,
     "cost": 3
    },
-   "effects": [
-    [
-     "Health",
-     "140"
-    ],
-    [
-     "Health",
-     "182"
-    ],
-    [
-     "Health",
-     "196"
-    ],
-    [
-     "Health",
-     "210"
-    ],
-    [
-     "Health",
-     "224"
-    ]
-   ],
    "shops": [
     "Duneshelter"
    ],
@@ -45096,28 +43763,6 @@
     "level": 18,
     "cost": 3
    },
-   "effects": [
-    [
-     "Health",
-     "140"
-    ],
-    [
-     "Health",
-     "182"
-    ],
-    [
-     "Health",
-     "196"
-    ],
-    [
-     "Health",
-     "210"
-    ],
-    [
-     "Health",
-     "224"
-    ]
-   ],
    "shops": [
     "Duneshelter"
    ],
@@ -45184,28 +43829,6 @@
     "level": 18,
     "cost": 3
    },
-   "effects": [
-    [
-     "Health",
-     "140"
-    ],
-    [
-     "Health",
-     "182"
-    ],
-    [
-     "Health",
-     "196"
-    ],
-    [
-     "Health",
-     "210"
-    ],
-    [
-     "Health",
-     "224"
-    ]
-   ],
    "shops": [
     "Duneshelter"
    ],
@@ -45272,28 +43895,6 @@
     "level": 18,
     "cost": 3
    },
-   "effects": [
-    [
-     "Health",
-     "140"
-    ],
-    [
-     "Health",
-     "182"
-    ],
-    [
-     "Health",
-     "196"
-    ],
-    [
-     "Health",
-     "210"
-    ],
-    [
-     "Health",
-     "224"
-    ]
-   ],
    "shops": [
     "Duneshelter"
    ],
@@ -45360,28 +43961,6 @@
     "level": 18,
     "cost": 3
    },
-   "effects": [
-    [
-     "Health",
-     "140"
-    ],
-    [
-     "Health",
-     "182"
-    ],
-    [
-     "Health",
-     "196"
-    ],
-    [
-     "Health",
-     "210"
-    ],
-    [
-     "Health",
-     "224"
-    ]
-   ],
    "shops": [
     "Duneshelter"
    ],
@@ -45468,28 +44047,6 @@
     "level": 16,
     "cost": 3
    },
-   "effects": [
-    [
-     "Health",
-     "140"
-    ],
-    [
-     "Health",
-     "182"
-    ],
-    [
-     "Health",
-     "196"
-    ],
-    [
-     "Health",
-     "210"
-    ],
-    [
-     "Health",
-     "224"
-    ]
-   ],
    "shops": [
     "Duneshelter",
     "Fisherman's Point"
@@ -45577,28 +44134,6 @@
     "level": 16,
     "cost": 3
    },
-   "effects": [
-    [
-     "Health",
-     "140"
-    ],
-    [
-     "Health",
-     "182"
-    ],
-    [
-     "Health",
-     "196"
-    ],
-    [
-     "Health",
-     "210"
-    ],
-    [
-     "Health",
-     "224"
-    ]
-   ],
    "shops": [
     "Duneshelter",
     "Fisherman's Point"
@@ -45686,28 +44221,6 @@
     "level": 16,
     "cost": 3
    },
-   "effects": [
-    [
-     "Health",
-     "140"
-    ],
-    [
-     "Health",
-     "182"
-    ],
-    [
-     "Health",
-     "196"
-    ],
-    [
-     "Health",
-     "210"
-    ],
-    [
-     "Health",
-     "224"
-    ]
-   ],
    "shops": [
     "Duneshelter",
     "Fisherman's Point"
@@ -45795,28 +44308,6 @@
     "level": 16,
     "cost": 3
    },
-   "effects": [
-    [
-     "Health",
-     "140"
-    ],
-    [
-     "Health",
-     "182"
-    ],
-    [
-     "Health",
-     "196"
-    ],
-    [
-     "Health",
-     "210"
-    ],
-    [
-     "Health",
-     "224"
-    ]
-   ],
    "shops": [
     "Duneshelter",
     "Fisherman's Point"
@@ -45904,28 +44395,6 @@
     "level": 16,
     "cost": 3
    },
-   "effects": [
-    [
-     "Health",
-     "140"
-    ],
-    [
-     "Health",
-     "182"
-    ],
-    [
-     "Health",
-     "196"
-    ],
-    [
-     "Health",
-     "210"
-    ],
-    [
-     "Health",
-     "224"
-    ]
-   ],
    "shops": [
     "Duneshelter",
     "Fisherman's Point"
@@ -45993,28 +44462,6 @@
     "level": 12,
     "cost": 2
    },
-   "effects": [
-    [
-     "Health",
-     "140"
-    ],
-    [
-     "Health",
-     "182"
-    ],
-    [
-     "Health",
-     "196"
-    ],
-    [
-     "Health",
-     "210"
-    ],
-    [
-     "Health",
-     "224"
-    ]
-   ],
    "desc": "Armor made from Leather.\nIts warmth and defense have been improved.Cold Resistance Lv. 1"
   },
   "FurArmor_3": {
@@ -46078,28 +44525,6 @@
     "level": 12,
     "cost": 2
    },
-   "effects": [
-    [
-     "Health",
-     "140"
-    ],
-    [
-     "Health",
-     "182"
-    ],
-    [
-     "Health",
-     "196"
-    ],
-    [
-     "Health",
-     "210"
-    ],
-    [
-     "Health",
-     "224"
-    ]
-   ],
    "desc": "Armor made from Leather.\nIts warmth and defense have been improved.Cold Resistance Lv. 1"
   },
   "FurArmor_4": {
@@ -46163,28 +44588,6 @@
     "level": 12,
     "cost": 2
    },
-   "effects": [
-    [
-     "Health",
-     "140"
-    ],
-    [
-     "Health",
-     "182"
-    ],
-    [
-     "Health",
-     "196"
-    ],
-    [
-     "Health",
-     "210"
-    ],
-    [
-     "Health",
-     "224"
-    ]
-   ],
    "desc": "Armor made from Leather.\nIts warmth and defense have been improved.Cold Resistance Lv. 1"
   },
   "FurArmor_5": {
@@ -46248,28 +44651,6 @@
     "level": 12,
     "cost": 2
    },
-   "effects": [
-    [
-     "Health",
-     "140"
-    ],
-    [
-     "Health",
-     "182"
-    ],
-    [
-     "Health",
-     "196"
-    ],
-    [
-     "Health",
-     "210"
-    ],
-    [
-     "Health",
-     "224"
-    ]
-   ],
    "desc": "Armor made from Leather.\nIts warmth and defense have been improved.Cold Resistance Lv. 1"
   },
   "FurHelmet": {
@@ -46312,29 +44693,7 @@
    "tech": {
     "level": 10,
     "cost": 2
-   },
-   "effects": [
-    [
-     "Health",
-     "60"
-    ],
-    [
-     "Health",
-     "78"
-    ],
-    [
-     "Health",
-     "84"
-    ],
-    [
-     "Health",
-     "90"
-    ],
-    [
-     "Health",
-     "96"
-    ]
-   ]
+   }
   },
   "FurHelmet_2": {
    "recipe": [
@@ -46376,29 +44735,7 @@
    "tech": {
     "level": 10,
     "cost": 2
-   },
-   "effects": [
-    [
-     "Health",
-     "60"
-    ],
-    [
-     "Health",
-     "78"
-    ],
-    [
-     "Health",
-     "84"
-    ],
-    [
-     "Health",
-     "90"
-    ],
-    [
-     "Health",
-     "96"
-    ]
-   ]
+   }
   },
   "FurHelmet_3": {
    "recipe": [
@@ -46440,29 +44777,7 @@
    "tech": {
     "level": 10,
     "cost": 2
-   },
-   "effects": [
-    [
-     "Health",
-     "60"
-    ],
-    [
-     "Health",
-     "78"
-    ],
-    [
-     "Health",
-     "84"
-    ],
-    [
-     "Health",
-     "90"
-    ],
-    [
-     "Health",
-     "96"
-    ]
-   ]
+   }
   },
   "FurHelmet_4": {
    "recipe": [
@@ -46504,29 +44819,7 @@
    "tech": {
     "level": 10,
     "cost": 2
-   },
-   "effects": [
-    [
-     "Health",
-     "60"
-    ],
-    [
-     "Health",
-     "78"
-    ],
-    [
-     "Health",
-     "84"
-    ],
-    [
-     "Health",
-     "90"
-    ],
-    [
-     "Health",
-     "96"
-    ]
-   ]
+   }
   },
   "FurHelmet_5": {
    "recipe": [
@@ -46568,37 +44861,9 @@
    "tech": {
     "level": 10,
     "cost": 2
-   },
-   "effects": [
-    [
-     "Health",
-     "60"
-    ],
-    [
-     "Health",
-     "78"
-    ],
-    [
-     "Health",
-     "84"
-    ],
-    [
-     "Health",
-     "90"
-    ],
-    [
-     "Health",
-     "96"
-    ]
-   ]
+   }
   },
   "GYM_Head_Desert": {
-   "effects": [
-    [
-     "Health",
-     "60"
-    ]
-   ],
    "drops": [
     {
      "src": "PIDF Commander Marcus & Faleris Lv.78 (Tower Hard)",
@@ -46608,12 +44873,6 @@
    ]
   },
   "GYM_Head_Electric": {
-   "effects": [
-    [
-     "Health",
-     "60"
-    ]
-   ],
    "drops": [
     {
      "src": "Brothers of the Eternal Pyre Soul Leader Axel & Orserk Lv.76 (Tower Hard)",
@@ -46623,12 +44882,6 @@
    ]
   },
   "GYM_Head_Forest": {
-   "effects": [
-    [
-     "Health",
-     "60"
-    ]
-   ],
    "drops": [
     {
      "src": "Free Pal Alliance Founder Lily & Lyleen Lv.74 (Tower Hard)",
@@ -46638,12 +44891,6 @@
    ]
   },
   "GYM_Head_Grass": {
-   "effects": [
-    [
-     "Health",
-     "60"
-    ]
-   ],
    "drops": [
     {
      "src": "Rayne Syndicate Boss Zoe & Grizzbolt Lv.72 (Tower Hard)",
@@ -46653,12 +44900,6 @@
    ]
   },
   "GYM_Head_Sakurajima": {
-   "effects": [
-    [
-     "Health",
-     "60"
-    ]
-   ],
    "drops": [
     {
      "src": "Leader of the Moonflowers Saya & Selyne Lv.80 (Tower Hard)",
@@ -46668,12 +44909,6 @@
    ]
   },
   "GYM_Head_Snow": {
-   "effects": [
-    [
-     "Health",
-     "60"
-    ]
-   ],
    "drops": [
     {
      "src": "PAL Genetic Research Unit Commander Victor & Shadowbeak Lv.80 (Tower Hard)",
@@ -46683,12 +44918,6 @@
    ]
   },
   "GYM_Head_Viking": {
-   "effects": [
-    [
-     "Health",
-     "60"
-    ]
-   ],
    "drops": [
     {
      "src": "Jarl of Feybreak  Bjorn & Bastigor Lv.80 (Tower Hard)",
@@ -49108,28 +47337,6 @@
       "n": 100
      }
     ]
-   ],
-   "effects": [
-    [
-     "Health",
-     "80"
-    ],
-    [
-     "Health",
-     "120"
-    ],
-    [
-     "Health",
-     "180"
-    ],
-    [
-     "Health",
-     "240"
-    ],
-    [
-     "Health",
-     "320"
-    ]
    ]
   },
   "Head002": {
@@ -49164,28 +47371,6 @@
       "n": 123
      }
     ]
-   ],
-   "effects": [
-    [
-     "Health",
-     "80"
-    ],
-    [
-     "Health",
-     "120"
-    ],
-    [
-     "Health",
-     "180"
-    ],
-    [
-     "Health",
-     "240"
-    ],
-    [
-     "Health",
-     "320"
-    ]
    ]
   },
   "Head003": {
@@ -49219,28 +47404,6 @@
       "id": "CopperIngot",
       "n": 9
      }
-    ]
-   ],
-   "effects": [
-    [
-     "Health",
-     "60"
-    ],
-    [
-     "Health",
-     "90"
-    ],
-    [
-     "Health",
-     "135"
-    ],
-    [
-     "Health",
-     "180"
-    ],
-    [
-     "Health",
-     "240"
     ]
    ],
    "desc": "A cute headband with ears modeled after a Ribbuny.\nIt doesn't provide much head protection.Grass Damage Reduction Lv. 1"
@@ -49278,53 +47441,7 @@
      }
     ]
    ],
-   "effects": [
-    [
-     "Health",
-     "60"
-    ],
-    [
-     "Health",
-     "90"
-    ],
-    [
-     "Health",
-     "135"
-    ],
-    [
-     "Health",
-     "180"
-    ],
-    [
-     "Health",
-     "240"
-    ]
-   ],
    "desc": "A hat modeled after a Wixen or Katress.\nIt makes you feel like you can use Pal skills.Dark Damage Reduction Lv. 1"
-  },
-  "Head005": {
-   "effects": [
-    [
-     "Health",
-     "70"
-    ],
-    [
-     "Health",
-     "105"
-    ],
-    [
-     "Health",
-     "157"
-    ],
-    [
-     "Health",
-     "210"
-    ],
-    [
-     "Health",
-     "280"
-    ]
-   ]
   },
   "Head006": {
    "recipe": [
@@ -49359,53 +47476,9 @@
      }
     ]
    ],
-   "effects": [
-    [
-     "Health",
-     "80"
-    ],
-    [
-     "Health",
-     "120"
-    ],
-    [
-     "Health",
-     "180"
-    ],
-    [
-     "Health",
-     "240"
-    ],
-    [
-     "Health",
-     "320"
-    ]
-   ],
    "desc": "A tough helmet that protects its wearer's head.\nIt was apparently made after a number of people injured their heads\nafter taking a tumble off a Eikthyrdeer.Electric Damage Reduction Lv. 1"
   },
   "Head007": {
-   "effects": [
-    [
-     "Health",
-     "70"
-    ],
-    [
-     "Health",
-     "105"
-    ],
-    [
-     "Health",
-     "157"
-    ],
-    [
-     "Health",
-     "210"
-    ],
-    [
-     "Health",
-     "280"
-    ]
-   ],
    "desc": "A gentleman's hat.\nThose made from Sibelyx materials are considered luxury items,\nbut those made from Swee materials are of poor quality, and more commonly found.Fire Damage Reduction Lv. 1"
   },
   "Head008": {
@@ -49439,28 +47512,6 @@
       "id": "Leather",
       "n": 49
      }
-    ]
-   ],
-   "effects": [
-    [
-     "Health",
-     "70"
-    ],
-    [
-     "Health",
-     "105"
-    ],
-    [
-     "Health",
-     "157"
-    ],
-    [
-     "Health",
-     "210"
-    ],
-    [
-     "Health",
-     "280"
     ]
    ],
    "desc": "A cap for those who love to fight.\nIts previous owner nearly drove Azurobe\nto extinction.Water Damage Reduction Lv. 1"
@@ -49517,101 +47568,9 @@
       "n": 9
      }
     ]
-   ],
-   "effects": [
-    [
-     "Health",
-     "70"
-    ],
-    [
-     "Health",
-     "105"
-    ],
-    [
-     "Health",
-     "157"
-    ],
-    [
-     "Health",
-     "210"
-    ],
-    [
-     "Health",
-     "280"
-    ]
-   ]
-  },
-  "Head010": {
-   "effects": [
-    [
-     "Health",
-     "80"
-    ],
-    [
-     "Health",
-     "120"
-    ],
-    [
-     "Health",
-     "180"
-    ],
-    [
-     "Health",
-     "240"
-    ],
-    [
-     "Health",
-     "320"
-    ]
-   ]
-  },
-  "Head011": {
-   "effects": [
-    [
-     "Health",
-     "30"
-    ],
-    [
-     "Health",
-     "45"
-    ],
-    [
-     "Health",
-     "67"
-    ],
-    [
-     "Health",
-     "90"
-    ],
-    [
-     "Health",
-     "120"
-    ]
    ]
   },
   "Head012": {
-   "effects": [
-    [
-     "Health",
-     "60"
-    ],
-    [
-     "Health",
-     "90"
-    ],
-    [
-     "Health",
-     "135"
-    ],
-    [
-     "Health",
-     "180"
-    ],
-    [
-     "Health",
-     "240"
-    ]
-   ],
    "desc": "A tough, round hat.\nIt was sold with the guarantee that it wouldn't break\neven if a Mammorest stepped on it.Neutral Damage Reduction Lv. 1"
   },
   "Head013": {
@@ -49645,28 +47604,6 @@
       "id": "PalItem_ColorfulBird",
       "n": 22
      }
-    ]
-   ],
-   "effects": [
-    [
-     "Health",
-     "60"
-    ],
-    [
-     "Health",
-     "90"
-    ],
-    [
-     "Health",
-     "135"
-    ],
-    [
-     "Health",
-     "180"
-    ],
-    [
-     "Health",
-     "240"
     ]
    ],
    "desc": "Cap shaped like a Tocotoco.\nIts gaudy design is visible from far away.Neutral Damage Reduction Lv. 1"
@@ -49704,28 +47641,6 @@
      }
     ]
    ],
-   "effects": [
-    [
-     "Health",
-     "60"
-    ],
-    [
-     "Health",
-     "90"
-    ],
-    [
-     "Health",
-     "135"
-    ],
-    [
-     "Health",
-     "180"
-    ],
-    [
-     "Health",
-     "240"
-    ]
-   ],
    "desc": "Cap shaped like a Tocotoco.\nIt makes those who wear it smile uncontrollably.Neutral Damage Reduction Lv. 1"
   },
   "Head015": {
@@ -49759,28 +47674,6 @@
       "id": "PalItem_PlantSlime",
       "n": 22
      }
-    ]
-   ],
-   "effects": [
-    [
-     "Health",
-     "60"
-    ],
-    [
-     "Health",
-     "90"
-    ],
-    [
-     "Health",
-     "135"
-    ],
-    [
-     "Health",
-     "180"
-    ],
-    [
-     "Health",
-     "240"
     ]
    ],
    "desc": "Cap shaped like a Gumoss.Grass Damage Reduction Lv. 1"
@@ -49818,28 +47711,6 @@
      }
     ]
    ],
-   "effects": [
-    [
-     "Health",
-     "60"
-    ],
-    [
-     "Health",
-     "90"
-    ],
-    [
-     "Health",
-     "135"
-    ],
-    [
-     "Health",
-     "180"
-    ],
-    [
-     "Health",
-     "240"
-    ]
-   ],
    "desc": "Hat shaped like a Penking.Ice Damage Reduction Lv. 1"
   },
   "Head017": {
@@ -49875,28 +47746,6 @@
      }
     ]
    ],
-   "effects": [
-    [
-     "Health",
-     "60"
-    ],
-    [
-     "Health",
-     "90"
-    ],
-    [
-     "Health",
-     "135"
-    ],
-    [
-     "Health",
-     "180"
-    ],
-    [
-     "Health",
-     "240"
-    ]
-   ],
    "desc": "Hat shaped like a Katress.Dark Damage Reduction Lv. 1"
   },
   "HeadEquip001_purple": {
@@ -49905,12 +47754,6 @@
      "id": "CopperIngot",
      "n": 1
     }
-   ],
-   "effects": [
-    [
-     "Health",
-     "80"
-    ]
    ],
    "drops": [
     {
@@ -49921,24 +47764,12 @@
    ]
   },
   "HeadEquip023": {
-   "effects": [
-    [
-     "Health",
-     "60"
-    ]
-   ],
    "shops": [
     "Medal merchant"
    ],
    "desc": "Floral hair accessory inspired by Lyleen.Grass Damage Reduction Lv. 1"
   },
   "HeadEquip024": {
-   "effects": [
-    [
-     "Health",
-     "60"
-    ]
-   ],
    "shops": [
     "Medal merchant"
    ],
@@ -49977,12 +47808,6 @@
      }
     ]
    ],
-   "effects": [
-    [
-     "Health",
-     "60"
-    ]
-   ],
    "desc": "Hood shaped like a Leezpunk.Dark Damage Reduction Lv. 1"
   },
   "HeadEquip026": {
@@ -50018,21 +47843,9 @@
      }
     ]
    ],
-   "effects": [
-    [
-     "Health",
-     "60"
-    ]
-   ],
    "desc": "Cap shaped like a Killamari.Dark Damage Reduction Lv. 1"
   },
   "HeadEquip027": {
-   "effects": [
-    [
-     "Health",
-     "60"
-    ]
-   ],
    "shops": [
     "Medal merchant"
    ],
@@ -50071,33 +47884,15 @@
      }
     ]
    ],
-   "effects": [
-    [
-     "Health",
-     "60"
-    ]
-   ],
    "desc": "Headband shaped like a Ribbuny.Neutral Damage Reduction Lv. 1"
   },
   "HeadEquip029": {
-   "effects": [
-    [
-     "Health",
-     "60"
-    ]
-   ],
    "shops": [
     "Medal merchant"
    ],
    "desc": "Helm shaped like a Lamball.Neutral Damage Reduction Lv. 1"
   },
   "HeadEquip030": {
-   "effects": [
-    [
-     "Health",
-     "60"
-    ]
-   ],
    "shops": [
     "Medal merchant"
    ],
@@ -50136,12 +47931,6 @@
      }
     ]
    ],
-   "effects": [
-    [
-     "Health",
-     "60"
-    ]
-   ],
    "desc": "Cap shaped like a Swee.Ice Damage Reduction Lv. 1"
   },
   "HeadEquip032": {
@@ -50177,21 +47966,9 @@
      }
     ]
    ],
-   "effects": [
-    [
-     "Health",
-     "60"
-    ]
-   ],
    "desc": "Hat shaped like a Dazzi.Electric Damage Reduction Lv. 1"
   },
   "HeadEquip033": {
-   "effects": [
-    [
-     "Health",
-     "60"
-    ]
-   ],
    "shops": [
     "Medal merchant"
    ],
@@ -50203,12 +47980,6 @@
      "id": "CopperIngot",
      "n": 1
     }
-   ],
-   "effects": [
-    [
-     "Health",
-     "80"
-    ]
    ],
    "drops": [
     {
@@ -50224,12 +47995,6 @@
      "id": "CopperIngot",
      "n": 1
     }
-   ],
-   "effects": [
-    [
-     "Health",
-     "80"
-    ]
    ],
    "drops": [
     {
@@ -50247,12 +48012,6 @@
      "n": 25
     }
    ],
-   "effects": [
-    [
-     "Health",
-     "250"
-    ]
-   ],
    "boxes": [
     {
      "src": "Mission: That's That Me, Depresso!",
@@ -50268,12 +48027,6 @@
      "n": 1
     }
    ],
-   "effects": [
-    [
-     "Health",
-     "80"
-    ]
-   ],
    "drops": [
     {
      "src": "King of Salvation (Ultra) Hartalis (Raid)",
@@ -50283,12 +48036,6 @@
    ]
   },
   "HeadEquip048": {
-   "effects": [
-    [
-     "Health",
-     "60"
-    ]
-   ],
    "drops": [
     {
      "src": "High Keeper of the Azure Covenant Auri & Shaolong Lv.80 (Tower Hard)",
@@ -50298,12 +48045,6 @@
    ]
   },
   "HeadEquip049": {
-   "effects": [
-    [
-     "Health",
-     "60"
-    ]
-   ],
    "drops": [
     {
      "src": "Blightstar Calamity Zenara & Astralym Lv.100 (Tower Hard)",
@@ -50313,156 +48054,78 @@
    ]
   },
   "HeadEquip050": {
-   "effects": [
-    [
-     "Health",
-     "60"
-    ]
-   ],
    "shops": [
     "Bounty merchant"
    ],
    "desc": "Headband shaped like a Herbil.Grass Damage Reduction Lv. 1"
   },
   "HeadEquip051": {
-   "effects": [
-    [
-     "Health",
-     "60"
-    ]
-   ],
    "shops": [
     "Arena merchant"
    ],
    "desc": "Headband shaped like a Kingpaca.Neutral Damage Reduction Lv. 1"
   },
   "HeadEquip052": {
-   "effects": [
-    [
-     "Health",
-     "60"
-    ]
-   ],
    "shops": [
     "Medal merchant"
    ],
    "desc": "Hat shaped like a Gloopie.Water Damage Reduction Lv. 1"
   },
   "HeadEquip053": {
-   "effects": [
-    [
-     "Health",
-     "60"
-    ]
-   ],
    "shops": [
     "Medal merchant"
    ],
    "desc": "Hat shaped like a Jelliette.Water Damage Reduction Lv. 1"
   },
   "HeadEquip054": {
-   "effects": [
-    [
-     "Health",
-     "60"
-    ]
-   ],
    "shops": [
     "Bounty merchant"
    ],
    "desc": "Hat shaped like a Turtacle.Water Damage Reduction Lv. 1"
   },
   "HeadEquip055": {
-   "effects": [
-    [
-     "Health",
-     "60"
-    ]
-   ],
    "shops": [
     "Bounty merchant"
    ],
    "desc": "Hat shaped like a Croajiro.Water Damage Reduction Lv. 1"
   },
   "HeadEquip056": {
-   "effects": [
-    [
-     "Health",
-     "60"
-    ]
-   ],
    "shops": [
     "Medal merchant"
    ],
    "desc": "Hat shaped like a Chikipi.Neutral Damage Reduction Lv. 1"
   },
   "HeadEquip057": {
-   "effects": [
-    [
-     "Health",
-     "80"
-    ]
-   ],
    "shops": [
     "Arena merchant"
    ],
    "desc": "Hat shaped like a Dandilord.Dark Damage Reduction Lv. 1"
   },
   "HeadEquip058": {
-   "effects": [
-    [
-     "Health",
-     "60"
-    ]
-   ],
    "shops": [
     "Arena merchant"
    ],
    "desc": "Hat shaped like a Shroomer.Grass Damage Reduction Lv. 1"
   },
   "HeadEquip059": {
-   "effects": [
-    [
-     "Health",
-     "60"
-    ]
-   ],
    "shops": [
     "Arena merchant"
    ],
    "desc": "Hair accessory modeled after a Ghangler.Water Damage Reduction Lv. 1"
   },
   "HeadEquip060": {
-   "effects": [
-    [
-     "Health",
-     "60"
-    ]
-   ],
    "shops": [
     "Arena merchant"
    ],
    "desc": "Hat shaped like a Icelyn.Ice Damage Reduction Lv. 1"
   },
   "HeadEquip061": {
-   "effects": [
-    [
-     "Health",
-     "60"
-    ]
-   ],
    "shops": [
     "Arena merchant"
    ],
    "desc": "Hat shaped like a Splatterina.Dark Damage Reduction Lv. 1"
   },
   "HeadEquip062": {
-   "effects": [
-    [
-     "Health",
-     "60"
-    ]
-   ],
    "shops": [
     "Arena merchant"
    ],
@@ -51402,29 +49065,7 @@
    "tech": {
     "level": 37,
     "cost": 3
-   },
-   "effects": [
-    [
-     "Health",
-     "500"
-    ],
-    [
-     "Health",
-     "650"
-    ],
-    [
-     "Health",
-     "700"
-    ],
-    [
-     "Health",
-     "750"
-    ],
-    [
-     "Health",
-     "800"
-    ]
-   ]
+   }
   },
   "IronArmorCold": {
    "recipe": [
@@ -51519,28 +49160,6 @@
     "level": 41,
     "cost": 4
    },
-   "effects": [
-    [
-     "Health",
-     "500"
-    ],
-    [
-     "Health",
-     "650"
-    ],
-    [
-     "Health",
-     "700"
-    ],
-    [
-     "Health",
-     "750"
-    ],
-    [
-     "Health",
-     "800"
-    ]
-   ],
    "desc": "Improved Refined Metal Armor.\nUseful for surviving in cold climates.Cold Resistance Lv. 2"
   },
   "IronArmorCold_2": {
@@ -51636,28 +49255,6 @@
     "level": 41,
     "cost": 4
    },
-   "effects": [
-    [
-     "Health",
-     "500"
-    ],
-    [
-     "Health",
-     "650"
-    ],
-    [
-     "Health",
-     "700"
-    ],
-    [
-     "Health",
-     "750"
-    ],
-    [
-     "Health",
-     "800"
-    ]
-   ],
    "desc": "Improved Refined Metal Armor.\nUseful for surviving in cold climates.Cold Resistance Lv. 2"
   },
   "IronArmorCold_3": {
@@ -51753,28 +49350,6 @@
     "level": 41,
     "cost": 4
    },
-   "effects": [
-    [
-     "Health",
-     "500"
-    ],
-    [
-     "Health",
-     "650"
-    ],
-    [
-     "Health",
-     "700"
-    ],
-    [
-     "Health",
-     "750"
-    ],
-    [
-     "Health",
-     "800"
-    ]
-   ],
    "desc": "Improved Refined Metal Armor.\nUseful for surviving in cold climates.Cold Resistance Lv. 2"
   },
   "IronArmorCold_4": {
@@ -51870,28 +49445,6 @@
     "level": 41,
     "cost": 4
    },
-   "effects": [
-    [
-     "Health",
-     "500"
-    ],
-    [
-     "Health",
-     "650"
-    ],
-    [
-     "Health",
-     "700"
-    ],
-    [
-     "Health",
-     "750"
-    ],
-    [
-     "Health",
-     "800"
-    ]
-   ],
    "desc": "Improved Refined Metal Armor.\nUseful for surviving in cold climates.Cold Resistance Lv. 2"
   },
   "IronArmorCold_5": {
@@ -51987,28 +49540,6 @@
     "level": 41,
     "cost": 4
    },
-   "effects": [
-    [
-     "Health",
-     "500"
-    ],
-    [
-     "Health",
-     "650"
-    ],
-    [
-     "Health",
-     "700"
-    ],
-    [
-     "Health",
-     "750"
-    ],
-    [
-     "Health",
-     "800"
-    ]
-   ],
    "desc": "Improved Refined Metal Armor.\nUseful for surviving in cold climates.Cold Resistance Lv. 2"
   },
   "IronArmorHeat": {
@@ -52104,28 +49635,6 @@
     "level": 40,
     "cost": 4
    },
-   "effects": [
-    [
-     "Health",
-     "500"
-    ],
-    [
-     "Health",
-     "650"
-    ],
-    [
-     "Health",
-     "700"
-    ],
-    [
-     "Health",
-     "750"
-    ],
-    [
-     "Health",
-     "800"
-    ]
-   ],
    "desc": "Improved Refined Metal Armor.\nBoasts high heat resistance.Heat Resistance Lv. 2"
   },
   "IronArmorHeat_2": {
@@ -52221,28 +49730,6 @@
     "level": 40,
     "cost": 4
    },
-   "effects": [
-    [
-     "Health",
-     "500"
-    ],
-    [
-     "Health",
-     "650"
-    ],
-    [
-     "Health",
-     "700"
-    ],
-    [
-     "Health",
-     "750"
-    ],
-    [
-     "Health",
-     "800"
-    ]
-   ],
    "desc": "Improved Refined Metal Armor.\nBoasts high heat resistance.Heat Resistance Lv. 2"
   },
   "IronArmorHeat_3": {
@@ -52338,28 +49825,6 @@
     "level": 40,
     "cost": 4
    },
-   "effects": [
-    [
-     "Health",
-     "500"
-    ],
-    [
-     "Health",
-     "650"
-    ],
-    [
-     "Health",
-     "700"
-    ],
-    [
-     "Health",
-     "750"
-    ],
-    [
-     "Health",
-     "800"
-    ]
-   ],
    "desc": "Improved Refined Metal Armor.\nBoasts high heat resistance.Heat Resistance Lv. 2"
   },
   "IronArmorHeat_4": {
@@ -52455,28 +49920,6 @@
     "level": 40,
     "cost": 4
    },
-   "effects": [
-    [
-     "Health",
-     "500"
-    ],
-    [
-     "Health",
-     "650"
-    ],
-    [
-     "Health",
-     "700"
-    ],
-    [
-     "Health",
-     "750"
-    ],
-    [
-     "Health",
-     "800"
-    ]
-   ],
    "desc": "Improved Refined Metal Armor.\nBoasts high heat resistance.Heat Resistance Lv. 2"
   },
   "IronArmorHeat_5": {
@@ -52572,28 +50015,6 @@
     "level": 40,
     "cost": 4
    },
-   "effects": [
-    [
-     "Health",
-     "500"
-    ],
-    [
-     "Health",
-     "650"
-    ],
-    [
-     "Health",
-     "700"
-    ],
-    [
-     "Health",
-     "750"
-    ],
-    [
-     "Health",
-     "800"
-    ]
-   ],
    "desc": "Improved Refined Metal Armor.\nBoasts high heat resistance.Heat Resistance Lv. 2"
   },
   "IronArmor_2": {
@@ -52668,29 +50089,7 @@
    "tech": {
     "level": 37,
     "cost": 3
-   },
-   "effects": [
-    [
-     "Health",
-     "500"
-    ],
-    [
-     "Health",
-     "650"
-    ],
-    [
-     "Health",
-     "700"
-    ],
-    [
-     "Health",
-     "750"
-    ],
-    [
-     "Health",
-     "800"
-    ]
-   ]
+   }
   },
   "IronArmor_3": {
    "recipe": [
@@ -52764,29 +50163,7 @@
    "tech": {
     "level": 37,
     "cost": 3
-   },
-   "effects": [
-    [
-     "Health",
-     "500"
-    ],
-    [
-     "Health",
-     "650"
-    ],
-    [
-     "Health",
-     "700"
-    ],
-    [
-     "Health",
-     "750"
-    ],
-    [
-     "Health",
-     "800"
-    ]
-   ]
+   }
   },
   "IronArmor_4": {
    "recipe": [
@@ -52860,29 +50237,7 @@
    "tech": {
     "level": 37,
     "cost": 3
-   },
-   "effects": [
-    [
-     "Health",
-     "500"
-    ],
-    [
-     "Health",
-     "650"
-    ],
-    [
-     "Health",
-     "700"
-    ],
-    [
-     "Health",
-     "750"
-    ],
-    [
-     "Health",
-     "800"
-    ]
-   ]
+   }
   },
   "IronArmor_5": {
    "recipe": [
@@ -52956,29 +50311,7 @@
    "tech": {
     "level": 37,
     "cost": 3
-   },
-   "effects": [
-    [
-     "Health",
-     "500"
-    ],
-    [
-     "Health",
-     "650"
-    ],
-    [
-     "Health",
-     "700"
-    ],
-    [
-     "Health",
-     "750"
-    ],
-    [
-     "Health",
-     "800"
-    ]
-   ]
+   }
   },
   "IronHelmet": {
    "recipe": [
@@ -53052,29 +50385,7 @@
    "tech": {
     "level": 37,
     "cost": 3
-   },
-   "effects": [
-    [
-     "Health",
-     "250"
-    ],
-    [
-     "Health",
-     "325"
-    ],
-    [
-     "Health",
-     "350"
-    ],
-    [
-     "Health",
-     "375"
-    ],
-    [
-     "Health",
-     "400"
-    ]
-   ]
+   }
   },
   "IronHelmet_2": {
    "recipe": [
@@ -53148,29 +50459,7 @@
    "tech": {
     "level": 37,
     "cost": 3
-   },
-   "effects": [
-    [
-     "Health",
-     "250"
-    ],
-    [
-     "Health",
-     "325"
-    ],
-    [
-     "Health",
-     "350"
-    ],
-    [
-     "Health",
-     "375"
-    ],
-    [
-     "Health",
-     "400"
-    ]
-   ]
+   }
   },
   "IronHelmet_3": {
    "recipe": [
@@ -53244,29 +50533,7 @@
    "tech": {
     "level": 37,
     "cost": 3
-   },
-   "effects": [
-    [
-     "Health",
-     "250"
-    ],
-    [
-     "Health",
-     "325"
-    ],
-    [
-     "Health",
-     "350"
-    ],
-    [
-     "Health",
-     "375"
-    ],
-    [
-     "Health",
-     "400"
-    ]
-   ]
+   }
   },
   "IronHelmet_4": {
    "recipe": [
@@ -53340,29 +50607,7 @@
    "tech": {
     "level": 37,
     "cost": 3
-   },
-   "effects": [
-    [
-     "Health",
-     "250"
-    ],
-    [
-     "Health",
-     "325"
-    ],
-    [
-     "Health",
-     "350"
-    ],
-    [
-     "Health",
-     "375"
-    ],
-    [
-     "Health",
-     "400"
-    ]
-   ]
+   }
   },
   "IronHelmet_5": {
    "recipe": [
@@ -53436,29 +50681,7 @@
    "tech": {
     "level": 37,
     "cost": 3
-   },
-   "effects": [
-    [
-     "Health",
-     "250"
-    ],
-    [
-     "Health",
-     "325"
-    ],
-    [
-     "Health",
-     "350"
-    ],
-    [
-     "Health",
-     "375"
-    ],
-    [
-     "Health",
-     "400"
-    ]
-   ]
+   }
   },
   "IronIngot": {
    "recipe": [
@@ -62450,17 +59673,7 @@
    ],
    "tech": {
     "level": 32
-   },
-   "effects": [
-    [
-     "Health",
-     "806"
-    ],
-    [
-     "Health",
-     "2112"
-    ]
-   ]
+   }
   },
   "Octavia002_Armor": {
    "recipe": [
@@ -62493,17 +59706,7 @@
     "level": 56,
     "cost": 5,
     "ancient": true
-   },
-   "effects": [
-    [
-     "Health",
-     "215"
-    ],
-    [
-     "Health",
-     "1900"
-    ]
-   ]
+   }
   },
   "OctaviaRevolver": {
    "recipe": [
@@ -75055,28 +72258,6 @@
     "level": 51,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "1300"
-    ],
-    [
-     "Health",
-     "1560"
-    ],
-    [
-     "Health",
-     "1690"
-    ],
-    [
-     "Health",
-     "1820"
-    ],
-    [
-     "Health",
-     "1950"
-    ]
-   ],
    "desc": "Armor made of Plasteel.\nIn addition to enhanced defense capabilities, its weight was also reduced.\nEquipment that pushes the limits of technology.Cold Resistance Lv. 1"
   },
   "PlasticArmorCold": {
@@ -75172,28 +72353,6 @@
     "level": 54,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "1300"
-    ],
-    [
-     "Health",
-     "1560"
-    ],
-    [
-     "Health",
-     "1690"
-    ],
-    [
-     "Health",
-     "1820"
-    ],
-    [
-     "Health",
-     "1950"
-    ]
-   ],
    "desc": "Improved Plasteel Armor. \nUseful for surviving in cold climates.Cold Resistance Lv. 2"
   },
   "PlasticArmorCold_2": {
@@ -75289,28 +72448,6 @@
     "level": 54,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "1300"
-    ],
-    [
-     "Health",
-     "1560"
-    ],
-    [
-     "Health",
-     "1690"
-    ],
-    [
-     "Health",
-     "1820"
-    ],
-    [
-     "Health",
-     "1950"
-    ]
-   ],
    "desc": "Improved Plasteel Armor. \nUseful for surviving in cold climates.Cold Resistance Lv. 2"
   },
   "PlasticArmorCold_3": {
@@ -75406,28 +72543,6 @@
     "level": 54,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "1300"
-    ],
-    [
-     "Health",
-     "1560"
-    ],
-    [
-     "Health",
-     "1690"
-    ],
-    [
-     "Health",
-     "1820"
-    ],
-    [
-     "Health",
-     "1950"
-    ]
-   ],
    "desc": "Improved Plasteel Armor. \nUseful for surviving in cold climates.Cold Resistance Lv. 2"
   },
   "PlasticArmorCold_4": {
@@ -75523,28 +72638,6 @@
     "level": 54,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "1300"
-    ],
-    [
-     "Health",
-     "1560"
-    ],
-    [
-     "Health",
-     "1690"
-    ],
-    [
-     "Health",
-     "1820"
-    ],
-    [
-     "Health",
-     "1950"
-    ]
-   ],
    "desc": "Improved Plasteel Armor. \nUseful for surviving in cold climates.Cold Resistance Lv. 2"
   },
   "PlasticArmorCold_5": {
@@ -75640,28 +72733,6 @@
     "level": 54,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "1300"
-    ],
-    [
-     "Health",
-     "1560"
-    ],
-    [
-     "Health",
-     "1690"
-    ],
-    [
-     "Health",
-     "1820"
-    ],
-    [
-     "Health",
-     "1950"
-    ]
-   ],
    "desc": "Improved Plasteel Armor. \nUseful for surviving in cold climates.Cold Resistance Lv. 2"
   },
   "PlasticArmorHeat": {
@@ -75757,28 +72828,6 @@
     "level": 53,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "1300"
-    ],
-    [
-     "Health",
-     "1560"
-    ],
-    [
-     "Health",
-     "1690"
-    ],
-    [
-     "Health",
-     "1820"
-    ],
-    [
-     "Health",
-     "1950"
-    ]
-   ],
    "desc": "Improved Plasteel Armor.\nBoasts high heat resistance.Cold Resistance Lv. 1"
   },
   "PlasticArmorHeat_2": {
@@ -75874,28 +72923,6 @@
     "level": 53,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "1300"
-    ],
-    [
-     "Health",
-     "1560"
-    ],
-    [
-     "Health",
-     "1690"
-    ],
-    [
-     "Health",
-     "1820"
-    ],
-    [
-     "Health",
-     "1950"
-    ]
-   ],
    "desc": "Improved Plasteel Armor.\nBoasts high heat resistance.Cold Resistance Lv. 1"
   },
   "PlasticArmorHeat_3": {
@@ -75991,28 +73018,6 @@
     "level": 53,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "1300"
-    ],
-    [
-     "Health",
-     "1560"
-    ],
-    [
-     "Health",
-     "1690"
-    ],
-    [
-     "Health",
-     "1820"
-    ],
-    [
-     "Health",
-     "1950"
-    ]
-   ],
    "desc": "Improved Plasteel Armor.\nBoasts high heat resistance.Cold Resistance Lv. 1"
   },
   "PlasticArmorHeat_4": {
@@ -76108,28 +73113,6 @@
     "level": 53,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "1300"
-    ],
-    [
-     "Health",
-     "1560"
-    ],
-    [
-     "Health",
-     "1690"
-    ],
-    [
-     "Health",
-     "1820"
-    ],
-    [
-     "Health",
-     "1950"
-    ]
-   ],
    "desc": "Improved Plasteel Armor.\nBoasts high heat resistance.Cold Resistance Lv. 1"
   },
   "PlasticArmorHeat_5": {
@@ -76225,28 +73208,6 @@
     "level": 53,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "1300"
-    ],
-    [
-     "Health",
-     "1560"
-    ],
-    [
-     "Health",
-     "1690"
-    ],
-    [
-     "Health",
-     "1820"
-    ],
-    [
-     "Health",
-     "1950"
-    ]
-   ],
    "desc": "Improved Plasteel Armor.\nBoasts high heat resistance.Cold Resistance Lv. 1"
   },
   "PlasticArmorWeight": {
@@ -76342,28 +73303,6 @@
     "level": 55,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "1300"
-    ],
-    [
-     "Health",
-     "1560"
-    ],
-    [
-     "Health",
-     "1690"
-    ],
-    [
-     "Health",
-     "1820"
-    ],
-    [
-     "Health",
-     "1950"
-    ]
-   ],
    "desc": "Improved Plasteel Armor.\nIncreases carrying capacity.Cold Resistance Lv. 1"
   },
   "PlasticArmorWeight_2": {
@@ -76459,28 +73398,6 @@
     "level": 55,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "1300"
-    ],
-    [
-     "Health",
-     "1560"
-    ],
-    [
-     "Health",
-     "1690"
-    ],
-    [
-     "Health",
-     "1820"
-    ],
-    [
-     "Health",
-     "1950"
-    ]
-   ],
    "desc": "Improved Plasteel Armor.\nIncreases carrying capacity.Cold Resistance Lv. 1"
   },
   "PlasticArmorWeight_3": {
@@ -76576,28 +73493,6 @@
     "level": 55,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "1300"
-    ],
-    [
-     "Health",
-     "1560"
-    ],
-    [
-     "Health",
-     "1690"
-    ],
-    [
-     "Health",
-     "1820"
-    ],
-    [
-     "Health",
-     "1950"
-    ]
-   ],
    "desc": "Improved Plasteel Armor.\nIncreases carrying capacity.Cold Resistance Lv. 1"
   },
   "PlasticArmorWeight_4": {
@@ -76693,28 +73588,6 @@
     "level": 55,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "1300"
-    ],
-    [
-     "Health",
-     "1560"
-    ],
-    [
-     "Health",
-     "1690"
-    ],
-    [
-     "Health",
-     "1820"
-    ],
-    [
-     "Health",
-     "1950"
-    ]
-   ],
    "desc": "Improved Plasteel Armor.\nIncreases carrying capacity.Cold Resistance Lv. 1"
   },
   "PlasticArmorWeight_5": {
@@ -76810,28 +73683,6 @@
     "level": 55,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "1300"
-    ],
-    [
-     "Health",
-     "1560"
-    ],
-    [
-     "Health",
-     "1690"
-    ],
-    [
-     "Health",
-     "1820"
-    ],
-    [
-     "Health",
-     "1950"
-    ]
-   ],
    "desc": "Improved Plasteel Armor.\nIncreases carrying capacity.Cold Resistance Lv. 1"
   },
   "PlasticArmor_2": {
@@ -76907,28 +73758,6 @@
     "level": 51,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "1300"
-    ],
-    [
-     "Health",
-     "1560"
-    ],
-    [
-     "Health",
-     "1690"
-    ],
-    [
-     "Health",
-     "1820"
-    ],
-    [
-     "Health",
-     "1950"
-    ]
-   ],
    "desc": "Armor made of Plasteel.\nIn addition to enhanced defense capabilities, its weight was also reduced.\nEquipment that pushes the limits of technology.Cold Resistance Lv. 1"
   },
   "PlasticArmor_3": {
@@ -77004,28 +73833,6 @@
     "level": 51,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "1300"
-    ],
-    [
-     "Health",
-     "1560"
-    ],
-    [
-     "Health",
-     "1690"
-    ],
-    [
-     "Health",
-     "1820"
-    ],
-    [
-     "Health",
-     "1950"
-    ]
-   ],
    "desc": "Armor made of Plasteel.\nIn addition to enhanced defense capabilities, its weight was also reduced.\nEquipment that pushes the limits of technology.Cold Resistance Lv. 1"
   },
   "PlasticArmor_4": {
@@ -77101,28 +73908,6 @@
     "level": 51,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "1300"
-    ],
-    [
-     "Health",
-     "1560"
-    ],
-    [
-     "Health",
-     "1690"
-    ],
-    [
-     "Health",
-     "1820"
-    ],
-    [
-     "Health",
-     "1950"
-    ]
-   ],
    "desc": "Armor made of Plasteel.\nIn addition to enhanced defense capabilities, its weight was also reduced.\nEquipment that pushes the limits of technology.Cold Resistance Lv. 1"
   },
   "PlasticArmor_5": {
@@ -77198,28 +73983,6 @@
     "level": 51,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "1300"
-    ],
-    [
-     "Health",
-     "1560"
-    ],
-    [
-     "Health",
-     "1690"
-    ],
-    [
-     "Health",
-     "1820"
-    ],
-    [
-     "Health",
-     "1950"
-    ]
-   ],
    "desc": "Armor made of Plasteel.\nIn addition to enhanced defense capabilities, its weight was also reduced.\nEquipment that pushes the limits of technology.Cold Resistance Lv. 1"
   },
   "PlasticHelmet": {
@@ -77295,28 +74058,6 @@
     "level": 51,
     "cost": 4
    },
-   "effects": [
-    [
-     "Health",
-     "600"
-    ],
-    [
-     "Health",
-     "720"
-    ],
-    [
-     "Health",
-     "780"
-    ],
-    [
-     "Health",
-     "840"
-    ],
-    [
-     "Health",
-     "900"
-    ]
-   ],
    "desc": "Helmet made of Plasteel.\nIn addition to enhanced defense capabilities, its weight was also reduced.\nEquipment that pushes the limits of technology."
   },
   "PlasticHelmet_2": {
@@ -77392,28 +74133,6 @@
     "level": 51,
     "cost": 4
    },
-   "effects": [
-    [
-     "Health",
-     "600"
-    ],
-    [
-     "Health",
-     "720"
-    ],
-    [
-     "Health",
-     "780"
-    ],
-    [
-     "Health",
-     "840"
-    ],
-    [
-     "Health",
-     "900"
-    ]
-   ],
    "desc": "Helmet made of Plasteel.\nIn addition to enhanced defense capabilities, its weight was also reduced.\nEquipment that pushes the limits of technology."
   },
   "PlasticHelmet_3": {
@@ -77489,28 +74208,6 @@
     "level": 51,
     "cost": 4
    },
-   "effects": [
-    [
-     "Health",
-     "600"
-    ],
-    [
-     "Health",
-     "720"
-    ],
-    [
-     "Health",
-     "780"
-    ],
-    [
-     "Health",
-     "840"
-    ],
-    [
-     "Health",
-     "900"
-    ]
-   ],
    "desc": "Helmet made of Plasteel.\nIn addition to enhanced defense capabilities, its weight was also reduced.\nEquipment that pushes the limits of technology."
   },
   "PlasticHelmet_4": {
@@ -77586,28 +74283,6 @@
     "level": 51,
     "cost": 4
    },
-   "effects": [
-    [
-     "Health",
-     "600"
-    ],
-    [
-     "Health",
-     "720"
-    ],
-    [
-     "Health",
-     "780"
-    ],
-    [
-     "Health",
-     "840"
-    ],
-    [
-     "Health",
-     "900"
-    ]
-   ],
    "desc": "Helmet made of Plasteel.\nIn addition to enhanced defense capabilities, its weight was also reduced.\nEquipment that pushes the limits of technology."
   },
   "PlasticHelmet_5": {
@@ -77683,28 +74358,6 @@
     "level": 51,
     "cost": 4
    },
-   "effects": [
-    [
-     "Health",
-     "600"
-    ],
-    [
-     "Health",
-     "720"
-    ],
-    [
-     "Health",
-     "780"
-    ],
-    [
-     "Health",
-     "840"
-    ],
-    [
-     "Health",
-     "900"
-    ]
-   ],
    "desc": "Helmet made of Plasteel.\nIn addition to enhanced defense capabilities, its weight was also reduced.\nEquipment that pushes the limits of technology."
   },
   "Player_Outfit_Kigurumi001": {
@@ -77713,12 +74366,6 @@
      "id": "Venom",
      "n": 75
     }
-   ],
-   "effects": [
-    [
-     "Health",
-     "100"
-    ]
    ],
    "boxes": [
     {
@@ -80275,28 +76922,6 @@
     "level": 59,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "1750"
-    ],
-    [
-     "Health",
-     "1925"
-    ],
-    [
-     "Health",
-     "2012"
-    ],
-    [
-     "Health",
-     "2100"
-    ],
-    [
-     "Health",
-     "2275"
-    ]
-   ],
    "desc": "Armor made of Hexolite.\nPossesses overwhelming durability and defense.Cold Resistance Lv. 2"
   },
   "SFArmorCold": {
@@ -80372,28 +76997,6 @@
     "level": 64,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "1750"
-    ],
-    [
-     "Health",
-     "1925"
-    ],
-    [
-     "Health",
-     "2012"
-    ],
-    [
-     "Health",
-     "2100"
-    ],
-    [
-     "Health",
-     "2275"
-    ]
-   ],
    "desc": "Improved Hexolite Armor.\nUseful for surviving in cold climates.Cold Resistance Lv. 3"
   },
   "SFArmorCold_2": {
@@ -80469,28 +77072,6 @@
     "level": 64,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "1750"
-    ],
-    [
-     "Health",
-     "1925"
-    ],
-    [
-     "Health",
-     "2012"
-    ],
-    [
-     "Health",
-     "2100"
-    ],
-    [
-     "Health",
-     "2275"
-    ]
-   ],
    "desc": "Improved Hexolite Armor.\nUseful for surviving in cold climates.Cold Resistance Lv. 3"
   },
   "SFArmorCold_3": {
@@ -80566,28 +77147,6 @@
     "level": 64,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "1750"
-    ],
-    [
-     "Health",
-     "1925"
-    ],
-    [
-     "Health",
-     "2012"
-    ],
-    [
-     "Health",
-     "2100"
-    ],
-    [
-     "Health",
-     "2275"
-    ]
-   ],
    "desc": "Improved Hexolite Armor.\nUseful for surviving in cold climates.Cold Resistance Lv. 3"
   },
   "SFArmorCold_4": {
@@ -80663,28 +77222,6 @@
     "level": 64,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "1750"
-    ],
-    [
-     "Health",
-     "1925"
-    ],
-    [
-     "Health",
-     "2012"
-    ],
-    [
-     "Health",
-     "2100"
-    ],
-    [
-     "Health",
-     "2275"
-    ]
-   ],
    "desc": "Improved Hexolite Armor.\nUseful for surviving in cold climates.Cold Resistance Lv. 3"
   },
   "SFArmorCold_5": {
@@ -80760,28 +77297,6 @@
     "level": 64,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "1750"
-    ],
-    [
-     "Health",
-     "1925"
-    ],
-    [
-     "Health",
-     "2012"
-    ],
-    [
-     "Health",
-     "2100"
-    ],
-    [
-     "Health",
-     "2275"
-    ]
-   ],
    "desc": "Improved Hexolite Armor.\nUseful for surviving in cold climates.Cold Resistance Lv. 3"
   },
   "SFArmorHeat": {
@@ -80821,28 +77336,6 @@
     "level": 63,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "1750"
-    ],
-    [
-     "Health",
-     "1925"
-    ],
-    [
-     "Health",
-     "2012"
-    ],
-    [
-     "Health",
-     "2100"
-    ],
-    [
-     "Health",
-     "2275"
-    ]
-   ],
    "desc": "Improved Hexolite Armor.\nBoasts high heat resistance.Cold Resistance Lv. 2"
   },
   "SFArmorHeat_2": {
@@ -80882,28 +77375,6 @@
     "level": 63,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "1750"
-    ],
-    [
-     "Health",
-     "1925"
-    ],
-    [
-     "Health",
-     "2012"
-    ],
-    [
-     "Health",
-     "2100"
-    ],
-    [
-     "Health",
-     "2275"
-    ]
-   ],
    "desc": "Improved Hexolite Armor.\nBoasts high heat resistance.Cold Resistance Lv. 2"
   },
   "SFArmorHeat_3": {
@@ -80943,28 +77414,6 @@
     "level": 63,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "1750"
-    ],
-    [
-     "Health",
-     "1925"
-    ],
-    [
-     "Health",
-     "2012"
-    ],
-    [
-     "Health",
-     "2100"
-    ],
-    [
-     "Health",
-     "2275"
-    ]
-   ],
    "desc": "Improved Hexolite Armor.\nBoasts high heat resistance.Cold Resistance Lv. 2"
   },
   "SFArmorHeat_4": {
@@ -81004,28 +77453,6 @@
     "level": 63,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "1750"
-    ],
-    [
-     "Health",
-     "1925"
-    ],
-    [
-     "Health",
-     "2012"
-    ],
-    [
-     "Health",
-     "2100"
-    ],
-    [
-     "Health",
-     "2275"
-    ]
-   ],
    "desc": "Improved Hexolite Armor.\nBoasts high heat resistance.Cold Resistance Lv. 2"
   },
   "SFArmorHeat_5": {
@@ -81065,28 +77492,6 @@
     "level": 63,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "1750"
-    ],
-    [
-     "Health",
-     "1925"
-    ],
-    [
-     "Health",
-     "2012"
-    ],
-    [
-     "Health",
-     "2100"
-    ],
-    [
-     "Health",
-     "2275"
-    ]
-   ],
    "desc": "Improved Hexolite Armor.\nBoasts high heat resistance.Cold Resistance Lv. 2"
   },
   "SFArmorWeight": {
@@ -81162,28 +77567,6 @@
     "level": 65,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "1750"
-    ],
-    [
-     "Health",
-     "1925"
-    ],
-    [
-     "Health",
-     "2012"
-    ],
-    [
-     "Health",
-     "2100"
-    ],
-    [
-     "Health",
-     "2275"
-    ]
-   ],
    "desc": "Improved Hexolite Armor.\nIncreases carrying capacity.Cold Resistance Lv. 2"
   },
   "SFArmorWeight_2": {
@@ -81259,28 +77642,6 @@
     "level": 65,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "1750"
-    ],
-    [
-     "Health",
-     "1925"
-    ],
-    [
-     "Health",
-     "2012"
-    ],
-    [
-     "Health",
-     "2100"
-    ],
-    [
-     "Health",
-     "2275"
-    ]
-   ],
    "desc": "Improved Hexolite Armor.\nIncreases carrying capacity.Cold Resistance Lv. 2"
   },
   "SFArmorWeight_3": {
@@ -81356,28 +77717,6 @@
     "level": 65,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "1750"
-    ],
-    [
-     "Health",
-     "1925"
-    ],
-    [
-     "Health",
-     "2012"
-    ],
-    [
-     "Health",
-     "2100"
-    ],
-    [
-     "Health",
-     "2275"
-    ]
-   ],
    "desc": "Improved Hexolite Armor.\nIncreases carrying capacity.Cold Resistance Lv. 2"
   },
   "SFArmorWeight_4": {
@@ -81453,28 +77792,6 @@
     "level": 65,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "1750"
-    ],
-    [
-     "Health",
-     "1925"
-    ],
-    [
-     "Health",
-     "2012"
-    ],
-    [
-     "Health",
-     "2100"
-    ],
-    [
-     "Health",
-     "2275"
-    ]
-   ],
    "desc": "Improved Hexolite Armor.\nIncreases carrying capacity.Cold Resistance Lv. 2"
   },
   "SFArmorWeight_5": {
@@ -81550,28 +77867,6 @@
     "level": 65,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "1750"
-    ],
-    [
-     "Health",
-     "1925"
-    ],
-    [
-     "Health",
-     "2012"
-    ],
-    [
-     "Health",
-     "2100"
-    ],
-    [
-     "Health",
-     "2275"
-    ]
-   ],
    "desc": "Improved Hexolite Armor.\nIncreases carrying capacity.Cold Resistance Lv. 2"
   },
   "SFArmor_2": {
@@ -81627,28 +77922,6 @@
     "level": 59,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "1750"
-    ],
-    [
-     "Health",
-     "1925"
-    ],
-    [
-     "Health",
-     "2012"
-    ],
-    [
-     "Health",
-     "2100"
-    ],
-    [
-     "Health",
-     "2275"
-    ]
-   ],
    "desc": "Armor made of Hexolite.\nPossesses overwhelming durability and defense.Cold Resistance Lv. 2"
   },
   "SFArmor_3": {
@@ -81704,28 +77977,6 @@
     "level": 59,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "1750"
-    ],
-    [
-     "Health",
-     "1925"
-    ],
-    [
-     "Health",
-     "2012"
-    ],
-    [
-     "Health",
-     "2100"
-    ],
-    [
-     "Health",
-     "2275"
-    ]
-   ],
    "desc": "Armor made of Hexolite.\nPossesses overwhelming durability and defense.Cold Resistance Lv. 2"
   },
   "SFArmor_4": {
@@ -81781,28 +78032,6 @@
     "level": 59,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "1750"
-    ],
-    [
-     "Health",
-     "1925"
-    ],
-    [
-     "Health",
-     "2012"
-    ],
-    [
-     "Health",
-     "2100"
-    ],
-    [
-     "Health",
-     "2275"
-    ]
-   ],
    "desc": "Armor made of Hexolite.\nPossesses overwhelming durability and defense.Cold Resistance Lv. 2"
   },
   "SFArmor_5": {
@@ -81858,28 +78087,6 @@
     "level": 59,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "1750"
-    ],
-    [
-     "Health",
-     "1925"
-    ],
-    [
-     "Health",
-     "2012"
-    ],
-    [
-     "Health",
-     "2100"
-    ],
-    [
-     "Health",
-     "2275"
-    ]
-   ],
    "desc": "Armor made of Hexolite.\nPossesses overwhelming durability and defense.Cold Resistance Lv. 2"
   },
   "SFArrow": {
@@ -82437,28 +78644,6 @@
     "level": 60,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "800"
-    ],
-    [
-     "Health",
-     "880"
-    ],
-    [
-     "Health",
-     "920"
-    ],
-    [
-     "Health",
-     "960"
-    ],
-    [
-     "Health",
-     "1040"
-    ]
-   ],
    "desc": "Helmet made of Hexolite.\nCombines incredible strength and lightness."
   },
   "SFHelmet_2": {
@@ -82514,28 +78699,6 @@
     "level": 60,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "800"
-    ],
-    [
-     "Health",
-     "880"
-    ],
-    [
-     "Health",
-     "920"
-    ],
-    [
-     "Health",
-     "960"
-    ],
-    [
-     "Health",
-     "1040"
-    ]
-   ],
    "desc": "Helmet made of Hexolite.\nCombines incredible strength and lightness."
   },
   "SFHelmet_3": {
@@ -82591,28 +78754,6 @@
     "level": 60,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "800"
-    ],
-    [
-     "Health",
-     "880"
-    ],
-    [
-     "Health",
-     "920"
-    ],
-    [
-     "Health",
-     "960"
-    ],
-    [
-     "Health",
-     "1040"
-    ]
-   ],
    "desc": "Helmet made of Hexolite.\nCombines incredible strength and lightness."
   },
   "SFHelmet_4": {
@@ -82668,28 +78809,6 @@
     "level": 60,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "800"
-    ],
-    [
-     "Health",
-     "880"
-    ],
-    [
-     "Health",
-     "920"
-    ],
-    [
-     "Health",
-     "960"
-    ],
-    [
-     "Health",
-     "1040"
-    ]
-   ],
    "desc": "Helmet made of Hexolite.\nCombines incredible strength and lightness."
   },
   "SFHelmet_5": {
@@ -82745,28 +78864,6 @@
     "level": 60,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "800"
-    ],
-    [
-     "Health",
-     "880"
-    ],
-    [
-     "Health",
-     "920"
-    ],
-    [
-     "Health",
-     "960"
-    ],
-    [
-     "Health",
-     "1040"
-    ]
-   ],
    "desc": "Helmet made of Hexolite.\nCombines incredible strength and lightness."
   },
   "Salad": {
@@ -101642,28 +97739,6 @@
     "level": 46,
     "cost": 4
    },
-   "effects": [
-    [
-     "Health",
-     "750"
-    ],
-    [
-     "Health",
-     "975"
-    ],
-    [
-     "Health",
-     "1050"
-    ],
-    [
-     "Health",
-     "1125"
-    ],
-    [
-     "Health",
-     "1200"
-    ]
-   ],
    "desc": "Armor made from Pal Metal Ingot.\nHigh defense, but extremely heavy.\nEquipment for a hero, it exudes bravery.Cold Resistance Lv. 1"
   },
   "StealArmorCold": {
@@ -101759,28 +97834,6 @@
     "level": 50,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "750"
-    ],
-    [
-     "Health",
-     "975"
-    ],
-    [
-     "Health",
-     "1050"
-    ],
-    [
-     "Health",
-     "1125"
-    ],
-    [
-     "Health",
-     "1200"
-    ]
-   ],
    "desc": "Improved Pal Metal Armor.\nUseful for surviving in cold climates.Cold Resistance Lv. 2"
   },
   "StealArmorCold_2": {
@@ -101876,28 +97929,6 @@
     "level": 50,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "750"
-    ],
-    [
-     "Health",
-     "975"
-    ],
-    [
-     "Health",
-     "1050"
-    ],
-    [
-     "Health",
-     "1125"
-    ],
-    [
-     "Health",
-     "1200"
-    ]
-   ],
    "desc": "Improved Pal Metal Armor.\nUseful for surviving in cold climates.Cold Resistance Lv. 2"
   },
   "StealArmorCold_3": {
@@ -101993,28 +98024,6 @@
     "level": 50,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "750"
-    ],
-    [
-     "Health",
-     "975"
-    ],
-    [
-     "Health",
-     "1050"
-    ],
-    [
-     "Health",
-     "1125"
-    ],
-    [
-     "Health",
-     "1200"
-    ]
-   ],
    "desc": "Improved Pal Metal Armor.\nUseful for surviving in cold climates.Cold Resistance Lv. 2"
   },
   "StealArmorCold_4": {
@@ -102110,28 +98119,6 @@
     "level": 50,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "750"
-    ],
-    [
-     "Health",
-     "975"
-    ],
-    [
-     "Health",
-     "1050"
-    ],
-    [
-     "Health",
-     "1125"
-    ],
-    [
-     "Health",
-     "1200"
-    ]
-   ],
    "desc": "Improved Pal Metal Armor.\nUseful for surviving in cold climates.Cold Resistance Lv. 2"
   },
   "StealArmorCold_5": {
@@ -102227,28 +98214,6 @@
     "level": 50,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "750"
-    ],
-    [
-     "Health",
-     "975"
-    ],
-    [
-     "Health",
-     "1050"
-    ],
-    [
-     "Health",
-     "1125"
-    ],
-    [
-     "Health",
-     "1200"
-    ]
-   ],
    "desc": "Improved Pal Metal Armor.\nUseful for surviving in cold climates.Cold Resistance Lv. 2"
   },
   "StealArmorHeat": {
@@ -102344,28 +98309,6 @@
     "level": 48,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "750"
-    ],
-    [
-     "Health",
-     "975"
-    ],
-    [
-     "Health",
-     "1050"
-    ],
-    [
-     "Health",
-     "1125"
-    ],
-    [
-     "Health",
-     "1200"
-    ]
-   ],
    "desc": "Improved Pal Metal Armor.\nBoasts high heat resistance.Heat Resistance Lv. 2"
   },
   "StealArmorHeat_2": {
@@ -102461,28 +98404,6 @@
     "level": 48,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "750"
-    ],
-    [
-     "Health",
-     "975"
-    ],
-    [
-     "Health",
-     "1050"
-    ],
-    [
-     "Health",
-     "1125"
-    ],
-    [
-     "Health",
-     "1200"
-    ]
-   ],
    "desc": "Improved Pal Metal Armor.\nBoasts high heat resistance.Heat Resistance Lv. 2"
   },
   "StealArmorHeat_3": {
@@ -102578,28 +98499,6 @@
     "level": 48,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "750"
-    ],
-    [
-     "Health",
-     "975"
-    ],
-    [
-     "Health",
-     "1050"
-    ],
-    [
-     "Health",
-     "1125"
-    ],
-    [
-     "Health",
-     "1200"
-    ]
-   ],
    "desc": "Improved Pal Metal Armor.\nBoasts high heat resistance.Heat Resistance Lv. 2"
   },
   "StealArmorHeat_4": {
@@ -102695,28 +98594,6 @@
     "level": 48,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "750"
-    ],
-    [
-     "Health",
-     "975"
-    ],
-    [
-     "Health",
-     "1050"
-    ],
-    [
-     "Health",
-     "1125"
-    ],
-    [
-     "Health",
-     "1200"
-    ]
-   ],
    "desc": "Improved Pal Metal Armor.\nBoasts high heat resistance.Heat Resistance Lv. 2"
   },
   "StealArmorHeat_5": {
@@ -102812,28 +98689,6 @@
     "level": 48,
     "cost": 5
    },
-   "effects": [
-    [
-     "Health",
-     "750"
-    ],
-    [
-     "Health",
-     "975"
-    ],
-    [
-     "Health",
-     "1050"
-    ],
-    [
-     "Health",
-     "1125"
-    ],
-    [
-     "Health",
-     "1200"
-    ]
-   ],
    "desc": "Improved Pal Metal Armor.\nBoasts high heat resistance.Heat Resistance Lv. 2"
   },
   "StealArmor_2": {
@@ -102909,28 +98764,6 @@
     "level": 46,
     "cost": 4
    },
-   "effects": [
-    [
-     "Health",
-     "750"
-    ],
-    [
-     "Health",
-     "975"
-    ],
-    [
-     "Health",
-     "1050"
-    ],
-    [
-     "Health",
-     "1125"
-    ],
-    [
-     "Health",
-     "1200"
-    ]
-   ],
    "desc": "Armor made from Pal Metal Ingot.\nHigh defense, but extremely heavy.\nEquipment for a hero, it exudes bravery.Cold Resistance Lv. 1"
   },
   "StealArmor_3": {
@@ -103006,28 +98839,6 @@
     "level": 46,
     "cost": 4
    },
-   "effects": [
-    [
-     "Health",
-     "750"
-    ],
-    [
-     "Health",
-     "975"
-    ],
-    [
-     "Health",
-     "1050"
-    ],
-    [
-     "Health",
-     "1125"
-    ],
-    [
-     "Health",
-     "1200"
-    ]
-   ],
    "desc": "Armor made from Pal Metal Ingot.\nHigh defense, but extremely heavy.\nEquipment for a hero, it exudes bravery.Cold Resistance Lv. 1"
   },
   "StealArmor_4": {
@@ -103103,28 +98914,6 @@
     "level": 46,
     "cost": 4
    },
-   "effects": [
-    [
-     "Health",
-     "750"
-    ],
-    [
-     "Health",
-     "975"
-    ],
-    [
-     "Health",
-     "1050"
-    ],
-    [
-     "Health",
-     "1125"
-    ],
-    [
-     "Health",
-     "1200"
-    ]
-   ],
    "desc": "Armor made from Pal Metal Ingot.\nHigh defense, but extremely heavy.\nEquipment for a hero, it exudes bravery.Cold Resistance Lv. 1"
   },
   "StealArmor_5": {
@@ -103200,28 +98989,6 @@
     "level": 46,
     "cost": 4
    },
-   "effects": [
-    [
-     "Health",
-     "750"
-    ],
-    [
-     "Health",
-     "975"
-    ],
-    [
-     "Health",
-     "1050"
-    ],
-    [
-     "Health",
-     "1125"
-    ],
-    [
-     "Health",
-     "1200"
-    ]
-   ],
    "desc": "Armor made from Pal Metal Ingot.\nHigh defense, but extremely heavy.\nEquipment for a hero, it exudes bravery.Cold Resistance Lv. 1"
   },
   "StealHelmet": {
@@ -103297,28 +99064,6 @@
     "level": 46,
     "cost": 4
    },
-   "effects": [
-    [
-     "Health",
-     "350"
-    ],
-    [
-     "Health",
-     "455"
-    ],
-    [
-     "Health",
-     "490"
-    ],
-    [
-     "Health",
-     "525"
-    ],
-    [
-     "Health",
-     "560"
-    ]
-   ],
    "desc": "A helm made from Pal Metal Ingot.\nEnvied for its immaculate quality, it is proof of a chosen warrior."
   },
   "StealHelmet_2": {
@@ -103394,28 +99139,6 @@
     "level": 46,
     "cost": 4
    },
-   "effects": [
-    [
-     "Health",
-     "350"
-    ],
-    [
-     "Health",
-     "455"
-    ],
-    [
-     "Health",
-     "490"
-    ],
-    [
-     "Health",
-     "525"
-    ],
-    [
-     "Health",
-     "560"
-    ]
-   ],
    "desc": "A helm made from Pal Metal Ingot.\nEnvied for its immaculate quality, it is proof of a chosen warrior."
   },
   "StealHelmet_3": {
@@ -103491,28 +99214,6 @@
     "level": 46,
     "cost": 4
    },
-   "effects": [
-    [
-     "Health",
-     "350"
-    ],
-    [
-     "Health",
-     "455"
-    ],
-    [
-     "Health",
-     "490"
-    ],
-    [
-     "Health",
-     "525"
-    ],
-    [
-     "Health",
-     "560"
-    ]
-   ],
    "desc": "A helm made from Pal Metal Ingot.\nEnvied for its immaculate quality, it is proof of a chosen warrior."
   },
   "StealHelmet_4": {
@@ -103588,28 +99289,6 @@
     "level": 46,
     "cost": 4
    },
-   "effects": [
-    [
-     "Health",
-     "350"
-    ],
-    [
-     "Health",
-     "455"
-    ],
-    [
-     "Health",
-     "490"
-    ],
-    [
-     "Health",
-     "525"
-    ],
-    [
-     "Health",
-     "560"
-    ]
-   ],
    "desc": "A helm made from Pal Metal Ingot.\nEnvied for its immaculate quality, it is proof of a chosen warrior."
   },
   "StealHelmet_5": {
@@ -103685,28 +99364,6 @@
     "level": 46,
     "cost": 4
    },
-   "effects": [
-    [
-     "Health",
-     "350"
-    ],
-    [
-     "Health",
-     "455"
-    ],
-    [
-     "Health",
-     "490"
-    ],
-    [
-     "Health",
-     "525"
-    ],
-    [
-     "Health",
-     "560"
-    ]
-   ],
    "desc": "A helm made from Pal Metal Ingot.\nEnvied for its immaculate quality, it is proof of a chosen warrior."
   },
   "StealIngot": {
@@ -112739,28 +108396,6 @@
      }
     ]
    ],
-   "effects": [
-    [
-     "Health",
-     "650"
-    ],
-    [
-     "Health",
-     "845"
-    ],
-    [
-     "Health",
-     "910"
-    ],
-    [
-     "Health",
-     "975"
-    ],
-    [
-     "Health",
-     "1040"
-    ]
-   ],
    "desc": "[Tides of Terraria] \nArmor forged from Hallowed Bar. \nEnveloped in divine power, it lessens damage from [Tides of Terraria] monsters.Cold Resistance Lv. 1"
   },
   "YakushimaArmor001_2": {
@@ -112794,28 +108429,6 @@
       "id": "YakushimaIngot001",
       "n": 240
      }
-    ]
-   ],
-   "effects": [
-    [
-     "Health",
-     "650"
-    ],
-    [
-     "Health",
-     "845"
-    ],
-    [
-     "Health",
-     "910"
-    ],
-    [
-     "Health",
-     "975"
-    ],
-    [
-     "Health",
-     "1040"
     ]
    ],
    "desc": "[Tides of Terraria] \nArmor forged from Hallowed Bar. \nEnveloped in divine power, it lessens damage from [Tides of Terraria] monsters.Cold Resistance Lv. 1"
@@ -112853,28 +108466,6 @@
      }
     ]
    ],
-   "effects": [
-    [
-     "Health",
-     "650"
-    ],
-    [
-     "Health",
-     "845"
-    ],
-    [
-     "Health",
-     "910"
-    ],
-    [
-     "Health",
-     "975"
-    ],
-    [
-     "Health",
-     "1040"
-    ]
-   ],
    "desc": "[Tides of Terraria] \nArmor forged from Hallowed Bar. \nEnveloped in divine power, it lessens damage from [Tides of Terraria] monsters.Cold Resistance Lv. 1"
   },
   "YakushimaArmor001_4": {
@@ -112910,28 +108501,6 @@
      }
     ]
    ],
-   "effects": [
-    [
-     "Health",
-     "650"
-    ],
-    [
-     "Health",
-     "845"
-    ],
-    [
-     "Health",
-     "910"
-    ],
-    [
-     "Health",
-     "975"
-    ],
-    [
-     "Health",
-     "1040"
-    ]
-   ],
    "desc": "[Tides of Terraria] \nArmor forged from Hallowed Bar. \nEnveloped in divine power, it lessens damage from [Tides of Terraria] monsters.Cold Resistance Lv. 1"
   },
   "YakushimaArmor001_5": {
@@ -112965,28 +108534,6 @@
       "id": "YakushimaIngot001",
       "n": 240
      }
-    ]
-   ],
-   "effects": [
-    [
-     "Health",
-     "650"
-    ],
-    [
-     "Health",
-     "845"
-    ],
-    [
-     "Health",
-     "910"
-    ],
-    [
-     "Health",
-     "975"
-    ],
-    [
-     "Health",
-     "1040"
     ]
    ],
    "desc": "[Tides of Terraria] \nArmor forged from Hallowed Bar. \nEnveloped in divine power, it lessens damage from [Tides of Terraria] monsters.Cold Resistance Lv. 1"
@@ -114255,28 +109802,6 @@
      }
     ]
    ],
-   "effects": [
-    [
-     "Health",
-     "320"
-    ],
-    [
-     "Health",
-     "352"
-    ],
-    [
-     "Health",
-     "368"
-    ],
-    [
-     "Health",
-     "384"
-    ],
-    [
-     "Health",
-     "416"
-    ]
-   ],
    "desc": "[Tides of Terraria] \nHelmet forged from Hallowed Bar. \nEnveloped in divine power, it increases damage dealt by Meowmere, Excalibur, Terra Blade, and Legendary Meowmere.Hallowed Power: Close Range"
   },
   "YakushimaHeadEquip001_2": {
@@ -114310,28 +109835,6 @@
       "id": "YakushimaIngot001",
       "n": 240
      }
-    ]
-   ],
-   "effects": [
-    [
-     "Health",
-     "320"
-    ],
-    [
-     "Health",
-     "352"
-    ],
-    [
-     "Health",
-     "368"
-    ],
-    [
-     "Health",
-     "384"
-    ],
-    [
-     "Health",
-     "416"
     ]
    ],
    "desc": "[Tides of Terraria] \nHelmet forged from Hallowed Bar. \nEnveloped in divine power, it increases damage dealt by Meowmere, Excalibur, Terra Blade, and Legendary Meowmere.Hallowed Power: Close Range"
@@ -114369,28 +109872,6 @@
      }
     ]
    ],
-   "effects": [
-    [
-     "Health",
-     "320"
-    ],
-    [
-     "Health",
-     "352"
-    ],
-    [
-     "Health",
-     "368"
-    ],
-    [
-     "Health",
-     "384"
-    ],
-    [
-     "Health",
-     "416"
-    ]
-   ],
    "desc": "[Tides of Terraria] \nHelmet forged from Hallowed Bar. \nEnveloped in divine power, it increases damage dealt by Meowmere, Excalibur, Terra Blade, and Legendary Meowmere.Hallowed Power: Close Range"
   },
   "YakushimaHeadEquip001_4": {
@@ -114424,28 +109905,6 @@
       "id": "YakushimaIngot001",
       "n": 240
      }
-    ]
-   ],
-   "effects": [
-    [
-     "Health",
-     "320"
-    ],
-    [
-     "Health",
-     "352"
-    ],
-    [
-     "Health",
-     "368"
-    ],
-    [
-     "Health",
-     "384"
-    ],
-    [
-     "Health",
-     "416"
     ]
    ],
    "desc": "[Tides of Terraria] \nHelmet forged from Hallowed Bar. \nEnveloped in divine power, it increases damage dealt by Meowmere, Excalibur, Terra Blade, and Legendary Meowmere.Hallowed Power: Close Range"
@@ -114483,28 +109942,6 @@
      }
     ]
    ],
-   "effects": [
-    [
-     "Health",
-     "320"
-    ],
-    [
-     "Health",
-     "352"
-    ],
-    [
-     "Health",
-     "368"
-    ],
-    [
-     "Health",
-     "384"
-    ],
-    [
-     "Health",
-     "416"
-    ]
-   ],
    "desc": "[Tides of Terraria] \nHelmet forged from Hallowed Bar. \nEnveloped in divine power, it increases damage dealt by Meowmere, Excalibur, Terra Blade, and Legendary Meowmere.Hallowed Power: Close Range"
   },
   "YakushimaHeadEquip002": {
@@ -114538,28 +109975,6 @@
       "id": "YakushimaIngot001",
       "n": 240
      }
-    ]
-   ],
-   "effects": [
-    [
-     "Health",
-     "320"
-    ],
-    [
-     "Health",
-     "352"
-    ],
-    [
-     "Health",
-     "368"
-    ],
-    [
-     "Health",
-     "384"
-    ],
-    [
-     "Health",
-     "416"
     ]
    ],
    "desc": "[Tides of Terraria] \nHelmet forged from Hallowed Bar. \nEnveloped in divine power, it increases damage dealt by Nightglow.Hallowed Power: Magic"
@@ -114597,28 +110012,6 @@
      }
     ]
    ],
-   "effects": [
-    [
-     "Health",
-     "320"
-    ],
-    [
-     "Health",
-     "352"
-    ],
-    [
-     "Health",
-     "368"
-    ],
-    [
-     "Health",
-     "384"
-    ],
-    [
-     "Health",
-     "416"
-    ]
-   ],
    "desc": "[Tides of Terraria] \nHelmet forged from Hallowed Bar. \nEnveloped in divine power, it increases damage dealt by Nightglow.Hallowed Power: Magic"
   },
   "YakushimaHeadEquip002_3": {
@@ -114652,28 +110045,6 @@
       "id": "YakushimaIngot001",
       "n": 240
      }
-    ]
-   ],
-   "effects": [
-    [
-     "Health",
-     "320"
-    ],
-    [
-     "Health",
-     "352"
-    ],
-    [
-     "Health",
-     "368"
-    ],
-    [
-     "Health",
-     "384"
-    ],
-    [
-     "Health",
-     "416"
     ]
    ],
    "desc": "[Tides of Terraria] \nHelmet forged from Hallowed Bar. \nEnveloped in divine power, it increases damage dealt by Nightglow.Hallowed Power: Magic"
@@ -114711,28 +110082,6 @@
      }
     ]
    ],
-   "effects": [
-    [
-     "Health",
-     "320"
-    ],
-    [
-     "Health",
-     "352"
-    ],
-    [
-     "Health",
-     "368"
-    ],
-    [
-     "Health",
-     "384"
-    ],
-    [
-     "Health",
-     "416"
-    ]
-   ],
    "desc": "[Tides of Terraria] \nHelmet forged from Hallowed Bar. \nEnveloped in divine power, it increases damage dealt by Nightglow.Hallowed Power: Magic"
   },
   "YakushimaHeadEquip002_5": {
@@ -114766,28 +110115,6 @@
       "id": "YakushimaIngot001",
       "n": 240
      }
-    ]
-   ],
-   "effects": [
-    [
-     "Health",
-     "320"
-    ],
-    [
-     "Health",
-     "352"
-    ],
-    [
-     "Health",
-     "368"
-    ],
-    [
-     "Health",
-     "384"
-    ],
-    [
-     "Health",
-     "416"
     ]
    ],
    "desc": "[Tides of Terraria] \nHelmet forged from Hallowed Bar. \nEnveloped in divine power, it increases damage dealt by Nightglow.Hallowed Power: Magic"
@@ -114825,28 +110152,6 @@
      }
     ]
    ],
-   "effects": [
-    [
-     "Health",
-     "320"
-    ],
-    [
-     "Health",
-     "352"
-    ],
-    [
-     "Health",
-     "368"
-    ],
-    [
-     "Health",
-     "384"
-    ],
-    [
-     "Health",
-     "416"
-    ]
-   ],
    "desc": "[Tides of Terraria] \nHelmet forged from Hallowed Bar. \nEnveloped in divine power, it increases damage dealt by Vortex Beater.Hallowed Power: Ranged"
   },
   "YakushimaHeadEquip003_2": {
@@ -114880,28 +110185,6 @@
       "id": "YakushimaIngot001",
       "n": 240
      }
-    ]
-   ],
-   "effects": [
-    [
-     "Health",
-     "320"
-    ],
-    [
-     "Health",
-     "352"
-    ],
-    [
-     "Health",
-     "368"
-    ],
-    [
-     "Health",
-     "384"
-    ],
-    [
-     "Health",
-     "416"
     ]
    ],
    "desc": "[Tides of Terraria] \nHelmet forged from Hallowed Bar. \nEnveloped in divine power, it increases damage dealt by Vortex Beater.Hallowed Power: Ranged"
@@ -114939,28 +110222,6 @@
      }
     ]
    ],
-   "effects": [
-    [
-     "Health",
-     "320"
-    ],
-    [
-     "Health",
-     "352"
-    ],
-    [
-     "Health",
-     "368"
-    ],
-    [
-     "Health",
-     "384"
-    ],
-    [
-     "Health",
-     "416"
-    ]
-   ],
    "desc": "[Tides of Terraria] \nHelmet forged from Hallowed Bar. \nEnveloped in divine power, it increases damage dealt by Vortex Beater.Hallowed Power: Ranged"
   },
   "YakushimaHeadEquip003_4": {
@@ -114994,28 +110255,6 @@
       "id": "YakushimaIngot001",
       "n": 240
      }
-    ]
-   ],
-   "effects": [
-    [
-     "Health",
-     "320"
-    ],
-    [
-     "Health",
-     "352"
-    ],
-    [
-     "Health",
-     "368"
-    ],
-    [
-     "Health",
-     "384"
-    ],
-    [
-     "Health",
-     "416"
     ]
    ],
    "desc": "[Tides of Terraria] \nHelmet forged from Hallowed Bar. \nEnveloped in divine power, it increases damage dealt by Vortex Beater.Hallowed Power: Ranged"
@@ -115053,28 +110292,6 @@
      }
     ]
    ],
-   "effects": [
-    [
-     "Health",
-     "320"
-    ],
-    [
-     "Health",
-     "352"
-    ],
-    [
-     "Health",
-     "368"
-    ],
-    [
-     "Health",
-     "384"
-    ],
-    [
-     "Health",
-     "416"
-    ]
-   ],
    "desc": "[Tides of Terraria] \nHelmet forged from Hallowed Bar. \nEnveloped in divine power, it increases damage dealt by Vortex Beater.Hallowed Power: Ranged"
   },
   "YakushimaHeadEquip004": {
@@ -115108,28 +110325,6 @@
       "id": "YakushimaIngot001",
       "n": 240
      }
-    ]
-   ],
-   "effects": [
-    [
-     "Health",
-     "320"
-    ],
-    [
-     "Health",
-     "352"
-    ],
-    [
-     "Health",
-     "368"
-    ],
-    [
-     "Health",
-     "384"
-    ],
-    [
-     "Health",
-     "416"
     ]
    ],
    "desc": "[Tides of Terraria] \nHelmet forged from Hallowed Bar. \nEnveloped in divine power, it increases damage dealt by Terraprisma.Hallowed Power: Summon"
@@ -115167,28 +110362,6 @@
      }
     ]
    ],
-   "effects": [
-    [
-     "Health",
-     "320"
-    ],
-    [
-     "Health",
-     "352"
-    ],
-    [
-     "Health",
-     "368"
-    ],
-    [
-     "Health",
-     "384"
-    ],
-    [
-     "Health",
-     "416"
-    ]
-   ],
    "desc": "[Tides of Terraria] \nHelmet forged from Hallowed Bar. \nEnveloped in divine power, it increases damage dealt by Terraprisma.Hallowed Power: Summon"
   },
   "YakushimaHeadEquip004_3": {
@@ -115222,28 +110395,6 @@
       "id": "YakushimaIngot001",
       "n": 240
      }
-    ]
-   ],
-   "effects": [
-    [
-     "Health",
-     "320"
-    ],
-    [
-     "Health",
-     "352"
-    ],
-    [
-     "Health",
-     "368"
-    ],
-    [
-     "Health",
-     "384"
-    ],
-    [
-     "Health",
-     "416"
     ]
    ],
    "desc": "[Tides of Terraria] \nHelmet forged from Hallowed Bar. \nEnveloped in divine power, it increases damage dealt by Terraprisma.Hallowed Power: Summon"
@@ -115281,28 +110432,6 @@
      }
     ]
    ],
-   "effects": [
-    [
-     "Health",
-     "320"
-    ],
-    [
-     "Health",
-     "352"
-    ],
-    [
-     "Health",
-     "368"
-    ],
-    [
-     "Health",
-     "384"
-    ],
-    [
-     "Health",
-     "416"
-    ]
-   ],
    "desc": "[Tides of Terraria] \nHelmet forged from Hallowed Bar. \nEnveloped in divine power, it increases damage dealt by Terraprisma.Hallowed Power: Summon"
   },
   "YakushimaHeadEquip004_5": {
@@ -115338,28 +110467,6 @@
      }
     ]
    ],
-   "effects": [
-    [
-     "Health",
-     "320"
-    ],
-    [
-     "Health",
-     "352"
-    ],
-    [
-     "Health",
-     "368"
-    ],
-    [
-     "Health",
-     "384"
-    ],
-    [
-     "Health",
-     "416"
-    ]
-   ],
    "desc": "[Tides of Terraria] \nHelmet forged from Hallowed Bar. \nEnveloped in divine power, it increases damage dealt by Terraprisma.Hallowed Power: Summon"
   },
   "YakushimaHeadEquip005": {
@@ -115368,12 +110475,6 @@
      "id": "YakushimaIngot001",
      "n": 1
     }
-   ],
-   "effects": [
-    [
-     "Health",
-     "800"
-    ]
    ],
    "drops": [
     {
@@ -115395,12 +110496,6 @@
      "id": "YakushimaIngot001",
      "n": 1
     }
-   ],
-   "effects": [
-    [
-     "Health",
-     "800"
-    ]
    ],
    "drops": [
     {

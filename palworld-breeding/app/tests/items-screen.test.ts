@@ -143,10 +143,17 @@ describe('the item share sheet says what the screen says', () => {
   });
 
   it('never leaks an internal token', () => {
-    for (const id of ['Cake', 'PalSphere', 'AssaultRifle_Default1', 'Pan']) {
+    for (const id of ['Cake', 'PalSphere', 'AssaultRifle_Default1', 'Pan',
+      'AncientArmor']) {
       expect(shareTextForItem(id, '1.0'))
         .not.toMatch(/[a-z][A-Z]\w*_|_\d|<[a-zA-Z]+ id=/);
     }
+  });
+
+  it('armor shares its passives by their game names', () => {
+    const txt = shareTextForItem('AncientArmor', '1.0');
+    expect(txt).toContain('Cold Resistance Lv. 2');
+    expect(txt).not.toContain('TemperatureResist');
   });
 
   it('the screen sends exactly this composer through the native sheet', () => {

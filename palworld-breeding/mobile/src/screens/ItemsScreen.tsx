@@ -22,7 +22,7 @@ import {
   kindsInGroup, kindWord, palsDropping, schematicsFor, searchItems,
   sortItems, statRank, teachesOf, TIER_WORDS, tierWord, type ItemSort,
 } from '../itemsData';
-import { ITEM_FACTS, type CraftRow } from '../itemFacts';
+import { equipPassiveName, ITEM_FACTS, type CraftRow } from '../itemFacts';
 import { ItemIcon } from '../ui/ItemIcon';
 import { navigateTo, onNavIntent, takeIntentPayload } from '../nav/intent';
 import { shareTextForItem, techSentence } from '../itemShare';
@@ -223,7 +223,9 @@ function ItemDetail({ id, onClose, onOpenItem }: {
                   <Fact label="Capture Power" value={facts.capture} />
                 )}
                 {st?.passives && st.passives.length > 0 && (
-                  <Fact label="Wears the passive" value={st.passives.join(', ')} />
+                  <Fact label={st.passives.length === 1
+                    ? 'Wears the passive' : 'Wears the passives'}
+                    value={st.passives.map(equipPassiveName).join(' · ')} />
                 )}
                 {it.weight != null && it.weight > 0 && (
                   <Fact label="Weight" value={String(it.weight)} />

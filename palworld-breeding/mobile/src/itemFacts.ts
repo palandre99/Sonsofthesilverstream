@@ -27,9 +27,17 @@ export interface ItemFactRow {
 const payload = factsJson as unknown as {
   counts: Record<string, number>;
   mapObjectNames: Record<string, string>;
+  equipPassiveNames: Record<string, string>;
   facts: Record<string, ItemFactRow>;
 };
 
 export const ITEM_FACTS: Record<string, ItemFactRow> = payload.facts;
 export const MAP_OBJECT_NAMES: Record<string, string> = payload.mapObjectNames;
 export const ITEM_FACT_COUNTS = payload.counts;
+
+/** Equipment-passive id -> the game's display name ("Cold Resistance
+ * Lv. 2") — the stats layer's raw ids never reach a screen directly. */
+export const EQUIP_PASSIVE_NAMES: Record<string, string> =
+  payload.equipPassiveNames;
+export const equipPassiveName = (id: string): string =>
+  EQUIP_PASSIVE_NAMES[id] ?? id;

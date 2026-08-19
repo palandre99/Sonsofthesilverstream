@@ -10,7 +10,7 @@
 import {
   ITEM_STATS, ITEMS, kindWord, palsDropping, statRank, tierWord,
 } from './itemsData';
-import { ITEM_FACTS } from './itemFacts';
+import { equipPassiveName, ITEM_FACTS } from './itemFacts';
 
 export function techSentence(
   t: { level: number; cost?: number; ancient?: boolean },
@@ -42,6 +42,7 @@ export function shareTextForItem(id: string, gameVersion: string): string {
     statBits.push(`${st.magazine} round${st.magazine === 1 ? '' : 's'}`);
   }
   if (facts?.capture != null) statBits.push(`Capture Power ${facts.capture}`);
+  for (const p of st?.passives ?? []) statBits.push(equipPassiveName(p));
   if (statBits.length) lines.push(statBits.join(' · '));
   for (const [k, v] of facts?.effects ?? []) lines.push(`${k} ${v}`);
   if (facts?.tech) lines.push(techSentence(facts.tech));

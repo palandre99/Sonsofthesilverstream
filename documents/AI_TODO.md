@@ -2289,6 +2289,48 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## THE ITEMS LOOP — GOAL AND STANDING BACKLOG (CEO 2026-08-19: "set up
+## loop and goal and automatic work perfectly")
+
+**GOAL: the Items fane is the best item reference for this game in
+existence — every item, every number provable, every question a player
+could ask answered in one tap, indistinguishable from a first-party
+product.** The loop drains this backlog top-down, one item per tick,
+gates + eye pass + commit + publish per tick, appending new findings as
+it re-evaluates. The loop only idles when this list is empty AND a
+re-evaluation finds nothing — otherwise it ALWAYS has work.
+
+- [x] IL1 2026-08-19: BIGGER than planned — the card was showing RAW
+      EQUIPMENT-PASSIVE IDS ("TemperatureResist_Cold2"; pal-passive
+      descriptions in passives_1_0 turned out to be the wrong table
+      entirely). The item pages' skill bars pair each id with the game's
+      display name at exact identity — mini-sweep of all 77 passive
+      carriers: 29 ids mapped, 0 conflicts, full coverage pinned. Cards
+      + share now say "Cold Resistance Lv. 2". The eye pass also caught
+      armor cards flooding "What it does" with five per-tier Health rows
+      (family-page chip noise) — dropped; every carrier already ships hp
+      in stats (verified zero loss). 797 green, published.
+- [ ] IL2 "Crafted at" station on the craft card — the Production
+      sections + mapObjectNames are ALREADY captured; ship the station
+      name per recipe.
+- [ ] IL3 Research entries: the lab Research rows captured per item
+      (High Grade Medical Supplies has 9) are unshipped — a "Research"
+      section on cards that have them.
+- [ ] IL4 Ammo <-> weapon links: ammo cards name the weapons that fire
+      them (description anchors already resolve); weapons link their ammo.
+- [ ] IL5 Egg cards: the 53 MaterialPalEgg items — hatch-related facts
+      from data we own (which pals come from which egg class, via
+      pals_1_0 spawn/egg data if provable; else honest coming-soon copy).
+- [ ] IL6 Food saturation ordering: a "best food" sort within Food
+      (Nutrition per item, SAN) — the numbers exist on effects.
+- [ ] IL7 Sphere module effects on sphere cards (module family cross-link).
+- [ ] IL8 Unified cross-fane search design notes for the CEO (pals +
+      items one index — design only, CEO decides placement).
+- [ ] IL9 Weekly upstream re-check ritual entry (patch-day criterion 14):
+      document the one-command data refresh chain end to end.
+- [ ] IL10 Re-evaluation sweep: walk 10 random cards of different kinds
+      at phone size hunting anything unworthy — append findings here.
+
 ## E154. ITEM CARDS SHARE LIKE THE CALCULATOR DOES 2026-08-19 (loop
 ## tick 6)
 

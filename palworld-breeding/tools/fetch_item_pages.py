@@ -58,6 +58,11 @@ CHIP = re.compile(
     r'<span class="bg-dark bg-gradient p-1">(?:<span[^>]*>)?([^<]+?)(?:</span>)?'
     r'</span><span class="border p-1">([^<]+)</span>')
 TECH_ID = re.compile(r'\?s=Technology%2F([^"&]+)')
+# equipment passives: the skill bar pairs the internal id with the game's
+# display name ("Cold Resistance Lv. 2") — exact identity for the ids the
+# stats layer carries raw
+SKILL_BAR = re.compile(
+    r'item_skill_bar[^>]*data-hover="\?s=PassiveSkills%2F([^"&]+)"[^>]*>([^<]+)<')
 TECH_LV = re.compile(r'Technology Lv\. (\d+)')
 OG_IMG = re.compile(r'<meta property="og:image" content="([^"]+)"')
 DESC = re.compile(r'<div class="card-body py-2">\s*<div>(.*?)</div>', re.S)
@@ -199,6 +204,11 @@ def main() -> None:
             m = DESC.search(page)
             if m:
                 rec["descHtml"] = m.group(1)[:4000]
+            bars = SKILL_BAR.findall(page)
+            if bars:
+                rec["equipPassives"] = [
+                    [urllib.parse.unquote(pid), html.unescape(txt).strip()]
+                    for pid, txt in bars]
             raw[slug] = rec
         if i % 100 == 0:
             print(f"  {i}/{len(slugs)} ({len(errors)} errors)", flush=True)
