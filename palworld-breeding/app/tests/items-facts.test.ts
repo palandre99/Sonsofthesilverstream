@@ -112,6 +112,38 @@ describe('sources speak in a player’s words', () => {
   });
 });
 
+describe('tier crafts prove their own attribution', () => {
+  it('the Assault Rifle’s higher tiers each name product, schematic and cost', () => {
+    const crafts = (F.facts.AssaultRifle_Default1 as unknown as {
+      crafts?: { product: string; schematic?: string;
+        mats: { id: string; n: number }[] }[];
+    }).crafts;
+    expect(crafts?.length).toBe(4);
+    expect(crafts![0].product).toBe('AssaultRifle_Default2');
+    expect(crafts![0].schematic).toBe('Blueprint_AssaultRifle_Default2');
+    expect(crafts![0].mats).toContainEqual({ id: 'IronIngot', n: 50 });
+    expect(crafts![3].product).toBe('AssaultRifle_Default5');
+    expect(crafts![3].mats).toContainEqual({ id: 'PalCrystal_Ex', n: 4 });
+  });
+
+  it('every craft resolves entirely against the backbone', () => {
+    for (const [id, f] of Object.entries(F.facts)) {
+      const crafts = (f as unknown as {
+        crafts?: { product: string; schematic?: string;
+          mats: { id: string; n: number }[] }[];
+      }).crafts ?? [];
+      for (const c of crafts) {
+        expect(ITEMS[c.product], `${id} craft product`).toBeDefined();
+        if (c.schematic) expect(ITEMS[c.schematic], `${id} schematic`).toBeDefined();
+        for (const m of c.mats) {
+          expect(ITEMS[m.id], `${id} craft material ${m.id}`).toBeDefined();
+          expect(m.n).toBeGreaterThan(0);
+        }
+      }
+    }
+  });
+});
+
 describe('equipment passives resolve to the game’s names', () => {
   it('every passive id the stats layer uses has a display name', () => {
     const stats = JSON.parse(readFileSync(

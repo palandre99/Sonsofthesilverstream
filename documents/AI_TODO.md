@@ -2310,9 +2310,19 @@ re-evaluation finds nothing — otherwise it ALWAYS has work.
       armor cards flooding "What it does" with five per-tier Health rows
       (family-page chip noise) — dropped; every carrier already ships hp
       in stats (verified zero loss). 797 green, published.
-- [ ] IL2 "Crafted at" station on the craft card — the Production
-      sections + mapObjectNames are ALREADY captured; ship the station
-      name per recipe.
+- [x] IL2 2026-08-19: PIVOTED to the stronger thing the data proves —
+      the Production rows carry NO station column, but each row carries
+      its own product + schematic ids in its hovers. Positional
+      recipe-to-tier alignment FAILED on half the catalogue (522/1017)
+      and was refused; the self-proving rows shipped instead: 412
+      schematic-tier crafts, every product/schematic/material id
+      resolving against the backbone (pinned catalogue-wide). Cards now
+      label each higher tier with its word + tappable schematic + exact
+      bill of materials. 799 green, eye-verified, published. Station
+      names remain only where the game's own descriptions say them.
+      NEW IL11: craft WORK amount + per-handiwork-level times are in the
+      same rows (clipped today) — capture cleanly for a "how long to
+      craft" line someday.
 - [ ] IL3 Research entries: the lab Research rows captured per item
       (High Grade Medical Supplies has 9) are unshipped — a "Research"
       section on cards that have them.

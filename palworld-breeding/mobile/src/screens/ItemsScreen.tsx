@@ -269,7 +269,33 @@ function ItemDetail({ id, onClose, onOpenItem }: {
                   ))}
                 </View>
               )}
-              {facts.recipesMore && facts.recipesMore.length > 0 && (
+              {facts.crafts && facts.crafts.length > 0 ? (
+                <View style={{ marginTop: 8 }}>
+                  <Text style={[s.body, { fontSize: 12, color: T.muted }]}>
+                    Higher tiers, each with its schematic:
+                  </Text>
+                  {facts.crafts.map((c) => (
+                    <View key={c.product} style={{ marginTop: 5 }}>
+                      <View style={[s.row, { gap: 8 }]}>
+                        <TierChip id={c.product} />
+                        {c.schematic && (
+                          <Pressable
+                            onPress={() => onOpenItem(c.schematic!)}
+                            accessibilityRole="button"
+                            accessibilityLabel={`${ITEMS[c.schematic]?.name}. Open its card`}>
+                            <Text style={{ color: T.accentInk, fontSize: 12, fontWeight: '700' }}>
+                              {ITEMS[c.schematic]?.name}
+                            </Text>
+                          </Pressable>
+                        )}
+                      </View>
+                      <Text style={[s.body, { fontSize: 12, marginTop: 2, color: T.faint }]}>
+                        {c.mats.map((r) => `${r.n}× ${ITEMS[r.id]?.name ?? r.id}`).join(' · ')}
+                      </Text>
+                    </View>
+                  ))}
+                </View>
+              ) : facts.recipesMore && facts.recipesMore.length > 0 && (
                 <View style={{ marginTop: 8 }}>
                   <Text style={[s.body, { fontSize: 12, color: T.muted }]}>
                     Higher tiers are crafted with the schematic and cost more:

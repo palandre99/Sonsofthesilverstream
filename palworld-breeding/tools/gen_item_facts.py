@@ -168,7 +168,57 @@ def main() -> None:
         "recipeRows": 0, "recipeRefusals": 0, "withRecipe": 0,
         "tech": 0, "techRefusals": 0, "descs": 0, "descRefusals": 0,
         "drops": 0, "boxes": 0, "shops": 0, "capture": 0,
+        "tierCrafts": 0, "tierCraftRefusals": 0,
     }
+    name_to_id: dict[str, str] = {}
+    for iid, it in items.items():
+        if it.get("category") == "Blueprint" or not it.get("name"):
+            continue
+        prev = name_to_id.get(it["name"])
+        if prev is not None:
+            # same name on several ids: keep the family base (lowest rarity)
+            if (items[prev].get("rarity") or 0) <= (it.get("rarity") or 0):
+                continue
+        name_to_id[it["name"]] = iid
+
+    MAT_LINE = re.compile(r"^(.+?) (\d[\d,]*)$")
+
+    def parse_tier_craft(row: dict, page_ids: list[str]) -> dict | None:
+        """A Production row proves its own tier: the product id and the
+        schematic id ride in the row's hovers; materials parse from the
+        row text and every name must resolve against the backbone — no
+        positional assumptions (those failed on half the catalogue)."""
+        hovers = [h[len("Items/"):] for h in row.get("h", [])
+                  if h.startswith("Items/")]
+        product = next((h for h in hovers
+                        if h in items
+                        and items[h].get("category") != "Blueprint"
+                        and h in page_ids), None)
+        schematic = next((h for h in hovers
+                          if h in items
+                          and items[h].get("category") == "Blueprint"), None)
+        if product is None:
+            return None
+        mats = []
+        for line in row.get("c", [""])[0].split("\n"):
+            line = line.strip()
+            if not line:
+                continue
+            if line.startswith("Lv.") or "Lv.1:" in line:
+                break
+            m = MAT_LINE.match(line)
+            if not m:
+                return None
+            mid = name_to_id.get(m.group(1))
+            if mid is None:
+                return None
+            mats.append({"id": mid, "n": int(m.group(2).replace(",", ""))})
+        if not mats:
+            return None
+        out: dict = {"product": product, "mats": mats}
+        if schematic:
+            out["schematic"] = schematic
+        return out
     unknown_chip_labels: dict[str, int] = {}
     map_objects: dict[str, str] = {}
     map_conflicts: set[str] = set()
@@ -248,9 +298,27 @@ def main() -> None:
             if k not in EFFECT_LABELS and k not in (
                     "Attack", "Defense", "Technology", "Capture Power",
                     "Durability", "MagazineSize", "Magazine Size", "HP",
+                    "Health",  # per-tier chip noise, excluded on purpose
                     "Shield", "Weight", "Gold Coin", "Price", "Rarity",
                     "SneakAttackRate", "Code"):
                 unknown_chip_labels[k] = unknown_chip_labels.get(k, 0) + 1
+
+        # ---- per-tier crafts from Production rows (self-proving joins)
+        crafts = []
+        for sec in page.get("sections", []):
+            if sec["title"] != "Production":
+                continue
+            for row in sec["rows"]:
+                tc = parse_tier_craft(row, ids)
+                if tc is None:
+                    counts["tierCraftRefusals"] += 1
+                elif "schematic" in tc and tc not in crafts:
+                    # base-tier rows duplicate `recipe`; only the
+                    # schematic tiers carry new, provable attribution
+                    crafts.append(tc)
+        if crafts:
+            f["crafts"] = crafts
+            counts["tierCrafts"] += len(crafts)
 
         # ---- sections -> where to find
         for sec in page.get("sections", []):

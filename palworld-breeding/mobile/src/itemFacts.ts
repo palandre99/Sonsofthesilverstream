@@ -12,10 +12,17 @@ import factsJson from './data/item_facts_1_0.json';
 
 export interface CraftRow { id: string; n: number }
 
+export interface TierCraft {
+  product: string;
+  mats: CraftRow[];
+  schematic?: string;
+}
+
 export interface ItemFactRow {
   desc?: string;
   recipe?: CraftRow[];
   recipesMore?: CraftRow[][];
+  crafts?: TierCraft[];
   tech?: { level: number; cost?: number; ancient?: boolean };
   capture?: string;
   effects?: [string, string][];
