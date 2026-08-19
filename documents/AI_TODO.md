@@ -499,8 +499,20 @@ and the one missing dataset identified: the element chart.*
       cleanly. 789 tests green, both tsc clean, eye-walked on the
       render (roster weaknesses verified against the chart incl. the
       cancelled ones: Blazamut Ryu only Water, Hartalis only Electric).
-- [ ] B7 Phase D: Teams tab (element-coverage matrix, ranked squads,
-      gap→catch/breed rows; saved-squad editor deferred, logged here).
+- [x] B7 DONE 2026-08-19 ~09:40 (0e914c6, PUBLISHED both channels,
+      "bundle still clean"): THE TEAMS TAB IS LIVE — ALL FIVE TABS OF
+      THE FANE ARE NOW REAL SCREENS. Element coverage ("your box covers
+      5 of 9"), best owned answer per element with the resist note
+      ("Foxparks — hits it for double, and resists it back"; the
+      Pengullet-resists-Dragon subtlety hand-verified against the
+      chart), expandable per-element detail with the SAME closest-first
+      gap advice as the Boss Card — both screens now consume ONE
+      picking module, mobile/src/bosses/counterPicks.ts (the E131
+      one-shared-rule law), which BossCard was refactored onto. Walked
+      on the render: empty-coverage Electric row says "close the gap:
+      Dumud, catch Lv 1". A saved-squad EDITOR stays deliberately
+      deferred (this ledger line is its record) — the tab answers "who
+      do I bring", the editor is a later nicety.
 - [ ] B8 Phase E: cross-links (pal-card strong/weak chips, NavIntent
       payload extension, map-side "Prep this fight" — REQUEST to the map
       lane, not an edit; Suggested Goals fighting → Teams).

@@ -59,10 +59,27 @@ reinforced in the ledger: a quiet session is not an ended one.
 oracle and the three new boss families), app build clean, both trees
 `tsc --noEmit` clean, published through 4d5c8b3 on both channels.
 
-**Next in the lane:** Phase B Alphas tab (205 bosses browse + tracking),
-then Raids, then Teams, then cross-links (map "Prep this fight" via a
-ledger request to the map lane). Open findings: Astralym missing from
-PAL_ICONS (B10), tower first-clear rewards not yet parsed (B11).
+**Same day, the rest of the fane (B5–B7, all published):** the ALPHAS tab
+— all 205 titled bosses easiest-first with per-boss beaten AND caught
+ticks, real places from the data's own location lines, level tinted
+against the profile, the respawn note labelled community-measured; the
+RAIDS tab — the six summonable bosses with the exact slab item named
+from the game's item table, Ultra/Master as a toggle with its own attack
+kit, the derived percentages proven redundant (11/11 rows) and printed
+once; the TEAMS tab — the box scored against all nine elements with the
+same closest-first gap advice as the Boss Card, both fed by ONE shared
+picking module. **All five tabs of Bosses & Raids are real screens.**
+Gates at close: 789 tests green, both trees typecheck, published through
+0e914c6 on both channels, confirmed.
+
+**Next in the lane:** Phase E cross-links (B8) — pal-card strong/weak
+chips and the map's "Prep this fight" — QUEUED BEHIND COORDINATION: the
+items lane actively edited PalDetail.tsx and nav/intent.ts today, and
+those are exactly Phase E's files. Coordinate in the ledger before
+touching them. Open findings: Astralym missing from PAL_ICONS (B10),
+tower first-clear rewards not yet parsed (B11), verification.json copy
+divergence (B9). Alpha movesets extend the fetcher when the alpha Boss
+Card flavor lands.
 
 ## 2026-08-17 night -> 08-18 midday — A NEW SESSION'S HUNT, HIS FOUR ORDERS,
 ## AND THE BRUTAL EVAL (breeding lane, E128-E134)
