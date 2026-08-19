@@ -2289,6 +2289,20 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E154. ITEM CARDS SHARE LIKE THE CALCULATOR DOES 2026-08-19 (loop
+## tick 6)
+
+AAA criterion 15's first half for the fane: a Share button on every
+item card sends the card's facts as clean text — name + tier + kind,
+stats WITH their ranks, effects, the tech unlock line, the craft list,
+top sources — with the provenance stamp travelling ("Palworld 1.0 ·
+read from the game files · Paldexia"), same law as the calc's share.
+The composer lives in itemShare.ts, pure and imported by the TEST for
+real output assertions (stronger than source-string pins): rank format,
+craft lines, drop sources, and a no-internal-token sweep across four
+card types all pinned. Header eye-checked at phone width (Close/Share
+stacked, clear of the title). 795 tests green, tsc clean.
+
 ## E153. THE AAA SWEEP: RANK CONTEXT, KIND-AWARE SEARCH, THE COMMUNITY
 ## FENCE, AND A ROW DEDUPE 2026-08-19 (loop tick 5)
 

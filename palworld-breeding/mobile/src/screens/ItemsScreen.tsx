@@ -13,7 +13,7 @@
  * active-filters summary line with a clear action. No stacked chip strips.
  */
 import React, { useEffect, useMemo, useState } from 'react';
-import { FlatList, Modal, Pressable, ScrollView, Text, View } from 'react-native';
+import { FlatList, Modal, Pressable, ScrollView, Share, Text, View } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { T } from '../theme';
 import { Badge, Btn, Card, PageHead, SearchInput, s } from '../ui/kit';
@@ -25,6 +25,8 @@ import {
 import { ITEM_FACTS, type CraftRow } from '../itemFacts';
 import { ItemIcon } from '../ui/ItemIcon';
 import { navigateTo, onNavIntent, takeIntentPayload } from '../nav/intent';
+import { shareTextForItem, techSentence } from '../itemShare';
+import { breeding } from '../store';
 
 /** Tier tints — presentation colours for the game's own tier words. */
 const TIER_TINTS: Record<string, string> = {
@@ -143,13 +145,7 @@ function IngredientRow({ row, onOpenItem }: {
   );
 }
 
-const techLine = (t: { level: number; cost?: number; ancient?: boolean }): string => {
-  const pts = t.cost == null ? null
-    : `${t.cost} ${t.ancient ? 'ancient ' : ''}technology point${t.cost === 1 ? '' : 's'}`;
-  if (t.ancient && pts) return `Ancient Technology — unlocks at level ${t.level} for ${pts}`;
-  if (pts) return `Unlocks at level ${t.level} for ${pts}`;
-  return `Unlocks at technology level ${t.level}`;
-};
+const techLine = techSentence;
 
 function ItemDetail({ id, onClose, onOpenItem }: {
   id: string; onClose: () => void; onOpenItem: (id: string) => void;
@@ -177,7 +173,15 @@ function ItemDetail({ id, onClose, onOpenItem }: {
                 )}
               </View>
             </View>
-            <Btn small label="Close" onPress={onClose} />
+            <View style={{ gap: 6 }}>
+              <Btn small label="Close" onPress={onClose} />
+              <Btn small label="Share"
+                onPress={() => {
+                  void Share.share({
+                    message: shareTextForItem(id, breeding.game_version),
+                  });
+                }} />
+            </View>
           </View>
         </View>
         <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 30 }}>

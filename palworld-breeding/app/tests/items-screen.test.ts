@@ -11,6 +11,7 @@ import {
   searchItems, sortItems, statRank, teachesOf, tierWord,
 } from '../../mobile/src/itemsData';
 import palsJson from '../../mobile/src/data/pals_1_0.json';
+import { shareTextForItem } from '../../mobile/src/itemShare';
 
 describe('the groups cover the catalogue exactly once', () => {
   it('every item is in exactly one group', () => {
@@ -121,6 +122,37 @@ describe('pal drops and items join both ways (game-file data)', () => {
       join(__dirname, '../../mobile/src/ui/PalDetail.tsx'), 'utf8');
     expect(pal).toContain("domain: 'items', tab: 'allitems'");
     expect(pal).toContain('Open its item card');
+  });
+});
+
+describe('the item share sheet says what the screen says', () => {
+  it('a weapon shares its rank, tech cost, craft and provenance', () => {
+    const txt = shareTextForItem('AssaultRifle_Default1', '1.0');
+    expect(txt).toContain('Assault Rifle — Common assault rifle');
+    expect(txt).toMatch(/Attack 320 \(#\d+ of \d+\)/);
+    expect(txt).toContain('technology point');
+    expect(txt).toContain('Craft: 40× Refined Ingot');
+    expect(txt).toContain('Palworld 1.0 · read from the game files · Paldexia');
+  });
+
+  it('food shares what it does and who drops it', () => {
+    const txt = shareTextForItem('Cake', '1.0');
+    expect(txt).toContain('Nutrition 656');
+    expect(txt).toContain('Craft: 5× Flour');
+    expect(txt).toContain('drops from Lovander');
+  });
+
+  it('never leaks an internal token', () => {
+    for (const id of ['Cake', 'PalSphere', 'AssaultRifle_Default1', 'Pan']) {
+      expect(shareTextForItem(id, '1.0'))
+        .not.toMatch(/[a-z][A-Z]\w*_|_\d|<[a-zA-Z]+ id=/);
+    }
+  });
+
+  it('the screen sends exactly this composer through the native sheet', () => {
+    const code = readFileSync(
+      join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+    expect(code).toContain('shareTextForItem(id, breeding.game_version)');
   });
 });
 
