@@ -140,6 +140,40 @@ partition all 1,892 items exactly once, pinned by test.
 markup (no h5/table structure — card grids). Rich cross-check targets for
 the schematic/drop phase; need their own parser when that phase opens.
 
+## 6. ONE SEARCH FOR EVERYTHING — design notes for the CEO (IL8, 2026-08-19)
+
+*The AAA bar (blueprint §5, criterion 2) is "search from anywhere in ≤1
+tap, unified index". Today each fane searches only itself: the Paldex
+finds pals, the Items tab finds items. Nothing finds "Anubis" AND
+"Anubis's Talisman" in one box. This is the design, ready to build the
+moment you pick a placement — nothing here is started yet.*
+
+**What one search would cover (all data already on the phone):**
+299 pals · 1,892 items · the app's own screens ("breeding calculator",
+"tower bosses") · later bosses/raids by name. Typing "cake" would show:
+the item Cake (and the other 5 cakes), pals that drop cakes, and the
+breeding screens where cake math lives. Every hit opens the right card
+in the right fane via the NavIntent system that already carries pal and
+item payloads.
+
+**Placement options:**
+- **A. A search button in the top bar, everywhere** (recommended). One
+  tap from any screen, opens a full-screen search with mixed results
+  grouped by kind (Pals / Items / Screens). This is Dododex's
+  omnipresent-header pattern and the literal reading of criterion 2.
+  Cost: a shared overlay + result routing, ~1 tick.
+- **B. Widen the Paldex search** to also return items. Cheapest, but it
+  buries "everything" inside one tab of one domain and muddies the
+  Paldex's own job. Not recommended.
+- **C. A Search tab in the side panel.** Clean but two taps from most
+  places, and the side panel is CEO-final architecture — touching it
+  needs your call anyway.
+
+**Your call needed:** pick A, B, C, or a different shape. On a go for A,
+the build is: one SearchOverlay component + a merged index (name +
+kind words, the token matching the Items search already uses) + result
+rows reusing PalIcon/ItemIcon + NavIntent routing. No data work needed.
+
 ## 5. Honest limits recorded up front
 
 - The capture-rate formula and any drop-RATE percentages are NOT in the

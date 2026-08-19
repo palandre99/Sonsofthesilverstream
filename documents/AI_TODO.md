@@ -2350,8 +2350,12 @@ re-evaluation finds nothing — otherwise it ALWAYS has work.
       the sphere..."): sphere cards list all 6 modules with icons,
       module cards list all capture spheres, every chip tappable.
       Round trip eye-verified. 809 green, published.
-- [ ] IL8 Unified cross-fane search design notes for the CEO (pals +
-      items one index — design only, CEO decides placement).
+- [x] IL8 2026-08-19: design notes written — 09_ITEMS_PLAN.md §6 "ONE
+      SEARCH FOR EVERYTHING": what one index covers (299 pals + 1,892
+      items + screens), three placements with a recommendation (A: a
+      search button in the top bar everywhere, the Dododex pattern),
+      cost ~1 tick on a go. CEO DECISION PENDING — doc-only tick, no
+      publish needed.
 - [ ] IL9 Weekly upstream re-check ritual entry (patch-day criterion 14):
       document the one-command data refresh chain end to end.
 - [ ] IL10 Re-evaluation sweep: walk 10 random cards of different kinds
