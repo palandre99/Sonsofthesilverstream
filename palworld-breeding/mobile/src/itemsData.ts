@@ -15,6 +15,7 @@
 import itemsJson from './data/items_1_0.json';
 import statsJson from './data/item_stats_1_0.json';
 import palsJson from './data/pals_1_0.json';
+import { ITEM_FACTS } from './itemFacts';
 
 export interface ItemInfo {
   name: string;
@@ -213,9 +214,23 @@ export function kindsInGroup(groupId: string): { kind: string; count: number }[]
 
 export type ItemSort = 'power' | 'name' | 'rarity';
 
-/** The strongest number an item carries — attack, else defense. */
+/** A named effect's numeric value, when the item carries one. */
+export function effectNumber(id: string, label: string): number | null {
+  for (const [k, v] of ITEM_FACTS[id]?.effects ?? []) {
+    if (k === label) {
+      const n = Number(v.replace(/[^\d.-]/g, ''));
+      if (!Number.isNaN(n)) return n;
+    }
+  }
+  return null;
+}
+
+/** The strongest number an item carries — attack, else defense, else
+ * what food actually competes on: Nutrition ("Strongest first" on the
+ * Food tab means best meals first, not alphabet). */
 export const powerOf = (id: string): number =>
-  ITEM_STATS[id]?.atk ?? ITEM_STATS[id]?.def ?? -1;
+  ITEM_STATS[id]?.atk ?? ITEM_STATS[id]?.def
+  ?? effectNumber(id, 'Nutrition') ?? -1;
 
 export function sortItems(ids: string[], sort: ItemSort): string[] {
   const out = [...ids];

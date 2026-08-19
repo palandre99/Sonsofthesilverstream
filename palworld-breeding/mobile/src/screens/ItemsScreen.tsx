@@ -18,10 +18,10 @@ import * as Haptics from 'expo-haptics';
 import { T } from '../theme';
 import { Badge, Btn, Card, PageHead, SearchInput, s } from '../ui/kit';
 import {
-  ammoForWeapon, familyOf, groupOf, idsInGroup, ITEM_GROUPS, ITEM_STATS,
-  ITEMS, kindsInGroup, kindWord, palsDropping, palsHatchingFrom,
-  schematicsFor, searchItems, sortItems, statRank, teachesOf, TIER_WORDS,
-  tierWord, weaponsForAmmo, type ItemSort,
+  ammoForWeapon, effectNumber, familyOf, groupOf, idsInGroup, ITEM_GROUPS,
+  ITEM_STATS, ITEMS, kindsInGroup, kindWord, palsDropping,
+  palsHatchingFrom, schematicsFor, searchItems, sortItems, statRank,
+  teachesOf, TIER_WORDS, tierWord, weaponsForAmmo, type ItemSort,
 } from '../itemsData';
 import { equipPassiveName, ITEM_FACTS, type CraftRow } from '../itemFacts';
 import { ItemIcon } from '../ui/ItemIcon';
@@ -68,6 +68,13 @@ function statLine(id: string): string {
   if (st?.hp != null) bits.push(`+${st.hp} Health`);
   if (st?.durability != null) bits.push(`durability ${st.durability}`);
   if (st?.magazine != null) bits.push(`${st.magazine} round${st.magazine === 1 ? '' : 's'}`);
+  if (!bits.length) {
+    // food and consumables compete on their effects, not combat stats
+    const nut = effectNumber(id, 'Nutrition');
+    const san = effectNumber(id, 'SAN');
+    if (nut != null) bits.push(`Nutrition ${nut}`);
+    if (san != null) bits.push(`SAN ${san}`);
+  }
   return bits.join(' · ');
 }
 

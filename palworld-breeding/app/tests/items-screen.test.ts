@@ -6,7 +6,7 @@ import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import {
-  ammoForWeapon, familyOf, idsInGroup, ITEM_GROUPS, ITEM_STATS, ITEMS,
+  ammoForWeapon, effectNumber, familyOf, idsInGroup, ITEM_GROUPS, ITEM_STATS, ITEMS,
   itemIdByName, KIND_WORDS, kindsInGroup, kindWord, palsDropping,
   palsHatchingFrom, schematicsFor, searchItems, sortItems, statRank,
   teachesOf, tierWord, weaponsForAmmo,
@@ -180,6 +180,25 @@ describe('ammo and weapons join both ways from the game’s own tags', () => {
     const joined = ammo.filter((i) => weaponsForAmmo(i).length > 0);
     expect(ammo.length).toBe(32);
     expect(joined.length).toBe(25);
+  });
+});
+
+describe('food sorts by what food competes on', () => {
+  it('strongest-first on Food means best Nutrition first', () => {
+    const food = sortItems(idsInGroup('food'), 'power');
+    const first = effectNumber(food[0], 'Nutrition');
+    expect(first).not.toBeNull();
+    for (const id of food.slice(1, 15)) {
+      const n = effectNumber(id, 'Nutrition');
+      if (n != null) expect(n).toBeLessThanOrEqual(first!);
+    }
+  });
+
+  it('food rows carry Nutrition and SAN as their line', () => {
+    const code = readFileSync(
+      join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+    expect(code).toContain("effectNumber(id, 'Nutrition')");
+    expect(code).toContain("effectNumber(id, 'SAN')");
   });
 });
 

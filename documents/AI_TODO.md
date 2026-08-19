@@ -2341,8 +2341,10 @@ re-evaluation finds nothing — otherwise it ALWAYS has work.
       Mutated/Ominous are Breeding Farm eggs (contents depend on the
       parents) and plain Dragon Egg has no wild claimant in the table.
       Eye-verified (Common Egg lists its 23), 805 green, published.
-- [ ] IL6 Food saturation ordering: a "best food" sort within Food
-      (Nutrition per item, SAN) — the numbers exist on effects.
+- [x] IL6 2026-08-19: "Strongest first" on Food now means best meals
+      first — powerOf falls through to Nutrition, and stat-less rows
+      carry "Nutrition 738 · SAN 92" as their line. Eye-verified
+      (Special Cake tops the tab). 807 green, published.
 - [ ] IL7 Sphere module effects on sphere cards (module family cross-link).
 - [ ] IL8 Unified cross-fane search design notes for the CEO (pals +
       items one index — design only, CEO decides placement).
