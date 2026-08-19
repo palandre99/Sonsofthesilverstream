@@ -1,7 +1,68 @@
 # PROGRESS — audited state, no invented percentages
 
-*Updated 2026-08-18 (breeding lane). Update this file whenever a work block lands;
+*Updated 2026-08-19 (bosses lane). Update this file whenever a work block lands;
 date every entry.*
+
+## 2026-08-18 late -> 08-19 — THE BOSSES & RAIDS FANE OPENS: research, the
+## whole data layer, and the Tower tab LIVE (bosses lane, B1-B4)
+
+CEO redirect verbatim in AI_TODO §B: "u will be the worker that starts the
+bosses and raids tab… 10/10 masterpiece quality AAA studio level is
+minimum." Plan of record: `documents/10_BOSSES_PLAN.md`.
+
+**Research first (competitors probed live):** the opening is real — no
+Palworld tool anywhere combines datamined boss facts + counters + YOUR-box
+ranking + prep + tracking. The pattern worth stealing is Pokebattler's
+"counters from your own box"; the card anatomy is Dododex's. And this
+project can do what neither can: when you LACK the counter, say how to get
+it, because the planner already exists.
+
+**The data layer (all shipped, all validated, claims in verification.json):**
+- The element chart — the one dataset the whole fane leans on — ships
+  wiki-measured with both wikis in cell-for-cell agreement (revids
+  recorded), antisymmetry proven, vocabulary equal to our pals file, and
+  "no pal takes 4x" counted from OUR data. A false "+20% same-element
+  bonus" from early research was caught and never shipped.
+- All 22 tower + 11 raid encounters per difficulty: real fight HP, elements,
+  fight multipliers, and each variant's OWN attack kit (Zoe Normal has 5
+  attacks, Hard 9 — pages carry one raw section per difficulty, each
+  self-identified by its Code row). 0 refusals, 10 honest notes. Facts the
+  data settled: Panthalus is a Lv-70 tower fight; Zenara & Astralym and
+  Moon Lord are genuinely element-less; web guides print three wrong tower
+  levels (paldb raw: Lily 20, Axel 30, Marcus 40).
+- `src/logic/counters.ts` (parity pair, covered by the existing gate): the
+  matchup brain — element edge first, then survival against the boss's
+  actual kit, then stats. Deliberately lexicographic so every rank is
+  explainable in ONE sentence; no invented weights, no fight simulation.
+
+**The Tower tab is on the phone (published both channels, confirmed):**
+13 fights in order, "next up" tuned to the profile's level, per-difficulty
+beaten ticks that grey the rows. The Boss Card: Normal/Hard toggle with
+each difficulty's own kit, your best pals ranked FROM YOUR BOX with the
+why per row, "Worth getting" closest-first with catch/breed labels and a
+Plan-it that lands in the Planner with the route already built, the
+fight's numbers, its attacks with effects, arena + map hop, record ticks.
+Walked at phone size on the render: a level-12 starter box gets Pupperai/
+Rushoar/Hangyu at 1 step and Dumud at catch Lv 1 — all Ground.
+
+**The QA walk caught four real defects before the CEO could:** nested
+buttons in the suggestion rows, a name matcher swallowing a title word,
+ALL 269 move effects silently dropped by the first fetch parser, and a
+suggestion order that contradicted its own copy. All fixed and published.
+
+**Coordination event, recorded:** the items lane committed this lane's
+in-flight Phase-A files believing the session had ended (attributed,
+f7542cd) and published; the fixed build superseded it minutes later. Rule
+reinforced in the ledger: a quiet session is not an ended one.
+
+**Gates at this entry:** 782 tests green (49 files, incl. the 44,851-row
+oracle and the three new boss families), app build clean, both trees
+`tsc --noEmit` clean, published through 4d5c8b3 on both channels.
+
+**Next in the lane:** Phase B Alphas tab (205 bosses browse + tracking),
+then Raids, then Teams, then cross-links (map "Prep this fight" via a
+ledger request to the map lane). Open findings: Astralym missing from
+PAL_ICONS (B10), tower first-clear rewards not yet parsed (B11).
 
 ## 2026-08-17 night -> 08-18 midday — A NEW SESSION'S HUNT, HIS FOUR ORDERS,
 ## AND THE BRUTAL EVAL (breeding lane, E128-E134)

@@ -416,11 +416,50 @@ and the one missing dataset identified: the element chart.*
       fetcher. NOTE for the eventual web guide audit: web guides state
       wrong tower levels (game8-class say Lily 25 / Axel 40 / Marcus 45;
       the raw table says 20 / 30 / 40).
-- [ ] B3 Phase 0c: `src/logic/counters.ts` parity pair + new test families
-      (`elements.test.ts`, `counters.test.ts`, `boss-data.test.ts`).
-- [ ] B4 Phase A: Tower tab + the Boss Card (fixed anatomy, counters from
-      the box, catch/breed deep links, PalMap preview, Normal/Hard beaten
-      ticks per profile). Eye-verified, gates green, committed, PUBLISHED.
+- [x] B3 DONE 2026-08-18 late (bb2953a): counters.ts parity pair + the
+      three test families, 45 new pins. The suite's first run caught a
+      REAL logic bug (bestOffense floored at 1x, so a mono-Water pal vs
+      an Electric boss never showed its 0.5x handicap — the poor-pick
+      branch was dead code) and my own imported-Pokemon-logic test error
+      (in THIS game Water does not resist Ice, so Dragon/Water bosses
+      are weak to Electric AND Ice — the guides agree). The new
+      'wiki-measured' claim verdict got a designed badge on the phone's
+      Reference screen; the WEBSITE's verdict map lacks it (amber
+      fallback, logged in WEB BACKLOG, hold respected).
+- [x] B4 DONE 2026-08-19 ~00:45 (f7542cd by the items lane + 4d5c8b3,
+      published both channels, confirmed on channel:list): THE TOWER TAB
+      IS LIVE — the fane's first real screen. All 13 fights in level
+      order with weakness lines, "next up" tuned to the profile level,
+      beaten ticks per difficulty greying rows. The Boss Card: mode
+      toggle (Normal/Hard with each difficulty's OWN attack kit), level
+      fit in a player's words, "Your best pals" ranked from the box with
+      the why per row, "Worth getting" ranked CLOSEST-FIRST with
+      CATCH/BREED labels + Plan-it deep link into the Planner (lands
+      with the route built and a Back-to chip), the fight's real numbers,
+      its attacks with effects, arena + Open-the-Map, record ticks.
+      Walked on the render at phone size: level-12 profile → Pupperai/
+      Rushoar/Hangyu 1 step + Dumud catch Lv 1, all Ground; Hard swaps
+      to the 9-attack kit; tick advances next-up to Lily & Lyleen. The
+      QA render caught and fixed: nested-button rows (invalid web DOM,
+      tap hazard), shortName swallowing a title word, all 269 move
+      effects dropped by the fetch parser (now 228 carry effects), and
+      suggestion order contradicting its own copy (atk-first -> effort-
+      first). 782 tests green, both tsc clean, app build clean.
+      CROSS-LANE NOTE: the items lane committed this lane's in-flight
+      Phase-A files (f7542cd, attributed) believing the session had
+      ended, and published; the 4d5c8b3 publish superseded that build
+      minutes later with the QA fixes. No harm done — but a session
+      being QUIET is not a session being OVER; check the lock before
+      landing someone else's tree.
+- [ ] B10 FINDING (icon pipeline, small): Astralym has no entry in
+      PAL_ICONS (assets/icons) — its rows draw the initials fallback.
+      Probably other 1.0-new pals too; sweep PAL_NAMES against PAL_ICONS
+      and fetch the missing portraits via the existing icon pipeline.
+- [ ] B11 FINDING (boss data, later): the raw table's
+      FirstDefeatRewardItemID was not parsed by the fetch — tower cards
+      ship without a "winning gets you" section rather than inventing
+      one. Extend fetch_tower_raid_stats.py to keep that column and
+      resolve it against items_1_0.json.
 - [ ] B5 Phase B: Alphas tab (205+ browse, filters, beaten/caught ticks,
       respawn note community-labelled).
 - [ ] B6 Phase C: Raids tab (roster from data, summoning prep checklist
