@@ -1,0 +1,151 @@
+/** One search for everything — pals, items, and the app's own screens.
+ *
+ * The AAA bar's criterion 2 (04_PRODUCT_BLUEPRINT §5): "search from
+ * anywhere in ≤1 tap, unified index". Design notes and the three
+ * placements weighed are in 09_ITEMS_PLAN §6; the CEO handed the call
+ * back ("u make decisions"), so this is option A — a search button in
+ * the top bar of every screen, opening this overlay.
+ *
+ * Every hit routes through the NavIntent mailbox that already carries
+ * pal and item payloads, so a result lands on the real card in the real
+ * fane. Nothing here invents data: pals come from the engine's table,
+ * items from the shipped backbone, screens from the nav registry.
+ */
+import React, { useMemo, useState } from 'react';
+import { FlatList, Modal, Pressable, Text, View } from 'react-native';
+import { T } from '../theme';
+import { Btn, PalIcon, SearchInput, s } from './kit';
+import { ItemIcon } from './ItemIcon';
+import { Icon } from './Icon';
+import { pals } from '../store';
+import { ITEMS, kindWord, searchItems, sortItems } from '../itemsData';
+import { DOMAINS } from '../nav/domains';
+import { navigateTo } from '../nav/intent';
+
+interface Hit {
+  kind: 'pal' | 'item' | 'screen';
+  id: string;
+  title: string;
+  sub: string;
+  domain: string;
+  tab: string;
+}
+
+/** Screens a player might search for by name, from the live registry —
+ * so a domain we haven't built yet can never become a dead result. */
+const SCREEN_HITS: Hit[] = DOMAINS.flatMap((d) =>
+  d.tabs
+    .filter((t) => !t.soon && !d.soon)
+    .map((t) => ({
+      kind: 'screen' as const,
+      id: `${d.id}/${t.id}`,
+      title: t.label === d.title ? d.title : `${d.title} · ${t.label}`,
+      sub: 'Screen',
+      domain: d.id,
+      tab: t.id,
+    })));
+
+function hitsFor(q: string): Hit[] {
+  const needle = q.trim().toLowerCase();
+  if (needle.length < 2) return [];
+  const palHits: Hit[] = Object.keys(pals)
+    .filter((n) => n.toLowerCase().includes(needle))
+    .slice(0, 12)
+    .map((n) => ({
+      kind: 'pal', id: n, title: n,
+      sub: (pals[n].elements ?? []).join(' · ') || 'Pal',
+      domain: 'breeding', tab: 'paldex',
+    }));
+  const itemHits: Hit[] = sortItems(searchItems(q), 'power')
+    .slice(0, 14)
+    .map((id) => ({
+      kind: 'item', id, title: ITEMS[id].name, sub: kindWord(id),
+      domain: 'items', tab: 'allitems',
+    }));
+  const screenHits = SCREEN_HITS.filter(
+    (h) => h.title.toLowerCase().includes(needle));
+  return [...palHits, ...itemHits, ...screenHits];
+}
+
+export function SearchEverything({ onClose }: { onClose: () => void }) {
+  const [q, setQ] = useState('');
+  const hits = useMemo(() => hitsFor(q), [q]);
+  const typing = q.trim().length >= 2;
+
+  const go = (h: Hit) => {
+    onClose();
+    navigateTo({
+      domain: h.domain,
+      tab: h.tab,
+      payload: h.kind === 'pal' ? { pal: h.id }
+        : h.kind === 'item' ? { item: h.id } : undefined,
+    });
+  };
+
+  return (
+    <Modal visible animationType="slide" presentationStyle="pageSheet"
+      onRequestClose={onClose}>
+      <View style={{ flex: 1, backgroundColor: T.bg2, padding: 16 }}>
+        <View style={[s.row, { gap: 10, marginBottom: 10 }]}>
+          <View style={{ flex: 1 }}>
+            <SearchInput value={q} onChange={setQ}
+              placeholder="Search pals, items, screens…" />
+          </View>
+          <Btn small label="Close" onPress={onClose} />
+        </View>
+        {!typing ? (
+          <Text style={[s.body, { color: T.faint, fontSize: 12.5 }]}>
+            Type two letters to search every pal, every item and every
+            screen at once.
+          </Text>
+        ) : hits.length === 0 ? (
+          <Text style={[s.body, { fontSize: 12.5 }]}>
+            Nothing matches “{q.trim()}”.
+          </Text>
+        ) : (
+          <Text style={[s.body, { fontSize: 12.5, marginBottom: 6 }]}>
+            {hits.length === 1 ? '1 result' : `${hits.length} results`}
+          </Text>
+        )}
+        <FlatList
+          data={hits}
+          keyExtractor={(h) => `${h.kind}:${h.id}`}
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="on-drag"
+          renderItem={({ item: h }) => (
+            <Pressable
+              onPress={() => go(h)}
+              accessibilityRole="button"
+              accessibilityLabel={`${h.title}, ${h.sub}. Open it`}
+              style={({ pressed }) => ({
+                flexDirection: 'row', alignItems: 'center', gap: 10,
+                paddingVertical: 8, paddingHorizontal: 10, borderRadius: 12,
+                backgroundColor: pressed ? T.surface2 : T.surface,
+                borderWidth: 1, borderColor: T.line, marginBottom: 6,
+              })}>
+              {h.kind === 'pal' ? <PalIcon name={h.id} size={32} />
+                : h.kind === 'item' ? <ItemIcon icon={ITEMS[h.id].icon} size={32} />
+                : (
+                  <View style={{
+                    width: 32, height: 32, borderRadius: 8,
+                    alignItems: 'center', justifyContent: 'center',
+                    backgroundColor: T.surface2,
+                  }}>
+                    <Icon name="compass-outline" size={17} color={T.muted} />
+                  </View>
+                )}
+              <View style={{ flex: 1 }}>
+                <Text style={{ color: T.ink, fontWeight: '800', fontSize: 14 }}
+                  numberOfLines={1}>{h.title}</Text>
+                <Text style={{ color: T.muted, fontSize: 12 }} numberOfLines={1}>
+                  {h.sub}
+                </Text>
+              </View>
+            </Pressable>
+          )}
+          contentContainerStyle={{ paddingBottom: 30 }}
+        />
+      </View>
+    </Modal>
+  );
+}

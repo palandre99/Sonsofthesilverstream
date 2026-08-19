@@ -896,11 +896,14 @@ export function ItemsScreen({ initialGroup = 'weapons' }: { initialGroup?: strin
     [filters, q, sort],
   );
 
-  // a pal card's drop chip lands here with the item preselected — only the
-  // center Items tab takes the payload (intents always target 'allitems',
-  // and a sibling tab instance must not steal it mid-switch)
+  // a pal card's drop chip — or a search hit — lands here with the item
+  // preselected. Only the CENTER tab takes the payload (intents target
+  // 'allitems'; a sibling tab instance must not steal it mid-switch).
+  // Its group is 'other' since 2026-08-20 — the guard tracked the old
+  // 'all' for one commit and silently swallowed every jump, caught on
+  // the render pass.
   useEffect(() => {
-    if (initialGroup !== 'all') return undefined;
+    if (initialGroup !== 'other') return undefined;
     const apply = () => {
       const p = takeIntentPayload('allitems');
       if (p?.item) setOpen(p.item);

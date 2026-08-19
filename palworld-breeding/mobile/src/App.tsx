@@ -17,6 +17,7 @@ import { DOMAINS } from './nav/domains';
 import { onNavIntent } from './nav/intent';
 import { DomainPanel } from './ui/DomainPanel';
 import { Icon } from './ui/Icon';
+import { SearchEverything } from './ui/SearchEverything';
 import { CalculatorScreen } from './screens/CalculatorScreen';
 import { PlannerScreen } from './screens/PlannerScreen';
 import { OddsScreen } from './screens/OddsScreen';
@@ -146,6 +147,7 @@ function Shell() {
   const [domainId, setDomainId] = useState(start.domain);
   const [tabId, setTabId] = useState(start.tab);
   const [panel, setPanel] = useState(false);
+  const [search, setSearch] = useState(false);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
@@ -241,10 +243,26 @@ function Shell() {
             ? <Text style={{ color: T.faint }}>  ·  {tab.label}</Text>
             : null}
         </Text>
+        {/* one search for everything, one tap from any screen (AAA
+            criterion 2; placement decided 2026-08-20 on the CEO's
+            "u make decisions") */}
+        <Pressable
+          onPress={() => {
+            void Haptics.selectionAsync();
+            setSearch(true);
+          }}
+          hitSlop={12}
+          accessibilityRole="button"
+          accessibilityLabel="Search everything"
+          style={({ pressed }) => [{ paddingHorizontal: 6 }, pressed && { opacity: 0.6 }]}
+        >
+          <Icon name="magnify" size={21} color={T.muted} />
+        </Pressable>
         <Text style={styles.headerProfile} numberOfLines={1}>
           {getActiveProfile().name}
         </Text>
       </View>
+      {search && <SearchEverything onClose={() => setSearch(false)} />}
 
       <View style={{ flex: 1 }} {...edgePan.panHandlers}>
         <Boundary key={`${domainId}/${tab?.id ?? 'full'}`}>

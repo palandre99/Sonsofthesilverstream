@@ -2297,8 +2297,48 @@ existence — every item, every number provable, every question a player
 could ask answered in one tap, indistinguishable from a first-party
 product.** The loop drains this backlog top-down, one item per tick,
 gates + eye pass + commit + publish per tick, appending new findings as
-it re-evaluates. The loop only idles when this list is empty AND a
-re-evaluation finds nothing — otherwise it ALWAYS has work.
+it re-evaluates.
+
+**LOOP LAW (CEO, 2026-08-20: "Read Claude md again… add it to loop also.
+U make decisions.. also u are idle remember loop and goal and continue
+work always"):**
+1. RE-READ the root `CLAUDE.md` at the top of every tick — it is the law
+   and it changes.
+2. NEVER idle. If this list is empty, the tick's job is to FIND the next
+   work (a new surface, a deeper data layer, a competitor gap) and add
+   it — "clean sweep, holding" is not an acceptable tick outcome twice
+   in a row.
+3. DECIDE. Design calls that used to wait for the CEO get made, built,
+   and reported with the reasoning. Only true CEO-only blockers (Apple
+   logins, purchases, money, his own device) stop a tick.
+
+- [x] IL18b 2026-08-20: ONE SEARCH FOR EVERYTHING IS LIVE — the CEO
+      handed the call back ("u make decisions"), so plan §6 option A
+      shipped: a magnifier in the TOP BAR of every screen opens an
+      overlay searching all 299 pals + 1,892 items + every live screen
+      at once, each hit routing through the intent mailbox to the real
+      card ("anubis" -> the pal, its talisman, its schematic). Screen
+      results are generated from the nav registry and filtered by
+      `!soon`, so a coming-soon tab can never become a dead result.
+      CAUGHT ON THE RENDER PASS: my own IL18 rename ('all' -> 'other'
+      for the center tab) had left the intent guard naming the old
+      group, so every jump landed on the tab with NO card — invisible to
+      tests until now; fixed and pinned by a test that reads the group
+      out of App.tsx and asserts the guard matches it. 825 green.
+- [ ] IL19 Item comparison: pick two items of a kind and see their
+      numbers side by side (Dododex's compare pattern; the stat layer
+      already holds everything needed).
+- [ ] IL20 "What can I make with this?" — reverse recipes: an item card
+      lists the things it is an ingredient FOR (the recipe data already
+      closes over ids both ways).
+- [ ] IL21 Tech-tree surface: 588 nodes with level + cost are shipped
+      but only reachable one item at a time — a "what unlocks at my
+      level" view (needs a player level input; Settings has profiles).
+- [ ] IL22 Where-to-find map links: box/chest sources that name a map
+      POI should deep-link into the Map fane (coordinate with that
+      lane's data — REQUEST, not an edit of their files).
+- [ ] IL23 Sphere capture-rate calculator — ONLY if the formula can be
+      datamined or honestly labelled; the plan's §5 limit still stands.
 
 - [x] IL1 2026-08-19: BIGGER than planned — the card was showing RAW
       EQUIPMENT-PASSIVE IDS ("TemperatureResist_Cold2"; pal-passive
