@@ -21,13 +21,11 @@ import { Icon } from '../../ui/Icon';
 import { ELEMENT_ICONS } from '../../data/statIcons';
 import type { BossEncounter } from '../../data/towerRaid.g';
 import {
-  attainLabel, boxKeyOf, cachedDerivations, derivationsReady, effortSteps,
+  attainLabel, boxKeyOf, cachedDerivations, derivationsReady,
   getAttainContext, type Attain,
 } from '../../logic/recommend';
-import {
-  compareCounters, matchupLabel, rankCounters, weaknessLabel,
-  type CounterRow,
-} from '../../logic/counters';
+import { matchupLabel, weaknessLabel, type CounterRow } from '../../logic/counters';
+import { counterSuggestions, ownedCounterRows } from '../../bosses/counterPicks';
 import { effectWords, fmtHp, levelFit, shortName } from '../../bosses/format';
 import { isBeaten, loadRecord, onRecordChange, toggleBeaten } from '../../bosses/record';
 import itemsJson from '../../data/items_1_0.json';
@@ -68,7 +66,7 @@ function BossElementChips({ elements }: { elements: string[] }) {
   );
 }
 
-function CounterPalRow({ row, why, attain, onOpen, onPlan }: {
+export function CounterPalRow({ row, why, attain, onOpen, onPlan }: {
   row: CounterRow; why: string; attain?: Attain | null;
   onOpen: () => void; onPlan?: (() => void) | null;
 }) {
@@ -130,13 +128,11 @@ export function BossCard({ base, hard, onClose }: {
 
   /* ---- your best pals: pure element math over the box, instant ---- */
   const box = getBox();
-  const ownedRows = useMemo(() => {
-    const candidates = Object.keys(box)
-      .filter((n) => pals[n])
-      .map((n) => ({ name: n, elements: pals[n].elements ?? [], atk: pals[n].atk ?? null }));
-    return rankCounters(candidates, enc.elements, moveEls);
+  const ownedRows = useMemo(
+    () => ownedCounterRows(Object.keys(box), enc.elements, moveEls),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [boxKeyOf(Object.keys(box)), enc]);
+    [boxKeyOf(Object.keys(box)), enc],
+  );
   const ownedTop = ownedRows.slice(0, 5);
   const ownedMoreWithEdge = ownedRows.slice(5).filter((r) => r.offense > 1).length;
 
@@ -157,26 +153,7 @@ export function BossCard({ base, hard, onClose }: {
   const suggestions = useMemo(() => {
     if (!ready || !enc.elements.length) return null;
     const ctx = getAttainContext(engine, pals, breeding, boxNames, playerLevel, ownedAny);
-    const candidates = Object.keys(pals)
-      .filter((n) => !ownedAny(n))
-      .map((n) => ({ name: n, elements: pals[n].elements ?? [], atk: pals[n].atk ?? null }));
-    const rows = rankCounters(candidates, enc.elements, moveEls)
-      .filter((r) => r.offense === 2);
-    const out: { row: CounterRow; attain: Attain }[] = [];
-    for (const r of rows) {
-      const a = ctx.attain(r.name);
-      // only actionable advice: something to breed, catch, or unlock
-      if (a.kind === 'later' && !a.unlock) continue;
-      out.push({ row: r, attain: a });
-    }
-    // every row already hits for double, so CLOSENESS to this save leads
-    // — the section's copy promises exactly that, and a two-step breed
-    // beats a 25-step wonder (the kindling rule, applied to fights).
-    // Matchup order breaks effort ties.
-    out.sort((a, b) =>
-      effortSteps(a.attain) - effortSteps(b.attain)
-      || compareCounters(a.row, b.row));
-    return out.slice(0, 5);
+    return counterSuggestions(ctx, ownedAny, enc.elements, moveEls);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ready, boxKeyOf(boxNames), playerLevel, enc]);
 

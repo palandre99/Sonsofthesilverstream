@@ -101,11 +101,9 @@ export const DOMAINS: DomainDef[] = [
       // LIVE 2026-08-19 (Bosses fane phase C): the summoned-raid roster
       // with slab names from the items table and per-difficulty records
       { id: 'raids', label: 'Raids', icon: 'lightning-bolt-outline' },
-      {
-        id: 'teams', label: 'Teams', icon: 'account-group-outline', soon: true,
-        blurb: 'Build combat teams from the pals you own.',
-        planned: ['Team builder', 'Element coverage analysis'],
-      },
+      // LIVE 2026-08-19 (Bosses fane phase D): the box as a fighting
+      // force — element coverage + who to bring + who to go get
+      { id: 'teams', label: 'Teams', icon: 'account-group-outline' },
     ],
   },
   {

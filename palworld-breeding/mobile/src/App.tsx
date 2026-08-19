@@ -28,6 +28,7 @@ import { ItemsScreen } from './screens/ItemsScreen';
 import { TowerScreen } from './screens/bosses/TowerScreen';
 import { AlphasScreen } from './screens/bosses/AlphasScreen';
 import { RaidsScreen } from './screens/bosses/RaidsScreen';
+import { TeamsScreen } from './screens/bosses/TeamsScreen';
 import { AboutScreen, ProfilesScreen } from './screens/SettingsScreens';
 
 class Boundary extends Component<{ children: ReactNode }, { err: Error | null }> {
@@ -81,6 +82,7 @@ const LIVE_SCREENS: Record<string, () => React.JSX.Element> = {
   tower: TowerScreen,
   alphas: AlphasScreen,
   raids: RaidsScreen,
+  teams: TeamsScreen,
   calc: CalculatorScreen,
   plan: PlannerScreen,
   paldex: PaldexScreen,
