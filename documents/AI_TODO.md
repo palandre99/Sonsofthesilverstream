@@ -482,8 +482,23 @@ and the one missing dataset identified: the element chart.*
       NOTE for Phase E: the items lane is editing nav/intent.ts —
       coordinate the NavIntent payload extension with them instead of
       assuming the file is free.
-- [ ] B6 Phase C: Raids tab (roster from data, summoning prep checklist
-      with item cross-links, fight card + Ultra toggle, rewards).
+- [x] B6 DONE 2026-08-19 ~09:15 (aa5d3d5, PUBLISHED both channels along
+      with B5 — the queue cleared when the items lane's tree settled;
+      confirmed "bundle still clean"): THE RAIDS TAB IS LIVE. The six
+      summonable bosses easiest-first; the Boss Card generalized to
+      raids — the summoning line names the exact slab item (slab codes
+      ARE item ids in items_1_0.json: PalSummon_NightLady -> "Bellanoir's
+      Slab"; even the crossover resolves to "Celestial Sigil"),
+      Ultra/Master is a toggle on the same card with its own kit, and
+      the one non-datamined sentence (summoned bosses wreck what they
+      reach) ships labelled player-reported. Read-aloud caught the
+      fight badges stating one fact twice: the raid list's DR%/AD% are
+      pure derivations of recvRate/dealRate (identical on 11/11 rows,
+      now a test pin) so each fact prints once. matchupLabel now calls
+      a raid boss by its pal name and composes the poor-pick sentence
+      cleanly. 789 tests green, both tsc clean, eye-walked on the
+      render (roster weaknesses verified against the chart incl. the
+      cancelled ones: Blazamut Ryu only Water, Hartalis only Electric).
 - [ ] B7 Phase D: Teams tab (element-coverage matrix, ranked squads,
       gap→catch/breed rows; saved-squad editor deferred, logged here).
 - [ ] B8 Phase E: cross-links (pal-card strong/weak chips, NavIntent
