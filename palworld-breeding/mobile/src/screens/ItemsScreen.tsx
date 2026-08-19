@@ -280,7 +280,9 @@ function ItemDetail({ id, onClose, onOpenItem }: {
               {facts.crafts && facts.crafts.length > 0 ? (
                 <View style={{ marginTop: 8 }}>
                   <Text style={[s.body, { fontSize: 12, color: T.muted }]}>
-                    Higher tiers, each with its schematic:
+                    {facts.crafts.length === 1 && facts.crafts[0].product === id
+                      ? 'Crafted with its schematic:'
+                      : 'Higher tiers, each with its schematic:'}
                   </Text>
                   {facts.crafts.map((c) => (
                     <View key={c.product} style={{ marginTop: 5 }}>
@@ -423,6 +425,10 @@ function ItemDetail({ id, onClose, onOpenItem }: {
           {(() => {
             const schems = schematicsFor(id);
             if (!schems.length) return null;
+            // the tier-craft rows above already name each schematic with
+            // its exact costs — repeating them here was the IL10 sweep's
+            // duplication find (Life Pendant said the same thing twice)
+            if (facts?.crafts && facts.crafts.length > 0) return null;
             return (
               <Card style={{ marginTop: 10 }}>
                 <Text style={s.h3}>Schematics for higher tiers</Text>
