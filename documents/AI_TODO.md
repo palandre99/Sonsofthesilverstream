@@ -2345,7 +2345,11 @@ re-evaluation finds nothing — otherwise it ALWAYS has work.
       first — powerOf falls through to Nutrition, and stat-less rows
       carry "Nutrition 738 · SAN 92" as their line. Eye-verified
       (Special Cake tops the tab). 807 green, published.
-- [ ] IL7 Sphere module effects on sphere cards (module family cross-link).
+- [x] IL7 2026-08-19: spheres <-> modules bridge both ways (the game's
+      own framing — every module description says "Equipping it makes
+      the sphere..."): sphere cards list all 6 modules with icons,
+      module cards list all capture spheres, every chip tappable.
+      Round trip eye-verified. 809 green, published.
 - [ ] IL8 Unified cross-fane search design notes for the CEO (pals +
       items one index — design only, CEO decides placement).
 - [ ] IL9 Weekly upstream re-check ritual entry (patch-day criterion 14):

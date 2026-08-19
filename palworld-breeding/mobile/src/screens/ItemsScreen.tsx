@@ -319,6 +319,51 @@ function ItemDetail({ id, onClose, onOpenItem }: {
           )}
 
           {(() => {
+            // spheres <-> modules: the game frames every module as a
+            // sphere attachment ("Equipping it makes the sphere...") —
+            // surface the whole family both ways
+            const sub = ITEMS[id].subcategory;
+            const linked2 = sub === 'SPWeaponCaptureBall'
+              ? {
+                title: 'Sphere modules',
+                ids: idsInGroup('spheres')
+                  .filter((i) => ITEMS[i].category === 'CaptureItemModifier'),
+              }
+              : sub === 'CaptureItemModifier'
+                ? {
+                  title: 'Attaches to capture spheres',
+                  ids: idsInGroup('spheres')
+                    .filter((i) => ITEMS[i].subcategory === 'SPWeaponCaptureBall'),
+                }
+                : null;
+            if (!linked2 || !linked2.ids.length) return null;
+            return (
+              <Card style={{ marginTop: 10 }}>
+                <Text style={s.h3}>{linked2.title}</Text>
+                <View style={[s.wrap, { marginTop: 6 }]}>
+                  {linked2.ids.map((lid) => (
+                    <Pressable key={lid}
+                      onPress={() => onOpenItem(lid)}
+                      accessibilityRole="button"
+                      accessibilityLabel={`${ITEMS[lid].name}. Open its card`}
+                      style={({ pressed }) => ({
+                        flexDirection: 'row', alignItems: 'center', gap: 6,
+                        backgroundColor: pressed ? T.surface2 : T.surface,
+                        borderWidth: 1, borderColor: T.accentSoft,
+                        borderRadius: 9, paddingHorizontal: 8, paddingVertical: 4,
+                      })}>
+                      <ItemIcon icon={ITEMS[lid].icon} size={18} />
+                      <Text style={{ color: T.accentInk, fontSize: 12, fontWeight: '700' }}>
+                        {ITEMS[lid].name}
+                      </Text>
+                    </Pressable>
+                  ))}
+                </View>
+              </Card>
+            );
+          })()}
+
+          {(() => {
             const linked = ITEMS[id].category === 'Ammo'
               ? { title: 'Fits these weapons', ids: weaponsForAmmo(id) }
               : { title: 'Fires', ids: ammoForWeapon(id) };

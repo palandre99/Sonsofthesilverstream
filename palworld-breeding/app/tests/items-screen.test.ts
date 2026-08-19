@@ -202,6 +202,22 @@ describe('food sorts by what food competes on', () => {
   });
 });
 
+describe('spheres and modules bridge both ways', () => {
+  it('the screen renders the family cross-ref in both directions', () => {
+    const code = readFileSync(
+      join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+    expect(code).toContain("'Sphere modules'");
+    expect(code).toContain("'Attaches to capture spheres'");
+    expect(code).toContain("'SPWeaponCaptureBall'");
+  });
+
+  it('the sphere group splits 10 balls and 6 modules', () => {
+    const spheres = idsInGroup('spheres');
+    expect(spheres.filter((i) => ITEMS[i].subcategory === 'SPWeaponCaptureBall').length).toBe(10);
+    expect(spheres.filter((i) => ITEMS[i].category === 'CaptureItemModifier').length).toBe(6);
+  });
+});
+
 describe('eggs know their pals (game-file egg_types)', () => {
   it('the Common Egg hatches Lamball, and every egg type joins', () => {
     const commonEgg = Object.keys(ITEMS).find(
