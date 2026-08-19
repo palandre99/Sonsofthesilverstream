@@ -174,6 +174,30 @@ the build is: one SearchOverlay component + a merged index (name +
 kind words, the token matching the Items search already uses) + result
 rows reusing PalIcon/ItemIcon + NavIntent routing. No data work needed.
 
+## 7. THE PATCH-DAY RITUAL — the items data refresh, end to end (IL9)
+
+*Run after any game patch, in this order; every step validates before it
+writes and the gates catch anything that moved. All from
+`palworld-breeding/`:*
+
+```bash
+python tools/fetch_items_index.py          # atlas backbone (bump BUILD pin first)
+python tools/fetch_item_params.py          # paldb raw stat cards
+python tools/gen_item_stats.py             # -> item_stats_1_0.json (3 copies)
+python tools/fetch_item_pages.py           # full page sweep (~30 min)
+python tools/fetch_item_pages.py --retry-errors   # errata pass for stragglers
+python tools/fetch_tech_tree.py            # /en/Technologies (588 nodes)
+python tools/fetch_item_icons.py           # icons -> webp sheets (cached, fast)
+python tools/gen_item_facts.py             # validating merge -> item_facts (3 copies)
+cd app && npx vitest run                   # every pin must stay green
+```
+
+Rules that keep it honest: sweeps run ONE at a time (paldb throttles
+parallel runs); the BUILD pin in fetch_items_index.py moves only after
+the atlas publishes the new build; count changes surface in the pinned
+tests — read the new truth from the runners, update pins deliberately,
+never loosen a zero-refusal expectation to make a run pass.
+
 ## 5. Honest limits recorded up front
 
 - The capture-rate formula and any drop-RATE percentages are NOT in the

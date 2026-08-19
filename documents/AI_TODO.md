@@ -2356,8 +2356,11 @@ re-evaluation finds nothing — otherwise it ALWAYS has work.
       search button in the top bar everywhere, the Dododex pattern),
       cost ~1 tick on a go. CEO DECISION PENDING — doc-only tick, no
       publish needed.
-- [ ] IL9 Weekly upstream re-check ritual entry (patch-day criterion 14):
-      document the one-command data refresh chain end to end.
+- [x] IL9 2026-08-19: the patch-day refresh ritual documented end to end
+      (09_ITEMS_PLAN.md §7): the eight-command chain in order, the
+      one-sweep-at-a-time rule, the BUILD-pin discipline, and the law
+      that pins move deliberately — never loosened to make a run pass.
+      Doc-only, committed.
 - [ ] IL10 Re-evaluation sweep: walk 10 random cards of different kinds
       at phone size hunting anything unworthy — append findings here.
 
