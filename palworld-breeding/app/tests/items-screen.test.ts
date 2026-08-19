@@ -174,6 +174,16 @@ describe('the item share sheet says what the screen says', () => {
     expect(txt).not.toContain('TemperatureResist');
   });
 
+  it('every one of the 1,892 items shares clean — the catalogue-wide property', () => {
+    for (const id of Object.keys(ITEMS)) {
+      const txt = shareTextForItem(id, '1.0');
+      expect(txt.length, id).toBeGreaterThan(30);
+      expect(txt, id).toContain('read from the game files · Paldexia');
+      expect(txt, `${id} share leaks markup`).not.toMatch(/<[a-zA-Z]+ id=/);
+      expect(txt, `${id} share leaks an id token`).not.toMatch(/ [A-Za-z]+_[A-Za-z0-9]+ /);
+    }
+  });
+
   it('the screen sends exactly this composer through the native sheet', () => {
     const code = readFileSync(
       join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');

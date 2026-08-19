@@ -2370,6 +2370,14 @@ re-evaluation finds nothing — otherwise it ALWAYS has work.
       "Crafted with its schematic". FOUND AND LOGGED: IL12 below. The
       Wood card feeding Lumbering research and the fruit card's 19
       sources read genuinely good.
+- [x] IL17 2026-08-19 (~15:00): the catalogue-wide share property —
+      every one of the 1,892 items' share text asserted in one test:
+      never short, provenance always travels, zero markup or id-token
+      leaks. PASSED CLEAN on first run — the sweep found nothing to
+      fix, which is the state the loop has been driving toward.
+      Test-only, committed, no publish needed. The fane holds: 16
+      shipped improvements today, three catalogue-wide certifications
+      green, CEO-gated arcs (search placement §6, device pass) ready.
 - [x] IL16 2026-08-19 (~14:25): stat-less rows use the facts they
       already ship — spheres show "Capture Power 64", accessories their
       grant ("Health Up Lv. 3 +1"), gliders/meds their first effect.
