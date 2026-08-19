@@ -320,6 +320,17 @@ def main() -> None:
             f["crafts"] = crafts
             counts["tierCrafts"] += len(crafts)
 
+        # ---- what equipment grants, by the game's own names (skill bars)
+        bars = page.get("equipPassives") or []
+        grants: list[str] = []
+        for _, txt in bars:
+            if txt and txt not in grants:
+                grants.append(txt)
+        if grants:
+            f["grants"] = grants
+            counts.setdefault("grants", 0)
+            counts["grants"] += len(grants)
+
         # ---- lab research this item feeds (the bonus names — "what is
         # this item FOR"; the full per-research material bill is a later
         # browser surface)

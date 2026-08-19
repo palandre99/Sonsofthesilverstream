@@ -248,6 +248,15 @@ function ItemDetail({ id, onClose, onOpenItem }: {
             </Card>
           )}
 
+          {facts?.grants && facts.grants.length > 0 && (
+            <Card style={{ marginTop: 10 }}>
+              <Text style={s.h3}>What it grants</Text>
+              <Text style={[s.body, { marginTop: 5, fontSize: 12.5 }]}>
+                {facts.grants.join(' · ')}
+              </Text>
+            </Card>
+          )}
+
           {facts?.effects && facts.effects.length > 0 && (
             <Card style={{ marginTop: 10 }}>
               <Text style={s.h3}>What it does</Text>

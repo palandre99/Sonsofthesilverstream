@@ -44,6 +44,7 @@ export function shareTextForItem(id: string, gameVersion: string): string {
   if (facts?.capture != null) statBits.push(`Capture Power ${facts.capture}`);
   for (const p of st?.passives ?? []) statBits.push(equipPassiveName(p));
   if (statBits.length) lines.push(statBits.join(' · '));
+  for (const g of facts?.grants ?? []) lines.push(g);
   for (const [k, v] of facts?.effects ?? []) lines.push(`${k} ${v}`);
   if (facts?.tech) lines.push(techSentence(facts.tech));
   if (facts?.recipe) {

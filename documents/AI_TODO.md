@@ -2370,11 +2370,11 @@ re-evaluation finds nothing — otherwise it ALWAYS has work.
       "Crafted with its schematic". FOUND AND LOGGED: IL12 below. The
       Wood card feeding Lumbering research and the fruit card's 19
       sources read genuinely good.
-- [ ] IL12 Accessory effects: accessory pages carry skill bars with the
-      game's own effect names ("Health Up Lv. 3" on Life Pendant —
-      probed, exact PassiveSkills ids). Mini-sweep the 81 accessory
-      pages (the IL1 pattern), ship "Grants: <effect>" on accessory
-      cards. Today they describe effects only in prose.
+- [x] IL12 2026-08-19: accessories say what they grant — 80 of 81 pages
+      carry skill bars; the id-name table grew to 91 pairs, zero
+      conflicts; 360 grant lines shipped ("What it grants: Health Up
+      Lv. 3"), on cards and in shares, no-underscore pin catalogue-wide.
+      Eye-verified on Life Pendant. 811 green, published.
 
 ## E154. ITEM CARDS SHARE LIKE THE CALCULATOR DOES 2026-08-19 (loop
 ## tick 6)

@@ -19,6 +19,7 @@
   "capture": 10,
   "tierCrafts": 412,
   "tierCraftRefusals": 498,
+  "grants": 360,
   "research": 360,
   "taggedDescriptions": 1306
  },
@@ -61,35 +62,97 @@
   "YakushimaBoss002_Relic": "Moon Lord Statue"
  },
  "equipPassiveNames": {
+  "AirDash_1": "Aerial Dash +1",
+  "AirDash_2": "Aerial Dash +2",
+  "AirDash_3": "Aerial Dash +3",
   "Attack_ACC_up1_Armor": "Attack Up (S) Lv. 1",
   "Attack_ACC_up2_Armor": "Attack Up (S) Lv. 2",
+  "Attack_ACC_up3": "Attack Up Lv. 3",
   "Attack_ACC_up3_Armor": "Attack Up (S) Lv. 3",
+  "Attack_ACC_up3_Otomo_Only_Equip": "Pal Attack Up Lv. 3",
+  "Attack_ACC_up4": "Attack Up Lv. 4",
   "Attack_ACC_up4_Armor": "Attack Up (S) Lv. 4",
+  "Attack_ACC_up4_Otomo_Only_Equip": "Pal Attack Up Lv. 4",
+  "AvoidDurationUp_EquipSkill_2": "Extended Dodge Invincibility",
+  "Defense_ACC_up3_Otomo_Only_Equip": "Pal Defense Up Lv. 3",
+  "Defense_ACC_up4_Otomo_Only_Equip": "Pal Defense Up Lv. 4",
+  "Defuser_ExplosiveSpore_EquipSkill": "Explosion Immunity",
+  "ElementBoost_Dark_3_Otomo_Only_Equip": "Pal Dark Damage Enhancement Lv. 3",
+  "ElementBoost_Dark_4_Otomo_Only_Equip": "Pal Dark Damage Enhancement Lv. 4",
+  "ElementBoost_Dragon_3_Otomo_Only_Equip": "Pal Dragon Damage Enhancement Lv. 3",
+  "ElementBoost_Dragon_4_Otomo_Only_Equip": "Pal Dragon Damage Enhancement Lv. 4",
+  "ElementBoost_Earth_3_Otomo_Only_Equip": "Pal Ground Damage Enhancement Lv. 3",
+  "ElementBoost_Earth_4_Otomo_Only_Equip": "Pal Ground Damage Enhancement Lv. 4",
+  "ElementBoost_Electricity_3_Otomo_Only_Equip": "Pal Electric Damage Enhancement Lv. 3",
+  "ElementBoost_Electricity_4_Otomo_Only_Equip": "Pal Electric Damage Enhancement Lv. 4",
+  "ElementBoost_Fire_3_Otomo_Only_Equip": "Pal Fire Damage Enhancement Lv. 3",
+  "ElementBoost_Fire_4_Otomo_Only_Equip": "Pal Fire Damage Enhancement Lv. 4",
+  "ElementBoost_Ice_3_Otomo_Only_Equip": "Pal Ice Damage Enhancement Lv. 3",
+  "ElementBoost_Ice_4_Otomo_Only_Equip": "Pal Ice Damage Enhancement Lv. 4",
+  "ElementBoost_Leaf_3_Otomo_Only_Equip": "Pal Grass Damage Enhancement Lv. 3",
+  "ElementBoost_Leaf_4_Otomo_Only_Equip": "Pal Grass Damage Enhancement Lv. 4",
+  "ElementBoost_Normal_3_Otomo_Only_Equip": "Pal Neutral Damage Enhancement Lv. 3",
+  "ElementBoost_Normal_4_Otomo_Only_Equip": "Pal Neutral Damage Enhancement Lv. 4",
+  "ElementBoost_Water_3_Otomo_Only_Equip": "Pal Water Damage Enhancement Lv. 3",
+  "ElementBoost_Water_4_Otomo_Only_Equip": "Pal Water Damage Enhancement Lv. 4",
   "ElementResist_Aqua_1": "Water Damage Reduction Lv. 1",
+  "ElementResist_Aqua_3": "Water Damage Reduction Lv. 3",
+  "ElementResist_Aqua_4": "Water Damage Reduction Lv. 4",
   "ElementResist_Dark_1": "Dark Damage Reduction Lv. 1",
+  "ElementResist_Dark_3": "Dark Damage Reduction Lv. 3",
+  "ElementResist_Dark_4": "Dark Damage Reduction Lv. 4",
   "ElementResist_Dragon_1": "Dragon Damage Reduction Lv. 1",
+  "ElementResist_Dragon_3": "Dragon Damage Reduction Lv. 3",
+  "ElementResist_Dragon_4": "Dragon Damage Reduction Lv. 4",
   "ElementResist_Earth_1": "Earth Damage Reduction Lv. 1",
+  "ElementResist_Earth_3": "Earth Damage Reduction Lv. 3",
+  "ElementResist_Earth_4": "Ground Damage Reduction Lv. 4",
   "ElementResist_Fire_1": "Fire Damage Reduction Lv. 1",
+  "ElementResist_Fire_3": "Fire Damage Reduction Lv. 3",
+  "ElementResist_Fire_4": "Fire Damage Reduction Lv. 4",
   "ElementResist_Ice_1": "Ice Damage Reduction Lv. 1",
+  "ElementResist_Ice_3": "Ice Damage Reduction Lv. 3",
+  "ElementResist_Ice_4": "Ice Damage Reduction Lv. 4",
   "ElementResist_Leaf_1": "Grass Damage Reduction Lv. 1",
+  "ElementResist_Leaf_3": "Grass Damage Reduction Lv. 3",
+  "ElementResist_Leaf_4": "Grass Damage Reduction Lv. 4",
   "ElementResist_Normal_1": "Neutral Damage Reduction Lv. 1",
+  "ElementResist_Normal_3": "Neutral Damage Reduction Lv. 3",
+  "ElementResist_Normal_4": "Neutral Damage Reduction Lv. 4",
   "ElementResist_Thunder_1": "Electric Damage Reduction Lv. 1",
+  "ElementResist_Thunder_3": "Electric Damage Reduction Lv. 3",
+  "ElementResist_Thunder_4": "Electric Damage Reduction Lv. 4",
+  "FriendshipPoint_Increase_EquipSkill": "Party Pal Trust Boost",
+  "HP_ACC_up3": "Health Up Lv. 3",
+  "HP_ACC_up4": "Health Up Lv. 4",
+  "Invalid_ToxicGas_EquipSkill": "Toxic Gas Immunity",
+  "JumpCount_Increase1": "Jump Count Increase +1",
+  "JumpCount_Increase2": "Jump Count Increase +2",
+  "JumpPower_Increase": "Jump Power Boost",
   "MaxInventoryWeight_up_Equip_1": "Max Carrying Capacity Lv. 1",
+  "MaxInventoryWeight_up_Equip_2": "Max Carrying Capacity Lv. 2",
   "MaxInventoryWeight_up_Equip_3": "Max Carrying Capacity Lv. 3",
   "MaxInventoryWeight_up_Equip_4": "Max Carrying Capacity Lv. 4",
+  "NonKilling": "Mercy Hit",
   "OctaviaArmorVampire": "Blood Is Fuel",
+  "PalExp_Increase_3_Otomo_Only_Equip": "Pal EXP Up Lv. 3",
   "TemperatureResist_Cold1": "Cold Resistance Lv. 1",
   "TemperatureResist_Cold2": "Cold Resistance Lv. 2",
   "TemperatureResist_Cold3": "Cold Resistance Lv. 3",
   "TemperatureResist_Heat1": "Heat Resistance Lv. 1",
   "TemperatureResist_Heat2": "Heat Resistance Lv. 2",
   "TemperatureResist_Heat3": "Heat Resistance Lv. 3",
+  "TemperatureResist_Heat3Cold3": "Heat Resistance Lv. 3 / Cold Resistance Lv. 3",
   "WorkSpeed_ACC_up1": "Speedy Worker Lv. 1",
+  "WorkSpeed_ACC_up3": "Speedy Worker Lv. 3",
+  "WorkSpeed_ACC_up4": "Speedy Worker Lv. 4",
   "YakushimaDagameBoost_Magic_Equip": "Hallowed Power: Magic",
   "YakushimaDagameBoost_Melee_Equip": "Hallowed Power: Close Range",
   "YakushimaDagameBoost_Ranged_Equip": "Hallowed Power: Ranged",
   "YakushimaDagameBoost_Summon_Equip": "Hallowed Power: Summon",
-  "YakushimaProtection_Equip": "Hallowed Guard"
+  "YakushimaProtection_Equip": "Hallowed Guard",
+  "defense_ACC_up3": "Defense Up Lv. 3",
+  "defense_ACC_up4": "Defense Up Lv. 4"
  },
  "techTreeSize": 588,
  "facts": {
@@ -148,6 +211,9 @@
      ],
      "schematic": "Blueprint_Accessory_AT_1_2"
     }
+   ],
+   "grants": [
+    "Attack Up Lv. 3"
    ]
   },
   "Accessory_AirDash1": {
@@ -169,7 +235,10 @@
     "level": 35,
     "cost": 2,
     "ancient": true
-   }
+   },
+   "grants": [
+    "Aerial Dash +1"
+   ]
   },
   "Accessory_AirDash2": {
    "recipe": [
@@ -194,7 +263,10 @@
     "level": 61,
     "cost": 5,
     "ancient": true
-   }
+   },
+   "grants": [
+    "Aerial Dash +2"
+   ]
   },
   "Accessory_AirDash3": {
    "recipe": [
@@ -219,7 +291,10 @@
     "level": 65,
     "cost": 6,
     "ancient": true
-   }
+   },
+   "grants": [
+    "Aerial Dash +3"
+   ]
   },
   "Accessory_AquaResist_1": {
    "recipe": [
@@ -263,6 +338,9 @@
      ],
      "schematic": "Blueprint_Accessory_AquaResist_1_2"
     }
+   ],
+   "grants": [
+    "Water Damage Reduction Lv. 3"
    ]
   },
   "Accessory_Avoid_1": {
@@ -307,6 +385,9 @@
      ],
      "schematic": "Blueprint_Accessory_Avoid_1_fix"
     }
+   ],
+   "grants": [
+    "Extended Dodge Invincibility"
    ]
   },
   "Accessory_ColdIce_1": {
@@ -351,6 +432,10 @@
      ],
      "schematic": "Blueprint_Accessory_ColdIce_1"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 3",
+    "Ice Damage Reduction Lv. 4"
    ]
   },
   "Accessory_CoolResist_1": {
@@ -387,6 +472,9 @@
      ],
      "schematic": "Blueprint_Accessory_CoolResist_1_2"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 3"
    ]
   },
   "Accessory_DFHP_1": {
@@ -431,6 +519,10 @@
      ],
      "schematic": "Blueprint_Accessory_DFHP_1"
     }
+   ],
+   "grants": [
+    "Defense Up Lv. 4",
+    "Health Up Lv. 4"
    ]
   },
   "Accessory_DarkResist_1": {
@@ -475,6 +567,9 @@
      ],
      "schematic": "Blueprint_Accessory_DarkResist_1_2"
     }
+   ],
+   "grants": [
+    "Dark Damage Reduction Lv. 3"
    ]
   },
   "Accessory_DragonResist_1": {
@@ -515,6 +610,9 @@
      ],
      "schematic": "Blueprint_Accessory_DragonResist_1_2"
     }
+   ],
+   "grants": [
+    "Dragon Damage Reduction Lv. 3"
    ]
   },
   "Accessory_EarthResist_1": {
@@ -559,6 +657,9 @@
      ],
      "schematic": "Blueprint_Accessory_EarthResist_1_2"
     }
+   ],
+   "grants": [
+    "Earth Damage Reduction Lv. 3"
    ]
   },
   "Accessory_ExplosionResist": {
@@ -575,7 +676,10 @@
    "tech": {
     "level": 76,
     "cost": 5
-   }
+   },
+   "grants": [
+    "Explosion Immunity"
+   ]
   },
   "Accessory_FireResist_1": {
    "recipe": [
@@ -619,6 +723,9 @@
      ],
      "schematic": "Blueprint_Accessory_FireResist_1_2"
     }
+   ],
+   "grants": [
+    "Fire Damage Reduction Lv. 3"
    ]
   },
   "Accessory_HCHP_1": {
@@ -667,6 +774,10 @@
      ],
      "schematic": "Blueprint_Accessory_HCHP_1"
     }
+   ],
+   "grants": [
+    "Heat Resistance Lv. 3 / Cold Resistance Lv. 3",
+    "Health Up Lv. 4"
    ]
   },
   "Accessory_HCMW_1": {
@@ -715,6 +826,10 @@
      ],
      "schematic": "Blueprint_Accessory_HCMW_1"
     }
+   ],
+   "grants": [
+    "Heat Resistance Lv. 3 / Cold Resistance Lv. 3",
+    "Max Carrying Capacity Lv. 4"
    ]
   },
   "Accessory_HP_1": {
@@ -759,6 +874,9 @@
      ],
      "schematic": "Blueprint_Accessory_HP_1_2"
     }
+   ],
+   "grants": [
+    "Health Up Lv. 3"
    ]
   },
   "Accessory_HeatColdResist_1": {
@@ -795,6 +913,9 @@
      ],
      "schematic": "Blueprint_Accessory_HeatColdResist_1_2"
     }
+   ],
+   "grants": [
+    "Heat Resistance Lv. 3 / Cold Resistance Lv. 3"
    ]
   },
   "Accessory_HeatFire_1": {
@@ -847,6 +968,10 @@
      ],
      "schematic": "Blueprint_Accessory_HeatFire_1"
     }
+   ],
+   "grants": [
+    "Heat Resistance Lv. 3",
+    "Fire Damage Reduction Lv. 4"
    ]
   },
   "Accessory_HeatResist_1": {
@@ -887,6 +1012,9 @@
      ],
      "schematic": "Blueprint_Accessory_HeatResist_1_2"
     }
+   ],
+   "grants": [
+    "Heat Resistance Lv. 3"
    ]
   },
   "Accessory_IceResist_1": {
@@ -927,6 +1055,9 @@
      ],
      "schematic": "Blueprint_Accessory_IceResist_1_2"
     }
+   ],
+   "grants": [
+    "Ice Damage Reduction Lv. 3"
    ]
   },
   "Accessory_JumpAir_1": {
@@ -979,6 +1110,10 @@
      ],
      "schematic": "Blueprint_Accessory_JumpAir_1"
     }
+   ],
+   "grants": [
+    "Jump Count Increase +1",
+    "Aerial Dash +1"
    ]
   },
   "Accessory_JumpAir_2": {
@@ -1031,6 +1166,10 @@
      ],
      "schematic": "Blueprint_Accessory_JumpAir_2"
     }
+   ],
+   "grants": [
+    "Jump Count Increase +1",
+    "Aerial Dash +2"
    ]
   },
   "Accessory_JumpCount_Increase1": {
@@ -1052,7 +1191,10 @@
     "level": 40,
     "cost": 2,
     "ancient": true
-   }
+   },
+   "grants": [
+    "Jump Count Increase +1"
+   ]
   },
   "Accessory_JumpCount_Increase2": {
    "recipe": [
@@ -1077,7 +1219,10 @@
     "level": 70,
     "cost": 6,
     "ancient": true
-   }
+   },
+   "grants": [
+    "Jump Count Increase +2"
+   ]
   },
   "Accessory_JumpPower_Increase": {
    "recipe": [
@@ -1098,7 +1243,10 @@
     "level": 28,
     "cost": 2,
     "ancient": true
-   }
+   },
+   "grants": [
+    "Jump Power Boost"
+   ]
   },
   "Accessory_LeafResist_1": {
    "recipe": [
@@ -1142,6 +1290,9 @@
      ],
      "schematic": "Blueprint_Accessory_LeafResist_1_2"
     }
+   ],
+   "grants": [
+    "Grass Damage Reduction Lv. 3"
    ]
   },
   "Accessory_MaxWeightUp_01": {
@@ -1186,6 +1337,10 @@
      ],
      "schematic": "Blueprint_Accessory_MaxWeightUp_01_2"
     }
+   ],
+   "grants": [
+    "Max Carrying Capacity Lv. 3",
+    "Max Carrying Capacity Lv. 2"
    ]
   },
   "Accessory_NonkChecker_1": {
@@ -1230,6 +1385,9 @@
      ],
      "schematic": "Blueprint_Accessory_NonkChecker_1"
     }
+   ],
+   "grants": [
+    "Mercy Hit"
    ]
   },
   "Accessory_Nonkilling": {
@@ -1251,7 +1409,10 @@
     "level": 18,
     "cost": 2,
     "ancient": true
-   }
+   },
+   "grants": [
+    "Mercy Hit"
+   ]
   },
   "Accessory_NormalResist_1": {
    "recipe": [
@@ -1291,6 +1452,9 @@
      ],
      "schematic": "Blueprint_Accessory_NormalResist_1_2"
     }
+   ],
+   "grants": [
+    "Neutral Damage Reduction Lv. 3"
    ]
   },
   "Accessory_Otomo_Dargon_1": {
@@ -1335,6 +1499,10 @@
      ],
      "schematic": "Blueprint_Accessory_Otomo_Dargon_1"
     }
+   ],
+   "grants": [
+    "Dark Damage Reduction Lv. 4",
+    "Pal Dragon Damage Enhancement Lv. 4"
    ]
   },
   "Accessory_Otomo_Dark_1": {
@@ -1379,6 +1547,10 @@
      ],
      "schematic": "Blueprint_Accessory_Otomo_Dark_1"
     }
+   ],
+   "grants": [
+    "Neutral Damage Reduction Lv. 4",
+    "Pal Dark Damage Enhancement Lv. 4"
    ]
   },
   "Accessory_Otomo_Earth_1": {
@@ -1399,6 +1571,10 @@
      "id": "PalCrystal_Ex",
      "n": 5
     }
+   ],
+   "grants": [
+    "Electric Damage Reduction Lv. 4",
+    "Pal Ground Damage Enhancement Lv. 4"
    ]
   },
   "Accessory_Otomo_Electricity_1": {
@@ -1443,6 +1619,10 @@
      ],
      "schematic": "Blueprint_Accessory_Otomo_Electricity_1"
     }
+   ],
+   "grants": [
+    "Water Damage Reduction Lv. 4",
+    "Pal Electric Damage Enhancement Lv. 4"
    ]
   },
   "Accessory_Otomo_Fire_1": {
@@ -1487,6 +1667,10 @@
      ],
      "schematic": "Blueprint_Accessory_Otomo_Fire_1"
     }
+   ],
+   "grants": [
+    "Grass Damage Reduction Lv. 4",
+    "Pal Fire Damage Enhancement Lv. 4"
    ]
   },
   "Accessory_Otomo_Fire_2": {
@@ -1527,6 +1711,10 @@
      ],
      "schematic": "Blueprint_Accessory_Otomo_Fire_2"
     }
+   ],
+   "grants": [
+    "Ice Damage Reduction Lv. 4",
+    "Pal Fire Damage Enhancement Lv. 4"
    ]
   },
   "Accessory_Otomo_Ice_1": {
@@ -1559,6 +1747,10 @@
      ],
      "schematic": "Blueprint_Accessory_Otomo_Ice_1"
     }
+   ],
+   "grants": [
+    "Dragon Damage Reduction Lv. 4",
+    "Pal Ice Damage Enhancement Lv. 4"
    ]
   },
   "Accessory_Otomo_Leaf_1": {
@@ -1603,6 +1795,10 @@
      ],
      "schematic": "Blueprint_Accessory_Otomo_Leaf_1"
     }
+   ],
+   "grants": [
+    "Ground Damage Reduction Lv. 4",
+    "Pal Grass Damage Enhancement Lv. 4"
    ]
   },
   "Accessory_Otomo_Water_1": {
@@ -1647,6 +1843,10 @@
      ],
      "schematic": "Blueprint_Accessory_Otomo_Water_1"
     }
+   ],
+   "grants": [
+    "Fire Damage Reduction Lv. 4",
+    "Pal Water Damage Enhancement Lv. 4"
    ]
   },
   "Accessory_PPAT_1": {
@@ -1691,6 +1891,10 @@
      ],
      "schematic": "Blueprint_Accessory_PPAT_1"
     }
+   ],
+   "grants": [
+    "Attack Up Lv. 4",
+    "Pal Attack Up Lv. 4"
    ]
   },
   "Accessory_PPDF_1": {
@@ -1735,6 +1939,10 @@
      ],
      "schematic": "Blueprint_Accessory_PPDF_1"
     }
+   ],
+   "grants": [
+    "Defense Up Lv. 4",
+    "Pal Defense Up Lv. 4"
    ]
   },
   "Accessory_SuperJumpAir_1": {
@@ -1787,6 +1995,10 @@
      ],
      "schematic": "Blueprint_Accessory_SuperJumpAir_1"
     }
+   ],
+   "grants": [
+    "Jump Count Increase +2",
+    "Aerial Dash +1"
    ]
   },
   "Accessory_SuperJumpAir_2": {
@@ -1839,6 +2051,10 @@
      ],
      "schematic": "Blueprint_Accessory_SuperJumpAir_2"
     }
+   ],
+   "grants": [
+    "Jump Count Increase +2",
+    "Aerial Dash +2"
    ]
   },
   "Accessory_TalentChecker": {
@@ -1904,6 +2120,9 @@
      ],
      "schematic": "Blueprint_Accessory_ThunderResist_1_2"
     }
+   ],
+   "grants": [
+    "Electric Damage Reduction Lv. 3"
    ]
   },
   "Accessory_WKMC_1": {
@@ -1948,6 +2167,10 @@
      ],
      "schematic": "Blueprint_Accessory_WKMC_1"
     }
+   ],
+   "grants": [
+    "Max Carrying Capacity Lv. 4",
+    "Speedy Worker Lv. 4"
    ]
   },
   "Accessory_WorkSpeed_1": {
@@ -1992,6 +2215,9 @@
      ],
      "schematic": "Blueprint_Accessory_WorkSpeed_1_2"
     }
+   ],
+   "grants": [
+    "Speedy Worker Lv. 3"
    ]
   },
   "Accessory_defense_1": {
@@ -2036,6 +2262,9 @@
      ],
      "schematic": "Blueprint_Accessory_defense_1_2"
     }
+   ],
+   "grants": [
+    "Defense Up Lv. 3"
    ]
   },
   "AdditionalInventory_001": {
@@ -2554,6 +2783,14 @@
      "schematic": "Blueprint_AncientArmor_4"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Heat Resistance Lv. 2",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Ancient armor forged from Soralite Ingot.\nCrafted with the essence of a lost civilization, it boasts overwhelming defensive power and is capable of withstanding cataclysmic threats.Cold Resistance Lv. 2"
   },
   "AncientArmorCold": {
@@ -2716,6 +2953,15 @@
      ],
      "schematic": "Blueprint_AncientArmorCold_5"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 3",
+    "Heat Resistance Lv. 2",
+    "Ice Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "Refined Ancient Armor.\nIts cold resistance has been further enhanced using ancient technology, allowing the wearer to maintain their strength even in extreme cold regions.Cold Resistance Lv. 3"
   },
@@ -2880,6 +3126,15 @@
      "schematic": "Blueprint_AncientArmorCold_5"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 3",
+    "Heat Resistance Lv. 2",
+    "Ice Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Refined Ancient Armor.\nIts cold resistance has been further enhanced using ancient technology, allowing the wearer to maintain their strength even in extreme cold regions.Cold Resistance Lv. 3"
   },
   "AncientArmorCold_3": {
@@ -3042,6 +3297,15 @@
      ],
      "schematic": "Blueprint_AncientArmorCold_5"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 3",
+    "Heat Resistance Lv. 2",
+    "Ice Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "Refined Ancient Armor.\nIts cold resistance has been further enhanced using ancient technology, allowing the wearer to maintain their strength even in extreme cold regions.Cold Resistance Lv. 3"
   },
@@ -3206,6 +3470,15 @@
      "schematic": "Blueprint_AncientArmorCold_5"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 3",
+    "Heat Resistance Lv. 2",
+    "Ice Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Refined Ancient Armor.\nIts cold resistance has been further enhanced using ancient technology, allowing the wearer to maintain their strength even in extreme cold regions.Cold Resistance Lv. 3"
   },
   "AncientArmorCold_5": {
@@ -3369,6 +3642,15 @@
      "schematic": "Blueprint_AncientArmorCold_5"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 3",
+    "Heat Resistance Lv. 2",
+    "Ice Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Refined Ancient Armor.\nIts cold resistance has been further enhanced using ancient technology, allowing the wearer to maintain their strength even in extreme cold regions.Cold Resistance Lv. 3"
   },
   "AncientArmorHeat": {
@@ -3489,6 +3771,15 @@
      ],
      "schematic": "Blueprint_AncientArmorHeat_4"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Heat Resistance Lv. 3",
+    "Fire Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "Refined Ancient Armor.\nIts heat resistance has been further enhanced using ancient technology, allowing it to endure scorching environmentsCold Resistance Lv. 2"
   },
@@ -3611,6 +3902,15 @@
      "schematic": "Blueprint_AncientArmorHeat_4"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Heat Resistance Lv. 3",
+    "Fire Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Refined Ancient Armor.\nIts heat resistance has been further enhanced using ancient technology, allowing it to endure scorching environmentsCold Resistance Lv. 2"
   },
   "AncientArmorHeat_3": {
@@ -3731,6 +4031,15 @@
      ],
      "schematic": "Blueprint_AncientArmorHeat_4"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Heat Resistance Lv. 3",
+    "Fire Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "Refined Ancient Armor.\nIts heat resistance has been further enhanced using ancient technology, allowing it to endure scorching environmentsCold Resistance Lv. 2"
   },
@@ -3853,6 +4162,15 @@
      "schematic": "Blueprint_AncientArmorHeat_4"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Heat Resistance Lv. 3",
+    "Fire Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Refined Ancient Armor.\nIts heat resistance has been further enhanced using ancient technology, allowing it to endure scorching environmentsCold Resistance Lv. 2"
   },
   "AncientArmorHeat_5": {
@@ -3973,6 +4291,15 @@
      ],
      "schematic": "Blueprint_AncientArmorHeat_4"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Heat Resistance Lv. 3",
+    "Fire Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "Refined Ancient Armor.\nIts heat resistance has been further enhanced using ancient technology, allowing it to endure scorching environmentsCold Resistance Lv. 2"
   },
@@ -4115,6 +4442,15 @@
      "schematic": "Blueprint_AncientArmorWeight_3"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Heat Resistance Lv. 2",
+    "Max Carrying Capacity Lv. 4",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Refined Ancient Armor.\nIt is equipped with ancient auxiliary mechanisms, allowing the wearer to carry more supplies.Cold Resistance Lv. 2"
   },
   "AncientArmorWeight_2": {
@@ -4255,6 +4591,15 @@
      ],
      "schematic": "Blueprint_AncientArmorWeight_3"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Heat Resistance Lv. 2",
+    "Max Carrying Capacity Lv. 4",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "Refined Ancient Armor.\nIt is equipped with ancient auxiliary mechanisms, allowing the wearer to carry more supplies.Cold Resistance Lv. 2"
   },
@@ -4397,6 +4742,15 @@
      "schematic": "Blueprint_AncientArmorWeight_3"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Heat Resistance Lv. 2",
+    "Max Carrying Capacity Lv. 4",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Refined Ancient Armor.\nIt is equipped with ancient auxiliary mechanisms, allowing the wearer to carry more supplies.Cold Resistance Lv. 2"
   },
   "AncientArmorWeight_4": {
@@ -4537,6 +4891,15 @@
      ],
      "schematic": "Blueprint_AncientArmorWeight_3"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Heat Resistance Lv. 2",
+    "Max Carrying Capacity Lv. 4",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "Refined Ancient Armor.\nIt is equipped with ancient auxiliary mechanisms, allowing the wearer to carry more supplies.Cold Resistance Lv. 2"
   },
@@ -4679,6 +5042,15 @@
      "schematic": "Blueprint_AncientArmorWeight_3"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Heat Resistance Lv. 2",
+    "Max Carrying Capacity Lv. 4",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Refined Ancient Armor.\nIt is equipped with ancient auxiliary mechanisms, allowing the wearer to carry more supplies.Cold Resistance Lv. 2"
   },
   "AncientArmor_2": {
@@ -4809,6 +5181,14 @@
      ],
      "schematic": "Blueprint_AncientArmor_4"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Heat Resistance Lv. 2",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "Ancient armor forged from Soralite Ingot.\nCrafted with the essence of a lost civilization, it boasts overwhelming defensive power and is capable of withstanding cataclysmic threats.Cold Resistance Lv. 2"
   },
@@ -4941,6 +5321,14 @@
      "schematic": "Blueprint_AncientArmor_4"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Heat Resistance Lv. 2",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Ancient armor forged from Soralite Ingot.\nCrafted with the essence of a lost civilization, it boasts overwhelming defensive power and is capable of withstanding cataclysmic threats.Cold Resistance Lv. 2"
   },
   "AncientArmor_4": {
@@ -5072,6 +5460,14 @@
      "schematic": "Blueprint_AncientArmor_4"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Heat Resistance Lv. 2",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Ancient armor forged from Soralite Ingot.\nCrafted with the essence of a lost civilization, it boasts overwhelming defensive power and is capable of withstanding cataclysmic threats.Cold Resistance Lv. 2"
   },
   "AncientArmor_5": {
@@ -5202,6 +5598,14 @@
      ],
      "schematic": "Blueprint_AncientArmor_4"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Heat Resistance Lv. 2",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "Ancient armor forged from Soralite Ingot.\nCrafted with the essence of a lost civilization, it boasts overwhelming defensive power and is capable of withstanding cataclysmic threats.Cold Resistance Lv. 2"
   },
@@ -5352,6 +5756,10 @@
      "schematic": "Blueprint_AncientHelmet_5"
     }
    ],
+   "grants": [
+    "Neutral Damage Reduction Lv. 1",
+    "Dragon Damage Reduction Lv. 1"
+   ],
    "desc": "An ancient helmet forged from Soralite Ingot.\nIt is imbued with wisdom passed down through the ages, protecting its wearer with unwavering strength.\nIts defensive capabilities far surpass those of modern equipment.Neutral Damage Reduction Lv. 1"
   },
   "AncientHelmet_2": {
@@ -5500,6 +5908,10 @@
      ],
      "schematic": "Blueprint_AncientHelmet_5"
     }
+   ],
+   "grants": [
+    "Neutral Damage Reduction Lv. 1",
+    "Dragon Damage Reduction Lv. 1"
    ],
    "desc": "An ancient helmet forged from Soralite Ingot.\nIt is imbued with wisdom passed down through the ages, protecting its wearer with unwavering strength.\nIts defensive capabilities far surpass those of modern equipment.Neutral Damage Reduction Lv. 1"
   },
@@ -5650,6 +6062,10 @@
      "schematic": "Blueprint_AncientHelmet_5"
     }
    ],
+   "grants": [
+    "Neutral Damage Reduction Lv. 1",
+    "Dragon Damage Reduction Lv. 1"
+   ],
    "desc": "An ancient helmet forged from Soralite Ingot.\nIt is imbued with wisdom passed down through the ages, protecting its wearer with unwavering strength.\nIts defensive capabilities far surpass those of modern equipment.Neutral Damage Reduction Lv. 1"
   },
   "AncientHelmet_4": {
@@ -5799,6 +6215,10 @@
      "schematic": "Blueprint_AncientHelmet_5"
     }
    ],
+   "grants": [
+    "Neutral Damage Reduction Lv. 1",
+    "Dragon Damage Reduction Lv. 1"
+   ],
    "desc": "An ancient helmet forged from Soralite Ingot.\nIt is imbued with wisdom passed down through the ages, protecting its wearer with unwavering strength.\nIts defensive capabilities far surpass those of modern equipment.Neutral Damage Reduction Lv. 1"
   },
   "AncientHelmet_5": {
@@ -5947,6 +6367,10 @@
      ],
      "schematic": "Blueprint_AncientHelmet_5"
     }
+   ],
+   "grants": [
+    "Neutral Damage Reduction Lv. 1",
+    "Dragon Damage Reduction Lv. 1"
    ],
    "desc": "An ancient helmet forged from Soralite Ingot.\nIt is imbued with wisdom passed down through the ages, protecting its wearer with unwavering strength.\nIts defensive capabilities far surpass those of modern equipment.Neutral Damage Reduction Lv. 1"
   },
@@ -38282,6 +38706,13 @@
      "schematic": "Blueprint_ClothArmor_5"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Clothes made from Cloth.\nProtects against cold nights.Cold Resistance Lv. 1"
   },
   "ClothArmorCold": {
@@ -38350,6 +38781,13 @@
      ],
      "schematic": "Blueprint_ClothArmorCold_5"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "A Cloth Outfit produced in cold regions.\nUseful for surviving in cold climates.Cold Resistance Lv. 2"
   },
@@ -38420,6 +38858,13 @@
      "schematic": "Blueprint_ClothArmorCold_5"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "A Cloth Outfit produced in cold regions.\nUseful for surviving in cold climates.Cold Resistance Lv. 2"
   },
   "ClothArmorCold_3": {
@@ -38488,6 +38933,13 @@
      ],
      "schematic": "Blueprint_ClothArmorCold_5"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "A Cloth Outfit produced in cold regions.\nUseful for surviving in cold climates.Cold Resistance Lv. 2"
   },
@@ -38558,6 +39010,13 @@
      "schematic": "Blueprint_ClothArmorCold_5"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "A Cloth Outfit produced in cold regions.\nUseful for surviving in cold climates.Cold Resistance Lv. 2"
   },
   "ClothArmorCold_5": {
@@ -38626,6 +39085,13 @@
      ],
      "schematic": "Blueprint_ClothArmorCold_5"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "A Cloth Outfit produced in cold regions.\nUseful for surviving in cold climates.Cold Resistance Lv. 2"
   },
@@ -38732,6 +39198,13 @@
      "schematic": "Blueprint_ClothArmorHeat_5"
     }
    ],
+   "grants": [
+    "Heat Resistance Lv. 2",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "A Cloth Outfit produced in hot regions.\nBoasts high heat resistance.Heat Resistance Lv. 2"
   },
   "ClothArmorHeat_2": {
@@ -38836,6 +39309,13 @@
      ],
      "schematic": "Blueprint_ClothArmorHeat_5"
     }
+   ],
+   "grants": [
+    "Heat Resistance Lv. 2",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "A Cloth Outfit produced in hot regions.\nBoasts high heat resistance.Heat Resistance Lv. 2"
   },
@@ -38942,6 +39422,13 @@
      "schematic": "Blueprint_ClothArmorHeat_5"
     }
    ],
+   "grants": [
+    "Heat Resistance Lv. 2",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "A Cloth Outfit produced in hot regions.\nBoasts high heat resistance.Heat Resistance Lv. 2"
   },
   "ClothArmorHeat_4": {
@@ -39046,6 +39533,13 @@
      ],
      "schematic": "Blueprint_ClothArmorHeat_5"
     }
+   ],
+   "grants": [
+    "Heat Resistance Lv. 2",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "A Cloth Outfit produced in hot regions.\nBoasts high heat resistance.Heat Resistance Lv. 2"
   },
@@ -39152,6 +39646,13 @@
      "schematic": "Blueprint_ClothArmorHeat_5"
     }
    ],
+   "grants": [
+    "Heat Resistance Lv. 2",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "A Cloth Outfit produced in hot regions.\nBoasts high heat resistance.Heat Resistance Lv. 2"
   },
   "ClothArmor_2": {
@@ -39220,6 +39721,13 @@
      ],
      "schematic": "Blueprint_ClothArmor_5"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "Clothes made from Cloth.\nProtects against cold nights.Cold Resistance Lv. 1"
   },
@@ -39290,6 +39798,13 @@
      "schematic": "Blueprint_ClothArmor_5"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Clothes made from Cloth.\nProtects against cold nights.Cold Resistance Lv. 1"
   },
   "ClothArmor_4": {
@@ -39359,6 +39874,13 @@
      "schematic": "Blueprint_ClothArmor_5"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Clothes made from Cloth.\nProtects against cold nights.Cold Resistance Lv. 1"
   },
   "ClothArmor_5": {
@@ -39427,6 +39949,13 @@
      ],
      "schematic": "Blueprint_ClothArmor_5"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "Clothes made from Cloth.\nProtects against cold nights.Cold Resistance Lv. 1"
   },
@@ -40483,6 +41012,14 @@
      ],
      "schematic": "Blueprint_CopperArmor_5"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 1",
+    "Heat Resistance Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ]
   },
   "CopperArmorCold": {
@@ -40639,6 +41176,15 @@
      ],
      "schematic": "Blueprint_CopperArmorCold_5"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Heat Resistance Lv. 1",
+    "Ice Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "Improved Metal Armor.\nUseful for surviving in cold climates.Cold Resistance Lv. 2"
   },
@@ -40797,6 +41343,15 @@
      "schematic": "Blueprint_CopperArmorCold_5"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Heat Resistance Lv. 1",
+    "Ice Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Improved Metal Armor.\nUseful for surviving in cold climates.Cold Resistance Lv. 2"
   },
   "CopperArmorCold_3": {
@@ -40953,6 +41508,15 @@
      ],
      "schematic": "Blueprint_CopperArmorCold_5"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Heat Resistance Lv. 1",
+    "Ice Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "Improved Metal Armor.\nUseful for surviving in cold climates.Cold Resistance Lv. 2"
   },
@@ -41111,6 +41675,15 @@
      "schematic": "Blueprint_CopperArmorCold_5"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Heat Resistance Lv. 1",
+    "Ice Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Improved Metal Armor.\nUseful for surviving in cold climates.Cold Resistance Lv. 2"
   },
   "CopperArmorCold_5": {
@@ -41267,6 +41840,15 @@
      ],
      "schematic": "Blueprint_CopperArmorCold_5"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Heat Resistance Lv. 1",
+    "Ice Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "Improved Metal Armor.\nUseful for surviving in cold climates.Cold Resistance Lv. 2"
   },
@@ -41453,6 +42035,15 @@
      "schematic": "Blueprint_CopperArmorHeat_5"
     }
    ],
+   "grants": [
+    "Heat Resistance Lv. 2",
+    "Cold Resistance Lv. 1",
+    "Fire Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Improved Metal Armor.\nBoasts high heat resistance.Heat Resistance Lv. 2"
   },
   "CopperArmorHeat_2": {
@@ -41637,6 +42228,15 @@
      ],
      "schematic": "Blueprint_CopperArmorHeat_5"
     }
+   ],
+   "grants": [
+    "Heat Resistance Lv. 2",
+    "Cold Resistance Lv. 1",
+    "Fire Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "Improved Metal Armor.\nBoasts high heat resistance.Heat Resistance Lv. 2"
   },
@@ -41823,6 +42423,15 @@
      "schematic": "Blueprint_CopperArmorHeat_5"
     }
    ],
+   "grants": [
+    "Heat Resistance Lv. 2",
+    "Cold Resistance Lv. 1",
+    "Fire Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Improved Metal Armor.\nBoasts high heat resistance.Heat Resistance Lv. 2"
   },
   "CopperArmorHeat_4": {
@@ -42007,6 +42616,15 @@
      ],
      "schematic": "Blueprint_CopperArmorHeat_5"
     }
+   ],
+   "grants": [
+    "Heat Resistance Lv. 2",
+    "Cold Resistance Lv. 1",
+    "Fire Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "Improved Metal Armor.\nBoasts high heat resistance.Heat Resistance Lv. 2"
   },
@@ -42193,6 +42811,15 @@
      "schematic": "Blueprint_CopperArmorHeat_5"
     }
    ],
+   "grants": [
+    "Heat Resistance Lv. 2",
+    "Cold Resistance Lv. 1",
+    "Fire Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Improved Metal Armor.\nBoasts high heat resistance.Heat Resistance Lv. 2"
   },
   "CopperArmor_2": {
@@ -42319,6 +42946,14 @@
      ],
      "schematic": "Blueprint_CopperArmor_5"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 1",
+    "Heat Resistance Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ]
   },
   "CopperArmor_3": {
@@ -42445,6 +43080,14 @@
      ],
      "schematic": "Blueprint_CopperArmor_5"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 1",
+    "Heat Resistance Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ]
   },
   "CopperArmor_4": {
@@ -42571,6 +43214,14 @@
      ],
      "schematic": "Blueprint_CopperArmor_5"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 1",
+    "Heat Resistance Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ]
   },
   "CopperArmor_5": {
@@ -42697,6 +43348,14 @@
      ],
      "schematic": "Blueprint_CopperArmor_5"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 1",
+    "Heat Resistance Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ]
   },
   "CopperHelmet": {
@@ -54409,6 +55068,13 @@
      "schematic": "Blueprint_FurArmor_5"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Armor made from Leather.\nIts warmth and defense have been improved.Cold Resistance Lv. 1"
   },
   "FurArmorCold": {
@@ -54549,6 +55215,14 @@
      ],
      "schematic": "Blueprint_FurArmorCold_5"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Ice Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "shops": [
     "Duneshelter"
@@ -54694,6 +55368,14 @@
      "schematic": "Blueprint_FurArmorCold_5"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Ice Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "shops": [
     "Duneshelter"
    ],
@@ -54837,6 +55519,14 @@
      ],
      "schematic": "Blueprint_FurArmorCold_5"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Ice Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "shops": [
     "Duneshelter"
@@ -54982,6 +55672,14 @@
      "schematic": "Blueprint_FurArmorCold_5"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Ice Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "shops": [
     "Duneshelter"
    ],
@@ -55125,6 +55823,14 @@
      ],
      "schematic": "Blueprint_FurArmorCold_5"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Ice Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "shops": [
     "Duneshelter"
@@ -55289,6 +55995,14 @@
      ],
      "schematic": "Blueprint_FurArmorHeat_5"
     }
+   ],
+   "grants": [
+    "Heat Resistance Lv. 2",
+    "Fire Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "shops": [
     "Duneshelter",
@@ -55455,6 +56169,14 @@
      "schematic": "Blueprint_FurArmorHeat_5"
     }
    ],
+   "grants": [
+    "Heat Resistance Lv. 2",
+    "Fire Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "shops": [
     "Duneshelter",
     "Fisherman's Point"
@@ -55619,6 +56341,14 @@
      ],
      "schematic": "Blueprint_FurArmorHeat_5"
     }
+   ],
+   "grants": [
+    "Heat Resistance Lv. 2",
+    "Fire Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "shops": [
     "Duneshelter",
@@ -55785,6 +56515,14 @@
      "schematic": "Blueprint_FurArmorHeat_5"
     }
    ],
+   "grants": [
+    "Heat Resistance Lv. 2",
+    "Fire Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "shops": [
     "Duneshelter",
     "Fisherman's Point"
@@ -55950,6 +56688,14 @@
      "schematic": "Blueprint_FurArmorHeat_5"
     }
    ],
+   "grants": [
+    "Heat Resistance Lv. 2",
+    "Fire Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "shops": [
     "Duneshelter",
     "Fisherman's Point"
@@ -56095,6 +56841,13 @@
      "schematic": "Blueprint_FurArmor_5"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Armor made from Leather.\nIts warmth and defense have been improved.Cold Resistance Lv. 1"
   },
   "FurArmor_3": {
@@ -56235,6 +56988,13 @@
      ],
      "schematic": "Blueprint_FurArmor_5"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "Armor made from Leather.\nIts warmth and defense have been improved.Cold Resistance Lv. 1"
   },
@@ -56377,6 +57137,13 @@
      "schematic": "Blueprint_FurArmor_5"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Armor made from Leather.\nIts warmth and defense have been improved.Cold Resistance Lv. 1"
   },
   "FurArmor_5": {
@@ -56518,6 +57285,13 @@
      "schematic": "Blueprint_FurArmor_5"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Armor made from Leather.\nIts warmth and defense have been improved.Cold Resistance Lv. 1"
   },
   "FurHelmet": {
@@ -56622,6 +57396,9 @@
      ],
      "schematic": "Blueprint_FurHelmet_5"
     }
+   ],
+   "grants": [
+    "Max Carrying Capacity Lv. 1"
    ]
   },
   "FurHelmet_2": {
@@ -56726,6 +57503,9 @@
      ],
      "schematic": "Blueprint_FurHelmet_5"
     }
+   ],
+   "grants": [
+    "Max Carrying Capacity Lv. 1"
    ]
   },
   "FurHelmet_3": {
@@ -56830,6 +57610,9 @@
      ],
      "schematic": "Blueprint_FurHelmet_5"
     }
+   ],
+   "grants": [
+    "Max Carrying Capacity Lv. 1"
    ]
   },
   "FurHelmet_4": {
@@ -56934,6 +57717,9 @@
      ],
      "schematic": "Blueprint_FurHelmet_5"
     }
+   ],
+   "grants": [
+    "Max Carrying Capacity Lv. 1"
    ]
   },
   "FurHelmet_5": {
@@ -57038,6 +57824,9 @@
      ],
      "schematic": "Blueprint_FurHelmet_5"
     }
+   ],
+   "grants": [
+    "Max Carrying Capacity Lv. 1"
    ]
   },
   "GYM_Head_Desert": {
@@ -57117,7 +57906,10 @@
    "tech": {
     "level": 76,
     "cost": 5
-   }
+   },
+   "grants": [
+    "Toxic Gas Immunity"
+   ]
   },
   "GatlingBullet": {
    "recipe": [
@@ -61080,6 +61872,9 @@
      ],
      "schematic": "Blueprint_Head001_1"
     }
+   ],
+   "grants": [
+    "Dragon Damage Reduction Lv. 1"
    ]
   },
   "Head002": {
@@ -61126,6 +61921,9 @@
      ],
      "schematic": "Blueprint_Head002_1"
     }
+   ],
+   "grants": [
+    "Ice Damage Reduction Lv. 1"
    ]
   },
   "Head003": {
@@ -61176,6 +61974,9 @@
      ],
      "schematic": "Blueprint_Head003_1"
     }
+   ],
+   "grants": [
+    "Grass Damage Reduction Lv. 1"
    ],
    "desc": "A cute headband with ears modeled after a Ribbuny.\nIt doesn't provide much head protection.Grass Damage Reduction Lv. 1"
   },
@@ -61228,6 +62029,9 @@
      "schematic": "Blueprint_Head004_1"
     }
    ],
+   "grants": [
+    "Dark Damage Reduction Lv. 1"
+   ],
    "desc": "A hat modeled after a Wixen or Katress.\nIt makes you feel like you can use Pal skills.Dark Damage Reduction Lv. 1"
   },
   "Head005": {
@@ -61246,6 +62050,9 @@
      ],
      "schematic": "Blueprint_Head005_1"
     }
+   ],
+   "grants": [
+    "Earth Damage Reduction Lv. 1"
    ]
   },
   "Head006": {
@@ -61297,6 +62104,9 @@
      "schematic": "Blueprint_Head006_1"
     }
    ],
+   "grants": [
+    "Electric Damage Reduction Lv. 1"
+   ],
    "desc": "A tough helmet that protects its wearer's head.\nIt was apparently made after a number of people injured their heads\nafter taking a tumble off a Eikthyrdeer.Electric Damage Reduction Lv. 1"
   },
   "Head007": {
@@ -61311,6 +62121,9 @@
      ],
      "schematic": "Blueprint_Head007_1"
     }
+   ],
+   "grants": [
+    "Fire Damage Reduction Lv. 1"
    ],
    "desc": "A gentleman's hat.\nThose made from Sibelyx materials are considered luxury items,\nbut those made from Swee materials are of poor quality, and more commonly found.Fire Damage Reduction Lv. 1"
   },
@@ -61358,6 +62171,9 @@
      ],
      "schematic": "Blueprint_Head008_1"
     }
+   ],
+   "grants": [
+    "Water Damage Reduction Lv. 1"
    ],
    "desc": "A cap for those who love to fight.\nIts previous owner nearly drove Azurobe\nto extinction.Water Damage Reduction Lv. 1"
   },
@@ -61433,6 +62249,9 @@
      ],
      "schematic": "Blueprint_Head009_1"
     }
+   ],
+   "grants": [
+    "Heat Resistance Lv. 1"
    ]
   },
   "Head010": {
@@ -61451,6 +62270,9 @@
      ],
      "schematic": "Blueprint_Head010_1"
     }
+   ],
+   "grants": [
+    "Speedy Worker Lv. 1"
    ]
   },
   "Head011": {
@@ -61469,6 +62291,9 @@
      ],
      "schematic": "Blueprint_Head011_1"
     }
+   ],
+   "grants": [
+    "Heat Resistance Lv. 1"
    ]
   },
   "Head012": {
@@ -61483,6 +62308,9 @@
      ],
      "schematic": "Blueprint_Head012_1"
     }
+   ],
+   "grants": [
+    "Neutral Damage Reduction Lv. 1"
    ],
    "desc": "A tough, round hat.\nIt was sold with the guarantee that it wouldn't break\neven if a Mammorest stepped on it.Neutral Damage Reduction Lv. 1"
   },
@@ -61531,6 +62359,9 @@
      "schematic": "Blueprint_Head013_1"
     }
    ],
+   "grants": [
+    "Neutral Damage Reduction Lv. 1"
+   ],
    "desc": "Cap shaped like a Tocotoco.\nIts gaudy design is visible from far away.Neutral Damage Reduction Lv. 1"
   },
   "Head014": {
@@ -61577,6 +62408,9 @@
      ],
      "schematic": "Blueprint_Head014_1"
     }
+   ],
+   "grants": [
+    "Neutral Damage Reduction Lv. 1"
    ],
    "desc": "Cap shaped like a Tocotoco.\nIt makes those who wear it smile uncontrollably.Neutral Damage Reduction Lv. 1"
   },
@@ -61625,6 +62459,9 @@
      "schematic": "Blueprint_Head015_1"
     }
    ],
+   "grants": [
+    "Grass Damage Reduction Lv. 1"
+   ],
    "desc": "Cap shaped like a Gumoss.Grass Damage Reduction Lv. 1"
   },
   "Head016": {
@@ -61671,6 +62508,9 @@
      ],
      "schematic": "Blueprint_Head016_1"
     }
+   ],
+   "grants": [
+    "Ice Damage Reduction Lv. 1"
    ],
    "desc": "Hat shaped like a Penking.Ice Damage Reduction Lv. 1"
   },
@@ -61719,6 +62559,9 @@
      "schematic": "Blueprint_Head017_1"
     }
    ],
+   "grants": [
+    "Dark Damage Reduction Lv. 1"
+   ],
    "desc": "Hat shaped like a Katress.Dark Damage Reduction Lv. 1"
   },
   "HeadEquip001_purple": {
@@ -61737,12 +62580,18 @@
    ]
   },
   "HeadEquip023": {
+   "grants": [
+    "Grass Damage Reduction Lv. 1"
+   ],
    "shops": [
     "Medal merchant"
    ],
    "desc": "Floral hair accessory inspired by Lyleen.Grass Damage Reduction Lv. 1"
   },
   "HeadEquip024": {
+   "grants": [
+    "Ice Damage Reduction Lv. 1"
+   ],
    "shops": [
     "Medal merchant"
    ],
@@ -61793,6 +62642,9 @@
      "schematic": "Blueprint_HeadEquip025_1"
     }
    ],
+   "grants": [
+    "Dark Damage Reduction Lv. 1"
+   ],
    "desc": "Hood shaped like a Leezpunk.Dark Damage Reduction Lv. 1"
   },
   "HeadEquip026": {
@@ -61840,9 +62692,15 @@
      "schematic": "Blueprint_HeadEquip026_1"
     }
    ],
+   "grants": [
+    "Dark Damage Reduction Lv. 1"
+   ],
    "desc": "Cap shaped like a Killamari.Dark Damage Reduction Lv. 1"
   },
   "HeadEquip027": {
+   "grants": [
+    "Dark Damage Reduction Lv. 1"
+   ],
    "shops": [
     "Medal merchant"
    ],
@@ -61893,15 +62751,25 @@
      "schematic": "Blueprint_HeadEquip028_1"
     }
    ],
+   "grants": [
+    "Neutral Damage Reduction Lv. 1",
+    "Dark Damage Reduction Lv. 1"
+   ],
    "desc": "Headband shaped like a Ribbuny.Neutral Damage Reduction Lv. 1"
   },
   "HeadEquip029": {
+   "grants": [
+    "Neutral Damage Reduction Lv. 1"
+   ],
    "shops": [
     "Medal merchant"
    ],
    "desc": "Helm shaped like a Lamball.Neutral Damage Reduction Lv. 1"
   },
   "HeadEquip030": {
+   "grants": [
+    "Earth Damage Reduction Lv. 1"
+   ],
    "shops": [
     "Medal merchant"
    ],
@@ -61952,6 +62820,10 @@
      "schematic": "Blueprint_HeadEquip031_1"
     }
    ],
+   "grants": [
+    "Ice Damage Reduction Lv. 1",
+    "Dark Damage Reduction Lv. 1"
+   ],
    "desc": "Cap shaped like a Swee.Ice Damage Reduction Lv. 1"
   },
   "HeadEquip032": {
@@ -61999,9 +62871,16 @@
      "schematic": "Blueprint_HeadEquip032_1"
     }
    ],
+   "grants": [
+    "Electric Damage Reduction Lv. 1",
+    "Dark Damage Reduction Lv. 1"
+   ],
    "desc": "Hat shaped like a Dazzi.Electric Damage Reduction Lv. 1"
   },
   "HeadEquip033": {
+   "grants": [
+    "Neutral Damage Reduction Lv. 1"
+   ],
    "shops": [
     "Medal merchant"
    ],
@@ -62087,78 +62966,117 @@
    ]
   },
   "HeadEquip050": {
+   "grants": [
+    "Grass Damage Reduction Lv. 1"
+   ],
    "shops": [
     "Bounty merchant"
    ],
    "desc": "Headband shaped like a Herbil.Grass Damage Reduction Lv. 1"
   },
   "HeadEquip051": {
+   "grants": [
+    "Neutral Damage Reduction Lv. 1"
+   ],
    "shops": [
     "Arena merchant"
    ],
    "desc": "Headband shaped like a Kingpaca.Neutral Damage Reduction Lv. 1"
   },
   "HeadEquip052": {
+   "grants": [
+    "Water Damage Reduction Lv. 1"
+   ],
    "shops": [
     "Medal merchant"
    ],
    "desc": "Hat shaped like a Gloopie.Water Damage Reduction Lv. 1"
   },
   "HeadEquip053": {
+   "grants": [
+    "Water Damage Reduction Lv. 1"
+   ],
    "shops": [
     "Medal merchant"
    ],
    "desc": "Hat shaped like a Jelliette.Water Damage Reduction Lv. 1"
   },
   "HeadEquip054": {
+   "grants": [
+    "Water Damage Reduction Lv. 1"
+   ],
    "shops": [
     "Bounty merchant"
    ],
    "desc": "Hat shaped like a Turtacle.Water Damage Reduction Lv. 1"
   },
   "HeadEquip055": {
+   "grants": [
+    "Water Damage Reduction Lv. 1"
+   ],
    "shops": [
     "Bounty merchant"
    ],
    "desc": "Hat shaped like a Croajiro.Water Damage Reduction Lv. 1"
   },
   "HeadEquip056": {
+   "grants": [
+    "Neutral Damage Reduction Lv. 1"
+   ],
    "shops": [
     "Medal merchant"
    ],
    "desc": "Hat shaped like a Chikipi.Neutral Damage Reduction Lv. 1"
   },
   "HeadEquip057": {
+   "grants": [
+    "Dark Damage Reduction Lv. 1"
+   ],
    "shops": [
     "Arena merchant"
    ],
    "desc": "Hat shaped like a Dandilord.Dark Damage Reduction Lv. 1"
   },
   "HeadEquip058": {
+   "grants": [
+    "Grass Damage Reduction Lv. 1"
+   ],
    "shops": [
     "Arena merchant"
    ],
    "desc": "Hat shaped like a Shroomer.Grass Damage Reduction Lv. 1"
   },
   "HeadEquip059": {
+   "grants": [
+    "Water Damage Reduction Lv. 1"
+   ],
    "shops": [
     "Arena merchant"
    ],
    "desc": "Hair accessory modeled after a Ghangler.Water Damage Reduction Lv. 1"
   },
   "HeadEquip060": {
+   "grants": [
+    "Ice Damage Reduction Lv. 1"
+   ],
    "shops": [
     "Arena merchant"
    ],
    "desc": "Hat shaped like a Icelyn.Ice Damage Reduction Lv. 1"
   },
   "HeadEquip061": {
+   "grants": [
+    "Dark Damage Reduction Lv. 1"
+   ],
    "shops": [
     "Arena merchant"
    ],
    "desc": "Hat shaped like a Splatterina.Dark Damage Reduction Lv. 1"
   },
   "HeadEquip062": {
+   "grants": [
+    "Dark Damage Reduction Lv. 1"
+   ],
    "shops": [
     "Arena merchant"
    ],
@@ -63208,6 +64126,14 @@
      ],
      "schematic": "Blueprint_IronArmor_5"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 1",
+    "Heat Resistance Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ]
   },
   "IronArmorCold": {
@@ -63408,6 +64334,15 @@
      ],
      "schematic": "Blueprint_IronArmorCold_5"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Heat Resistance Lv. 1",
+    "Ice Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "Improved Refined Metal Armor.\nUseful for surviving in cold climates.Cold Resistance Lv. 2"
   },
@@ -63610,6 +64545,15 @@
      "schematic": "Blueprint_IronArmorCold_5"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Heat Resistance Lv. 1",
+    "Ice Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Improved Refined Metal Armor.\nUseful for surviving in cold climates.Cold Resistance Lv. 2"
   },
   "IronArmorCold_3": {
@@ -63810,6 +64754,15 @@
      ],
      "schematic": "Blueprint_IronArmorCold_5"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Heat Resistance Lv. 1",
+    "Ice Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "Improved Refined Metal Armor.\nUseful for surviving in cold climates.Cold Resistance Lv. 2"
   },
@@ -64012,6 +64965,15 @@
      "schematic": "Blueprint_IronArmorCold_5"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Heat Resistance Lv. 1",
+    "Ice Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Improved Refined Metal Armor.\nUseful for surviving in cold climates.Cold Resistance Lv. 2"
   },
   "IronArmorCold_5": {
@@ -64212,6 +65174,15 @@
      ],
      "schematic": "Blueprint_IronArmorCold_5"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Heat Resistance Lv. 1",
+    "Ice Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "Improved Refined Metal Armor.\nUseful for surviving in cold climates.Cold Resistance Lv. 2"
   },
@@ -64414,6 +65385,15 @@
      "schematic": "Blueprint_IronArmorHeat_5"
     }
    ],
+   "grants": [
+    "Heat Resistance Lv. 2",
+    "Cold Resistance Lv. 1",
+    "Fire Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Improved Refined Metal Armor.\nBoasts high heat resistance.Heat Resistance Lv. 2"
   },
   "IronArmorHeat_2": {
@@ -64614,6 +65594,15 @@
      ],
      "schematic": "Blueprint_IronArmorHeat_5"
     }
+   ],
+   "grants": [
+    "Heat Resistance Lv. 2",
+    "Cold Resistance Lv. 1",
+    "Fire Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "Improved Refined Metal Armor.\nBoasts high heat resistance.Heat Resistance Lv. 2"
   },
@@ -64816,6 +65805,15 @@
      "schematic": "Blueprint_IronArmorHeat_5"
     }
    ],
+   "grants": [
+    "Heat Resistance Lv. 2",
+    "Cold Resistance Lv. 1",
+    "Fire Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Improved Refined Metal Armor.\nBoasts high heat resistance.Heat Resistance Lv. 2"
   },
   "IronArmorHeat_4": {
@@ -65016,6 +66014,15 @@
      ],
      "schematic": "Blueprint_IronArmorHeat_5"
     }
+   ],
+   "grants": [
+    "Heat Resistance Lv. 2",
+    "Cold Resistance Lv. 1",
+    "Fire Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "Improved Refined Metal Armor.\nBoasts high heat resistance.Heat Resistance Lv. 2"
   },
@@ -65218,6 +66225,15 @@
      "schematic": "Blueprint_IronArmorHeat_5"
     }
    ],
+   "grants": [
+    "Heat Resistance Lv. 2",
+    "Cold Resistance Lv. 1",
+    "Fire Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Improved Refined Metal Armor.\nBoasts high heat resistance.Heat Resistance Lv. 2"
   },
   "IronArmor_2": {
@@ -65382,6 +66398,14 @@
      ],
      "schematic": "Blueprint_IronArmor_5"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 1",
+    "Heat Resistance Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ]
   },
   "IronArmor_3": {
@@ -65546,6 +66570,14 @@
      ],
      "schematic": "Blueprint_IronArmor_5"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 1",
+    "Heat Resistance Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ]
   },
   "IronArmor_4": {
@@ -65710,6 +66742,14 @@
      ],
      "schematic": "Blueprint_IronArmor_5"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 1",
+    "Heat Resistance Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ]
   },
   "IronArmor_5": {
@@ -65874,6 +66914,14 @@
      ],
      "schematic": "Blueprint_IronArmor_5"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 1",
+    "Heat Resistance Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ]
   },
   "IronHelmet": {
@@ -79422,7 +80470,15 @@
    ],
    "tech": {
     "level": 32
-   }
+   },
+   "grants": [
+    "Cold Resistance Lv. 1",
+    "Heat Resistance Lv. 1",
+    "Blood Is Fuel",
+    "Cold Resistance Lv. 2",
+    "Heat Resistance Lv. 2",
+    "Attack Up (S) Lv. 4"
+   ]
   },
   "Octavia002_Armor": {
    "recipe": [
@@ -79455,7 +80511,12 @@
     "level": 56,
     "cost": 5,
     "ancient": true
-   }
+   },
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Heat Resistance Lv. 2",
+    "Attack Up (S) Lv. 4"
+   ]
   },
   "OctaviaRevolver": {
    "recipe": [
@@ -80992,6 +82053,10 @@
      ],
      "schematic": "Blueprint_Otomo_ATDark_ElementBoost_1"
     }
+   ],
+   "grants": [
+    "Pal Attack Up Lv. 4",
+    "Pal Dark Damage Enhancement Lv. 4"
    ]
   },
   "Otomo_ATDragon_ElementBoost_1": {
@@ -81004,6 +82069,10 @@
      "id": "Polymer",
      "n": 20
     }
+   ],
+   "grants": [
+    "Pal Attack Up Lv. 4",
+    "Pal Dragon Damage Enhancement Lv. 4"
    ]
   },
   "Otomo_ATEarth_ElementBoost_1": {
@@ -81020,6 +82089,10 @@
      "id": "Bone",
      "n": 30
     }
+   ],
+   "grants": [
+    "Pal Attack Up Lv. 4",
+    "Pal Ground Damage Enhancement Lv. 4"
    ]
   },
   "Otomo_ATElectricity_ElementBoost_1": {
@@ -81060,6 +82133,10 @@
      ],
      "schematic": "Blueprint_Otomo_ATElectricity_ElementBoost_1"
     }
+   ],
+   "grants": [
+    "Pal Attack Up Lv. 4",
+    "Pal Electric Damage Enhancement Lv. 4"
    ]
   },
   "Otomo_ATFire_ElementBoost_1": {
@@ -81100,6 +82177,10 @@
      ],
      "schematic": "Blueprint_Otomo_ATFire_ElementBoost_1"
     }
+   ],
+   "grants": [
+    "Pal Attack Up Lv. 4",
+    "Pal Fire Damage Enhancement Lv. 4"
    ]
   },
   "Otomo_ATIce_ElementBoost_1": {
@@ -81136,6 +82217,10 @@
      ],
      "schematic": "Blueprint_Otomo_ATIce_ElementBoost_1"
     }
+   ],
+   "grants": [
+    "Pal Attack Up Lv. 4",
+    "Pal Ice Damage Enhancement Lv. 4"
    ]
   },
   "Otomo_ATLeaf_ElementBoost_1": {
@@ -81176,6 +82261,10 @@
      ],
      "schematic": "Blueprint_Otomo_ATLeaf_ElementBoost_1"
     }
+   ],
+   "grants": [
+    "Pal Attack Up Lv. 4",
+    "Pal Grass Damage Enhancement Lv. 4"
    ]
   },
   "Otomo_ATNormal_ElementBoost_1": {
@@ -81216,6 +82305,10 @@
      ],
      "schematic": "Blueprint_Otomo_ATNormal_ElementBoost_1"
     }
+   ],
+   "grants": [
+    "Pal Attack Up Lv. 4",
+    "Pal Neutral Damage Enhancement Lv. 4"
    ]
   },
   "Otomo_ATWater_ElementBoost_1": {
@@ -81256,6 +82349,10 @@
      ],
      "schematic": "Blueprint_Otomo_ATWater_ElementBoost_1"
     }
+   ],
+   "grants": [
+    "Pal Attack Up Lv. 4",
+    "Pal Water Damage Enhancement Lv. 4"
    ]
   },
   "Otomo_Attack_up1": {
@@ -81300,6 +82397,9 @@
      ],
      "schematic": "Blueprint_Otomo_Attack_up1_2"
     }
+   ],
+   "grants": [
+    "Pal Attack Up Lv. 3"
    ]
   },
   "Otomo_DFDark_ElementBoost_1": {
@@ -81344,6 +82444,10 @@
      ],
      "schematic": "Blueprint_Otomo_DFDark_ElementBoost_1"
     }
+   ],
+   "grants": [
+    "Pal Defense Up Lv. 4",
+    "Pal Dark Damage Enhancement Lv. 4"
    ]
   },
   "Otomo_DFDragon_ElementBoost_1": {
@@ -81388,6 +82492,10 @@
      ],
      "schematic": "Blueprint_Otomo_DFDragon_ElementBoost_1"
     }
+   ],
+   "grants": [
+    "Pal Defense Up Lv. 4",
+    "Pal Dragon Damage Enhancement Lv. 4"
    ]
   },
   "Otomo_DFEarth_ElementBoost_1": {
@@ -81432,6 +82540,10 @@
      ],
      "schematic": "Blueprint_Otomo_DFEarth_ElementBoost_1"
     }
+   ],
+   "grants": [
+    "Pal Defense Up Lv. 4",
+    "Pal Ground Damage Enhancement Lv. 4"
    ]
   },
   "Otomo_DFElectricity_ElementBoost_1": {
@@ -81476,6 +82588,10 @@
      ],
      "schematic": "Blueprint_Otomo_DFElectricity_ElementBoost_1"
     }
+   ],
+   "grants": [
+    "Pal Defense Up Lv. 4",
+    "Pal Electric Damage Enhancement Lv. 4"
    ]
   },
   "Otomo_DFFire_ElementBoost_1": {
@@ -81520,6 +82636,10 @@
      ],
      "schematic": "Blueprint_Otomo_DFFire_ElementBoost_1"
     }
+   ],
+   "grants": [
+    "Pal Defense Up Lv. 4",
+    "Pal Fire Damage Enhancement Lv. 4"
    ]
   },
   "Otomo_DFIce_ElementBoost_1": {
@@ -81560,6 +82680,10 @@
      ],
      "schematic": "Blueprint_Otomo_DFIce_ElementBoost_1"
     }
+   ],
+   "grants": [
+    "Pal Defense Up Lv. 4",
+    "Pal Ice Damage Enhancement Lv. 4"
    ]
   },
   "Otomo_DFLeaf_ElementBoost_1": {
@@ -81604,6 +82728,10 @@
      ],
      "schematic": "Blueprint_Otomo_DFLeaf_ElementBoost_1"
     }
+   ],
+   "grants": [
+    "Pal Defense Up Lv. 4",
+    "Pal Grass Damage Enhancement Lv. 4"
    ]
   },
   "Otomo_DFNormal_ElementBoost_1": {
@@ -81648,6 +82776,10 @@
      ],
      "schematic": "Blueprint_Otomo_DFNormal_ElementBoost_1"
     }
+   ],
+   "grants": [
+    "Pal Defense Up Lv. 4",
+    "Pal Neutral Damage Enhancement Lv. 4"
    ]
   },
   "Otomo_DFWater_ElementBoost_1": {
@@ -81692,6 +82824,10 @@
      ],
      "schematic": "Blueprint_Otomo_DFWater_ElementBoost_1"
     }
+   ],
+   "grants": [
+    "Pal Defense Up Lv. 4",
+    "Pal Water Damage Enhancement Lv. 4"
    ]
   },
   "Otomo_Defense_up1": {
@@ -81736,6 +82872,9 @@
      ],
      "schematic": "Blueprint_Otomo_Defense_up1_2"
     }
+   ],
+   "grants": [
+    "Pal Defense Up Lv. 3"
    ]
   },
   "Otomo_ElementBoost_Dark_1": {
@@ -81780,6 +82919,9 @@
      ],
      "schematic": "Blueprint_Otomo_ElementBoost_Dark_1_2"
     }
+   ],
+   "grants": [
+    "Pal Dark Damage Enhancement Lv. 3"
    ]
   },
   "Otomo_ElementBoost_Dragon_1": {
@@ -81820,6 +82962,9 @@
      ],
      "schematic": "Blueprint_Otomo_ElementBoost_Dragon_1_2"
     }
+   ],
+   "grants": [
+    "Pal Dragon Damage Enhancement Lv. 3"
    ]
   },
   "Otomo_ElementBoost_Earth_1": {
@@ -81840,6 +82985,9 @@
      "id": "PalCrystal_Ex",
      "n": 2
     }
+   ],
+   "grants": [
+    "Pal Ground Damage Enhancement Lv. 3"
    ]
   },
   "Otomo_ElementBoost_Electricity_1": {
@@ -81884,6 +83032,9 @@
      ],
      "schematic": "Blueprint_Otomo_ElementBoost_Electricity_1_2"
     }
+   ],
+   "grants": [
+    "Pal Electric Damage Enhancement Lv. 3"
    ]
   },
   "Otomo_ElementBoost_Fire_1": {
@@ -81928,6 +83079,9 @@
      ],
      "schematic": "Blueprint_Otomo_ElementBoost_Fire_1_2"
     }
+   ],
+   "grants": [
+    "Pal Fire Damage Enhancement Lv. 3"
    ]
   },
   "Otomo_ElementBoost_Ice_1": {
@@ -81968,6 +83122,9 @@
      ],
      "schematic": "Blueprint_Otomo_ElementBoost_Ice_1_2"
     }
+   ],
+   "grants": [
+    "Pal Ice Damage Enhancement Lv. 3"
    ]
   },
   "Otomo_ElementBoost_Leaf_1": {
@@ -82012,6 +83169,9 @@
      ],
      "schematic": "Blueprint_Otomo_ElementBoost_Leaf_1_2"
     }
+   ],
+   "grants": [
+    "Pal Grass Damage Enhancement Lv. 3"
    ]
   },
   "Otomo_ElementBoost_Normal_1": {
@@ -82052,6 +83212,9 @@
      ],
      "schematic": "Blueprint_Otomo_ElementBoost_Normal_1_2"
     }
+   ],
+   "grants": [
+    "Pal Neutral Damage Enhancement Lv. 3"
    ]
   },
   "Otomo_ElementBoost_Water_1": {
@@ -82096,6 +83259,9 @@
      ],
      "schematic": "Blueprint_Otomo_ElementBoost_Water_1_2"
     }
+   ],
+   "grants": [
+    "Pal Water Damage Enhancement Lv. 3"
    ]
   },
   "Otomo_PalConfidence_Increase_1": {
@@ -82140,6 +83306,9 @@
      ],
      "schematic": "Blueprint_Otomo_PalConfidence_Increase_1_fix"
     }
+   ],
+   "grants": [
+    "Party Pal Trust Boost"
    ]
   },
   "Otomo_PalExp_Increase_1": {
@@ -82160,6 +83329,9 @@
      "id": "PalCrystal_Ex",
      "n": 3
     }
+   ],
+   "grants": [
+    "Pal EXP Up Lv. 3"
    ]
   },
   "OverheatRifle": {
@@ -93683,6 +94855,14 @@
      "schematic": "Blueprint_PlasticArmor_5"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 1",
+    "Heat Resistance Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Armor made of Plasteel.\nIn addition to enhanced defense capabilities, its weight was also reduced.\nEquipment that pushes the limits of technology.Cold Resistance Lv. 1"
   },
   "PlasticArmorCold": {
@@ -93883,6 +95063,15 @@
      ],
      "schematic": "Blueprint_PlasticArmorCold_5"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Heat Resistance Lv. 1",
+    "Ice Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "Improved Plasteel Armor. \nUseful for surviving in cold climates.Cold Resistance Lv. 2"
   },
@@ -94085,6 +95274,15 @@
      "schematic": "Blueprint_PlasticArmorCold_5"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Heat Resistance Lv. 1",
+    "Ice Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Improved Plasteel Armor. \nUseful for surviving in cold climates.Cold Resistance Lv. 2"
   },
   "PlasticArmorCold_3": {
@@ -94285,6 +95483,15 @@
      ],
      "schematic": "Blueprint_PlasticArmorCold_5"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Heat Resistance Lv. 1",
+    "Ice Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "Improved Plasteel Armor. \nUseful for surviving in cold climates.Cold Resistance Lv. 2"
   },
@@ -94487,6 +95694,15 @@
      "schematic": "Blueprint_PlasticArmorCold_5"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Heat Resistance Lv. 1",
+    "Ice Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Improved Plasteel Armor. \nUseful for surviving in cold climates.Cold Resistance Lv. 2"
   },
   "PlasticArmorCold_5": {
@@ -94687,6 +95903,15 @@
      ],
      "schematic": "Blueprint_PlasticArmorCold_5"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Heat Resistance Lv. 1",
+    "Ice Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "Improved Plasteel Armor. \nUseful for surviving in cold climates.Cold Resistance Lv. 2"
   },
@@ -94889,6 +96114,15 @@
      "schematic": "Blueprint_PlasticArmorHeat_5"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 1",
+    "Heat Resistance Lv. 2",
+    "Fire Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Improved Plasteel Armor.\nBoasts high heat resistance.Cold Resistance Lv. 1"
   },
   "PlasticArmorHeat_2": {
@@ -95089,6 +96323,15 @@
      ],
      "schematic": "Blueprint_PlasticArmorHeat_5"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 1",
+    "Heat Resistance Lv. 2",
+    "Fire Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "Improved Plasteel Armor.\nBoasts high heat resistance.Cold Resistance Lv. 1"
   },
@@ -95291,6 +96534,15 @@
      "schematic": "Blueprint_PlasticArmorHeat_5"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 1",
+    "Heat Resistance Lv. 2",
+    "Fire Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Improved Plasteel Armor.\nBoasts high heat resistance.Cold Resistance Lv. 1"
   },
   "PlasticArmorHeat_4": {
@@ -95491,6 +96743,15 @@
      ],
      "schematic": "Blueprint_PlasticArmorHeat_5"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 1",
+    "Heat Resistance Lv. 2",
+    "Fire Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "Improved Plasteel Armor.\nBoasts high heat resistance.Cold Resistance Lv. 1"
   },
@@ -95693,6 +96954,15 @@
      "schematic": "Blueprint_PlasticArmorHeat_5"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 1",
+    "Heat Resistance Lv. 2",
+    "Fire Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Improved Plasteel Armor.\nBoasts high heat resistance.Cold Resistance Lv. 1"
   },
   "PlasticArmorWeight": {
@@ -95893,6 +97163,15 @@
      ],
      "schematic": "Blueprint_PlasticArmorWeight_5"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 1",
+    "Heat Resistance Lv. 1",
+    "Max Carrying Capacity Lv. 3",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "Improved Plasteel Armor.\nIncreases carrying capacity.Cold Resistance Lv. 1"
   },
@@ -96095,6 +97374,15 @@
      "schematic": "Blueprint_PlasticArmorWeight_5"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 1",
+    "Heat Resistance Lv. 1",
+    "Max Carrying Capacity Lv. 3",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Improved Plasteel Armor.\nIncreases carrying capacity.Cold Resistance Lv. 1"
   },
   "PlasticArmorWeight_3": {
@@ -96295,6 +97583,15 @@
      ],
      "schematic": "Blueprint_PlasticArmorWeight_5"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 1",
+    "Heat Resistance Lv. 1",
+    "Max Carrying Capacity Lv. 3",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "Improved Plasteel Armor.\nIncreases carrying capacity.Cold Resistance Lv. 1"
   },
@@ -96497,6 +97794,15 @@
      "schematic": "Blueprint_PlasticArmorWeight_5"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 1",
+    "Heat Resistance Lv. 1",
+    "Max Carrying Capacity Lv. 3",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Improved Plasteel Armor.\nIncreases carrying capacity.Cold Resistance Lv. 1"
   },
   "PlasticArmorWeight_5": {
@@ -96698,6 +98004,15 @@
      "schematic": "Blueprint_PlasticArmorWeight_5"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 1",
+    "Heat Resistance Lv. 1",
+    "Max Carrying Capacity Lv. 3",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Improved Plasteel Armor.\nIncreases carrying capacity.Cold Resistance Lv. 1"
   },
   "PlasticArmor_2": {
@@ -96862,6 +98177,14 @@
      ],
      "schematic": "Blueprint_PlasticArmor_5"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 1",
+    "Heat Resistance Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "Armor made of Plasteel.\nIn addition to enhanced defense capabilities, its weight was also reduced.\nEquipment that pushes the limits of technology.Cold Resistance Lv. 1"
   },
@@ -97028,6 +98351,14 @@
      "schematic": "Blueprint_PlasticArmor_5"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 1",
+    "Heat Resistance Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Armor made of Plasteel.\nIn addition to enhanced defense capabilities, its weight was also reduced.\nEquipment that pushes the limits of technology.Cold Resistance Lv. 1"
   },
   "PlasticArmor_4": {
@@ -97193,6 +98524,14 @@
      "schematic": "Blueprint_PlasticArmor_5"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 1",
+    "Heat Resistance Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Armor made of Plasteel.\nIn addition to enhanced defense capabilities, its weight was also reduced.\nEquipment that pushes the limits of technology.Cold Resistance Lv. 1"
   },
   "PlasticArmor_5": {
@@ -97357,6 +98696,14 @@
      ],
      "schematic": "Blueprint_PlasticArmor_5"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 1",
+    "Heat Resistance Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "Armor made of Plasteel.\nIn addition to enhanced defense capabilities, its weight was also reduced.\nEquipment that pushes the limits of technology.Cold Resistance Lv. 1"
   },
@@ -101256,6 +102603,14 @@
      "schematic": "Blueprint_SFArmor_5"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Heat Resistance Lv. 2",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Armor made of Hexolite.\nPossesses overwhelming durability and defense.Cold Resistance Lv. 2"
   },
   "SFArmorCold": {
@@ -101436,6 +102791,15 @@
      ],
      "schematic": "Blueprint_SFArmorCold_5"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 3",
+    "Heat Resistance Lv. 2",
+    "Ice Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "Improved Hexolite Armor.\nUseful for surviving in cold climates.Cold Resistance Lv. 3"
   },
@@ -101618,6 +102982,15 @@
      "schematic": "Blueprint_SFArmorCold_5"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 3",
+    "Heat Resistance Lv. 2",
+    "Ice Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Improved Hexolite Armor.\nUseful for surviving in cold climates.Cold Resistance Lv. 3"
   },
   "SFArmorCold_3": {
@@ -101798,6 +103171,15 @@
      ],
      "schematic": "Blueprint_SFArmorCold_5"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 3",
+    "Heat Resistance Lv. 2",
+    "Ice Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "Improved Hexolite Armor.\nUseful for surviving in cold climates.Cold Resistance Lv. 3"
   },
@@ -101980,6 +103362,15 @@
      "schematic": "Blueprint_SFArmorCold_5"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 3",
+    "Heat Resistance Lv. 2",
+    "Ice Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Improved Hexolite Armor.\nUseful for surviving in cold climates.Cold Resistance Lv. 3"
   },
   "SFArmorCold_5": {
@@ -102161,6 +103552,15 @@
      "schematic": "Blueprint_SFArmorCold_5"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 3",
+    "Heat Resistance Lv. 2",
+    "Ice Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Improved Hexolite Armor.\nUseful for surviving in cold climates.Cold Resistance Lv. 3"
   },
   "SFArmorHeat": {
@@ -102305,6 +103705,15 @@
      ],
      "schematic": "Blueprint_SFArmorHeat_5"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Heat Resistance Lv. 3",
+    "Fire Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "Improved Hexolite Armor.\nBoasts high heat resistance.Cold Resistance Lv. 2"
   },
@@ -102451,6 +103860,15 @@
      "schematic": "Blueprint_SFArmorHeat_5"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Heat Resistance Lv. 3",
+    "Fire Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Improved Hexolite Armor.\nBoasts high heat resistance.Cold Resistance Lv. 2"
   },
   "SFArmorHeat_3": {
@@ -102595,6 +104013,15 @@
      ],
      "schematic": "Blueprint_SFArmorHeat_5"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Heat Resistance Lv. 3",
+    "Fire Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "Improved Hexolite Armor.\nBoasts high heat resistance.Cold Resistance Lv. 2"
   },
@@ -102741,6 +104168,15 @@
      "schematic": "Blueprint_SFArmorHeat_5"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Heat Resistance Lv. 3",
+    "Fire Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Improved Hexolite Armor.\nBoasts high heat resistance.Cold Resistance Lv. 2"
   },
   "SFArmorHeat_5": {
@@ -102885,6 +104321,15 @@
      ],
      "schematic": "Blueprint_SFArmorHeat_5"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Heat Resistance Lv. 3",
+    "Fire Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "Improved Hexolite Armor.\nBoasts high heat resistance.Cold Resistance Lv. 2"
   },
@@ -103067,6 +104512,15 @@
      "schematic": "Blueprint_SFArmorWeight_5"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Heat Resistance Lv. 2",
+    "Max Carrying Capacity Lv. 3",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Improved Hexolite Armor.\nIncreases carrying capacity.Cold Resistance Lv. 2"
   },
   "SFArmorWeight_2": {
@@ -103247,6 +104701,15 @@
      ],
      "schematic": "Blueprint_SFArmorWeight_5"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Heat Resistance Lv. 2",
+    "Max Carrying Capacity Lv. 3",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "Improved Hexolite Armor.\nIncreases carrying capacity.Cold Resistance Lv. 2"
   },
@@ -103429,6 +104892,15 @@
      "schematic": "Blueprint_SFArmorWeight_5"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Heat Resistance Lv. 2",
+    "Max Carrying Capacity Lv. 3",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Improved Hexolite Armor.\nIncreases carrying capacity.Cold Resistance Lv. 2"
   },
   "SFArmorWeight_4": {
@@ -103609,6 +105081,15 @@
      ],
      "schematic": "Blueprint_SFArmorWeight_5"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Heat Resistance Lv. 2",
+    "Max Carrying Capacity Lv. 3",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "Improved Hexolite Armor.\nIncreases carrying capacity.Cold Resistance Lv. 2"
   },
@@ -103791,6 +105272,15 @@
      "schematic": "Blueprint_SFArmorWeight_5"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Heat Resistance Lv. 2",
+    "Max Carrying Capacity Lv. 3",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Improved Hexolite Armor.\nIncreases carrying capacity.Cold Resistance Lv. 2"
   },
   "SFArmor_2": {
@@ -103935,6 +105425,14 @@
      ],
      "schematic": "Blueprint_SFArmor_5"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Heat Resistance Lv. 2",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "Armor made of Hexolite.\nPossesses overwhelming durability and defense.Cold Resistance Lv. 2"
   },
@@ -104081,6 +105579,14 @@
      "schematic": "Blueprint_SFArmor_5"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Heat Resistance Lv. 2",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Armor made of Hexolite.\nPossesses overwhelming durability and defense.Cold Resistance Lv. 2"
   },
   "SFArmor_4": {
@@ -104226,6 +105732,14 @@
      "schematic": "Blueprint_SFArmor_5"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Heat Resistance Lv. 2",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Armor made of Hexolite.\nPossesses overwhelming durability and defense.Cold Resistance Lv. 2"
   },
   "SFArmor_5": {
@@ -104370,6 +105884,14 @@
      ],
      "schematic": "Blueprint_SFArmor_5"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Heat Resistance Lv. 2",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "Armor made of Hexolite.\nPossesses overwhelming durability and defense.Cold Resistance Lv. 2"
   },
@@ -128946,6 +130468,14 @@
      "schematic": "Blueprint_StealArmor_5"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 1",
+    "Heat Resistance Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Armor made from Pal Metal Ingot.\nHigh defense, but extremely heavy.\nEquipment for a hero, it exudes bravery.Cold Resistance Lv. 1"
   },
   "StealArmorCold": {
@@ -129146,6 +130676,15 @@
      ],
      "schematic": "Blueprint_StealArmorCold_5"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Heat Resistance Lv. 1",
+    "Ice Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "Improved Pal Metal Armor.\nUseful for surviving in cold climates.Cold Resistance Lv. 2"
   },
@@ -129348,6 +130887,15 @@
      "schematic": "Blueprint_StealArmorCold_5"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Heat Resistance Lv. 1",
+    "Ice Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Improved Pal Metal Armor.\nUseful for surviving in cold climates.Cold Resistance Lv. 2"
   },
   "StealArmorCold_3": {
@@ -129548,6 +131096,15 @@
      ],
      "schematic": "Blueprint_StealArmorCold_5"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Heat Resistance Lv. 1",
+    "Ice Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "Improved Pal Metal Armor.\nUseful for surviving in cold climates.Cold Resistance Lv. 2"
   },
@@ -129750,6 +131307,15 @@
      "schematic": "Blueprint_StealArmorCold_5"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Heat Resistance Lv. 1",
+    "Ice Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Improved Pal Metal Armor.\nUseful for surviving in cold climates.Cold Resistance Lv. 2"
   },
   "StealArmorCold_5": {
@@ -129950,6 +131516,15 @@
      ],
      "schematic": "Blueprint_StealArmorCold_5"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 2",
+    "Heat Resistance Lv. 1",
+    "Ice Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "Improved Pal Metal Armor.\nUseful for surviving in cold climates.Cold Resistance Lv. 2"
   },
@@ -130152,6 +131727,15 @@
      "schematic": "Blueprint_StealArmorHeat_5"
     }
    ],
+   "grants": [
+    "Heat Resistance Lv. 2",
+    "Cold Resistance Lv. 1",
+    "Fire Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Improved Pal Metal Armor.\nBoasts high heat resistance.Heat Resistance Lv. 2"
   },
   "StealArmorHeat_2": {
@@ -130352,6 +131936,15 @@
      ],
      "schematic": "Blueprint_StealArmorHeat_5"
     }
+   ],
+   "grants": [
+    "Heat Resistance Lv. 2",
+    "Cold Resistance Lv. 1",
+    "Fire Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "Improved Pal Metal Armor.\nBoasts high heat resistance.Heat Resistance Lv. 2"
   },
@@ -130554,6 +132147,15 @@
      "schematic": "Blueprint_StealArmorHeat_5"
     }
    ],
+   "grants": [
+    "Heat Resistance Lv. 2",
+    "Cold Resistance Lv. 1",
+    "Fire Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Improved Pal Metal Armor.\nBoasts high heat resistance.Heat Resistance Lv. 2"
   },
   "StealArmorHeat_4": {
@@ -130754,6 +132356,15 @@
      ],
      "schematic": "Blueprint_StealArmorHeat_5"
     }
+   ],
+   "grants": [
+    "Heat Resistance Lv. 2",
+    "Cold Resistance Lv. 1",
+    "Fire Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "Improved Pal Metal Armor.\nBoasts high heat resistance.Heat Resistance Lv. 2"
   },
@@ -130956,6 +132567,15 @@
      "schematic": "Blueprint_StealArmorHeat_5"
     }
    ],
+   "grants": [
+    "Heat Resistance Lv. 2",
+    "Cold Resistance Lv. 1",
+    "Fire Damage Reduction Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Improved Pal Metal Armor.\nBoasts high heat resistance.Heat Resistance Lv. 2"
   },
   "StealArmor_2": {
@@ -131098,6 +132718,14 @@
      ],
      "schematic": "Blueprint_StealArmor_5"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 1",
+    "Heat Resistance Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "Armor made from Pal Metal Ingot.\nHigh defense, but extremely heavy.\nEquipment for a hero, it exudes bravery.Cold Resistance Lv. 1"
   },
@@ -131242,6 +132870,14 @@
      "schematic": "Blueprint_StealArmor_5"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 1",
+    "Heat Resistance Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Armor made from Pal Metal Ingot.\nHigh defense, but extremely heavy.\nEquipment for a hero, it exudes bravery.Cold Resistance Lv. 1"
   },
   "StealArmor_4": {
@@ -131385,6 +133021,14 @@
      "schematic": "Blueprint_StealArmor_5"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 1",
+    "Heat Resistance Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "Armor made from Pal Metal Ingot.\nHigh defense, but extremely heavy.\nEquipment for a hero, it exudes bravery.Cold Resistance Lv. 1"
   },
   "StealArmor_5": {
@@ -131527,6 +133171,14 @@
      ],
      "schematic": "Blueprint_StealArmor_5"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 1",
+    "Heat Resistance Lv. 1",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "Armor made from Pal Metal Ingot.\nHigh defense, but extremely heavy.\nEquipment for a hero, it exudes bravery.Cold Resistance Lv. 1"
   },
@@ -142821,6 +144473,15 @@
      "schematic": "Blueprint_YakushimaArmor001_4"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 1",
+    "Heat Resistance Lv. 1",
+    "Hallowed Guard",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "[Tides of Terraria] \nArmor forged from Hallowed Bar. \nEnveloped in divine power, it lessens damage from [Tides of Terraria] monsters.Cold Resistance Lv. 1"
   },
   "YakushimaArmor001_2": {
@@ -142897,6 +144558,15 @@
      ],
      "schematic": "Blueprint_YakushimaArmor001_4"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 1",
+    "Heat Resistance Lv. 1",
+    "Hallowed Guard",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "[Tides of Terraria] \nArmor forged from Hallowed Bar. \nEnveloped in divine power, it lessens damage from [Tides of Terraria] monsters.Cold Resistance Lv. 1"
   },
@@ -142975,6 +144645,15 @@
      "schematic": "Blueprint_YakushimaArmor001_4"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 1",
+    "Heat Resistance Lv. 1",
+    "Hallowed Guard",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "[Tides of Terraria] \nArmor forged from Hallowed Bar. \nEnveloped in divine power, it lessens damage from [Tides of Terraria] monsters.Cold Resistance Lv. 1"
   },
   "YakushimaArmor001_4": {
@@ -143052,6 +144731,15 @@
      "schematic": "Blueprint_YakushimaArmor001_4"
     }
    ],
+   "grants": [
+    "Cold Resistance Lv. 1",
+    "Heat Resistance Lv. 1",
+    "Hallowed Guard",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
+   ],
    "desc": "[Tides of Terraria] \nArmor forged from Hallowed Bar. \nEnveloped in divine power, it lessens damage from [Tides of Terraria] monsters.Cold Resistance Lv. 1"
   },
   "YakushimaArmor001_5": {
@@ -143128,6 +144816,15 @@
      ],
      "schematic": "Blueprint_YakushimaArmor001_4"
     }
+   ],
+   "grants": [
+    "Cold Resistance Lv. 1",
+    "Heat Resistance Lv. 1",
+    "Hallowed Guard",
+    "Attack Up (S) Lv. 1",
+    "Attack Up (S) Lv. 2",
+    "Attack Up (S) Lv. 3",
+    "Attack Up (S) Lv. 4"
    ],
    "desc": "[Tides of Terraria] \nArmor forged from Hallowed Bar. \nEnveloped in divine power, it lessens damage from [Tides of Terraria] monsters.Cold Resistance Lv. 1"
   },
@@ -145517,6 +147214,9 @@
      "schematic": "Blueprint_YakushimaHeadEquip001_4"
     }
    ],
+   "grants": [
+    "Hallowed Power: Close Range"
+   ],
    "desc": "[Tides of Terraria] \nHelmet forged from Hallowed Bar. \nEnveloped in divine power, it increases damage dealt by Meowmere, Excalibur, Terra Blade, and Legendary Meowmere.Hallowed Power: Close Range"
   },
   "YakushimaHeadEquip001_2": {
@@ -145593,6 +147293,9 @@
      ],
      "schematic": "Blueprint_YakushimaHeadEquip001_4"
     }
+   ],
+   "grants": [
+    "Hallowed Power: Close Range"
    ],
    "desc": "[Tides of Terraria] \nHelmet forged from Hallowed Bar. \nEnveloped in divine power, it increases damage dealt by Meowmere, Excalibur, Terra Blade, and Legendary Meowmere.Hallowed Power: Close Range"
   },
@@ -145671,6 +147374,9 @@
      "schematic": "Blueprint_YakushimaHeadEquip001_4"
     }
    ],
+   "grants": [
+    "Hallowed Power: Close Range"
+   ],
    "desc": "[Tides of Terraria] \nHelmet forged from Hallowed Bar. \nEnveloped in divine power, it increases damage dealt by Meowmere, Excalibur, Terra Blade, and Legendary Meowmere.Hallowed Power: Close Range"
   },
   "YakushimaHeadEquip001_4": {
@@ -145748,6 +147454,9 @@
      "schematic": "Blueprint_YakushimaHeadEquip001_4"
     }
    ],
+   "grants": [
+    "Hallowed Power: Close Range"
+   ],
    "desc": "[Tides of Terraria] \nHelmet forged from Hallowed Bar. \nEnveloped in divine power, it increases damage dealt by Meowmere, Excalibur, Terra Blade, and Legendary Meowmere.Hallowed Power: Close Range"
   },
   "YakushimaHeadEquip001_5": {
@@ -145824,6 +147533,9 @@
      ],
      "schematic": "Blueprint_YakushimaHeadEquip001_4"
     }
+   ],
+   "grants": [
+    "Hallowed Power: Close Range"
    ],
    "desc": "[Tides of Terraria] \nHelmet forged from Hallowed Bar. \nEnveloped in divine power, it increases damage dealt by Meowmere, Excalibur, Terra Blade, and Legendary Meowmere.Hallowed Power: Close Range"
   },
@@ -145912,6 +147624,9 @@
      "schematic": "Blueprint_YakushimaHeadEquip002_5"
     }
    ],
+   "grants": [
+    "Hallowed Power: Magic"
+   ],
    "desc": "[Tides of Terraria] \nHelmet forged from Hallowed Bar. \nEnveloped in divine power, it increases damage dealt by Nightglow.Hallowed Power: Magic"
   },
   "YakushimaHeadEquip002_2": {
@@ -145998,6 +147713,9 @@
      ],
      "schematic": "Blueprint_YakushimaHeadEquip002_5"
     }
+   ],
+   "grants": [
+    "Hallowed Power: Magic"
    ],
    "desc": "[Tides of Terraria] \nHelmet forged from Hallowed Bar. \nEnveloped in divine power, it increases damage dealt by Nightglow.Hallowed Power: Magic"
   },
@@ -146086,6 +147804,9 @@
      "schematic": "Blueprint_YakushimaHeadEquip002_5"
     }
    ],
+   "grants": [
+    "Hallowed Power: Magic"
+   ],
    "desc": "[Tides of Terraria] \nHelmet forged from Hallowed Bar. \nEnveloped in divine power, it increases damage dealt by Nightglow.Hallowed Power: Magic"
   },
   "YakushimaHeadEquip002_4": {
@@ -146172,6 +147893,9 @@
      ],
      "schematic": "Blueprint_YakushimaHeadEquip002_5"
     }
+   ],
+   "grants": [
+    "Hallowed Power: Magic"
    ],
    "desc": "[Tides of Terraria] \nHelmet forged from Hallowed Bar. \nEnveloped in divine power, it increases damage dealt by Nightglow.Hallowed Power: Magic"
   },
@@ -146260,6 +147984,9 @@
      "schematic": "Blueprint_YakushimaHeadEquip002_5"
     }
    ],
+   "grants": [
+    "Hallowed Power: Magic"
+   ],
    "desc": "[Tides of Terraria] \nHelmet forged from Hallowed Bar. \nEnveloped in divine power, it increases damage dealt by Nightglow.Hallowed Power: Magic"
   },
   "YakushimaHeadEquip003": {
@@ -146346,6 +148073,9 @@
      ],
      "schematic": "Blueprint_YakushimaHeadEquip003_5"
     }
+   ],
+   "grants": [
+    "Hallowed Power: Ranged"
    ],
    "desc": "[Tides of Terraria] \nHelmet forged from Hallowed Bar. \nEnveloped in divine power, it increases damage dealt by Vortex Beater.Hallowed Power: Ranged"
   },
@@ -146434,6 +148164,9 @@
      "schematic": "Blueprint_YakushimaHeadEquip003_5"
     }
    ],
+   "grants": [
+    "Hallowed Power: Ranged"
+   ],
    "desc": "[Tides of Terraria] \nHelmet forged from Hallowed Bar. \nEnveloped in divine power, it increases damage dealt by Vortex Beater.Hallowed Power: Ranged"
   },
   "YakushimaHeadEquip003_3": {
@@ -146520,6 +148253,9 @@
      ],
      "schematic": "Blueprint_YakushimaHeadEquip003_5"
     }
+   ],
+   "grants": [
+    "Hallowed Power: Ranged"
    ],
    "desc": "[Tides of Terraria] \nHelmet forged from Hallowed Bar. \nEnveloped in divine power, it increases damage dealt by Vortex Beater.Hallowed Power: Ranged"
   },
@@ -146608,6 +148344,9 @@
      "schematic": "Blueprint_YakushimaHeadEquip003_5"
     }
    ],
+   "grants": [
+    "Hallowed Power: Ranged"
+   ],
    "desc": "[Tides of Terraria] \nHelmet forged from Hallowed Bar. \nEnveloped in divine power, it increases damage dealt by Vortex Beater.Hallowed Power: Ranged"
   },
   "YakushimaHeadEquip003_5": {
@@ -146695,6 +148434,9 @@
      "schematic": "Blueprint_YakushimaHeadEquip003_5"
     }
    ],
+   "grants": [
+    "Hallowed Power: Ranged"
+   ],
    "desc": "[Tides of Terraria] \nHelmet forged from Hallowed Bar. \nEnveloped in divine power, it increases damage dealt by Vortex Beater.Hallowed Power: Ranged"
   },
   "YakushimaHeadEquip004": {
@@ -146761,6 +148503,9 @@
      ],
      "schematic": "Blueprint_YakushimaHeadEquip004_4"
     }
+   ],
+   "grants": [
+    "Hallowed Power: Summon"
    ],
    "desc": "[Tides of Terraria] \nHelmet forged from Hallowed Bar. \nEnveloped in divine power, it increases damage dealt by Terraprisma.Hallowed Power: Summon"
   },
@@ -146829,6 +148574,9 @@
      "schematic": "Blueprint_YakushimaHeadEquip004_4"
     }
    ],
+   "grants": [
+    "Hallowed Power: Summon"
+   ],
    "desc": "[Tides of Terraria] \nHelmet forged from Hallowed Bar. \nEnveloped in divine power, it increases damage dealt by Terraprisma.Hallowed Power: Summon"
   },
   "YakushimaHeadEquip004_3": {
@@ -146895,6 +148643,9 @@
      ],
      "schematic": "Blueprint_YakushimaHeadEquip004_4"
     }
+   ],
+   "grants": [
+    "Hallowed Power: Summon"
    ],
    "desc": "[Tides of Terraria] \nHelmet forged from Hallowed Bar. \nEnveloped in divine power, it increases damage dealt by Terraprisma.Hallowed Power: Summon"
   },
@@ -146963,6 +148714,9 @@
      "schematic": "Blueprint_YakushimaHeadEquip004_4"
     }
    ],
+   "grants": [
+    "Hallowed Power: Summon"
+   ],
    "desc": "[Tides of Terraria] \nHelmet forged from Hallowed Bar. \nEnveloped in divine power, it increases damage dealt by Terraprisma.Hallowed Power: Summon"
   },
   "YakushimaHeadEquip004_5": {
@@ -147029,6 +148783,9 @@
      ],
      "schematic": "Blueprint_YakushimaHeadEquip004_4"
     }
+   ],
+   "grants": [
+    "Hallowed Power: Summon"
    ],
    "desc": "[Tides of Terraria] \nHelmet forged from Hallowed Bar. \nEnveloped in divine power, it increases damage dealt by Terraprisma.Hallowed Power: Summon"
   },

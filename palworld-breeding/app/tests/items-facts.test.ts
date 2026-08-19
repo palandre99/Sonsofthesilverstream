@@ -144,6 +144,28 @@ describe('tier crafts prove their own attribution', () => {
   });
 });
 
+describe('accessories say what they grant, by the game’s names', () => {
+  it('the Life Pendant grants Health Up Lv. 3', () => {
+    const id = Object.keys(ITEMS).find(
+      (i) => ITEMS[i].name === 'Life Pendant');
+    const g = (F.facts[id!] as unknown as { grants?: string[] }).grants;
+    expect(g).toContain('Health Up Lv. 3');
+  });
+
+  it('grants cover nearly every accessory and never leak an id', () => {
+    const acc = Object.keys(ITEMS)
+      .filter((i) => ITEMS[i].category === 'Accessory');
+    const covered = acc.filter((i) =>
+      ((F.facts[i] as unknown as { grants?: string[] })?.grants ?? []).length > 0);
+    expect(covered.length).toBeGreaterThanOrEqual(78);
+    for (const [id, f] of Object.entries(F.facts)) {
+      for (const g of (f as unknown as { grants?: string[] }).grants ?? []) {
+        expect(g, `${id} grant leaks: ${g}`).not.toMatch(/_/);
+      }
+    }
+  });
+});
+
 describe('research lines say what an item is for', () => {
   it('Ancient Civilization Parts feeds the lab bonuses by name', () => {
     const id = Object.keys(ITEMS).find(
