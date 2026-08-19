@@ -144,6 +144,26 @@ describe('tier crafts prove their own attribution', () => {
   });
 });
 
+describe('craft work and times ship from the page’s own table', () => {
+  it('the Cake takes 2000 work, about 1h6m40s at Handiwork Lv. 1', () => {
+    const f = F.facts.Cake as unknown as {
+      craftWork?: number; craftTime?: string;
+    };
+    expect(f.craftWork).toBe(2000);
+    expect(f.craftTime).toBe('1h6m40s');
+  });
+
+  it('times parse as durations catalogue-wide', () => {
+    for (const [id, f] of Object.entries(F.facts)) {
+      const t = (f as unknown as { craftTime?: string }).craftTime;
+      if (t != null) {
+        expect(t, `${id} craftTime malformed: ${t}`)
+          .toMatch(/^(\d+h)?(\d+m)?([\d.]+s)?$/);
+      }
+    }
+  });
+});
+
 describe('accessories say what they grant, by the game’s names', () => {
   it('the Life Pendant grants Health Up Lv. 3', () => {
     const id = Object.keys(ITEMS).find(

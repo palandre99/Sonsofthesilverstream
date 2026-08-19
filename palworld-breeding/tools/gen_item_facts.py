@@ -182,6 +182,8 @@ def main() -> None:
         name_to_id[it["name"]] = iid
 
     MAT_LINE = re.compile(r"^(.+?) (\d[\d,]*)$")
+    LV1_TIME = re.compile(r"Lv\.1: ([0-9hms.]+)Lv\.2")
+    WORK_AMT = re.compile(r'">(\d+)\s*$')
 
     def parse_tier_craft(row: dict, page_ids: list[str]) -> dict | None:
         """A Production row proves its own tier: the product id and the
@@ -218,6 +220,16 @@ def main() -> None:
         out: dict = {"product": product, "mats": mats}
         if schematic:
             out["schematic"] = schematic
+        # the row text carries the craft's work amount and the full
+        # per-handiwork-level time table; ship the work + the Lv.1
+        # baseline (IL11 — parsed from the existing capture, no re-sweep)
+        c0 = row.get("c", [""])[0]
+        m = LV1_TIME.search(c0)
+        if m:
+            out["t1"] = m.group(1)
+        m = WORK_AMT.search(c0)
+        if m:
+            out["work"] = int(m.group(1))
         return out
     unknown_chip_labels: dict[str, int] = {}
     map_objects: dict[str, str] = {}
@@ -316,6 +328,13 @@ def main() -> None:
                     # base-tier rows duplicate `recipe`; only the
                     # schematic tiers carry new, provable attribution
                     crafts.append(tc)
+                elif "schematic" not in tc and "craftWork" not in f:
+                    # the base row still tells us the base craft's work
+                    # and Lv.1 time
+                    if tc.get("work") is not None:
+                        f["craftWork"] = tc["work"]
+                    if tc.get("t1"):
+                        f["craftTime"] = tc["t1"]
         if crafts:
             f["crafts"] = crafts
             counts["tierCrafts"] += len(crafts)

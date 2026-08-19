@@ -16,6 +16,9 @@ export interface TierCraft {
   product: string;
   mats: CraftRow[];
   schematic?: string;
+  /** crafting work amount and the Handiwork Lv. 1 time, page-stated */
+  work?: number;
+  t1?: string;
 }
 
 export interface ItemFactRow {
@@ -25,6 +28,8 @@ export interface ItemFactRow {
   crafts?: TierCraft[];
   research?: string[];
   grants?: string[];
+  craftWork?: number;
+  craftTime?: string;
   tech?: { level: number; cost?: number; ancient?: boolean };
   capture?: string;
   effects?: [string, string][];

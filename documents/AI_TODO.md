@@ -2370,6 +2370,16 @@ re-evaluation finds nothing — otherwise it ALWAYS has work.
       "Crafted with its schematic". FOUND AND LOGGED: IL12 below. The
       Wood card feeding Lumbering research and the fruit card's 19
       sources read genuinely good.
+- [x] IL11 2026-08-19: craft work + times shipped WITHOUT a re-sweep —
+      the numbers were parseable from the existing capture (the work
+      amount and the full per-handiwork-level time table ride the
+      Production row text). Cards say "2,000 work — about 1h 6m 40s
+      with Handiwork Lv. 1" (Cake pinned exactly; duration format pinned
+      catalogue-wide). Tier crafts carry work/t1 too for later use.
+      Eye-verified. 813 green, published. POLISH NOTE: a pal chip and a
+      paldb rate row can sit adjacent with the same pal name (Lovander
+      twice on Cake) — different provenance, slightly awkward; candidate
+      for a future merge of chip+rate.
 - [x] IL12 2026-08-19: accessories say what they grant — 80 of 81 pages
       carry skill bars; the id-name table grew to 91 pairs, zero
       conflicts; 360 grant lines shipped ("What it grants: Health Up
