@@ -85,6 +85,21 @@ function statLine(id: string): string {
         : `Teaches ${ITEMS[t.id].name}`);
     }
   }
+  if (!bits.length) {
+    // spheres show their capture power; accessories their grant; gliders
+    // and meds their first effect (IL16 — the data was already shipped,
+    // the rows just never used it)
+    const facts = ITEM_FACTS[id];
+    if (facts?.capture != null) {
+      bits.push(`Capture Power ${facts.capture}`);
+    } else if (facts?.grants?.length) {
+      bits.push(facts.grants[0]
+        + (facts.grants.length > 1 ? ` +${facts.grants.length - 1}` : ''));
+    } else if (facts?.effects?.length) {
+      const [k, v] = facts.effects[0];
+      bits.push(`${k} ${v}`);
+    }
+  }
   return bits.join(' · ');
 }
 

@@ -79,6 +79,14 @@ describe('schematic rows say what they teach (IL15)', () => {
     expect(code).toContain('Teaches ${ITEMS[t.id].name}');
     expect(code).toContain('tier ${t.tier}');
   });
+
+  it('stat-less rows fall through to capture power, grants and effects (IL16)', () => {
+    const code = readFileSync(
+      join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+    expect(code).toContain('Capture Power ${facts.capture}');
+    expect(code).toContain('facts.grants[0]');
+    expect(code).toContain('facts.effects[0]');
+  });
 });
 
 describe('schematics join their items by the game’s own naming', () => {
