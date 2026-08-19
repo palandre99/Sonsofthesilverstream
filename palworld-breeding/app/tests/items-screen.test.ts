@@ -7,7 +7,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import {
   ammoForWeapon, collapseFamilies, effectNumber, familyOf, familyPowerOf,
-  idsInGroup, ITEM_GROUPS, ITEM_STATS, ITEMS, itemIdByName, KIND_WORDS,
+  idsInGroup, implantPassive, ITEM_GROUPS, ITEM_STATS, ITEMS, itemIdByName, KIND_WORDS,
   kindsInGroup, kindWord, palsDropping, palsHatchingFrom, rivalsOf,
   schematicsFor, searchItems, sortItems, statRank, TAB_GROUPS, teachesOf,
   tierWord, usedInOf, weaponsForAmmo,
@@ -264,6 +264,33 @@ describe('the level filter uses the player’s own profile (IL21)', () => {
     expect(code).toContain('Only what I can unlock');
     expect(code, 'no level set must teach, not silently show nothing')
       .toContain('Set your level on the Profiles screen');
+  });
+});
+
+describe('implants name their passive, from the datamined table (IL25)', () => {
+  it('all 40 implants resolve to a real passive with real effect text', () => {
+    const implants = Object.keys(ITEMS).filter(
+      (i) => ITEMS[i].subcategory === 'Essential_PassiveSkillChange');
+    expect(implants.length).toBe(40);
+    for (const id of implants) {
+      const p = implantPassive(id);
+      expect(p, `${ITEMS[id].name} resolved to no passive`).not.toBeNull();
+      expect(p!.effects.length).toBeGreaterThan(3);
+      expect(p!.name).toBe(ITEMS[id].name.split(': ')[1]);
+    }
+  });
+
+  it('the canary reads the game’s own words', () => {
+    const brave = Object.keys(ITEMS).find((i) => ITEMS[i].name === 'Implant: Brave');
+    expect(implantPassive(brave!)).toMatchObject({
+      name: 'Brave', tier: 1, effects: 'Attack +10%',
+    });
+  });
+
+  it('non-implants get nothing, and the passive is searchable', () => {
+    expect(implantPassive('Cake')).toBeNull();
+    const hits = searchItems('brave');
+    expect(hits.some((i) => ITEMS[i].name === 'Implant: Brave')).toBe(true);
   });
 });
 

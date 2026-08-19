@@ -15,6 +15,7 @@
 import itemsJson from './data/items_1_0.json';
 import statsJson from './data/item_stats_1_0.json';
 import palsJson from './data/pals_1_0.json';
+import passivesJson from './data/passives_1_0.json';
 import { ITEM_FACTS } from './itemFacts';
 
 export interface ItemInfo {
@@ -242,6 +243,32 @@ export const powerOf = (id: string): number =>
   ITEM_STATS[id]?.atk ?? ITEM_STATS[id]?.def
   ?? effectNumber(id, 'Nutrition') ?? -1;
 
+/* ---- implants -> the passive they grant (IL25) ---------------------
+ * The 40 "Implant: X" items were the biggest group of bare cards in the
+ * catalogue: a name, a price, nothing else. Their X is a passive skill
+ * name, and we already ship all 114 passives DATAMINED with their real
+ * effect text — 40 of 40 join exactly (measured 2026-08-20), so the
+ * card can finally say what the implant does. Same table the breeding
+ * fane reads; no new data, no guessing. */
+export interface PassiveRow {
+  name: string;
+  tier: number;
+  category?: string;
+  effects: string;
+}
+
+const PASSIVE_BY_NAME = new Map<string, PassiveRow>(
+  (passivesJson as unknown as { passives: PassiveRow[] }).passives
+    .map((p) => [p.name, p]));
+
+/** The passive an implant grants, with the game's own effect text. */
+export function implantPassive(id: string): PassiveRow | null {
+  const it = ITEMS[id];
+  if (it?.subcategory !== 'Essential_PassiveSkillChange') return null;
+  const key = it.name.includes(': ') ? it.name.split(': ')[1] : it.name;
+  return PASSIVE_BY_NAME.get(key) ?? null;
+}
+
 /* ---- reverse recipes: what can I MAKE with this? (IL20) ------------
  * Every recipe already closes over backbone ids, so the index inverts
  * exactly — no name matching. Tier crafts fold into their family, so
@@ -318,11 +345,13 @@ function haystackFor(id: string): string {
   let hay = HAYSTACK.get(id);
   if (hay == null) {
     const f = ITEM_FACTS[id];
+    const imp = implantPassive(id);
     hay = [
       ITEMS[id].name,
       kindWord(id),
       ...(f?.grants ?? []),
       ...(f?.effects ?? []).map(([k]) => k),
+      ...(imp ? [imp.name, imp.effects] : []),
     ].join(' ').toLowerCase();
     HAYSTACK.set(id, hay);
   }

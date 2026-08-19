@@ -2368,6 +2368,19 @@ work always"):**
       offline-complete, blueprint §5 criterion 7). Stays unbuilt until a
       datamined formula appears. What IS provable already ships: the 10
       spheres' exact capture powers and the module cross-links.
+- [x] IL25 2026-08-20: THE BAREST CARDS IN THE CATALOGUE GOT THEIR
+      MEANING. A hunt for cards a player would find empty (accounting
+      for runtime sections, not just payload keys) found 54 truly bare
+      — and 40 of them were one group: "Implant: X", showing a name and
+      a price and nothing else. Their X is a passive skill name, and we
+      already ship all 114 passives DATAMINED with real effect text:
+      40 of 40 join exactly. Every implant card now reads "The passive
+      it gives — Brave · Tier 1 · Attack +10%", searchable by passive
+      name AND effect, and it travels in shares. Same table the
+      breeding fane reads; no new data. 839 green, eye-verified.
+      REMAINING BARE (14, logged honestly): 12 raw materials with no
+      recipe/drop/use recorded upstream, Shield Ultra and one broken
+      upstream blueprint row.
 - [x] IL24 2026-08-20 (found BY the two blocks above — the tick's job
       when the queue stalls): search now covers what an item GRANTS and
       DOES, not just its name and kind. "cold resistance" returns every

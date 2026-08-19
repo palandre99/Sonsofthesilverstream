@@ -19,8 +19,8 @@ import { T } from '../theme';
 import { Badge, Btn, Card, PageHead, SearchInput, s } from '../ui/kit';
 import {
   ammoForWeapon, collapseFamilies, effectNumber, familyOf, familyPowerOf,
-  groupOf, idsInGroup, ITEM_GROUPS, ITEM_STATS, ITEMS, kindsInGroup,
-  kindWord, palsDropping, palsHatchingFrom, rivalsOf, schematicsFor,
+  groupOf, idsInGroup, implantPassive, ITEM_GROUPS, ITEM_STATS, ITEMS,
+  kindsInGroup, kindWord, palsDropping, palsHatchingFrom, rivalsOf, schematicsFor,
   searchItems, sortItems, statRank, TAB_GROUPS, teachesOf, TIER_WORDS,
   tierWord, usedInOf, weaponsForAmmo, type ItemSort,
 } from '../itemsData';
@@ -331,6 +331,28 @@ function ItemDetail({ id, onClose, onOpenItem }: {
               </View>
             </Card>
           )}
+
+          {(() => {
+            // IL25: an implant's whole point is the passive it gives —
+            // read from the same datamined passives table the breeding
+            // fane uses (40 of 40 implants join exactly)
+            const p = implantPassive(id);
+            if (!p) return null;
+            return (
+              <Card style={{ marginTop: 10 }}>
+                <Text style={s.h3}>The passive it gives</Text>
+                <View style={[s.row, { gap: 8, marginTop: 5 }]}>
+                  <Text style={{ color: T.accentInk, fontSize: 13.5, fontWeight: '800' }}>
+                    {p.name}
+                  </Text>
+                  <Badge kind="plain">{`Tier ${p.tier}`}</Badge>
+                </View>
+                <Text style={[s.body, { marginTop: 4, fontSize: 12.5 }]}>
+                  {p.effects}
+                </Text>
+              </Card>
+            );
+          })()}
 
           {facts?.grants && facts.grants.length > 0 && (
             <Card style={{ marginTop: 10 }}>

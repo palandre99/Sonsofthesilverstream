@@ -8,7 +8,8 @@
  * react-native; the screen passes breeding.game_version.
  */
 import {
-  ITEM_STATS, ITEMS, kindWord, palsDropping, statRank, tierWord,
+  implantPassive, ITEM_STATS, ITEMS, kindWord, palsDropping, statRank,
+  tierWord,
 } from './itemsData';
 import { equipPassiveName, ITEM_FACTS } from './itemFacts';
 
@@ -44,6 +45,8 @@ export function shareTextForItem(id: string, gameVersion: string): string {
   if (facts?.capture != null) statBits.push(`Capture Power ${facts.capture}`);
   for (const p of st?.passives ?? []) statBits.push(equipPassiveName(p));
   if (statBits.length) lines.push(statBits.join(' · '));
+  const imp = implantPassive(id);
+  if (imp) lines.push(`Gives the passive ${imp.name} — ${imp.effects}`);
   for (const g of facts?.grants ?? []) lines.push(g);
   for (const [k, v] of facts?.effects ?? []) lines.push(`${k} ${v}`);
   if (facts?.tech) lines.push(techSentence(facts.tech));
