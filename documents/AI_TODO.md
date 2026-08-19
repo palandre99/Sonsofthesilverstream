@@ -460,8 +460,28 @@ and the one missing dataset identified: the element chart.*
       ship without a "winning gets you" section rather than inventing
       one. Extend fetch_tower_raid_stats.py to keep that column and
       resolve it against items_1_0.json.
-- [ ] B5 Phase B: Alphas tab (205+ browse, filters, beaten/caught ticks,
-      respawn note community-labelled).
+- [x] B5 DONE 2026-08-19 ~08:55 (7f68450) — PUBLISH QUEUED: THE ALPHAS
+      TAB IS LIVE IN THE TREE. All 205 titled bosses, easiest first,
+      level tinted against the profile level, place from the pal data's
+      own location lines (or "no fixed spot — a dungeon fight", the
+      E-audit's established fact), weakness line per row, search +
+      status filters with counted results, and per-boss BEATEN and
+      CAUGHT ticks (record.ts keys `alpha:`/`alphacaught:`) greying
+      rows and following the save. Respawn note ships labelled
+      community-measured with the server-settings caveat. Walked on the
+      render at phone size: Chillet's two bosses show their real places
+      (Palpagos Islands / Cherry Blossom Cave), tick -> counts + Beaten
+      filter -> untick all round-trip. Render caught: the caught tick's
+      off-state icon name didn't exist (drew "?") — fixed with explicit
+      on/off glyphs. 785 tests green, both tsc clean.
+      PUBLISH: refused by the guard — the items lane is mid-edit
+      (itemsData.ts, nav/intent.ts dirty). Message ready: "Bosses fane:
+      the Alphas tab is live — all 205 titled bosses, easiest first,
+      with beaten and caught ticks that follow your save." Republish on
+      the next clean tree; the M67 precedent applies.
+      NOTE for Phase E: the items lane is editing nav/intent.ts —
+      coordinate the NavIntent payload extension with them instead of
+      assuming the file is free.
 - [ ] B6 Phase C: Raids tab (roster from data, summoning prep checklist
       with item cross-links, fight card + Ultra toggle, rewards).
 - [ ] B7 Phase D: Teams tab (element-coverage matrix, ranked squads,
