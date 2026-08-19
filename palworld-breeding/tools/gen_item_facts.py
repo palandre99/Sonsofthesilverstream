@@ -249,21 +249,33 @@ def main() -> None:
             rows = sec["rows"]
             if title == "Dropped By":
                 out = []
+                seen: set[tuple] = set()
                 for r in rows[:60]:
                     c = r.get("c", [])
                     if len(c) >= 3 and c[0]:
-                        out.append({"src": player_source(c[0]),
-                                    "n": c[1], "p": c[2]})
+                        row = {"src": player_source(c[0]),
+                               "n": c[1], "p": c[2]}
+                        key = (row["src"], row["n"], row["p"])
+                        if key in seen:
+                            continue  # NPC variants collapse to one row
+                        seen.add(key)
+                        out.append(row)
                 if out:
                     f["drops"] = out
                     counts["drops"] += len(out)
             elif title == "Treasure Box":
                 out = []
+                seen = set()
                 for r in rows[:40]:
                     c = r.get("c", [])
                     if len(c) >= 4 and c[0]:
-                        out.append({"src": player_source(c[0]),
-                                    "n": c[2], "p": c[3]})
+                        row = {"src": player_source(c[0]),
+                               "n": c[2], "p": c[3]}
+                        key = (row["src"], row["n"], row["p"])
+                        if key in seen:
+                            continue
+                        seen.add(key)
+                        out.append(row)
                 if out:
                     f["boxes"] = out
                     counts["boxes"] += len(out)

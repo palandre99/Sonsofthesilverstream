@@ -8,7 +8,7 @@ import { join } from 'node:path';
 import {
   familyOf, idsInGroup, ITEM_GROUPS, ITEM_STATS, ITEMS, itemIdByName,
   KIND_WORDS, kindsInGroup, kindWord, palsDropping, schematicsFor,
-  searchItems, sortItems, teachesOf, tierWord,
+  searchItems, sortItems, statRank, teachesOf, tierWord,
 } from '../../mobile/src/itemsData';
 import palsJson from '../../mobile/src/data/pals_1_0.json';
 
@@ -167,6 +167,25 @@ describe('sorting and search behave like a player expects', () => {
     const hits = searchItems('assault rifle');
     expect(hits.length).toBeGreaterThanOrEqual(10);  // families + ammo
     expect(searchItems('zzz-no-such-item')).toEqual([]);
+  });
+
+  it('search understands kinds, not just name substrings', () => {
+    // "cooked fish" matches the kind word, not any item name
+    expect(searchItems('cooked fish').length).toBe(11);
+    expect(searchItems('skill fruit').length).toBeGreaterThanOrEqual(93);
+    // word order does not matter
+    expect(searchItems('rifle assault').length)
+      .toBe(searchItems('assault rifle').length);
+  });
+
+  it('stats carry rank context, ties sharing a rank', () => {
+    const top = sortItems(idsInGroup('weapons'), 'power')[0];
+    expect(statRank(top, 'atk')?.rank).toBe(1);
+    const r = statRank('AssaultRifle_Default1', 'atk');
+    expect(r).not.toBeNull();
+    expect(r!.rank).toBeGreaterThan(1);
+    expect(r!.of).toBeGreaterThan(100);
+    expect(statRank('Cake', 'atk')).toBeNull();
   });
 
   it('a family lists every tier weakest-first', () => {

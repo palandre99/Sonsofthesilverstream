@@ -234,10 +234,46 @@ export function sortItems(ids: string[], sort: ItemSort): string[] {
   return out;
 }
 
+/** Search: every word must match somewhere in the name OR the kind word,
+ * so "cooked fish" finds the fish dishes and "skill fruit" finds all 93 —
+ * not just literal substrings of names (AAA criterion 2). */
 export function searchItems(q: string): string[] {
-  const needle = q.trim().toLowerCase();
-  if (!needle) return [];
-  return ITEM_IDS.filter((i) => ITEMS[i].name.toLowerCase().includes(needle));
+  const tokens = q.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  if (!tokens.length) return [];
+  return ITEM_IDS.filter((i) => {
+    const hay = `${ITEMS[i].name} ${kindWord(i)}`.toLowerCase();
+    return tokens.every((t) => hay.includes(t));
+  });
+}
+
+/** Where this item's stat stands among everything that carries the stat —
+ * "Attack 320" alone floats; "#41 of 187" is a fact with context
+ * (AAA criterion 6). Computed once per stat, cached. */
+const RANKS = new Map<string, Map<string, number>>();
+export function statRank(id: string, stat: 'atk' | 'def' | 'hp'):
+  { rank: number; of: number } | null {
+  if ((ITEM_STATS[id]?.[stat]) == null) return null;
+  let table = RANKS.get(stat);
+  if (!table) {
+    const carriers = ITEM_IDS
+      .filter((i) => ITEM_STATS[i]?.[stat] != null)
+      .sort((a, b) => (ITEM_STATS[b][stat] ?? 0) - (ITEM_STATS[a][stat] ?? 0));
+    table = new Map();
+    let rank = 0;
+    let last: number | null = null;
+    carriers.forEach((i, idx) => {
+      const v = ITEM_STATS[i][stat] ?? 0;
+      if (v !== last) {
+        rank = idx + 1;  // ties share a rank, like any leaderboard
+        last = v;
+      }
+      table!.set(i, rank);
+    });
+    RANKS.set(stat, table);
+  }
+  const rank = table.get(id);
+  if (rank == null) return null;
+  return { rank, of: table.size };
 }
 
 /** Every tier of the same family (same display name), weakest first. */

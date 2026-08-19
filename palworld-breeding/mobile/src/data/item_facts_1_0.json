@@ -13,8 +13,8 @@
   "techRefusals": 0,
   "descs": 1331,
   "descRefusals": 2,
-  "drops": 2494,
-  "boxes": 8718,
+  "drops": 2312,
+  "boxes": 8569,
   "shops": 416,
   "capture": 10,
   "taggedDescriptions": 1306
@@ -4603,11 +4603,6 @@
      "src": "Moonflower Jonin",
      "n": "1–2",
      "p": "100%"
-    },
-    {
-     "src": "Free Pal Alliance Believer",
-     "n": "1–2",
-     "p": "100%"
     }
    ],
    "shops": [
@@ -4848,33 +4843,8 @@
      "p": "100%"
     },
     {
-     "src": "PIDF Rifleman",
-     "n": "1",
-     "p": "100%"
-    },
-    {
-     "src": "PIDF Rifleman",
-     "n": "1",
-     "p": "100%"
-    },
-    {
      "src": "Slacker Chief",
      "n": "1–2",
-     "p": "100%"
-    },
-    {
-     "src": "Brothers of the Eternal Pyre Martyr",
-     "n": "1–2",
-     "p": "100%"
-    },
-    {
-     "src": "PIDF Rifleman",
-     "n": "1",
-     "p": "100%"
-    },
-    {
-     "src": "PIDF Rifleman",
-     "n": "1",
      "p": "100%"
     }
    ],
@@ -7415,11 +7385,6 @@
      "p": "60%"
     },
     {
-     "src": "Cattiva",
-     "n": "1",
-     "p": "100%"
-    },
-    {
      "src": "Shroomer Lv.70",
      "n": "1–2",
      "p": "60%"
@@ -7509,11 +7474,6 @@
     "level": 5
    },
    "drops": [
-    {
-     "src": "Gumoss",
-     "n": "1",
-     "p": "100%"
-    },
     {
      "src": "Gumoss",
      "n": "1",
@@ -21795,11 +21755,6 @@
      "p": "1.61%"
     },
     {
-     "src": "Forest 01",
-     "n": "1",
-     "p": "1.61%"
-    },
-    {
      "src": "Fishing spot (Forest 01)",
      "n": "1",
      "p": "0.583%"
@@ -21882,11 +21837,6 @@
      "src": "Fishing spot (Grass 02)",
      "n": "1",
      "p": "0.346%"
-    },
-    {
-     "src": "Forest 01",
-     "n": "1",
-     "p": "0.322%"
     },
     {
      "src": "Forest 01",
@@ -21988,11 +21938,6 @@
      "p": "0.064%"
     },
     {
-     "src": "Forest 01",
-     "n": "1",
-     "p": "0.064%"
-    },
-    {
      "src": "Fishing spot (Forest 01)",
      "n": "1",
      "p": "0.023%"
@@ -22087,11 +22032,6 @@
      "src": "Fishing spot (Grass 02)",
      "n": "1",
      "p": "0.014%"
-    },
-    {
-     "src": "Forest 01",
-     "n": "1",
-     "p": "0.013%"
     },
     {
      "src": "Forest 01",
@@ -33507,16 +33447,6 @@
      "src": "Free Pal Alliance Judicator",
      "n": "1",
      "p": "2%"
-    },
-    {
-     "src": "Free Pal Alliance Believer",
-     "n": "1",
-     "p": "2%"
-    },
-    {
-     "src": "Free Pal Alliance Believer",
-     "n": "1",
-     "p": "2%"
     }
    ],
    "boxes": [
@@ -36845,11 +36775,6 @@
      "p": "100%"
     },
     {
-     "src": "Knocklem",
-     "n": "2–3",
-     "p": "100%"
-    },
-    {
      "src": "Knocklem Ignis",
      "n": "2–3",
      "p": "100%"
@@ -37084,46 +37009,6 @@
      "src": "Syndicate Swordsman",
      "n": "1",
      "p": "30%"
-    },
-    {
-     "src": "Syndicate Gunner",
-     "n": "1",
-     "p": "30%"
-    },
-    {
-     "src": "Syndicate Hunter",
-     "n": "1",
-     "p": "30%"
-    },
-    {
-     "src": "Syndicate Grenadier",
-     "n": "1",
-     "p": "30%"
-    },
-    {
-     "src": "Syndicate Cleaner",
-     "n": "1",
-     "p": "30%"
-    },
-    {
-     "src": "Syndicate Elite",
-     "n": "1",
-     "p": "30%"
-    },
-    {
-     "src": "Syndicate Veteran",
-     "n": "1",
-     "p": "30%"
-    },
-    {
-     "src": "Syndicate Interceptor",
-     "n": "1",
-     "p": "30%"
-    },
-    {
-     "src": "Syndicate Crusher",
-     "n": "1",
-     "p": "60%"
     }
    ],
    "boxes": [
@@ -37538,11 +37423,6 @@
      "src": "Panthalus",
      "n": "1",
      "p": "100%"
-    },
-    {
-     "src": "Panthalus",
-     "n": "1",
-     "p": "100%"
     }
    ],
    "shops": [
@@ -37745,192 +37625,7 @@
     },
     {
      "src": "Ancient Ruin",
-     "n": "20",
-     "p": "100%"
-    },
-    {
-     "src": "Ancient Ruin",
-     "n": "20",
-     "p": "100%"
-    },
-    {
-     "src": "Ancient Ruin",
-     "n": "20",
-     "p": "100%"
-    },
-    {
-     "src": "Ancient Ruin",
-     "n": "20",
-     "p": "100%"
-    },
-    {
-     "src": "Ancient Ruin",
-     "n": "20",
-     "p": "100%"
-    },
-    {
-     "src": "Ancient Ruin",
-     "n": "20",
-     "p": "100%"
-    },
-    {
-     "src": "Ancient Ruin",
-     "n": "20",
-     "p": "100%"
-    },
-    {
-     "src": "Ancient Ruin",
-     "n": "20",
-     "p": "100%"
-    },
-    {
-     "src": "Ancient Ruin",
-     "n": "20",
-     "p": "100%"
-    },
-    {
-     "src": "Ancient Ruin",
-     "n": "20",
-     "p": "100%"
-    },
-    {
-     "src": "Ancient Ruin",
-     "n": "20",
-     "p": "100%"
-    },
-    {
-     "src": "Ancient Ruin",
-     "n": "20",
-     "p": "100%"
-    },
-    {
-     "src": "Ancient Ruin",
-     "n": "20",
-     "p": "100%"
-    },
-    {
-     "src": "Ancient Ruin",
-     "n": "20",
-     "p": "100%"
-    },
-    {
-     "src": "Ancient Ruin",
-     "n": "20",
-     "p": "100%"
-    },
-    {
-     "src": "Ancient Ruin",
      "n": "25",
-     "p": "100%"
-    },
-    {
-     "src": "Ancient Ruin",
-     "n": "25",
-     "p": "100%"
-    },
-    {
-     "src": "Ancient Ruin",
-     "n": "25",
-     "p": "100%"
-    },
-    {
-     "src": "Ancient Ruin",
-     "n": "25",
-     "p": "100%"
-    },
-    {
-     "src": "Ancient Ruin",
-     "n": "25",
-     "p": "100%"
-    },
-    {
-     "src": "Ancient Ruin",
-     "n": "25",
-     "p": "100%"
-    },
-    {
-     "src": "Ancient Ruin",
-     "n": "25",
-     "p": "100%"
-    },
-    {
-     "src": "Ancient Ruin",
-     "n": "25",
-     "p": "100%"
-    },
-    {
-     "src": "Ancient Ruin",
-     "n": "25",
-     "p": "100%"
-    },
-    {
-     "src": "Ancient Ruin",
-     "n": "25",
-     "p": "100%"
-    },
-    {
-     "src": "Ancient Ruin",
-     "n": "25",
-     "p": "100%"
-    },
-    {
-     "src": "Ancient Ruin",
-     "n": "25",
-     "p": "100%"
-    },
-    {
-     "src": "Ancient Ruin",
-     "n": "25",
-     "p": "100%"
-    },
-    {
-     "src": "Ancient Ruin",
-     "n": "25",
-     "p": "100%"
-    },
-    {
-     "src": "Ancient Ruin",
-     "n": "25",
-     "p": "100%"
-    },
-    {
-     "src": "Ancient Ruin",
-     "n": "25",
-     "p": "100%"
-    },
-    {
-     "src": "Ancient Ruin",
-     "n": "25",
-     "p": "100%"
-    },
-    {
-     "src": "Ancient Ruin",
-     "n": "30",
-     "p": "100%"
-    },
-    {
-     "src": "Ancient Ruin",
-     "n": "30",
-     "p": "100%"
-    },
-    {
-     "src": "Ancient Ruin",
-     "n": "30",
-     "p": "100%"
-    },
-    {
-     "src": "Ancient Ruin",
-     "n": "30",
-     "p": "100%"
-    },
-    {
-     "src": "Ancient Ruin",
-     "n": "30",
-     "p": "100%"
-    },
-    {
-     "src": "Ancient Ruin",
-     "n": "30",
      "p": "100%"
     },
     {
@@ -41679,11 +41374,6 @@
      "src": "Syndicate Hunter",
      "n": "1",
      "p": "100%"
-    },
-    {
-     "src": "Syndicate Thug",
-     "n": "1",
-     "p": "100%"
     }
    ],
    "boxes": [
@@ -41713,22 +41403,7 @@
      "p": "100%"
     },
     {
-     "src": "Herd of Starving Wild Pals",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
      "src": "Eternal Pyre Missionaries",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
-     "src": "Herd of Starving Wild Pals",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
-     "src": "Herd of Starving Wild Pals",
      "n": "10–20",
      "p": "100%"
     },
@@ -41738,17 +41413,7 @@
      "p": "100%"
     },
     {
-     "src": "Herd of Starving Wild Pals",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
      "src": "Moonflower Assassins",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
-     "src": "Herd of Starving Wild Pals",
      "n": "10–20",
      "p": "100%"
     },
@@ -41758,17 +41423,7 @@
      "p": "100%"
     },
     {
-     "src": "Herd of Starving Wild Pals",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
      "src": "Test of the Covenant: Prelude",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
-     "src": "Herd of Starving Wild Pals",
      "n": "10–20",
      "p": "100%"
     },
@@ -41891,11 +41546,6 @@
      "src": "Free Pal Alliance Believer",
      "n": "1",
      "p": "50%"
-    },
-    {
-     "src": "Free Pal Alliance Believer",
-     "n": "1",
-     "p": "50%"
     }
    ],
    "boxes": [
@@ -41945,22 +41595,7 @@
      "p": "100%"
     },
     {
-     "src": "Herd of Man-eating Wild Pals",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
      "src": "Brothers of the Eternal Pyre: Extremists",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
-     "src": "Herd of Man-eating Wild Pals",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
-     "src": "Herd of Man-eating Wild Pals",
      "n": "10–20",
      "p": "100%"
     },
@@ -41970,17 +41605,7 @@
      "p": "100%"
     },
     {
-     "src": "Herd of Man-eating Wild Pals",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
      "src": "Moonflower Vangard",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
-     "src": "Herd of Man-eating Wild Pals",
      "n": "10–20",
      "p": "100%"
     },
@@ -41990,17 +41615,7 @@
      "p": "100%"
     },
     {
-     "src": "Herd of Man-eating Wild Pals",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
      "src": "Test of the Covenant: Verse",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
-     "src": "Herd of Man-eating Wild Pals",
      "n": "10–20",
      "p": "100%"
     },
@@ -42129,11 +41744,6 @@
      "src": "Brothers of the Eternal Pyre Martyr",
      "n": "1",
      "p": "30%"
-    },
-    {
-     "src": "Brothers of the Eternal Pyre Martyr",
-     "n": "1",
-     "p": "30%"
     }
    ],
    "boxes": [
@@ -42243,22 +41853,7 @@
      "p": "100%"
     },
     {
-     "src": "Herd of Violent Wild Pals",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
      "src": "Brothers of the Eternal Pyre: Doomsayers",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
-     "src": "Herd of Violent Wild Pals",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
-     "src": "Herd of Violent Wild Pals",
      "n": "10–20",
      "p": "100%"
     },
@@ -42268,17 +41863,7 @@
      "p": "100%"
     },
     {
-     "src": "Herd of Violent Wild Pals",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
      "src": "Moonflower Raiders",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
-     "src": "Herd of Violent Wild Pals",
      "n": "10–20",
      "p": "100%"
     },
@@ -42288,17 +41873,7 @@
      "p": "100%"
     },
     {
-     "src": "Herd of Violent Wild Pals",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
      "src": "Test of the Covenant: Crescendo",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
-     "src": "Herd of Violent Wild Pals",
      "n": "10–20",
      "p": "100%"
     },
@@ -42438,11 +42013,6 @@
      "p": "20%"
     },
     {
-     "src": "PAL Genetic Research Unit Executioner",
-     "n": "1",
-     "p": "20%"
-    },
-    {
      "src": "Eclipsed Siren Bellanoir (Raid)",
      "n": "3–5",
      "p": "100%"
@@ -42535,22 +42105,7 @@
      "p": "100%"
     },
     {
-     "src": "Herd of Ferocious Wild Pals",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
      "src": "Eternal Pyre Inquisitors",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
-     "src": "Herd of Ferocious Wild Pals",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
-     "src": "Herd of Ferocious Wild Pals",
      "n": "10–20",
      "p": "100%"
     },
@@ -42560,17 +42115,7 @@
      "p": "100%"
     },
     {
-     "src": "Herd of Ferocious Wild Pals",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
      "src": "Moonflower Elites",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
-     "src": "Herd of Ferocious Wild Pals",
      "n": "10–20",
      "p": "100%"
     },
@@ -42580,17 +42125,7 @@
      "p": "100%"
     },
     {
-     "src": "Herd of Ferocious Wild Pals",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
      "src": "Test of the Covenant: Climax",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
-     "src": "Herd of Ferocious Wild Pals",
      "n": "10–20",
      "p": "100%"
     },
@@ -42691,16 +42226,6 @@
      "src": "PIDF Rocketeer",
      "n": "1",
      "p": "100%"
-    },
-    {
-     "src": "Syndicate Elite",
-     "n": "1",
-     "p": "50%"
-    },
-    {
-     "src": "Syndicate Elite",
-     "n": "1",
-     "p": "50%"
     }
    ],
    "shops": [
@@ -42926,11 +42451,6 @@
     },
     {
      "src": "Brothers of the Eternal Pyre Martyr",
-     "n": "1–2",
-     "p": "100%"
-    },
-    {
-     "src": "Brothers of the Eternal Pyre Martyr",
      "n": "2–3",
      "p": "100%"
     },
@@ -42942,11 +42462,6 @@
     {
      "src": "Pyromaniac Flare",
      "n": "1–2",
-     "p": "100%"
-    },
-    {
-     "src": "Faleris",
-     "n": "1–4",
      "p": "100%"
     },
     {
@@ -42967,16 +42482,6 @@
     {
      "src": "Finsider Ignis",
      "n": "1–3",
-     "p": "100%"
-    },
-    {
-     "src": "Brothers of the Eternal Pyre Martyr",
-     "n": "1",
-     "p": "100%"
-    },
-    {
-     "src": "Brothers of the Eternal Pyre Martyr",
-     "n": "1–2",
      "p": "100%"
     },
     {
@@ -43321,22 +42826,7 @@
      "p": "100%"
     },
     {
-     "src": "Herd of Man-eating Wild Pals",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
      "src": "Brothers of the Eternal Pyre: Extremists",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
-     "src": "Herd of Man-eating Wild Pals",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
-     "src": "Herd of Man-eating Wild Pals",
      "n": "10–20",
      "p": "100%"
     },
@@ -43346,17 +42836,7 @@
      "p": "100%"
     },
     {
-     "src": "Herd of Man-eating Wild Pals",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
      "src": "Moonflower Vangard",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
-     "src": "Herd of Man-eating Wild Pals",
      "n": "10–20",
      "p": "100%"
     },
@@ -43366,17 +42846,7 @@
      "p": "100%"
     },
     {
-     "src": "Herd of Man-eating Wild Pals",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
      "src": "Test of the Covenant: Verse",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
-     "src": "Herd of Man-eating Wild Pals",
      "n": "10–20",
      "p": "100%"
     },
@@ -43452,22 +42922,7 @@
      "p": "100%"
     },
     {
-     "src": "Herd of Violent Wild Pals",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
      "src": "Brothers of the Eternal Pyre: Doomsayers",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
-     "src": "Herd of Violent Wild Pals",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
-     "src": "Herd of Violent Wild Pals",
      "n": "10–20",
      "p": "100%"
     },
@@ -43477,17 +42932,7 @@
      "p": "100%"
     },
     {
-     "src": "Herd of Violent Wild Pals",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
      "src": "Moonflower Raiders",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
-     "src": "Herd of Violent Wild Pals",
      "n": "10–20",
      "p": "100%"
     },
@@ -43497,17 +42942,7 @@
      "p": "100%"
     },
     {
-     "src": "Herd of Violent Wild Pals",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
      "src": "Test of the Covenant: Crescendo",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
-     "src": "Herd of Violent Wild Pals",
      "n": "10–20",
      "p": "100%"
     },
@@ -43650,42 +43085,12 @@
      "p": "100%"
     },
     {
-     "src": "Herd of Ferocious Wild Pals",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
-     "src": "Herd of Extremely Ferocious Wild Pals",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
      "src": "Eternal Pyre Inquisitors",
      "n": "10–20",
      "p": "100%"
     },
     {
      "src": "Eternal Pyre Condemners",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
-     "src": "Herd of Ferocious Wild Pals",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
-     "src": "Herd of Extremely Ferocious Wild Pals",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
-     "src": "Herd of Ferocious Wild Pals",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
-     "src": "Herd of Extremely Ferocious Wild Pals",
      "n": "10–20",
      "p": "100%"
     },
@@ -43700,32 +43105,12 @@
      "p": "100%"
     },
     {
-     "src": "Herd of Ferocious Wild Pals",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
-     "src": "Herd of Extremely Ferocious Wild Pals",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
      "src": "Moonflower Elites",
      "n": "10–20",
      "p": "100%"
     },
     {
      "src": "Moonflower Hit Squad",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
-     "src": "Herd of Ferocious Wild Pals",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
-     "src": "Herd of Extremely Ferocious Wild Pals",
      "n": "10–20",
      "p": "100%"
     },
@@ -43740,32 +43125,12 @@
      "p": "100%"
     },
     {
-     "src": "Herd of Ferocious Wild Pals",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
-     "src": "Herd of Extremely Ferocious Wild Pals",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
      "src": "Test of the Covenant: Climax",
      "n": "10–20",
      "p": "100%"
     },
     {
      "src": "Test of the Covenant: Finale",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
-     "src": "Herd of Ferocious Wild Pals",
-     "n": "10–20",
-     "p": "100%"
-    },
-    {
-     "src": "Herd of Extremely Ferocious Wild Pals",
      "n": "10–20",
      "p": "100%"
     },
@@ -48594,22 +47959,12 @@
      "p": "2%"
     },
     {
-     "src": "Free Pal Alliance Believer",
-     "n": "1",
-     "p": "2%"
-    },
-    {
      "src": "Gloating Narcissist Ego",
      "n": "1",
      "p": "2%"
     },
     {
      "src": "Hostile Defender Brick",
-     "n": "1",
-     "p": "2%"
-    },
-    {
-     "src": "Free Pal Alliance Believer",
      "n": "1",
      "p": "2%"
     }
@@ -50903,11 +50258,6 @@
      "src": "Mission: That's That Me, Depresso!",
      "n": "1",
      "p": "100%"
-    },
-    {
-     "src": "Mission: That's That Me, Depresso!",
-     "n": "1",
-     "p": "100%"
     }
    ]
   },
@@ -51443,11 +50793,6 @@
     {
      "src": "Caprity Noct",
      "n": "1–2",
-     "p": "100%"
-    },
-    {
-     "src": "Incineram Noct",
-     "n": "1",
      "p": "100%"
     },
     {
@@ -56866,11 +56211,6 @@
      "p": "100%"
     },
     {
-     "src": "Incineram Noct",
-     "n": "1",
-     "p": "100%"
-    },
-    {
      "src": "Herbil",
      "n": "1",
      "p": "100%"
@@ -58180,11 +57520,6 @@
      "src": "PAL Genetic Research Unit Executioner",
      "n": "1",
      "p": "10%"
-    },
-    {
-     "src": "PAL Genetic Research Unit Executioner",
-     "n": "1",
-     "p": "10%"
     }
    ],
    "shops": [
@@ -58396,22 +57731,7 @@
      "p": "100%"
     },
     {
-     "src": "Herd of Extremely Ferocious Wild Pals",
-     "n": "1",
-     "p": "100%"
-    },
-    {
      "src": "Eternal Pyre Condemners",
-     "n": "1",
-     "p": "100%"
-    },
-    {
-     "src": "Herd of Extremely Ferocious Wild Pals",
-     "n": "1",
-     "p": "100%"
-    },
-    {
-     "src": "Herd of Extremely Ferocious Wild Pals",
      "n": "1",
      "p": "100%"
     },
@@ -58421,17 +57741,7 @@
      "p": "100%"
     },
     {
-     "src": "Herd of Extremely Ferocious Wild Pals",
-     "n": "1",
-     "p": "100%"
-    },
-    {
      "src": "Moonflower Hit Squad",
-     "n": "1",
-     "p": "100%"
-    },
-    {
-     "src": "Herd of Extremely Ferocious Wild Pals",
      "n": "1",
      "p": "100%"
     },
@@ -58441,17 +57751,7 @@
      "p": "100%"
     },
     {
-     "src": "Herd of Extremely Ferocious Wild Pals",
-     "n": "1",
-     "p": "100%"
-    },
-    {
      "src": "Test of the Covenant: Finale",
-     "n": "1",
-     "p": "100%"
-    },
-    {
-     "src": "Herd of Extremely Ferocious Wild Pals",
      "n": "1",
      "p": "100%"
     },
@@ -58590,42 +57890,7 @@
      "p": "10%"
     },
     {
-     "src": "PAL Genetic Research Unit Executioner",
-     "n": "1",
-     "p": "10%"
-    },
-    {
-     "src": "PAL Genetic Research Unit Executioner",
-     "n": "1",
-     "p": "10%"
-    },
-    {
-     "src": "PAL Genetic Research Unit Executioner",
-     "n": "1",
-     "p": "10%"
-    },
-    {
      "src": "Kidnapper Whisk",
-     "n": "1",
-     "p": "10%"
-    },
-    {
-     "src": "PAL Genetic Research Unit Executioner",
-     "n": "1",
-     "p": "10%"
-    },
-    {
-     "src": "PAL Genetic Research Unit Executioner",
-     "n": "1",
-     "p": "10%"
-    },
-    {
-     "src": "PAL Genetic Research Unit Executioner",
-     "n": "1",
-     "p": "10%"
-    },
-    {
-     "src": "PAL Genetic Research Unit Executioner",
      "n": "1",
      "p": "10%"
     }
@@ -60893,11 +60158,6 @@
      "src": "Lamball",
      "n": "1",
      "p": "100%"
-    },
-    {
-     "src": "Lamball",
-     "n": "1",
-     "p": "100%"
     }
    ],
    "shops": [
@@ -60981,19 +60241,9 @@
      "p": "5%"
     },
     {
-     "src": "Free Pal Alliance Believer",
-     "n": "1",
-     "p": "5%"
-    },
-    {
      "src": "Free Pal Alliance Judicator",
      "n": "1",
      "p": "5%"
-    },
-    {
-     "src": "Free Pal Alliance Believer",
-     "n": "1",
-     "p": "30%"
     },
     {
      "src": "Free Pal Alliance Believer",
@@ -61014,16 +60264,6 @@
      "src": "Well-Meaning Quack Quill",
      "n": "1",
      "p": "50%"
-    },
-    {
-     "src": "Free Pal Alliance Believer",
-     "n": "1",
-     "p": "5%"
-    },
-    {
-     "src": "Free Pal Alliance Believer",
-     "n": "1",
-     "p": "5%"
     }
    ],
    "shops": [
@@ -61293,11 +60533,6 @@
      "src": "Xenogard",
      "n": "5–12",
      "p": "100%"
-    },
-    {
-     "src": "Xenovader",
-     "n": "3–10",
-     "p": "100%"
     }
    ],
    "desc": "Fragment of a rock from outer space.\nContains large amounts of Paldium Fragment,\nwhich can be extracted by placing it in a Crusher."
@@ -61494,11 +60729,6 @@
      "p": "40%"
     },
     {
-     "src": "Free Pal Alliance Believer",
-     "n": "100–150",
-     "p": "40%"
-    },
-    {
      "src": "Free Pal Alliance Judicator",
      "n": "100–300",
      "p": "40%"
@@ -61514,21 +60744,6 @@
      "p": "40%"
     },
     {
-     "src": "Villager",
-     "n": "10–100",
-     "p": "40%"
-    },
-    {
-     "src": "Villager",
-     "n": "10–100",
-     "p": "40%"
-    },
-    {
-     "src": "Brothers of the Eternal Pyre Martyr",
-     "n": "100–150",
-     "p": "40%"
-    },
-    {
      "src": "Brothers of the Eternal Pyre Martyr",
      "n": "100–150",
      "p": "40%"
@@ -61541,11 +60756,6 @@
     {
      "src": "Pal Merchant",
      "n": "10–100",
-     "p": "40%"
-    },
-    {
-     "src": "Guard",
-     "n": "50–200",
      "p": "40%"
     },
     {
@@ -61579,19 +60789,9 @@
      "p": "40%"
     },
     {
-     "src": "Pal Merchant",
-     "n": "10–100",
-     "p": "40%"
-    },
-    {
      "src": "Black Marketeer",
      "n": "10000–15000",
      "p": "100%"
-    },
-    {
-     "src": "Villager",
-     "n": "10–100",
-     "p": "40%"
     },
     {
      "src": "PAL Genetic Research Unit Executioner",
@@ -61599,34 +60799,9 @@
      "p": "50%"
     },
     {
-     "src": "Villager",
-     "n": "10–100",
-     "p": "40%"
-    },
-    {
-     "src": "Villager",
-     "n": "10–100",
-     "p": "40%"
-    },
-    {
      "src": "Islander",
      "n": "10–100",
      "p": "40%"
-    },
-    {
-     "src": "Islander",
-     "n": "10–100",
-     "p": "40%"
-    },
-    {
-     "src": "Villager",
-     "n": "10–100",
-     "p": "40%"
-    },
-    {
-     "src": "Pal Merchant",
-     "n": "100–300",
-     "p": "100%"
     },
     {
      "src": "Pal Merchant",
@@ -61654,24 +60829,9 @@
      "p": "40%"
     },
     {
-     "src": "Pal Merchant",
-     "n": "10–100",
-     "p": "40%"
-    },
-    {
-     "src": "Pal Merchant",
-     "n": "10–100",
-     "p": "40%"
-    },
-    {
      "src": "Wandering Merchant",
      "n": "100–300",
      "p": "100%"
-    },
-    {
-     "src": "PAL Genetic Research Unit Executioner",
-     "n": "200–400",
-     "p": "50%"
     },
     {
      "src": "Test Assassin",
@@ -65709,21 +64869,6 @@
      "p": "11.111%"
     },
     {
-     "src": "Expedition: World Tree (Hard)",
-     "n": "2–5",
-     "p": "11.111%"
-    },
-    {
-     "src": "Expedition: World Tree (Hard)",
-     "n": "2–5",
-     "p": "11.111%"
-    },
-    {
-     "src": "Expedition: World Tree",
-     "n": "1–3",
-     "p": "5.556%"
-    },
-    {
      "src": "Expedition: World Tree",
      "n": "1–3",
      "p": "5.556%"
@@ -66004,21 +65149,6 @@
      "src": "Expedition: World Tree (Hard)",
      "n": "2–5",
      "p": "11.111%"
-    },
-    {
-     "src": "Expedition: World Tree (Hard)",
-     "n": "2–5",
-     "p": "11.111%"
-    },
-    {
-     "src": "Expedition: World Tree (Hard)",
-     "n": "2–5",
-     "p": "11.111%"
-    },
-    {
-     "src": "Expedition: World Tree",
-     "n": "1–3",
-     "p": "5.556%"
     },
     {
      "src": "Expedition: World Tree",
@@ -66338,16 +65468,6 @@
      "p": "11.111%"
     },
     {
-     "src": "Expedition: World Tree (Hard)",
-     "n": "2–5",
-     "p": "11.111%"
-    },
-    {
-     "src": "Expedition: World Tree",
-     "n": "1–3",
-     "p": "5.556%"
-    },
-    {
      "src": "Expedition: World Tree",
      "n": "1–3",
      "p": "5.556%"
@@ -66645,16 +65765,6 @@
      "p": "11.111%"
     },
     {
-     "src": "Expedition: World Tree (Hard)",
-     "n": "2–5",
-     "p": "11.111%"
-    },
-    {
-     "src": "Expedition: World Tree",
-     "n": "1–3",
-     "p": "5.556%"
-    },
-    {
      "src": "Expedition: World Tree",
      "n": "1–3",
      "p": "5.556%"
@@ -66947,16 +66057,6 @@
      "p": "11.111%"
     },
     {
-     "src": "Expedition: World Tree (Hard)",
-     "n": "2–5",
-     "p": "11.111%"
-    },
-    {
-     "src": "Expedition: World Tree",
-     "n": "1–3",
-     "p": "5.556%"
-    },
-    {
      "src": "Expedition: World Tree",
      "n": "1–3",
      "p": "5.556%"
@@ -67222,16 +66322,6 @@
      "src": "Expedition: World Tree (Hard)",
      "n": "2–5",
      "p": "11.111%"
-    },
-    {
-     "src": "Expedition: World Tree (Hard)",
-     "n": "2–5",
-     "p": "11.111%"
-    },
-    {
-     "src": "Expedition: World Tree",
-     "n": "1–3",
-     "p": "5.556%"
     },
     {
      "src": "Expedition: World Tree",
@@ -67511,21 +66601,6 @@
      "p": "11.111%"
     },
     {
-     "src": "Expedition: World Tree (Hard)",
-     "n": "2–5",
-     "p": "11.111%"
-    },
-    {
-     "src": "Expedition: World Tree (Hard)",
-     "n": "2–5",
-     "p": "11.111%"
-    },
-    {
-     "src": "Expedition: World Tree",
-     "n": "1–3",
-     "p": "5.556%"
-    },
-    {
      "src": "Expedition: World Tree",
      "n": "1–3",
      "p": "5.556%"
@@ -67778,21 +66853,6 @@
      "p": "11.111%"
     },
     {
-     "src": "Expedition: World Tree (Hard)",
-     "n": "2–5",
-     "p": "11.111%"
-    },
-    {
-     "src": "Expedition: World Tree (Hard)",
-     "n": "2–5",
-     "p": "11.111%"
-    },
-    {
-     "src": "Expedition: World Tree",
-     "n": "1–3",
-     "p": "5.556%"
-    },
-    {
      "src": "Expedition: World Tree",
      "n": "1–3",
      "p": "5.556%"
@@ -68033,16 +67093,6 @@
      "src": "Expedition: World Tree (Hard)",
      "n": "2–5",
      "p": "11.111%"
-    },
-    {
-     "src": "Expedition: World Tree (Hard)",
-     "n": "2–5",
-     "p": "11.111%"
-    },
-    {
-     "src": "Expedition: World Tree",
-     "n": "1–3",
-     "p": "5.556%"
     },
     {
      "src": "Expedition: World Tree",
@@ -68641,16 +67691,6 @@
     {
      "src": "Bellanoir Libero",
      "n": "2–3",
-     "p": "100%"
-    },
-    {
-     "src": "Kitsun Noct",
-     "n": "1–2",
-     "p": "100%"
-    },
-    {
-     "src": "Kitsun Noct",
-     "n": "1–2",
      "p": "100%"
     }
    ],
@@ -69540,11 +68580,6 @@
      "src": "Leezpunk Ignis",
      "n": "1",
      "p": "50%"
-    },
-    {
-     "src": "Leezpunk",
-     "n": "1",
-     "p": "50%"
     }
    ],
    "shops": [
@@ -69603,11 +68638,6 @@
   },
   "PalItem_PlantSlime": {
    "drops": [
-    {
-     "src": "Gumoss",
-     "n": "1",
-     "p": "50%"
-    },
     {
      "src": "Gumoss",
      "n": "1",
@@ -70062,11 +69092,6 @@
     {
      "src": "Extraterrestrial Lunaris",
      "n": "4–6",
-     "p": "100%"
-    },
-    {
-     "src": "Suddenly Transformed Gumoss",
-     "n": "2",
      "p": "100%"
     },
     {
@@ -71992,42 +71017,12 @@
      "p": "40%"
     },
     {
-     "src": "Syndicate Thug",
-     "n": "1–2",
-     "p": "40%"
-    },
-    {
-     "src": "Pal Merchant",
-     "n": "1–2",
-     "p": "40%"
-    },
-    {
-     "src": "Pal Merchant",
-     "n": "1–2",
-     "p": "40%"
-    },
-    {
-     "src": "Pal Merchant",
-     "n": "1–2",
-     "p": "40%"
-    },
-    {
      "src": "PIDF Guard",
      "n": "1–2",
      "p": "40%"
     },
     {
      "src": "Quest Client",
-     "n": "1–2",
-     "p": "40%"
-    },
-    {
-     "src": "Pal Merchant",
-     "n": "1–2",
-     "p": "40%"
-    },
-    {
-     "src": "Pal Merchant",
      "n": "1–2",
      "p": "40%"
     },
@@ -72060,11 +71055,6 @@
      "src": "Syndicate Grenadier",
      "n": "1–2",
      "p": "40%"
-    },
-    {
-     "src": "Syndicate Thug",
-     "n": "1–2",
-     "p": "100%"
     },
     {
      "src": "Syndicate Thug",
@@ -72128,11 +71118,6 @@
     },
     {
      "src": "PIDF Rifleman",
-     "n": "1–2",
-     "p": "40%"
-    },
-    {
-     "src": "Syndicate Thug",
      "n": "1–2",
      "p": "40%"
     }
@@ -72556,21 +71541,6 @@
     },
     {
      "src": "Intimidating Interviewer Grill",
-     "n": "1–2",
-     "p": "40%"
-    },
-    {
-     "src": "Syndicate Elite",
-     "n": "1–2",
-     "p": "40%"
-    },
-    {
-     "src": "Syndicate Crusher",
-     "n": "1–2",
-     "p": "40%"
-    },
-    {
-     "src": "Syndicate Elite",
      "n": "1–2",
      "p": "40%"
     },
@@ -73154,21 +72124,6 @@
      "p": "40%"
     },
     {
-     "src": "PIDF Rifleman",
-     "n": "1–2",
-     "p": "40%"
-    },
-    {
-     "src": "PIDF Rifleman",
-     "n": "1–2",
-     "p": "40%"
-    },
-    {
-     "src": "PIDF Rifleman",
-     "n": "1–2",
-     "p": "40%"
-    },
-    {
      "src": "Slacker Chief",
      "n": "1–2",
      "p": "40%"
@@ -73189,17 +72144,7 @@
      "p": "40%"
     },
     {
-     "src": "PIDF Rifleman",
-     "n": "1–2",
-     "p": "40%"
-    },
-    {
      "src": "PIDF Guard",
-     "n": "1–2",
-     "p": "40%"
-    },
-    {
-     "src": "PIDF Elite",
      "n": "1–2",
      "p": "40%"
     },
@@ -73240,31 +72185,6 @@
     },
     {
      "src": "PIDF Rider",
-     "n": "1–2",
-     "p": "40%"
-    },
-    {
-     "src": "PIDF Rider",
-     "n": "1–2",
-     "p": "40%"
-    },
-    {
-     "src": "PIDF Rifleman",
-     "n": "1–2",
-     "p": "40%"
-    },
-    {
-     "src": "PIDF Rifleman",
-     "n": "1–2",
-     "p": "40%"
-    },
-    {
-     "src": "Syndicate Swordsman",
-     "n": "1–2",
-     "p": "40%"
-    },
-    {
-     "src": "Syndicate Cleaner",
      "n": "1–2",
      "p": "40%"
     }
@@ -74523,11 +73443,6 @@
      "p": "30%"
     },
     {
-     "src": "Syndicate Thug",
-     "n": "1",
-     "p": "30%"
-    },
-    {
      "src": "Syndicate Grenadier",
      "n": "1",
      "p": "30%"
@@ -74806,24 +73721,9 @@
      "p": "30%"
     },
     {
-     "src": "Free Pal Alliance Believer",
-     "n": "1",
-     "p": "30%"
-    },
-    {
      "src": "Brothers of the Eternal Pyre Martyr",
      "n": "1",
      "p": "30%"
-    },
-    {
-     "src": "Brothers of the Eternal Pyre Martyr",
-     "n": "1",
-     "p": "30%"
-    },
-    {
-     "src": "Helzephyr",
-     "n": "1",
-     "p": "3%"
     },
     {
      "src": "Smokie Cryst",
@@ -75027,11 +73927,6 @@
      "src": "Paladius",
      "n": "1",
      "p": "100%"
-    },
-    {
-     "src": "PAL Genetic Research Unit Executioner",
-     "n": "1",
-     "p": "30%"
     },
     {
      "src": "PAL Genetic Research Unit Executioner",
@@ -75622,11 +74517,6 @@
      "p": "100%"
     },
     {
-     "src": "Rampaging Direhowl",
-     "n": "1",
-     "p": "100%"
-    },
-    {
      "src": "Rampaging Lovander",
      "n": "4",
      "p": "100%"
@@ -75634,11 +74524,6 @@
     {
      "src": "Rampaging Jormuntide Ignis",
      "n": "4",
-     "p": "100%"
-    },
-    {
-     "src": "Panthalus",
-     "n": "1",
      "p": "100%"
     }
    ],
@@ -75824,42 +74709,7 @@
      "p": "40%"
     },
     {
-     "src": "Villager",
-     "n": "1–2",
-     "p": "40%"
-    },
-    {
-     "src": "Villager",
-     "n": "1–2",
-     "p": "40%"
-    },
-    {
-     "src": "Villager",
-     "n": "1–2",
-     "p": "40%"
-    },
-    {
-     "src": "Villager",
-     "n": "1–2",
-     "p": "40%"
-    },
-    {
-     "src": "Villager",
-     "n": "1–2",
-     "p": "40%"
-    },
-    {
      "src": "Islander",
-     "n": "1–2",
-     "p": "40%"
-    },
-    {
-     "src": "Islander",
-     "n": "1–2",
-     "p": "40%"
-    },
-    {
-     "src": "Villager",
      "n": "1–2",
      "p": "40%"
     },
@@ -78875,11 +77725,6 @@
      "src": "Mission: That's That Me, Depresso!",
      "n": "1",
      "p": "100%"
-    },
-    {
-     "src": "Mission: That's That Me, Depresso!",
-     "n": "1",
-     "p": "100%"
     }
    ]
   },
@@ -78958,47 +77803,7 @@
      "p": "20%"
     },
     {
-     "src": "Brothers of the Eternal Pyre Martyr",
-     "n": "1",
-     "p": "20%"
-    },
-    {
-     "src": "Brothers of the Eternal Pyre Martyr",
-     "n": "1",
-     "p": "20%"
-    },
-    {
-     "src": "Brothers of the Eternal Pyre Martyr",
-     "n": "1",
-     "p": "20%"
-    },
-    {
      "src": "Black Magic Fanatic Shadow",
-     "n": "1",
-     "p": "20%"
-    },
-    {
-     "src": "Brothers of the Eternal Pyre Martyr",
-     "n": "1",
-     "p": "20%"
-    },
-    {
-     "src": "Brothers of the Eternal Pyre Martyr",
-     "n": "1",
-     "p": "20%"
-    },
-    {
-     "src": "Brothers of the Eternal Pyre Martyr",
-     "n": "1",
-     "p": "20%"
-    },
-    {
-     "src": "Brothers of the Eternal Pyre Martyr",
-     "n": "1",
-     "p": "20%"
-    },
-    {
-     "src": "Brothers of the Eternal Pyre Martyr",
      "n": "1",
      "p": "20%"
     }
@@ -80040,11 +78845,6 @@
     {
      "src": "Rampaging Flopie",
      "n": "4",
-     "p": "100%"
-    },
-    {
-     "src": "Rampaging Direhowl",
-     "n": "1",
      "p": "100%"
     },
     {
@@ -81260,16 +80060,6 @@
     },
     {
      "src": "PIDF Rifleman",
-     "n": "1–2",
-     "p": "100%"
-    },
-    {
-     "src": "Syndicate Crusher",
-     "n": "2–3",
-     "p": "100%"
-    },
-    {
-     "src": "Syndicate Thug",
      "n": "1–2",
      "p": "100%"
     },
@@ -85134,16 +83924,6 @@
      "src": "Syndicate Hunter",
      "n": "3",
      "p": "100%"
-    },
-    {
-     "src": "PIDF Elite",
-     "n": "1",
-     "p": "100%"
-    },
-    {
-     "src": "Syndicate Hunter",
-     "n": "1",
-     "p": "100%"
     }
    ],
    "shops": [
@@ -85673,11 +84453,6 @@
      "src": "Fruits Desert 1",
      "n": "1",
      "p": "2.703%"
-    },
-    {
-     "src": "Fruits Volcano 1",
-     "n": "1",
-     "p": "2.632%"
     },
     {
      "src": "Fruits Volcano 1",
@@ -87983,16 +86758,6 @@
      "p": "2.703%"
     },
     {
-     "src": "Fruits Desert 1",
-     "n": "1",
-     "p": "2.703%"
-    },
-    {
-     "src": "Fruits Volcano 1",
-     "n": "1",
-     "p": "2.632%"
-    },
-    {
      "src": "Fruits Volcano 1",
      "n": "1",
      "p": "2.632%"
@@ -89527,11 +88292,6 @@
      "p": "2.703%"
     },
     {
-     "src": "Fruits Desert 1",
-     "n": "1",
-     "p": "2.703%"
-    },
-    {
      "src": "Fruits Sakurajima 1",
      "n": "1",
      "p": "2.703%"
@@ -89540,11 +88300,6 @@
      "src": "Fruits Feybreak 1",
      "n": "1",
      "p": "2.703%"
-    },
-    {
-     "src": "Fruits Volcano 1",
-     "n": "1",
-     "p": "2.632%"
     },
     {
      "src": "Fruits Volcano 1",
@@ -89577,22 +88332,7 @@
      "p": "2.479%"
     },
     {
-     "src": "Desert Fire Treasure",
-     "n": "1",
-     "p": "2.479%"
-    },
-    {
      "src": "Sakurajima Fire Treasure",
-     "n": "1",
-     "p": "2.479%"
-    },
-    {
-     "src": "Sakurajima Fire Treasure",
-     "n": "1",
-     "p": "2.479%"
-    },
-    {
-     "src": "Sunreach Fire Treasure",
      "n": "1",
      "p": "2.479%"
     },
@@ -91759,16 +90499,6 @@
      "src": "Fruits Desert 1",
      "n": "1",
      "p": "2.703%"
-    },
-    {
-     "src": "Fruits Desert 1",
-     "n": "1",
-     "p": "2.703%"
-    },
-    {
-     "src": "Fruits Volcano 1",
-     "n": "1",
-     "p": "2.632%"
     },
     {
      "src": "Fruits Volcano 1",
@@ -94500,11 +93230,6 @@
      "p": "2.703%"
     },
     {
-     "src": "Fruits Desert 1",
-     "n": "1",
-     "p": "2.703%"
-    },
-    {
      "src": "Fruits Sakurajima 1",
      "n": "1",
      "p": "2.703%"
@@ -94513,11 +93238,6 @@
      "src": "Fruits Feybreak 1",
      "n": "1",
      "p": "2.703%"
-    },
-    {
-     "src": "Fruits Volcano 1",
-     "n": "1",
-     "p": "2.632%"
     },
     {
      "src": "Fruits Volcano 1",
@@ -106810,17 +105530,7 @@
      "p": "1%"
     },
     {
-     "src": "Free Pal Alliance Believer",
-     "n": "1",
-     "p": "1%"
-    },
-    {
      "src": "Free Pal Alliance Judicator",
-     "n": "1",
-     "p": "1%"
-    },
-    {
-     "src": "Syndicate Thug",
      "n": "1",
      "p": "1%"
     },
@@ -106865,92 +105575,7 @@
      "p": "1%"
     },
     {
-     "src": "Syndicate Gunner",
-     "n": "1",
-     "p": "1%"
-    },
-    {
-     "src": "Syndicate Thug",
-     "n": "1",
-     "p": "1%"
-    },
-    {
-     "src": "Syndicate Hunter",
-     "n": "1",
-     "p": "1%"
-    },
-    {
-     "src": "Syndicate Elite",
-     "n": "1",
-     "p": "1%"
-    },
-    {
-     "src": "Syndicate Thug",
-     "n": "1",
-     "p": "1%"
-    },
-    {
-     "src": "Syndicate Grenadier",
-     "n": "1",
-     "p": "1%"
-    },
-    {
-     "src": "Syndicate Cleaner",
-     "n": "1",
-     "p": "1%"
-    },
-    {
-     "src": "Syndicate Crusher",
-     "n": "1",
-     "p": "1%"
-    },
-    {
-     "src": "Free Pal Alliance Believer",
-     "n": "1",
-     "p": "1%"
-    },
-    {
-     "src": "Free Pal Alliance Believer",
-     "n": "1",
-     "p": "1%"
-    },
-    {
-     "src": "Syndicate Gunner",
-     "n": "1",
-     "p": "1%"
-    },
-    {
-     "src": "Syndicate Hunter",
-     "n": "1",
-     "p": "1%"
-    },
-    {
-     "src": "Syndicate Grenadier",
-     "n": "1",
-     "p": "1%"
-    },
-    {
      "src": "Syndicate Veteran",
-     "n": "1",
-     "p": "1%"
-    },
-    {
-     "src": "Syndicate Thug",
-     "n": "1",
-     "p": "1%"
-    },
-    {
-     "src": "Syndicate Gunner",
-     "n": "1",
-     "p": "1%"
-    },
-    {
-     "src": "Syndicate Hunter",
-     "n": "1",
-     "p": "1%"
-    },
-    {
-     "src": "Syndicate Grenadier",
      "n": "1",
      "p": "1%"
     },
@@ -106966,26 +105591,6 @@
     },
     {
      "src": "Syndicate Swordsman",
-     "n": "1",
-     "p": "1%"
-    },
-    {
-     "src": "Syndicate Gunner",
-     "n": "1",
-     "p": "1%"
-    },
-    {
-     "src": "Syndicate Hunter",
-     "n": "1",
-     "p": "1%"
-    },
-    {
-     "src": "Syndicate Grenadier",
-     "n": "1",
-     "p": "1%"
-    },
-    {
-     "src": "Syndicate Veteran",
      "n": "1",
      "p": "1%"
     },
@@ -107010,72 +105615,7 @@
      "p": "1%"
     },
     {
-     "src": "Leezpunk",
-     "n": "1",
-     "p": "100%"
-    },
-    {
-     "src": "Syndicate Laser Rifleman",
-     "n": "1",
-     "p": "1%"
-    },
-    {
-     "src": "Syndicate Crossbowman",
-     "n": "1",
-     "p": "1%"
-    },
-    {
-     "src": "Syndicate Swordsman",
-     "n": "1",
-     "p": "1%"
-    },
-    {
-     "src": "Free Pal Alliance Believer",
-     "n": "1",
-     "p": "1%"
-    },
-    {
-     "src": "Free Pal Alliance Believer",
-     "n": "1",
-     "p": "1%"
-    },
-    {
      "src": "PIDF Rifleman",
-     "n": "1",
-     "p": "1%"
-    },
-    {
-     "src": "Syndicate Swordsman",
-     "n": "1",
-     "p": "1%"
-    },
-    {
-     "src": "Syndicate Elite",
-     "n": "1",
-     "p": "1%"
-    },
-    {
-     "src": "Syndicate Crusher",
-     "n": "1",
-     "p": "1%"
-    },
-    {
-     "src": "Syndicate Cleaner",
-     "n": "1",
-     "p": "1%"
-    },
-    {
-     "src": "Syndicate Thug",
-     "n": "1",
-     "p": "1%"
-    },
-    {
-     "src": "Syndicate Hunter",
-     "n": "1",
-     "p": "1%"
-    },
-    {
-     "src": "Syndicate Elite",
      "n": "1",
      "p": "1%"
     },
@@ -107156,16 +105696,6 @@
      "p": "2%"
     },
     {
-     "src": "PAL Genetic Research Unit Executioner",
-     "n": "1",
-     "p": "3%"
-    },
-    {
-     "src": "PAL Genetic Research Unit Executioner",
-     "n": "1",
-     "p": "2%"
-    },
-    {
      "src": "Syndicate Cleaner",
      "n": "1",
      "p": "1%"
@@ -107189,31 +105719,6 @@
      "src": "Moonflower Jonin",
      "n": "1",
      "p": "2%"
-    },
-    {
-     "src": "Syndicate Cleaner",
-     "n": "1",
-     "p": "1%"
-    },
-    {
-     "src": "Syndicate Elite",
-     "n": "1",
-     "p": "1%"
-    },
-    {
-     "src": "Syndicate Cleaner",
-     "n": "1",
-     "p": "1%"
-    },
-    {
-     "src": "Syndicate Elite",
-     "n": "1",
-     "p": "1%"
-    },
-    {
-     "src": "Syndicate Interceptor",
-     "n": "1",
-     "p": "1%"
     },
     {
      "src": "Feybreak Warrior",
@@ -107251,102 +105756,7 @@
      "p": "2%"
     },
     {
-     "src": "Leezpunk",
-     "n": "1",
-     "p": "1%"
-    },
-    {
-     "src": "Moonflower Genin",
-     "n": "1",
-     "p": "2%"
-    },
-    {
-     "src": "Moonflower Jonin",
-     "n": "1",
-     "p": "2%"
-    },
-    {
-     "src": "Moonflower Genin",
-     "n": "1",
-     "p": "2%"
-    },
-    {
-     "src": "Moonflower Jonin",
-     "n": "1",
-     "p": "2%"
-    },
-    {
-     "src": "PAL Genetic Research Unit Executioner",
-     "n": "1",
-     "p": "3%"
-    },
-    {
-     "src": "PAL Genetic Research Unit Executioner",
-     "n": "1",
-     "p": "3%"
-    },
-    {
-     "src": "Moonflower Genin",
-     "n": "1",
-     "p": "2%"
-    },
-    {
-     "src": "Moonflower Jonin",
-     "n": "1",
-     "p": "2%"
-    },
-    {
-     "src": "Feybreak Warrior",
-     "n": "1",
-     "p": "2%"
-    },
-    {
-     "src": "Feybreak Warrior",
-     "n": "1",
-     "p": "2%"
-    },
-    {
-     "src": "Feybreak Berserker",
-     "n": "1",
-     "p": "2%"
-    },
-    {
      "src": "Azure Covenant Enforcer",
-     "n": "1",
-     "p": "2%"
-    },
-    {
-     "src": "Moonflower Genin",
-     "n": "1",
-     "p": "2%"
-    },
-    {
-     "src": "Moonflower Jonin",
-     "n": "1",
-     "p": "2%"
-    },
-    {
-     "src": "Moonflower Genin",
-     "n": "1",
-     "p": "2%"
-    },
-    {
-     "src": "PAL Genetic Research Unit Executioner",
-     "n": "1",
-     "p": "3%"
-    },
-    {
-     "src": "PAL Genetic Research Unit Executioner",
-     "n": "1",
-     "p": "2%"
-    },
-    {
-     "src": "Moonflower Genin",
-     "n": "1",
-     "p": "2%"
-    },
-    {
-     "src": "Moonflower Jonin",
      "n": "1",
      "p": "2%"
     }
@@ -107555,16 +105965,6 @@
      "src": "Medal Merchant",
      "n": "1",
      "p": "100%"
-    },
-    {
-     "src": "Syndicate Crusher",
-     "n": "1",
-     "p": "1%"
-    },
-    {
-     "src": "Syndicate Crusher",
-     "n": "1",
-     "p": "1%"
     },
     {
      "src": "Syndicate Crusher",
@@ -108280,11 +106680,6 @@
     {
      "src": "Shroomer Noct",
      "n": "4–8",
-     "p": "100%"
-    },
-    {
-     "src": "Helzephyr",
-     "n": "1–3",
      "p": "100%"
     },
     {
@@ -109247,11 +107642,6 @@
     {
      "src": "Cremis",
      "n": "1–2",
-     "p": "100%"
-    },
-    {
-     "src": "Lamball",
-     "n": "1–3",
      "p": "100%"
     },
     {
@@ -110219,11 +108609,6 @@
     },
     {
      "src": "Supply drop (Grass)",
-     "n": "1",
-     "p": "0.083%"
-    },
-    {
-     "src": "Enemy Camp Volcano Seabase Goal",
      "n": "1",
      "p": "0.083%"
     },
@@ -112786,11 +111171,6 @@
      "p": "51.613%"
     },
     {
-     "src": "Expedition: World Tree",
-     "n": "1–3",
-     "p": "51.613%"
-    },
-    {
      "src": "World Tree Electric Treasure",
      "n": "1–10",
      "p": "43.802%"
@@ -113141,11 +111521,6 @@
     }
    ],
    "boxes": [
-    {
-     "src": "Expedition: World Tree",
-     "n": "1–3",
-     "p": "25.806%"
-    },
     {
      "src": "Expedition: World Tree",
      "n": "1–3",
@@ -113509,11 +111884,6 @@
     },
     {
      "src": "Expedition: World Tree (Hard)",
-     "n": "2–4",
-     "p": "57.143%"
-    },
-    {
-     "src": "Expedition: World Tree (Hard)",
      "n": "2–5",
      "p": "32.258%"
     },
@@ -113531,11 +111901,6 @@
      "src": "World Tree Water Treasure",
      "n": "1–3",
      "p": "14.586%"
-    },
-    {
-     "src": "Expedition: World Tree",
-     "n": "1–3",
-     "p": "12.903%"
     },
     {
      "src": "Expedition: World Tree",
@@ -113885,11 +112250,6 @@
     },
     {
      "src": "Expedition: World Tree (Hard)",
-     "n": "2–4",
-     "p": "28.571%"
-    },
-    {
-     "src": "Expedition: World Tree (Hard)",
      "n": "2–5",
      "p": "16.129%"
     },
@@ -113907,11 +112267,6 @@
      "src": "World Tree Water Treasure",
      "n": "1–2",
      "p": "10.951%"
-    },
-    {
-     "src": "Expedition: World Tree",
-     "n": "1–3",
-     "p": "6.452%"
     },
     {
      "src": "Expedition: World Tree",
@@ -114260,11 +112615,6 @@
      "p": "14.286%"
     },
     {
-     "src": "Expedition: World Tree (Hard)",
-     "n": "2–4",
-     "p": "14.286%"
-    },
-    {
      "src": "World Tree Electric Treasure",
      "n": "1",
      "p": "8.76%"
@@ -114283,11 +112633,6 @@
      "src": "Expedition: World Tree (Hard)",
      "n": "2–5",
      "p": "8.065%"
-    },
-    {
-     "src": "Expedition: World Tree",
-     "n": "1–3",
-     "p": "3.226%"
     },
     {
      "src": "Expedition: World Tree",

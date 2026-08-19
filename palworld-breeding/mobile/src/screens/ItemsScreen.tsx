@@ -20,7 +20,7 @@ import { Badge, Btn, Card, PageHead, SearchInput, s } from '../ui/kit';
 import {
   familyOf, groupOf, idsInGroup, ITEM_GROUPS, ITEM_STATS, ITEMS,
   kindsInGroup, kindWord, palsDropping, schematicsFor, searchItems,
-  sortItems, teachesOf, TIER_WORDS, tierWord, type ItemSort,
+  sortItems, statRank, teachesOf, TIER_WORDS, tierWord, type ItemSort,
 } from '../itemsData';
 import { ITEM_FACTS, type CraftRow } from '../itemFacts';
 import { ItemIcon } from '../ui/ItemIcon';
@@ -194,9 +194,24 @@ function ItemDetail({ id, onClose, onOpenItem }: {
             <Card style={{ marginTop: 10 }}>
               <Text style={s.h3}>The numbers</Text>
               <View style={{ marginTop: 6, gap: 3 }}>
-                {st?.atk != null && <Fact label="Attack" value={String(st.atk)} />}
-                {st?.def != null && <Fact label="Defense" value={String(st.def)} />}
-                {st?.hp != null && <Fact label="Health bonus" value={`+${st.hp}`} />}
+                {st?.atk != null && (
+                  <Fact label="Attack" value={(() => {
+                    const r = statRank(id, 'atk');
+                    return r ? `${st.atk} · #${r.rank} of ${r.of}` : String(st.atk);
+                  })()} />
+                )}
+                {st?.def != null && (
+                  <Fact label="Defense" value={(() => {
+                    const r = statRank(id, 'def');
+                    return r ? `${st.def} · #${r.rank} of ${r.of}` : String(st.def);
+                  })()} />
+                )}
+                {st?.hp != null && (
+                  <Fact label="Health bonus" value={(() => {
+                    const r = statRank(id, 'hp');
+                    return r ? `+${st.hp} · #${r.rank} of ${r.of}` : `+${st.hp}`;
+                  })()} />
+                )}
                 {st?.shield != null && <Fact label="Shield" value={String(st.shield)} />}
                 {st?.durability != null && <Fact label="Durability" value={String(st.durability)} />}
                 {st?.magazine != null && <Fact label="Magazine" value={`${st.magazine} round${st.magazine === 1 ? '' : 's'}`} />}
@@ -330,7 +345,15 @@ function ItemDetail({ id, onClose, onOpenItem }: {
           {(facts?.drops || facts?.boxes || facts?.shops
             || palsDropping(id).length > 0) && (
             <Card style={{ marginTop: 10 }}>
-              <Text style={s.h3}>Where to find it</Text>
+              <View style={[s.row, { gap: 8 }]}>
+                <Text style={[s.h3, { flex: 1 }]}>Where to find it</Text>
+                {/* the fence (AAA criterion 13): pal chips are game-file
+                    fact; the rate rows below are the community database's
+                    loot-table readings — say so where the eyes are */}
+                {(facts?.drops || facts?.boxes) && (
+                  <Badge kind="plain">community rates</Badge>
+                )}
+              </View>
               {palsDropping(id).length > 0 && (
                 <View style={[s.wrap, { marginTop: 6 }]}>
                   {/* from OUR pal table (game files) — each chip opens the

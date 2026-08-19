@@ -2289,6 +2289,33 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E153. THE AAA SWEEP: RANK CONTEXT, KIND-AWARE SEARCH, THE COMMUNITY
+## FENCE, AND A ROW DEDUPE 2026-08-19 (loop tick 5)
+
+E152 verified live (rode the bosses lane's "fane complete" publish — all
+five of their tabs are real now; their lane may go quiet).
+
+The fane re-evaluated against 04_PRODUCT_BLUEPRINT §5's fifteen
+criteria: 11 pass clean. The three real gaps found got fixed same tick,
+each eye-verified on the QA render:
+- Criterion 6 (numbers never float): Attack/Defense/Health on the card
+  carry rank context — "Attack 15000 · #9 of 295" — ties share a rank,
+  computed at runtime, cached, pinned.
+- Criterion 2 (search): token AND matching across name + kind word:
+  "cooked fish" finds exactly its 11, "skill fruit" all 93, word order
+  free. Pinned.
+- Criterion 13 (fence community from fact): the "Where to find it"
+  header wears a "community rates" badge whenever paldb rate rows are
+  present; the pal chips above it stay game-file fact.
+- Bonus find on the render: paldb lists NPC variants as duplicate
+  rows ("Syndicate Thug 1–2 · 40%" twice) — identical (src, qty, rate)
+  triples now collapse at the merge.
+
+LOGGED for later ticks (bigger arcs): unified cross-fane search (pals +
+items one index), passive-skill links on item cards into breeding data,
+item-card share sheet, on-device perf pass for the 1.8MB facts payload
+(CEO-gated real-device pass covers it). 791 tests green, tsc clean.
+
 ## E152. THE TREASURE MAPS GET THEIR NAMES — AND THE NAME REPAIR LEARNS
 ## THE ID-SHAPED CLASS 2026-08-19 (loop tick 4)
 
