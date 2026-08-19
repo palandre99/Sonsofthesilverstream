@@ -2262,6 +2262,19 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E151. PAL DROPS AND ITEMS LINK BOTH WAYS 2026-08-19 (loop tick 3)
+
+Phase F's core cross-link, from OUR game-file pal table (all 115 distinct
+drop strings resolve against the item backbone — zero mismatches,
+pinned): every drop on a pal's card is now a tappable link that lands on
+the item's full card in the Items fane (NavIntent payload gained `item`;
+only the center Items tab takes it, so a sibling tab can't steal the
+payload mid-switch). Every item card's "Where to find it" opens with
+"drops from these pals" chips that jump straight to the pal's Paldex
+card. Eye-verified both directions on the QA render: Lamball -> Wool ->
+the six wool-droppers -> back to Lamball. 788 tests green, tsc clean.
+Publish rides the next clean window (bosses lane editing BossCard).
+
 ## E150. SCHEMATICS JOIN THEIR ITEMS BOTH WAYS 2026-08-19 (loop tick 2)
 
 E149 published (rode the bosses lane's channel push at a newer commit —

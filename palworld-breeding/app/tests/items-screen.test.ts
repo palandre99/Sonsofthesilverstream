@@ -6,10 +6,11 @@ import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import {
-  familyOf, idsInGroup, ITEM_GROUPS, ITEM_STATS, ITEMS,
-  KIND_WORDS, kindsInGroup, kindWord, schematicsFor, searchItems,
-  sortItems, teachesOf, tierWord,
+  familyOf, idsInGroup, ITEM_GROUPS, ITEM_STATS, ITEMS, itemIdByName,
+  KIND_WORDS, kindsInGroup, kindWord, palsDropping, schematicsFor,
+  searchItems, sortItems, teachesOf, tierWord,
 } from '../../mobile/src/itemsData';
+import palsJson from '../../mobile/src/data/pals_1_0.json';
 
 describe('the groups cover the catalogue exactly once', () => {
   it('every item is in exactly one group', () => {
@@ -90,6 +91,36 @@ describe('schematics join their items by the game’s own naming', () => {
       (i) => ITEMS[i].name === "Bellanoir's Slab Fragment");
     expect(slab).toBeDefined();
     expect(teachesOf(slab!)).toBeNull();
+  });
+});
+
+describe('pal drops and items join both ways (game-file data)', () => {
+  it('every pal drop string resolves to an item', () => {
+    const pals = (palsJson as { pals: Record<string, { drops?: string[] }> }).pals;
+    const all = new Set<string>();
+    for (const p of Object.values(pals)) {
+      for (const d of p.drops ?? []) all.add(d);
+    }
+    expect(all.size).toBeGreaterThanOrEqual(100);
+    for (const d of all) {
+      expect(itemIdByName(d), `pal drop "${d}" resolves to no item`).not.toBeNull();
+    }
+  });
+
+  it('the joins go both directions', () => {
+    expect(palsDropping(itemIdByName('Wool')!)).toContain('Lamball');
+    expect(palsDropping('Cake')).toContain('Lovander');
+  });
+
+  it('the screens carry the tappable links', () => {
+    const items = readFileSync(
+      join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+    expect(items).toContain("takeIntentPayload('allitems')");
+    expect(items).toContain('palsDropping(id)');
+    const pal = readFileSync(
+      join(__dirname, '../../mobile/src/ui/PalDetail.tsx'), 'utf8');
+    expect(pal).toContain("domain: 'items', tab: 'allitems'");
+    expect(pal).toContain('Open its item card');
   });
 });
 

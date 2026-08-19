@@ -14,6 +14,7 @@
  */
 import itemsJson from './data/items_1_0.json';
 import statsJson from './data/item_stats_1_0.json';
+import palsJson from './data/pals_1_0.json';
 
 export interface ItemInfo {
   name: string;
@@ -246,6 +247,37 @@ export function familyOf(id: string): string[] {
   return ITEM_IDS
     .filter((i) => ITEMS[i].name === name && ITEMS[i].category === ITEMS[id].category)
     .sort((a, b) => (ITEMS[a].rarity ?? 0) - (ITEMS[b].rarity ?? 0));
+}
+
+/* ---- pal drops <-> items, from our own datamined pal table ---------
+ * pals_1_0 lists what every pal drops by the item's display name; all
+ * 115 distinct strings resolve against the backbone (measured
+ * 2026-08-19, zero mismatches — pinned by test). */
+const PAL_DROPS = (palsJson as unknown as {
+  pals: Record<string, { drops?: string[] }>;
+}).pals;
+
+const DROPPED_BY = new Map<string, string[]>();
+for (const [pal, p] of Object.entries(PAL_DROPS)) {
+  for (const item of p.drops ?? []) {
+    const list = DROPPED_BY.get(item) ?? [];
+    list.push(pal);
+    DROPPED_BY.set(item, list);
+  }
+}
+
+/** Which pals drop this item — game-file data, Paldex-linkable. */
+export function palsDropping(id: string): string[] {
+  return DROPPED_BY.get(ITEMS[id]?.name ?? '') ?? [];
+}
+
+/** The family's base item id for a display name — the join every
+ * cross-link uses (pal drops name items; names resolve here exactly). */
+export function itemIdByName(name: string): string | null {
+  const fam = ITEM_IDS
+    .filter((i) => ITEMS[i].name === name && ITEMS[i].category !== 'Blueprint')
+    .sort((a, b) => (ITEMS[a].rarity ?? 0) - (ITEMS[b].rarity ?? 0));
+  return fam[0] ?? null;
 }
 
 /* ---- schematic <-> item joins, by the game's own naming -------------

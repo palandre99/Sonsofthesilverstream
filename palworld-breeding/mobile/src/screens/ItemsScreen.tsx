@@ -12,18 +12,19 @@
  * a Filters button opening a sheet — group, kind, tier, order — plus an
  * active-filters summary line with a clear action. No stacked chip strips.
  */
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { FlatList, Modal, Pressable, ScrollView, Text, View } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { T } from '../theme';
 import { Badge, Btn, Card, PageHead, SearchInput, s } from '../ui/kit';
 import {
   familyOf, groupOf, idsInGroup, ITEM_GROUPS, ITEM_STATS, ITEMS,
-  kindsInGroup, kindWord, schematicsFor, searchItems, sortItems,
-  teachesOf, TIER_WORDS, tierWord, type ItemSort,
+  kindsInGroup, kindWord, palsDropping, schematicsFor, searchItems,
+  sortItems, teachesOf, TIER_WORDS, tierWord, type ItemSort,
 } from '../itemsData';
 import { ITEM_FACTS, type CraftRow } from '../itemFacts';
 import { ItemIcon } from '../ui/ItemIcon';
+import { navigateTo, onNavIntent, takeIntentPayload } from '../nav/intent';
 
 /** Tier tints — presentation colours for the game's own tier words. */
 const TIER_TINTS: Record<string, string> = {
@@ -326,9 +327,37 @@ function ItemDetail({ id, onClose, onOpenItem }: {
             );
           })()}
 
-          {(facts?.drops || facts?.boxes || facts?.shops) && (
+          {(facts?.drops || facts?.boxes || facts?.shops
+            || palsDropping(id).length > 0) && (
             <Card style={{ marginTop: 10 }}>
               <Text style={s.h3}>Where to find it</Text>
+              {palsDropping(id).length > 0 && (
+                <View style={[s.wrap, { marginTop: 6 }]}>
+                  {/* from OUR pal table (game files) — each chip opens the
+                      pal's Paldex card */}
+                  {palsDropping(id).map((pal) => (
+                    <Pressable key={pal}
+                      onPress={() => {
+                        onClose();
+                        navigateTo({
+                          domain: 'breeding', tab: 'paldex',
+                          payload: { pal },
+                        });
+                      }}
+                      accessibilityRole="button"
+                      accessibilityLabel={`${pal} drops this. Open the pal's card`}
+                      style={({ pressed }) => ({
+                        backgroundColor: pressed ? T.surface2 : T.surface,
+                        borderWidth: 1, borderColor: T.accentSoft,
+                        borderRadius: 9, paddingHorizontal: 8, paddingVertical: 4,
+                      })}>
+                      <Text style={{ color: T.accentInk, fontSize: 12, fontWeight: '700' }}>
+                        {pal}
+                      </Text>
+                    </Pressable>
+                  ))}
+                </View>
+              )}
               {facts.drops && facts.drops.length > 0 && (
                 <View style={{ marginTop: 6, gap: 3 }}>
                   {facts.drops.slice(0, 8).map((d, i) => (
@@ -557,6 +586,19 @@ export function ItemsScreen({ initialGroup = 'weapons' }: { initialGroup?: strin
     () => sortItems(applyItemFilters(filters, q), sort),
     [filters, q, sort],
   );
+
+  // a pal card's drop chip lands here with the item preselected — only the
+  // center Items tab takes the payload (intents always target 'allitems',
+  // and a sibling tab instance must not steal it mid-switch)
+  useEffect(() => {
+    if (initialGroup !== 'all') return undefined;
+    const apply = () => {
+      const p = takeIntentPayload('allitems');
+      if (p?.item) setOpen(p.item);
+    };
+    apply(); // payload waiting from before this screen mounted
+    return onNavIntent(apply);
+  }, [initialGroup]);
 
   // the summary line: everything narrowing the list beyond the tab's home
   const activeBits: string[] = [];

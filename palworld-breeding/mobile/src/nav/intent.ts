@@ -17,8 +17,9 @@ export interface NavIntent {
   /** what the destination screen should preselect; `fromCard` names the pal
    * whose info card sent the player here, so the destination can offer a
    * one-tap way BACK to that card (CEO 2026-08-15: without it you had to
-   * re-scroll the whole Paldex to reopen the pal you came from) */
-  payload?: { pal?: string; mode?: 'pair' | 'reverse'; fromCard?: string };
+   * re-scroll the whole Paldex to reopen the pal you came from);
+   * `item` opens an item's card in the Items fane (pal drops -> item) */
+  payload?: { pal?: string; item?: string; mode?: 'pair' | 'reverse'; fromCard?: string };
 }
 
 let pending: NavIntent | null = null;

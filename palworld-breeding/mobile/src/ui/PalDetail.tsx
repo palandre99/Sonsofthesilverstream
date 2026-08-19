@@ -11,6 +11,7 @@ import {
 } from '../store';
 import type { PalInfo } from '../store';
 import { navigateTo } from '../nav/intent';
+import { itemIdByName } from '../itemsData';
 import { wildBands } from '../map/layers';
 import { WORK_ICONS } from '../data/workIcons';
 import { PalMap } from './PalMap';
@@ -521,7 +522,34 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
           <Card style={{ marginTop: 10 }}>
             <Text style={s.h3}>Drops</Text>
             <View style={[s.wrap, { marginTop: 8 }]}>
-              {p.drops.map((d) => <Badge key={d} kind="plain">{d}</Badge>)}
+              {/* each drop opens its item card in the Items fane — the
+                  drop names resolve against the item table exactly (115/115,
+                  pinned), so a dead tap here means broken data, not design */}
+              {p.drops.map((d) => {
+                const target = itemIdByName(d);
+                if (!target) return <Badge key={d} kind="plain">{d}</Badge>;
+                return (
+                  <Pressable key={d}
+                    onPress={() => {
+                      onClose();
+                      navigateTo({
+                        domain: 'items', tab: 'allitems',
+                        payload: { item: target, fromCard: name },
+                      });
+                    }}
+                    accessibilityRole="button"
+                    accessibilityLabel={`${d}. Open its item card`}
+                    style={({ pressed }) => ({
+                      backgroundColor: pressed ? T.surface2 : T.surface,
+                      borderWidth: 1, borderColor: T.accentSoft,
+                      borderRadius: 9, paddingHorizontal: 8, paddingVertical: 4,
+                    })}>
+                    <Text style={{ color: T.accentInk, fontSize: 12, fontWeight: '700' }}>
+                      {d}
+                    </Text>
+                  </Pressable>
+                );
+              })}
               {(p.ranch_produce ?? []).map((r) => (
                 <Badge key={`r-${r}`} kind="ok">Ranch: {r}</Badge>
               ))}
