@@ -2370,6 +2370,10 @@ re-evaluation finds nothing — otherwise it ALWAYS has work.
       "Crafted with its schematic". FOUND AND LOGGED: IL12 below. The
       Wood card feeding Lumbering research and the fruit card's 19
       sources read genuinely good.
+- [x] IL15 2026-08-19 (~13:50): schematic rows say what they teach —
+      490 rows that read only "Schematic" now carry "Teaches Advanced
+      Bow · tier 2" (decision-grade scent, criterion 11). Eye-verified.
+      814 green, published.
 - [x] IL14 2026-08-19 (~13:10): the catalogue-wide certification pass —
       full audit over all 1,872 fact rows found exactly TWO raw-tag
       cards left (the ULTRAKILL-collab schematics, upstream-absent

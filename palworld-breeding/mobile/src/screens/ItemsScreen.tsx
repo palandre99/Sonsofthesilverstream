@@ -75,6 +75,16 @@ function statLine(id: string): string {
     if (nut != null) bits.push(`Nutrition ${nut}`);
     if (san != null) bits.push(`SAN ${san}`);
   }
+  if (!bits.length && ITEMS[id].category === 'Blueprint') {
+    // a schematic row's whole point is what it teaches (IL15 — 490 rows
+    // used to say nothing but "Schematic")
+    const t = teachesOf(id);
+    if (t) {
+      bits.push(t.tier > 1
+        ? `Teaches ${ITEMS[t.id].name} · tier ${t.tier}`
+        : `Teaches ${ITEMS[t.id].name}`);
+    }
+  }
   return bits.join(' · ');
 }
 

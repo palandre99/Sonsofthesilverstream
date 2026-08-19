@@ -72,6 +72,15 @@ describe("groups expose their depth — the CEO's 'many sub ones'", () => {
   });
 });
 
+describe('schematic rows say what they teach (IL15)', () => {
+  it('the row line renders the teaching, not just "Schematic"', () => {
+    const code = readFileSync(
+      join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+    expect(code).toContain('Teaches ${ITEMS[t.id].name}');
+    expect(code).toContain('tier ${t.tier}');
+  });
+});
+
 describe('schematics join their items by the game’s own naming', () => {
   it('463 blueprints teach a real item family', () => {
     const bps = Object.keys(ITEMS).filter((i) => ITEMS[i].category === 'Blueprint');
