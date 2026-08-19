@@ -94,11 +94,9 @@ export const DOMAINS: DomainDef[] = [
       // LIVE 2026-08-18 (Bosses fane phase A): the tower campaign with the
       // Boss Card — real fight rows, counters from the player's own box
       { id: 'tower', label: 'Tower', icon: 'chess-rook' },
-      {
-        id: 'alphas', label: 'Alphas', icon: 'alert-octagram-outline', soon: true,
-        blurb: 'Every alpha boss — locations already live in the info cards.',
-        planned: ['Alpha checklist tracking', 'Respawn timers'],
-      },
+      // LIVE 2026-08-19 (Bosses fane phase B): every titled boss with
+      // beaten/caught tracking per profile
+      { id: 'alphas', label: 'Alphas', icon: 'alert-octagram-outline' },
       PALDEX,
       {
         id: 'raids', label: 'Raids', icon: 'lightning-bolt-outline', soon: true,
