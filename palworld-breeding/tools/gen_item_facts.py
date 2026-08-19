@@ -75,6 +75,60 @@ def clean_text(s: str) -> str:
     return html.unescape(TAG.sub("", s)).replace("\r\n", "\n").replace("\r", "\n").strip()
 
 
+# ---- source names in a player's words --------------------------------
+# 273 of 1,515 distinct drop/box sources and 33 of 36 shop ids arrive as
+# internal tokens (Feybreak02_Fishing, Caravan_Shop_17). The transforms
+# below only SPACE and PATTERN them — regions keep the game's own token
+# (Feybreak, Sakurajima, World Tree); nothing is renamed to a place the
+# data does not state. Shops collapse onto the game's merchant vocabulary
+# (the same six families paldb's own navigation uses) and deduplicate.
+SHOP_WORDS = [
+    ("Caravan_Shop", "Caravan merchant"),
+    ("Wander_Shop", "Wandering merchant"),
+    ("Bounty_Shop", "Bounty merchant"),
+    ("Medal_Shop", "Medal merchant"),
+    ("Arena_Shop", "Arena merchant"),
+    ("Dungeon_Shop", "Dungeon merchant"),
+    ("Vagrant_Trader", "Vagrant trader"),
+]
+CAMEL = re.compile(r"(?<=[a-z0-9])(?=[A-Z])|(?<=[A-Za-z])(?=\d)")
+
+
+def spaced(token: str) -> str:
+    return CAMEL.sub(" ", token.replace("_", " ")).strip()
+
+
+def player_source(src: str) -> str:
+    if "_" not in src and not CAMEL.search(src):
+        return src  # already readable text from the page
+    m = re.fullmatch(r"(.+?)_Fishing", src)
+    if m:
+        return f"Fishing spot ({spaced(m.group(1))})"
+    m = re.fullmatch(r"(.+?)_Supply", src)
+    if m:
+        return f"Supply drop ({spaced(m.group(1))})"
+    m = re.fullmatch(r"Expedition_(.+?)(_Hard)?", src)
+    if m:
+        hard = " (Hard)" if m.group(2) else ""
+        return f"Expedition: {spaced(m.group(1))}{hard}"
+    m = re.fullmatch(r"Salvage_Rank(\d+)", src)
+    if m:
+        return f"Salvage rank {m.group(1)}"
+    if src == "TreasureMap01":
+        return "Treasure Map"  # the item's own name in the backbone
+    m = re.fullmatch(r"TreasureMap0?(\d+)", src)
+    if m:
+        return f"Treasure map {m.group(1)}"
+    return spaced(src)
+
+
+def player_shop(src: str) -> str:
+    for prefix, word in SHOP_WORDS:
+        if src.startswith(prefix):
+            return word
+    return spaced(src) if "_" in src else src
+
+
 def main() -> None:
     items = json.loads(
         (ROOT / "data" / "items_1_0.json").read_text(encoding="utf-8"))["items"]
@@ -185,7 +239,8 @@ def main() -> None:
                 for r in rows[:60]:
                     c = r.get("c", [])
                     if len(c) >= 3 and c[0]:
-                        out.append({"src": c[0], "n": c[1], "p": c[2]})
+                        out.append({"src": player_source(c[0]),
+                                    "n": c[1], "p": c[2]})
                 if out:
                     f["drops"] = out
                     counts["drops"] += len(out)
@@ -194,12 +249,13 @@ def main() -> None:
                 for r in rows[:40]:
                     c = r.get("c", [])
                     if len(c) >= 4 and c[0]:
-                        out.append({"src": c[0], "n": c[2], "p": c[3]})
+                        out.append({"src": player_source(c[0]),
+                                    "n": c[2], "p": c[3]})
                 if out:
                     f["boxes"] = out
                     counts["boxes"] += len(out)
             elif "Merchant" in title:
-                names = sorted({r["c"][-1] for r in rows
+                names = sorted({player_shop(r["c"][-1]) for r in rows
                                 if r.get("c") and r["c"][-1]})
                 if names:
                     f.setdefault("shops", [])

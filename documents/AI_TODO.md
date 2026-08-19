@@ -2203,6 +2203,28 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E149. WHERE-TO-FIND SOURCES IN A PLAYER'S WORDS 2026-08-19 (morning
+## loop tick)
+
+273 of 1,515 distinct drop/box sources and 33 of 36 shop ids shipped as
+internal tokens (Feybreak02_Fishing, Caravan_Shop_17) — caught on the
+card review, queued in E148, now fixed at the merge: pattern transforms
+that only space and shape ("Fishing spot (Feybreak 02)", "Supply drop
+(Desert)", "Expedition: Sakurajima (Hard)", "Salvage rank 2"), shops
+collapsed onto the game's own merchant families (Caravan/Wandering/
+Bounty/Medal/Arena/Dungeon/Vagrant + real settlement names like
+Duneshelter) and deduplicated. Nothing renamed to a place the data does
+not state. Pins: no underscore ships in any source, no digit ships in
+any shop name. 782 tests green, tsc clean.
+
+NEW FINDING for the queue: TreasureMap02..05 wear their raw ids as NAMES
+in the index (single-member families the E144 name repair could not
+derive — no clean family sibling). Sources: paldb pages absent. Needs a
+recovery route (paldb search or wiki-labelled) — logged, not guessed.
+
+Publish: the bosses lane RESUMED mid-edit (format.ts + tower data dirty)
+— this tick is committed, publish fires on the next clean window.
+
 ## E148. PUBLISHED — AND THE BOSSES LANE'S FINISHED TOWER TAB LANDED
 ## WITH ATTRIBUTION 2026-08-19 (~01:25-01:35)
 

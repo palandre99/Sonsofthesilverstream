@@ -87,6 +87,31 @@ describe('the facts agree with what we already verified independently', () => {
   });
 });
 
+describe('sources speak in a player’s words', () => {
+  it('no shipped source string carries an internal token', () => {
+    for (const [id, f] of Object.entries(F.facts)) {
+      for (const row of [...(f.drops ?? []), ...(f.boxes ?? [])]) {
+        expect(row.src, `${id} leaks: ${row.src}`).not.toMatch(/_/);
+      }
+      for (const shop of f.shops ?? []) {
+        expect(shop, `${id} shop leaks: ${shop}`).not.toMatch(/_/);
+      }
+    }
+  });
+
+  it('shops collapse onto merchant families and real place names', () => {
+    const all = new Set<string>();
+    for (const f of Object.values(F.facts)) {
+      for (const shop of f.shops ?? []) all.add(shop);
+    }
+    // six merchant families + a handful of named settlements — never a
+    // numbered internal shop id
+    expect(all.size).toBeLessThanOrEqual(12);
+    for (const sh of all) expect(sh, sh).not.toMatch(/\d/);
+    expect([...all].some((sh) => sh.includes('merchant'))).toBe(true);
+  });
+});
+
 describe('descriptions shipped clean', () => {
   it('no shipped description carries a raw placeholder tag', () => {
     for (const [id, f] of Object.entries(F.facts)) {
