@@ -495,52 +495,75 @@ function ItemDetail({ id, onClose, onOpenItem }: {
                   <Badge kind="plain">community rates</Badge>
                 )}
               </View>
-              {palsDropping(id).length > 0 && (
-                <View style={[s.wrap, { marginTop: 6 }]}>
-                  {/* from OUR pal table (game files) — each chip opens the
-                      pal's Paldex card */}
-                  {palsDropping(id).map((pal) => (
-                    <Pressable key={pal}
-                      onPress={() => {
-                        onClose();
-                        navigateTo({
-                          domain: 'breeding', tab: 'paldex',
-                          payload: { pal },
-                        });
-                      }}
-                      accessibilityRole="button"
-                      accessibilityLabel={`${pal} drops this. Open the pal's card`}
-                      style={({ pressed }) => ({
-                        backgroundColor: pressed ? T.surface2 : T.surface,
-                        borderWidth: 1, borderColor: T.accentSoft,
-                        borderRadius: 9, paddingHorizontal: 8, paddingVertical: 4,
-                      })}>
-                      <Text style={{ color: T.accentInk, fontSize: 12, fontWeight: '700' }}>
-                        {pal}
-                      </Text>
-                    </Pressable>
-                  ))}
-                </View>
-              )}
-              {facts.drops && facts.drops.length > 0 && (
-                <View style={{ marginTop: 6, gap: 3 }}>
-                  {facts.drops.slice(0, 8).map((d, i) => (
-                    <View key={i} style={[s.row, { gap: 8 }]}>
-                      <Text style={[s.body, { fontSize: 12.5, flex: 1 }]} numberOfLines={1}>
-                        {d.src}
-                      </Text>
-                      <Text style={{ color: T.muted, fontSize: 12 }}>
-                        {d.n ? `${d.n} · ` : ''}{d.p}
-                      </Text>
-                    </View>
-                  ))}
-                  {facts.drops.length > 8 && (
-                    <Text style={[s.body, { fontSize: 11.5, color: T.faint }]}>
-                      …and {facts.drops.length - 8} more drop sources
-                    </Text>
-                  )}
-                </View>
-              )}
+              {(() => {
+                // one pal, one mention: when a community rate row names a
+                // pal we chip (exact name match), the rate rides the chip
+                // and the row disappears (the IL11 sweep's polish note)
+                const pals = palsDropping(id);
+                const palSet = new Set(pals);
+                const rateFor = new Map<string, string>();
+                for (const d of facts?.drops ?? []) {
+                  if (palSet.has(d.src) && !rateFor.has(d.src)) {
+                    rateFor.set(d.src, `${d.n ? `${d.n} · ` : ''}${d.p}`);
+                  }
+                }
+                const rows = (facts?.drops ?? []).filter((d) => !palSet.has(d.src));
+                return (
+                  <>
+                    {pals.length > 0 && (
+                      <View style={[s.wrap, { marginTop: 6 }]}>
+                        {/* from OUR pal table (game files) — each chip
+                            opens the pal's Paldex card */}
+                        {pals.map((pal) => (
+                          <Pressable key={pal}
+                            onPress={() => {
+                              onClose();
+                              navigateTo({
+                                domain: 'breeding', tab: 'paldex',
+                                payload: { pal },
+                              });
+                            }}
+                            accessibilityRole="button"
+                            accessibilityLabel={`${pal} drops this. Open the pal's card`}
+                            style={({ pressed }) => ({
+                              backgroundColor: pressed ? T.surface2 : T.surface,
+                              borderWidth: 1, borderColor: T.accentSoft,
+                              borderRadius: 9, paddingHorizontal: 8, paddingVertical: 4,
+                            })}>
+                            <Text style={{ color: T.accentInk, fontSize: 12, fontWeight: '700' }}>
+                              {pal}
+                              {rateFor.has(pal) && (
+                                <Text style={{ color: T.muted, fontWeight: '600' }}>
+                                  {'  '}{rateFor.get(pal)}
+                                </Text>
+                              )}
+                            </Text>
+                          </Pressable>
+                        ))}
+                      </View>
+                    )}
+                    {rows.length > 0 && (
+                      <View style={{ marginTop: 6, gap: 3 }}>
+                        {rows.slice(0, 8).map((d, i) => (
+                          <View key={i} style={[s.row, { gap: 8 }]}>
+                            <Text style={[s.body, { fontSize: 12.5, flex: 1 }]} numberOfLines={1}>
+                              {d.src}
+                            </Text>
+                            <Text style={{ color: T.muted, fontSize: 12 }}>
+                              {d.n ? `${d.n} · ` : ''}{d.p}
+                            </Text>
+                          </View>
+                        ))}
+                        {rows.length > 8 && (
+                          <Text style={[s.body, { fontSize: 11.5, color: T.faint }]}>
+                            …and {rows.length - 8} more drop sources
+                          </Text>
+                        )}
+                      </View>
+                    )}
+                  </>
+                );
+              })()}
               {facts.boxes && facts.boxes.length > 0 && (
                 <View style={{ marginTop: facts.drops ? 10 : 6, gap: 3 }}>
                   <Text style={{ color: T.faint, fontSize: 10.5, fontWeight: '800', letterSpacing: 1 }}>

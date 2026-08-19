@@ -2370,6 +2370,16 @@ re-evaluation finds nothing — otherwise it ALWAYS has work.
       "Crafted with its schematic". FOUND AND LOGGED: IL12 below. The
       Wood card feeding Lumbering research and the fruit card's 19
       sources read genuinely good.
+- [x] IL13 2026-08-19 (~12:30): the chip+rate merge — when a community
+      rate row names a pal we chip, the rate now rides the chip and the
+      duplicate row disappears ("Lovander  1 · 1%", one mention). Fresh
+      sweep after: Anubis's Talisman (recovered apostrophe name) shows
+      its grants + schematic craft complete; Giga Glider shows Speed /
+      Stamina Drain / tech / craft time complete. ZERO new findings —
+      the fane reads clean across every kind walked this session.
+      813 green, published. The loop eases to a longer heartbeat;
+      CEO-pending: the search placement (plan §6) and the real-device
+      pass.
 - [x] IL11 2026-08-19: craft work + times shipped WITHOUT a re-sweep —
       the numbers were parseable from the existing capture (the work
       amount and the full per-handiwork-level time table ride the
