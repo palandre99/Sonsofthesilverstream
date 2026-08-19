@@ -125,6 +125,14 @@ describe('the encounter tables are what the fetch validated', () => {
     }
   });
 
+  it('the raid percentages are pure derivations of the raw rates — the card may print only one of each pair', () => {
+    for (const r of RAID_BOSSES) {
+      expect(Math.round((1 - r.recvRate!) * 1000) / 10, r.title)
+        .toBeCloseTo(r.damageCutPct!, 1);
+      expect(Math.round(r.dealRate! * 100), r.title).toBe(r.attackPct!);
+    }
+  });
+
   it('names its source and matches the canonical JSON counts', () => {
     expect(TOWER_RAID_SOURCE).toContain('paldb.cc');
     const canonical = JSON.parse(readFileSync(

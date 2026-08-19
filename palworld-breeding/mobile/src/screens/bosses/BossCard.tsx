@@ -30,6 +30,13 @@ import {
 } from '../../logic/counters';
 import { effectWords, fmtHp, levelFit, shortName } from '../../bosses/format';
 import { isBeaten, loadRecord, onRecordChange, toggleBeaten } from '../../bosses/record';
+import itemsJson from '../../data/items_1_0.json';
+
+/** slab codes are item ids verbatim (PalSummon_NightLady → "Bellanoir's
+ * Slab"), so the summoning line uses the game's own item names */
+const ITEM_NAMES = (itemsJson as unknown as {
+  items: Record<string, { name: string }>;
+}).items;
 
 /** boss elements as chips — the BOSS's own row, which can differ from the
  * species (Zenara & Astralym fight typeless while Astralym has elements) */
@@ -107,7 +114,9 @@ export function BossCard({ base, hard, onClose }: {
 }) {
   const [mode, setMode] = useState<'base' | 'hard'>('base');
   const enc = mode === 'hard' && hard ? hard : base;
-  const name = shortName(base.title);
+  // the name a player says: the pal it is (raids), or the paired names
+  const name = base.species && !base.arena
+    ? base.species : shortName(base.title);
   const playerLevel = getPlayerLevel();
   const fit = levelFit(playerLevel, enc);
   const moveEls = useMemo(() => enc.moves.map((m) => m.element), [enc]);
@@ -335,6 +344,10 @@ export function BossCard({ base, hard, onClose }: {
               {enc.dealRate != null && enc.dealRate !== 1 && (
                 <Badge kind="warn">{`its hits land ×${enc.dealRate}`}</Badge>
               )}
+              {/* the raid list's damage-reduction and attack-% figures
+                  are pure derivations of the two rates above — proven
+                  identical on all 11 rows and pinned in boss-data tests,
+                  so printing both would say the same fact twice */}
             </View>
             {enc.moves.length ? (
               <View style={{ marginTop: 10, gap: 7 }}>
@@ -381,18 +394,38 @@ export function BossCard({ base, hard, onClose }: {
           </Card>
 
           <Card style={{ padding: 14 }}>
-            <Text style={s.h3}>Where</Text>
-            <Text style={[s.body, { marginTop: 6 }]}>
-              {enc.arena && !enc.arena.includes('？')
-                ? `Fought at ${enc.arena}.`
-                : 'Its arena stays hidden until the story takes you '
-                  + 'there — the game lists it as ???.'}
-            </Text>
+            <Text style={s.h3}>{enc.slab ? 'Summoning it' : 'Where'}</Text>
+            {enc.slab ? (
+              <>
+                <Text style={[s.body, { marginTop: 6 }]}>
+                  {`You bring this fight to you: offer ${
+                    ITEM_NAMES[enc.slab]?.name ?? 'its slab'
+                  } at a Summoning Altar — the slab is combined from its `
+                  + 'fragments (the game’s own item text).'}
+                </Text>
+                <Text style={[s.body, {
+                  fontSize: 11.5, color: T.faint, marginTop: 6,
+                }]}>
+                  Player-reported, not from the game files: a summoned
+                  boss wrecks whatever it can reach — most players build
+                  the altar far from their base.
+                </Text>
+              </>
+            ) : (
+              <Text style={[s.body, { marginTop: 6 }]}>
+                {enc.arena && !enc.arena.includes('？')
+                  ? `Fought at ${enc.arena}.`
+                  : 'Its arena stays hidden until the story takes you '
+                    + 'there — the game lists it as ???.'}
+              </Text>
+            )}
             <View style={[s.wrap, { marginTop: 10 }]}>
-              <Btn small label="Open the Map" onPress={() => {
-                onClose();
-                navigateTo({ domain: 'map', tab: '' });
-              }} />
+              {!enc.slab && (
+                <Btn small label="Open the Map" onPress={() => {
+                  onClose();
+                  navigateTo({ domain: 'map', tab: '' });
+                }} />
+              )}
               {base.species && (
                 <Btn small label={`${base.species}’s own card`}
                   onPress={() => openPal(base.species!)} />

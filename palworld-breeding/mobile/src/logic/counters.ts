@@ -148,13 +148,14 @@ export function rankCounters(
 
 /** The one-line WHY for a ranked row. */
 export function matchupLabel(row: CounterRow, bossName: string): string {
+  const poor = row.offense <= 0.5;
   const bits: string[] = [];
   if (row.offense >= 4) {
     bits.push(`${row.offenseVia} hits it for quadruple damage`);
   } else if (row.offense === 2) {
     bits.push(`${row.offenseVia} attacks hit it for double damage`);
-  } else if (row.offense <= 0.5) {
-    bits.push(`its own attacks are resisted — a poor pick`);
+  } else if (poor) {
+    bits.push('its own attacks are resisted');
   }
   if (row.bossMoves > 0) {
     if (row.incomingWorst <= 0.5) {
@@ -162,12 +163,14 @@ export function matchupLabel(row: CounterRow, bossName: string): string {
     } else if (row.resisted > 0) {
       bits.push(`resists ${row.resisted} of its ${row.bossMoves} attacks`);
     } else if (row.incomingWorst >= 2) {
-      bits.push(`careful — it takes double from this fight`);
+      bits.push(poor ? 'it takes double from this fight'
+        : 'careful — it takes double from this fight');
     }
   }
   if (!bits.length) return 'No element edge either way.';
   const s = bits.join(', and ');
-  return s.charAt(0).toUpperCase() + s.slice(1) + '.';
+  return s.charAt(0).toUpperCase() + s.slice(1)
+    + (poor ? ' — a poor pick.' : '.');
 }
 
 /** The chart's own sentence for a boss header: what to bring. */

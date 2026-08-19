@@ -98,11 +98,9 @@ export const DOMAINS: DomainDef[] = [
       // beaten/caught tracking per profile
       { id: 'alphas', label: 'Alphas', icon: 'alert-octagram-outline' },
       PALDEX,
-      {
-        id: 'raids', label: 'Raids', icon: 'lightning-bolt-outline', soon: true,
-        blurb: 'Raid bosses and preparation checklists.',
-        planned: ['Raid guides', 'Reward tables'],
-      },
+      // LIVE 2026-08-19 (Bosses fane phase C): the summoned-raid roster
+      // with slab names from the items table and per-difficulty records
+      { id: 'raids', label: 'Raids', icon: 'lightning-bolt-outline' },
       {
         id: 'teams', label: 'Teams', icon: 'account-group-outline', soon: true,
         blurb: 'Build combat teams from the pals you own.',
