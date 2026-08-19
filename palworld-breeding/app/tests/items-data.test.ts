@@ -81,10 +81,10 @@ describe('names are player-facing, never upstream artifacts', () => {
   it('the derived variants say so, and inherited exactly their family name', () => {
     const derived = items.filter(([, it_]) =>
       (it_ as unknown as { nameFromBase?: boolean }).nameFromBase);
-    // 354 originally + 8 id-shaped names recovered 2026-08-19 (the
-    // TreasureMap02-05 class: name == id with trailing digits, family
-    // found by id stem)
-    expect(derived.length).toBe(362);
+    // 354 originally + 8 id-shaped names (the TreasureMap class) + 5
+    // spaced-id names (the Octavia collab class, trailing-digit gated) —
+    // both recovered 2026-08-19
+    expect(derived.length).toBe(367);
     // canary: the Uncommon Assault Rifle wears the family name
     const ar2 = payload.items['AssaultRifle_Default2'] as unknown as
       { name: string; nameFromBase?: boolean };

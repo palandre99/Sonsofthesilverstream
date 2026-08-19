@@ -78,6 +78,13 @@ def main() -> None:
             # a display name — but single clean words (Cake, Egg, Flour)
             # ARE their own ids legitimately and stay untouched
             return True
+        if name == iid.replace("_", " ") and _re.search(r"\d$", iid):
+            # the multi-token spaced-id shape ("Octavia001 Armor 5" for
+            # Octavia001_Armor_5) — trailing digit required, otherwise
+            # legitimate names like "Baked Berries" (id Baked_Berries)
+            # get flagged (that over-catch cost 11 derivations on the
+            # first cut, caught by the run report)
+            return True
         m = _re.fullmatch(r"([A-Za-z0-9]+) \d", name)
         return bool(m and m.group(1) in iid)
 

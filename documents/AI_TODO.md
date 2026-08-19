@@ -2370,6 +2370,19 @@ re-evaluation finds nothing — otherwise it ALWAYS has work.
       "Crafted with its schematic". FOUND AND LOGGED: IL12 below. The
       Wood card feeding Lumbering research and the fruit card's 19
       sources read genuinely good.
+- [x] IL14 2026-08-19 (~13:10): the catalogue-wide certification pass —
+      full audit over all 1,872 fact rows found exactly TWO raw-tag
+      cards left (the ULTRAKILL-collab schematics, upstream-absent
+      pages). Fixed with a backbone-only tag substitution (item names +
+      rarity words + harvested map-object names — ships only when every
+      tag resolves) plus one more name-repair class (spaced-id names,
+      trailing-digit gated after the first cut over-caught Baked
+      Berries and the run report caught it). 367 derived names, 0
+      unresolved, ZERO raw-tag cards remain. ALSO: caught a live E139
+      — a head-truncated pipe killed the writer between copies and the
+      three backbone copies diverged; the byte-identity pin caught it,
+      rerun-to-file healed it. Standing note: never pipe the generators
+      through head. 813 green, published.
 - [x] IL13 2026-08-19 (~12:30): the chip+rate merge — when a community
       rate row names a pal we chip, the rate now rides the chip and the
       duplicate row disappears ("Lovander  1 · 1%", one mention). Fresh

@@ -3092,7 +3092,7 @@
    "icon": "YakushimaHeadEquip005"
   },
   "Octavia001_Armor_5": {
-   "name": "Octavia001 Armor 5",
+   "name": "V1 Armor",
    "description": "[ULTRAKILL Collab] \nArmor modeled after the Final War machine built in a distant land.\nIt features a self-repair system that activates when dealing damage.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -3101,10 +3101,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 114360,
-   "icon": "Octavia001_Armor"
+   "icon": "Octavia001_Armor",
+   "nameFromBase": true
   },
   "Octavia002_Armor_5": {
-   "name": "Octavia002 Armor 5",
+   "name": "V2 Armor",
    "description": "[ULTRAKILL Collab]\nArmor modeled after the New Peace machine built in a distant land. \nIts self-repair system was removed in favor of sturdier plating.",
    "category": "Armor",
    "subcategory": "ArmorBody",
@@ -3113,7 +3114,8 @@
    "maxStack": 1,
    "weight": 0,
    "price": 1384920,
-   "icon": "Octavia002_Armor"
+   "icon": "Octavia002_Armor",
+   "nameFromBase": true
   },
   "StealArmor": {
    "name": "Pal Metal Armor",
@@ -20684,7 +20686,7 @@
    "nameFromBase": true
   },
   "Launcher_Meteor_5": {
-   "name": "Launcher Meteor 5",
+   "name": "Meteor Launcher",
    "description": "A phenomenal weapon that fires a meteor.\nUpon striking its target, it creates an explosion similar to a meteorite impact.",
    "category": "Weapon",
    "subcategory": "WeaponRocketLauncher",
@@ -20693,7 +20695,8 @@
    "maxStack": 1,
    "weight": 0,
    "price": 303840,
-   "icon": "Launcher_Meteor"
+   "icon": "Launcher_Meteor",
+   "nameFromBase": true
   },
   "YakushimaBlade005": {
    "name": "Legendary Meowmere",
@@ -22174,7 +22177,7 @@
    "nameFromBase": true
   },
   "Spear_ForestBoss_5": {
-   "name": "Spear ForestBoss 5",
+   "name": "Lily's Spear",
    "description": "The spear cherished by Lily.\nPunishes those who neglect their Pals.",
    "category": "Weapon",
    "subcategory": "WeaponMelee",
@@ -22183,10 +22186,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 205540,
-   "icon": "Spear_ForestBoss"
+   "icon": "Spear_ForestBoss",
+   "nameFromBase": true
   },
   "Spear_ForestBoss2_5": {
-   "name": "Spear ForestBoss2 5",
+   "name": "Enhanced Lily's Spear",
    "description": "An enhanced version of Lily's beloved spear. \nPierces those who neglect their Pals.",
    "category": "Weapon",
    "subcategory": "WeaponMelee",
@@ -22195,7 +22199,8 @@
    "maxStack": 1,
    "weight": 0,
    "price": 985440,
-   "icon": "Spear_ForestBoss2"
+   "icon": "Spear_ForestBoss2",
+   "nameFromBase": true
   },
   "Axe_Tier_00": {
    "name": "Stone Axe",

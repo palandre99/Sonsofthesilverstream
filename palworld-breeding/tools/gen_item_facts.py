@@ -443,6 +443,35 @@ def main() -> None:
     for ref in map_conflicts:
         map_objects.pop(ref, None)
 
+    # ---- backbone-only description fallback: items whose page is absent
+    # upstream never got a paldb rendering, but item names, rarity words
+    # and the harvested map-object names are tables WE hold. Ships only
+    # if EVERY tag resolves (the two ULTRAKILL-collab schematics today).
+    def sub_tag(m: re.Match) -> str:
+        kind, ref = m.group(1), m.group(2)
+        if kind == "itemName" and ref in ITEM_NAMES:
+            return ITEM_NAMES[ref]
+        if kind == "uiCommon" and ref.startswith("RARITY_"):
+            word = ref[len("RARITY_"):].capitalize()
+            if word in ("Common", "Uncommon", "Rare", "Epic", "Legendary"):
+                return word
+        if kind in ("mapObjectName", "MapObjectName") and ref in map_objects:
+            return map_objects[ref]
+        return m.group(0)  # unresolved — the tag stays, so it's refused
+
+    for iid, it in items.items():
+        base_desc = it.get("description") or ""
+        if not GAME_TAG.search(base_desc):
+            continue
+        if iid in facts and facts[iid].get("desc"):
+            continue
+        attempted = re.sub(r"<([a-zA-Z]+) id=\|([^|]*)\|/>", sub_tag, base_desc)
+        if not GAME_TAG.search(attempted):
+            row = facts.setdefault(iid, {})
+            row["desc"] = attempted.replace("\r\n", "\n").strip()
+            counts.setdefault("descsFromBackbone", 0)
+            counts["descsFromBackbone"] += 1
+
     tagged = sum(1 for it in items.values()
                  if GAME_TAG.search(it.get("description") or ""))
     payload = {

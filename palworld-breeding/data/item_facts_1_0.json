@@ -11,8 +11,8 @@
   "withRecipe": 1355,
   "tech": 391,
   "techRefusals": 0,
-  "descs": 1331,
-  "descRefusals": 2,
+  "descs": 1333,
+  "descRefusals": 0,
   "drops": 2312,
   "boxes": 8569,
   "shops": 416,
@@ -21,6 +21,7 @@
   "tierCraftRefusals": 498,
   "grants": 360,
   "research": 360,
+  "descsFromBackbone": 1,
   "taggedDescriptions": 1306
  },
  "mapObjectNames": {
@@ -12108,6 +12109,9 @@
     }
    ],
    "desc": "When in inventory, unlocks recipe for Ring of Water Resistance\n(Rare).\nCan be crafted at High Quality Workbench."
+  },
+  "Blueprint_Accessory_Avoid_1_fix": {
+   "desc": "When in inventory, unlocks recipe for Phantom Ring\n(Epic).\nCan be crafted at Production Assembly Line."
   },
   "Blueprint_Accessory_ColdIce_1": {
    "recipe": [
@@ -26567,7 +26571,8 @@
    ],
    "shops": [
     "Arena merchant"
-   ]
+   ],
+   "desc": "[ULTRAKILL Collab] \nWhen in inventory, unlocks recipe for V1 Armor (Legendary). \nCan be crafted at Production Assembly Line."
   },
   "Blueprint_Octavia002_Armor_5": {
    "recipe": [
@@ -26582,7 +26587,8 @@
    ],
    "shops": [
     "Arena merchant"
-   ]
+   ],
+   "desc": "[ULTRAKILL Collab] \nWhen in inventory, unlocks recipe for V2 Armor (Legendary). \nCan be crafted at Production Assembly Line II."
   },
   "Blueprint_OctaviaRevolver_5": {
    "recipe": [
