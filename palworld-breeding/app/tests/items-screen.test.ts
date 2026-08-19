@@ -8,9 +8,9 @@ import { join } from 'node:path';
 import {
   ammoForWeapon, collapseFamilies, effectNumber, familyOf, familyPowerOf,
   idsInGroup, ITEM_GROUPS, ITEM_STATS, ITEMS, itemIdByName, KIND_WORDS,
-  kindsInGroup, kindWord, palsDropping, palsHatchingFrom, schematicsFor,
-  searchItems, sortItems, statRank, TAB_GROUPS, teachesOf, tierWord,
-  weaponsForAmmo,
+  kindsInGroup, kindWord, palsDropping, palsHatchingFrom, rivalsOf,
+  schematicsFor, searchItems, sortItems, statRank, TAB_GROUPS, teachesOf,
+  tierWord, weaponsForAmmo,
 } from '../../mobile/src/itemsData';
 import palsJson from '../../mobile/src/data/pals_1_0.json';
 import { shareTextForItem } from '../../mobile/src/itemShare';
@@ -237,6 +237,33 @@ describe('one row per item, tiers inside the card (CEO 2026-08-19)', () => {
     }
     expect(other.length).toBeGreaterThan(1000);
     expect(other.length).toBeLessThan(idsInGroup('all').length);
+  });
+});
+
+describe('cards compare against their own kind (IL19)', () => {
+  it('an assault rifle is ranked among assault rifles, one row per family', () => {
+    const rivals = rivalsOf('AssaultRifle_Default1');
+    expect(rivals.length).toBeGreaterThan(3);
+    for (const id of rivals) expect(kindWord(id)).toBe('Assault rifle');
+    // families, not tiers: no two entries share a name
+    expect(new Set(rivals.map((i) => ITEMS[i].name)).size).toBe(rivals.length);
+    // ranked by the family's best number, descending
+    for (let i = 1; i < rivals.length; i += 1) {
+      expect(familyPowerOf(rivals[i - 1])).toBeGreaterThanOrEqual(familyPowerOf(rivals[i]));
+    }
+  });
+
+  it('every ranked entry carries a real number', () => {
+    for (const id of rivalsOf('AssaultRifle_Default1')) {
+      expect(familyPowerOf(id)).toBeGreaterThan(0);
+    }
+  });
+
+  it('kinds too small to rank get no leaderboard', () => {
+    const detector = Object.keys(ITEMS).find(
+      (i) => kindWord(i) === 'Metal detector');
+    expect(detector).toBeDefined();
+    expect(rivalsOf(detector!).length).toBeLessThan(3);
   });
 });
 

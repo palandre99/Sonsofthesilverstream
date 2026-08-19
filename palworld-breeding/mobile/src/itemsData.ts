@@ -242,6 +242,19 @@ export const powerOf = (id: string): number =>
   ITEM_STATS[id]?.atk ?? ITEM_STATS[id]?.def
   ?? effectNumber(id, 'Nutrition') ?? -1;
 
+/** The item's own kind, ranked by the best number each family reaches —
+ * the compare view (IL19). One row per family so a bow's five tiers do
+ * not crowd out the other bows; the caller highlights `id`'s family. */
+export function rivalsOf(id: string): string[] {
+  const kind = kindWord(id);
+  const bases = collapseFamilies(
+    ITEM_IDS.filter((i) => kindWord(i) === kind));
+  return bases
+    .filter((i) => familyPowerOf(i) > 0)
+    .sort((a, b) => familyPowerOf(b) - familyPowerOf(a)
+      || ITEMS[a].name.localeCompare(ITEMS[b].name));
+}
+
 /** The best number anywhere in the family — what a collapsed row is
  * ranked by, so "strongest first" still puts the Mechanical Bow on top
  * even though its row shows the Common tier. */

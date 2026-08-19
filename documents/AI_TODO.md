@@ -2325,9 +2325,15 @@ work always"):**
       group, so every jump landed on the tab with NO card — invisible to
       tests until now; fixed and pinned by a test that reads the group
       out of App.tsx and asserts the guard matches it. 825 green.
-- [ ] IL19 Item comparison: pick two items of a kind and see their
-      numbers side by side (Dododex's compare pattern; the stat layer
-      already holds everything needed).
+- [x] IL19 2026-08-20: comparison shipped as a LEADERBOARD, not a
+      picker — my call: two-item pickers are heavy on a phone and answer
+      a narrower question than "is this any good?". Every card now ends
+      with "How it stacks up": its own kind ranked by each family's best
+      tier, this item highlighted, every rival tappable, and an honest
+      "6 more sit between #5 and this one" when it ranks low. One row
+      per family so a bow's five tiers can't crowd the other bows; kinds
+      with fewer than three families get no leaderboard. Eye-verified on
+      the Makeshift Assault Rifle (#12 of its kind). 828 green.
 - [ ] IL20 "What can I make with this?" — reverse recipes: an item card
       lists the things it is an ingredient FOR (the recipe data already
       closes over ids both ways).

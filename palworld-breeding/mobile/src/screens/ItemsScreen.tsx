@@ -18,11 +18,11 @@ import * as Haptics from 'expo-haptics';
 import { T } from '../theme';
 import { Badge, Btn, Card, PageHead, SearchInput, s } from '../ui/kit';
 import {
-  ammoForWeapon, collapseFamilies, effectNumber, familyOf, groupOf,
-  idsInGroup, ITEM_GROUPS, ITEM_STATS, ITEMS, kindsInGroup, kindWord,
-  palsDropping, palsHatchingFrom, schematicsFor, searchItems, sortItems,
-  statRank, TAB_GROUPS, teachesOf, TIER_WORDS, tierWord, weaponsForAmmo,
-  type ItemSort,
+  ammoForWeapon, collapseFamilies, effectNumber, familyOf, familyPowerOf,
+  groupOf, idsInGroup, ITEM_GROUPS, ITEM_STATS, ITEMS, kindsInGroup,
+  kindWord, palsDropping, palsHatchingFrom, rivalsOf, schematicsFor,
+  searchItems, sortItems, statRank, TAB_GROUPS, teachesOf, TIER_WORDS,
+  tierWord, weaponsForAmmo, type ItemSort,
 } from '../itemsData';
 import { equipPassiveName, ITEM_FACTS, type CraftRow } from '../itemFacts';
 import { ItemIcon } from '../ui/ItemIcon';
@@ -700,6 +700,64 @@ function ItemDetail({ id, onClose, onOpenItem }: {
               </Text>
             </Card>
           )}
+
+          {(() => {
+            // IL19 compare: no picker UI on a phone — the card shows the
+            // item's own kind ranked, with this family marked. One row
+            // per family so five tiers of one bow can't crowd out the
+            // other bows.
+            const rivals = rivalsOf(id);
+            if (rivals.length < 3) return null;
+            const mine = familyOf(id)[0];
+            const at = rivals.indexOf(mine);
+            const top = rivals.slice(0, 5);
+            const rows = at >= 0 && at > 4 ? [...top, mine] : top;
+            return (
+              <Card style={{ marginTop: 10 }}>
+                <Text style={s.h3}>How it stacks up</Text>
+                <Text style={[s.body, { fontSize: 11.5, color: T.faint, marginTop: 2 }]}>
+                  {`Every ${kindWord(id).toLowerCase()} in the game, best tier first`}
+                </Text>
+                <View style={{ marginTop: 6 }}>
+                  {rows.map((rid) => {
+                    const here = rid === mine;
+                    const place = rivals.indexOf(rid) + 1;
+                    return (
+                      <Pressable key={rid}
+                        onPress={() => !here && onOpenItem(rid)}
+                        accessibilityRole={here ? 'text' : 'button'}
+                        accessibilityLabel={here
+                          ? `${ITEMS[rid].name}, number ${place}, the one you are looking at`
+                          : `${ITEMS[rid].name}, number ${place}. Open its card`}
+                        style={({ pressed }) => [s.row, {
+                          gap: 8, paddingVertical: 5, paddingHorizontal: 8,
+                          borderRadius: 8,
+                          backgroundColor: here ? T.accentSoft
+                            : pressed ? T.surface2 : 'transparent',
+                        }]}>
+                        <Text style={{
+                          color: here ? T.accentInk : T.faint,
+                          width: 26, fontSize: 12, fontWeight: '800',
+                        }}>#{place}</Text>
+                        <Text style={{
+                          color: here ? T.accentInk : T.ink,
+                          fontSize: 12.5, fontWeight: here ? '800' : '600', flex: 1,
+                        }} numberOfLines={1}>{ITEMS[rid].name}</Text>
+                        <Text style={{ color: T.muted, fontSize: 12 }}>
+                          {familyPowerOf(rid)}
+                        </Text>
+                      </Pressable>
+                    );
+                  })}
+                  {at > 5 && (
+                    <Text style={[s.body, { fontSize: 11.5, color: T.faint, marginTop: 3 }]}>
+                      {`${at - 5} more sit between #5 and this one.`}
+                    </Text>
+                  )}
+                </View>
+              </Card>
+            );
+          })()}
 
           {family.length > 1 && (
             <Card style={{ marginTop: 10 }}>
