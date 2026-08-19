@@ -2341,9 +2341,17 @@ work always"):**
       honest "…and 17 more things it goes into" because Ancient
       Civilization Parts alone feeds 1,285 recipes. Eye-verified on
       Refined Ingot. 831 green.
-- [ ] IL21 Tech-tree surface: 588 nodes with level + cost are shipped
-      but only reachable one item at a time — a "what unlocks at my
-      level" view (needs a player level input; Settings has profiles).
+- [x] IL21 2026-08-20: "what can I actually build" — my call was NOT a
+      new screen (nav is CEO-final and the five tabs are set) but a
+      filter + row marks inside the index the player already uses.
+      Every row shows the level it needs in gold when it is out of
+      reach ("Mechanical Bow · Lv 67"), and one chip cuts the list to
+      what the profile's own level unlocks (105 weapon families -> 62 at
+      Lv 42, eye-verified). It reads getPlayerLevel() — the SAME level
+      the Tower tab uses, so there is no second place to set it — and a
+      family is judged by its EASIEST tier so a buildable bow never
+      hides behind its Legendary tier. No level set says so and points
+      at Profiles instead of showing an empty list. 835 green.
 - [ ] IL22 Where-to-find map links: box/chest sources that name a map
       POI should deep-link into the Map fane (coordinate with that
       lane's data — REQUEST, not an edit of their files).

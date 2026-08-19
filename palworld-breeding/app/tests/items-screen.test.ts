@@ -240,6 +240,32 @@ describe('one row per item, tiers inside the card (CEO 2026-08-19)', () => {
   });
 });
 
+describe('the level filter uses the player’s own profile (IL21)', () => {
+  const code = readFileSync(
+    join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+
+  it('reads the same level the rest of the app already stores', () => {
+    expect(code).toContain("import { breeding, getPlayerLevel } from '../store'");
+    expect(code, 'a second place to set the level would drift')
+      .not.toMatch(/setProfileLevel|useState<number>\(\s*1\s*\)/);
+  });
+
+  it('a family is judged by its EASIEST tier, not its hardest', () => {
+    expect(code).toContain('Math.min(...levels)');
+  });
+
+  it('items with no technology entry are never treated as locked', () => {
+    expect(code).toContain('(unlockLevel(i) ?? 0) <= level');
+  });
+
+  it('rows say the level they need, and the sheet says it plainly', () => {
+    expect(code).toContain('Lv {lockedAt}');
+    expect(code).toContain('Only what I can unlock');
+    expect(code, 'no level set must teach, not silently show nothing')
+      .toContain('Set your level on the Profiles screen');
+  });
+});
+
 describe('recipes read both ways (IL20)', () => {
   it('an ingredient lists what it goes into, families not tiers', () => {
     const ingot = itemIdByName('Refined Ingot');

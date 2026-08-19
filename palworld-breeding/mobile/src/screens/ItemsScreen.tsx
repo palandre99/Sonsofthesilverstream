@@ -28,7 +28,7 @@ import { equipPassiveName, ITEM_FACTS, type CraftRow } from '../itemFacts';
 import { ItemIcon } from '../ui/ItemIcon';
 import { navigateTo, onNavIntent, takeIntentPayload } from '../nav/intent';
 import { shareTextForItem, techSentence } from '../itemShare';
-import { breeding } from '../store';
+import { breeding, getPlayerLevel } from '../store';
 
 /** Tier tints — presentation colours for the game's own tier words. */
 const TIER_TINTS: Record<string, string> = {
@@ -51,14 +51,29 @@ interface ItemFilters {
   tiers: string[];        // tier words, empty = all
   /** show every rarity tier as its own row (default: one row per family) */
   expand: boolean;
+  /** IL21: only what the player's own technology level can unlock */
+  reachable: boolean;
 }
 
-function applyItemFilters(f: ItemFilters, q: string): string[] {
+/** The family's easiest unlock level — a bow you can already build at 12
+ * shouldn't hide because its Legendary tier wants 50. */
+function unlockLevel(id: string): number | undefined {
+  const levels = familyOf(id)
+    .map((i) => ITEM_FACTS[i]?.tech?.level)
+    .filter((n): n is number => n != null);
+  return levels.length ? Math.min(...levels) : undefined;
+}
+
+function applyItemFilters(f: ItemFilters, q: string, level?: number): string[] {
   let ids = q.trim() ? searchItems(q) : idsInGroup(f.group);
   if (f.kind) ids = ids.filter((i) => kindWord(i) === f.kind);
   if (f.expand && f.tiers.length) {
     ids = ids.filter((i) => f.tiers.includes(
       ITEM_STATS[i]?.tier ?? tierWord(ITEMS[i].rarity)));
+  }
+  if (f.reachable && level != null) {
+    // items with no technology entry aren't locked BY tech — they stay
+    ids = ids.filter((i) => (unlockLevel(i) ?? 0) <= level);
   }
   return f.expand ? ids : collapseFamilies(ids);
 }
@@ -132,11 +147,15 @@ function TierChip({ id, size = 12 }: { id: string; size?: number }) {
   );
 }
 
-function ItemRow({ id, showGroup, collapsed, onOpen }: {
-  id: string; showGroup: boolean; collapsed?: boolean;
+function ItemRow({ id, showGroup, collapsed, level, onOpen }: {
+  id: string; showGroup: boolean; collapsed?: boolean; level?: number;
   onOpen: (id: string) => void;
 }) {
   const it = ITEMS[id];
+  // out of reach at the player's own level — the row says so instead of
+  // making them open the card to find out (IL21)
+  const need = unlockLevel(id);
+  const lockedAt = level != null && need != null && need > level ? need : null;
   const fam = collapsed ? familyOf(id) : [id];
   const tiers = fam.length;
   const line = tiers > 1 ? familyLine(fam) : statLine(id);
@@ -175,7 +194,11 @@ function ItemRow({ id, showGroup, collapsed, onOpen }: {
             {line || kindWord(id)}
             {showGroup && groupOf(id) ? `  ·  ${groupOf(id)}` : ''}
           </Text>
-          {it.weight != null && it.weight > 0 && (
+          {lockedAt != null ? (
+            <Text style={{ color: T.goldInk, fontSize: 11, fontWeight: '700' }}>
+              Lv {lockedAt}
+            </Text>
+          ) : it.weight != null && it.weight > 0 && (
             <Text style={{ color: T.faint, fontSize: 11 }}>{it.weight} wt</Text>
           )}
         </View>
@@ -883,6 +906,7 @@ function ItemFilterSheet({ filters, sort, home, onApply, onClose }: {
   const [f, setF] = useState<ItemFilters>(filters);
   const [sk, setSk] = useState<ItemSort>(sort);
   const kinds = kindsInGroup(f.group);
+  const level = getPlayerLevel();
 
   // every chip turns OFF when tapped again (the CEO once hit a sort chip
   // he could not un-choose) — radio groups fall back to neutral
@@ -898,7 +922,7 @@ function ItemFilterSheet({ filters, sort, home, onApply, onClose }: {
     });
   const pickSort = (k: ItemSort) => setSk(sk === k ? 'power' : k);
 
-  const n = applyItemFilters(f, '').length;
+  const n = applyItemFilters(f, '', level).length;
   return (
     <Modal visible animationType="slide" presentationStyle="pageSheet"
       onRequestClose={onClose}>
@@ -910,7 +934,7 @@ function ItemFilterSheet({ filters, sort, home, onApply, onClose }: {
           <Text style={[s.h2, { flex: 1 }]}>Filter & sort</Text>
           <Btn small label="Reset"
             onPress={() => {
-              setF({ group: home, kind: null, tiers: [], expand: false });
+              setF({ group: home, kind: null, tiers: [], expand: false, reachable: false });
               setSk('power');
             }} />
         </View>
@@ -942,6 +966,23 @@ function ItemFilterSheet({ filters, sort, home, onApply, onClose }: {
                 label={`${g.label} · ${idsInGroup(g.id).length}`}
                 onPress={() => pickGroup(g.id)} />
             ))}
+          </Section>
+          <Section title="Technology">
+            {/* the level comes from the player's own profile — the same
+                one the Tower tab reads; no second place to set it */}
+            <Chip on={!f.reachable} label="Everything"
+              onPress={() => setF({ ...f, reachable: false })} />
+            <Chip on={f.reachable}
+              label={level != null
+                ? `Only what I can unlock (Lv ${level})`
+                : 'Only what I can unlock'}
+              onPress={() => setF({ ...f, reachable: true })} />
+            {f.reachable && level == null && (
+              <Text style={[s.body, { fontSize: 11.5, color: T.goldInk, width: '100%' }]}>
+                Set your level on the Profiles screen and this filters to
+                what your technology can actually build.
+              </Text>
+            )}
           </Section>
           <Section title="Tiers">
             {/* collapsed rows already stand for every tier, so the tier
@@ -982,16 +1023,17 @@ function ItemFilterSheet({ filters, sort, home, onApply, onClose }: {
 export function ItemsScreen({ initialGroup = 'weapons' }: { initialGroup?: string }) {
   const [q, setQ] = useState('');
   const [filters, setFilters] = useState<ItemFilters>({
-    group: initialGroup, kind: null, tiers: [], expand: false,
+    group: initialGroup, kind: null, tiers: [], expand: false, reachable: false,
   });
   const [sort, setSort] = useState<ItemSort>('power');
   const [sheet, setSheet] = useState(false);
   const [open, setOpen] = useState<string | null>(null);
 
   const searching = q.trim().length > 0;
+  const level = getPlayerLevel();
   const ids = useMemo(
-    () => sortItems(applyItemFilters(filters, q), sort, !filters.expand),
-    [filters, q, sort],
+    () => sortItems(applyItemFilters(filters, q, level), sort, !filters.expand),
+    [filters, q, sort, level],
   );
 
   // a pal card's drop chip — or a search hit — lands here with the item
@@ -1018,6 +1060,7 @@ export function ItemsScreen({ initialGroup = 'weapons' }: { initialGroup?: strin
       : ITEM_GROUPS.find((g) => g.id === filters.group)?.label ?? filters.group);
   }
   if (filters.kind) activeBits.push(filters.kind);
+  if (filters.reachable && level != null) activeBits.push(`Lv ${level} or lower`);
   if (filters.expand) activeBits.push('every tier');
   if (filters.tiers.length) activeBits.push(filters.tiers.join('/'));
   if (sort !== 'power') activeBits.push(SORT_LABELS[sort]);
@@ -1043,7 +1086,7 @@ export function ItemsScreen({ initialGroup = 'weapons' }: { initialGroup?: strin
           </Text>
           <Pressable
             onPress={() => {
-              setFilters({ group: initialGroup, kind: null, tiers: [], expand: false });
+              setFilters({ group: initialGroup, kind: null, tiers: [], expand: false, reachable: false });
               setSort('power');
             }}
             accessibilityRole="button"
@@ -1068,7 +1111,7 @@ export function ItemsScreen({ initialGroup = 'weapons' }: { initialGroup?: strin
         initialNumToRender={14}
         windowSize={7}
         renderItem={({ item: id }) => (
-          <ItemRow id={id} collapsed={!filters.expand}
+          <ItemRow id={id} collapsed={!filters.expand} level={level}
             showGroup={searching || filters.group === 'all' || filters.group === 'other'}
             onOpen={setOpen} />
         )}
