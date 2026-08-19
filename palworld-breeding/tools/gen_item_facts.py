@@ -102,6 +102,15 @@ ITEM_NAMES: dict[str, str] = {}  # internal id -> display name, set by main
 
 
 def player_source(src: str) -> str:
+    # treasure maps FIRST: all four higher maps wear the family name
+    # "Treasure Map" since the 2026-08-19 backbone repair, so the id
+    # lookup would collapse the tiers into four identical rows — the
+    # numbered form keeps them tellable apart
+    if src == "TreasureMap01":
+        return "Treasure Map"  # the item's own name in the backbone
+    m = re.fullmatch(r"TreasureMap0?(\d+)", src)
+    if m:
+        return f"Treasure map {m.group(1)}"
     if src in ITEM_NAMES:
         # some source cells carry an ITEM's internal id (a chest that
         # contains the item itself) — exact-identity resolution first
@@ -121,11 +130,6 @@ def player_source(src: str) -> str:
     m = re.fullmatch(r"Salvage_Rank(\d+)", src)
     if m:
         return f"Salvage rank {m.group(1)}"
-    if src == "TreasureMap01":
-        return "Treasure Map"  # the item's own name in the backbone
-    m = re.fullmatch(r"TreasureMap0?(\d+)", src)
-    if m:
-        return f"Treasure map {m.group(1)}"
     return spaced(src)
 
 

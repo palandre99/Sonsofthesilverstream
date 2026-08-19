@@ -73,6 +73,11 @@ def main() -> None:
     def broken(name: str, iid: str) -> bool:
         if name == "en Text":
             return True
+        if name == iid and (_re.search(r"\d$", iid) or "_" in iid):
+            # an id-shaped string (trailing digits / underscores) is never
+            # a display name — but single clean words (Cake, Egg, Flour)
+            # ARE their own ids legitimately and stay untouched
+            return True
         m = _re.fullmatch(r"([A-Za-z0-9]+) \d", name)
         return bool(m and m.group(1) in iid)
 
@@ -83,7 +88,8 @@ def main() -> None:
             continue
         base_id = _re.sub(r"_?(Default)?\d+$", "", iid)
         cand = None
-        for c in (base_id, base_id + "_Default1", base_id + "_1", base_id + "1"):
+        for c in (base_id, base_id + "_Default1", base_id + "_1",
+                  base_id + "1", base_id + "01"):
             hit = items.get(c)
             if hit and not broken(hit["name"], c):
                 cand = hit

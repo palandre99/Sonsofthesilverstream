@@ -2277,6 +2277,28 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E152. THE TREASURE MAPS GET THEIR NAMES — AND THE NAME REPAIR LEARNS
+## THE ID-SHAPED CLASS 2026-08-19 (loop tick 4)
+
+E150+E151 went LIVE riding the bosses lane's "two new tabs" publish
+(their commit sits on top of mine; bundles are per-tree, so the channel
+carries every landed lane — the working convention now: newest committed
+lane publishes for everyone).
+
+The fix: TreasureMap02-05 wore their raw ids as NAMES (single-member
+"families" the E144 repair could not reach). Their structure IS a tier
+family — shared id stem, rarity 0->4, base's clean name "Treasure Map" —
+so the derivation rule now covers id-shaped names (name == id with
+trailing digits/underscores) joined by id stem. 362 derived, 0
+unresolved, 8 recovered total. FIRST ATTEMPT REGRESSED and the run
+report caught it: a naive name==id rule also flagged Cake/Egg/Flour
+(single clean words that ARE their ids legitimately) and cost 8 prior
+derivations whose base candidate suddenly looked broken — the rule is
+now shape-gated, with pins: TreasureMap05 wears "Treasure Map",
+Cake carries no flag. Facts resolver keeps the numbered "Treasure map
+N" for the four maps so their source rows stay tellable apart. 789
+tests green, tsc clean.
+
 ## E151. PAL DROPS AND ITEMS LINK BOTH WAYS 2026-08-19 (loop tick 3)
 
 Phase F's core cross-link, from OUR game-file pal table (all 115 distinct

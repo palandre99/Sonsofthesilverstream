@@ -81,12 +81,23 @@ describe('names are player-facing, never upstream artifacts', () => {
   it('the derived variants say so, and inherited exactly their family name', () => {
     const derived = items.filter(([, it_]) =>
       (it_ as unknown as { nameFromBase?: boolean }).nameFromBase);
-    expect(derived.length).toBe(354);
+    // 354 originally + 8 id-shaped names recovered 2026-08-19 (the
+    // TreasureMap02-05 class: name == id with trailing digits, family
+    // found by id stem)
+    expect(derived.length).toBe(362);
     // canary: the Uncommon Assault Rifle wears the family name
     const ar2 = payload.items['AssaultRifle_Default2'] as unknown as
       { name: string; nameFromBase?: boolean };
     expect(ar2.name).toBe('Assault Rifle');
     expect(ar2.nameFromBase).toBe(true);
+    // canary 2: the higher treasure maps wear their family's name now
+    const tm5 = payload.items['TreasureMap05'] as unknown as
+      { name: string; nameFromBase?: boolean };
+    expect(tm5.name).toBe('Treasure Map');
+    expect(tm5.nameFromBase).toBe(true);
+    // and clean single-word names that equal their id stayed untouched
+    expect((payload.items.Cake as unknown as { nameFromBase?: boolean })
+      .nameFromBase).toBeUndefined();
   });
 });
 
