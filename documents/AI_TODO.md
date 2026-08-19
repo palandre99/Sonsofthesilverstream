@@ -2370,6 +2370,28 @@ re-evaluation finds nothing — otherwise it ALWAYS has work.
       "Crafted with its schematic". FOUND AND LOGGED: IL12 below. The
       Wood card feeding Lumbering research and the fruit card's 19
       sources read genuinely good.
+- [x] IL18 2026-08-19 (~19:15) CEO FEEDBACK, two screenshots:
+      **"Filter and sorting system u use look sooooo messy… a weapon that
+      has blueprints and different versions maybe u don't need to show
+      them all in this tab? A bow for example, show normal version then
+      within the card u can see all the versions of it"** and **"Items
+      tab shows weapons armors etc, it's not meant to I believe"**.
+      Both fixed this tick:
+      1. ONE ROW PER ITEM. 310 weapon rows collapse to ~105 families —
+         "Mechanical Bow · 5 tiers · Attack 20000–24000", ranked by the
+         family's BEST tier while showing the base one; the card's tier
+         table already carried the rest. A families index replaced the
+         O(n) familyOf rescan (a collapsing list would have run it 1,892
+         times). "Every tier separately" is one tap in the sheet.
+      2. THE CENTER TAB IS THE OTHER ITEMS. 'other' excludes the four
+         groups that own a tab (weapons/armor/food/spheres) — the tab now
+         opens on meds, consumables, materials, gear. 'Everything' stays
+         a filter chip.
+      3. THE SHEET IS CALM. Sections reordered to what a player reaches
+         for (Sort → Kind → Show → Tiers), "Any" added to Kind, "This
+         tab" first under Show, and the five tier chips only render when
+         you deliberately expand tiers — the default sheet is 5 chips
+         lighter. Eye-verified all three at phone size. 819 green.
 - [x] IL17 2026-08-19 (~15:00): the catalogue-wide share property —
       every one of the 1,892 items' share text asserted in one test:
       never short, provenance always travels, zero markup or id-token

@@ -68,7 +68,9 @@ class Boundary extends Component<{ children: ReactNode }, { err: Error | null }>
  * the center "Items" tab is the whole catalogue (CEO 2026-08-18 layout). */
 const WeaponsTab = () => <ItemsScreen initialGroup="weapons" />;
 const ArmorTab = () => <ItemsScreen initialGroup="armor" />;
-const AllItemsTab = () => <ItemsScreen initialGroup="all" />;
+// the center tab is everything that ISN'T a tab of its own — weapons,
+// armor, food and spheres have their own (CEO 2026-08-19)
+const AllItemsTab = () => <ItemsScreen initialGroup="other" />;
 const FoodTab = () => <ItemsScreen initialGroup="food" />;
 const SpheresTab = () => <ItemsScreen initialGroup="spheres" />;
 

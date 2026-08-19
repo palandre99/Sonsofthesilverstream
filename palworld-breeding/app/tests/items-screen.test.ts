@@ -6,10 +6,11 @@ import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import {
-  ammoForWeapon, effectNumber, familyOf, idsInGroup, ITEM_GROUPS, ITEM_STATS, ITEMS,
-  itemIdByName, KIND_WORDS, kindsInGroup, kindWord, palsDropping,
-  palsHatchingFrom, schematicsFor, searchItems, sortItems, statRank,
-  teachesOf, tierWord, weaponsForAmmo,
+  ammoForWeapon, collapseFamilies, effectNumber, familyOf, familyPowerOf,
+  idsInGroup, ITEM_GROUPS, ITEM_STATS, ITEMS, itemIdByName, KIND_WORDS,
+  kindsInGroup, kindWord, palsDropping, palsHatchingFrom, schematicsFor,
+  searchItems, sortItems, statRank, TAB_GROUPS, teachesOf, tierWord,
+  weaponsForAmmo,
 } from '../../mobile/src/itemsData';
 import palsJson from '../../mobile/src/data/pals_1_0.json';
 import { shareTextForItem } from '../../mobile/src/itemShare';
@@ -207,6 +208,35 @@ describe('ammo and weapons join both ways from the game’s own tags', () => {
     const joined = ammo.filter((i) => weaponsForAmmo(i).length > 0);
     expect(ammo.length).toBe(32);
     expect(joined.length).toBe(25);
+  });
+});
+
+describe('one row per item, tiers inside the card (CEO 2026-08-19)', () => {
+  it('collapsing turns 310 weapon rows into their families', () => {
+    const all = idsInGroup('weapons');
+    const collapsed = collapseFamilies(all);
+    expect(all.length).toBe(310);
+    expect(collapsed.length).toBeLessThan(120);
+    // the representative is the BASE tier a player meets first
+    for (const id of collapsed) {
+      expect(ITEMS[id].rarity ?? 0).toBe(ITEMS[familyOf(id)[0]].rarity ?? 0);
+    }
+  });
+
+  it('the Mechanical Bow is one row that still ranks by its best tier', () => {
+    const rows = sortItems(collapseFamilies(idsInGroup('weapons')), 'power', true);
+    expect(ITEMS[rows[0]].name).toBe('Mechanical Bow');
+    expect(ITEM_STATS[rows[0]]?.tier).toBe('Common');   // shows the base
+    expect(familyPowerOf(rows[0])).toBe(24000);         // ranks by the top
+  });
+
+  it('the center Items tab excludes the groups that own a tab', () => {
+    const other = idsInGroup('other');
+    for (const g of TAB_GROUPS) {
+      for (const id of idsInGroup(g)) expect(other).not.toContain(id);
+    }
+    expect(other.length).toBeGreaterThan(1000);
+    expect(other.length).toBeLessThan(idsInGroup('all').length);
   });
 });
 

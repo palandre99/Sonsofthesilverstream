@@ -18,10 +18,11 @@ import * as Haptics from 'expo-haptics';
 import { T } from '../theme';
 import { Badge, Btn, Card, PageHead, SearchInput, s } from '../ui/kit';
 import {
-  ammoForWeapon, effectNumber, familyOf, groupOf, idsInGroup, ITEM_GROUPS,
-  ITEM_STATS, ITEMS, kindsInGroup, kindWord, palsDropping,
-  palsHatchingFrom, schematicsFor, searchItems, sortItems, statRank,
-  teachesOf, TIER_WORDS, tierWord, weaponsForAmmo, type ItemSort,
+  ammoForWeapon, collapseFamilies, effectNumber, familyOf, groupOf,
+  idsInGroup, ITEM_GROUPS, ITEM_STATS, ITEMS, kindsInGroup, kindWord,
+  palsDropping, palsHatchingFrom, schematicsFor, searchItems, sortItems,
+  statRank, TAB_GROUPS, teachesOf, TIER_WORDS, tierWord, weaponsForAmmo,
+  type ItemSort,
 } from '../itemsData';
 import { equipPassiveName, ITEM_FACTS, type CraftRow } from '../itemFacts';
 import { ItemIcon } from '../ui/ItemIcon';
@@ -45,19 +46,21 @@ const SORT_LABELS: Record<ItemSort, string> = {
 };
 
 interface ItemFilters {
-  group: string;          // group id or 'all'
+  group: string;          // group id, 'other' or 'all'
   kind: string | null;    // a kindWord within the group
   tiers: string[];        // tier words, empty = all
+  /** show every rarity tier as its own row (default: one row per family) */
+  expand: boolean;
 }
 
 function applyItemFilters(f: ItemFilters, q: string): string[] {
   let ids = q.trim() ? searchItems(q) : idsInGroup(f.group);
-  if (!q.trim() && f.kind) ids = ids.filter((i) => kindWord(i) === f.kind);
-  if (f.tiers.length) {
+  if (f.kind) ids = ids.filter((i) => kindWord(i) === f.kind);
+  if (f.expand && f.tiers.length) {
     ids = ids.filter((i) => f.tiers.includes(
       ITEM_STATS[i]?.tier ?? tierWord(ITEMS[i].rarity)));
   }
-  return ids;
+  return f.expand ? ids : collapseFamilies(ids);
 }
 
 function statLine(id: string): string {
@@ -103,6 +106,23 @@ function statLine(id: string): string {
   return bits.join(' · ');
 }
 
+/** A collapsed row's line: the family's span, not one tier's numbers. */
+function familyLine(fam: string[]): string {
+  const lo = ITEM_STATS[fam[0]];
+  const hi = ITEM_STATS[fam[fam.length - 1]];
+  const span = (k: 'atk' | 'def' | 'hp'): string | null => {
+    const a = lo?.[k];
+    const b = hi?.[k];
+    if (a == null || b == null) return null;
+    return a === b ? `${a}` : `${a}–${b}`;
+  };
+  const atk = span('atk');
+  if (atk) return `Attack ${atk}`;
+  const def = span('def');
+  if (def) return `Defense ${def}`;
+  return statLine(fam[0]) || kindWord(fam[0]);
+}
+
 function TierChip({ id, size = 12 }: { id: string; size?: number }) {
   const word = ITEM_STATS[id]?.tier ?? tierWord(ITEMS[id].rarity);
   return (
@@ -112,31 +132,43 @@ function TierChip({ id, size = 12 }: { id: string; size?: number }) {
   );
 }
 
-function ItemRow({ id, showGroup, onOpen }: {
-  id: string; showGroup: boolean; onOpen: (id: string) => void;
+function ItemRow({ id, showGroup, collapsed, onOpen }: {
+  id: string; showGroup: boolean; collapsed?: boolean;
+  onOpen: (id: string) => void;
 }) {
   const it = ITEMS[id];
-  const line = statLine(id);
+  const fam = collapsed ? familyOf(id) : [id];
+  const tiers = fam.length;
+  const line = tiers > 1 ? familyLine(fam) : statLine(id);
   const word = ITEM_STATS[id]?.tier ?? tierWord(it.rarity);
+  const topWord = ITEM_STATS[fam[tiers - 1]]?.tier
+    ?? tierWord(ITEMS[fam[tiers - 1]].rarity);
   return (
     <Pressable
       onPress={() => onOpen(id)}
       accessibilityRole="button"
-      accessibilityLabel={`${it.name}, ${word}. Open its card`}
+      accessibilityLabel={tiers > 1
+        ? `${it.name}, ${tiers} tiers up to ${topWord}. Open its card`
+        : `${it.name}, ${word}. Open its card`}
       style={({ pressed }) => ({
         flexDirection: 'row', alignItems: 'center', gap: 10,
         paddingVertical: 8, paddingHorizontal: 10, borderRadius: 12,
         backgroundColor: pressed ? T.surface2 : T.surface,
         borderWidth: 1, borderColor: T.line, marginBottom: 6,
         borderLeftWidth: 3,
-        borderLeftColor: TIER_TINTS[word] ?? T.line,
+        borderLeftColor: TIER_TINTS[tiers > 1 ? topWord : word] ?? T.line,
       })}>
-      <ItemIcon icon={it.icon} size={40} tint={TIER_TINTS[word]} />
+      <ItemIcon icon={it.icon} size={40}
+        tint={TIER_TINTS[tiers > 1 ? topWord : word]} />
       <View style={{ flex: 1 }}>
         <View style={[s.row, { gap: 8 }]}>
           <Text style={{ color: T.ink, fontWeight: '800', fontSize: 14.5, flex: 1 }}
             numberOfLines={1}>{it.name}</Text>
-          <TierChip id={id} />
+          {tiers > 1 ? (
+            <Text style={{
+              color: TIER_TINTS[topWord] ?? T.muted, fontSize: 11.5, fontWeight: '800',
+            }}>{tiers} tiers</Text>
+          ) : <TierChip id={id} />}
         </View>
         <View style={[s.row, { gap: 8, marginTop: 2 }]}>
           <Text style={{ color: T.muted, fontSize: 12, flex: 1 }} numberOfLines={1}>
@@ -752,7 +784,7 @@ function ItemFilterSheet({ filters, sort, home, onApply, onClose }: {
 }) {
   const [f, setF] = useState<ItemFilters>(filters);
   const [sk, setSk] = useState<ItemSort>(sort);
-  const kinds = f.group === 'all' ? [] : kindsInGroup(f.group);
+  const kinds = kindsInGroup(f.group);
 
   // every chip turns OFF when tapped again (the CEO once hit a sort chip
   // he could not un-choose) — radio groups fall back to neutral
@@ -779,20 +811,21 @@ function ItemFilterSheet({ filters, sort, home, onApply, onClose }: {
         }}>
           <Text style={[s.h2, { flex: 1 }]}>Filter & sort</Text>
           <Btn small label="Reset"
-            onPress={() => { setF({ group: home, kind: null, tiers: [] }); setSk('power'); }} />
+            onPress={() => {
+              setF({ group: home, kind: null, tiers: [], expand: false });
+              setSk('power');
+            }} />
         </View>
-        <ScrollView contentContainerStyle={{ padding: 16, gap: 18, paddingBottom: 30 }}>
-          <Section title="Group">
-            <Chip on={f.group === 'all'} label={`Everything · ${idsInGroup('all').length}`}
-              onPress={() => pickGroup('all')} />
-            {ITEM_GROUPS.map((g) => (
-              <Chip key={g.id} on={f.group === g.id}
-                label={`${g.label} · ${idsInGroup(g.id).length}`}
-                onPress={() => pickGroup(g.id)} />
-            ))}
+        <ScrollView contentContainerStyle={{ padding: 16, gap: 16, paddingBottom: 30 }}>
+          <Section title="Sort by">
+            <Chip on={sk === 'power'} label="Strongest" onPress={() => setSk('power')} />
+            <Chip on={sk === 'name'} label="A–Z" onPress={() => pickSort('name')} />
+            <Chip on={sk === 'rarity'} label="Rarest" onPress={() => pickSort('rarity')} />
           </Section>
           {kinds.length >= 2 && (
             <Section title="Kind">
+              <Chip on={f.kind == null} label="Any"
+                onPress={() => setF({ ...f, kind: null })} />
               {kinds.map((k) => (
                 <Chip key={k.kind} on={f.kind === k.kind}
                   label={`${k.kind} · ${k.count}`}
@@ -800,17 +833,36 @@ function ItemFilterSheet({ filters, sort, home, onApply, onClose }: {
               ))}
             </Section>
           )}
-          <Section title="Tier">
-            {TIER_WORDS.map((t) => (
-              <Chip key={t} on={f.tiers.includes(t)} label={t}
-                tint={TIER_TINTS[t]} onPress={() => pickTier(t)} />
+          <Section title="Show">
+            <Chip on={f.group === home}
+              label={`This tab · ${idsInGroup(home).length}`}
+              onPress={() => pickGroup(home)} />
+            <Chip on={f.group === 'all'} label={`Everything · ${idsInGroup('all').length}`}
+              onPress={() => pickGroup('all')} />
+            {ITEM_GROUPS.filter((g) => g.id !== home).map((g) => (
+              <Chip key={g.id} on={f.group === g.id}
+                label={`${g.label} · ${idsInGroup(g.id).length}`}
+                onPress={() => pickGroup(g.id)} />
             ))}
           </Section>
-          <Section title="Order">
-            <Chip on={sk === 'power'} label="Strongest first" onPress={() => setSk('power')} />
-            <Chip on={sk === 'name'} label="A–Z" onPress={() => pickSort('name')} />
-            <Chip on={sk === 'rarity'} label="Rarest first" onPress={() => pickSort('rarity')} />
+          <Section title="Tiers">
+            {/* collapsed rows already stand for every tier, so the tier
+                filter only appears once tiers are their own rows — that
+                is 5 fewer chips in the default view (CEO: "filter looks
+                chaotic") */}
+            <Chip on={!f.expand} label="One row per item"
+              onPress={() => setF({ ...f, expand: false, tiers: [] })} />
+            <Chip on={f.expand} label="Every tier separately"
+              onPress={() => setF({ ...f, expand: true })} />
           </Section>
+          {f.expand && (
+            <Section title="Only these tiers">
+              {TIER_WORDS.map((t) => (
+                <Chip key={t} on={f.tiers.includes(t)} label={t}
+                  tint={TIER_TINTS[t]} onPress={() => pickTier(t)} />
+              ))}
+            </Section>
+          )}
         </ScrollView>
         <View style={{
           flexDirection: 'row', gap: 10, padding: 16,
@@ -832,7 +884,7 @@ function ItemFilterSheet({ filters, sort, home, onApply, onClose }: {
 export function ItemsScreen({ initialGroup = 'weapons' }: { initialGroup?: string }) {
   const [q, setQ] = useState('');
   const [filters, setFilters] = useState<ItemFilters>({
-    group: initialGroup, kind: null, tiers: [],
+    group: initialGroup, kind: null, tiers: [], expand: false,
   });
   const [sort, setSort] = useState<ItemSort>('power');
   const [sheet, setSheet] = useState(false);
@@ -840,7 +892,7 @@ export function ItemsScreen({ initialGroup = 'weapons' }: { initialGroup?: strin
 
   const searching = q.trim().length > 0;
   const ids = useMemo(
-    () => sortItems(applyItemFilters(filters, q), sort),
+    () => sortItems(applyItemFilters(filters, q), sort, !filters.expand),
     [filters, q, sort],
   );
 
@@ -861,9 +913,11 @@ export function ItemsScreen({ initialGroup = 'weapons' }: { initialGroup?: strin
   const activeBits: string[] = [];
   if (filters.group !== initialGroup) {
     activeBits.push(filters.group === 'all' ? 'Everything'
+      : filters.group === 'other' ? 'Items'
       : ITEM_GROUPS.find((g) => g.id === filters.group)?.label ?? filters.group);
   }
   if (filters.kind) activeBits.push(filters.kind);
+  if (filters.expand) activeBits.push('every tier');
   if (filters.tiers.length) activeBits.push(filters.tiers.join('/'));
   if (sort !== 'power') activeBits.push(SORT_LABELS[sort]);
 
@@ -888,7 +942,7 @@ export function ItemsScreen({ initialGroup = 'weapons' }: { initialGroup?: strin
           </Text>
           <Pressable
             onPress={() => {
-              setFilters({ group: initialGroup, kind: null, tiers: [] });
+              setFilters({ group: initialGroup, kind: null, tiers: [], expand: false });
               setSort('power');
             }}
             accessibilityRole="button"
@@ -913,7 +967,9 @@ export function ItemsScreen({ initialGroup = 'weapons' }: { initialGroup?: strin
         initialNumToRender={14}
         windowSize={7}
         renderItem={({ item: id }) => (
-          <ItemRow id={id} showGroup={searching || filters.group === 'all'} onOpen={setOpen} />
+          <ItemRow id={id} collapsed={!filters.expand}
+            showGroup={searching || filters.group === 'all' || filters.group === 'other'}
+            onOpen={setOpen} />
         )}
         ListEmptyComponent={!searching ? (
           <Text style={[s.body, { textAlign: 'center', marginTop: 30 }]}>

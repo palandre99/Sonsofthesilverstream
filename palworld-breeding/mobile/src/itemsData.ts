@@ -106,9 +106,19 @@ for (const id of ITEM_IDS) {
   }
 }
 
-/** 'all' is the Items tab's home: the entire catalogue in one list. */
+/** The four groups that own their own bottom tab — the center Items tab
+ * shows everything ELSE (CEO 2026-08-19: "Items tab shows weapons armors
+ * etc, it's not meant to"). 'all' stays available as a filter chip. */
+export const TAB_GROUPS = ['weapons', 'armor', 'food', 'spheres'];
+
 export function idsInGroup(groupId: string): string[] {
   if (groupId === 'all') return ITEM_IDS;
+  if (groupId === 'other') {
+    return ITEM_IDS.filter((i) => {
+      const g = GROUP_OF.get(i)?.id;
+      return g != null && !TAB_GROUPS.includes(g);
+    });
+  }
   return ITEM_IDS.filter((i) => GROUP_OF.get(i)?.id === groupId);
 }
 
@@ -232,7 +242,17 @@ export const powerOf = (id: string): number =>
   ITEM_STATS[id]?.atk ?? ITEM_STATS[id]?.def
   ?? effectNumber(id, 'Nutrition') ?? -1;
 
-export function sortItems(ids: string[], sort: ItemSort): string[] {
+/** The best number anywhere in the family — what a collapsed row is
+ * ranked by, so "strongest first" still puts the Mechanical Bow on top
+ * even though its row shows the Common tier. */
+export const familyPowerOf = (id: string): number =>
+  Math.max(...familyOf(id).map(powerOf));
+
+export function sortItems(ids: string[], sort: ItemSort, byFamily = false): string[] {
+  if (byFamily && sort === 'power') {
+    return [...ids].sort((a, b) => familyPowerOf(b) - familyPowerOf(a)
+      || ITEMS[a].name.localeCompare(ITEMS[b].name));
+  }
   const out = [...ids];
   if (sort === 'name') {
     out.sort((a, b) => ITEMS[a].name.localeCompare(ITEMS[b].name)
@@ -291,13 +311,43 @@ export function statRank(id: string, stat: 'atk' | 'def' | 'hp'):
   return { rank, of: table.size };
 }
 
+/* ---- families: one weapon, five tiers ------------------------------
+ * The CEO's 2026-08-19 call: "a weapon that has blueprints and different
+ * versions maybe u don't need to show them all in this tab? A bow for
+ * example, show normal version then within the card u can see all the
+ * versions of it." So the list shows ONE row per family and the card
+ * keeps the tier table. Indexed once at load — familyOf used to rescan
+ * all 1,892 ids per call, which a collapsing list would do 1,892 times. */
+const FAMILY_KEY = (id: string): string =>
+  `${ITEMS[id]?.name ?? id}|${ITEMS[id]?.category ?? ''}`;
+
+const FAMILIES = new Map<string, string[]>();
+for (const id of ITEM_IDS) {
+  const key = FAMILY_KEY(id);
+  const list = FAMILIES.get(key) ?? [];
+  list.push(id);
+  FAMILIES.set(key, list);
+}
+for (const list of FAMILIES.values()) {
+  list.sort((a, b) => (ITEMS[a].rarity ?? 0) - (ITEMS[b].rarity ?? 0));
+}
+
 /** Every tier of the same family (same display name), weakest first. */
 export function familyOf(id: string): string[] {
-  const name = ITEMS[id]?.name;
-  if (!name) return [id];
-  return ITEM_IDS
-    .filter((i) => ITEMS[i].name === name && ITEMS[i].category === ITEMS[id].category)
-    .sort((a, b) => (ITEMS[a].rarity ?? 0) - (ITEMS[b].rarity ?? 0));
+  return FAMILIES.get(FAMILY_KEY(id)) ?? [id];
+}
+
+/** One id per family — the base tier, the one a player meets first. */
+export function collapseFamilies(ids: string[]): string[] {
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const id of ids) {
+    const key = FAMILY_KEY(id);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push(familyOf(id)[0] ?? id);
+  }
+  return out;
 }
 
 /* ---- pal drops <-> items, from our own datamined pal table ---------
