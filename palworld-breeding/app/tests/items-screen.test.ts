@@ -7,7 +7,8 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import {
   familyOf, idsInGroup, ITEM_GROUPS, ITEM_STATS, ITEMS,
-  KIND_WORDS, kindsInGroup, kindWord, searchItems, sortItems, tierWord,
+  KIND_WORDS, kindsInGroup, kindWord, schematicsFor, searchItems,
+  sortItems, teachesOf, tierWord,
 } from '../../mobile/src/itemsData';
 
 describe('the groups cover the catalogue exactly once', () => {
@@ -65,6 +66,30 @@ describe("groups expose their depth — the CEO's 'many sub ones'", () => {
     expect(kindsInGroup('fruits').length).toBe(1);
     expect(kindsInGroup('eggs').length).toBe(1);
     expect(kindsInGroup('gear').length).toBe(1);
+  });
+});
+
+describe('schematics join their items by the game’s own naming', () => {
+  it('463 blueprints teach a real item family', () => {
+    const bps = Object.keys(ITEMS).filter((i) => ITEMS[i].category === 'Blueprint');
+    const joined = bps.filter((i) => teachesOf(i) != null);
+    expect(bps.length).toBe(490);
+    expect(joined.length).toBe(463);
+  });
+
+  it('the Assault Rifle joins both ways', () => {
+    const schems = schematicsFor('AssaultRifle_Default1');
+    expect(schems.length).toBeGreaterThanOrEqual(4);
+    expect(schems[0].tier).toBeLessThan(schems[schems.length - 1].tier);
+    const t = teachesOf(schems[0].id);
+    expect(t?.id).toBe('AssaultRifle_Default1');
+  });
+
+  it('raid slabs and furniture stay honestly unjoined', () => {
+    const slab = Object.keys(ITEMS).find(
+      (i) => ITEMS[i].name === "Bellanoir's Slab Fragment");
+    expect(slab).toBeDefined();
+    expect(teachesOf(slab!)).toBeNull();
   });
 });
 

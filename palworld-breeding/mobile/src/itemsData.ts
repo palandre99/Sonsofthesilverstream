@@ -247,3 +247,39 @@ export function familyOf(id: string): string[] {
     .filter((i) => ITEMS[i].name === name && ITEMS[i].category === ITEMS[id].category)
     .sort((a, b) => (ITEMS[a].rarity ?? 0) - (ITEMS[b].rarity ?? 0));
 }
+
+/* ---- schematic <-> item joins, by the game's own naming -------------
+ * "Assault Rifle Schematic 2" teaches the Assault Rifle family, tier 2.
+ * 463 of 490 blueprints join this way (measured 2026-08-19); the rest
+ * (raid slab fragments, furniture with no inventory item) stay plain. */
+const SCHEMATIC_NAME = /^(.*?) Schematic(?: (\d+))?$/;
+
+/** What a schematic teaches: the target family's base item id + tier. */
+export function teachesOf(blueprintId: string): { id: string; tier: number } | null {
+  const it = ITEMS[blueprintId];
+  if (it?.category !== 'Blueprint') return null;
+  const m = SCHEMATIC_NAME.exec(it.name);
+  if (!m) return null;
+  const fam = ITEM_IDS
+    .filter((i) => ITEMS[i].name === m[1] && ITEMS[i].category !== 'Blueprint')
+    .sort((a, b) => (ITEMS[a].rarity ?? 0) - (ITEMS[b].rarity ?? 0));
+  if (!fam.length) return null;
+  return { id: fam[0], tier: m[2] ? Number(m[2]) : 1 };
+}
+
+/** The schematics that teach this item's family, lowest tier first. */
+export function schematicsFor(id: string): { id: string; tier: number }[] {
+  const name = ITEMS[id]?.name;
+  if (!name || ITEMS[id].category === 'Blueprint') return [];
+  return ITEM_IDS
+    .filter((i) => {
+      if (ITEMS[i].category !== 'Blueprint') return false;
+      const m = SCHEMATIC_NAME.exec(ITEMS[i].name);
+      return m?.[1] === name;
+    })
+    .map((i) => ({
+      id: i,
+      tier: Number(SCHEMATIC_NAME.exec(ITEMS[i].name)?.[2] ?? 1),
+    }))
+    .sort((a, b) => a.tier - b.tier);
+}

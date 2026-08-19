@@ -19,8 +19,8 @@ import { T } from '../theme';
 import { Badge, Btn, Card, PageHead, SearchInput, s } from '../ui/kit';
 import {
   familyOf, groupOf, idsInGroup, ITEM_GROUPS, ITEM_STATS, ITEMS,
-  kindsInGroup, kindWord, searchItems, sortItems, TIER_WORDS, tierWord,
-  type ItemSort,
+  kindsInGroup, kindWord, schematicsFor, searchItems, sortItems,
+  teachesOf, TIER_WORDS, tierWord, type ItemSort,
 } from '../itemsData';
 import { ITEM_FACTS, type CraftRow } from '../itemFacts';
 import { ItemIcon } from '../ui/ItemIcon';
@@ -261,6 +261,70 @@ function ItemDetail({ id, onClose, onOpenItem }: {
               )}
             </Card>
           )}
+
+          {(() => {
+            const teaches = teachesOf(id);
+            if (!teaches) return null;
+            const target = ITEMS[teaches.id];
+            return (
+              <Card style={{ marginTop: 10 }}>
+                <Text style={s.h3}>What it teaches</Text>
+                <Pressable
+                  onPress={() => onOpenItem(teaches.id)}
+                  accessibilityRole="button"
+                  accessibilityLabel={`${target.name}. Open its card`}
+                  style={({ pressed }) => [s.row, {
+                    gap: 10, marginTop: 6, paddingVertical: 5, paddingHorizontal: 8,
+                    borderRadius: 8,
+                    backgroundColor: pressed ? T.surface2 : 'transparent',
+                  }]}>
+                  <ItemIcon icon={target.icon} size={26} />
+                  <Text style={{ color: T.accentInk, fontSize: 12.5, fontWeight: '700', flex: 1 }}>
+                    {teaches.tier > 1
+                      ? `The tier-${teaches.tier} craft of ${target.name}`
+                      : `How to craft ${target.name}`}
+                  </Text>
+                </Pressable>
+              </Card>
+            );
+          })()}
+
+          {(() => {
+            const schems = schematicsFor(id);
+            if (!schems.length) return null;
+            return (
+              <Card style={{ marginTop: 10 }}>
+                <Text style={s.h3}>Schematics for higher tiers</Text>
+                <View style={{ marginTop: 6 }}>
+                  {schems.map((sc) => {
+                    const best = ITEM_FACTS[sc.id]?.boxes?.[0];
+                    return (
+                      <Pressable key={sc.id}
+                        onPress={() => onOpenItem(sc.id)}
+                        accessibilityRole="button"
+                        accessibilityLabel={`${ITEMS[sc.id].name}. Open its card`}
+                        style={({ pressed }) => [s.row, {
+                          gap: 8, paddingVertical: 5, paddingHorizontal: 8,
+                          borderRadius: 8,
+                          backgroundColor: pressed ? T.surface2 : 'transparent',
+                        }]}>
+                        <TierChip id={sc.id} />
+                        <Text style={{ color: T.accentInk, fontSize: 12.5, fontWeight: '700', flex: 1 }}
+                          numberOfLines={1}>
+                          {ITEMS[sc.id].name}
+                        </Text>
+                        {best && (
+                          <Text style={{ color: T.muted, fontSize: 11.5 }} numberOfLines={1}>
+                            {best.src} · {best.p}
+                          </Text>
+                        )}
+                      </Pressable>
+                    );
+                  })}
+                </View>
+              </Card>
+            );
+          })()}
 
           {(facts?.drops || facts?.boxes || facts?.shops) && (
             <Card style={{ marginTop: 10 }}>

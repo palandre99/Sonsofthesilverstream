@@ -2242,6 +2242,26 @@ page of plan tab a while back, empty and poor design"
         full-width and fits three. Web empty-collection button and goal
         next-step line: both already present.
 
+## E150. SCHEMATICS JOIN THEIR ITEMS BOTH WAYS 2026-08-19 (loop tick 2)
+
+E149 published (rode the bosses lane's channel push at a newer commit —
+verified both channels current; skipped a redundant re-publish after
+their concurrent eas run clobbered mine mid-upload in the shared dist/).
+
+NEW: the schematic<->item join, by the game's own naming, computed at
+runtime from shipped data (no new payload): "Assault Rifle Schematic 2"
+-> the Assault Rifle family, tier 2. 463 of 490 blueprints join (pinned
+exactly); the 27 that don't are raid slab fragments and furniture with
+no inventory item — honestly unjoined. Item cards gain "Schematics for
+higher tiers" (each tier tappable, with its BEST drop source and rate:
+"Schematic 4 — Lv 55 Oilrig Greater Chest · 1.775%"); schematic cards
+gain "What it teaches" with a tappable link back. Eye-verified both
+directions on the QA render. ALSO: source cells that carry an ITEM's
+internal id now resolve through the backbone to display names (exact
+identity), killing the "Assault Rifle Default 1" class of leak. 33 items
+pins green, tsc clean. Publish waits on the bosses lane's AlphasScreen
+(B5) now in flight in the shared tree.
+
 ## E149. WHERE-TO-FIND SOURCES IN A PLAYER'S WORDS 2026-08-19 (morning
 ## loop tick)
 

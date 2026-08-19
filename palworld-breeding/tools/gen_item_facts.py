@@ -98,7 +98,14 @@ def spaced(token: str) -> str:
     return CAMEL.sub(" ", token.replace("_", " ")).strip()
 
 
+ITEM_NAMES: dict[str, str] = {}  # internal id -> display name, set by main
+
+
 def player_source(src: str) -> str:
+    if src in ITEM_NAMES:
+        # some source cells carry an ITEM's internal id (a chest that
+        # contains the item itself) — exact-identity resolution first
+        return ITEM_NAMES[src]
     if "_" not in src and not CAMEL.search(src):
         return src  # already readable text from the page
     m = re.fullmatch(r"(.+?)_Fishing", src)
@@ -132,6 +139,8 @@ def player_shop(src: str) -> str:
 def main() -> None:
     items = json.loads(
         (ROOT / "data" / "items_1_0.json").read_text(encoding="utf-8"))["items"]
+    ITEM_NAMES.update({iid: it["name"] for iid, it in items.items()
+                       if it.get("name")})
     raw = json.loads(
         (CACHE / "item_pages_raw.json").read_text(encoding="utf-8"))
     tree = json.loads(
