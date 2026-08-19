@@ -19,9 +19,9 @@ import { T } from '../theme';
 import { Badge, Btn, Card, PageHead, SearchInput, s } from '../ui/kit';
 import {
   ammoForWeapon, familyOf, groupOf, idsInGroup, ITEM_GROUPS, ITEM_STATS,
-  ITEMS, kindsInGroup, kindWord, palsDropping, schematicsFor, searchItems,
-  sortItems, statRank, teachesOf, TIER_WORDS, tierWord, weaponsForAmmo,
-  type ItemSort,
+  ITEMS, kindsInGroup, kindWord, palsDropping, palsHatchingFrom,
+  schematicsFor, searchItems, sortItems, statRank, teachesOf, TIER_WORDS,
+  tierWord, weaponsForAmmo, type ItemSort,
 } from '../itemsData';
 import { equipPassiveName, ITEM_FACTS, type CraftRow } from '../itemFacts';
 import { ItemIcon } from '../ui/ItemIcon';
@@ -497,6 +497,42 @@ function ItemDetail({ id, onClose, onOpenItem }: {
               )}
             </Card>
           )}
+
+          {(() => {
+            const hatchers = palsHatchingFrom(id);
+            if (!hatchers.length) return null;
+            return (
+              <Card style={{ marginTop: 10 }}>
+                <Text style={s.h3}>
+                  {hatchers.length === 1
+                    ? 'Hatches into this pal' : 'Hatches into these pals'}
+                </Text>
+                <View style={[s.wrap, { marginTop: 6 }]}>
+                  {hatchers.map((pal) => (
+                    <Pressable key={pal}
+                      onPress={() => {
+                        onClose();
+                        navigateTo({
+                          domain: 'breeding', tab: 'paldex',
+                          payload: { pal },
+                        });
+                      }}
+                      accessibilityRole="button"
+                      accessibilityLabel={`${pal} hatches from this egg. Open the pal's card`}
+                      style={({ pressed }) => ({
+                        backgroundColor: pressed ? T.surface2 : T.surface,
+                        borderWidth: 1, borderColor: T.accentSoft,
+                        borderRadius: 9, paddingHorizontal: 8, paddingVertical: 4,
+                      })}>
+                      <Text style={{ color: T.accentInk, fontSize: 12, fontWeight: '700' }}>
+                        {pal}
+                      </Text>
+                    </Pressable>
+                  ))}
+                </View>
+              </Card>
+            );
+          })()}
 
           {facts?.research && facts.research.length > 0 && (
             <Card style={{ marginTop: 10 }}>

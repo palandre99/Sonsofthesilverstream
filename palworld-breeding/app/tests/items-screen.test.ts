@@ -8,8 +8,8 @@ import { join } from 'node:path';
 import {
   ammoForWeapon, familyOf, idsInGroup, ITEM_GROUPS, ITEM_STATS, ITEMS,
   itemIdByName, KIND_WORDS, kindsInGroup, kindWord, palsDropping,
-  schematicsFor, searchItems, sortItems, statRank, teachesOf, tierWord,
-  weaponsForAmmo,
+  palsHatchingFrom, schematicsFor, searchItems, sortItems, statRank,
+  teachesOf, tierWord, weaponsForAmmo,
 } from '../../mobile/src/itemsData';
 import palsJson from '../../mobile/src/data/pals_1_0.json';
 import { shareTextForItem } from '../../mobile/src/itemShare';
@@ -180,6 +180,30 @@ describe('ammo and weapons join both ways from the game’s own tags', () => {
     const joined = ammo.filter((i) => weaponsForAmmo(i).length > 0);
     expect(ammo.length).toBe(32);
     expect(joined.length).toBe(25);
+  });
+});
+
+describe('eggs know their pals (game-file egg_types)', () => {
+  it('the Common Egg hatches Lamball, and every egg type joins', () => {
+    const commonEgg = Object.keys(ITEMS).find(
+      (i) => ITEMS[i].name === 'Common Egg');
+    expect(palsHatchingFrom(commonEgg!)).toContain('Lamball');
+    const eggs = Object.keys(ITEMS)
+      .filter((i) => ITEMS[i].subcategory === 'MaterialPalEgg');
+    expect(eggs.length).toBe(53);
+    const covered = eggs.filter((i) => palsHatchingFrom(i).length > 0);
+    // 43 join; the uncovered six names are RIGHT to stay empty — the
+    // Mutated/Ominous families are Breeding Farm eggs whose contents
+    // depend on the parents, and plain Dragon Egg has no wild claimant
+    // in the pal table
+    expect(covered.length).toBe(43);
+    const uncoveredNames = new Set(eggs
+      .filter((i) => palsHatchingFrom(i).length === 0)
+      .map((i) => ITEMS[i].name));
+    expect([...uncoveredNames].sort()).toEqual([
+      'Dragon Egg', 'Huge Mutated Egg', 'Huge Ominous Egg',
+      'Large Mutated Egg', 'Large Ominous Egg', 'Ominous Egg',
+    ]);
   });
 });
 

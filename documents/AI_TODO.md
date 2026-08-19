@@ -2334,9 +2334,13 @@ re-evaluation finds nothing — otherwise it ALWAYS has work.
       weapons" tappable; weapon cards: "Fires" tappable, matched on any
       tier via the family base. Eye-verified the full round trip. 804
       green, published.
-- [ ] IL5 Egg cards: the 53 MaterialPalEgg items — hatch-related facts
-      from data we own (which pals come from which egg class, via
-      pals_1_0 spawn/egg data if provable; else honest coming-soon copy).
+- [x] IL5 2026-08-19: every egg card names its hatch pool — pals_1_0's
+      egg_types joins egg item names exactly (26/26 types, zero
+      mismatches); 43 of 53 egg items list their pals as tappable
+      Paldex chips. The six uncovered names are PINNED as correct:
+      Mutated/Ominous are Breeding Farm eggs (contents depend on the
+      parents) and plain Dragon Egg has no wild claimant in the table.
+      Eye-verified (Common Egg lists its 23), 805 green, published.
 - [ ] IL6 Food saturation ordering: a "best food" sort within Food
       (Nutrition per item, SAN) — the numbers exist on effects.
 - [ ] IL7 Sphere module effects on sphere cards (module family cross-link).

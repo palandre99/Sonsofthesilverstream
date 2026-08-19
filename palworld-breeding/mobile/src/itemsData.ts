@@ -290,7 +290,7 @@ export function familyOf(id: string): string[] {
  * 115 distinct strings resolve against the backbone (measured
  * 2026-08-19, zero mismatches — pinned by test). */
 const PAL_DROPS = (palsJson as unknown as {
-  pals: Record<string, { drops?: string[] }>;
+  pals: Record<string, { drops?: string[]; egg_types?: string[] }>;
 }).pals;
 
 const DROPPED_BY = new Map<string, string[]>();
@@ -305,6 +305,20 @@ for (const [pal, p] of Object.entries(PAL_DROPS)) {
 /** Which pals drop this item — game-file data, Paldex-linkable. */
 export function palsDropping(id: string): string[] {
   return DROPPED_BY.get(ITEMS[id]?.name ?? '') ?? [];
+}
+
+/** Which pals hatch from this egg — every pal's egg_types names an egg
+ * item exactly (26 of 26 types verified, zero mismatches). */
+const HATCHES = new Map<string, string[]>();
+for (const [pal, p] of Object.entries(PAL_DROPS)) {
+  for (const t of p.egg_types ?? []) {
+    const list = HATCHES.get(t) ?? [];
+    list.push(pal);
+    HATCHES.set(t, list);
+  }
+}
+export function palsHatchingFrom(id: string): string[] {
+  return HATCHES.get(ITEMS[id]?.name ?? '') ?? [];
 }
 
 /* ---- ammo <-> weapon, from the game's own description tags ----------
