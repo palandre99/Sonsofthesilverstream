@@ -330,11 +330,11 @@ const craftDepth = (id: string, path: Set<string>): number => {
   return 1 + Math.max(...ITEM_FACTS[id]!.recipe!.map((r) => craftDepth(r.id, next)));
 };
 
-/** The full bill of materials for ONE of `id`. `gather` is empty when
- * the item is not craftable; `steps` is empty when the recipe is
- * already all raw — the caller shows the section only when it adds
- * something the recipe did not already say. */
-export function rawMaterialsFor(id: string): CraftRollup {
+/** The bill for ANY material list — a base recipe or one schematic
+ * tier's (IL33). `product` is the thing being made: it seeds the path,
+ * so a tier that lists itself stops instead of looping, and it is what
+ * a circular expansion is checked against. */
+export function rollupOfMats(mats: CraftRow[], product?: string): CraftRollup {
   const gather = new Map<string, number>();
   const steps = new Map<string, number>();
   const walk = (at: string, qty: number, path: Set<string>): void => {
@@ -349,13 +349,17 @@ export function rawMaterialsFor(id: string): CraftRollup {
       walk(r.id, need, next);
     }
   };
-  if (ITEM_FACTS[id]?.recipe) walk(id, 1, new Set());
+  const seed = new Set(product ? [product] : []);
+  for (const m of mats) {
+    if (expands(m.id, seed)) steps.set(m.id, (steps.get(m.id) ?? 0) + m.n);
+    walk(m.id, m.n, seed);
+  }
   // Two items round-trip: a Small Pal Soul is made from a Medium, and a
   // Medium from Smalls. Expanding either one ends up asking you to
   // gather the very thing you are making, which is not an answer — so
   // there is no from-scratch bill for them and the card just shows the
   // recipe.
-  if (gather.has(id)) return { gather: [], steps: [] };
+  if (product && gather.has(product)) return { gather: [], steps: [] };
   // The same loop can be reached from OUTSIDE it: anything crafted from
   // Pal Souls walks into the Small/Medium round trip and stops there.
   // Whatever the walk stopped on is a thing you go and get, so it must
@@ -370,6 +374,16 @@ export function rawMaterialsFor(id: string): CraftRollup {
       craftDepth(a.id, new Set()) - craftDepth(b.id, new Set())
       || b.n - a.n || ITEMS[a.id].name.localeCompare(ITEMS[b.id].name)),
   };
+}
+
+/** The full bill of materials for ONE of `id`. `gather` is empty when
+ * the item is not craftable; `steps` is empty when the recipe is
+ * already all raw — the caller shows the section only when it adds
+ * something the recipe did not already say. */
+export function rawMaterialsFor(id: string): CraftRollup {
+  const recipe = ITEM_FACTS[id]?.recipe;
+  if (!recipe) return { gather: [], steps: [] };
+  return rollupOfMats(recipe, id);
 }
 
 /** The things this item helps craft — one row per family, best first. */

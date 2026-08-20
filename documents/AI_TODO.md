@@ -2312,16 +2312,31 @@ work always"):**
    and reported with the reasoning. Only true CEO-only blockers (Apple
    logins, purchases, money, his own device) stop a tick.
 
-- [ ] IL33 FOUND BY IL32 2026-08-20: the from-scratch bill expands the
-      BASE recipe only. A weapon's higher tiers carry their own, much
-      bigger material lists (`facts.crafts[].mats` — the Uncommon Beam
-      Sword alone is 37 Plasteel · 125 Paldium · 25 Nightstar Sand · 1
-      Computer · 3 Ancient Civilization Parts), and those are shown
-      un-expanded, so the exact question IL32 just answered for the
-      Common tier is still unanswered for the tier a player actually
-      builds. Same derivation, same guards — `rawMaterialsFor` needs to
-      take a material list rather than only an item id. Check whether
-      the tier mats reach the same two game loops before shipping.
+- [x] IL33 2026-08-20: THE TIER A PLAYER ACTUALLY BUILDS NOW ANSWERS THE
+      SAME QUESTION. IL32 expanded the base recipe; the higher tiers —
+      1,690 schematic crafts, and the ones people grind for — still
+      showed a flat list. 1,451 of them hid deeper crafting, so each now
+      opens out: the Legendary Beam Sword's "60 Plasteel" is really
+      376 Ore · 200 Paldium Fragment · 48 Coal · 40 Nightstar Sand ·
+      16 Flame Organ · 16 HQ Pal Oil · 8 Sulfur · 6 Ancient Civilization
+      Parts, and it costs more ore at every tier (169 → 204 → 263 → 376,
+      pinned as a strictly-rising test).
+      MY DESIGN CALL — collapsed, one at a time. Five tiers × a full
+      bill is thirty lines of wall, which is exactly the "chaotic and
+      terrible" the CEO rejected before; each tier gets a quiet "What it
+      really costs" that opens one bill and closes the others. Tiers
+      whose recipe is already raw show no control at all (239 of them).
+      `rawMaterialsFor` became `rollupOfMats(mats, product)` so the
+      product seeds the cycle path — the same guard, now proven on tier
+      lists too: 0 circular, 0 unknown ids across all 1,690.
+      CAUGHT ON THE EYE PASS: every tier shares the family's NAME, so
+      all three controls read aloud identically ("the Beam Sword"). They
+      now carry the tier word — "Show what the Legendary Beam Sword
+      really costs" — which is the only thing that tells them apart.
+      Share text deliberately unchanged: it never carried tier recipes,
+      so there is no drift to fix (IL30's rule, applied and answered).
+      864 green, eye pass at 375×812 — accordion verified one-open,
+      nothing of mine past the viewport.
 - [x] IL18b 2026-08-20: ONE SEARCH FOR EVERYTHING IS LIVE — the CEO
       handed the call back ("u make decisions"), so plan §6 option A
       shipped: a magnifier in the TOP BAR of every screen opens an

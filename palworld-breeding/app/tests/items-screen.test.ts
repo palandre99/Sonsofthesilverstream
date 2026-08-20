@@ -9,7 +9,7 @@ import {
   ammoForWeapon, collapseFamilies, effectNumber, familyOf, familyPowerOf,
   idsInGroup, implantPassive, ITEM_GROUPS, ITEM_STATS, ITEMS, itemIdByName, KIND_WORDS,
   kindsInGroup, kindWord, palsDropping, palsHatchingFrom, rawMaterialsFor,
-  rivalsOf,
+  rivalsOf, rollupOfMats,
   schematicsFor, searchItems, sortItems, statRank, TAB_GROUPS, teachesOf,
   tierWord, usedInOf, weaponsForAmmo,
 } from '../../mobile/src/itemsData';
@@ -723,6 +723,58 @@ describe('the screen speaks plainly and cites its sources', () => {
       'Xenolord (Ultra) Slab Fragment',
       'Xenolord Slab Fragment',
     ]);
+  });
+
+  it('every schematic tier gets the same expansion as the base (IL33)', () => {
+    const facts = (FACTS as { facts: Record<string, {
+      crafts?: { product: string; mats: { id: string; n: number }[] }[] }> }).facts;
+    let tiers = 0;
+    let deeper = 0;
+    for (const f of Object.values(facts)) {
+      for (const c of f.crafts ?? []) {
+        tiers++;
+        const roll = rollupOfMats(c.mats, c.product);
+        for (const r of [...roll.gather, ...roll.steps]) {
+          expect(ITEMS[r.id], `tier ${c.product} rolled up to unknown ${r.id}`).toBeTruthy();
+          expect(r.n).toBeGreaterThan(0);
+        }
+        // never "to build this, go and get this"
+        expect(roll.gather.some((r) => r.id === c.product)).toBe(false);
+        const steps = new Set(roll.steps.map((r) => r.id));
+        for (const r of roll.gather) expect(steps.has(r.id)).toBe(false);
+        if (roll.steps.length) deeper++;
+      }
+    }
+    expect(tiers).toBe(1690);
+    expect(deeper).toBe(1451);
+  });
+
+  it("a tier's bill scales with the tier, and it is the same ore", () => {
+    const facts = (FACTS as { facts: Record<string, {
+      crafts?: { product: string; mats: { id: string; n: number }[] }[] }> }).facts;
+    const tiers = facts.BeamSword!.crafts!;
+    const ore = (mats: { id: string; n: number }[], product: string) =>
+      rollupOfMats(mats, product).gather.find((r) => ITEMS[r.id].name === 'Ore')!.n;
+    const counts = tiers.map((c) => ore(c.mats, c.product));
+    // the Common blade is 169 Ore; every tier above it costs strictly more
+    expect(rawMaterialsFor('BeamSword').gather[0].n).toBe(169);
+    expect(counts[0]).toBe(204);
+    expect(counts[counts.length - 1]).toBe(376);
+    for (let i = 1; i < counts.length; i++) {
+      expect(counts[i], `tier ${i} costs no more ore than tier ${i - 1}`)
+        .toBeGreaterThan(counts[i - 1]);
+    }
+  });
+
+  it('a tier that is already raw offers nothing to open out', () => {
+    const facts = (FACTS as { facts: Record<string, {
+      crafts?: { product: string; mats: { id: string; n: number }[] }[] }> }).facts;
+    const flat = Object.values(facts).flatMap((f) => f.crafts ?? [])
+      .filter((c) => rollupOfMats(c.mats, c.product).steps.length === 0);
+    expect(flat.length).toBe(1690 - 1451);
+    // and the screen only draws the control when there is depth to show
+    expect(code).toContain('const deep = roll.steps.length > 0;');
+    expect(code).toContain('What it really costs');
   });
 
   it('the two Pal Souls loop back on each other, so neither claims a bill', () => {

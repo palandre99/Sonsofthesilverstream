@@ -21,7 +21,7 @@ import {
   ammoForWeapon, collapseFamilies, effectNumber, familyOf, familyPowerOf,
   groupOf, idsInGroup, implantPassive, ITEM_GROUPS, ITEM_STATS, ITEMS,
   kindsInGroup, kindWord, palsDropping, palsHatchingFrom, rawMaterialsFor,
-  rivalsOf, schematicsFor,
+  rivalsOf, rollupOfMats, schematicsFor,
   searchItems, sortItems, statRank, TAB_GROUPS, teachesOf, TIER_WORDS,
   tierWord, usedInOf, weaponsForAmmo, type ItemSort,
 } from '../itemsData';
@@ -251,6 +251,8 @@ function ItemDetail({ id, trail = [], onClose, onBack, onOpenItem }: {
   id: string; trail?: string[]; onClose: () => void; onBack?: () => void;
   onOpenItem: (id: string) => void;
 }) {
+  // which schematic tier has its full cost opened out (one at a time)
+  const [openTier, setOpenTier] = useState<string | null>(null);
   const cameFrom = trail.length ? ITEMS[trail[trail.length - 1]] : null;
   const it = ITEMS[id];
   const st = ITEM_STATS[id];
@@ -476,26 +478,78 @@ function ItemDetail({ id, trail = [], onClose, onBack, onOpenItem }: {
                       ? 'Crafted with its schematic:'
                       : 'Higher tiers, each with its schematic:'}
                   </Text>
-                  {facts.crafts.map((c) => (
-                    <View key={c.product} style={{ marginTop: 5 }}>
-                      <View style={[s.row, { gap: 8 }]}>
-                        <TierChip id={c.product} />
-                        {c.schematic && (
+                  {facts.crafts.map((c) => {
+                    // IL33: a tier's own recipe hides the same depth the
+                    // base one did — the Legendary Beam Sword's "60
+                    // Plasteel" is really 376 Ore. Opened on tap, one at
+                    // a time, so five tiers can't bury the card.
+                    const roll = rollupOfMats(c.mats, c.product);
+                    const deep = roll.steps.length > 0;
+                    const shown = openTier === c.product;
+                    // every tier shares the family's name, so the tier
+                    // word is the only thing that tells them apart when
+                    // the label is read aloud
+                    const tierName = [
+                      ITEM_STATS[c.product]?.tier ?? tierWord(ITEMS[c.product]?.rarity ?? 0),
+                      ITEMS[c.product]?.name ?? c.product,
+                    ].join(' ');
+                    return (
+                      <View key={c.product} style={{ marginTop: 5 }}>
+                        <View style={[s.row, { gap: 8 }]}>
+                          <TierChip id={c.product} />
+                          {c.schematic && (
+                            <Pressable
+                              onPress={() => onOpenItem(c.schematic!)}
+                              accessibilityRole="button"
+                              accessibilityLabel={`${ITEMS[c.schematic]?.name}. Open its card`}>
+                              <Text style={{ color: T.accentInk, fontSize: 12, fontWeight: '700' }}>
+                                {ITEMS[c.schematic]?.name}
+                              </Text>
+                            </Pressable>
+                          )}
+                        </View>
+                        <Text style={[s.body, { fontSize: 12, marginTop: 2, color: T.faint }]}>
+                          {c.mats.map((r) => `${r.n}× ${ITEMS[r.id]?.name ?? r.id}`).join(' · ')}
+                        </Text>
+                        {deep && (
                           <Pressable
-                            onPress={() => onOpenItem(c.schematic!)}
+                            onPress={() => setOpenTier(shown ? null : c.product)}
                             accessibilityRole="button"
-                            accessibilityLabel={`${ITEMS[c.schematic]?.name}. Open its card`}>
-                            <Text style={{ color: T.accentInk, fontSize: 12, fontWeight: '700' }}>
-                              {ITEMS[c.schematic]?.name}
+                            accessibilityLabel={shown
+                              ? `Hide what the ${tierName} really costs`
+                              : `Show what the ${tierName} really costs from scratch`}
+                            style={({ pressed }) => [s.row, {
+                              gap: 3, marginTop: 3, alignSelf: 'flex-start',
+                              opacity: pressed ? 0.6 : 1,
+                            }]}>
+                            <Icon name={shown ? 'chevron-up' : 'chevron-down'}
+                              size={14} color={T.accentInk} />
+                            <Text style={{ color: T.accentInk, fontSize: 11.5, fontWeight: '700' }}>
+                              {shown ? 'Hide the full cost' : 'What it really costs'}
                             </Text>
                           </Pressable>
                         )}
+                        {deep && shown && (
+                          <View style={{
+                            marginTop: 4, paddingLeft: 8,
+                            borderLeftWidth: 2, borderLeftColor: T.line2,
+                          }}>
+                            <Text style={[s.body, { fontSize: 11.5, color: T.muted }]}>
+                              From scratch
+                            </Text>
+                            <Text style={[s.body, { fontSize: 12, marginTop: 1, color: T.ink }]}>
+                              {roll.gather
+                                .map((r) => `${r.n}× ${ITEMS[r.id].name}`).join(' · ')}
+                            </Text>
+                            <Text style={[s.body, { fontSize: 11.5, marginTop: 3, color: T.faint }]}>
+                              Crafted along the way: {roll.steps
+                                .map((r) => `${r.n}× ${ITEMS[r.id].name}`).join(' · ')}
+                            </Text>
+                          </View>
+                        )}
                       </View>
-                      <Text style={[s.body, { fontSize: 12, marginTop: 2, color: T.faint }]}>
-                        {c.mats.map((r) => `${r.n}× ${ITEMS[r.id]?.name ?? r.id}`).join(' · ')}
-                      </Text>
-                    </View>
-                  ))}
+                    );
+                  })}
                 </View>
               ) : facts.recipesMore && facts.recipesMore.length > 0 && (
                 <View style={{ marginTop: 8 }}>
@@ -1245,6 +1299,9 @@ export function ItemsScreen({ initialGroup = 'weapons' }: { initialGroup?: strin
       />
       {open && (
         <ItemDetail id={open}
+          // the card holds per-item state (which tier is opened out),
+          // so walking the trail must give it a fresh one
+          key={open}
           // IL28: tapping an ingredient, a rival or a schematic used to
           // REPLACE the card with no way back — the same "it takes me
           // out and I can't return" the CEO hit on the Paldex->Map jump
