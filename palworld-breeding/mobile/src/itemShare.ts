@@ -8,7 +8,8 @@
  * react-native; the screen passes breeding.game_version.
  */
 import {
-  buildTotals, implantPassive, ITEM_STATS, ITEMS, kindPhrase, palsDropping,
+  buildTime, buildTotals, implantPassive, ITEM_STATS, ITEMS, kindPhrase,
+  palsDropping, spokenTime,
   palsHatchingFrom, rawMaterialsFor, statRank, tierWord,
 } from './itemsData';
 import { equipPassiveName, ITEM_FACTS } from './itemFacts';
@@ -49,6 +50,22 @@ export function shareTextForBuild(
   if (totals.steps.length) {
     lines.push('', 'Crafted along the way, in this order:',
       '  ' + totals.steps.map((r) => `${r.n}× ${ITEMS[r.id].name}`).join(' · '));
+  }
+  // IL30's standing lesson, applied the same tick the panel gained it:
+  // "how long is this?" is exactly what you tell the people you play
+  // with, and it travels with the same honesty the panel shows.
+  // The out-of-reach LEVEL warning deliberately does NOT travel — it is
+  // personal state ("you are level 40"), not a fact about the shopping
+  // list, and it would be nonsense in someone else's hands.
+  const time = buildTime(list);
+  if (time.counted > 0 || time.unknown > 0) {
+    lines.push('', (time.counted > 0
+      ? `About ${spokenTime(time.seconds)} of crafting at Handiwork Lv. 1`
+      : 'No craft time is recorded for any of these')
+      + (time.unknown > 0
+        ? `${time.counted > 0 ? ', plus ' : ' — '}${time.unknown} `
+          + `${time.unknown === 1 ? 'thing' : 'things'} with no time recorded`
+        : ''));
   }
   lines.push('', `Palworld ${gameVersion} · read from the game files · Paldexia`);
   return lines.join('\n');

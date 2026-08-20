@@ -2454,6 +2454,16 @@ work always"):**
       with no time recorded" — one word meaning two different numbers
       on the same card. `unknown` now counts things, and the test says
       why. 924 green.
+      AND THE SHARE DRIFTED TWICE BEFORE I NOTICED: IL30's standing
+      lesson says a new panel section must be considered for the share
+      IN THE SAME TICK, and I added the level warning (IL46) and this
+      time line without doing it. Caught by re-reading my own rule at
+      the end of the tick and checking, rather than by a test — nothing
+      was WRONG, just missing, which is exactly how IL30 described it.
+      The time now travels with a shared list; the LEVEL warning
+      deliberately does not, because "you are level 40" is personal
+      state and nonsense in someone else's hands. Pinned both ways.
+      928 green.
 - [x] IL45 2026-08-20: HOLD A ROW TO ADD IT — and the measurement said
       NO BUTTON, so there is none. The row is 343px wide and its name
       slot is 199px; "Disposable Implant: Demon's Hand" already needs

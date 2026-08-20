@@ -1197,3 +1197,30 @@ describe('the build list says how long, and what it cannot time (IL47)', () => {
     expect(timed.length).toBe(740);
   });
 });
+
+describe('the shared build carries the time too (IL30 lesson, IL47 tick)', () => {
+  it('a shared list says how long, with the same honesty', () => {
+    const txt = shareTextForBuild({ BeamSword: 3, AIcore: 2 }, '1.0');
+    expect(txt).toContain('About 8h 20m of crafting at Handiwork Lv. 1');
+    expect(txt).toContain('plus 2 things with no time recorded');
+  });
+
+  it('a list of raw materials claims no time at all', () => {
+    const txt = shareTextForBuild({ Wood: 20 }, '1.0');
+    expect(txt).not.toContain('Handiwork');
+    expect(txt).not.toContain('no time recorded');
+  });
+
+  it('the personal level warning deliberately does NOT travel', () => {
+    // "you are level 40" is nonsense in someone else's hands
+    const txt = shareTextForBuild({ BeamSword: 1 }, '1.0');
+    expect(txt).not.toContain('technology level');
+    expect(txt).not.toContain('out of reach');
+  });
+
+  it('provenance still comes last, after the new line', () => {
+    const txt = shareTextForBuild({ BeamSword: 1 }, '1.0');
+    expect(txt.trimEnd().endsWith(
+      'Palworld 1.0 · read from the game files · Paldexia')).toBe(true);
+  });
+});
