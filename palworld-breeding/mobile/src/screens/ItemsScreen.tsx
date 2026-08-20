@@ -1097,6 +1097,58 @@ function ItemDetail({ id, trail = [], onClose, onBack, onOpenItem }: {
             );
           })()}
 
+          {/* IL89: the row has said "Used in 233 recipes" since the
+              material sweep, and then the CARD — where a player goes to
+              find out — said nothing at all. "I have 200 Paldium
+              Fragment, what is it for?" had no answer here. Ordered by
+              when you can make each thing, because that is the question
+              behind the question. */}
+          {(() => {
+            const made = usedInOf(id);
+            if (!made.length) return null;
+            const lv = (i: string) => ITEM_FACTS[i]?.tech?.level ?? 9999;
+            const ordered = [...made].sort((a, b) => lv(a) - lv(b)
+              || ITEMS[a].name.localeCompare(ITEMS[b].name));
+            const show = ordered.slice(0, 12);
+            return (
+              <Card style={{ marginTop: 10 }}>
+                <Text style={s.h3}>
+                  {made.length === 1 ? 'What it makes' : 'What you can make with it'}
+                </Text>
+                <View style={[s.wrap, { marginTop: 6, gap: 6 }]}>
+                  {show.map((mid) => (
+                    <Pressable key={mid}
+                      onPress={() => onOpenItem(mid)}
+                      accessibilityRole="button"
+                      accessibilityLabel={`${ITEMS[mid].name}. Open its card`}
+                      style={({ pressed }) => [{
+                        flexDirection: 'row', alignItems: 'center', gap: 6,
+                        paddingVertical: 4, paddingHorizontal: 8,
+                        borderRadius: 8,
+                        backgroundColor: pressed ? T.surface2 : T.surface,
+                      }]}>
+                      <ItemIcon icon={ITEMS[mid].icon} size={20} />
+                      <Text style={{ color: T.accentInk, fontSize: 12, fontWeight: '700' }}>
+                        {ITEMS[mid].name}
+                      </Text>
+                      {ITEM_FACTS[mid]?.tech?.level != null && (
+                        <Text style={{ color: T.faint, fontSize: 11, fontWeight: '700' }}>
+                          Lv {ITEM_FACTS[mid]!.tech!.level}
+                        </Text>
+                      )}
+                    </Pressable>
+                  ))}
+                </View>
+                {made.length > show.length && (
+                  <Text style={[s.body, { marginTop: 6, fontSize: 11.5, color: T.faint }]}>
+                    +{made.length - show.length} more — these are the
+                    {' '}{show.length} you can unlock earliest.
+                  </Text>
+                )}
+              </Card>
+            );
+          })()}
+
           {hasNoKnownSource(id) && (
             /* IL41: 102 cards could say NOTHING about where the item
                comes from — no recipe, no tech, no drop, no chest, no

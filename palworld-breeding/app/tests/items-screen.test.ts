@@ -2287,3 +2287,36 @@ describe('a single-group tab offers its classes too (IL88)', () => {
       '{ ...filters, kind: filters.kind === g.id ? null : g.id }');
   });
 });
+
+describe('a material card says what it is for (IL89)', () => {
+  it('the row promised it and the card was silent', () => {
+    const pal = itemIdByName('Paldium Fragment')!;
+    expect(usedInOf(pal).length).toBe(195);
+    // 142 items feed a recipe; the median one feeds four, so most cards
+    // show the whole list and only a handful need the cap
+    const carriers = ITEM_IDS.filter((i) => usedInOf(i).length > 0);
+    expect(carriers.length).toBe(142);
+    const under12 = carriers.filter((i) => usedInOf(i).length <= 12);
+    expect(under12.length).toBeGreaterThan(carriers.length / 2);
+  });
+
+  it('the twelve shown are the earliest to unlock, not the first twelve', () => {
+    const code = readFileSync(
+      join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+    const block = code.slice(code.indexOf('IL89'), code.indexOf('IL89') + 2600);
+    expect(block).toContain('ITEM_FACTS[i]?.tech?.level ?? 9999');
+    expect(block).toContain('.slice(0, 12)');
+    expect(block).toContain('you can unlock earliest');
+    // and each one opens its own card
+    expect(block).toContain('onPress={() => onOpenItem(mid)}');
+  });
+
+  it('a material with one product says "What it makes"', () => {
+    const charcoal = itemIdByName('Charcoal')!;
+    expect(usedInOf(charcoal).length).toBe(1);
+    const code = readFileSync(
+      join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+    expect(code).toContain(
+      "made.length === 1 ? 'What it makes' : 'What you can make with it'");
+  });
+});

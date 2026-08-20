@@ -12251,3 +12251,30 @@ component, and neither appears while searching.
 Gates: mobile `tsc --noEmit` clean, `npx vitest run` 1075/1075. The IL87
 test that pinned "only the centre tab has a strip" now pins what is still
 true — it never runs while searching and never renders empty.
+
+---
+
+## IL89 — a material card says what the material is FOR (2026-08-20)
+
+The row has said *"Used in 233 recipes"* since the material sweep — and
+then the CARD, which is where a player goes to find out, said nothing at
+all. Paldium Fragment's card had "The numbers" and "Where to find it" and
+stopped. *"I have 200 of these, what are they for?"* had no answer on the
+one screen built to answer it.
+
+```
+What you can make with it
+[Common Shield Lv 4] [Foxparks' Harness Lv 6] [Rushoar Saddle Lv 6]
+[Melpaca Saddle Lv 7] [Eikthyrdeer Saddle Lv 12] [Grappling Gun Lv 12] …
++183 more — these are the 12 you can unlock earliest.
+```
+
+**Ordered by when you can make each thing**, because that is the question
+behind the question, and every entry opens its own card. 142 items feed a
+recipe and the median one feeds four, so most cards show the whole list —
+only a handful need the cap, and those say so honestly rather than
+truncating in silence.
+
+A material with a single product says "What it makes" instead.
+
+Gates: mobile `tsc --noEmit` clean, `npx vitest run` 1078/1078.
