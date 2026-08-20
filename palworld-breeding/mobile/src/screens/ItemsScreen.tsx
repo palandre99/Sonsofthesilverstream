@@ -22,7 +22,7 @@ import {
   groupOf, hasNoKnownSource, idsInGroup, implantPassive, ITEM_GROUPS,
   ITEM_STATS, ITEMS,
   kindPhrase, kindsInGroup, kindWord, palsDropping, palsHatchingFrom, rawMaterialsFor,
-  rankAxisOf, rankValueOf, rivalsOf, rollupOfMats, schematicsFor,
+  buildTotals, rankAxisOf, rankValueOf, rivalsOf, rollupOfMats, schematicsFor,
   searchItems, sortItems, statRank, TAB_GROUPS, teachesOf, TIER_WORDS,
   tierWord, usedInOf, weaponsForAmmo, type ItemSort,
 } from '../itemsData';
@@ -31,7 +31,10 @@ import { ItemIcon } from '../ui/ItemIcon';
 import { Icon } from '../ui/Icon';
 import { navigateTo, onNavIntent, takeIntentPayload } from '../nav/intent';
 import { shareTextForItem, techSentence } from '../itemShare';
-import { breeding, getPlayerLevel } from '../store';
+import {
+  addToBuild, breeding, buildQty, clearBuild, getBuildList, getPlayerLevel,
+  setBuildQty, useAppVersion,
+} from '../store';
 
 /** Tier tints — presentation colours for the game's own tier words. */
 const TIER_TINTS: Record<string, string> = {
@@ -278,6 +281,87 @@ function MatChips({ rows, onOpenItem, dim = false }: {
   );
 }
 
+/** The build list, summed (IL43) — the question the per-item bills
+ * could not answer: "I want all of THIS, what do I actually need?"
+ * Collapsed to one line until the player opens it, and invisible
+ * entirely until they put something on it, so the index a player who
+ * never uses this feature sees is exactly the index they see today. */
+function BuildPanel({ onOpenItem }: { onOpenItem: (id: string) => void }) {
+  useAppVersion();
+  const [open, setOpen] = useState(false);
+  const list = getBuildList();
+  const ids = Object.keys(list);
+  if (!ids.length) return null;
+  const totals = buildTotals(list);
+  const things = ids.reduce((a, i) => a + list[i], 0);
+  return (
+    <Card style={{ marginBottom: 8 }}>
+      <Pressable
+        onPress={() => setOpen(!open)}
+        accessibilityRole="button"
+        accessibilityLabel={open
+          ? 'Hide what your build needs'
+          : `Your build: ${things} thing${things === 1 ? '' : 's'}. Show what it needs`}
+        style={[s.row, { gap: 8 }]}>
+        <Icon name={open ? 'chevron-up' : 'chevron-down'} size={16} color={T.accentInk} />
+        <Text style={[s.h3, { flex: 1 }]}>
+          My build — {things} thing{things === 1 ? '' : 's'}
+        </Text>
+        <Text style={{ color: T.muted, fontSize: 12 }}>
+          {totals.gather.length} to gather
+        </Text>
+      </Pressable>
+      {open && (
+        <View style={{ marginTop: 8 }}>
+          <Text style={[s.body, { fontSize: 11.5, color: T.muted }]}>
+            What you are making
+          </Text>
+          <View style={{ marginTop: 4 }}>
+            {ids.map((i) => (
+              <View key={i} style={[s.row, { gap: 8, paddingVertical: 3 }]}>
+                <Text style={{ color: T.ink, width: 34, fontSize: 12.5, fontWeight: '800', textAlign: 'right' }}>
+                  {list[i]}×
+                </Text>
+                <Pressable
+                  onPress={() => onOpenItem(i)}
+                  accessibilityRole="button"
+                  accessibilityLabel={`${list[i]} ${ITEMS[i].name}. Open its card`}
+                  style={{ flex: 1 }}>
+                  <Text style={{ color: T.accentInk, fontSize: 12.5, fontWeight: '700' }}
+                    numberOfLines={1}>
+                    {ITEMS[i].name}
+                  </Text>
+                </Pressable>
+                <Btn small label="Remove"
+                  onPress={() => { void setBuildQty(i, 0); }} />
+              </View>
+            ))}
+          </View>
+          <Text style={[s.body, {
+            fontSize: 11.5, color: T.muted, marginTop: 8, paddingTop: 8,
+            borderTopWidth: 1, borderTopColor: T.line,
+          }]}>
+            Everything you need from scratch
+          </Text>
+          <MatChips rows={totals.gather} onOpenItem={onOpenItem} />
+          {totals.steps.length > 0 && (
+            <>
+              <Text style={[s.body, { fontSize: 11.5, color: T.faint, marginTop: 8 }]}>
+                Crafted along the way, in this order
+              </Text>
+              <MatChips rows={totals.steps} onOpenItem={onOpenItem} dim />
+            </>
+          )}
+          <View style={{ marginTop: 10 }}>
+            <Btn small label="Clear my build"
+              onPress={() => { void clearBuild(); }} />
+          </View>
+        </View>
+      )}
+    </Card>
+  );
+}
+
 const techLine = techSentence;
 
 /** "1h6m40s" -> "1h 6m 40s" — the page's compact time, made readable. */
@@ -290,6 +374,8 @@ function ItemDetail({ id, trail = [], onClose, onBack, onOpenItem }: {
 }) {
   // which schematic tier has its full cost opened out (one at a time)
   const [openTier, setOpenTier] = useState<string | null>(null);
+  useAppVersion();                       // the build stepper reads the store
+  const wanted = buildQty(id);
   const cameFrom = trail.length ? ITEMS[trail[trail.length - 1]] : null;
   const it = ITEMS[id];
   const st = ITEM_STATS[id];
@@ -579,6 +665,28 @@ function ItemDetail({ id, trail = [], onClose, onBack, onOpenItem }: {
                   ))}
                 </View>
               )}
+              {/* IL43: the one thing a per-item bill cannot do is add
+                  up. This lives on things you MAKE — a stepper on all
+                  1,892 cards would be clutter that answers nothing. */}
+              <View style={[s.row, {
+                gap: 8, marginTop: 10, paddingTop: 8,
+                borderTopWidth: 1, borderTopColor: T.line,
+              }]}>
+                {wanted > 0 ? (
+                  <>
+                    <Text style={[s.body, { fontSize: 12, color: T.muted, flex: 1 }]}>
+                      On your build list — {wanted}
+                    </Text>
+                    <Btn small label="−"
+                      onPress={() => { void setBuildQty(id, wanted - 1); }} />
+                    <Btn small label="+"
+                      onPress={() => { void addToBuild(id); }} />
+                  </>
+                ) : (
+                  <Btn small label="Add to my build"
+                    onPress={() => { void addToBuild(id); }} />
+                )}
+              </View>
             </Card>
           )}
 
@@ -1298,6 +1406,7 @@ export function ItemsScreen({ initialGroup = 'weapons' }: { initialGroup?: strin
       <PageHead title="Items"
         sub="Every item in the game with its real numbers — nothing estimated."
         stamp />
+      <BuildPanel onOpenItem={setOpen} />
       <View style={{ flexDirection: 'row', gap: 8, marginBottom: 8 }}>
         <View style={{ flex: 1 }}>
           <SearchInput value={q} onChange={setQ}

@@ -6,7 +6,7 @@ import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import {
-  ammoForWeapon, collapseFamilies, effectNumber, familyOf, familyPowerOf,
+  ammoForWeapon, buildTotals, collapseFamilies, effectNumber, familyOf, familyPowerOf,
   hasNoKnownSource,
   idsInGroup, implantPassive, ITEM_GROUPS, ITEM_STATS, ITEMS, itemIdByName, KIND_WORDS,
   kindsInGroup, kindWord, palsDropping, palsHatchingFrom, rawMaterialsFor,
@@ -304,7 +304,10 @@ describe('the level filter uses the player’s own profile (IL21)', () => {
     join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
 
   it('reads the same level the rest of the app already stores', () => {
-    expect(code).toContain("import { breeding, getPlayerLevel } from '../store'");
+    // (the store import grew a build-list slice at IL43; the point of
+    // this assertion is that the LEVEL comes from the shared store)
+    expect(code).toContain('getPlayerLevel');
+    expect(code).toContain("} from '../store';");
     expect(code, 'a second place to set the level would drift')
       .not.toMatch(/setProfileLevel|useState<number>\(\s*1\s*\)/);
   });
@@ -946,5 +949,65 @@ describe('a kind with no attack still gets a rank (IL42)', () => {
   it('the board says what it ranks by when it is not the stat', () => {
     expect(code).toContain('most ${axis} first');
     expect(code).toContain('{rankValueOf(rid)}');
+  });
+});
+
+describe('the build list adds up what a whole grind costs (IL43)', () => {
+  const code = readFileSync(
+    join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+  const store = readFileSync(
+    join(__dirname, '../../mobile/src/store.ts'), 'utf8');
+
+  it('one item is exactly its own bill', () => {
+    const one = buildTotals({ BeamSword: 1 });
+    const solo = rawMaterialsFor('BeamSword');
+    expect(one.gather).toEqual(solo.gather);
+    expect(one.steps).toEqual(solo.steps);
+  });
+
+  it('quantity multiplies, it does not re-derive', () => {
+    const three = buildTotals({ BeamSword: 3 });
+    const solo = rawMaterialsFor('BeamSword');
+    for (const row of three.gather) {
+      const own = solo.gather.find((g) => g.id === row.id)!;
+      expect(row.n).toBe(own.n * 3);
+    }
+  });
+
+  it('two things that share a material share ONE line', () => {
+    // the whole point: not two Wood rows, one Wood row.
+    // Charcoal is 2 Wood each, the Wooden Club (id Bat) is 5 Wood each
+    const both = buildTotals({ Charcoal: 2, Bat: 3 });
+    const wood = both.gather.filter((g) => ITEMS[g.id].name === 'Wood');
+    expect(wood.length).toBe(1);
+    expect(wood[0].n).toBe(2 * 2 + 5 * 3);
+  });
+
+  it('something nobody crafts is itself a thing to gather', () => {
+    const raw = buildTotals({ Wood: 50 });
+    expect(raw.gather).toEqual([{ id: 'Wood', n: 50 }]);
+    expect(raw.steps).toEqual([]);
+  });
+
+  it('an empty or unknown list totals nothing, never throws', () => {
+    expect(buildTotals({})).toEqual({ gather: [], steps: [] });
+    expect(buildTotals({ NotAnItem: 3 })).toEqual({ gather: [], steps: [] });
+    expect(buildTotals({ BeamSword: 0 })).toEqual({ gather: [], steps: [] });
+  });
+
+  it('the list is per world and survives a restart', () => {
+    expect(store).toContain('build: `palforge-${profileId}-build`');
+    expect(store).toContain("build: 'palforge-default-build'");
+    // and an id the catalogue forgot is dropped on load, like the box
+    expect(store).toContain('Object.hasOwn(ITEMS, i) && Number.isFinite(n) && n > 0');
+  });
+
+  it('a slip on the stepper cannot ask for four billion Paldium', () => {
+    expect(store).toContain('Math.min(qty, 999)');
+  });
+
+  it('the panel hides completely until something is on the list', () => {
+    expect(code).toContain('if (!ids.length) return null;');
+    expect(code).toContain('<BuildPanel onOpenItem={setOpen} />');
   });
 });

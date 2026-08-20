@@ -2379,7 +2379,7 @@ work always"):**
       the game's own acronyms. A shared `kindPhrase` now keeps EXP and
       SAN in capitals, and the share composer had the same bug and got
       the same fix. 896 green.
-- [ ] IL43 PROPOSAL, needs a scope call 2026-08-20 — A BUILD LIST. IL32
+- [x] IL43 2026-08-20: THE BUILD LIST — what a whole grind costs. IL32
       and IL33 answer "what does THIS cost from scratch". The question
       they do not answer is the one a player actually asks before a
       grind session: "I want a Legendary set AND these two weapons —
@@ -2398,6 +2398,28 @@ work always"):**
       in the existing store beside the box and plans. No new tab, no
       nav change. But it is a scope step, so it is written down rather
       than started, and the CEO can kill it in one word.
+      DONE 2026-08-20, to exactly the small shape below. "Add to my
+      build" sits at the foot of the craft card (only on things you
+      MAKE — a stepper on all 1,892 cards is clutter that answers
+      nothing), and one collapsible panel at the top of the item index
+      sums the lot. EYE-VERIFIED with a deliberately mixed list: 1 Beam
+      Sword + 3 Fire Arrows + 2 Charcoal reads "My build — 6 things ·
+      9 to gather", and the totals are 169 Ore · 100 Paldium · 20
+      Nightstar Sand · 12 Coal · 10 Wood · 7 Flame Organ · 6 Stone · 4
+      HQ Pal Oil · 2 Sulfur. The arithmetic is the point and it checks:
+      Flame Organ 4 (sword) + 3 (arrows) = 7, and Wood is ONE line of
+      10 across two different products rather than two rows.
+      HONEST SCOPE DISCIPLINE: no new tab, no nav change, and the panel
+      renders NOTHING until the player adds something — a player who
+      never touches this sees the index exactly as before. Per profile,
+      like the box: two worlds, two build lists. Survives a reload
+      (verified). Capped at 999 so a slip on the stepper cannot ask for
+      four billion Paldium, and an id the catalogue forgets is dropped
+      on load the way the box drops a deleted pal.
+      A WRONG ASSERTION CORRECTED, NOT FORCED: my "two things share one
+      Wood line" test used Arrow, which has no recipe at all and is
+      therefore a thing you GATHER, so the total never moved. Swapped to
+      the Wooden Club (5 Wood) and pinned the exact sum. 904 green.
       DECISION 2026-08-20: the proposal was reported to the CEO and no
       objection came back over two ticks. LOOP LAW 3 is explicit that
       design calls are mine and that only Apple logins, purchases,

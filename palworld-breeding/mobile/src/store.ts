@@ -12,6 +12,7 @@ import { BreedingEngine } from './engine/formula';
 import { derivations, planFor, stepId } from './engine/planner';
 import { ADVICE_VERSION, helperAdvice, type HelperAdvice } from './engine/helpers';
 import type { BreedingData, PlanStep } from './engine/types';
+import { ITEMS } from './itemsData';
 import breedingJson from './data/breeding_1_0.json';
 import palsJson from './data/pals_1_0.json';
 import passivesJson from './data/passives_1_0.json';
@@ -151,11 +152,15 @@ interface State {
   /** legacy `true` (pre-gender ticks) or a StepCheck record */
   checks: Record<string, true | StepCheckShape>;
   plan: SavedPlan | null;
+  /** the things a player means to make, item id -> how many (IL43).
+   * Per profile, like everything else here: two worlds, two build
+   * lists. Empty for everyone until they add something. */
+  build: Record<string, number>;
 }
 
 interface StepCheckShape { m: boolean; f: boolean; addedM: boolean; addedF: boolean }
 
-const state: State = { box: {}, checks: {}, plan: null };
+const state: State = { box: {}, checks: {}, plan: null, build: {} };
 let version = 0;
 const listeners = new Set<() => void>();
 
@@ -197,14 +202,22 @@ export const getProfiles = (): Profile[] => profiles;
 export const getActiveProfile = (): Profile =>
   profiles.find((p) => p.id === activeProfile) ?? profiles[0];
 
-function keysFor(profileId: string): { box: string; checks: string; plan: string } {
+function keysFor(profileId: string):
+{ box: string; checks: string; plan: string; build: string } {
   if (profileId === 'default') {
-    return { box: 'hatchlab-box-v2', checks: 'hatchlab-checks-v1', plan: 'hatchlab-plan-v1' };
+    return {
+      box: 'hatchlab-box-v2',
+      checks: 'hatchlab-checks-v1',
+      plan: 'hatchlab-plan-v1',
+      // no legacy key to preserve — the build list is new at IL43
+      build: 'palforge-default-build',
+    };
   }
   return {
     box: `palforge-${profileId}-box`,
     checks: `palforge-${profileId}-checks`,
     plan: `palforge-${profileId}-plan`,
+    build: `palforge-${profileId}-build`,
   };
 }
 
@@ -341,7 +354,7 @@ export async function switchProfile(id: string): Promise<void> {
  * risk landing under the wrong profile's keys */
 let switching = false;
 
-async function persist(key: 'box' | 'checks' | 'plan'): Promise<void> {
+async function persist(key: 'box' | 'checks' | 'plan' | 'build'): Promise<void> {
   if (switching) return;
   try {
     await AsyncStorage.setItem(keysFor(activeProfile)[key], JSON.stringify(state[key]));
@@ -352,9 +365,19 @@ async function loadProfileData(): Promise<void> {
   state.box = {};
   state.checks = {};
   state.plan = null;
+  state.build = {};
   try {
     const k = keysFor(activeProfile);
-    const [b, c, p] = await AsyncStorage.multiGet([k.box, k.checks, k.plan]);
+    const [b, c, p, bl] = await AsyncStorage.multiGet(
+      [k.box, k.checks, k.plan, k.build]);
+    if (bl[1]) {
+      // same hygiene the box gets: an id the catalogue no longer knows
+      // is dropped rather than rendered as a blank row
+      const saved = JSON.parse(bl[1]) as Record<string, number>;
+      state.build = Object.fromEntries(
+        Object.entries(saved)
+          .filter(([i, n]) => Object.hasOwn(ITEMS, i) && Number.isFinite(n) && n > 0));
+    }
     if (b[1]) {
       const saved = JSON.parse(b[1]) as Record<string, OwnedGenders>;
       state.box = Object.fromEntries(
@@ -383,6 +406,40 @@ export async function loadPersisted(): Promise<void> {
     }
   } catch { /* default registry */ }
   await loadProfileData();
+}
+
+/* ---------------- the build list (IL43) ----------------
+ * "I want a Legendary set AND these two weapons — what do I need in
+ * total?" is the question a player asks before a grind session, and the
+ * per-item bills (IL32/IL33) could not answer it. This holds only what
+ * the player asked for; every material total is DERIVED from the
+ * shipped recipes at read time, so nothing here can drift out of date
+ * when the data refreshes. */
+
+export const getBuildList = (): Record<string, number> => state.build;
+export const buildQty = (id: string): number => state.build[id] ?? 0;
+export const buildCount = (): number => Object.keys(state.build).length;
+
+/** Set how many of `id` the player wants; 0 or less removes it. */
+export async function setBuildQty(id: string, n: number): Promise<void> {
+  if (!Object.hasOwn(ITEMS, id)) return;
+  const qty = Math.floor(n);
+  const next = { ...state.build };
+  if (!Number.isFinite(qty) || qty <= 0) delete next[id];
+  // a slip on the stepper should not ask for 4 billion Paldium
+  else next[id] = Math.min(qty, 999);
+  state.build = next;
+  emit();
+  await persist('build');
+}
+
+export const addToBuild = (id: string, n = 1): Promise<void> =>
+  setBuildQty(id, buildQty(id) + n);
+
+export async function clearBuild(): Promise<void> {
+  state.build = {};
+  emit();
+  await persist('build');
 }
 
 /* ---------------- box ---------------- */

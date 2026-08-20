@@ -386,6 +386,42 @@ export function rawMaterialsFor(id: string): CraftRollup {
   return rollupOfMats(recipe, id);
 }
 
+/** Everything a whole build list costs, summed (IL43). Each item's own
+ * bill (IL32) multiplied by how many are wanted, then added together —
+ * so ten arrows and a bow share one Wood line instead of three.
+ * An item nobody crafts is itself a thing to gather, which is what a
+ * player means when they put Paldium Fragment on the list. */
+export function buildTotals(list: Record<string, number>): CraftRollup {
+  const gather = new Map<string, number>();
+  const steps = new Map<string, number>();
+  for (const [id, qty] of Object.entries(list)) {
+    if (!ITEMS[id] || !(qty > 0)) continue;
+    const bill = rawMaterialsFor(id);
+    if (!bill.gather.length && !bill.steps.length) {
+      gather.set(id, (gather.get(id) ?? 0) + qty);
+      continue;
+    }
+    for (const g of bill.gather) {
+      gather.set(g.id, (gather.get(g.id) ?? 0) + g.n * qty);
+    }
+    for (const st of bill.steps) {
+      steps.set(st.id, (steps.get(st.id) ?? 0) + st.n * qty);
+    }
+  }
+  // the same rule as one item's bill: a thing you were told to gather is
+  // never also a step you craft
+  for (const leaf of gather.keys()) steps.delete(leaf);
+  const rows = (m: Map<string, number>): CraftRow[] =>
+    [...m].map(([i, n]) => ({ id: i, n }));
+  return {
+    gather: rows(gather).sort((a, b) => b.n - a.n
+      || ITEMS[a.id].name.localeCompare(ITEMS[b.id].name)),
+    steps: rows(steps).sort((a, b) =>
+      craftDepth(a.id, new Set()) - craftDepth(b.id, new Set())
+      || b.n - a.n || ITEMS[a.id].name.localeCompare(ITEMS[b.id].name)),
+  };
+}
+
 /** Nothing anywhere says how to get this item: no recipe, no tier
  * craft, no technology node, no research, no drop, no chest, no shop,
  * and no pal drops it (IL41). 102 items are in this state. A card that
