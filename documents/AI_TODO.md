@@ -12163,3 +12163,41 @@ would be a resemblance, not an identity, exactly the trap that killed
 B14. Refused.
 
 Gates: mobile `tsc --noEmit` clean, `npx vitest run` 1069/1069.
+
+---
+
+## IL87 — the centre tab stops being a 1,183-row dump (2026-08-20)
+
+**The fane's worst remaining surface, and it took opening the tab as a
+player to see it.** The centre "Items" tab holds everything without a tab
+of its own: **1,183 rows, eleven different kinds of thing, 490 of them
+schematics** — accessories, ammo, saddles, meds, manuals and eggs all
+interleaved in one A–Z list. The group chips existed only inside the
+filter sheet, so reaching the saddles was Filters → scroll → tap.
+
+They are on the screen now, biggest first, exactly the eleven this tab
+carries:
+
+```
+Schematics · 490   Pal gear · 138   Materials · 123   Consumables · 96
+Skill fruits · 93  Accessories · 81  Key items · 79   Ammo · 32
+Eggs · 32          Meds · 14         Gliders · 5
+```
+
+One tap goes from the dump to the saddles — verified on the running app
+(Aegidron Saddle Lv 79, Arsox Saddle Lv 15, …).
+
+**It appears only where it helps.** Not on the Weapons or Armor tabs,
+which hold one kind of thing each; not while searching, where the query
+owns the list. The four groups with their own bottom tab are left out —
+repeating them would be two ways to the same list. Counts follow the same
+rule as the sheet: the number is what the tap will actually show.
+
+First cut offered Weapons and Armor too; caught on the eye pass.
+
+Gates: mobile `tsc --noEmit` clean, `npx vitest run` 1072/1072.
+
+**LOOP FAILURE, MINE.** The previous tick ended with the report and no
+re-armed wakeup, so the loop stopped dead. Re-arming by hand at the end
+of every turn means one forgotten call kills it. There is now a cron
+(`*/3 * * * *`, job c9d39b74) that fires whether or not I remember.

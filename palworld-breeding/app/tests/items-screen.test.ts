@@ -2217,3 +2217,39 @@ describe('an egg card leads with how you get one (IL86)', () => {
     }
   });
 });
+
+describe('the centre tab is navigable, not a 1,183-row dump (IL87)', () => {
+  it('the tab really does carry eleven different kinds of thing', () => {
+    const other = collapseFamilies(idsInGroup('other'));
+    expect(other.length).toBe(1183);
+    const by = new Map<string, number>();
+    for (const i of other) {
+      const g = groupOf(i) ?? '?';
+      by.set(g, (by.get(g) ?? 0) + 1);
+    }
+    expect(by.size).toBe(11);
+    expect(by.get('Schematics')).toBe(490);   // 41% of the list
+    expect(by.get('Pal gear')).toBe(138);
+    expect(by.get('Gliders')).toBe(5);
+  });
+
+  it('the strip offers those groups and not the four with their own tab', () => {
+    const code = readFileSync(
+      join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+    const block = code.slice(code.indexOf('IL87'), code.indexOf('IL87') + 900);
+    expect(block).toContain('groupStrip.map');
+    expect(code).toContain('.filter((g) => !TAB_GROUPS.includes(g.id))');
+    // and it counts the way the sheet does — what the tap will show
+    expect(code.replace(/\s+/g, ' ')).toContain(
+      "n: applyItemFilters({ ...filters, group: g.id, kind: null }, '', level).length");
+  });
+
+  it('it only appears where it helps', () => {
+    const code = readFileSync(
+      join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+    // not on a weapons tab, which holds one kind of thing; not while
+    // searching, where the query owns the list
+    expect(code).toContain("if (homeGroup !== 'other') return [];");
+    expect(code).toContain('{!searching && groupStrip.length > 0 && (');
+  });
+});

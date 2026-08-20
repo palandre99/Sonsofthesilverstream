@@ -1642,6 +1642,27 @@ export function ItemsScreen({ initialGroup = 'weapons' }: { initialGroup?: strin
   // only worth computing when nothing matched at all
   const near = searching && ids.length === 0 ? suggestItems(q) : [];
 
+  // The groups worth offering on THIS tab, biggest first. Only the
+  // centre tab needs it — a weapons tab has nothing else in it — and it
+  // is skipped while searching, where the query owns the list.
+  const homeGroup = initialGroup;
+  const groupStrip = useMemo(() => {
+    if (searching || (filters.group !== 'other' && filters.group !== homeGroup
+      && !ITEM_GROUPS.some((g) => g.id === filters.group))) return [];
+    if (homeGroup !== 'other') return [];
+    return ITEM_GROUPS
+      // the four with their own bottom tab are already one tap away —
+      // repeating them here would be two ways to the same list
+      .filter((g) => !TAB_GROUPS.includes(g.id))
+      .map((g) => ({
+        id: g.id,
+        label: g.label,
+        n: applyItemFilters({ ...filters, group: g.id, kind: null }, '', level).length,
+      }))
+      .filter((g) => g.n > 0)
+      .sort((a, b) => b.n - a.n);
+  }, [filters, level, searching, homeGroup]);
+
   // ...and the same for filters: which single chip, dropped, brings the
   // list back? Only computed on an empty list, so it costs nothing in
   // the normal case.
@@ -1743,6 +1764,26 @@ export function ItemsScreen({ initialGroup = 'weapons' }: { initialGroup?: strin
           primary={activeBits.length > 0}
           onPress={() => setSheet(true)} />
       </View>
+      {/* IL87: the centre tab is everything that has no tab of its own —
+          1,183 rows, eleven different kinds of thing, 490 of them
+          schematics, in one A-Z list. The group chips existed only
+          inside the filter sheet, so reaching the saddles was Filters ->
+          scroll -> tap. They belong on the screen. Counts are the real
+          filtered counts, the same rule the sheet follows. */}
+      {!searching && groupStrip.length > 0 && (
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ gap: 6, paddingBottom: 8 }}>
+          {groupStrip.map((g) => (
+            <Chip key={g.id} on={filters.group === g.id}
+              label={`${g.label} · ${g.n}`}
+              onPress={() => setFilters({
+                ...filters,
+                group: filters.group === g.id ? homeGroup : g.id,
+                kind: null,
+              })} />
+          ))}
+        </ScrollView>
+      )}
       {activeBits.length > 0 && !searching && (
         <View style={[s.wrap, { marginBottom: 8 }]}>
           <Text style={{ color: T.accentInk, fontSize: 11.5, fontWeight: '700' }}>

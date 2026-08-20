@@ -31,6 +31,9 @@ export interface TowerSpot {
   /** the map's own name for the spot */
   name: string;
   region: RegionId;
+  /** where it sits on the map texture, for the cropped preview */
+  u: number;
+  v: number;
   /** the game's own coordinate readout, as the map prints it */
   x: number;
   y: number;
@@ -70,6 +73,8 @@ export function towerSpot(title: string, arena: string | null): TowerSpot | null
   return {
     name: hit.name,
     region: hit.region,
+    u: hit.u,
+    v: hit.v,
     x: Math.round(x),
     y: Math.round(y),
     from: whereFromLine(hit.u, hit.v, hit.region),
