@@ -42,12 +42,11 @@ reading its `Info.plist`:
 | | Full | Live |
 |---|---|---|
 | Bundle id | `com.palandre.hatchlab` | `com.palandre.hatchlab.dev` |
-| Name on phone | Palforge | Palforge DEV |
+| Name on phone | Paldexia | Paldexia DEV |
 
-*Those two labels are the only place the old name still shows to him. They
-are compiled into the binaries and change at the next build, not by update
-— see `11_RENAME_TO_PALDEXIA.md`. The app's own screens already say
-**Paldexia**.*
+*Renamed on the 2026-08-20 builds. The old `Palforge` name survives only in
+identifiers (bundle ids, schemes, the `/palforge/` Pages path) — never
+rename those; see `11_RENAME_TO_PALDEXIA.md`.*
 | Scheme | `palforge` | `palforge-dev` |
 | Icon | sphere | sphere + orange DEV band |
 
@@ -127,9 +126,9 @@ update the install-dev page in the same work block.
 Current builds (iOS, **runtime 1.1.0** — the native-toolkit builds,
 2026-08-15 evening; both identities verified by unpacking the `.ipa`s):
 
-- **DEV** `a6447f7e-ff8d-4f2d-ac19-0051abce7e9b` — development channel,
+- **DEV** `016ba0dc-eabd-4cf3-a299-c32e961fb5db` — development channel,
   bundle `com.palandre.hatchlab.dev`, "Palforge DEV", scheme `palforge-dev`
-- **FAST** `021773ab-9106-461a-9241-2b874d232794` — preview channel,
+- **FAST** `9b168719-d4ec-441d-bbd2-c1dda16afe62` — preview channel,
   bundle `com.palandre.hatchlab`, "Palforge", scheme `palforge`
 
 ⚠ The 1.0.0 builds (`ccefd7d2` DEV / `0bd4b937` FAST) stopped receiving

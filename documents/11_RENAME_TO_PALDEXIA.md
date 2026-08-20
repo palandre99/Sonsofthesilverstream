@@ -13,7 +13,7 @@ on 2026-08-18.*
 | Layer | Changes how? | Status |
 |---|---|---|
 | Words **inside** the app | JavaScript → ships by OTA | ✅ **DONE** |
-| The **label under the icon** on the home screen | native, baked into the build | ⏸ needs a rebuild |
+| The **label under the icon** on the home screen | native, baked into the build | ✅ **DONE** (2026-08-20 builds) |
 | URL scheme, bundle id | native, baked into the build | ⏸ / never (see below) |
 | App icon artwork | native — but our mark carries **no text**, so nothing to change | ✅ nothing to do |
 | Website + domain | a deploy | ⏸ website is ON HOLD (CEO 2026-08-17) |
@@ -35,15 +35,18 @@ One occurrence was left alone on purpose: the header **comment** at the top of
 time; it is a code comment, invisible to users. Rename it whenever that file is
 next touched.
 
-## ⏸ Waits for the next build — the home-screen label
+## ✅ Done 2026-08-20 — the home-screen label
 
-The icon label still reads **Palforge** / **Palforge DEV** because it comes from
-`name` in `mobile/app.json` (full) and `mobile/app.config.js` (DEV). Those are
-compiled into the binary; no OTA can touch them. Do it as part of the next build
-that is happening anyway — do **not** burn a 15-minute build on the label alone
-unless the CEO asks.
+Builds **9b168719** (full) and **016ba0dc** (DEV) carry the new names, verified
+by unpacking each `.ipa`: `CFBundleDisplayName` = Paldexia / Paldexia DEV, with
+`CFBundleIdentifier` and the URL schemes **unchanged**, so both installed over
+the old apps in place and the CEO kept his box, plans and profiles.
 
-When that build comes, change exactly these two lines:
+No Apple login was needed: the bundle ids did not change, so the credentials
+already existed and both builds were triggered non-interactively. Worth
+remembering — a rename only costs an interactive login if the bundle id moves.
+
+The two lines that changed were:
 
 ```
 mobile/app.json        "name": "Palforge"      →  "name": "Paldexia"

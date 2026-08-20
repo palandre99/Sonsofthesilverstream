@@ -587,6 +587,34 @@ pushed to PR #1, OTA'd BOTH channels, ledgered.
 - **Rarity visuals**: five iterations under live CEO feedback, then PARKED
   at his order — vanilla restored; the integer + wild ranges stay.
 
+## 2026-08-20 — Paldexia: new logo, new name on the icon, both apps rebuilt
+
+- **Logo rebuilt.** CEO: "not very good atm — better, more accurate, polished,
+  smooth." `mobile/scripts/make-assets.py` was drawing flat vector shapes
+  through hand-rolled PNG writing (banded shading, a lopsided ribbon for a ring,
+  cones floating in front of the orb). It now shades a real sphere per pixel
+  with numpy + PIL: wrapped Lambert diffuse, a Blinn-Phong glint plus broad
+  sheen, Fresnel rim, base occlusion, ground bounce. The meridian ring is drawn
+  back-half → sphere → front-half so it truly encircles the orb, lit from the
+  same direction; the pole caps are knobs through the same shader. Silhouette
+  anti-aliased analytically. Legibility checked at 60/120/180px.
+- **Name on the icon.** Display names are now Paldexia / Paldexia DEV. Bundle
+  ids, schemes, slug and the `/palforge/` path deliberately unchanged.
+- **Both apps rebuilt and shipped:** FULL `9b168719`, DEV `016ba0dc`, v1.1.0,
+  runtime 1.1.0 (same stream as before, nothing orphaned). Identity verified by
+  unpacking both `.ipa` files, not by trusting config. Because the bundle ids
+  held, they upgrade the installed apps **in place** — his box, plans and
+  profiles survive.
+- **No Apple login needed.** Unchanged bundle ids meant credentials already
+  existed, so both builds were triggered non-interactively. A rename only costs
+  an interactive login if the bundle id moves.
+- Install hub, both manifests, `01_LINKS`, `11_RENAME`, `README-PHONE` updated;
+  Pages redeployed and re-fetched (hub, both manifests, both `.ipa` = 200/206).
+- Gates at the time of build: **996/996 vitest**, mobile `tsc` clean.
+- **No OTA published from here** — two lanes had uncommitted work in the tree,
+  and the publish rule forbids shipping someone else's unfinished code. The
+  lanes publish on their own cadence; the new binaries already embed current JS.
+
 ## 2026-08-15 late — hostile doc audit, workspace handover-ready
 
 Audited every markdown file in the repo against reality. Seven real defects,
