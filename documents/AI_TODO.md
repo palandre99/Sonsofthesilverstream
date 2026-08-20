@@ -629,6 +629,20 @@ and the one missing dataset identified: the element chart.*
       a tile is missing. The bosses lane worked around it by capping its
       own preview width — the workaround belongs in your component, not
       in every caller.
+- [x] B23 DONE 2026-08-19 (autonomous tick): the 205-boss list can be
+      ordered three ways — easiest first (default, because "what can I
+      fight next" is what the list is for), by name, by element (so one
+      counter clears several). Verified all three genuinely reorder.
+- [x] B24 DONE 2026-08-19 (found by the hostile sweep): a fight number
+      that HELPS you was coloured like a warning. Panthalus takes 120%
+      of your damage and its hits land at x0.83 — both good news, both
+      amber. The two multipliers cut in opposite directions depending on
+      which side of 1 they fall, so the colour now says which way:
+      green when the fight is in your favour, amber when it is not.
+      Swept clean in the same pass: Zenara (typeless, hidden arena, no
+      map spot — says so, invents nothing), Panthalus (hidden arena),
+      the Xenolord Ultra toggle (1.41M -> 2.56M HP, 12 -> 18 attacks,
+      each difficulty its own kit). No crashes on any surface.
 - [ ] B14 FOR THE ITEMS LANE (found by this lane's drop cross-check,
       2026-08-19): items_1_0.json is MISSING 11 real items that boss
       drop tables reference — all 8 tower Key Spheres (Envy, Pride,
