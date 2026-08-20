@@ -2312,6 +2312,16 @@ work always"):**
    and reported with the reasoning. Only true CEO-only blockers (Apple
    logins, purchases, money, his own device) stop a tick.
 
+- [ ] IL33 FOUND BY IL32 2026-08-20: the from-scratch bill expands the
+      BASE recipe only. A weapon's higher tiers carry their own, much
+      bigger material lists (`facts.crafts[].mats` — the Uncommon Beam
+      Sword alone is 37 Plasteel · 125 Paldium · 25 Nightstar Sand · 1
+      Computer · 3 Ancient Civilization Parts), and those are shown
+      un-expanded, so the exact question IL32 just answered for the
+      Common tier is still unanswered for the tier a player actually
+      builds. Same derivation, same guards — `rawMaterialsFor` needs to
+      take a material list rather than only an item id. Check whether
+      the tier mats reach the same two game loops before shipping.
 - [x] IL18b 2026-08-20: ONE SEARCH FOR EVERYTHING IS LIVE — the CEO
       handed the call back ("u make decisions"), so plan §6 option A
       shipped: a magnifier in the TOP BAR of every screen opens an
