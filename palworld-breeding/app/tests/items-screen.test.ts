@@ -6,7 +6,8 @@ import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import {
-  ammoForWeapon, buildTime, buildTotals, collapseFamilies, effectNumber,
+  ammoForWeapon, buildTime, buildTotals, captureRank, collapseFamilies,
+  effectNumber,
   effectRank, familyOf,
   familyPowerOf, gearAgainst, guardKinds, guardLevel, spokenTime,
   grantsToShow, hasNoKnownSource,
@@ -1559,5 +1560,29 @@ describe('an effect number without a unit still means something (IL64)', () => {
     const block = code.slice(code.indexOf('const r = effectRank(id, k);'),
       code.indexOf('const r = effectRank(id, k);') + 400);
     expect(block).not.toMatch(/best|worst|longest|strongest/i);
+  });
+});
+
+describe('a sphere card says how its capture power compares (IL65)', () => {
+  it('the ten spheres rank from strongest to weakest', () => {
+    const ultra = Object.keys(ITEMS).find((i) => ITEMS[i].name === 'Ultra Sphere')!;
+    const r = captureRank(ultra)!;
+    expect(r.of).toBe(10);
+    expect(r.rank).toBe(6);
+    const ancient = Object.keys(ITEMS).find((i) => ITEMS[i].name === 'Ancient Sphere')!;
+    expect(captureRank(ancient)).toEqual({ rank: 1, of: 10 });
+    const basic = Object.keys(ITEMS).find((i) => ITEMS[i].name === 'Pal Sphere')!;
+    expect(captureRank(basic)).toEqual({ rank: 10, of: 10 });
+  });
+
+  it('anything without a capture power gets no rank', () => {
+    expect(captureRank('BeamSword')).toBeNull();
+    expect(captureRank('Wood')).toBeNull();
+  });
+
+  it('the card shows the rank beside the number', () => {
+    const code = readFileSync(
+      join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+    expect(code).toContain('${facts.capture} · #${r.rank} of ${r.of}');
   });
 });

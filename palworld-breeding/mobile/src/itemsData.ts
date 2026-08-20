@@ -248,6 +248,21 @@ export const powerOf = (id: string): number =>
   // rather than because it is the best one (IL55)
   ?? captureNumber(id) ?? -1;
 
+/** Where a sphere's capture power sits among all of them (IL65). The
+ * ROW has ranked spheres since IL55, but the CARD said a bare "Capture
+ * Power 33" — 33 out of what? Ten spheres run from 7 to 64, and that
+ * span is the only thing that makes 33 mean anything. Neutral wording,
+ * same rule as the effect ranks. */
+export function captureRank(id: string): { rank: number; of: number } | null {
+  if (captureNumber(id) == null) return null;
+  const carriers = ITEM_IDS
+    .filter((i) => captureNumber(i) != null)
+    .sort((a, b) => (captureNumber(b) ?? 0) - (captureNumber(a) ?? 0));
+  const mine = captureNumber(id);
+  const rank = carriers.findIndex((i) => captureNumber(i) === mine) + 1;
+  return rank > 0 ? { rank, of: carriers.length } : null;
+}
+
 const captureNumber = (id: string): number | null => {
   const c = ITEM_FACTS[id]?.capture;
   if (c == null) return null;

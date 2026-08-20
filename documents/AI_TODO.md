@@ -11303,3 +11303,36 @@ also carries the Tower tab (whole-tree bundle); the About stamp shows my
 message because mine superseded E148's by minutes. Reported to the CEO;
 holding the watch for his verdict. Open offers unchanged: cap-zoom,
 generated farm-run, found-sync.
+
+---
+
+## IL65 — a sphere's capture power now says where it ranks (2026-08-20)
+
+**Card sweep, sphere cards.** Same fault class as IL64: the card printed
+`Capture Power 33` and stopped. Thirty-three out of what? The sphere ROWS
+have ranked capture power since IL55, so the list told the player more than
+the card did.
+
+`captureRank(id)` in `itemsData.ts` ranks the ten spheres by capture power
+(Ancient 64 → Pal Sphere 7) and returns null for everything that has no
+capture power at all. The card shows `33 · #6 of 10` — the same neutral
+"#n of m" wording as the effect ranks, no "best"/"worst" adjectives.
+
+Verified on the running app, not just in source:
+
+```
+"The numbers", "Capture Power", "33 · #6 of 10", "Sells for", "3300 gold",
+"Stacks to", "9999", "How to craft it", ...
+```
+
+The rest of the sphere card is clean — no doubled fact, no per-tier list,
+nothing else unitless. Sphere cards: SWEPT.
+
+Gates: mobile `tsc --noEmit` clean, `npx vitest run` 1009/1009 (three new).
+
+**Sweep status:** weapon clean · armour fixed (IL63) · food fixed (IL64) ·
+sphere fixed (IL65). Remaining: schematic, egg, accessory.
+
+**Publish still held** — `PaldexScreen.tsx` is the Bosses lane's and has
+been dirty for many ticks. Backlog waiting on it: IL57, IL62, IL63, IL64,
+IL65.

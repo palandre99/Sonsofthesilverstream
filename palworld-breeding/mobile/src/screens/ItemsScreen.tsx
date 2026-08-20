@@ -23,7 +23,8 @@ import {
   grantsToShow, palForGear,
   ITEM_STATS, ITEMS,
   kindPhrase, kindsInGroup, kindWord, palsDropping, palsHatchingFrom, rawMaterialsFor,
-  buildTime, buildTotals, effectRank, gearAgainst, guardKinds, guardLevel,
+  buildTime, buildTotals, captureRank, effectRank, gearAgainst, guardKinds,
+  guardLevel,
   ITEM_IDS,
   rankAxisOf,
   rankValueOf, rivalsOf, rollupOfMats,
@@ -650,8 +651,17 @@ function ItemDetail({ id, trail = [], onClose, onBack, onOpenItem }: {
                 {st?.shield != null && <Fact label="Shield" value={String(st.shield)} />}
                 {st?.durability != null && <Fact label="Durability" value={String(st.durability)} />}
                 {st?.magazine != null && <Fact label="Magazine" value={`${st.magazine} round${st.magazine === 1 ? '' : 's'}`} />}
+                {/* IL65: "Capture Power 33" — 33 out of what? The row
+                    has ranked spheres since IL55; the card said a bare
+                    number. Same neutral wording as the effect ranks. */}
                 {facts?.capture != null && (
-                  <Fact label="Capture Power" value={facts.capture} />
+                  <Fact label="Capture Power"
+                    value={(() => {
+                      const r = captureRank(id);
+                      return r && r.of > 2
+                        ? `${facts.capture} · #${r.rank} of ${r.of}`
+                        : facts.capture;
+                    })()} />
                 )}
                 {st?.passives && st.passives.length > 0 && (
                   <Fact label={st.passives.length === 1
