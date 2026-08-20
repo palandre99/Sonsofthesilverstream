@@ -12730,3 +12730,47 @@ Also verified clean at this width: Spheres tab (Capture sphere 10 ·
 Sphere module 6, ordered by capture power), and the ammo card, which
 carries description, numbers, craft, from-scratch, build, "Fits these
 weapons" and where-to-find.
+
+---
+
+## IL98 — the app finally says WHAT CHANGED when the data moves (2026-08-20)
+
+**The last unbuilt criterion in `04_PRODUCT_BLUEPRINT.md` §5.** Number 14
+asks for an in-app row saying "data updated for build X — what changed",
+within days of every patch. Nothing had ever said it, because **nothing
+had ever worked out what changed.**
+
+`tools/gen_data_changes.py` does, by diffing the item facts about to ship
+against the ones shipped last. It invents nothing — every line is the
+difference between two files we hold. Run against the data from before
+today's refresh, it produced, unprompted:
+
+```
+What changed in the data
+Refreshed 20 Aug 2026 · The stat fruits say what they do, and 5 weapons got a source
+· 5 items gained facts they had none of — Grappling Gun
+· 4 effects changed — Life Fruit, Power Fruit, Seafood Pasta, Stout Fruit
+```
+
+Both lines are exactly what happened, found by the tool rather than
+copied from my own notes: the five Grappling Gun tiers whose page was
+recovered, and the stat fruits plus Seafood Pasta that gained an effect
+from a label nothing had mapped.
+
+**Where it lives:** the Reference screen, under the data stamp that every
+data screen already carries — so "where these come from" now answers
+*what moved* as well as *where from*. Verified live.
+
+**Caught in my own output:** the first run read "Grappling Gun, Grappling
+Gun, Grappling Gun, Grappling Gun, Grappling Gun" — five tiers share one
+name. Names are said once now; the COUNT stays the real item count, so
+"5 items … Grappling Gun" is both true and readable.
+
+**The patch-day ritual in `09_ITEMS_PLAN.md` §7 now carries the step**,
+with the exact commands — capture the previous facts BEFORE regenerating,
+or the app keeps reporting the last refresh forever.
+
+Gates: mobile `tsc --noEmit` clean, `npx vitest run` 1112/1112, including
+a test that checks the generated claims against the shipped data itself.
+
+**All 15 AAA criteria are now built.**

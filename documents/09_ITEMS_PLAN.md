@@ -198,6 +198,20 @@ the atlas publishes the new build; count changes surface in the pinned
 tests — read the new truth from the runners, update pins deliberately,
 never loosen a zero-refusal expectation to make a run pass.
 
+**STEP: say what changed (added 2026-08-20).** Between regenerating the
+facts and committing, capture the PREVIOUS data and generate the change
+list, or the app will keep saying what it said last refresh:
+
+```bash
+git show HEAD:palworld-breeding/data/item_facts_1_0.json > /tmp/prev_facts.json
+cd palworld-breeding && python tools/gen_item_facts.py
+python tools/gen_data_changes.py --previous /tmp/prev_facts.json   --label "<what this refresh was, in the CEO's words>"
+```
+
+It writes `mobile/src/data/dataChanges.g.ts`, which the Reference screen
+renders under "What changed in the data" — reachable from the data stamp
+on every screen. Every line is a diff between two files we hold.
+
 ## 5. Honest limits recorded up front
 
 - The capture-rate formula and any drop-RATE percentages are NOT in the
