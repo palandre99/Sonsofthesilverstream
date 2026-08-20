@@ -4427,7 +4427,7 @@
   },
   "ClothArmor_2": {
    "name": "Cloth Outfit",
-   "description": "en Text",
+   "description": "Clothes made from <itemName id=|Cloth|/>.\nProtects against cold nights.",
    "category": "Armor",
    "subcategory": "ArmorBody",
    "rarity": 1,
@@ -4436,11 +4436,12 @@
    "weight": 0,
    "price": 1800,
    "icon": "LeatherClothing",
-   "nameFromBase": true
+   "nameFromBase": true,
+   "descriptionFromBase": true
   },
   "ClothArmor_3": {
    "name": "Cloth Outfit",
-   "description": "en Text",
+   "description": "Clothes made from <itemName id=|Cloth|/>.\nProtects against cold nights.",
    "category": "Armor",
    "subcategory": "ArmorBody",
    "rarity": 2,
@@ -4449,11 +4450,12 @@
    "weight": 0,
    "price": 2400,
    "icon": "LeatherClothing",
-   "nameFromBase": true
+   "nameFromBase": true,
+   "descriptionFromBase": true
   },
   "ClothArmor_4": {
    "name": "Cloth Outfit",
-   "description": "en Text",
+   "description": "Clothes made from <itemName id=|Cloth|/>.\nProtects against cold nights.",
    "category": "Armor",
    "subcategory": "ArmorBody",
    "rarity": 3,
@@ -4462,11 +4464,12 @@
    "weight": 0,
    "price": 3000,
    "icon": "LeatherClothing",
-   "nameFromBase": true
+   "nameFromBase": true,
+   "descriptionFromBase": true
   },
   "ClothArmor_5": {
    "name": "Cloth Outfit",
-   "description": "en Text",
+   "description": "Clothes made from <itemName id=|Cloth|/>.\nProtects against cold nights.",
    "category": "Armor",
    "subcategory": "ArmorBody",
    "rarity": 4,
@@ -4475,11 +4478,12 @@
    "weight": 0,
    "price": 4790,
    "icon": "LeatherClothing",
-   "nameFromBase": true
+   "nameFromBase": true,
+   "descriptionFromBase": true
   },
   "FurArmor_2": {
    "name": "Pelt Armor",
-   "description": "en Text",
+   "description": "Armor made from <itemName id=|Leather|/>.\nIts warmth and defense have been improved.",
    "category": "Armor",
    "subcategory": "ArmorBody",
    "rarity": 1,
@@ -4488,11 +4492,12 @@
    "weight": 0,
    "price": 6580,
    "icon": "FurArmor",
-   "nameFromBase": true
+   "nameFromBase": true,
+   "descriptionFromBase": true
   },
   "FurArmor_3": {
    "name": "Pelt Armor",
-   "description": "en Text",
+   "description": "Armor made from <itemName id=|Leather|/>.\nIts warmth and defense have been improved.",
    "category": "Armor",
    "subcategory": "ArmorBody",
    "rarity": 2,
@@ -4501,11 +4506,12 @@
    "weight": 0,
    "price": 8210,
    "icon": "FurArmor",
-   "nameFromBase": true
+   "nameFromBase": true,
+   "descriptionFromBase": true
   },
   "FurArmor_4": {
    "name": "Pelt Armor",
-   "description": "en Text",
+   "description": "Armor made from <itemName id=|Leather|/>.\nIts warmth and defense have been improved.",
    "category": "Armor",
    "subcategory": "ArmorBody",
    "rarity": 3,
@@ -4514,11 +4520,12 @@
    "weight": 0,
    "price": 9310,
    "icon": "FurArmor",
-   "nameFromBase": true
+   "nameFromBase": true,
+   "descriptionFromBase": true
   },
   "FurArmor_5": {
    "name": "Pelt Armor",
-   "description": "en Text",
+   "description": "Armor made from <itemName id=|Leather|/>.\nIts warmth and defense have been improved.",
    "category": "Armor",
    "subcategory": "ArmorBody",
    "rarity": 4,
@@ -4527,11 +4534,12 @@
    "weight": 0,
    "price": 12140,
    "icon": "FurArmor",
-   "nameFromBase": true
+   "nameFromBase": true,
+   "descriptionFromBase": true
   },
   "CopperArmor_2": {
    "name": "Metal Armor",
-   "description": "en Text",
+   "description": "Armor made of metal.\nSomewhat heavy, but provides good defense.",
    "category": "Armor",
    "subcategory": "ArmorBody",
    "rarity": 1,
@@ -4540,11 +4548,12 @@
    "weight": 0,
    "price": 16990,
    "icon": "CopperArmor",
-   "nameFromBase": true
+   "nameFromBase": true,
+   "descriptionFromBase": true
   },
   "CopperArmor_3": {
    "name": "Metal Armor",
-   "description": "en Text",
+   "description": "Armor made of metal.\nSomewhat heavy, but provides good defense.",
    "category": "Armor",
    "subcategory": "ArmorBody",
    "rarity": 2,
@@ -4553,11 +4562,12 @@
    "weight": 0,
    "price": 20590,
    "icon": "CopperArmor",
-   "nameFromBase": true
+   "nameFromBase": true,
+   "descriptionFromBase": true
   },
   "CopperArmor_4": {
    "name": "Metal Armor",
-   "description": "en Text",
+   "description": "Armor made of metal.\nSomewhat heavy, but provides good defense.",
    "category": "Armor",
    "subcategory": "ArmorBody",
    "rarity": 3,
@@ -4566,11 +4576,12 @@
    "weight": 0,
    "price": 24860,
    "icon": "CopperArmor",
-   "nameFromBase": true
+   "nameFromBase": true,
+   "descriptionFromBase": true
   },
   "CopperArmor_5": {
    "name": "Metal Armor",
-   "description": "en Text",
+   "description": "Armor made of metal.\nSomewhat heavy, but provides good defense.",
    "category": "Armor",
    "subcategory": "ArmorBody",
    "rarity": 4,
@@ -4579,11 +4590,12 @@
    "weight": 0,
    "price": 30240,
    "icon": "CopperArmor",
-   "nameFromBase": true
+   "nameFromBase": true,
+   "descriptionFromBase": true
   },
   "IronArmor_2": {
    "name": "Refined Metal Armor",
-   "description": "en Text",
+   "description": "Armor made from high quality metal.\nQuite heavy, but provides excellent defense.",
    "category": "Armor",
    "subcategory": "ArmorBody",
    "rarity": 1,
@@ -4592,11 +4604,12 @@
    "weight": 0,
    "price": 43060,
    "icon": "IronArmor",
-   "nameFromBase": true
+   "nameFromBase": true,
+   "descriptionFromBase": true
   },
   "IronArmor_3": {
    "name": "Refined Metal Armor",
-   "description": "en Text",
+   "description": "Armor made from high quality metal.\nQuite heavy, but provides excellent defense.",
    "category": "Armor",
    "subcategory": "ArmorBody",
    "rarity": 2,
@@ -4605,11 +4618,12 @@
    "weight": 0,
    "price": 55300,
    "icon": "IronArmor",
-   "nameFromBase": true
+   "nameFromBase": true,
+   "descriptionFromBase": true
   },
   "IronArmor_4": {
    "name": "Refined Metal Armor",
-   "description": "en Text",
+   "description": "Armor made from high quality metal.\nQuite heavy, but provides excellent defense.",
    "category": "Armor",
    "subcategory": "ArmorBody",
    "rarity": 3,
@@ -4618,11 +4632,12 @@
    "weight": 0,
    "price": 66670,
    "icon": "IronArmor",
-   "nameFromBase": true
+   "nameFromBase": true,
+   "descriptionFromBase": true
   },
   "IronArmor_5": {
    "name": "Refined Metal Armor",
-   "description": "en Text",
+   "description": "Armor made from high quality metal.\nQuite heavy, but provides excellent defense.",
    "category": "Armor",
    "subcategory": "ArmorBody",
    "rarity": 4,
@@ -4631,11 +4646,12 @@
    "weight": 0,
    "price": 78910,
    "icon": "IronArmor",
-   "nameFromBase": true
+   "nameFromBase": true,
+   "descriptionFromBase": true
   },
   "StealArmor_2": {
    "name": "Pal Metal Armor",
-   "description": "en Text",
+   "description": "Armor made from <itemName id=|StealIngot|/>.\nHigh defense, but extremely heavy.\nEquipment for a hero, it exudes bravery.",
    "category": "Armor",
    "subcategory": "ArmorBody",
    "rarity": 1,
@@ -4644,11 +4660,12 @@
    "weight": 0,
    "price": 52240,
    "icon": "StealArmor",
-   "nameFromBase": true
+   "nameFromBase": true,
+   "descriptionFromBase": true
   },
   "StealArmor_3": {
    "name": "Pal Metal Armor",
-   "description": "en Text",
+   "description": "Armor made from <itemName id=|StealIngot|/>.\nHigh defense, but extremely heavy.\nEquipment for a hero, it exudes bravery.",
    "category": "Armor",
    "subcategory": "ArmorBody",
    "rarity": 2,
@@ -4657,11 +4674,12 @@
    "weight": 0,
    "price": 65300,
    "icon": "StealArmor",
-   "nameFromBase": true
+   "nameFromBase": true,
+   "descriptionFromBase": true
   },
   "StealArmor_4": {
    "name": "Pal Metal Armor",
-   "description": "en Text",
+   "description": "Armor made from <itemName id=|StealIngot|/>.\nHigh defense, but extremely heavy.\nEquipment for a hero, it exudes bravery.",
    "category": "Armor",
    "subcategory": "ArmorBody",
    "rarity": 3,
@@ -4670,11 +4688,12 @@
    "weight": 0,
    "price": 78370,
    "icon": "StealArmor",
-   "nameFromBase": true
+   "nameFromBase": true,
+   "descriptionFromBase": true
   },
   "StealArmor_5": {
    "name": "Pal Metal Armor",
-   "description": "en Text",
+   "description": "Armor made from <itemName id=|StealIngot|/>.\nHigh defense, but extremely heavy.\nEquipment for a hero, it exudes bravery.",
    "category": "Armor",
    "subcategory": "ArmorBody",
    "rarity": 4,
@@ -4683,7 +4702,8 @@
    "weight": 0,
    "price": 91440,
    "icon": "StealArmor",
-   "nameFromBase": true
+   "nameFromBase": true,
+   "descriptionFromBase": true
   },
   "Blueprint_SFBow_2": {
    "name": "Advanced Bow Schematic 1",
@@ -22765,7 +22785,7 @@
   },
   "WeakerBow_2": {
    "name": "Old Bow",
-   "description": "en Text",
+   "description": "Primitive long range weapon.\nHastily put together, it isn't very powerful.",
    "category": "Weapon",
    "subcategory": "WeaponBow",
    "rarity": 1,
@@ -22774,11 +22794,12 @@
    "weight": 0,
    "price": 790,
    "icon": "Bow",
-   "nameFromBase": true
+   "nameFromBase": true,
+   "descriptionFromBase": true
   },
   "WeakerBow_3": {
    "name": "Old Bow",
-   "description": "en Text",
+   "description": "Primitive long range weapon.\nHastily put together, it isn't very powerful.",
    "category": "Weapon",
    "subcategory": "WeaponBow",
    "rarity": 2,
@@ -22787,11 +22808,12 @@
    "weight": 0,
    "price": 960,
    "icon": "Bow",
-   "nameFromBase": true
+   "nameFromBase": true,
+   "descriptionFromBase": true
   },
   "WeakerBow_4": {
    "name": "Old Bow",
-   "description": "en Text",
+   "description": "Primitive long range weapon.\nHastily put together, it isn't very powerful.",
    "category": "Weapon",
    "subcategory": "WeaponBow",
    "rarity": 3,
@@ -22800,11 +22822,12 @@
    "weight": 0,
    "price": 1110,
    "icon": "Bow",
-   "nameFromBase": true
+   "nameFromBase": true,
+   "descriptionFromBase": true
   },
   "WeakerBow_5": {
    "name": "Old Bow",
-   "description": "en Text",
+   "description": "Primitive long range weapon.\nHastily put together, it isn't very powerful.",
    "category": "Weapon",
    "subcategory": "WeaponBow",
    "rarity": 4,
@@ -22813,11 +22836,12 @@
    "weight": 0,
    "price": 2500,
    "icon": "Bow",
-   "nameFromBase": true
+   "nameFromBase": true,
+   "descriptionFromBase": true
   },
   "BowGun_2": {
    "name": "Crossbow",
-   "description": "en Text",
+   "description": "Fires an <itemName id=|Arrow|/> effortlessly.\nThough it takes time to load, it delivers a powerful shot.",
    "category": "Weapon",
    "subcategory": "WeaponCrossbow",
    "rarity": 1,
@@ -22826,11 +22850,12 @@
    "weight": 0,
    "price": 5210,
    "icon": "BowGun",
-   "nameFromBase": true
+   "nameFromBase": true,
+   "descriptionFromBase": true
   },
   "BowGun_3": {
    "name": "Crossbow",
-   "description": "en Text",
+   "description": "Fires an <itemName id=|Arrow|/> effortlessly.\nThough it takes time to load, it delivers a powerful shot.",
    "category": "Weapon",
    "subcategory": "WeaponCrossbow",
    "rarity": 2,
@@ -22839,11 +22864,12 @@
    "weight": 0,
    "price": 6480,
    "icon": "BowGun",
-   "nameFromBase": true
+   "nameFromBase": true,
+   "descriptionFromBase": true
   },
   "BowGun_4": {
    "name": "Crossbow",
-   "description": "en Text",
+   "description": "Fires an <itemName id=|Arrow|/> effortlessly.\nThough it takes time to load, it delivers a powerful shot.",
    "category": "Weapon",
    "subcategory": "WeaponCrossbow",
    "rarity": 3,
@@ -22852,11 +22878,12 @@
    "weight": 0,
    "price": 7440,
    "icon": "BowGun",
-   "nameFromBase": true
+   "nameFromBase": true,
+   "descriptionFromBase": true
   },
   "BowGun_5": {
    "name": "Crossbow",
-   "description": "en Text",
+   "description": "Fires an <itemName id=|Arrow|/> effortlessly.\nThough it takes time to load, it delivers a powerful shot.",
    "category": "Weapon",
    "subcategory": "WeaponCrossbow",
    "rarity": 4,
@@ -22865,11 +22892,12 @@
    "weight": 0,
    "price": 9910,
    "icon": "BowGun",
-   "nameFromBase": true
+   "nameFromBase": true,
+   "descriptionFromBase": true
   },
   "AssaultRifle_Default2": {
    "name": "Assault Rifle",
-   "description": "en Text",
+   "description": "An <itemName id=|AssaultRifle_Default1|/> that mows down enemies with overwhelming force. \nIt excels at rapid-fire and is well suited to taking down powerful foes.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
    "rarity": 1,
@@ -22878,11 +22906,12 @@
    "weight": 0,
    "price": 72050,
    "icon": "AssaultRifle_Default",
-   "nameFromBase": true
+   "nameFromBase": true,
+   "descriptionFromBase": true
   },
   "AssaultRifle_Default3": {
    "name": "Assault Rifle",
-   "description": "en Text",
+   "description": "An <itemName id=|AssaultRifle_Default1|/> that mows down enemies with overwhelming force. \nIt excels at rapid-fire and is well suited to taking down powerful foes.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
    "rarity": 2,
@@ -22891,11 +22920,12 @@
    "weight": 0,
    "price": 88800,
    "icon": "AssaultRifle_Default",
-   "nameFromBase": true
+   "nameFromBase": true,
+   "descriptionFromBase": true
   },
   "AssaultRifle_Default4": {
    "name": "Assault Rifle",
-   "description": "en Text",
+   "description": "An <itemName id=|AssaultRifle_Default1|/> that mows down enemies with overwhelming force. \nIt excels at rapid-fire and is well suited to taking down powerful foes.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
    "rarity": 3,
@@ -22904,11 +22934,12 @@
    "weight": 0,
    "price": 103250,
    "icon": "AssaultRifle_Default",
-   "nameFromBase": true
+   "nameFromBase": true,
+   "descriptionFromBase": true
   },
   "AssaultRifle_Default5": {
    "name": "Assault Rifle",
-   "description": "en Text",
+   "description": "An <itemName id=|AssaultRifle_Default1|/> that mows down enemies with overwhelming force. \nIt excels at rapid-fire and is well suited to taking down powerful foes.",
    "category": "Weapon",
    "subcategory": "WeaponAssaultRifle",
    "rarity": 4,
@@ -22917,11 +22948,12 @@
    "weight": 0,
    "price": 120000,
    "icon": "AssaultRifle_Default",
-   "nameFromBase": true
+   "nameFromBase": true,
+   "descriptionFromBase": true
   },
   "PumpActionShotgun_2": {
    "name": "Pump-Action Shotgun",
-   "description": "en Text",
+   "description": "A high capacity, powerful shotgun.\nIt has outstanding close range DPS.",
    "category": "Weapon",
    "subcategory": "WeaponShotgun",
    "rarity": 1,
@@ -22930,11 +22962,12 @@
    "weight": 0,
    "price": 77660,
    "icon": "ShotGun_Default",
-   "nameFromBase": true
+   "nameFromBase": true,
+   "descriptionFromBase": true
   },
   "PumpActionShotgun_3": {
    "name": "Pump-Action Shotgun",
-   "description": "en Text",
+   "description": "A high capacity, powerful shotgun.\nIt has outstanding close range DPS.",
    "category": "Weapon",
    "subcategory": "WeaponShotgun",
    "rarity": 2,
@@ -22943,11 +22976,12 @@
    "weight": 0,
    "price": 95280,
    "icon": "ShotGun_Default",
-   "nameFromBase": true
+   "nameFromBase": true,
+   "descriptionFromBase": true
   },
   "PumpActionShotgun_4": {
    "name": "Pump-Action Shotgun",
-   "description": "en Text",
+   "description": "A high capacity, powerful shotgun.\nIt has outstanding close range DPS.",
    "category": "Weapon",
    "subcategory": "WeaponShotgun",
    "rarity": 3,
@@ -22956,11 +22990,12 @@
    "weight": 0,
    "price": 111020,
    "icon": "ShotGun_Default",
-   "nameFromBase": true
+   "nameFromBase": true,
+   "descriptionFromBase": true
   },
   "PumpActionShotgun_5": {
    "name": "Pump-Action Shotgun",
-   "description": "en Text",
+   "description": "A high capacity, powerful shotgun.\nIt has outstanding close range DPS.",
    "category": "Weapon",
    "subcategory": "WeaponShotgun",
    "rarity": 4,
@@ -22969,11 +23004,12 @@
    "weight": 0,
    "price": 128640,
    "icon": "ShotGun_Default",
-   "nameFromBase": true
+   "nameFromBase": true,
+   "descriptionFromBase": true
   },
   "HandGun_Default_2": {
    "name": "Handgun",
-   "description": "en Text",
+   "description": "A handgun with improved capacity and rapid-fire capabilities.\nHas more immediate firepower than a <itemName id=|MakeshiftHandgun|/>.",
    "category": "Weapon",
    "subcategory": "WeaponHandgun",
    "rarity": 1,
@@ -22982,11 +23018,12 @@
    "weight": 0,
    "price": 24340,
    "icon": "HandGun_Default",
-   "nameFromBase": true
+   "nameFromBase": true,
+   "descriptionFromBase": true
   },
   "HandGun_Default_3": {
    "name": "Handgun",
-   "description": "en Text",
+   "description": "A handgun with improved capacity and rapid-fire capabilities.\nHas more immediate firepower than a <itemName id=|MakeshiftHandgun|/>.",
    "category": "Weapon",
    "subcategory": "WeaponHandgun",
    "rarity": 2,
@@ -22995,11 +23032,12 @@
    "weight": 0,
    "price": 29520,
    "icon": "HandGun_Default",
-   "nameFromBase": true
+   "nameFromBase": true,
+   "descriptionFromBase": true
   },
   "HandGun_Default_4": {
    "name": "Handgun",
-   "description": "en Text",
+   "description": "A handgun with improved capacity and rapid-fire capabilities.\nHas more immediate firepower than a <itemName id=|MakeshiftHandgun|/>.",
    "category": "Weapon",
    "subcategory": "WeaponHandgun",
    "rarity": 3,
@@ -23008,11 +23046,12 @@
    "weight": 0,
    "price": 35620,
    "icon": "HandGun_Default",
-   "nameFromBase": true
+   "nameFromBase": true,
+   "descriptionFromBase": true
   },
   "HandGun_Default_5": {
    "name": "Handgun",
-   "description": "en Text",
+   "description": "A handgun with improved capacity and rapid-fire capabilities.\nHas more immediate firepower than a <itemName id=|MakeshiftHandgun|/>.",
    "category": "Weapon",
    "subcategory": "WeaponHandgun",
    "rarity": 4,
@@ -23021,11 +23060,12 @@
    "weight": 0,
    "price": 42000,
    "icon": "HandGun_Default",
-   "nameFromBase": true
+   "nameFromBase": true,
+   "descriptionFromBase": true
   },
   "Launcher_Default_2": {
    "name": "Rocket Launcher",
-   "description": "en Text",
+   "description": "A <itemName id=|Launcher_Default|/> \nthat can fire a powerful round from long distances.",
    "category": "Weapon",
    "subcategory": "WeaponRocketLauncher",
    "rarity": 1,
@@ -23034,11 +23074,12 @@
    "weight": 0,
    "price": 1077940,
    "icon": "Launcher_Default",
-   "nameFromBase": true
+   "nameFromBase": true,
+   "descriptionFromBase": true
   },
   "Launcher_Default_3": {
    "name": "Rocket Launcher",
-   "description": "en Text",
+   "description": "A <itemName id=|Launcher_Default|/> \nthat can fire a powerful round from long distances.",
    "category": "Weapon",
    "subcategory": "WeaponRocketLauncher",
    "rarity": 2,
@@ -23047,11 +23088,12 @@
    "weight": 0,
    "price": 1313140,
    "icon": "Launcher_Default",
-   "nameFromBase": true
+   "nameFromBase": true,
+   "descriptionFromBase": true
   },
   "Launcher_Default_4": {
    "name": "Rocket Launcher",
-   "description": "en Text",
+   "description": "A <itemName id=|Launcher_Default|/> \nthat can fire a powerful round from long distances.",
    "category": "Weapon",
    "subcategory": "WeaponRocketLauncher",
    "rarity": 3,
@@ -23060,11 +23102,12 @@
    "weight": 0,
    "price": 1520110,
    "icon": "Launcher_Default",
-   "nameFromBase": true
+   "nameFromBase": true,
+   "descriptionFromBase": true
   },
   "Launcher_Default_5": {
    "name": "Rocket Launcher",
-   "description": "en Text",
+   "description": "A <itemName id=|Launcher_Default|/> \nthat can fire a powerful round from long distances.",
    "category": "Weapon",
    "subcategory": "WeaponRocketLauncher",
    "rarity": 4,
@@ -23073,7 +23116,8 @@
    "weight": 0,
    "price": 1756320,
    "icon": "Launcher_Default",
-   "nameFromBase": true
+   "nameFromBase": true,
+   "descriptionFromBase": true
   }
  }
 }

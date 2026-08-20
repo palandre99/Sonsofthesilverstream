@@ -2312,25 +2312,43 @@ work always"):**
    and reported with the reasoning. Only true CEO-only blockers (Apple
    logins, purchases, money, his own device) stop a tick.
 
-- [ ] IL37 FOUND BY IL36's OWN AUDIT 2026-08-20: SIXTEEN CARDS SHOW THE
-      PLAYER THE STRING "en Text" WHERE THE DESCRIPTION BELONGS. Found
-      by auditing what the card actually DISPLAYS (`facts.desc ??
-      item.description`), not what the payload holds — the difference is
-      the whole finding. 44 items carry the upstream "en Text" parse
-      artifact; the facts sweep already rescues 28 of them with a real
-      description, leaving 16 visible: the Metal Armor and Refined Metal
-      Armor tiers 2–5 among them.
-      ROOT CAUSE, same shape as IL36: `fetch_items_index.py` inherits a
-      base row's description only when the variant's own is EMPTY
-      (`if not it["description"]`) — a broken-but-present string sails
-      through, exactly like a plausible-looking name defeats the family
-      pass. Fix: treat "en Text" as missing in that condition, re-run
-      the generator (it writes all three copies), and pin it with the
-      display-level measurement, not the payload-level one: ZERO cards
-      may show "en Text". Verify one on screen (Metal Armor tier 2).
-      Also worth carrying forward: the audit found 0 names with
-      underscores, 0 cards with no description at all, and 0 showing
-      markup or literal escapes — so this is the last known text defect.
+- [ ] IL38 FOUND BY IL37's EYE PASS 2026-08-20: THE TOP-BAR SEARCH
+      RETURNS THE SAME WEAPON FIVE TIMES. Searching "Old Bow" in the
+      magnifier gives five rows all reading "Old Bow, Bow. Open it" —
+      the base plus its four rarity tiers, indistinguishable. The index
+      collapses families (IL19's `collapseFamilies`) but
+      `SearchEverything` searches raw ids, so every multi-tier weapon
+      and armor floods the overlay with duplicates. Found by chasing a
+      different question — "are the variant cards even reachable?" —
+      and the answer is yes, which is exactly why this reads as noise.
+      Decide between collapsing to the family (one row, opens the base,
+      matching the index) or labelling each row with its tier word.
+      MEASURE FIRST: how many of the ~1,892 items are tier variants
+      sharing a name, and what the overlay looks like for the worst
+      case, before choosing. The CEO has rejected messy list UI twice.
+- [x] IL37 2026-08-20: NO CARD SHOWS THE PLAYER "en Text" ANY MORE.
+      Sixteen cards displayed that raw parse artifact where the
+      description belongs — the Metal Armor, Refined Metal Armor, Old
+      Bow and Pump-Action Shotgun tiers. Found by auditing what the card
+      DISPLAYS (`facts.desc ?? item.description`), not what the payload
+      holds: 44 items carry the artifact and the facts sweep was already
+      hiding 28 of them, which is luck, not correctness.
+      ROOT CAUSE, the same shape as IL36: the generator inherited a
+      base's description only when the variant's own was EMPTY, so a
+      broken-but-PRESENT string sailed through — just as a
+      plausible-looking name defeats the family pass. Fixed at the
+      source; all 44 now inherit, and the run reports "0 items left
+      without a usable description" so a future build cannot hide one.
+      The diff is exactly 44 items and nothing else moved.
+      REACHABILITY CHECKED BEFORE CLAIMING IT MATTERED: every card link
+      (teaches, rivals, used-in) collapses to the family base, so I
+      tested whether those variant cards can be opened at all — they
+      can, through the top-bar search, which lists each tier separately.
+      Verified on screen: the second "Old Bow" hit now reads "Primitive
+      long range weapon." instead of "en Text". Had it been unreachable
+      I would have downgraded the finding rather than overclaim it.
+      Pinned at the DISPLAY level (0 of 1,892 show it, 0 blank cards),
+      not the payload level where the bug hid. 875 green.
 - [x] IL36 2026-08-20: THE LAST CODE NAME IS GONE — the weapon that read
       "GrapplingGun" now reads "Grappling Gun" on all five tiers, and
       searching for it by its real name finds it. Fixed at the SOURCE

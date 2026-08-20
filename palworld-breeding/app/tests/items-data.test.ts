@@ -244,3 +244,46 @@ describe('no player ever sees a code name (IL36)', () => {
     }
   });
 });
+
+describe('no card shows the player a parse artifact (IL37)', () => {
+  const items = (JSON.parse(readFileSync(
+    join(__dirname, '../../data/items_1_0.json'), 'utf8')) as {
+      items: Record<string, {
+        name: string; description: string; descriptionFromBase?: boolean;
+      }>;
+    }).items;
+  const facts = (JSON.parse(readFileSync(
+    join(__dirname, '../../data/item_facts_1_0.json'), 'utf8')) as {
+      facts: Record<string, { desc?: string }>;
+    }).facts;
+
+  /** exactly what ItemDetail renders: facts.desc ?? the item's own */
+  const shown = (id: string): string => {
+    const d = facts[id]?.desc;
+    return d && d.trim() ? d : items[id].description ?? '';
+  };
+
+  it('not one of the 1,892 cards displays "en Text"', () => {
+    // measured at the DISPLAY, not in the payload — the facts sweep was
+    // already hiding 28 of the 44, which is luck, not correctness
+    const visible = Object.keys(items)
+      .filter((id) => /en Text/i.test(shown(id)))
+      .map((id) => `${id} (${items[id].name})`);
+    expect(visible).toEqual([]);
+  });
+
+  it('every card has words on it', () => {
+    const blank = Object.keys(items).filter((id) => !shown(id).trim());
+    expect(blank).toEqual([]);
+  });
+
+  it('the armor tiers inherited their family description', () => {
+    for (const id of ['CopperArmor_2', 'IronArmor_5', 'WeakerBow_3',
+      'PumpActionShotgun_4']) {
+      expect(items[id].descriptionFromBase).toBe(true);
+      expect(items[id].description).not.toBe('en Text');
+    }
+    // the base rows kept their own text, not a borrowed one
+    expect(items.CopperArmor.descriptionFromBase).toBeUndefined();
+  });
+});

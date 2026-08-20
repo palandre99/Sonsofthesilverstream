@@ -88,6 +88,17 @@ def main() -> None:
         m = _re.fullmatch(r"([A-Za-z0-9]+) \d", name)
         return bool(m and m.group(1) in iid)
 
+    # The name table's parse artifact also lands in DESCRIPTIONS, and there
+    # it is a PRESENT string rather than an empty one — so the inheritance
+    # below, which only asked `not it["description"]`, sailed straight past
+    # it and 16 cards showed the player the literal words "en Text"
+    # (IL37; found by auditing what the CARD displays, since the facts
+    # sweep already covers the other 28). Measured before writing the rule:
+    # all 44 occurrences are that exact string, never part of a real
+    # sentence, so matching it exactly cannot eat a genuine description.
+    def broken_text(d: str | None) -> bool:
+        return not d or d.strip() == "en Text"
+
     # A run-together code name is never something the game shows a player.
     # Measured across the catalogue: 53 items carry a name equal to their
     # id, and 52 are legitimately ONE word (Cake, Coal, Bone, Katana,
@@ -134,12 +145,19 @@ def main() -> None:
             continue
         it["name"] = cand["name"]
         it["nameFromBase"] = True
-        if not it["description"] and cand["description"]:
+        if broken_text(it["description"]) and not broken_text(cand["description"]):
             it["description"] = cand["description"]
             it["descriptionFromBase"] = True
         derived += 1
     print(f"derived {derived} variant names from their families; "
           f"{len(unresolved)} unresolved: {unresolved[:8]}")
+
+    # Today every broken description belongs to an item whose NAME was
+    # broken too, so the pass above reaches all of them. That is a
+    # coincidence of this build, not a guarantee — say so out loud if a
+    # future refresh ships one the pass cannot reach.
+    left = [iid for iid, it in items.items() if broken_text(it["description"])]
+    print(f"{len(left)} items left without a usable description: {left[:8]}")
 
     cats = {}
     for it in items.values():
