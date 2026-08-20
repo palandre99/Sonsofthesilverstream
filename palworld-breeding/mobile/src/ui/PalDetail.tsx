@@ -550,9 +550,33 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
                   </Pressable>
                 );
               })}
-              {(p.ranch_produce ?? []).map((r) => (
-                <Badge key={`r-${r}`} kind="ok">Ranch: {r}</Badge>
-              ))}
+              {(p.ranch_produce ?? []).map((r) => {
+                // ranch produce is an item too — it sat as a dead badge
+                // while the drops beside it were links (IL31)
+                const target = itemIdByName(r);
+                if (!target) return <Badge key={`r-${r}`} kind="ok">Ranch: {r}</Badge>;
+                return (
+                  <Pressable key={`r-${r}`}
+                    onPress={() => {
+                      onClose();
+                      navigateTo({
+                        domain: 'items', tab: 'allitems',
+                        payload: { item: target },
+                      });
+                    }}
+                    accessibilityRole="button"
+                    accessibilityLabel={`Ranch produce ${r}. Open its item card`}
+                    style={({ pressed }) => ({
+                      backgroundColor: pressed ? T.surface2 : T.surface,
+                      borderWidth: 1, borderColor: T.okSoft,
+                      borderRadius: 9, paddingHorizontal: 8, paddingVertical: 4,
+                    })}>
+                    <Text style={{ color: T.ok, fontSize: 12, fontWeight: '700' }}>
+                      Ranch: {r}
+                    </Text>
+                  </Pressable>
+                );
+              })}
             </View>
           </Card>
         )}
@@ -851,7 +875,34 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
             {!p.wild && !ALPHA_SPOTS[name] && (
               <Badge kind="plain">no regular wild spawn</Badge>
             )}
-            {p.egg_types.map((e) => <Badge key={e} kind="plain">Egg: {e}</Badge>)}
+            {/* the egg a pal comes from is an ITEM we hold a full card
+                for — it was a dead badge while drops right above were
+                tappable (IL31 drift audit) */}
+            {p.egg_types.map((e) => {
+              const eggId = itemIdByName(e);
+              if (!eggId) return <Badge key={e} kind="plain">Egg: {e}</Badge>;
+              return (
+                <Pressable key={e}
+                  onPress={() => {
+                    onClose();
+                    navigateTo({
+                      domain: 'items', tab: 'allitems',
+                      payload: { item: eggId },
+                    });
+                  }}
+                  accessibilityRole="button"
+                  accessibilityLabel={`${e}. Open the egg's card`}
+                  style={({ pressed }) => ({
+                    backgroundColor: pressed ? T.surface2 : T.surface,
+                    borderWidth: 1, borderColor: T.accentSoft,
+                    borderRadius: 9, paddingHorizontal: 8, paddingVertical: 4,
+                  })}>
+                  <Text style={{ color: T.accentInk, fontSize: 12, fontWeight: '700' }}>
+                    Egg: {e}
+                  </Text>
+                </Pressable>
+              );
+            })}
           </View>
         </Card>
       </ScrollView>

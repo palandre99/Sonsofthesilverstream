@@ -2368,6 +2368,16 @@ work always"):**
       offline-complete, blueprint §5 criterion 7). Stays unbuilt until a
       datamined formula appears. What IS provable already ships: the 10
       spheres' exact capture powers and the module cross-links.
+- [x] IL31 2026-08-20: DRIFT AUDIT TURNED ON THE PAL CARD — every item
+      name there is a door now. A pal's ranch produce and its egg type
+      sat as dead badges while the drops beside them were tappable
+      (IL5's work never reached its neighbours). Both now open the item
+      card, so "I want a Chikipi" -> its Common Egg -> the whole hatch
+      pool is one round trip, eye-verified. HONEST EXCEPTIONS, named in
+      the test: 2 ranch entries are DESCRIPTIONS not items — Vixy digs
+      "items from the ground", Vaelet grows "various seeds" — they stay
+      plain badges instead of being force-matched. The test caught that
+      before I could assert otherwise. 856 green.
 - [x] IL30 2026-08-20: SHARE-TEXT DRIFT AUDIT. The card gained hatch
       lists (IL5) and craft work/times (IL11) but the share composer
       never learned them — a shared EGG said nothing about what hatches,

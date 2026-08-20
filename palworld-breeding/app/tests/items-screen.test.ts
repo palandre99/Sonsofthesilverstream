@@ -115,6 +115,44 @@ describe('schematics join their items by the game’s own naming', () => {
   });
 });
 
+describe('every item name on a pal card is a door (IL31)', () => {
+  const pal = readFileSync(
+    join(__dirname, '../../mobile/src/ui/PalDetail.tsx'), 'utf8');
+
+  it('drops, ranch produce AND egg types all link to item cards', () => {
+    // drops led the way at IL5; these two sat as dead badges beside them
+    expect(pal).toContain("accessibilityLabel={`Ranch produce ${r}. Open its item card`}");
+    expect(pal).toContain("accessibilityLabel={`${e}. Open the egg's card`}");
+    expect((pal.match(/domain: 'items', tab: 'allitems'/g) ?? []).length)
+      .toBeGreaterThanOrEqual(3);
+  });
+
+  it('a name the item table cannot resolve stays a plain badge', () => {
+    expect(pal).toContain('if (!target) return <Badge key={`r-${r}`} kind="ok">Ranch: {r}</Badge>;');
+    expect(pal).toContain('if (!eggId) return <Badge key={e} kind="plain">Egg: {e}</Badge>;');
+  });
+
+  it('the egg names on pal cards really resolve to items', () => {
+    const pals = (palsJson as {
+      pals: Record<string, { egg_types?: string[]; ranch_produce?: string[] }>;
+    }).pals;
+    const eggs = new Set<string>();
+    const ranch = new Set<string>();
+    for (const p of Object.values(pals)) {
+      for (const e of p.egg_types ?? []) eggs.add(e);
+      for (const r of p.ranch_produce ?? []) ranch.add(r);
+    }
+    for (const e of eggs) expect(itemIdByName(e), `egg ${e}`).not.toBeNull();
+    const unresolved = [...ranch].filter((r) => itemIdByName(r) == null).sort();
+    // Two ranch entries are DESCRIPTIONS, not item names — Vixy digs
+    // "items from the ground" and Vaelet grows "various seeds". They
+    // stay plain badges rather than being force-matched to some item
+    // (measured 2026-08-20; the fallback branch above is for exactly
+    // these two).
+    expect(unresolved).toEqual(['items from the ground', 'various seeds']);
+  });
+});
+
 describe('pal drops and items join both ways (game-file data)', () => {
   it('every pal drop string resolves to an item', () => {
     const pals = (palsJson as { pals: Record<string, { drops?: string[] }> }).pals;
