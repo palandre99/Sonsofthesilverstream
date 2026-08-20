@@ -250,6 +250,12 @@ function ItemRow({ id, showGroup, collapsed, level, onOpen }: {
   const topWord = ITEM_STATS[fam[tiers - 1]]?.tier
     ?? tierWord(ITEMS[fam[tiers - 1]].rarity);
   const inBuild = buildQty(id);
+  // A saddle carries no attack, defence or effect, so its line fell back
+  // to its kind and 138 rows read only "Pal gear" (IL53). 124 of them
+  // DO record a technology level, which is the thing a player browsing
+  // saddles wants: can I make this yet? Skipped when the gold marker is
+  // already showing that same level, so it is never said twice.
+  const unlockText = !lockedAt && need != null ? `Unlocks at Lv ${need}` : null;
   // only things you MAKE go on a build list — holding a raw material
   // would add a row nobody asked for
   const facts = ITEM_FACTS[id];
@@ -294,8 +300,14 @@ function ItemRow({ id, showGroup, collapsed, level, onOpen }: {
         </View>
         <View style={[s.row, { gap: 8, marginTop: 2 }]}>
           <Text style={{ color: T.muted, fontSize: 12, flex: 1 }} numberOfLines={1}>
-            {line || kindWord(id)}
-            {showGroup && groupOf(id) ? `  ·  ${groupOf(id)}` : ''}
+            {/* When an item has no numbers the line falls back to its
+                KIND, and the search view then appended its GROUP — for
+                the 138 saddles both read "Pal gear", so every row said
+                "Pal gear · Pal gear" (IL53). Say it once. */}
+            {line || unlockText || kindWord(id)}
+            {showGroup && groupOf(id)
+              && groupOf(id) !== (line || unlockText || kindWord(id))
+              ? `  ·  ${groupOf(id)}` : ''}
           </Text>
           {/* the player's own state outranks the game's trivia — a row
               on the build list says so before it says its weight.

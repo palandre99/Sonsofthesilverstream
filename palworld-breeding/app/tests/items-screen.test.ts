@@ -1344,3 +1344,29 @@ describe('food says why you would cook it (IL52)', () => {
     expect(code).toContain('ids.filter((i) => effectNumber(i, b) != null)');
   });
 });
+
+describe('a row with no numbers still says something (IL53)', () => {
+  const code = readFileSync(
+    join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+  const facts = (FACTS as { facts: Record<string, {
+    tech?: { level: number } }> }).facts;
+
+  it('the 138 saddles carry a level worth showing', () => {
+    const gear = Object.keys(ITEMS)
+      .filter((i) => ITEMS[i].subcategory === 'Essential_PalGear');
+    expect(gear.length).toBe(138);
+    expect(gear.filter((i) => facts[i]?.tech?.level).length).toBe(124);
+  });
+
+  it('the kind is never printed twice', () => {
+    // every saddle read "Pal gear · Pal gear": the line fell back to the
+    // kind and the search view then appended the identical group label
+    expect(code).toContain("groupOf(id) !== (line || unlockText || kindWord(id))");
+  });
+
+  it('the unlock level fills a blank line, but never doubles the marker', () => {
+    expect(code).toContain(
+      'const unlockText = !lockedAt && need != null ? `Unlocks at Lv ${need}` : null;');
+    expect(code).toContain('{line || unlockText || kindWord(id)}');
+  });
+});

@@ -2508,6 +2508,20 @@ work always"):**
       The publish ritual forbids shipping over another session's
       unfinished work. Committed and pushed; publish the moment the
       tree is clean of their changes.
+- [x] IL53 2026-08-20: "PAL GEAR · PAL GEAR" — 138 rows said the same
+      word twice. Found by continuing IL50/IL52's question ("what does
+      a player choose by, and does the row show it?") into the saddles.
+      A saddle carries no attack, defence or effect, so its line fell
+      back to its KIND, and the search view then appended its GROUP —
+      both of which read "Pal gear". Every one of the 138 rows printed
+      it twice. Now said once.
+      AND THE LINE EARNS ITS SPACE: 124 of the 138 record a technology
+      level (6 to 79), which is exactly what a player browsing saddles
+      wants — "Arsox Saddle · Unlocks at Lv 15" instead of "Pal gear".
+      Skipped when the gold out-of-reach marker is already showing that
+      same level, so it is never said twice either (the mistake IL46
+      had to fix once already). It also fills the one blank accessory,
+      the Ability Glasses. Eye-verified, clip-free. 974 green.
 - [x] IL52 2026-08-20: FOOD SAYS WHY YOU WOULD COOK IT. The same gap as
       IL50, one tab over: rows showed Nutrition and SAN — how FILLING a
       dish is — and hid the buffs that are the whole reason to cook it.
