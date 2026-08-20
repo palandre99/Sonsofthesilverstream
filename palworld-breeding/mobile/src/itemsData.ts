@@ -422,6 +422,64 @@ export function buildTotals(list: Record<string, number>): CraftRollup {
   };
 }
 
+/** "Is this an evening or a weekend?" — the second question after
+ * "what do I need?" (IL47). Sums the game's OWN stated Handiwork Lv. 1
+ * times; nothing is derived from a formula, and quantities simply
+ * multiply the stated figure.
+ *
+ * The honest half: only 742 of the 1,416 craftable items record a
+ * craft time at all (52%, measured 2026-08-20). A total over half the
+ * data with nothing said about the rest is exactly the number this app
+ * exists to replace, so `unknown` counts what could not be measured and
+ * the caller MUST say it. */
+export interface BuildTime {
+  /** seconds of crafting at Handiwork Lv. 1, for the rows we can measure */
+  seconds: number;
+  /** how many list entries contributed a time */
+  counted: number;
+  /** how many THINGS (units, not entries) record no craft time — the
+   * panel header counts units too, and one word must not mean two
+   * different numbers on the same card (caught on the eye pass: two
+   * AI Cores were reported as "1 thing with no time recorded") */
+  unknown: number;
+}
+
+const timeSeconds = (t: string): number => {
+  const h = /(\d+)h/.exec(t);
+  const m = /(\d+)m/.exec(t);
+  const s = /(\d+)s/.exec(t);
+  return (h ? +h[1] * 3600 : 0) + (m ? +m[1] * 60 : 0) + (s ? +s[1] : 0);
+};
+
+export function buildTime(list: Record<string, number>): BuildTime {
+  let seconds = 0;
+  let counted = 0;
+  let unknown = 0;
+  for (const [id, qty] of Object.entries(list)) {
+    if (!ITEMS[id] || !(qty > 0)) continue;
+    const t = ITEM_FACTS[id]?.craftTime;
+    if (!t || timeSeconds(t) === 0) {
+      // only things you MAKE can take time; a gathered material is not
+      // "unmeasured", it simply has no craft
+      if (ITEM_FACTS[id]?.recipe) unknown += qty;
+      continue;
+    }
+    seconds += timeSeconds(t) * qty;
+    counted += 1;
+  }
+  return { seconds, counted, unknown };
+}
+
+/** Seconds as something a player reads — "2h 47m", not 10000. */
+export function spokenTime(seconds: number): string {
+  if (seconds <= 0) return '';
+  const h = Math.floor(seconds / 3600);
+  const m = Math.round((seconds % 3600) / 60);
+  if (h > 0) return m > 0 ? `${h}h ${m}m` : `${h}h`;
+  if (seconds >= 60) return `${Math.floor(seconds / 60)}m`;
+  return `${seconds}s`;
+}
+
 /** Nothing anywhere says how to get this item: no recipe, no tier
  * craft, no technology node, no research, no drop, no chest, no shop,
  * and no pal drops it (IL41). 102 items are in this state. A card that

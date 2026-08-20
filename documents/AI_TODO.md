@@ -2427,7 +2427,7 @@ work always"):**
       now show together ("Lv 57 ×1 building"), eye-verified, and the
       row is still 343×58 with nothing clipped. Pinned by a test that
       reads inside the build branch for the level marker. 918 green.
-- [ ] IL47 FOUND BY IL45 2026-08-20: the build panel counts MATERIALS
+- [x] IL47 2026-08-20: the build panel counts materials AND TIME
       but never TIME. 742 of the craftable items ship a work amount and
       a Handiwork Lv. 1 time (Beam Sword: 5,000 work, 2h46m40s), the
       card already shows both, and the panel could total them — "about
@@ -2439,11 +2439,21 @@ work always"):**
       weapons, armour and accessories (70%). Missing outright: AI Core,
       Attack Pendant, Ring of Water Resistance, Phantom Ring, Wumpo
       Charm, Thermal Undershirt.
-      SO THE TOTAL MUST NAME WHAT IT LEFT OUT — "about 6h20m at
-      Handiwork Lv. 1, plus 2 things with no time recorded" — or not
-      ship. A bare total over half the data is precisely the number
-      this app exists to replace. Show the count of unmeasured items
-      beside it, never silently drop them.
+      DONE 2026-08-20, and it names what it cannot measure: the panel
+      reads "About 8h 20m of crafting at Handiwork Lv. 1, plus 2 things
+      with no time recorded". No formula was invented — it sums the
+      GAME'S OWN stated Handiwork Lv. 1 times and multiplies by the
+      quantity. (Work-to-time is a dead-constant 2.000 s per work unit
+      across all 739 items carrying both, which would have been a fine
+      derivation; summing the stated string is still better, so that is
+      what ships.) A list with nothing timeable says so outright rather
+      than printing "About 0s".
+      CAUGHT ON THE EYE PASS, and it is exactly the defect this
+      workspace bans: the header counts UNITS ("5 things") while my new
+      line counted ENTRIES, so two AI Cores were reported as "1 thing
+      with no time recorded" — one word meaning two different numbers
+      on the same card. `unknown` now counts things, and the test says
+      why. 924 green.
 - [x] IL45 2026-08-20: HOLD A ROW TO ADD IT — and the measurement said
       NO BUTTON, so there is none. The row is 343px wide and its name
       slot is 199px; "Disposable Implant: Demon's Hand" already needs

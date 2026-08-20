@@ -22,7 +22,8 @@ import {
   groupOf, hasNoKnownSource, idsInGroup, implantPassive, ITEM_GROUPS,
   ITEM_STATS, ITEMS,
   kindPhrase, kindsInGroup, kindWord, palsDropping, palsHatchingFrom, rawMaterialsFor,
-  buildTotals, rankAxisOf, rankValueOf, rivalsOf, rollupOfMats, schematicsFor,
+  buildTime, buildTotals, rankAxisOf, rankValueOf, rivalsOf, rollupOfMats,
+  schematicsFor, spokenTime,
   searchItems, sortItems, statRank, TAB_GROUPS, teachesOf, TIER_WORDS,
   tierWord, usedInOf, weaponsForAmmo, type ItemSort,
 } from '../itemsData';
@@ -335,6 +336,7 @@ function BuildPanel({ onOpenItem }: { onOpenItem: (id: string) => void }) {
   // away. Only when a level is actually SET (IL21's rule: no level, no
   // claim), and never a block — planning ahead is allowed.
   const level = getPlayerLevel();
+  const time = buildTime(list);
   const locked = level == null
     ? [] : ids.filter((i) => (unlockLevel(i) ?? 0) > level);
   return (
@@ -396,6 +398,23 @@ function BuildPanel({ onOpenItem }: { onOpenItem: (id: string) => void }) {
                 ? `${ITEMS[locked[0]].name} needs technology level ${unlockLevel(locked[0])} — you are level ${level}.`
                 : `${locked.length} of these need a higher technology level than ${level}: `
                   + locked.map((i) => `${ITEMS[i].name} (Lv ${unlockLevel(i)})`).join(', ')}
+            </Text>
+          )}
+          {/* IL47: "is this an evening or a weekend?" — but only half
+              the catalogue records a craft time, so the total always
+              says what it could not measure rather than quietly
+              averaging over it. */}
+          {(time.counted > 0 || time.unknown > 0) && (
+            <Text style={[s.body, {
+              fontSize: 12, color: T.muted, marginTop: 6,
+            }]}>
+              {time.counted > 0
+                ? `About ${spokenTime(time.seconds)} of crafting at Handiwork Lv. 1`
+                : 'No craft time is recorded for any of these'}
+              {time.unknown > 0
+                ? `${time.counted > 0 ? ', plus ' : ' — '}${time.unknown} `
+                  + `${time.unknown === 1 ? 'thing' : 'things'} with no time recorded`
+                : ''}
             </Text>
           )}
           <Text style={[s.body, {

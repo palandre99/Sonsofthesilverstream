@@ -6,7 +6,8 @@ import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import {
-  ammoForWeapon, buildTotals, collapseFamilies, effectNumber, familyOf, familyPowerOf,
+  ammoForWeapon, buildTime, buildTotals, collapseFamilies, effectNumber, familyOf,
+  familyPowerOf, spokenTime,
   hasNoKnownSource,
   idsInGroup, implantPassive, ITEM_GROUPS, ITEM_STATS, ITEMS, itemIdByName, KIND_WORDS,
   kindsInGroup, kindWord, palsDropping, palsHatchingFrom, rawMaterialsFor,
@@ -1136,5 +1137,63 @@ describe('the build list knows what your level can reach (IL46)', () => {
     expect(craftable.length).toBe(681);
     // the family's EASIEST tier is what unlockLevel reports (IL21)
     expect(facts.BeamSword!.tech!.level).toBe(57);
+  });
+});
+
+describe('the build list says how long, and what it cannot time (IL47)', () => {
+  const code = readFileSync(
+    join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+
+  it('sums the game\'s own stated times, multiplied by quantity', () => {
+    // Beam Sword is 2h46m40s = 10,000s at Handiwork Lv. 1
+    const one = buildTime({ BeamSword: 1 });
+    expect(one.seconds).toBe(10000);
+    expect(one.counted).toBe(1);
+    expect(one.unknown).toBe(0);
+    const three = buildTime({ BeamSword: 3 });
+    expect(three.seconds).toBe(30000);
+  });
+
+  it('counts what it CANNOT measure instead of ignoring it', () => {
+    // the AI Core has a recipe but no craft time recorded upstream.
+    // `unknown` counts THINGS, not entries — the panel header says
+    // "5 things" meaning units, and one word must not mean two numbers
+    const mixed = buildTime({ BeamSword: 1, AIcore: 2 });
+    expect(mixed.seconds).toBe(10000);
+    expect(mixed.counted).toBe(1);
+    expect(mixed.unknown).toBe(2);
+  });
+
+  it('a gathered material is not "unmeasured" — it has no craft at all', () => {
+    const raw = buildTime({ Wood: 40 });
+    expect(raw).toEqual({ seconds: 0, counted: 0, unknown: 0 });
+  });
+
+  it('reads as time a player speaks, not a pile of seconds', () => {
+    expect(spokenTime(10000)).toBe('2h 47m');
+    expect(spokenTime(3600)).toBe('1h');
+    expect(spokenTime(600)).toBe('10m');
+    expect(spokenTime(45)).toBe('45s');
+    expect(spokenTime(0)).toBe('');
+  });
+
+  it('the panel never shows a total without naming the gap', () => {
+    expect(code).toContain('plus ');
+    expect(code).toContain('with no time recorded');
+    expect(code).toContain('About ${spokenTime(time.seconds)} of crafting at Handiwork Lv. 1');
+    // and when nothing can be timed it says so rather than "About 0s"
+    expect(code).toContain('No craft time is recorded for any of these');
+  });
+
+  it('the shipped coverage is what the note measured', () => {
+    const facts = (FACTS as { facts: Record<string, {
+      recipe?: unknown; craftTime?: string }> }).facts;
+    const craftable = Object.keys(facts).filter((i) => facts[i].recipe);
+    const timed = craftable.filter((i) => facts[i].craftTime);
+    expect(craftable.length).toBe(1416);
+    // 740 carry a craft TIME (739 carry both a time and a work amount —
+    // one records a time with no work, which is why the two counts in
+    // the ledger differ by one)
+    expect(timed.length).toBe(740);
   });
 });
