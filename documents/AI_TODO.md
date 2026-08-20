@@ -29,6 +29,12 @@ logged gap costs nothing and saves the eventual port from re-discovery.*
   silent) — and the web box has no `u` flag at all. Port list: adopt
   boxShare.ts (or equivalent), add the `u` flag to the web store + Paldex
   UI (E122's feature), then extend `box-roundtrip.test.ts` to the u-states.
+- 2026-08-19 (bosses lane, B9): the website's verification.json is 10
+  claims behind canonical AND carries 2 claims that no longer exist
+  upstream — including a species-formula claim written with floor
+  brackets "⌊(rankA+rankB+1)/2⌋", the exact notation E105 banned from
+  user-facing copy. Port list: re-sync app/public/data/verification.json
+  from data/ and drop the two stale rows.
 - 2026-08-18 (bosses lane): the new 'wiki-measured' claim verdict (element
   chart) renders on the WEBSITE's reference page with the amber fallback
   style (`app/src/modules/misc.tsx` verdict map lacks the key). Visible,
@@ -624,15 +630,20 @@ and the one missing dataset identified: the element chart.*
       CORRECTION recorded: an early research summary claimed a "+20%
       same-element skill bonus" — both wikis explicitly say same-element
       is 1x, so no such number ships anywhere.
-- [ ] B9 FINDING (2026-08-18, this lane, needs an owner): the three
-      verification.json copies disagree on claim count — data/ 45,
-      mobile/src/data/ 39, app/public/data/ 37 (counts AFTER my +1 to
-      each). Copies are supposed to move together (E139). Possibly
-      benign per-platform lag (web frozen at the hold; canonical carrying
-      map-lane claims the apps don't render) — but somebody should diff
-      the claim lists and either sync or record WHY they differ. Not done
-      in this lane's block: the items lane was mid-flight in the tree and
-      verification.json may be part of their in-progress work.
+- [x] B9 RESOLVED 2026-08-19: the three verification.json copies were
+      diffed properly, and the divergence was NOT benign. The PHONE was
+      missing 6 map-lane claims — the map fane's whole proof story (the
+      8192 texture, the game's own POI symbols, the Dualith wrong-map
+      correction, the second independent projection check, the
+      dungeon/field split, the water-pals-in-water check) was in
+      canonical but never propagated, so the CEO's Reference screen
+      could not show it. Synced from canonical, order preserved, 46/46;
+      every verdict has a designed badge (the reference-copy test
+      re-run). The WEBSITE copy is 10 behind AND carries 2 stale
+      wordings (including a "⌊(rankA+rankB+1)/2⌋" formula claim whose
+      floor notation E105 banned from the app) — logged in WEB BACKLOG,
+      not fixed, because the site is on hold. Lesson for every lane: a
+      claim written only into data/ is invisible to the app that ships.
 
 ## F. CEO DIRECTIVE ~22:45 2026-08-15 — THE MAP FANE (second worker)
 ## (verbatim intake: "the map needs to look exactly like the map when i open

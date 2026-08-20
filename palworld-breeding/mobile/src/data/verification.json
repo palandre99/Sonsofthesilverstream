@@ -320,6 +320,67 @@
    ]
   },
   {
+   "claim": "Map texture: Palpagos is cut from the game's native 8192x8192 T_WorldMap; the World Tree remains 4096 because no 8192 export of T_TreeMap could be found. Zoom is capped per region at the pixels that actually exist.",
+   "verdict": "verified",
+   "evidence": "jeankassio/PalMiniMap (MIT) publishes T_WorldMap.png at 8192x8192 (23,473,212 bytes), exported from the game PAK with FModel. Confirmed to be the SAME image as the 4096 copy we already trusted before building on it: downscaled to 4096 it differs from pal-atlas's texture by 1.57/255 mean absolute error with 95.4% of pixels within 12/255 - compression noise, not a different image. The pyramid gains z4 (16x16 tiles) for Palpagos only; 180 of 256 z4 tiles are kept and 76 are open ocean. REGION_MAX_Z records the real depth per region and the zoom ceiling is derived from it, so the map can no longer magnify past its own pixels. Reason for the change: on a 3x-density phone a 4096 texture at full zoom was a 3x upscale (CEO: 'it looks like 380 quality.. not crisp 4K').",
+   "sources": [
+    "jeankassio/PalMiniMap PalMiniMap_V2/build/T_WorldMap.png (MIT)",
+    "Nifrendil/pal-atlas public/maps/worldtree.webp (MIT)",
+    "tools/build_map_tiles.py"
+   ]
+  },
+  {
+   "claim": "Map symbols: eight POI layers use the game's own icons at 64-100px; two candidate replacements were REJECTED because the symbol does not correspond.",
+   "verdict": "verified",
+   "evidence": "pal-atlas's icons are 14-46px, which is mush at ~45 device px on a 3x phone (CEO: 'Icons are also garbage'). jeankassio/PalMiniMap exports the same game UI textures larger: fast_travel and syndicate_tower 100px, sealed_realm/bounty_targets/chest 80px, dungeon/egg/note 64px. Every candidate was rendered SIDE BY SIDE against the icon it would replace before being accepted; that check rejected pal_effigy -> T_itemicon_Relic (a green creature, not the effigy statue) and alpha_pals -> T_icon_compass_boss (a horned head, a different glyph). Those two keep pal-atlas art, and a test asserts they stay under 64px so the choice is not silently undone. The remaining 13 layers have no corresponding symbol in that repo and keep their pal-atlas sprites.",
+   "sources": [
+    "jeankassio/PalMiniMap PalMiniMap_V2/icons/ (MIT)",
+    "Nifrendil/pal-atlas public/icons/ (MIT)",
+    "tools/fetch_map_icons.py"
+   ]
+  },
+  {
+   "claim": "One upstream row of 68,707 was on the wrong map: the Lv 55 Alpha Dualith. Its region label is corrected to Palpagos on evidence; its position is untouched.",
+   "verdict": "verified",
+   "evidence": "palworld-atlas-data tags the row region='tree', but its coordinates (-169138.25, 575683.1) fall outside the World Tree's DT_WorldMapUIData bounds entirely and inside Palpagos's. Two independent signals agree it is a Palpagos boss: (1) the coordinates only fit Palpagos; (2) Nifrendil/pal-atlas lists the SAME spawner - notes 'remainsIsland_1_GrassGolem_FBOSS | Lv 55-55', palId BOSS_GrassGolem - as alpha_1667 with mapId 'palpagos'. Swept both spawn files: exactly 1 of 68,707 rows fails its labelled region, and that same row fits the other region; every other row is correctly labelled. Previously project() returned None for it, so the boss was silently absent from the app. Now only the LABEL moves, never the position: the recovered point lands at uv (0.89735, 0.35791), which samples as LAND on the game texture (avg rgb 58,78,62), not clamped to an edge. Anything fitting NEITHER region is still dropped. The extractor prints every correction it makes.",
+   "sources": [
+    "Awy64/palworld-atlas-data tree_spawns.json (build 24575149)",
+    "Nifrendil/pal-atlas pois.json alpha_1667 / alpha_983",
+    "tools/extract_map_data.py project()"
+   ]
+  },
+  {
+   "claim": "The map projection is confirmed a SECOND time, independently, by where the 11,097 points of interest land: on the right kind of ground.",
+   "verdict": "verified",
+   "evidence": "tools/verify_map_projection.py settled the world-to-image transform against 58,504 spawn points. This checks the other half of the dataset and asks a different question - not 'is it inside the image' but 'is it on the right terrain'. 84.4% of the game's map texture is water by the same classifier the tile baker uses, so random placement would put ~84% of markers in water. Observed: 1.0% to 23.3%, every layer far below chance. The ORDER is the real proof, because a broken transform has no way to produce it: things that grow in forests are almost never in water (red berries 1.0%, mushrooms 2.2%, coal 2.5%, ore 6.1%) while paldium, which sits in and beside water in game, is the highest at 22.9%, alongside effigies 23.3% and coastal markers like fast travel 19.4%. Re-runnable as tools/verify_map_poi_placement.py, which fails if any land-only layer rises above 5% in water.",
+   "sources": [
+    "tools/verify_map_poi_placement.py",
+    "mobile/src/data/mapPois.g.ts (11,097 points, Nifrendil/pal-atlas MIT)",
+    "tools/.cache/T_WorldMap_hi.png (game texture, jeankassio/PalMiniMap MIT)"
+   ]
+  },
+  {
+   "claim": "The dungeon/field split is confirmed against a source it was not built from: dungeon-flagged spawns sit ON dungeon entrances, field spawns never do.",
+   "verdict": "verified",
+   "evidence": "10,792 of 64,671 Palpagos wild spawns are flagged as dungeon spawners - 17% of the dataset - and a wrong flag sends the player to a hillside to hunt a pal that only exists in a cave beneath it. The flag comes from Nifrendil/pal-atlas spawn-zones.json, which keeps only EPalSpawnerPlacementType::Field placements, so a spawn absent from that set is underground. Checked against a DIFFERENT list the discriminator never consulted: the 157 dungeon entrances in the POI layer. Result on a fixed 400-point sample of each class: dungeon-flagged spawns have a MEDIAN distance of 0 uu to the nearest entrance (most share coordinates exactly) with 78.0% inside 2,000 uu, while field spawns sit a median 22,869 uu away with only 0.2% inside 2,000 uu. The separation is total. Re-runnable as tools/verify_map_dungeon_split.py, which fails if the dungeon median rises above 2,000 uu or more than 1% of field spawns land on an entrance.",
+   "sources": [
+    "tools/verify_map_dungeon_split.py",
+    "Nifrendil/pal-atlas spawn-zones.json (Field placements; the discriminator)",
+    "Nifrendil/pal-atlas pois.json dungeon layer (157 entrances; the check)",
+    "Awy64/palworld-atlas-data palpagos_spawns.json build 24575149"
+   ]
+  },
+  {
+   "claim": "Water pals spawn in water and Grass pals inland - so the species-to-location mapping is right, not just the projection.",
+   "verdict": "verified",
+   "evidence": "Sampling every open-world spawn point on Palpagos against the game texture's own water classifier, grouped by the pal's primary element, gives an ordering only correct data can produce: Water 25.2%, Ice 20.8%, Dragon 15.9%, Fire 9.2%, Neutral 8.8%, Dark 8.5%, Electric 8.4%, Ground 5.4%, Grass 4.6%. Water pals are 5.5x more likely to be found in water than Grass pals, and every element sits far below the 84.4% a random placement would score. This tests something the land check does not: if the species-to-points mapping were shuffled, points would still land on land but the per-element correlation would collapse to a flat line. Dungeon spawns are excluded because a cave mouth says nothing about a pal's habitat. Re-runnable in tools/verify_map_poi_placement.py, which fails if Water ever drops to within 2x of Grass.",
+   "sources": [
+    "tools/verify_map_poi_placement.py species_habitat()",
+    "mobile/src/data/mapSpawns.g.ts (Awy64/palworld-atlas-data build 24575149)",
+    "data/pals_1_0.json element table"
+   ]
+  },
+  {
    "claim": "Each fixed boss is its own row in the game's parameter table with its own stats (e.g. boss Paladius: HP 156 vs 130, size XL vs L, x1.855 fight HP, takes 18% of incoming damage; boss Lamball: HP 84 vs 70, size M vs XS)",
    "verdict": "verified",
    "evidence": "205 of 207 titled fixed bosses fetched from paldb.cc per-boss pages (the raw DT_PalMonsterParameter row each; the table's existence and 753-row count confirmed by the palworld-atlas-data build manifest). Every row was accepted only when its CombiRank matched our oracle-tested value for the species; the 2 drops are recorded (Jolthog's boss page absent upstream; the Panthalus line is player-reported, not a boss page). Full capture with drop list: data/alpha_stats_1_0.json.",
