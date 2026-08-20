@@ -12,13 +12,15 @@ import * as Haptics from 'expo-haptics';
 import { ELEMENT_COLORS, T } from '../../theme';
 import { getPlayerLevel, pals } from '../../store';
 import { onNavIntent, takeIntentPayload } from '../../nav/intent';
-import { Badge, Card, DataStamp, PalIcon, SearchInput, s } from '../../ui/kit';
+import { Badge, Btn, Card, DataStamp, PalIcon, SearchInput, s } from '../../ui/kit';
 import { Icon } from '../../ui/Icon';
 import { ALPHA_STATS, type AlphaStat } from '../../data/alphaStats.g';
 import { weaknessLabel } from '../../logic/counters';
 import { ELEMENTS } from '../../data/elements';
 import { ELEMENT_ICONS } from '../../data/statIcons';
-import { isBeaten, loadRecord, onRecordChange, toggleBeaten } from '../../bosses/record';
+import {
+  clearRecord, isBeaten, loadRecord, onRecordChange, recordSize, toggleBeaten,
+} from '../../bosses/record';
 import { AlphaCard, alphaBeatKey, alphaCaughtKey } from './AlphaCard';
 
 interface AlphaRow {
@@ -166,6 +168,9 @@ export function AlphasScreen() {
   const [element, setElement] = useState<string | null>(null);
   const [inReach, setInReach] = useState(false);
   const [sort, setSort] = useState<SortKey>('level');
+  // arms once before it fires, the same guard the Paldex's clear uses —
+  // a stray tap must never wipe a record built over a whole save
+  const [armClear, setArmClear] = useState(false);
   const [, bump] = useState(0);
   useEffect(() => {
     void loadRecord();
@@ -379,6 +384,32 @@ export function AlphasScreen() {
               );
             })}
           </View>
+
+          {/* tracking with no way out is a trap: without this the only
+              way back from a 205-row record is 205 taps */}
+          {recordSize() > 0 && (
+            <View style={[s.wrap, { marginTop: 10 }]}>
+              <Btn small danger={armClear}
+                label={armClear
+                  ? `Yes, forget all ${recordSize()}`
+                  : 'Clear my boss record…'}
+                onPress={() => {
+                  void Haptics.selectionAsync();
+                  if (!armClear) { setArmClear(true); return; }
+                  clearRecord();
+                  setArmClear(false);
+                }} />
+              {armClear && (
+                <Btn small label="Keep it" onPress={() => setArmClear(false)} />
+              )}
+              {armClear && (
+                <Text style={[s.body, { fontSize: 11.5, width: '100%', marginTop: 2 }]}>
+                  Forgets every beaten and caught tick on this save — towers
+                  and raids too. Your collection and plan are untouched.
+                </Text>
+              )}
+            </View>
+          )}
 
           {shown.length !== rows.length && (
             <Text style={[s.body, { fontSize: 12, marginTop: 8 }]}>

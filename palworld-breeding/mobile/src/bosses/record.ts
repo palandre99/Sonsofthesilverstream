@@ -58,6 +58,21 @@ export function beatenCount(bps: string[]): number {
   return n;
 }
 
+/** How many fights are ticked, across every kind. */
+export function recordSize(): number {
+  return beaten.size;
+}
+
+/** Forget every tick on this profile — the way out of a record you no
+ * longer want. Tracking without a reset means 205 alphas can only be
+ * untangled one row at a time, which is not a feature, it is a trap. */
+export function clearRecord(): void {
+  beaten = new Set();
+  emit();
+  const id = loadedFor;
+  if (id) void AsyncStorage.removeItem(storageKey(id)).catch(() => {});
+}
+
 /** Tick or untick one fight, and persist. */
 export function toggleBeaten(bp: string): void {
   if (beaten.has(bp)) beaten.delete(bp);
