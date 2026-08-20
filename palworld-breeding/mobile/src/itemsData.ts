@@ -411,13 +411,57 @@ export function usedInOf(id: string): string[] {
 /** The item's own kind, ranked by the best number each family reaches —
  * the compare view (IL19). One row per family so a bow's five tiers do
  * not crowd out the other bows; the caller highlights `id`'s family. */
+/** A kind word inside a sentence: lowercased, except acronyms the game
+ * writes in capitals — "pal EXP item", never "pal exp item" (IL42). */
+export const kindPhrase = (id: string): string =>
+  kindWord(id).split(' ')
+    .map((w) => (/[A-Z]{2,}/.test(w) ? w : w.toLowerCase()))
+    .join(' ');
+
+/* ---- ranking a kind that carries no attack or defense (IL42) -------
+ * The workspace rule is that every number carries meaning — a rank, not
+ * a bare figure. 30 families broke it: a Training Manual showed its EXP
+ * and nothing about whether that is the good one, because `powerOf`
+ * only knows attack, defense and nutrition. So a kind may instead be
+ * ranked by ONE effect number, and only when EVERY family of that kind
+ * carries it — Pal EXP items all have "EXP", technology manuals all
+ * have "Technology Points". Ore, Gliders, Bait and Wood share no number
+ * at all and are deliberately left unranked: inventing an axis for them
+ * would be exactly the invented meaning this rule exists to prevent. */
+const KIND_AXIS = new Map<string, string | null>();
+export function rankAxisOf(kind: string): string | null {
+  const cached = KIND_AXIS.get(kind);
+  if (cached !== undefined) return cached;
+  const fams = collapseFamilies(ITEM_IDS.filter((i) => kindWord(i) === kind));
+  let axis: string | null = null;
+  const noStats = fams.every(
+    (i) => ITEM_STATS[i]?.atk == null && ITEM_STATS[i]?.def == null);
+  if (fams.length >= 2 && noStats) {
+    const sets = fams.map((i) => new Set(
+      (ITEM_FACTS[i]?.effects ?? []).map(([k]) => k)));
+    axis = [...(sets[0] ?? [])].find((l) => sets.every((s) => s.has(l))) ?? null;
+  }
+  KIND_AXIS.set(kind, axis);
+  return axis;
+}
+
+/** What a family is ranked BY — its best stat, or its kind's one shared
+ * effect number when the kind has no stats at all. */
+export function rankValueOf(id: string): number {
+  const p = familyPowerOf(id);
+  if (p > 0) return p;
+  const axis = rankAxisOf(kindWord(id));
+  if (!axis) return -1;
+  return Math.max(...familyOf(id).map((f) => effectNumber(f, axis) ?? -1));
+}
+
 export function rivalsOf(id: string): string[] {
   const kind = kindWord(id);
   const bases = collapseFamilies(
     ITEM_IDS.filter((i) => kindWord(i) === kind));
   return bases
-    .filter((i) => familyPowerOf(i) > 0)
-    .sort((a, b) => familyPowerOf(b) - familyPowerOf(a)
+    .filter((i) => rankValueOf(i) > 0)
+    .sort((a, b) => rankValueOf(b) - rankValueOf(a)
       || ITEMS[a].name.localeCompare(ITEMS[b].name));
 }
 

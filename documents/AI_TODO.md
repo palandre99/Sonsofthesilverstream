@@ -2349,7 +2349,7 @@ work always"):**
       HONEST SCORECARD: silent cards 106 -> 102, because most of the 45
       already had SOME source (tech or a chest) and were not in the 106.
       The recipe was still missing from all 45 cards, which is the point.
-- [ ] IL42 FOUND 2026-08-20 by testing the workspace's OWN quality rule
+- [x] IL42 2026-08-20 by testing the workspace's OWN quality rule
       ("every number carries meaning — rank context, not a raw figure")
       against the catalogue: 30 families show a bare number with no rank
       beside it. The leaderboard needs 3+ rival families
@@ -2357,11 +2357,28 @@ work always"):**
       with two members but wrong for these: Ore has 6, Pal EXP item 4,
       Glider 4, Technology manual 3. A Training Manual (L) tells you a
       number and nothing about whether it is the good one.
-      SMALL AND CLEARLY IN SCOPE. Lower the threshold where the kind can
-      support it, or give these a one-line rank ("#2 of 4 gliders")
-      instead of the full board. MEASURE which of the 30 gain a real
-      comparison before changing the threshold — some kinds share no
-      comparable stat and would rank on nothing.
+      DONE 2026-08-20. THE MEASUREMENT CHANGED THE FIX: lowering the
+      threshold alone would have done NOTHING, because `powerOf` only
+      knows attack, defense and nutrition — these kinds ranked on -1 and
+      were filtered out before the threshold was ever reached. So a kind
+      with no stats may now be ranked by ONE effect number, and only
+      when EVERY family of that kind carries it. A Training Manual now
+      reads "Every pal EXP item in the game, most EXP first — #1 XL
+      100000, #2 L 10000, #3 M 1000, #4 S 200", which finally answers
+      "is this the good one?". Threshold also 3 -> 2, since two rivals
+      is enough to answer that (the two Gatling guns had been denied a
+      rank for having only each other).
+      WHAT I REFUSED TO DO: Ore (14 families), Gliders (5), Fishing bait
+      (4) and Wood (5) share NO number at all. Ranking them would have
+      meant inventing the axis, which is the exact failure this rule
+      exists to prevent — they stay unranked and the test pins that by
+      name. Bare-number families 30 -> 17; ranked families 315 -> 328;
+      12 kinds gained an effect axis.
+      CAUGHT ON THE EYE PASS: the subtitle lowercases the kind, so it
+      read "Every pal exp item" — the blanket `.toLowerCase()` mangles
+      the game's own acronyms. A shared `kindPhrase` now keeps EXP and
+      SAN in capitals, and the share composer had the same bug and got
+      the same fix. 896 green.
 - [ ] IL43 PROPOSAL, needs a scope call 2026-08-20 — A BUILD LIST. IL32
       and IL33 answer "what does THIS cost from scratch". The question
       they do not answer is the one a player actually asks before a

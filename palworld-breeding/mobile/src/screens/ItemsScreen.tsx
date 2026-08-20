@@ -21,8 +21,8 @@ import {
   ammoForWeapon, collapseFamilies, effectNumber, familyOf, familyPowerOf,
   groupOf, hasNoKnownSource, idsInGroup, implantPassive, ITEM_GROUPS,
   ITEM_STATS, ITEMS,
-  kindsInGroup, kindWord, palsDropping, palsHatchingFrom, rawMaterialsFor,
-  rivalsOf, rollupOfMats, schematicsFor,
+  kindPhrase, kindsInGroup, kindWord, palsDropping, palsHatchingFrom, rawMaterialsFor,
+  rankAxisOf, rankValueOf, rivalsOf, rollupOfMats, schematicsFor,
   searchItems, sortItems, statRank, TAB_GROUPS, teachesOf, TIER_WORDS,
   tierWord, usedInOf, weaponsForAmmo, type ItemSort,
 } from '../itemsData';
@@ -985,7 +985,11 @@ function ItemDetail({ id, trail = [], onClose, onBack, onOpenItem }: {
             // per family so five tiers of one bow can't crowd out the
             // other bows.
             const rivals = rivalsOf(id);
-            if (rivals.length < 3) return null;
+            // two is enough to answer "is this the good one?" (IL42);
+            // it used to need three, which silently denied a rank to
+            // every small kind — the Gatling guns, the raw fish
+            if (rivals.length < 2) return null;
+            const axis = rankAxisOf(kindWord(id));
             const mine = familyOf(id)[0];
             const at = rivals.indexOf(mine);
             const top = rivals.slice(0, 5);
@@ -994,7 +998,11 @@ function ItemDetail({ id, trail = [], onClose, onBack, onOpenItem }: {
               <Card style={{ marginTop: 10 }}>
                 <Text style={s.h3}>How it stacks up</Text>
                 <Text style={[s.body, { fontSize: 11.5, color: T.faint, marginTop: 2 }]}>
-                  {`Every ${kindWord(id).toLowerCase()} in the game, best tier first`}
+                  {/* say what the ranking is BY when it is not the
+                      stat — "most EXP first" beats a bare number */}
+                  {axis
+                    ? `Every ${kindPhrase(id)} in the game, most ${axis} first`
+                    : `Every ${kindPhrase(id)} in the game, best tier first`}
                 </Text>
                 <View style={{ marginTop: 6 }}>
                   {rows.map((rid) => {
@@ -1022,7 +1030,7 @@ function ItemDetail({ id, trail = [], onClose, onBack, onOpenItem }: {
                           fontSize: 12.5, fontWeight: here ? '800' : '600', flex: 1,
                         }} numberOfLines={1}>{ITEMS[rid].name}</Text>
                         <Text style={{ color: T.muted, fontSize: 12 }}>
-                          {familyPowerOf(rid)}
+                          {rankValueOf(rid)}
                         </Text>
                       </Pressable>
                     );

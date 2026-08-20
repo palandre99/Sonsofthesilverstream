@@ -8,7 +8,7 @@
  * react-native; the screen passes breeding.game_version.
  */
 import {
-  implantPassive, ITEM_STATS, ITEMS, kindWord, palsDropping,
+  implantPassive, ITEM_STATS, ITEMS, kindPhrase, palsDropping,
   palsHatchingFrom, rawMaterialsFor, statRank, tierWord,
 } from './itemsData';
 import { equipPassiveName, ITEM_FACTS } from './itemFacts';
@@ -28,7 +28,7 @@ export function shareTextForItem(id: string, gameVersion: string): string {
   const st = ITEM_STATS[id];
   const facts = ITEM_FACTS[id];
   const word = st?.tier ?? tierWord(it.rarity);
-  const lines: string[] = [`${it.name} — ${word} ${kindWord(id).toLowerCase()}`];
+  const lines: string[] = [`${it.name} — ${word} ${kindPhrase(id)}`];
   const statBits: string[] = [];
   if (st?.atk != null) {
     const r = statRank(id, 'atk');

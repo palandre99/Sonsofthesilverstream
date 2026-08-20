@@ -10,7 +10,7 @@ import {
   hasNoKnownSource,
   idsInGroup, implantPassive, ITEM_GROUPS, ITEM_STATS, ITEMS, itemIdByName, KIND_WORDS,
   kindsInGroup, kindWord, palsDropping, palsHatchingFrom, rawMaterialsFor,
-  rivalsOf, rollupOfMats,
+  rankAxisOf, rankValueOf, rivalsOf, rollupOfMats,
   schematicsFor, searchItems, sortItems, statRank, TAB_GROUPS, teachesOf,
   tierWord, usedInOf, weaponsForAmmo,
 } from '../../mobile/src/itemsData';
@@ -900,5 +900,51 @@ describe('a card with no source says so, instead of just ending (IL41)', () => {
       .filter((i) => ITEMS[i].subcategory === 'MaterialPalEgg');
     const noHatch = eggs.filter((i) => palsHatchingFrom(i).length === 0);
     expect(noHatch.length).toBe(10);
+  });
+});
+
+describe('a kind with no attack still gets a rank (IL42)', () => {
+  const code = readFileSync(
+    join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+
+  it('EXP items rank by EXP, biggest first', () => {
+    expect(rankAxisOf('Pal EXP item')).toBe('EXP');
+    const order = rivalsOf('ExpBoost_03').map((i) => ITEMS[i].name);
+    expect(order).toEqual([
+      'Training Manual (XL)', 'Training Manual (L)',
+      'Training Manual (M)', 'Training Manual (S)',
+    ]);
+    expect(rankValueOf('ExpBoost_04')).toBe(100000);
+    expect(rankValueOf('ExpBoost_01')).toBe(200);
+  });
+
+  it('technology manuals rank by the points they give', () => {
+    expect(rankAxisOf('Technology manual')).toBe('Technology Points');
+    expect(rivalsOf('TechnologyBook_G1').map((i) => ITEMS[i].name)).toEqual([
+      'Futuristic Technical Manual', 'Innovative Technical Manual',
+      'Advanced Technical Manual',
+    ]);
+  });
+
+  it('two rivals is enough — the small kinds were denied a rank', () => {
+    // Gatling guns: two families, both with attack, previously no board
+    const gat = rivalsOf('GatlingGun');
+    expect(gat.length).toBe(2);
+    expect(ITEMS[gat[0]].name).toBe('Laser Gatling Gun');
+    expect(code).toContain('if (rivals.length < 2) return null;');
+  });
+
+  it('a kind that shares NO number is left unranked, not invented', () => {
+    // Ore, Gliders and Bait carry no common figure; ranking them would
+    // be exactly the invented meaning the rule exists to prevent
+    for (const kind of ['Ore', 'Glider', 'Fishing bait', 'Wood']) {
+      expect(rankAxisOf(kind), `${kind} got an invented axis`).toBeNull();
+    }
+    expect(rivalsOf('Coal')).toEqual([]);
+  });
+
+  it('the board says what it ranks by when it is not the stat', () => {
+    expect(code).toContain('most ${axis} first');
+    expect(code).toContain('{rankValueOf(rid)}');
   });
 });
