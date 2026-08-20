@@ -643,6 +643,31 @@ and the one missing dataset identified: the element chart.*
       map spot — says so, invents nothing), Panthalus (hidden arena),
       the Xenolord Ultra toggle (1.41M -> 2.56M HP, 12 -> 18 attacks,
       each difficulty its own kit). No crashes on any surface.
+- [~] B25 PARTLY DONE, NOT EYE-VERIFIED 2026-08-19 (autonomous tick):
+      the Suggested Goals "Fighting" section ranks by raw battle stats,
+      which is the right answer to "who is strong" and the wrong one to
+      "who do I bring to THIS fight". It now carries one tappable line —
+      "For a specific fight, see your squad by element ›" — into the
+      Teams tab (SuggestedGoals.tsx, guarded by sec.id === 'fight').
+      **Typechecks; PROVEN not to regress the sheet (A/B: with and
+      without the edit the sheet opens identically, +172 nodes); but the
+      link itself was NEVER SEEN on screen** — the QA harness would not
+      scroll the goals sheet as far as the Fighting section. Confirm on
+      device before anyone calls it done.
+      HOW IT REACHED THE BRANCH, recorded because it matters: this edit
+      was in flight (stashed mid-test) when the items lane's `git add -A`
+      swept the file into their commit dca256b — the same class of
+      incident they self-reported at 74f4311. No harm done; the change
+      is sound. But it is the SECOND time an in-flight file of this lane
+      has been committed by another session. `git add -A <dir>` cannot
+      tell whose work it is; stage explicit paths.
+      SELF-CORRECTION worth keeping: I first measured the goals button
+      as DEAD (0 DOM nodes added) and was ready to revert this change as
+      the cause. The measurement was taken on a QA server that was
+      dying — it exited moments later. Re-measured on a fresh server:
+      the sheet opens fine, with and without the edit. A dying harness
+      makes a working feature look broken; check the server is alive
+      before believing a "nothing happened" result.
 - [ ] B14 FOR THE ITEMS LANE (found by this lane's drop cross-check,
       2026-08-19): items_1_0.json is MISSING 11 real items that boss
       drop tables reference — all 8 tower Key Spheres (Envy, Pride,
