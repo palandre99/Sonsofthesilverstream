@@ -159,13 +159,19 @@ export function BossCard({ base, hard, onClose }: {
             <Text style={s.h3}>The fight</Text>
             <View style={[s.wrap, { marginTop: 8 }]}>
               <Badge kind="bad">{`${fmtHp(enc.fightHp)} HP`}</Badge>
+              {/* these two cut BOTH ways and the colour has to say which:
+                  Panthalus takes 120% of your damage and hits at x0.7 —
+                  both good news — and amber "warning" badges read as the
+                  opposite (caught on a sweep of the hidden-arena fights) */}
               {enc.recvRate != null && enc.recvRate !== 1 && (
-                <Badge kind="warn">
+                <Badge kind={enc.recvRate < 1 ? 'warn' : 'ok'}>
                   {`takes ${Math.round(enc.recvRate * 100)}% of your damage`}
                 </Badge>
               )}
               {enc.dealRate != null && enc.dealRate !== 1 && (
-                <Badge kind="warn">{`its hits land ×${enc.dealRate}`}</Badge>
+                <Badge kind={enc.dealRate > 1 ? 'warn' : 'ok'}>
+                  {`its hits land ×${enc.dealRate}`}
+                </Badge>
               )}
               {/* the raid list's damage-reduction and attack-% figures are
                   pure derivations of the two rates above — proven identical
