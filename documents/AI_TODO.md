@@ -2312,6 +2312,26 @@ work always"):**
    and reported with the reasoning. Only true CEO-only blockers (Apple
    logins, purchases, money, his own device) stop a tick.
 
+- [ ] IL40 FOUND 2026-08-20 by testing the CEO's own ask ("tells stats,
+      how to craft/where to find and so on") against every card: 106 of
+      the 1,892 cards CANNOT ANSWER "how do I get this?" — no recipe, no
+      tier craft, no tech node, no drop, no chest, no shop, no research,
+      and no pal drops it. Mostly Material (58) and Essential (33).
+      PROBED BEFORE QUEUEING, so this does not become another IL22: of a
+      five-item sample, THREE carry a "Production" section on their
+      paldb page (Fire Awakening Crystal, Celaray Lux's Gloves, V1
+      Armor) that we are not capturing, and TWO genuinely have no source
+      anywhere upstream (Implant: Brave, Building Repair Kit). So part
+      of this is recoverable and part is honestly unknowable.
+      LIKELY CAUSE: IL2 refused positional recipe-to-tier alignment and
+      kept only rows whose own hover ids prove the join (412 of them).
+      These pages' Production rows probably lack those ids, so they were
+      correctly refused rather than mis-parsed — the fix is to find what
+      identity those rows DO carry, not to loosen the rule.
+      NEXT TICK: sweep all 106 pages, count how many have a Production
+      section, and report the exact-identity join rate. Ship what joins;
+      for the rest say plainly on the card that the game files record no
+      source, the way IL26 did for the eggs. Never fuzzy-match.
 - [x] IL39 2026-08-20: THE SEARCH COUNT TELLS THE TRUTH NOW. The header
       counted the rows it DREW, not the matches that exist — "armor"
       said "14 results" when 130 things matched, "a" said 26 for 1,627 —
