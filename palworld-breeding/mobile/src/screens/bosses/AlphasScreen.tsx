@@ -183,8 +183,14 @@ export function AlphasScreen() {
     return onNavIntent(apply);
   }, [rows]);
 
-  const beatenCountAll = rows.filter((r) => isBeaten(alphaBeatKey(r.title))).length;
-  const caughtCountAll = rows.filter((r) => isBeaten(alphaCaughtKey(r.title))).length;
+  // one pass for both counts; the old version walked all 205 rows twice
+  // per render and each row asked the record again while drawing
+  let beatenCountAll = 0;
+  let caughtCountAll = 0;
+  for (const r of rows) {
+    if (isBeaten(alphaBeatKey(r.title))) beatenCountAll += 1;
+    if (isBeaten(alphaCaughtKey(r.title))) caughtCountAll += 1;
+  }
 
   const q = query.trim().toLowerCase();
   const shown = rows.filter((r) => {

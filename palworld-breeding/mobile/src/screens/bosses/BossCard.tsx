@@ -6,7 +6,7 @@
  * attacks → where it is → what winning gives you → your record. The alpha
  * card (AlphaCard.tsx) renders the SAME order from the same sections.
  */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Modal, Pressable, ScrollView, Text, View } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { T } from '../../theme';
@@ -16,6 +16,7 @@ import { Badge, Btn, Card, DataStamp, PalIcon, s } from '../../ui/kit';
 import { Icon } from '../../ui/Icon';
 import type { BossEncounter } from '../../data/towerRaid.g';
 import { ownedCounterRows } from '../../bosses/counterPicks';
+import { boxKeyOf } from '../../logic/recommend';
 import { fmtHp, levelFit, shortName } from '../../logic/bossText';
 import { isBeaten, loadRecord, onRecordChange, toggleBeaten } from '../../bosses/record';
 import itemsJson from '../../data/items_1_0.json';
@@ -48,9 +49,16 @@ export function BossCard({ base, hard, onClose }: {
   }, []);
 
   const boxNames = Object.keys(getBox());
-  const hasEdge = ownedCounterRows(
-    boxNames, enc.elements, enc.moves.map((m) => m.element),
-  )[0]?.offense === 2;
+  // memoized: this ranks the whole box, and ReadySection ranks it again
+  // for the list — without this the card pays for it twice on EVERY
+  // render (measured on the QA harness with a 117-pal box)
+  const hasEdge = useMemo(
+    () => ownedCounterRows(
+      boxNames, enc.elements, enc.moves.map((m) => m.element),
+    )[0]?.offense === 2,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [boxKeyOf(boxNames), enc.elements, enc.moves],
+  );
   const fitColor = { ok: T.ok, warn: T.warn, bad: T.bad, plain: T.muted }[fit.tone];
 
   return (

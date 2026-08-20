@@ -7,7 +7,7 @@
  *  - it stands somewhere, so "Where" is the real spawn map;
  *  - you can catch it, so the record has two ticks, not one.
  */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Modal, Pressable, ScrollView, Text, View } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { T } from '../../theme';
@@ -19,6 +19,7 @@ import { PalMap } from '../../ui/PalMap';
 import type { AlphaStat } from '../../data/alphaStats.g';
 import { bossLine } from '../../alphaFacts';
 import { ownedCounterRows } from '../../bosses/counterPicks';
+import { boxKeyOf } from '../../logic/recommend';
 import { levelFit } from '../../logic/bossText';
 import { isBeaten, loadRecord, onRecordChange, toggleBeaten } from '../../bosses/record';
 import {
@@ -49,9 +50,16 @@ export function AlphaCard({ species, stat, onClose }: {
     ? { ok: T.ok, warn: T.warn, bad: T.bad, plain: T.muted }[fit.tone] : T.muted;
 
   const boxNames = Object.keys(getBox());
-  const hasEdge = ownedCounterRows(
-    boxNames, elements, moves.map((m) => m.element),
-  )[0]?.offense === 2;
+  // memoized: this ranks the whole box, and ReadySection ranks it again
+  // for the list — without this the card pays for it twice on EVERY
+  // render (measured on the QA harness with a 117-pal box)
+  const hasEdge = useMemo(
+    () => ownedCounterRows(
+      boxNames, elements, moves.map((m) => m.element),
+    )[0]?.offense === 2,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [boxKeyOf(boxNames), elements, moves],
+  );
 
   const beaten = isBeaten(alphaBeatKey(stat.title));
   const caught = isBeaten(alphaCaughtKey(stat.title));
