@@ -39,6 +39,10 @@ def encounter(row: dict) -> str:
         % (m["lv"], json.dumps(m["name"]), json.dumps(m["element"]),
            m["ct"], m["power"], json.dumps(m["effects"]))
         for m in row["moves"])
+    drops = ", ".join(
+        "{ item: %s, qty: %s, pct: %s }"
+        % (json.dumps(d["item"]), json.dumps(d["qty"]), d["pct"])
+        for d in row.get("drops", []))
     title = re.sub(r"\s+", " ", row["title"]).strip()
     els = ", ".join(json.dumps(e) for e in row["elements"])
     return (
@@ -63,6 +67,7 @@ def encounter(row: dict) -> str:
         f"    ctRate: {ts_num(row['ctRate'])},\n"
         f"    genus: {ts_str(row['genus'])},\n"
         f"    moves: [{moves}],\n"
+        f"    drops: [{drops}],\n"
         "  },"
     )
 
@@ -100,6 +105,15 @@ export interface BossMove {{
   effects: string | null;
 }}
 
+export interface BossDrop {{
+  /** the game's own item name; a few are absent from the items index
+   * (the tower Key Spheres) — reported by the fetch, shown regardless */
+  item: string;
+  /** "1" or a range like "1-3", exactly as the table states it */
+  qty: string;
+  pct: number;
+}}
+
 export interface BossEncounter {{
   title: string;
   arena: string | null;
@@ -123,6 +137,8 @@ export interface BossEncounter {{
   ctRate: number | null;
   genus: string | null;
   moves: BossMove[];
+  /** what beating THIS difficulty gives you, with the game's own odds */
+  drops: BossDrop[];
 }}
 
 export const TOWER_RAID_SOURCE = {src_line};

@@ -1,8 +1,12 @@
 {
- "source": "paldb.cc /en/Tower + /en/Raid list pages (per-difficulty level/fight-HP/reduction rows) joined to each boss's own page (raw DT_PalMonsterParameter GYM_/RAID_ row + active skills), fetched 2026-08-19. A row ships only if the page's BPClass equals the list entry's id, the page carries the matching IsTowerBoss/IsRaidBoss flag, and the element agrees between both renderings after enum mapping. Species resolved from Tribe via our own icon codenames.",
+ "source": "paldb.cc /en/Tower + /en/Raid list pages (per-difficulty level/fight-HP/reduction rows) joined to each boss's own page (raw DT_PalMonsterParameter GYM_/RAID_ row + active skills), fetched 2026-08-20. A row ships only if the page's BPClass equals the list entry's id, the page carries the matching IsTowerBoss/IsRaidBoss flag, and the element agrees between both renderings after enum mapping. Species resolved from Tribe via our own icon codenames.",
  "counts": {
   "towers": 22,
   "raids": 11
+ },
+ "dropCounts": {
+  "rows": 234,
+  "unresolved": 22
  },
  "refusals": [],
  "notes": [
@@ -15,7 +19,29 @@
   "Moon Lord: tribe YakushimaBoss002 resolves to no species in pals_1_0.json",
   "[Master] Moon Lord: no element on its raw row",
   "[Master] Moon Lord: section shows no active skills",
-  "[Master] Moon Lord: tribe YakushimaBoss002_2 resolves to no species in pals_1_0.json"
+  "[Master] Moon Lord: tribe YakushimaBoss002_2 resolves to no species in pals_1_0.json",
+  "Rayne Syndicate Boss Zoe & Grizzbolt: drop 'Key Sphere of Envy' is not a name in items_1_0.json",
+  "Rayne Syndicate Boss Zoe & Grizzbolt: drop 'Key Sphere of Envy' is not a name in items_1_0.json",
+  "Free Pal Alliance Founder Lily & Lyleen: drop 'Key Sphere of Pride' is not a name in items_1_0.json",
+  "Free Pal Alliance Founder Lily & Lyleen: drop 'Key Sphere of Pride' is not a name in items_1_0.json",
+  "PIDF Commander Marcus & Faleris: drop 'Key Sphere of Greed' is not a name in items_1_0.json",
+  "PIDF Commander Marcus & Faleris: drop 'Key Sphere of Greed' is not a name in items_1_0.json",
+  "Brothers of the Eternal Pyre Soul Leader Axel & Orserk: drop 'Key Sphere of Sloth' is not a name in items_1_0.json",
+  "Brothers of the Eternal Pyre Soul Leader Axel & Orserk: drop 'Key Sphere of Sloth' is not a name in items_1_0.json",
+  "PAL Genetic Research Unit Commander Victor & Shadowbeak: drop 'Key Sphere of Gluttony' is not a name in items_1_0.json",
+  "PAL Genetic Research Unit Commander Victor & Shadowbeak: drop 'Key Sphere of Gluttony' is not a name in items_1_0.json",
+  "Leader of the Moonflowers Saya & Selyne: drop 'Key Sphere of Lust' is not a name in items_1_0.json",
+  "Leader of the Moonflowers Saya & Selyne: drop 'Key Sphere of Lust' is not a name in items_1_0.json",
+  "Jarl of Feybreak  Bjorn & Bastigor: drop 'Key Sphere of Wrath' is not a name in items_1_0.json",
+  "Jarl of Feybreak  Bjorn & Bastigor: drop 'Key Sphere of Wrath' is not a name in items_1_0.json",
+  "Bewitching Lurker Dandilord: drop \"Dandilord's Petal\" is not a name in items_1_0.json",
+  "Bewitching Lurker Dandilord: drop \"Dandilord's Petal\" is not a name in items_1_0.json",
+  "Immortal Shade Silvance: drop \"Silvance's Plume\" is not a name in items_1_0.json",
+  "Immortal Shade Silvance: drop \"Silvance's Plume\" is not a name in items_1_0.json",
+  "Highly Modified Grizzbolt: drop \"Modified Pal's Contaminated Core\" is not a name in items_1_0.json",
+  "Highly Modified Grizzbolt: drop \"Modified Pal's Contaminated Core\" is not a name in items_1_0.json",
+  "High Keeper of the Azure Covenant Auri & Shaolong: drop 'Key Sphere of Original Sin' is not a name in items_1_0.json",
+  "High Keeper of the Azure Covenant Auri & Shaolong: drop 'Key Sphere of Original Sin' is not a name in items_1_0.json"
  ],
  "towers": [
   {
@@ -84,6 +110,14 @@
      "ct": 8,
      "power": 140,
      "effects": "Electrify 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Key Sphere of Envy",
+     "slug": "Key_Sphere_of_Envy",
+     "qty": "1",
+     "pct": 100.0
     }
    ]
   },
@@ -186,6 +220,38 @@
      "power": 400,
      "effects": "Ivy-Covered 100"
     }
+   ],
+   "drops": [
+    {
+     "item": "Key Sphere of Envy",
+     "slug": "Key_Sphere_of_Envy",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Zoe Hat",
+     "slug": "Zoe_Hat",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Training Crystal",
+     "slug": "Training_Crystal",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Speed Lotus (L)",
+     "slug": "Speed_Lotus_(L)",
+     "qty": "1",
+     "pct": 20.0
+    },
+    {
+     "item": "Beam Scatter Schematic 4",
+     "slug": "Beam_Scatter_Schematic_4",
+     "qty": "1",
+     "pct": 10.0
+    }
    ]
   },
   {
@@ -262,6 +328,14 @@
      "ct": 4,
      "power": 80,
      "effects": "Ivy-Covered 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Key Sphere of Pride",
+     "slug": "Key_Sphere_of_Pride",
+     "qty": "1",
+     "pct": 100.0
     }
    ]
   },
@@ -380,6 +454,38 @@
      "power": 160,
      "effects": "Poison 100"
     }
+   ],
+   "drops": [
+    {
+     "item": "Key Sphere of Pride",
+     "slug": "Key_Sphere_of_Pride",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Lily Hat",
+     "slug": "Lily_Hat",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Training Crystal",
+     "slug": "Training_Crystal",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Life Lotus (L)",
+     "slug": "Life_Lotus_(L)",
+     "qty": "1",
+     "pct": 20.0
+    },
+    {
+     "item": "Drone Launcher Schematic 4",
+     "slug": "Drone_Launcher_Schematic_4",
+     "qty": "1",
+     "pct": 10.0
+    }
    ]
   },
   {
@@ -472,6 +578,14 @@
      "ct": 20,
      "power": 450,
      "effects": "Burn 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Key Sphere of Greed",
+     "slug": "Key_Sphere_of_Greed",
+     "qty": "1",
+     "pct": 100.0
     }
    ]
   },
@@ -582,6 +696,44 @@
      "power": 160,
      "effects": null
     }
+   ],
+   "drops": [
+    {
+     "item": "Key Sphere of Greed",
+     "slug": "Key_Sphere_of_Greed",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Marcus Hat",
+     "slug": "Marcus_Hat",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Training Crystal",
+     "slug": "Training_Crystal",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Carrying Lotus (L)",
+     "slug": "Carrying_Lotus_(L)",
+     "qty": "1",
+     "pct": 20.0
+    },
+    {
+     "item": "Heat-Resistant Ancient Armor Schematic 4",
+     "slug": "Heat-Resistant_Ancient_Armor_Schematic_4",
+     "qty": "1",
+     "pct": 5.0
+    },
+    {
+     "item": "Cold-Resistant Ancient Armor Schematic 4",
+     "slug": "Cold-Resistant_Ancient_Armor_Schematic_4",
+     "qty": "1",
+     "pct": 5.0
+    }
    ]
   },
   {
@@ -667,6 +819,14 @@
      "ct": 30,
      "power": 1,
      "effects": null
+    }
+   ],
+   "drops": [
+    {
+     "item": "Key Sphere of Sloth",
+     "slug": "Key_Sphere_of_Sloth",
+     "qty": "1",
+     "pct": 100.0
     }
    ]
   },
@@ -778,6 +938,38 @@
      "power": 200,
      "effects": "Ivy-Covered 35"
     }
+   ],
+   "drops": [
+    {
+     "item": "Key Sphere of Sloth",
+     "slug": "Key_Sphere_of_Sloth",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Axel Hat",
+     "slug": "Axel_Hat",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Training Crystal",
+     "slug": "Training_Crystal",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Stamina Lotus (L)",
+     "slug": "Stamina_Lotus_(L)",
+     "qty": "1",
+     "pct": 20.0
+    },
+    {
+     "item": "Heat-Resistant Ancient Armor Schematic 4",
+     "slug": "Heat-Resistant_Ancient_Armor_Schematic_4",
+     "qty": "1",
+     "pct": 10.0
+    }
    ]
   },
   {
@@ -870,6 +1062,14 @@
      "ct": 4,
      "power": 70,
      "effects": "Blind 20"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Key Sphere of Gluttony",
+     "slug": "Key_Sphere_of_Gluttony",
+     "qty": "1",
+     "pct": 100.0
     }
    ]
   },
@@ -972,6 +1172,38 @@
      "power": 200,
      "effects": "Freeze 100"
     }
+   ],
+   "drops": [
+    {
+     "item": "Key Sphere of Gluttony",
+     "slug": "Key_Sphere_of_Gluttony",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Victor Hat",
+     "slug": "Victor_Hat",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Training Crystal",
+     "slug": "Training_Crystal",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Power Lotus (L)",
+     "slug": "Power_Lotus_(L)",
+     "qty": "1",
+     "pct": 20.0
+    },
+    {
+     "item": "Cold-Resistant Ancient Armor Schematic 4",
+     "slug": "Cold-Resistant_Ancient_Armor_Schematic_4",
+     "qty": "1",
+     "pct": 10.0
+    }
    ]
   },
   {
@@ -1073,6 +1305,14 @@
      "ct": 300,
      "power": 1,
      "effects": null
+    }
+   ],
+   "drops": [
+    {
+     "item": "Key Sphere of Lust",
+     "slug": "Key_Sphere_of_Lust",
+     "qty": "1",
+     "pct": 100.0
     }
    ]
   },
@@ -1200,6 +1440,62 @@
      "power": 450,
      "effects": "Burn 100"
     }
+   ],
+   "drops": [
+    {
+     "item": "Key Sphere of Lust",
+     "slug": "Key_Sphere_of_Lust",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Saya Hat",
+     "slug": "Saya_Hat",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Training Crystal",
+     "slug": "Training_Crystal",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Life Lotus (L)",
+     "slug": "Life_Lotus_(L)",
+     "qty": "1",
+     "pct": 5.0
+    },
+    {
+     "item": "Stamina Lotus (L)",
+     "slug": "Stamina_Lotus_(L)",
+     "qty": "1",
+     "pct": 5.0
+    },
+    {
+     "item": "Power Lotus (L)",
+     "slug": "Power_Lotus_(L)",
+     "qty": "1",
+     "pct": 5.0
+    },
+    {
+     "item": "Speed Lotus (L)",
+     "slug": "Speed_Lotus_(L)",
+     "qty": "1",
+     "pct": 5.0
+    },
+    {
+     "item": "Carrying Lotus (L)",
+     "slug": "Carrying_Lotus_(L)",
+     "qty": "1",
+     "pct": 5.0
+    },
+    {
+     "item": "Plasma Rifle Schematic 4",
+     "slug": "Plasma_Rifle_Schematic_4",
+     "qty": "1",
+     "pct": 10.0
+    }
    ]
   },
   {
@@ -1300,6 +1596,14 @@
      "ct": 30,
      "power": 600,
      "effects": "Muddy 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Key Sphere of Wrath",
+     "slug": "Key_Sphere_of_Wrath",
+     "qty": "1",
+     "pct": 100.0
     }
    ]
   },
@@ -1410,6 +1714,62 @@
      "power": 200,
      "effects": "Burn 102"
     }
+   ],
+   "drops": [
+    {
+     "item": "Key Sphere of Wrath",
+     "slug": "Key_Sphere_of_Wrath",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Bjorn Hat",
+     "slug": "Bjorn_Hat",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Training Crystal",
+     "slug": "Training_Crystal",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Life Lotus (L)",
+     "slug": "Life_Lotus_(L)",
+     "qty": "1",
+     "pct": 6.0
+    },
+    {
+     "item": "Stamina Lotus (L)",
+     "slug": "Stamina_Lotus_(L)",
+     "qty": "1",
+     "pct": 6.0
+    },
+    {
+     "item": "Power Lotus (L)",
+     "slug": "Power_Lotus_(L)",
+     "qty": "1",
+     "pct": 6.0
+    },
+    {
+     "item": "Speed Lotus (L)",
+     "slug": "Speed_Lotus_(L)",
+     "qty": "1",
+     "pct": 6.0
+    },
+    {
+     "item": "Carrying Lotus (L)",
+     "slug": "Carrying_Lotus_(L)",
+     "qty": "1",
+     "pct": 6.0
+    },
+    {
+     "item": "Lightweight Ancient Armor Schematic 4",
+     "slug": "Lightweight_Ancient_Armor_Schematic_4",
+     "qty": "1",
+     "pct": 10.0
+    }
    ]
   },
   {
@@ -1502,6 +1862,20 @@
      "ct": 40,
      "power": 800,
      "effects": "Soak 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "slug": "Ancient_Civilization_Parts",
+     "qty": "8-9",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "slug": "Precious_Entrails",
+     "qty": "2-3",
+     "pct": 100.0
     }
    ]
   },
@@ -1597,6 +1971,134 @@
      "power": 800,
      "effects": null
     }
+   ],
+   "drops": [
+    {
+     "item": "Dandilord's Petal",
+     "slug": "Dandilords_Petal",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "slug": "Precious_Entrails",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Ancient Civilization Parts",
+     "slug": "Ancient_Civilization_Parts",
+     "qty": "6-8",
+     "pct": 100.0
+    },
+    {
+     "item": "Toxin Filtering Membrane",
+     "slug": "Toxin_Filtering_Membrane",
+     "qty": "5-10",
+     "pct": 100.0
+    },
+    {
+     "item": "World Tree Holy Water",
+     "slug": "World_Tree_Holy_Water",
+     "qty": "20-30",
+     "pct": 100.0
+    },
+    {
+     "item": "Dark Radiant Gem",
+     "slug": "Dark_Radiant_Gem",
+     "qty": "1-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Decayed Ancient Relic",
+     "slug": "Decayed_Ancient_Relic",
+     "qty": "1-10",
+     "pct": 100.0
+    },
+    {
+     "item": "Dormant Ancient Relic",
+     "slug": "Dormant_Ancient_Relic",
+     "qty": "1-5",
+     "pct": 50.0
+    },
+    {
+     "item": "Gorgeous Ancient Relic",
+     "slug": "Gorgeous_Ancient_Relic",
+     "qty": "1-3",
+     "pct": 30.0
+    },
+    {
+     "item": "Glowing Ancient Relic",
+     "slug": "Glowing_Ancient_Relic",
+     "qty": "1-2",
+     "pct": 25.0
+    },
+    {
+     "item": "Glistening Ancient Relic",
+     "slug": "Glistening_Ancient_Relic",
+     "qty": "1",
+     "pct": 20.0
+    },
+    {
+     "item": "Dandilord's Petal",
+     "slug": "Dandilords_Petal",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Ancient Civilization Parts",
+     "slug": "Ancient_Civilization_Parts",
+     "qty": "6-8",
+     "pct": 100.0
+    },
+    {
+     "item": "Toxin Filtering Membrane",
+     "slug": "Toxin_Filtering_Membrane",
+     "qty": "5-10",
+     "pct": 100.0
+    },
+    {
+     "item": "Dark Radiant Gem",
+     "slug": "Dark_Radiant_Gem",
+     "qty": "1-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Decayed Ancient Relic",
+     "slug": "Decayed_Ancient_Relic",
+     "qty": "1-10",
+     "pct": 100.0
+    },
+    {
+     "item": "Dormant Ancient Relic",
+     "slug": "Dormant_Ancient_Relic",
+     "qty": "1-5",
+     "pct": 50.0
+    },
+    {
+     "item": "Gorgeous Ancient Relic",
+     "slug": "Gorgeous_Ancient_Relic",
+     "qty": "1-3",
+     "pct": 30.0
+    },
+    {
+     "item": "Glowing Ancient Relic",
+     "slug": "Glowing_Ancient_Relic",
+     "qty": "1-2",
+     "pct": 25.0
+    },
+    {
+     "item": "Glistening Ancient Relic",
+     "slug": "Glistening_Ancient_Relic",
+     "qty": "1",
+     "pct": 20.0
+    },
+    {
+     "item": "World Tree Holy Water",
+     "slug": "World_Tree_Holy_Water",
+     "qty": "60-80",
+     "pct": 100.0
+    }
    ]
   },
   {
@@ -1690,6 +2192,134 @@
      "power": 800,
      "effects": null
     }
+   ],
+   "drops": [
+    {
+     "item": "Silvance's Plume",
+     "slug": "Silvances_Plume",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "slug": "Precious_Entrails",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Ancient Civilization Parts",
+     "slug": "Ancient_Civilization_Parts",
+     "qty": "6-8",
+     "pct": 100.0
+    },
+    {
+     "item": "Explosion-Resistant Fiber",
+     "slug": "Explosion-Resistant_Fiber",
+     "qty": "5-10",
+     "pct": 100.0
+    },
+    {
+     "item": "World Tree Holy Water",
+     "slug": "World_Tree_Holy_Water",
+     "qty": "20-30",
+     "pct": 100.0
+    },
+    {
+     "item": "Grass Radiant Gem",
+     "slug": "Grass_Radiant_Gem",
+     "qty": "1-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Decayed Ancient Relic",
+     "slug": "Decayed_Ancient_Relic",
+     "qty": "1-10",
+     "pct": 100.0
+    },
+    {
+     "item": "Dormant Ancient Relic",
+     "slug": "Dormant_Ancient_Relic",
+     "qty": "1-5",
+     "pct": 50.0
+    },
+    {
+     "item": "Gorgeous Ancient Relic",
+     "slug": "Gorgeous_Ancient_Relic",
+     "qty": "1-3",
+     "pct": 30.0
+    },
+    {
+     "item": "Glowing Ancient Relic",
+     "slug": "Glowing_Ancient_Relic",
+     "qty": "1-2",
+     "pct": 25.0
+    },
+    {
+     "item": "Glistening Ancient Relic",
+     "slug": "Glistening_Ancient_Relic",
+     "qty": "1",
+     "pct": 20.0
+    },
+    {
+     "item": "Silvance's Plume",
+     "slug": "Silvances_Plume",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Ancient Civilization Parts",
+     "slug": "Ancient_Civilization_Parts",
+     "qty": "6-8",
+     "pct": 100.0
+    },
+    {
+     "item": "Explosion-Resistant Fiber",
+     "slug": "Explosion-Resistant_Fiber",
+     "qty": "5-10",
+     "pct": 100.0
+    },
+    {
+     "item": "World Tree Holy Water",
+     "slug": "World_Tree_Holy_Water",
+     "qty": "60-80",
+     "pct": 100.0
+    },
+    {
+     "item": "Grass Radiant Gem",
+     "slug": "Grass_Radiant_Gem",
+     "qty": "1-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Decayed Ancient Relic",
+     "slug": "Decayed_Ancient_Relic",
+     "qty": "1-10",
+     "pct": 100.0
+    },
+    {
+     "item": "Dormant Ancient Relic",
+     "slug": "Dormant_Ancient_Relic",
+     "qty": "1-5",
+     "pct": 50.0
+    },
+    {
+     "item": "Gorgeous Ancient Relic",
+     "slug": "Gorgeous_Ancient_Relic",
+     "qty": "1-3",
+     "pct": 30.0
+    },
+    {
+     "item": "Glowing Ancient Relic",
+     "slug": "Glowing_Ancient_Relic",
+     "qty": "1-2",
+     "pct": 25.0
+    },
+    {
+     "item": "Glistening Ancient Relic",
+     "slug": "Glistening_Ancient_Relic",
+     "qty": "1",
+     "pct": 20.0
+    }
    ]
   },
   {
@@ -1774,6 +2404,140 @@
      "ct": 8,
      "power": 120,
      "effects": "Electrify 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Modified Pal's Contaminated Core",
+     "slug": "Modified_Pals_Contaminated_Core",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Decayed Ancient Relic",
+     "slug": "Decayed_Ancient_Relic",
+     "qty": "1-10",
+     "pct": 100.0
+    },
+    {
+     "item": "Dormant Ancient Relic",
+     "slug": "Dormant_Ancient_Relic",
+     "qty": "1-5",
+     "pct": 50.0
+    },
+    {
+     "item": "Gorgeous Ancient Relic",
+     "slug": "Gorgeous_Ancient_Relic",
+     "qty": "1-3",
+     "pct": 30.0
+    },
+    {
+     "item": "Glowing Ancient Relic",
+     "slug": "Glowing_Ancient_Relic",
+     "qty": "1-2",
+     "pct": 25.0
+    },
+    {
+     "item": "Glistening Ancient Relic",
+     "slug": "Glistening_Ancient_Relic",
+     "qty": "1",
+     "pct": 20.0
+    },
+    {
+     "item": "Modified Pal's Contaminated Core",
+     "slug": "Modified_Pals_Contaminated_Core",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Water Radiant Gem",
+     "slug": "Water_Radiant_Gem",
+     "qty": "1-3",
+     "pct": 11.0
+    },
+    {
+     "item": "Electric Radiant Gem",
+     "slug": "Electric_Radiant_Gem",
+     "qty": "1-3",
+     "pct": 11.0
+    },
+    {
+     "item": "Ground Radiant Gem",
+     "slug": "Ground_Radiant_Gem",
+     "qty": "1-3",
+     "pct": 11.0
+    },
+    {
+     "item": "Grass Radiant Gem",
+     "slug": "Grass_Radiant_Gem",
+     "qty": "1-3",
+     "pct": 11.0
+    },
+    {
+     "item": "Fire Radiant Gem",
+     "slug": "Fire_Radiant_Gem",
+     "qty": "1-3",
+     "pct": 11.0
+    },
+    {
+     "item": "Ice Radiant Gem",
+     "slug": "Ice_Radiant_Gem",
+     "qty": "1-3",
+     "pct": 11.0
+    },
+    {
+     "item": "Dragon Radiant Gem",
+     "slug": "Dragon_Radiant_Gem",
+     "qty": "1-3",
+     "pct": 11.0
+    },
+    {
+     "item": "Dark Radiant Gem",
+     "slug": "Dark_Radiant_Gem",
+     "qty": "1-3",
+     "pct": 11.0
+    },
+    {
+     "item": "Neutral Radiant Gem",
+     "slug": "Neutral_Radiant_Gem",
+     "qty": "1-3",
+     "pct": 11.0
+    },
+    {
+     "item": "Decayed Ancient Relic",
+     "slug": "Decayed_Ancient_Relic",
+     "qty": "1-5",
+     "pct": 100.0
+    },
+    {
+     "item": "Dormant Ancient Relic",
+     "slug": "Dormant_Ancient_Relic",
+     "qty": "1-5",
+     "pct": 50.0
+    },
+    {
+     "item": "Gorgeous Ancient Relic",
+     "slug": "Gorgeous_Ancient_Relic",
+     "qty": "1-5",
+     "pct": 30.0
+    },
+    {
+     "item": "Glowing Ancient Relic",
+     "slug": "Glowing_Ancient_Relic",
+     "qty": "1-2",
+     "pct": 25.0
+    },
+    {
+     "item": "Glistening Ancient Relic",
+     "slug": "Glistening_Ancient_Relic",
+     "qty": "1",
+     "pct": 20.0
+    },
+    {
+     "item": "World Tree Holy Water",
+     "slug": "World_Tree_Holy_Water",
+     "qty": "60-80",
+     "pct": 100.0
     }
    ]
   },
@@ -1868,6 +2632,14 @@
      "ct": 8,
      "power": 180,
      "effects": "Burn 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Key Sphere of Original Sin",
+     "slug": "Key_Sphere_of_Original_Sin",
+     "qty": "1",
+     "pct": 100.0
     }
    ]
   },
@@ -1971,6 +2743,62 @@
      "power": 500,
      "effects": "Muddy 100"
     }
+   ],
+   "drops": [
+    {
+     "item": "Key Sphere of Original Sin",
+     "slug": "Key_Sphere_of_Original_Sin",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Auri Hat",
+     "slug": "Auri_Hat",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Training Crystal",
+     "slug": "Training_Crystal",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Life Lotus (L)",
+     "slug": "Life_Lotus_(L)",
+     "qty": "1",
+     "pct": 6.0
+    },
+    {
+     "item": "Stamina Lotus (L)",
+     "slug": "Stamina_Lotus_(L)",
+     "qty": "1",
+     "pct": 6.0
+    },
+    {
+     "item": "Power Lotus (L)",
+     "slug": "Power_Lotus_(L)",
+     "qty": "1",
+     "pct": 6.0
+    },
+    {
+     "item": "Speed Lotus (L)",
+     "slug": "Speed_Lotus_(L)",
+     "qty": "1",
+     "pct": 6.0
+    },
+    {
+     "item": "Carrying Lotus (L)",
+     "slug": "Carrying_Lotus_(L)",
+     "qty": "1",
+     "pct": 6.0
+    },
+    {
+     "item": "Beam Launcher Schematic 4",
+     "slug": "Beam_Launcher_Schematic_4",
+     "qty": "1",
+     "pct": 10.0
+    }
    ]
   },
   {
@@ -2030,7 +2858,8 @@
      "power": 700,
      "effects": "Burn 100"
     }
-   ]
+   ],
+   "drops": []
   },
   {
    "title": "Blightstar Calamity Zenara & Astralym",
@@ -2088,6 +2917,20 @@
      "ct": 30,
      "power": 700,
      "effects": "Burn 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Zenara Hat",
+     "slug": "Zenara_Hat",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Dark Skill Fruit: Psycho Gravity",
+     "slug": "Dark_Skill_Fruit:_Psycho_Gravity",
+     "qty": "1",
+     "pct": 100.0
     }
    ]
   }
@@ -2183,6 +3026,56 @@
      "ct": 30,
      "power": 600,
      "effects": null
+    }
+   ],
+   "drops": [
+    {
+     "item": "Dark Skill Fruit: Apocalypse",
+     "slug": "Dark_Skill_Fruit:_Apocalypse",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Ancient Civilization Core",
+     "slug": "Ancient_Civilization_Core",
+     "qty": "1-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Training Manual (XL)",
+     "slug": "Training_Manual_(XL)",
+     "qty": "3-5",
+     "pct": 100.0
+    },
+    {
+     "item": "Applied Ranching Handbook I",
+     "slug": "Applied_Ranching_Handbook_I",
+     "qty": "1",
+     "pct": 33.3
+    },
+    {
+     "item": "Applied Transporting Handbook I",
+     "slug": "Applied_Transporting_Handbook_I",
+     "qty": "1",
+     "pct": 33.3
+    },
+    {
+     "item": "Applied Medicine Production Handbook I",
+     "slug": "Applied_Medicine_Production_Handbook_I",
+     "qty": "1",
+     "pct": 33.3
+    },
+    {
+     "item": "Huge Dark Egg",
+     "slug": "Huge_Dark_Egg",
+     "qty": "1",
+     "pct": 10.0
+    },
+    {
+     "item": "Huge Dark Egg",
+     "slug": "Huge_Dark_Egg",
+     "qty": "1",
+     "pct": 90.0
     }
    ]
   },
@@ -2285,6 +3178,62 @@
      "power": 600,
      "effects": null
     }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Core",
+     "slug": "Ancient_Civilization_Core",
+     "qty": "2-4",
+     "pct": 100.0
+    },
+    {
+     "item": "Bellanoir Libero (Ultra) Slab",
+     "slug": "Bellanoir_Libero_(Ultra)_Slab",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Training Manual (XL)",
+     "slug": "Training_Manual_(XL)",
+     "qty": "4-6",
+     "pct": 100.0
+    },
+    {
+     "item": "Dark Skill Fruit: Dark Whisp",
+     "slug": "Dark_Skill_Fruit:_Dark_Whisp",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Applied Ranching Handbook I",
+     "slug": "Applied_Ranching_Handbook_I",
+     "qty": "1",
+     "pct": 33.3
+    },
+    {
+     "item": "Applied Transporting Handbook I",
+     "slug": "Applied_Transporting_Handbook_I",
+     "qty": "1",
+     "pct": 33.3
+    },
+    {
+     "item": "Applied Medicine Production Handbook I",
+     "slug": "Applied_Medicine_Production_Handbook_I",
+     "qty": "1",
+     "pct": 33.3
+    },
+    {
+     "item": "Huge Dark Egg",
+     "slug": "Huge_Dark_Egg",
+     "qty": "1",
+     "pct": 10.0
+    },
+    {
+     "item": "Huge Dark Egg",
+     "slug": "Huge_Dark_Egg",
+     "qty": "1",
+     "pct": 90.0
+    }
    ]
   },
   {
@@ -2385,6 +3334,62 @@
      "ct": 30,
      "power": 600,
      "effects": null
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Core",
+     "slug": "Ancient_Civilization_Core",
+     "qty": "10",
+     "pct": 100.0
+    },
+    {
+     "item": "Witch's Crown",
+     "slug": "Witchs_Crown",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Training Crystal",
+     "slug": "Training_Crystal",
+     "qty": "10",
+     "pct": 100.0
+    },
+    {
+     "item": "Bellanoir Libero (Ultra) Slab",
+     "slug": "Bellanoir_Libero_(Ultra)_Slab",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Applied Ranching Handbook I",
+     "slug": "Applied_Ranching_Handbook_I",
+     "qty": "2",
+     "pct": 33.3
+    },
+    {
+     "item": "Applied Transporting Handbook I",
+     "slug": "Applied_Transporting_Handbook_I",
+     "qty": "2",
+     "pct": 33.3
+    },
+    {
+     "item": "Applied Medicine Production Handbook I",
+     "slug": "Applied_Medicine_Production_Handbook_I",
+     "qty": "2",
+     "pct": 33.3
+    },
+    {
+     "item": "Huge Dark Egg",
+     "slug": "Huge_Dark_Egg",
+     "qty": "1",
+     "pct": 10.0
+    },
+    {
+     "item": "Huge Dark Egg",
+     "slug": "Huge_Dark_Egg",
+     "qty": "1",
+     "pct": 90.0
     }
    ]
   },
@@ -2496,6 +3501,62 @@
      "power": 300,
      "effects": "Burn 100"
     }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Core",
+     "slug": "Ancient_Civilization_Core",
+     "qty": "2-4",
+     "pct": 100.0
+    },
+    {
+     "item": "Blazamut Ryu (Ultra) Slab",
+     "slug": "Blazamut_Ryu_(Ultra)_Slab",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Training Manual (XL)",
+     "slug": "Training_Manual_(XL)",
+     "qty": "5-7",
+     "pct": 100.0
+    },
+    {
+     "item": "Dragon Skill Fruit: Beam Slicer",
+     "slug": "Dragon_Skill_Fruit:_Beam_Slicer",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Applied Mining Handbook I",
+     "slug": "Applied_Mining_Handbook_I",
+     "qty": "1",
+     "pct": 33.3
+    },
+    {
+     "item": "Applied Lumbering Handbook I",
+     "slug": "Applied_Lumbering_Handbook_I",
+     "qty": "1",
+     "pct": 33.3
+    },
+    {
+     "item": "Applied Gathering Handbook I",
+     "slug": "Applied_Gathering_Handbook_I",
+     "qty": "1",
+     "pct": 33.3
+    },
+    {
+     "item": "Huge Dragon Egg",
+     "slug": "Huge_Dragon_Egg",
+     "qty": "1",
+     "pct": 10.0
+    },
+    {
+     "item": "Huge Dragon Egg",
+     "slug": "Huge_Dragon_Egg",
+     "qty": "1",
+     "pct": 90.0
+    }
    ]
   },
   {
@@ -2605,6 +3666,62 @@
      "ct": 16,
      "power": 300,
      "effects": "Burn 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Core",
+     "slug": "Ancient_Civilization_Core",
+     "qty": "10",
+     "pct": 100.0
+    },
+    {
+     "item": "Horns of Supremacy",
+     "slug": "Horns_of_Supremacy",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Training Crystal",
+     "slug": "Training_Crystal",
+     "qty": "10",
+     "pct": 100.0
+    },
+    {
+     "item": "Blazamut Ryu (Ultra) Slab",
+     "slug": "Blazamut_Ryu_(Ultra)_Slab",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Applied Mining Handbook I",
+     "slug": "Applied_Mining_Handbook_I",
+     "qty": "2",
+     "pct": 33.3
+    },
+    {
+     "item": "Applied Lumbering Handbook I",
+     "slug": "Applied_Lumbering_Handbook_I",
+     "qty": "2",
+     "pct": 33.3
+    },
+    {
+     "item": "Applied Gathering Handbook I",
+     "slug": "Applied_Gathering_Handbook_I",
+     "qty": "2",
+     "pct": 33.3
+    },
+    {
+     "item": "Huge Dragon Egg",
+     "slug": "Huge_Dragon_Egg",
+     "qty": "1",
+     "pct": 10.0
+    },
+    {
+     "item": "Huge Dragon Egg",
+     "slug": "Huge_Dragon_Egg",
+     "qty": "1",
+     "pct": 90.0
     }
    ]
   },
@@ -2731,6 +3848,62 @@
      "ct": 30,
      "power": 700,
      "effects": null
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Core",
+     "slug": "Ancient_Civilization_Core",
+     "qty": "3-6",
+     "pct": 100.0
+    },
+    {
+     "item": "Xenolord (Ultra) Slab",
+     "slug": "Xenolord_(Ultra)_Slab",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Training Crystal",
+     "slug": "Training_Crystal",
+     "qty": "4-5",
+     "pct": 100.0
+    },
+    {
+     "item": "Dragon Skill Fruit: Dragon Meteor",
+     "slug": "Dragon_Skill_Fruit:_Dragon_Meteor",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Applied Handiwork Handbook I",
+     "slug": "Applied_Handiwork_Handbook_I",
+     "qty": "1",
+     "pct": 33.3
+    },
+    {
+     "item": "Applied Generating Electricity Handbook I",
+     "slug": "Applied_Generating_Electricity_Handbook_I",
+     "qty": "1",
+     "pct": 33.3
+    },
+    {
+     "item": "Applied Cooling Handbook I",
+     "slug": "Applied_Cooling_Handbook_I",
+     "qty": "1",
+     "pct": 33.3
+    },
+    {
+     "item": "Huge Dark Egg",
+     "slug": "Huge_Dark_Egg",
+     "qty": "1",
+     "pct": 10.0
+    },
+    {
+     "item": "Huge Dark Egg",
+     "slug": "Huge_Dark_Egg",
+     "qty": "1",
+     "pct": 90.0
     }
    ]
   },
@@ -2906,6 +4079,62 @@
      "power": 700,
      "effects": null
     }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Core",
+     "slug": "Ancient_Civilization_Core",
+     "qty": "10",
+     "pct": 100.0
+    },
+    {
+     "item": "Xenolord (Ultra) Slab",
+     "slug": "Xenolord_(Ultra)_Slab",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Training Crystal",
+     "slug": "Training_Crystal",
+     "qty": "10",
+     "pct": 100.0
+    },
+    {
+     "item": "Xenolord's head",
+     "slug": "Xenolords_head",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Applied Handiwork Handbook I",
+     "slug": "Applied_Handiwork_Handbook_I",
+     "qty": "2",
+     "pct": 33.3
+    },
+    {
+     "item": "Applied Generating Electricity Handbook I",
+     "slug": "Applied_Generating_Electricity_Handbook_I",
+     "qty": "2",
+     "pct": 33.3
+    },
+    {
+     "item": "Applied Cooling Handbook I",
+     "slug": "Applied_Cooling_Handbook_I",
+     "qty": "2",
+     "pct": 33.3
+    },
+    {
+     "item": "Huge Dark Egg",
+     "slug": "Huge_Dark_Egg",
+     "qty": "1",
+     "pct": 10.0
+    },
+    {
+     "item": "Huge Dark Egg",
+     "slug": "Huge_Dark_Egg",
+     "qty": "1",
+     "pct": 90.0
+    }
    ]
   },
   {
@@ -2932,7 +4161,87 @@
    "dealRate": "1",
    "ctRate": "1",
    "genus": "Other",
-   "moves": []
+   "moves": [],
+   "drops": [
+    {
+     "item": "Legendary Meowmere",
+     "slug": "Legendary_Meowmere",
+     "qty": "1",
+     "pct": 22.22
+    },
+    {
+     "item": "Ancient Civilization Core",
+     "slug": "Ancient_Civilization_Core",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Training Manual (XL)",
+     "slug": "Training_Manual_(XL)",
+     "qty": "5-6",
+     "pct": 100.0
+    },
+    {
+     "item": "Legendary Meowmere",
+     "slug": "Legendary_Meowmere",
+     "qty": "1",
+     "pct": 22.0
+    },
+    {
+     "item": "Moon Lord Mask",
+     "slug": "Moon_Lord_Mask",
+     "qty": "1",
+     "pct": 10.0
+    },
+    {
+     "item": "Celestial Sigil [Master]",
+     "slug": "Celestial_Sigil_[Master]",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Terra Blade Schematic 2",
+     "slug": "Terra_Blade_Schematic_2",
+     "qty": "1",
+     "pct": 25.0
+    },
+    {
+     "item": "Vortex Beater Schematic 2",
+     "slug": "Vortex_Beater_Schematic_2",
+     "qty": "1",
+     "pct": 25.0
+    },
+    {
+     "item": "Nightglow Schematic 2",
+     "slug": "Nightglow_Schematic_2",
+     "qty": "1",
+     "pct": 25.0
+    },
+    {
+     "item": "Terraprisma Schematic 2",
+     "slug": "Terraprisma_Schematic_2",
+     "qty": "1",
+     "pct": 25.0
+    },
+    {
+     "item": "Applied Planting Handbook I",
+     "slug": "Applied_Planting_Handbook_I",
+     "qty": "1",
+     "pct": 33.3
+    },
+    {
+     "item": "Applied Handiwork Handbook I",
+     "slug": "Applied_Handiwork_Handbook_I",
+     "qty": "1",
+     "pct": 33.3
+    },
+    {
+     "item": "Applied Gathering Handbook I",
+     "slug": "Applied_Gathering_Handbook_I",
+     "qty": "1",
+     "pct": 33.3
+    }
+   ]
   },
   {
    "title": "[Master] Moon Lord",
@@ -2958,7 +4267,81 @@
    "dealRate": "7",
    "ctRate": "1",
    "genus": "Other",
-   "moves": []
+   "moves": [],
+   "drops": [
+    {
+     "item": "Ancient Civilization Core",
+     "slug": "Ancient_Civilization_Core",
+     "qty": "10",
+     "pct": 100.0
+    },
+    {
+     "item": "Celestial Sigil [Master]",
+     "slug": "Celestial_Sigil_[Master]",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Training Crystal",
+     "slug": "Training_Crystal",
+     "qty": "10",
+     "pct": 100.0
+    },
+    {
+     "item": "Moon Lord Mask",
+     "slug": "Moon_Lord_Mask",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Terra Blade Schematic 4",
+     "slug": "Terra_Blade_Schematic_4",
+     "qty": "1",
+     "pct": 25.0
+    },
+    {
+     "item": "Vortex Beater Schematic 4",
+     "slug": "Vortex_Beater_Schematic_4",
+     "qty": "1",
+     "pct": 25.0
+    },
+    {
+     "item": "Nightglow Schematic 4",
+     "slug": "Nightglow_Schematic_4",
+     "qty": "1",
+     "pct": 25.0
+    },
+    {
+     "item": "Terraprisma Schematic 4",
+     "slug": "Terraprisma_Schematic_4",
+     "qty": "1",
+     "pct": 25.0
+    },
+    {
+     "item": "Moon Lord Statue Schematic",
+     "slug": "Moon_Lord_Statue_Schematic",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Applied Planting Handbook I",
+     "slug": "Applied_Planting_Handbook_I",
+     "qty": "2",
+     "pct": 33.3
+    },
+    {
+     "item": "Applied Handiwork Handbook I",
+     "slug": "Applied_Handiwork_Handbook_I",
+     "qty": "2",
+     "pct": 33.3
+    },
+    {
+     "item": "Applied Gathering Handbook I",
+     "slug": "Applied_Gathering_Handbook_I",
+     "qty": "2",
+     "pct": 33.3
+    }
+   ]
   },
   {
    "title": "King of Salvation Hartalis",
@@ -3043,6 +4426,62 @@
      "ct": 30,
      "power": 600,
      "effects": "Ivy-Covered 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Core",
+     "slug": "Ancient_Civilization_Core",
+     "qty": "4-7",
+     "pct": 100.0
+    },
+    {
+     "item": "Hartalis (Ultra) Slab",
+     "slug": "Hartalis_(Ultra)_Slab",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Training Crystal",
+     "slug": "Training_Crystal",
+     "qty": "4-6",
+     "pct": 100.0
+    },
+    {
+     "item": "Skill Fruit: Holy Burst",
+     "slug": "Skill_Fruit:_Holy_Burst",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Applied Kindling Handbook I",
+     "slug": "Applied_Kindling_Handbook_I",
+     "qty": "1",
+     "pct": 33.3
+    },
+    {
+     "item": "Applied Watering Handbook I",
+     "slug": "Applied_Watering_Handbook_I",
+     "qty": "1",
+     "pct": 33.3
+    },
+    {
+     "item": "Applied Planting Handbook I",
+     "slug": "Applied_Planting_Handbook_I",
+     "qty": "1",
+     "pct": 33.3
+    },
+    {
+     "item": "Huge Common Egg",
+     "slug": "Huge_Common_Egg",
+     "qty": "1",
+     "pct": 10.0
+    },
+    {
+     "item": "Huge Common Egg",
+     "slug": "Huge_Common_Egg",
+     "qty": "1",
+     "pct": 90.0
     }
    ]
   },
@@ -3129,6 +4568,62 @@
      "ct": 30,
      "power": 600,
      "effects": "Ivy-Covered 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Core",
+     "slug": "Ancient_Civilization_Core",
+     "qty": "10",
+     "pct": 100.0
+    },
+    {
+     "item": "Hartalis (Ultra) Slab",
+     "slug": "Hartalis_(Ultra)_Slab",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Training Crystal",
+     "slug": "Training_Crystal",
+     "qty": "10",
+     "pct": 100.0
+    },
+    {
+     "item": "Crown of Salvation",
+     "slug": "Crown_of_Salvation",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Applied Kindling Handbook I",
+     "slug": "Applied_Kindling_Handbook_I",
+     "qty": "2",
+     "pct": 33.3
+    },
+    {
+     "item": "Applied Watering Handbook I",
+     "slug": "Applied_Watering_Handbook_I",
+     "qty": "2",
+     "pct": 33.3
+    },
+    {
+     "item": "Applied Planting Handbook I",
+     "slug": "Applied_Planting_Handbook_I",
+     "qty": "2",
+     "pct": 33.3
+    },
+    {
+     "item": "Huge Common Egg",
+     "slug": "Huge_Common_Egg",
+     "qty": "1",
+     "pct": 10.0
+    },
+    {
+     "item": "Huge Common Egg",
+     "slug": "Huge_Common_Egg",
+     "qty": "1",
+     "pct": 90.0
     }
    ]
   }

@@ -15,7 +15,7 @@ import { Badge, Card, PageHead, PalIcon, s } from '../../ui/kit';
 import { Icon } from '../../ui/Icon';
 import { TOWER_BOSSES, type BossEncounter } from '../../data/towerRaid.g';
 import { weaknessLabel } from '../../logic/counters';
-import { fmtHp, shortName } from '../../bosses/format';
+import { fmtHp, shortName } from '../../logic/bossText';
 import { isBeaten, loadRecord, onRecordChange } from '../../bosses/record';
 import { BossCard } from './BossCard';
 

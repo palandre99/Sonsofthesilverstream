@@ -1,109 +1,33 @@
-/** The Boss Card — one fixed anatomy for every boss fight (Dododex rule:
- * a returning thumb knows where everything lives).
+/** The Boss Card for a tower or raid fight — one fixed anatomy (Dododex
+ * rule: a returning thumb knows where everything lives).
  *
  * Order, top to bottom: who it is → are you ready (YOUR pals first, then
  * what's worth getting and how) → the fight's real numbers and its actual
- * attacks → where it is → your record. Every number is a game-table fact
- * or labelled; the ranking logic is stated in a player's words.
+ * attacks → where it is → what winning gives you → your record. The alpha
+ * card (AlphaCard.tsx) renders the SAME order from the same sections.
  */
-import React, { useEffect, useMemo, useState } from 'react';
-import { Image, Modal, Pressable, ScrollView, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Modal, Pressable, ScrollView, Text, View } from 'react-native';
 import * as Haptics from 'expo-haptics';
-import { ELEMENT_COLORS, T } from '../../theme';
-import {
-  addPlanTarget, breeding, engine, getBox, getPlayerLevel, ownedAny, pals,
-} from '../../store';
+import { T } from '../../theme';
+import { getBox, getPlayerLevel } from '../../store';
 import { navigateTo } from '../../nav/intent';
-import {
-  Badge, Btn, Card, DataStamp, PalIcon, s,
-} from '../../ui/kit';
+import { Badge, Btn, Card, DataStamp, PalIcon, s } from '../../ui/kit';
 import { Icon } from '../../ui/Icon';
-import { ELEMENT_ICONS } from '../../data/statIcons';
 import type { BossEncounter } from '../../data/towerRaid.g';
-import {
-  attainLabel, boxKeyOf, cachedDerivations, derivationsReady,
-  getAttainContext, type Attain,
-} from '../../logic/recommend';
-import { matchupLabel, weaknessLabel, type CounterRow } from '../../logic/counters';
-import { counterSuggestions, ownedCounterRows } from '../../bosses/counterPicks';
-import { effectWords, fmtHp, levelFit, shortName } from '../../bosses/format';
+import { ownedCounterRows } from '../../bosses/counterPicks';
+import { fmtHp, levelFit, shortName } from '../../logic/bossText';
 import { isBeaten, loadRecord, onRecordChange, toggleBeaten } from '../../bosses/record';
 import itemsJson from '../../data/items_1_0.json';
+import {
+  BossElementChips, coverageLine, MovesList, ReadySection, RewardsSection,
+} from './sections';
 
 /** slab codes are item ids verbatim (PalSummon_NightLady → "Bellanoir's
  * Slab"), so the summoning line uses the game's own item names */
 const ITEM_NAMES = (itemsJson as unknown as {
   items: Record<string, { name: string }>;
 }).items;
-
-/** boss elements as chips — the BOSS's own row, which can differ from the
- * species (Zenara & Astralym fight typeless while Astralym has elements) */
-function BossElementChips({ elements }: { elements: string[] }) {
-  if (!elements.length) {
-    return (
-      <View style={[s.chip, { backgroundColor: T.surface2 }]}>
-        <Text style={[s.chipText, { color: T.muted }]}>No element</Text>
-      </View>
-    );
-  }
-  return (
-    <>
-      {elements.map((e) => {
-        const c = ELEMENT_COLORS[e.toLowerCase()] ?? ELEMENT_COLORS.neutral;
-        return (
-          <View key={e} style={[s.chip, {
-            backgroundColor: c.bg, flexDirection: 'row',
-            alignItems: 'center', gap: 4, paddingHorizontal: 7,
-          }]}>
-            {ELEMENT_ICONS[e] && (
-              <Image source={ELEMENT_ICONS[e]} style={{ width: 14, height: 14 }} />
-            )}
-            <Text style={[s.chipText, { color: c.fg }]}>{e}</Text>
-          </View>
-        );
-      })}
-    </>
-  );
-}
-
-export function CounterPalRow({ row, why, attain, onOpen, onPlan }: {
-  row: CounterRow; why: string; attain?: Attain | null;
-  onOpen: () => void; onPlan?: (() => void) | null;
-}) {
-  const label = attain ? attainLabel(attain) : null;
-  // "Plan it" sits BESIDE the tappable area, never inside it — a button
-  // nested in a button is invalid on web (the QA render flagged the
-  // hydration error) and a tap-conflict on the phone.
-  return (
-    <View style={[s.row, { gap: 10, paddingVertical: 7 }]}>
-      <Pressable
-        onPress={onOpen}
-        accessibilityRole="button"
-        accessibilityLabel={`${row.name}. ${why}${label ? ` ${label.long}` : ''}`}
-        style={({ pressed }) => [{
-          flexDirection: 'row', alignItems: 'center', gap: 10,
-          flex: 1, opacity: pressed ? 0.6 : 1,
-        }]}
-      >
-        <PalIcon name={row.name} size={40} />
-        <View style={{ flex: 1 }}>
-          <View style={[s.row, { gap: 6, flexWrap: 'wrap' }]}>
-            <Text style={{ color: T.ink, fontWeight: '800', fontSize: 14 }}>
-              {row.name}
-            </Text>
-            {label && <Badge kind="plain">{label.short}</Badge>}
-          </View>
-          <Text style={[s.body, { fontSize: 12, lineHeight: 16, marginTop: 1 }]}>
-            {why}
-          </Text>
-        </View>
-      </Pressable>
-      {onPlan && (
-        <Btn small label="Plan it" onPress={onPlan} />
-      )}
-    </View>
-  );
-}
 
 export function BossCard({ base, hard, onClose }: {
   base: BossEncounter;
@@ -113,76 +37,20 @@ export function BossCard({ base, hard, onClose }: {
   const [mode, setMode] = useState<'base' | 'hard'>('base');
   const enc = mode === 'hard' && hard ? hard : base;
   // the name a player says: the pal it is (raids), or the paired names
-  const name = base.species && !base.arena
-    ? base.species : shortName(base.title);
+  const name = base.species && !base.arena ? base.species : shortName(base.title);
   const playerLevel = getPlayerLevel();
-  const fit = levelFit(playerLevel, enc);
-  const moveEls = useMemo(() => enc.moves.map((m) => m.element), [enc]);
+  const fit = levelFit(playerLevel, enc.lv);
 
-  // the record ticks re-render this card and the list behind it
   const [, bumpRecord] = useState(0);
   useEffect(() => {
     void loadRecord();
     return onRecordChange(() => bumpRecord((x) => x + 1));
   }, []);
 
-  /* ---- your best pals: pure element math over the box, instant ---- */
-  const box = getBox();
-  const ownedRows = useMemo(
-    () => ownedCounterRows(Object.keys(box), enc.elements, moveEls),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [boxKeyOf(Object.keys(box)), enc],
-  );
-  const ownedTop = ownedRows.slice(0, 5);
-  const ownedMoreWithEdge = ownedRows.slice(5).filter((r) => r.offense > 1).length;
-
-  /* ---- worth getting: needs the reachability pass — gated exactly like
-   * SuggestedGoals so the card never opens frozen (the 4437 ms lesson) */
-  const boxNames = Object.keys(box);
-  const ready = derivationsReady(boxNames);
-  const [, bumpReady] = useState(0);
-  useEffect(() => {
-    if (ready) return undefined;
-    const t = setTimeout(() => {
-      cachedDerivations(engine, boxNames);
-      bumpReady((x) => x + 1);
-    }, 30);
-    return () => clearTimeout(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [boxKeyOf(boxNames), ready]);
-  const suggestions = useMemo(() => {
-    if (!ready || !enc.elements.length) return null;
-    const ctx = getAttainContext(engine, pals, breeding, boxNames, playerLevel, ownedAny);
-    return counterSuggestions(ctx, ownedAny, enc.elements, moveEls);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ready, boxKeyOf(boxNames), playerLevel, enc]);
-
-  const openPal = (pal: string) => {
-    onClose();
-    navigateTo({ domain: 'bosses', tab: 'paldex', payload: { pal } });
-  };
-  const planPal = (pal: string) => {
-    void Haptics.selectionAsync();
-    onClose();
-    navigateTo({ domain: 'breeding', tab: 'plan', payload: { fromCard: pal } });
-    // let the navigation paint before planner-grade work (PalDetail's rule)
-    setTimeout(() => {
-      addPlanTarget(pal);
-      void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    }, 60);
-  };
-
-  const coverage = ownedTop[0]?.offense === 2
-    ? 'Your box has the counters — bring the pals below.'
-    : boxNames.length
-      ? enc.elements.length
-        ? 'Nothing you own hits it for double yet — the pals under '
-          + '"Worth getting" close that gap.'
-        : 'It has no element, so no pal hits it harder than any other — '
-          + 'bring your strongest.'
-      : 'Your box is empty — tick what you own in the Paldex and this '
-        + 'section will pick your team.';
-
+  const boxNames = Object.keys(getBox());
+  const hasEdge = ownedCounterRows(
+    boxNames, enc.elements, enc.moves.map((m) => m.element),
+  )[0]?.offense === 2;
   const fitColor = { ok: T.ok, warn: T.warn, bad: T.bad, plain: T.muted }[fit.tone];
 
   return (
@@ -249,65 +117,12 @@ export function BossCard({ base, hard, onClose }: {
               {fit.text}
             </Text>
             <Text style={[s.body, { marginTop: 4 }]}>
-              {weaknessLabel(enc.elements)} {coverage}
+              {coverageLine(enc.elements, hasEdge, boxNames.length)}
             </Text>
           </Card>
 
-          <Card style={{ padding: 14 }}>
-            <Text style={s.h3}>Your best pals for this fight</Text>
-            <Text style={[s.body, { fontSize: 12, marginTop: 2 }]}>
-              Ranked by element matchups against this boss and its own
-              attacks, then base attack. It doesn’t simulate the fight —
-              it tells you why each pick is here.
-            </Text>
-            <View style={{ marginTop: 6 }}>
-              {ownedTop.map((r) => (
-                <CounterPalRow key={r.name} row={r}
-                  why={matchupLabel(r, name)}
-                  onOpen={() => openPal(r.name)} />
-              ))}
-              {!ownedTop.length && (
-                <Text style={[s.body, { marginTop: 4 }]}>
-                  Nothing ticked as owned yet — your box picks this list.
-                </Text>
-              )}
-              {ownedMoreWithEdge > 0 && (
-                <Text style={[s.body, { fontSize: 12, color: T.faint, marginTop: 4 }]}>
-                  …and {ownedMoreWithEdge} more you own with the same
-                  element edge.
-                </Text>
-              )}
-            </View>
-          </Card>
-
-          {enc.elements.length > 0 && (
-            <Card style={{ padding: 14 }}>
-              <Text style={s.h3}>Worth getting for this fight</Text>
-              <Text style={[s.body, { fontSize: 12, marginTop: 2 }]}>
-                Pals that hit it for double, ranked the same way, closest
-                to your save first. Tap one for where to catch it; Plan it
-                sends a breeding route to the Planner.
-              </Text>
-              <View style={{ marginTop: 6 }}>
-                {suggestions == null && (
-                  <Text style={[s.body, { marginTop: 4 }]}>Reading your save…</Text>
-                )}
-                {suggestions?.map(({ row, attain }) => (
-                  <CounterPalRow key={row.name} row={row}
-                    why={matchupLabel(row, name)}
-                    attain={attain}
-                    onOpen={() => openPal(row.name)}
-                    onPlan={attain.kind === 'breed' ? () => planPal(row.name) : null} />
-                ))}
-                {suggestions != null && !suggestions.length && (
-                  <Text style={[s.body, { marginTop: 4 }]}>
-                    No catchable or breedable counters are in reach of your
-                    save yet.
-                  </Text>
-                )}
-              </View>
-            </Card>
-          )}
+          <ReadySection elements={enc.elements} moves={enc.moves}
+            bossName={name} onLeave={onClose} />
 
           <Card style={{ padding: 14 }}>
             <Text style={s.h3}>The fight</Text>
@@ -321,53 +136,12 @@ export function BossCard({ base, hard, onClose }: {
               {enc.dealRate != null && enc.dealRate !== 1 && (
                 <Badge kind="warn">{`its hits land ×${enc.dealRate}`}</Badge>
               )}
-              {/* the raid list's damage-reduction and attack-% figures
-                  are pure derivations of the two rates above — proven
-                  identical on all 11 rows and pinned in boss-data tests,
-                  so printing both would say the same fact twice */}
+              {/* the raid list's damage-reduction and attack-% figures are
+                  pure derivations of the two rates above — proven identical
+                  on all 11 rows and pinned in boss-data tests, so printing
+                  both would say the same fact twice */}
             </View>
-            {enc.moves.length ? (
-              <View style={{ marginTop: 10, gap: 7 }}>
-                <Text style={[s.body, { fontSize: 12, color: T.faint }]}>
-                  Its attacks — {enc.moves.length} in this difficulty’s own
-                  kit:
-                </Text>
-                {enc.moves.map((m) => {
-                  const c = ELEMENT_COLORS[m.element.toLowerCase()] ?? ELEMENT_COLORS.neutral;
-                  const eff = effectWords(m.effects);
-                  return (
-                    <View key={`${m.lv}-${m.name}`} style={[s.row, { gap: 8 }]}
-                      accessible
-                      accessibilityLabel={`${m.name}, ${m.element}, power ${m.power}${eff ? `, causes ${eff}` : ''}`}>
-                      <View style={[s.chip, {
-                        backgroundColor: c.bg, flexDirection: 'row',
-                        alignItems: 'center', gap: 4, paddingHorizontal: 6,
-                      }]}>
-                        {ELEMENT_ICONS[m.element] && (
-                          <Image source={ELEMENT_ICONS[m.element]}
-                            style={{ width: 12, height: 12 }} />
-                        )}
-                      </View>
-                      <Text style={{ color: T.ink, fontSize: 13, fontWeight: '700', flex: 1 }}
-                        numberOfLines={1}>
-                        {m.name}
-                      </Text>
-                      {eff && (
-                        <Text style={{ color: T.muted, fontSize: 11.5 }}>{eff}</Text>
-                      )}
-                      <Text style={{ color: T.accentInk, fontSize: 12, fontWeight: '800' }}>
-                        {m.power} power
-                      </Text>
-                    </View>
-                  );
-                })}
-              </View>
-            ) : (
-              <Text style={[s.body, { marginTop: 8 }]}>
-                Its move list isn’t in the boss tables we mirror — nothing
-                made up to fill the gap.
-              </Text>
-            )}
+            <MovesList moves={enc.moves} />
           </Card>
 
           <Card style={{ padding: 14 }}>
@@ -383,17 +157,17 @@ export function BossCard({ base, hard, onClose }: {
                 <Text style={[s.body, {
                   fontSize: 11.5, color: T.faint, marginTop: 6,
                 }]}>
-                  Player-reported, not from the game files: a summoned
-                  boss wrecks whatever it can reach — most players build
-                  the altar far from their base.
+                  Player-reported, not from the game files: a summoned boss
+                  wrecks whatever it can reach — most players build the altar
+                  far from their base.
                 </Text>
               </>
             ) : (
               <Text style={[s.body, { marginTop: 6 }]}>
                 {enc.arena && !enc.arena.includes('？')
                   ? `Fought at ${enc.arena}.`
-                  : 'Its arena stays hidden until the story takes you '
-                    + 'there — the game lists it as ???.'}
+                  : 'Its arena stays hidden until the story takes you there — '
+                    + 'the game lists it as ???.'}
               </Text>
             )}
             <View style={[s.wrap, { marginTop: 10 }]}>
@@ -405,10 +179,18 @@ export function BossCard({ base, hard, onClose }: {
               )}
               {base.species && (
                 <Btn small label={`${base.species}’s own card`}
-                  onPress={() => openPal(base.species!)} />
+                  onPress={() => {
+                    onClose();
+                    navigateTo({
+                      domain: 'bosses', tab: 'paldex',
+                      payload: { pal: base.species! },
+                    });
+                  }} />
               )}
             </View>
           </Card>
+
+          <RewardsSection drops={enc.drops} />
 
           <Card style={{ padding: 14 }}>
             <Text style={s.h3}>Your record</Text>

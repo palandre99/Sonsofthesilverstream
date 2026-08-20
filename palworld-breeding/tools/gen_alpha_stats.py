@@ -48,6 +48,20 @@ def main() -> None:
                 "hpRate": num(r, "hpRate"),
                 "recvRate": num(r, "recvRate"),
                 "capture": num(r, "capture"),
+                # the boss's own attack kit and drop table, parsed by the
+                # same code the tower/raid fetcher uses — narrowed to the
+                # SHARED shapes (BossMove/BossDrop), so the fetch's own
+                # bookkeeping fields never leak into the app
+                "moves": [
+                    {"lv": m["lv"], "name": m["name"], "element": m["element"],
+                     "ct": m["ct"], "power": m["power"],
+                     "effects": m.get("effects")}
+                    for m in (r.get("moves") or [])
+                ],
+                "drops": [
+                    {"item": d["item"], "qty": d["qty"], "pct": d["pct"]}
+                    for d in (r.get("drops") or [])
+                ],
             }
             if entry["hp"] is None:
                 continue  # a row with no combat stats has nothing to show
@@ -64,6 +78,8 @@ def main() -> None:
         " * before it was accepted; see data/alpha_stats_1_0.json for the",
         " * full capture and the drop list. */",
         "",
+        "import type { BossDrop, BossMove } from './towerRaid.g';",
+        "",
         "export interface AlphaStat {",
         "  /** the game's own boss title, e.g. \"Big Floof Lamball\" */",
         "  title: string;",
@@ -77,6 +93,10 @@ def main() -> None:
         "  hpRate: number | null; recvRate: number | null;",
         "  /** catch-chance multiplier */",
         "  capture: number | null;",
+        "  /** the boss variant's own attack kit, and what beating it",
+        "   * gives you — same shapes the tower/raid table uses */",
+        "  moves: BossMove[];",
+        "  drops: BossDrop[];",
         "}",
         "",
         "export const ALPHA_STATS: Record<string, AlphaStat[]> = "

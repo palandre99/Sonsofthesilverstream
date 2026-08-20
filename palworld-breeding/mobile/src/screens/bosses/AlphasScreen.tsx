@@ -14,12 +14,14 @@ import { getPlayerLevel, pals } from '../../store';
 import { navigateTo } from '../../nav/intent';
 import { Badge, Card, DataStamp, PalIcon, SearchInput, s } from '../../ui/kit';
 import { Icon } from '../../ui/Icon';
-import { ALPHA_STATS } from '../../data/alphaStats.g';
+import { ALPHA_STATS, type AlphaStat } from '../../data/alphaStats.g';
 import { weaknessLabel } from '../../logic/counters';
 import { isBeaten, loadRecord, onRecordChange, toggleBeaten } from '../../bosses/record';
+import { AlphaCard, alphaBeatKey, alphaCaughtKey } from './AlphaCard';
 
 interface AlphaRow {
   species: string;
+  stat: AlphaStat;
   title: string;
   lv: number | null;
   /** where it stands, from the pal data's own location lines — or null
@@ -27,9 +29,6 @@ interface AlphaRow {
   place: string | null;
   elements: string[];
 }
-
-const beatKey = (title: string) => `alpha:${title}`;
-const caughtKey = (title: string) => `alphacaught:${title}`;
 
 /** "Guardian of ... Aegidron (Lv. 79) - The World Tree (-59,756)" → the
  * place words, without the coordinate pair the map already owns. */
@@ -48,6 +47,7 @@ function buildRows(): AlphaRow[] {
     for (const a of entries) {
       rows.push({
         species,
+        stat: a,
         title: a.title,
         lv: a.lv,
         place: placeOf(species, a.title),
@@ -91,11 +91,11 @@ function Tick({ on, label, iconOn, iconOff, onPress }: {
   );
 }
 
-function AlphaListRow({ row, playerLevel }: {
-  row: AlphaRow; playerLevel: number | undefined;
+function AlphaListRow({ row, playerLevel, onOpen }: {
+  row: AlphaRow; playerLevel: number | undefined; onOpen: () => void;
 }) {
-  const beaten = isBeaten(beatKey(row.title));
-  const caught = isBeaten(caughtKey(row.title));
+  const beaten = isBeaten(alphaBeatKey(row.title));
+  const caught = isBeaten(alphaCaughtKey(row.title));
   const lvTone = row.lv == null || playerLevel == null
     ? T.muted
     : playerLevel >= row.lv ? T.ok
@@ -108,12 +108,12 @@ function AlphaListRow({ row, playerLevel }: {
       <Pressable
         onPress={() => {
           void Haptics.selectionAsync();
-          navigateTo({ domain: 'bosses', tab: 'paldex', payload: { pal: row.species } });
+          onOpen();
         }}
         accessibilityRole="button"
         accessibilityLabel={
           `${row.title}${row.lv != null ? `, level ${row.lv}` : ''}. `
-          + `${weaknessLabel(row.elements)} Opens ${row.species}'s card.`
+          + `${weaknessLabel(row.elements)}`
         }
         style={({ pressed }) => [{
           flexDirection: 'row', alignItems: 'center', gap: 10,
@@ -145,15 +145,16 @@ function AlphaListRow({ row, playerLevel }: {
       </Pressable>
       <Tick on={beaten} label="beaten"
         iconOn="checkbox-marked" iconOff="checkbox-blank-outline"
-        onPress={() => toggleBeaten(beatKey(row.title))} />
+        onPress={() => toggleBeaten(alphaBeatKey(row.title))} />
       <Tick on={caught} label="caught"
         iconOn="pokeball" iconOff="circle-outline"
-        onPress={() => toggleBeaten(caughtKey(row.title))} />
+        onPress={() => toggleBeaten(alphaCaughtKey(row.title))} />
     </Card>
   );
 }
 
 export function AlphasScreen() {
+  const [open, setOpen] = useState<AlphaRow | null>(null);
   const [query, setQuery] = useState('');
   const [status, setStatus] = useState<StatusFilter>('all');
   const [, bump] = useState(0);
@@ -165,15 +166,15 @@ export function AlphasScreen() {
   const rows = useMemo(buildRows, []);
   const playerLevel = getPlayerLevel();
 
-  const beatenCountAll = rows.filter((r) => isBeaten(beatKey(r.title))).length;
-  const caughtCountAll = rows.filter((r) => isBeaten(caughtKey(r.title))).length;
+  const beatenCountAll = rows.filter((r) => isBeaten(alphaBeatKey(r.title))).length;
+  const caughtCountAll = rows.filter((r) => isBeaten(alphaCaughtKey(r.title))).length;
 
   const q = query.trim().toLowerCase();
   const shown = rows.filter((r) => {
     if (q && !r.title.toLowerCase().includes(q)
       && !r.species.toLowerCase().includes(q)) return false;
-    const beaten = isBeaten(beatKey(r.title));
-    const caught = isBeaten(caughtKey(r.title));
+    const beaten = isBeaten(alphaBeatKey(r.title));
+    const caught = isBeaten(alphaCaughtKey(r.title));
     if (status === 'todo') return !beaten;
     if (status === 'beaten') return beaten;
     if (status === 'caught') return caught;
@@ -234,8 +235,13 @@ export function AlphasScreen() {
         </View>
       )}
       renderItem={({ item }) => (
-        <AlphaListRow row={item} playerLevel={playerLevel} />
+        <AlphaListRow row={item} playerLevel={playerLevel}
+          onOpen={() => setOpen(item)} />
       )}
+      ListFooterComponent={open ? (
+        <AlphaCard species={open.species} stat={open.stat}
+          onClose={() => setOpen(null)} />
+      ) : null}
       ListEmptyComponent={(
         <Text style={[s.body, { marginTop: 12 }]}>
           No boss matches that — try part of its title or its pal’s name.

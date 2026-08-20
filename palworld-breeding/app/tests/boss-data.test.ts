@@ -148,3 +148,93 @@ describe('the encounter tables are what the fetch validated', () => {
     expect(app.equals(mobile)).toBe(true);
   });
 });
+
+describe('what winning gives you', () => {
+  it('exactly one fight has no drop table upstream, and the card says so rather than inventing one', () => {
+    // found by this very test: the Lv-80 Nullstar Calamity row has no
+    // Possible Drops card on its page, while its Hard twin does. The
+    // rewards section prints the honest gap sentence for it.
+    const bare = ALL.filter((b) => b.drops.length === 0).map((b) => b.title);
+    expect(bare).toEqual(['Nullstar Calamity Zenara & Astralym']);
+  });
+
+  it('every row that HAS a drop table states a real amount and a real chance', () => {
+    for (const b of ALL) {
+      for (const d of b.drops) {
+        expect(d.item, b.title).toBeTruthy();
+        expect(d.qty, `${b.title}/${d.item}`).toMatch(/^\d+(-\d+)?$/);
+        expect(d.pct, `${b.title}/${d.item}`).toBeGreaterThan(0);
+        expect(d.pct, `${b.title}/${d.item}`).toBeLessThanOrEqual(100);
+      }
+    }
+  });
+
+  it('the canary: Zoe & Grizzbolt Hard pays the key, the hat, a crystal and a schematic', () => {
+    const hard = TOWER_BOSSES.find((r) => r.bp === 'GYM_ElecPanda_2')!;
+    expect(hard.drops.map((d) => d.item)).toEqual([
+      'Key Sphere of Envy', 'Zoe Hat', 'Training Crystal',
+      'Speed Lotus (L)', 'Beam Scatter Schematic 4',
+    ]);
+    expect(hard.drops[0].pct).toBe(100);
+    expect(hard.drops[4].pct).toBe(10);
+  });
+
+  it('Normal really pays less than Hard — the difficulty split is in the drops too', () => {
+    const normal = TOWER_BOSSES.find((r) => r.bp === 'GYM_ElecPanda')!;
+    expect(normal.drops.length).toBe(1);
+  });
+
+  it('every tower key sphere is still missing from the items index — a live cross-lane gap', () => {
+    // 11 drop names do not resolve against items_1_0.json (8 tower Key
+    // Spheres + 3 boss trophies). If this ever DROPS to zero the items
+    // backbone was fixed and this test should be deleted with a cheer.
+    const canonical = JSON.parse(readFileSync(
+      join(__dirname, '../../data/tower_raid_1_0.json'), 'utf8'));
+    expect(canonical.dropCounts.rows).toBe(234);
+    expect(canonical.dropCounts.unresolved).toBe(22);
+  });
+});
+
+describe('the alpha bosses carry the same facts', () => {
+  const alphas = JSON.parse(readFileSync(
+    join(__dirname, '../../data/alpha_stats_1_0.json'), 'utf8')) as {
+      bosses: Record<string, {
+        title: string; lv: number | null;
+        moves: { name: string; element: string; power: number }[];
+        drops: { item: string; qty: string; pct: number }[];
+      }[]>;
+      dropped: string[]; unmapped_skills: string[];
+    };
+  const rows = Object.values(alphas.bosses).flat();
+
+  it('205 boss rows, and the only two absent are the known upstream 404s', () => {
+    expect(rows.length).toBe(205);
+    expect(alphas.dropped).toEqual([
+      "Don't Touch! Jolthog: HTTP 404",
+      'Legendary Ocean King: HTTP 404',
+    ]);
+  });
+
+  it('every alpha has its own attack kit and its own drop table', () => {
+    for (const r of rows) {
+      expect(r.moves.length, `${r.title} has no moves`).toBeGreaterThan(0);
+      expect(r.drops.length, `${r.title} has no drops`).toBeGreaterThan(0);
+    }
+  });
+
+  it('every alpha move element maps into our nine — none were refused', () => {
+    expect(alphas.unmapped_skills).toEqual([]);
+    for (const r of rows) {
+      for (const m of r.moves) {
+        expect(NINE.has(m.element), `${r.title}: ${m.name} is ${m.element}`).toBe(true);
+      }
+    }
+  });
+
+  it('the canary: alpha Paladius keeps its E133 stats and gains a 10-attack kit', () => {
+    const p = alphas.bosses.Paladius[0];
+    expect(p.lv).toBe(60);
+    expect(p.moves.length).toBe(10);
+    expect(p.drops.some((d) => d.item === 'Twin Knights Bounty Token')).toBe(true);
+  });
+});

@@ -45,6 +45,7 @@ import re
 import sys
 import time
 import urllib.request
+from urllib.parse import unquote
 from datetime import date
 from pathlib import Path
 
@@ -225,6 +226,34 @@ def parse_skills(section: str) -> list[dict]:
     return skills
 
 
+DROP_RE = re.compile(
+    r'class="itemname"[^>]*href="([^"]+)"[^>]*>(?:<img[^>]*>)?([^<]+)</a>\s*'
+    r'<td><small class="itemQuantity">([^<]+)</small>.*?<td>([\d.]+)%', re.S)
+
+
+def parse_drops(section: str) -> list[dict]:
+    """The variant's own Possible Drops table: what beating THIS fight
+    gives you, with the game's own probabilities.
+
+    Read per variant section, because the difficulties really differ —
+    Zoe & Grizzbolt Normal drops one key, Hard drops five things
+    including the hat and a schematic."""
+    out = []
+    start = section.find('paldex_drop_item_title')
+    if start < 0:
+        return out
+    end = section.find('</table>', start)
+    for href, name, qty, pct in DROP_RE.findall(section[start:end if end > 0 else len(section)]):
+        out.append({
+            "item": name.strip(),
+            "slug": unquote(href),
+            # "1&ndash;3" is a RANGE, and an en dash is not a hyphen
+            "qty": qty.replace("&ndash;", "-").strip(),
+            "pct": float(pct),
+        })
+    return out
+
+
 def main() -> None:
     pals = json.loads(
         (ROOT / "data" / "pals_1_0.json").read_text(encoding="utf-8"))["pals"]
@@ -330,8 +359,29 @@ def main() -> None:
                 "ctRate": raw.get("EnemyWazaCoolTimeRate"),
                 "genus": raw.get("GenusCategory"),
                 "moves": skills,
+                "drops": parse_drops(seg),
             })
         sections[kind] = rows
+
+    # Drops are EXTRA facts, so an unresolved one is reported and kept
+    # (the player still sees the game's own name), never silently
+    # dropped and never allowed to fail the row.
+    item_names = {
+        it["name"] for it in json.loads(
+            (ROOT / "data" / "items_1_0.json").read_text(encoding="utf-8")
+        )["items"].values()
+    }
+    drop_rows = unresolved = 0
+    for rows_ in sections.values():
+        for r in rows_:
+            for d in r.get("drops", []):
+                drop_rows += 1
+                if d["item"] not in item_names:
+                    unresolved += 1
+                    notes.append(f"{r['title']}: drop {d['item']!r} is not "
+                                 "a name in items_1_0.json")
+    print(f"drops: {drop_rows} rows, {unresolved} unresolved against the "
+          "items table")
 
     payload = {
         "source": (
@@ -344,6 +394,7 @@ def main() -> None:
             "agrees between both renderings after enum mapping. Species "
             "resolved from Tribe via our own icon codenames."),
         "counts": {k: len(v) for k, v in sections.items()},
+        "dropCounts": {"rows": drop_rows, "unresolved": unresolved},
         "refusals": refusals,
         "notes": notes,
         **sections,

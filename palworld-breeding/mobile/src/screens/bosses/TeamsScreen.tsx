@@ -20,7 +20,7 @@ import {
 } from '../../logic/recommend';
 import { attackMultiplier, matchupLabel } from '../../logic/counters';
 import { counterSuggestions, ownedCounterRows } from '../../bosses/counterPicks';
-import { CounterPalRow } from './BossCard';
+import { CounterPalRow } from './CounterPalRow';
 
 export function TeamsScreen() {
   const [openEl, setOpenEl] = useState<string | null>(null);

@@ -25,6 +25,15 @@ export interface BossMove {
   effects: string | null;
 }
 
+export interface BossDrop {
+  /** the game's own item name; a few are absent from the items index
+   * (the tower Key Spheres) — reported by the fetch, shown regardless */
+  item: string;
+  /** "1" or a range like "1-3", exactly as the table states it */
+  qty: string;
+  pct: number;
+}
+
 export interface BossEncounter {
   title: string;
   arena: string | null;
@@ -48,9 +57,11 @@ export interface BossEncounter {
   ctRate: number | null;
   genus: string | null;
   moves: BossMove[];
+  /** what beating THIS difficulty gives you, with the game's own odds */
+  drops: BossDrop[];
 }
 
-export const TOWER_RAID_SOURCE = "paldb.cc /en/Tower + /en/Raid list pages (per-difficulty level/fight-HP/reduction rows) joined to each boss's own page (raw DT_PalMonsterParameter GYM_/RAID_ row + active skills), fetched 2026-08-19. A row ships only if the page's BPClass equals the list entry's id, the page carries the matching IsTowerBoss/IsRaidBoss flag, and the element agrees between both renderings after enum mapping. Species resolved from Tribe via our own icon codenames.";
+export const TOWER_RAID_SOURCE = "paldb.cc /en/Tower + /en/Raid list pages (per-difficulty level/fight-HP/reduction rows) joined to each boss's own page (raw DT_PalMonsterParameter GYM_/RAID_ row + active skills), fetched 2026-08-20. A row ships only if the page's BPClass equals the list entry's id, the page carries the matching IsTowerBoss/IsRaidBoss flag, and the element agrees between both renderings after enum mapping. Species resolved from Tribe via our own icon codenames.";
 
 export const TOWER_BOSSES: BossEncounter[] = [
   {
@@ -74,6 +85,7 @@ export const TOWER_BOSSES: BossEncounter[] = [
     ctRate: 2,
     genus: "Humanoid",
     moves: [{ lv: 1, name: "Lightning Claw", element: "Electric", ct: 8, power: 150, effects: "Electrify 100" }, { lv: 2, name: "Spark Blast", element: "Electric", ct: 2, power: 50, effects: "Electrify 100" }, { lv: 3, name: "Shockwave", element: "Electric", ct: 4, power: 80, effects: "Electrify 103" }, { lv: 4, name: "Plasma Funnel", element: "Electric", ct: 8, power: 120, effects: "Electrify 100" }, { lv: 5, name: "Lock-on Laser", element: "Electric", ct: 8, power: 140, effects: "Electrify 100" }],
+    drops: [{ item: "Key Sphere of Envy", qty: "1", pct: 100.0 }],
   },
   {
     title: "Rayne Syndicate Boss Zoe & Grizzbolt",
@@ -96,6 +108,7 @@ export const TOWER_BOSSES: BossEncounter[] = [
     ctRate: 3,
     genus: "Humanoid",
     moves: [{ lv: 1, name: "Heavy Thunder Tank", element: "Electric", ct: 24, power: 550, effects: "Electrify 100" }, { lv: 2, name: "Thunder Rain", element: "Electric", ct: 20, power: 400, effects: "Electrify 100" }, { lv: 4, name: "Lightning Strike", element: "Electric", ct: 16, power: 300, effects: "Electrify 100" }, { lv: 6, name: "Lethal Laser", element: "Electric", ct: 30, power: 600, effects: "Electrify 100" }, { lv: 7, name: "TriSpark", element: "Electric", ct: 12, power: 250, effects: "Electrify 100" }, { lv: 8, name: "Spine Vine", element: "Grass", ct: 12, power: 250, effects: "Ivy-Covered 100" }, { lv: 9, name: "Seed Mine", element: "Grass", ct: 8, power: 120, effects: "Ivy-Covered 100" }, { lv: 10, name: "Wind Edge", element: "Grass", ct: 12, power: 200, effects: "Ivy-Covered 35" }, { lv: 11, name: "Reflect Leaf", element: "Grass", ct: 20, power: 400, effects: "Ivy-Covered 100" }],
+    drops: [{ item: "Key Sphere of Envy", qty: "1", pct: 100.0 }, { item: "Zoe Hat", qty: "1", pct: 100.0 }, { item: "Training Crystal", qty: "1", pct: 100.0 }, { item: "Speed Lotus (L)", qty: "1", pct: 20.0 }, { item: "Beam Scatter Schematic 4", qty: "1", pct: 10.0 }],
   },
   {
     title: "Free Pal Alliance Founder Lily & Lyleen",
@@ -118,6 +131,7 @@ export const TOWER_BOSSES: BossEncounter[] = [
     ctRate: 2,
     genus: "Humanoid",
     moves: [{ lv: 1, name: "Poison Fog", element: "Dark", ct: 30, power: 0, effects: "Poison 9999" }, { lv: 2, name: "Unique_LilyQueen_GYM_Act", element: "Grass", ct: 60, power: 1, effects: null }, { lv: 3, name: "Seed Mine", element: "Grass", ct: 8, power: 120, effects: "Ivy-Covered 100" }, { lv: 4, name: "Multicutter", element: "Grass", ct: 8, power: 160, effects: "Ivy-Covered 35" }, { lv: 5, name: "Grass Tornado", element: "Grass", ct: 12, power: 200, effects: "Ivy-Covered 65" }, { lv: 6, name: "Seed Machine Gun", element: "Grass", ct: 4, power: 80, effects: "Ivy-Covered 100" }],
+    drops: [{ item: "Key Sphere of Pride", qty: "1", pct: 100.0 }],
   },
   {
     title: "Free Pal Alliance Founder Lily & Lyleen",
@@ -140,6 +154,7 @@ export const TOWER_BOSSES: BossEncounter[] = [
     ctRate: 3,
     genus: "Humanoid",
     moves: [{ lv: 1, name: "Unique_LilyQueen_LilyHealing_Boss", element: "Grass", ct: 300, power: 0, effects: null }, { lv: 2, name: "Unique_LilyQueen_GYM_Act", element: "Grass", ct: 60, power: 1, effects: null }, { lv: 3, name: "Solar Blast", element: "Grass", ct: 20, power: 450, effects: "Ivy-Covered 100" }, { lv: 4, name: "Raid Cutter", element: "Grass", ct: 20, power: 400, effects: "Ivy-Covered 35" }, { lv: 5, name: "Wind Burst", element: "Grass", ct: 30, power: 600, effects: "Ivy-Covered 100" }, { lv: 6, name: "Circle Vine", element: "Grass", ct: 16, power: 300, effects: "Ivy-Covered 100" }, { lv: 7, name: "Crosswind", element: "Grass", ct: 24, power: 500, effects: "Ivy-Covered 100" }, { lv: 8, name: "Torrential Blast", element: "Water", ct: 12, power: 250, effects: "Soak 100" }, { lv: 9, name: "Curtain Splash", element: "Water", ct: 16, power: 300, effects: "Soak 100" }, { lv: 11, name: "Geyser Gush", element: "Water", ct: 30, power: 600, effects: "Soak 100" }, { lv: 12, name: "Poison Shower", element: "Dark", ct: 8, power: 160, effects: "Poison 100" }],
+    drops: [{ item: "Key Sphere of Pride", qty: "1", pct: 100.0 }, { item: "Lily Hat", qty: "1", pct: 100.0 }, { item: "Training Crystal", qty: "1", pct: 100.0 }, { item: "Life Lotus (L)", qty: "1", pct: 20.0 }, { item: "Drone Launcher Schematic 4", qty: "1", pct: 10.0 }],
   },
   {
     title: "PIDF Commander Marcus & Faleris",
@@ -162,6 +177,7 @@ export const TOWER_BOSSES: BossEncounter[] = [
     ctRate: 2,
     genus: "Bird",
     moves: [{ lv: 1, name: "Phoenix Flare", element: "Fire", ct: 16, power: 320, effects: "Burn 100" }, { lv: 2, name: "Flare Arrow", element: "Fire", ct: 8, power: 120, effects: "Burn 102" }, { lv: 3, name: "Ignis Breath", element: "Fire", ct: 8, power: 160, effects: "Burn 100" }, { lv: 4, name: "Flame Wall", element: "Fire", ct: 12, power: 250, effects: "Burn 100" }, { lv: 5, name: "Flame Funnel", element: "Fire", ct: 16, power: 300, effects: "Burn 100" }, { lv: 6, name: "Ignis Rage", element: "Fire", ct: 24, power: 500, effects: "Burn 100" }, { lv: 7, name: "Spirit Fire", element: "Fire", ct: 4, power: 80, effects: "Burn 100" }, { lv: 8, name: "Volcanic Rain", element: "Fire", ct: 20, power: 450, effects: "Burn 100" }],
+    drops: [{ item: "Key Sphere of Greed", qty: "1", pct: 100.0 }],
   },
   {
     title: "PIDF Commander Marcus & Faleris",
@@ -184,6 +200,7 @@ export const TOWER_BOSSES: BossEncounter[] = [
     ctRate: 2.5,
     genus: "Bird",
     moves: [{ lv: 1, name: "Raging Flame Wave", element: "Fire", ct: 30, power: 650, effects: "Burn 100" }, { lv: 2, name: "Flame Funnel", element: "Fire", ct: 16, power: 300, effects: "Burn 100" }, { lv: 3, name: "Fire Ball", element: "Fire", ct: 30, power: 600, effects: "Burn 100" }, { lv: 4, name: "Flame Wall", element: "Fire", ct: 12, power: 250, effects: "Burn 100" }, { lv: 5, name: "Volcanic Rain", element: "Fire", ct: 20, power: 450, effects: "Burn 100" }, { lv: 6, name: "Thunder Rail", element: "Electric", ct: 30, power: 600, effects: "Electrify 100" }, { lv: 7, name: "Thunder Rain", element: "Electric", ct: 20, power: 400, effects: "Electrify 100" }, { lv: 8, name: "Thunderstorm", element: "Electric", ct: 30, power: 600, effects: null }, { lv: 9, name: "All Range Thunder", element: "Electric", ct: 24, power: 500, effects: "Electrify 100" }, { lv: 10, name: "Air Blade", element: "Neutral", ct: 8, power: 160, effects: null }],
+    drops: [{ item: "Key Sphere of Greed", qty: "1", pct: 100.0 }, { item: "Marcus Hat", qty: "1", pct: 100.0 }, { item: "Training Crystal", qty: "1", pct: 100.0 }, { item: "Carrying Lotus (L)", qty: "1", pct: 20.0 }, { item: "Heat-Resistant Ancient Armor Schematic 4", qty: "1", pct: 5.0 }, { item: "Cold-Resistant Ancient Armor Schematic 4", qty: "1", pct: 5.0 }],
   },
   {
     title: "Brothers of the Eternal Pyre Soul Leader Axel & Orserk",
@@ -206,6 +223,7 @@ export const TOWER_BOSSES: BossEncounter[] = [
     ctRate: 2,
     genus: "Humanoid",
     moves: [{ lv: 1, name: "Kerauno", element: "Electric", ct: 12, power: 250, effects: "Electrify 100" }, { lv: 2, name: "Tri-Lightning", element: "Electric", ct: 12, power: 200, effects: "Electrify 103" }, { lv: 3, name: "Dragon Burst", element: "Dragon", ct: 4, power: 80, effects: "Burn 50" }, { lv: 4, name: "Comet Strike", element: "Dragon", ct: 8, power: 180, effects: "Burn 100" }, { lv: 5, name: "Lightning Streak", element: "Electric", ct: 8, power: 160, effects: "Electrify 100" }, { lv: 6, name: "Acid Rain", element: "Water", ct: 8, power: 120, effects: "Soak 100" }, { lv: 7, name: "Unique_ThunderDragonMan_GYM_Act", element: "Electric", ct: 30, power: 1, effects: null }],
+    drops: [{ item: "Key Sphere of Sloth", qty: "1", pct: 100.0 }],
   },
   {
     title: "Brothers of the Eternal Pyre Soul Leader Axel & Orserk",
@@ -228,6 +246,7 @@ export const TOWER_BOSSES: BossEncounter[] = [
     ctRate: 2.5,
     genus: "Humanoid",
     moves: [{ lv: 1, name: "Unique_ThunderDragonMan_GYM_Act", element: "Electric", ct: 30, power: 1, effects: null }, { lv: 2, name: "Polykeraunos", element: "Electric", ct: 30, power: 600, effects: "Electrify 100" }, { lv: 3, name: "All Range Thunder", element: "Electric", ct: 24, power: 500, effects: "Electrify 100" }, { lv: 4, name: "Thunder Rail", element: "Electric", ct: 30, power: 600, effects: "Electrify 100" }, { lv: 5, name: "Comet Strike", element: "Dragon", ct: 8, power: 180, effects: "Burn 100" }, { lv: 6, name: "Beam Slicer", element: "Dragon", ct: 16, power: 350, effects: "Burn 100" }, { lv: 7, name: "Charge Cannon", element: "Dragon", ct: 20, power: 400, effects: "Burn 100" }, { lv: 8, name: "Crosswind", element: "Grass", ct: 24, power: 500, effects: "Ivy-Covered 100" }, { lv: 9, name: "Reflect Leaf", element: "Grass", ct: 20, power: 400, effects: "Ivy-Covered 100" }, { lv: 10, name: "Wind Edge", element: "Grass", ct: 12, power: 200, effects: "Ivy-Covered 35" }],
+    drops: [{ item: "Key Sphere of Sloth", qty: "1", pct: 100.0 }, { item: "Axel Hat", qty: "1", pct: 100.0 }, { item: "Training Crystal", qty: "1", pct: 100.0 }, { item: "Stamina Lotus (L)", qty: "1", pct: 20.0 }, { item: "Heat-Resistant Ancient Armor Schematic 4", qty: "1", pct: 10.0 }],
   },
   {
     title: "PAL Genetic Research Unit Commander Victor & Shadowbeak",
@@ -250,6 +269,7 @@ export const TOWER_BOSSES: BossEncounter[] = [
     ctRate: 2,
     genus: "FourLegged",
     moves: [{ lv: 1, name: "Divine Disaster", element: "Dark", ct: 20, power: 400, effects: null }, { lv: 2, name: "Dark Whisp", element: "Dark", ct: 30, power: 600, effects: "Blind 100" }, { lv: 3, name: "Umbral Surge", element: "Dark", ct: 4, power: 60, effects: "Blind 35" }, { lv: 4, name: "Nightmare Ball", element: "Dark", ct: 16, power: 300, effects: "Blind 65" }, { lv: 5, name: "Dark Laser", element: "Dark", ct: 20, power: 450, effects: "Blind 100" }, { lv: 6, name: "Poison Shower", element: "Dark", ct: 8, power: 160, effects: "Poison 100" }, { lv: 7, name: "Spirit Flame", element: "Dark", ct: 12, power: 200, effects: "Burn 102" }, { lv: 8, name: "Dark Cannon", element: "Dark", ct: 4, power: 70, effects: "Blind 20" }],
+    drops: [{ item: "Key Sphere of Gluttony", qty: "1", pct: 100.0 }],
   },
   {
     title: "PAL Genetic Research Unit Commander Victor & Shadowbeak",
@@ -272,6 +292,7 @@ export const TOWER_BOSSES: BossEncounter[] = [
     ctRate: 2,
     genus: "FourLegged",
     moves: [{ lv: 1, name: "Divine Disaster", element: "Dark", ct: 20, power: 400, effects: null }, { lv: 2, name: "Divine Disaster II", element: "Dark", ct: 30, power: 600, effects: null }, { lv: 3, name: "Dark Laser", element: "Dark", ct: 20, power: 450, effects: "Blind 100" }, { lv: 4, name: "Apocalypse", element: "Dark", ct: 20, power: 400, effects: "Blind 100" }, { lv: 5, name: "Lethal Laser", element: "Electric", ct: 30, power: 600, effects: "Electrify 100" }, { lv: 6, name: "Diamond Rain", element: "Ice", ct: 30, power: 600, effects: "Freeze 100" }, { lv: 7, name: "Blizzard Spike", element: "Ice", ct: 20, power: 450, effects: "Freeze 100" }, { lv: 8, name: "Icicle Line", element: "Ice", ct: 16, power: 300, effects: "Freeze 100" }, { lv: 9, name: "Freeze Wall", element: "Ice", ct: 12, power: 200, effects: "Freeze 100" }],
+    drops: [{ item: "Key Sphere of Gluttony", qty: "1", pct: 100.0 }, { item: "Victor Hat", qty: "1", pct: 100.0 }, { item: "Training Crystal", qty: "1", pct: 100.0 }, { item: "Power Lotus (L)", qty: "1", pct: 20.0 }, { item: "Cold-Resistant Ancient Armor Schematic 4", qty: "1", pct: 10.0 }],
   },
   {
     title: "Leader of the Moonflowers Saya & Selyne",
@@ -294,6 +315,7 @@ export const TOWER_BOSSES: BossEncounter[] = [
     ctRate: 2,
     genus: "Humanoid",
     moves: [{ lv: 1, name: "Star Mine", element: "Neutral", ct: 20, power: 400, effects: null }, { lv: 2, name: "Power Bomb", element: "Neutral", ct: 8, power: 120, effects: null }, { lv: 3, name: "Moonlight Beam", element: "Neutral", ct: 30, power: 600, effects: "Burn 100" }, { lv: 4, name: "Seigetsu Blade", element: "Neutral", ct: 16, power: 350, effects: null }, { lv: 5, name: "Holy Burst", element: "Neutral", ct: 30, power: 700, effects: null }, { lv: 6, name: "Air Blade", element: "Neutral", ct: 8, power: 160, effects: null }, { lv: 7, name: "Apocalypse", element: "Dark", ct: 20, power: 400, effects: "Blind 100" }, { lv: 8, name: "Nightmare Ball", element: "Dark", ct: 16, power: 300, effects: "Blind 65" }, { lv: 9, name: "Unique_MoonQueen_GYM_Act", element: "Neutral", ct: 300, power: 1, effects: null }],
+    drops: [{ item: "Key Sphere of Lust", qty: "1", pct: 100.0 }],
   },
   {
     title: "Leader of the Moonflowers Saya & Selyne",
@@ -316,6 +338,7 @@ export const TOWER_BOSSES: BossEncounter[] = [
     ctRate: 2,
     genus: "Humanoid",
     moves: [{ lv: 1, name: "Moonlight Beam", element: "Neutral", ct: 30, power: 600, effects: "Burn 100" }, { lv: 2, name: "Seigetsu Flash", element: "Neutral", ct: 30, power: 700, effects: null }, { lv: 3, name: "Unique_MoonQueen_GYM_Hard_Act", element: "Neutral", ct: 300, power: 1, effects: null }, { lv: 4, name: "Star Mine", element: "Neutral", ct: 20, power: 400, effects: null }, { lv: 5, name: "Air Blade", element: "Neutral", ct: 8, power: 160, effects: null }, { lv: 6, name: "Holy Burst", element: "Neutral", ct: 30, power: 700, effects: null }, { lv: 7, name: "Dark Whisp", element: "Dark", ct: 30, power: 600, effects: "Blind 100" }, { lv: 8, name: "Nightmare Ball", element: "Dark", ct: 16, power: 300, effects: "Blind 65" }, { lv: 9, name: "Freeze Wall", element: "Ice", ct: 12, power: 200, effects: "Freeze 100" }, { lv: 10, name: "Blizzard Spike", element: "Ice", ct: 20, power: 450, effects: "Freeze 100" }, { lv: 11, name: "Diamond Rain", element: "Ice", ct: 30, power: 600, effects: "Freeze 100" }, { lv: 12, name: "Comet Barrage", element: "Dragon", ct: 20, power: 450, effects: "Burn 100" }],
+    drops: [{ item: "Key Sphere of Lust", qty: "1", pct: 100.0 }, { item: "Saya Hat", qty: "1", pct: 100.0 }, { item: "Training Crystal", qty: "1", pct: 100.0 }, { item: "Life Lotus (L)", qty: "1", pct: 5.0 }, { item: "Stamina Lotus (L)", qty: "1", pct: 5.0 }, { item: "Power Lotus (L)", qty: "1", pct: 5.0 }, { item: "Speed Lotus (L)", qty: "1", pct: 5.0 }, { item: "Carrying Lotus (L)", qty: "1", pct: 5.0 }, { item: "Plasma Rifle Schematic 4", qty: "1", pct: 10.0 }],
   },
   {
     title: "Jarl of Feybreak Bjorn & Bastigor",
@@ -338,6 +361,7 @@ export const TOWER_BOSSES: BossEncounter[] = [
     ctRate: 2,
     genus: "Humanoid",
     moves: [{ lv: 1, name: "Frost Talon", element: "Ice", ct: 16, power: 300, effects: "Freeze 100" }, { lv: 2, name: "Glacial Impact", element: "Ice", ct: 30, power: 650, effects: "Freeze 100" }, { lv: 3, name: "Freeze Wall", element: "Ice", ct: 12, power: 200, effects: "Freeze 100" }, { lv: 4, name: "Icicle Bullet", element: "Ice", ct: 12, power: 250, effects: "Freeze 100" }, { lv: 5, name: "Blizzard Spike", element: "Ice", ct: 20, power: 450, effects: "Freeze 100" }, { lv: 6, name: "Diamond Rain", element: "Ice", ct: 30, power: 600, effects: "Freeze 100" }, { lv: 7, name: "Crystal Breath", element: "Ice", ct: 8, power: 160, effects: "Freeze 100" }, { lv: 8, name: "Rockburst", element: "Ground", ct: 16, power: 300, effects: "Muddy 100" }, { lv: 9, name: "Rocky Impact", element: "Ground", ct: 30, power: 600, effects: "Muddy 100" }],
+    drops: [{ item: "Key Sphere of Wrath", qty: "1", pct: 100.0 }],
   },
   {
     title: "Jarl of Feybreak Bjorn & Bastigor",
@@ -360,6 +384,7 @@ export const TOWER_BOSSES: BossEncounter[] = [
     ctRate: 2,
     genus: null,
     moves: [{ lv: 1, name: "Frost Talon", element: "Ice", ct: 16, power: 300, effects: "Freeze 100" }, { lv: 2, name: "Glacial Impact", element: "Ice", ct: 30, power: 650, effects: "Freeze 100" }, { lv: 3, name: "Diamond Rain", element: "Ice", ct: 30, power: 600, effects: "Freeze 100" }, { lv: 4, name: "Double Blizzard Spike", element: "Ice", ct: 30, power: 700, effects: "Freeze 100" }, { lv: 5, name: "Absolute Frost", element: "Ice", ct: 30, power: 700, effects: "Freeze 100" }, { lv: 6, name: "Geyser Gush", element: "Water", ct: 30, power: 600, effects: "Soak 100" }, { lv: 7, name: "Hydro Laser", element: "Water", ct: 20, power: 450, effects: "Soak 100" }, { lv: 8, name: "Aqua Surge", element: "Water", ct: 24, power: 500, effects: "Soak 100" }, { lv: 9, name: "Rocky Impact", element: "Ground", ct: 30, power: 600, effects: "Muddy 100" }, { lv: 10, name: "Spirit Flame", element: "Dark", ct: 12, power: 200, effects: "Burn 102" }],
+    drops: [{ item: "Key Sphere of Wrath", qty: "1", pct: 100.0 }, { item: "Bjorn Hat", qty: "1", pct: 100.0 }, { item: "Training Crystal", qty: "1", pct: 100.0 }, { item: "Life Lotus (L)", qty: "1", pct: 6.0 }, { item: "Stamina Lotus (L)", qty: "1", pct: 6.0 }, { item: "Power Lotus (L)", qty: "1", pct: 6.0 }, { item: "Speed Lotus (L)", qty: "1", pct: 6.0 }, { item: "Carrying Lotus (L)", qty: "1", pct: 6.0 }, { item: "Lightweight Ancient Armor Schematic 4", qty: "1", pct: 10.0 }],
   },
   {
     title: "Legendary Ocean King Panthalus",
@@ -382,6 +407,7 @@ export const TOWER_BOSSES: BossEncounter[] = [
     ctRate: 1,
     genus: "Fish",
     moves: [{ lv: 1, name: "Bubble Rain", element: "Water", ct: 12, power: 200, effects: "Soak 100" }, { lv: 7, name: "Creeping Bubbles", element: "Water", ct: 12, power: 200, effects: "Soak 100" }, { lv: 15, name: "Aqua Blade", element: "Water", ct: 16, power: 300, effects: "Soak 100" }, { lv: 22, name: "Tidal Charge", element: "Water", ct: 20, power: 400, effects: "Soak 100" }, { lv: 30, name: "Maelstrom", element: "Water", ct: 24, power: 500, effects: "Soak 100" }, { lv: 40, name: "Grand Breach", element: "Water", ct: 30, power: 700, effects: "Soak 100" }, { lv: 50, name: "Holy Burst", element: "Neutral", ct: 30, power: 700, effects: null }, { lv: 60, name: "Aqua Tornado", element: "Water", ct: 40, power: 800, effects: "Soak 100" }],
+    drops: [{ item: "Ancient Civilization Parts", qty: "8-9", pct: 100.0 }, { item: "Precious Entrails", qty: "2-3", pct: 100.0 }],
   },
   {
     title: "Bewitching Lurker Dandilord",
@@ -404,6 +430,7 @@ export const TOWER_BOSSES: BossEncounter[] = [
     ctRate: 1,
     genus: "Humanoid",
     moves: [{ lv: 1, name: "Dark Cannon", element: "Dark", ct: 4, power: 70, effects: "Blind 20" }, { lv: 7, name: "Seed Mine", element: "Grass", ct: 8, power: 120, effects: "Ivy-Covered 100" }, { lv: 15, name: "Circle Vine", element: "Grass", ct: 16, power: 300, effects: "Ivy-Covered 100" }, { lv: 22, name: "Dark Laser", element: "Dark", ct: 20, power: 450, effects: "Blind 100" }, { lv: 30, name: "Dark Whisp", element: "Dark", ct: 30, power: 600, effects: "Blind 100" }, { lv: 40, name: "Wind Burst", element: "Grass", ct: 30, power: 600, effects: "Ivy-Covered 100" }, { lv: 50, name: "Poison Promenade", element: "Dark", ct: 30, power: 700, effects: null }, { lv: 70, name: "Toxic Dance", element: "Dark", ct: 30, power: 800, effects: null }],
+    drops: [{ item: "Dandilord's Petal", qty: "1", pct: 100.0 }, { item: "Precious Entrails", qty: "2-3", pct: 100.0 }, { item: "Ancient Civilization Parts", qty: "6-8", pct: 100.0 }, { item: "Toxin Filtering Membrane", qty: "5-10", pct: 100.0 }, { item: "World Tree Holy Water", qty: "20-30", pct: 100.0 }, { item: "Dark Radiant Gem", qty: "1-3", pct: 100.0 }, { item: "Decayed Ancient Relic", qty: "1-10", pct: 100.0 }, { item: "Dormant Ancient Relic", qty: "1-5", pct: 50.0 }, { item: "Gorgeous Ancient Relic", qty: "1-3", pct: 30.0 }, { item: "Glowing Ancient Relic", qty: "1-2", pct: 25.0 }, { item: "Glistening Ancient Relic", qty: "1", pct: 20.0 }, { item: "Dandilord's Petal", qty: "1", pct: 100.0 }, { item: "Ancient Civilization Parts", qty: "6-8", pct: 100.0 }, { item: "Toxin Filtering Membrane", qty: "5-10", pct: 100.0 }, { item: "Dark Radiant Gem", qty: "1-3", pct: 100.0 }, { item: "Decayed Ancient Relic", qty: "1-10", pct: 100.0 }, { item: "Dormant Ancient Relic", qty: "1-5", pct: 50.0 }, { item: "Gorgeous Ancient Relic", qty: "1-3", pct: 30.0 }, { item: "Glowing Ancient Relic", qty: "1-2", pct: 25.0 }, { item: "Glistening Ancient Relic", qty: "1", pct: 20.0 }, { item: "World Tree Holy Water", qty: "60-80", pct: 100.0 }],
   },
   {
     title: "Immortal Shade Silvance",
@@ -426,6 +453,7 @@ export const TOWER_BOSSES: BossEncounter[] = [
     ctRate: 1.5,
     genus: "Humanoid",
     moves: [{ lv: 1, name: "Air Blade", element: "Neutral", ct: 8, power: 160, effects: null }, { lv: 7, name: "Reflect Leaf", element: "Grass", ct: 20, power: 400, effects: "Ivy-Covered 100" }, { lv: 15, name: "Blizzard Spike", element: "Ice", ct: 20, power: 450, effects: "Freeze 100" }, { lv: 22, name: "Crosswind", element: "Grass", ct: 24, power: 500, effects: "Ivy-Covered 100" }, { lv: 30, name: "Wind Burst", element: "Grass", ct: 30, power: 600, effects: "Ivy-Covered 100" }, { lv: 40, name: "Holy Burst", element: "Neutral", ct: 30, power: 700, effects: null }, { lv: 50, name: "Giant Spore", element: "Grass", ct: 30, power: 700, effects: null }, { lv: 70, name: "Spore Burst", element: "Grass", ct: 30, power: 800, effects: null }],
+    drops: [{ item: "Silvance's Plume", qty: "1", pct: 100.0 }, { item: "Precious Entrails", qty: "2-3", pct: 100.0 }, { item: "Ancient Civilization Parts", qty: "6-8", pct: 100.0 }, { item: "Explosion-Resistant Fiber", qty: "5-10", pct: 100.0 }, { item: "World Tree Holy Water", qty: "20-30", pct: 100.0 }, { item: "Grass Radiant Gem", qty: "1-3", pct: 100.0 }, { item: "Decayed Ancient Relic", qty: "1-10", pct: 100.0 }, { item: "Dormant Ancient Relic", qty: "1-5", pct: 50.0 }, { item: "Gorgeous Ancient Relic", qty: "1-3", pct: 30.0 }, { item: "Glowing Ancient Relic", qty: "1-2", pct: 25.0 }, { item: "Glistening Ancient Relic", qty: "1", pct: 20.0 }, { item: "Silvance's Plume", qty: "1", pct: 100.0 }, { item: "Ancient Civilization Parts", qty: "6-8", pct: 100.0 }, { item: "Explosion-Resistant Fiber", qty: "5-10", pct: 100.0 }, { item: "World Tree Holy Water", qty: "60-80", pct: 100.0 }, { item: "Grass Radiant Gem", qty: "1-3", pct: 100.0 }, { item: "Decayed Ancient Relic", qty: "1-10", pct: 100.0 }, { item: "Dormant Ancient Relic", qty: "1-5", pct: 50.0 }, { item: "Gorgeous Ancient Relic", qty: "1-3", pct: 30.0 }, { item: "Glowing Ancient Relic", qty: "1-2", pct: 25.0 }, { item: "Glistening Ancient Relic", qty: "1", pct: 20.0 }],
   },
   {
     title: "Highly Modified Grizzbolt",
@@ -448,6 +476,7 @@ export const TOWER_BOSSES: BossEncounter[] = [
     ctRate: 1,
     genus: "Humanoid",
     moves: [{ lv: 1, name: "Lightning Claw", element: "Electric", ct: 8, power: 150, effects: "Electrify 100" }, { lv: 2, name: "Heavy Thunder Tank", element: "Electric", ct: 24, power: 550, effects: "Electrify 100" }, { lv: 3, name: "Thunder Rain", element: "Electric", ct: 20, power: 400, effects: "Electrify 100" }, { lv: 4, name: "Lightning Strike", element: "Electric", ct: 16, power: 300, effects: "Electrify 100" }, { lv: 5, name: "Lethal Laser", element: "Electric", ct: 30, power: 600, effects: "Electrify 100" }, { lv: 6, name: "TriSpark", element: "Electric", ct: 12, power: 250, effects: "Electrify 100" }, { lv: 7, name: "Plasma Funnel", element: "Electric", ct: 8, power: 120, effects: "Electrify 100" }],
+    drops: [{ item: "Modified Pal's Contaminated Core", qty: "1", pct: 100.0 }, { item: "Decayed Ancient Relic", qty: "1-10", pct: 100.0 }, { item: "Dormant Ancient Relic", qty: "1-5", pct: 50.0 }, { item: "Gorgeous Ancient Relic", qty: "1-3", pct: 30.0 }, { item: "Glowing Ancient Relic", qty: "1-2", pct: 25.0 }, { item: "Glistening Ancient Relic", qty: "1", pct: 20.0 }, { item: "Modified Pal's Contaminated Core", qty: "1", pct: 100.0 }, { item: "Water Radiant Gem", qty: "1-3", pct: 11.0 }, { item: "Electric Radiant Gem", qty: "1-3", pct: 11.0 }, { item: "Ground Radiant Gem", qty: "1-3", pct: 11.0 }, { item: "Grass Radiant Gem", qty: "1-3", pct: 11.0 }, { item: "Fire Radiant Gem", qty: "1-3", pct: 11.0 }, { item: "Ice Radiant Gem", qty: "1-3", pct: 11.0 }, { item: "Dragon Radiant Gem", qty: "1-3", pct: 11.0 }, { item: "Dark Radiant Gem", qty: "1-3", pct: 11.0 }, { item: "Neutral Radiant Gem", qty: "1-3", pct: 11.0 }, { item: "Decayed Ancient Relic", qty: "1-5", pct: 100.0 }, { item: "Dormant Ancient Relic", qty: "1-5", pct: 50.0 }, { item: "Gorgeous Ancient Relic", qty: "1-5", pct: 30.0 }, { item: "Glowing Ancient Relic", qty: "1-2", pct: 25.0 }, { item: "Glistening Ancient Relic", qty: "1", pct: 20.0 }, { item: "World Tree Holy Water", qty: "60-80", pct: 100.0 }],
   },
   {
     title: "High Keeper of the Azure Covenant Auri & Shaolong",
@@ -470,6 +499,7 @@ export const TOWER_BOSSES: BossEncounter[] = [
     ctRate: 2,
     genus: "Dragon",
     moves: [{ lv: 1, name: "Hydra Charge", element: "Water", ct: 24, power: 500, effects: "Soak 100" }, { lv: 2, name: "Azure Dracoflare", element: "Dragon", ct: 30, power: 600, effects: "Burn 100" }, { lv: 3, name: "Geyser Gush", element: "Water", ct: 30, power: 600, effects: "Soak 100" }, { lv: 4, name: "Hydro Slicer", element: "Water", ct: 16, power: 350, effects: "Soak 100" }, { lv: 5, name: "Curtain Splash", element: "Water", ct: 16, power: 300, effects: "Soak 100" }, { lv: 7, name: "Dragon Meteor", element: "Dragon", ct: 30, power: 600, effects: "Burn 45" }, { lv: 8, name: "Charge Cannon", element: "Dragon", ct: 20, power: 400, effects: "Burn 100" }, { lv: 9, name: "Comet Strike", element: "Dragon", ct: 8, power: 180, effects: "Burn 100" }],
+    drops: [{ item: "Key Sphere of Original Sin", qty: "1", pct: 100.0 }],
   },
   {
     title: "High Keeper of the Azure Covenant Auri & Shaolong",
@@ -492,6 +522,7 @@ export const TOWER_BOSSES: BossEncounter[] = [
     ctRate: 2.5,
     genus: "Dragon",
     moves: [{ lv: 1, name: "Hydra Charge", element: "Water", ct: 24, power: 500, effects: "Soak 100" }, { lv: 2, name: "Azure Dracoflare", element: "Dragon", ct: 30, power: 600, effects: "Burn 100" }, { lv: 3, name: "Geyser Gush", element: "Water", ct: 30, power: 600, effects: "Soak 100" }, { lv: 4, name: "Aqua Surge", element: "Water", ct: 24, power: 500, effects: "Soak 100" }, { lv: 5, name: "Hydro Slicer", element: "Water", ct: 16, power: 350, effects: "Soak 100" }, { lv: 6, name: "Dragon Meteor", element: "Dragon", ct: 30, power: 600, effects: "Burn 45" }, { lv: 7, name: "Meteorain", element: "Dragon", ct: 30, power: 700, effects: "Burn 100" }, { lv: 8, name: "Rocky Impact", element: "Ground", ct: 30, power: 600, effects: "Muddy 100" }, { lv: 9, name: "Sand Twister", element: "Ground", ct: 24, power: 500, effects: "Muddy 100" }],
+    drops: [{ item: "Key Sphere of Original Sin", qty: "1", pct: 100.0 }, { item: "Auri Hat", qty: "1", pct: 100.0 }, { item: "Training Crystal", qty: "1", pct: 100.0 }, { item: "Life Lotus (L)", qty: "1", pct: 6.0 }, { item: "Stamina Lotus (L)", qty: "1", pct: 6.0 }, { item: "Power Lotus (L)", qty: "1", pct: 6.0 }, { item: "Speed Lotus (L)", qty: "1", pct: 6.0 }, { item: "Carrying Lotus (L)", qty: "1", pct: 6.0 }, { item: "Beam Launcher Schematic 4", qty: "1", pct: 10.0 }],
   },
   {
     title: "Nullstar Calamity Zenara & Astralym",
@@ -514,6 +545,7 @@ export const TOWER_BOSSES: BossEncounter[] = [
     ctRate: 2,
     genus: null,
     moves: [{ lv: 5, name: "Rocky Impact", element: "Ground", ct: 30, power: 600, effects: "Muddy 100" }, { lv: 7, name: "Holy Burst", element: "Neutral", ct: 30, power: 700, effects: null }, { lv: 8, name: "Dragon Meteor", element: "Dragon", ct: 30, power: 600, effects: "Burn 45" }, { lv: 9, name: "Meteorain", element: "Dragon", ct: 30, power: 700, effects: "Burn 100" }],
+    drops: [],
   },
   {
     title: "Blightstar Calamity Zenara & Astralym",
@@ -536,6 +568,7 @@ export const TOWER_BOSSES: BossEncounter[] = [
     ctRate: 2,
     genus: null,
     moves: [{ lv: 5, name: "Rocky Impact", element: "Ground", ct: 30, power: 600, effects: "Muddy 100" }, { lv: 7, name: "Holy Burst", element: "Neutral", ct: 30, power: 700, effects: null }, { lv: 8, name: "Psycho Gravity", element: "Dark", ct: 30, power: 700, effects: null }, { lv: 9, name: "Meteorain", element: "Dragon", ct: 30, power: 700, effects: "Burn 100" }],
+    drops: [{ item: "Zenara Hat", qty: "1", pct: 100.0 }, { item: "Dark Skill Fruit: Psycho Gravity", qty: "1", pct: 100.0 }],
   },
 ];
 
@@ -561,6 +594,7 @@ export const RAID_BOSSES: BossEncounter[] = [
     ctRate: 2,
     genus: "Humanoid",
     moves: [{ lv: 1, name: "Spirit Flame", element: "Dark", ct: 12, power: 200, effects: "Burn 102" }, { lv: 2, name: "Umbral Surge", element: "Dark", ct: 4, power: 60, effects: "Blind 35" }, { lv: 3, name: "Nightmare Ball", element: "Dark", ct: 16, power: 300, effects: "Blind 65" }, { lv: 4, name: "Dark Laser", element: "Dark", ct: 20, power: 450, effects: "Blind 100" }, { lv: 5, name: "Dark Cannon", element: "Dark", ct: 4, power: 70, effects: "Blind 20" }, { lv: 6, name: "Dark Arrow", element: "Dark", ct: 8, power: 120, effects: "Blind 102" }, { lv: 7, name: "Apocalypse", element: "Dark", ct: 20, power: 400, effects: "Blind 100" }, { lv: 8, name: "Nightmare Ray", element: "Dark", ct: 30, power: 600, effects: null }],
+    drops: [{ item: "Dark Skill Fruit: Apocalypse", qty: "1", pct: 100.0 }, { item: "Ancient Civilization Core", qty: "1-3", pct: 100.0 }, { item: "Training Manual (XL)", qty: "3-5", pct: 100.0 }, { item: "Applied Ranching Handbook I", qty: "1", pct: 33.3 }, { item: "Applied Transporting Handbook I", qty: "1", pct: 33.3 }, { item: "Applied Medicine Production Handbook I", qty: "1", pct: 33.3 }, { item: "Huge Dark Egg", qty: "1", pct: 10.0 }, { item: "Huge Dark Egg", qty: "1", pct: 90.0 }],
   },
   {
     title: "Twilight Siren Bellanoir Libero",
@@ -583,6 +617,7 @@ export const RAID_BOSSES: BossEncounter[] = [
     ctRate: 2,
     genus: "Humanoid",
     moves: [{ lv: 1, name: "Umbral Surge", element: "Dark", ct: 4, power: 60, effects: "Blind 35" }, { lv: 2, name: "Nightmare Ball", element: "Dark", ct: 16, power: 300, effects: "Blind 65" }, { lv: 3, name: "Dark Laser", element: "Dark", ct: 20, power: 450, effects: "Blind 100" }, { lv: 4, name: "Dark Cannon", element: "Dark", ct: 4, power: 70, effects: "Blind 20" }, { lv: 5, name: "Dark Whisp", element: "Dark", ct: 30, power: 600, effects: "Blind 100" }, { lv: 6, name: "Dark Arrow", element: "Dark", ct: 8, power: 120, effects: "Blind 102" }, { lv: 7, name: "Apocalypse", element: "Dark", ct: 20, power: 400, effects: "Blind 100" }, { lv: 8, name: "Flame Waltz", element: "Dark", ct: 20, power: 450, effects: "Burn 100" }, { lv: 9, name: "Nightmare Bloom", element: "Dark", ct: 30, power: 600, effects: null }],
+    drops: [{ item: "Ancient Civilization Core", qty: "2-4", pct: 100.0 }, { item: "Bellanoir Libero (Ultra) Slab", qty: "1", pct: 100.0 }, { item: "Training Manual (XL)", qty: "4-6", pct: 100.0 }, { item: "Dark Skill Fruit: Dark Whisp", qty: "1", pct: 100.0 }, { item: "Applied Ranching Handbook I", qty: "1", pct: 33.3 }, { item: "Applied Transporting Handbook I", qty: "1", pct: 33.3 }, { item: "Applied Medicine Production Handbook I", qty: "1", pct: 33.3 }, { item: "Huge Dark Egg", qty: "1", pct: 10.0 }, { item: "Huge Dark Egg", qty: "1", pct: 90.0 }],
   },
   {
     title: "Twilight Siren (Ultra) Bellanoir Libero",
@@ -605,6 +640,7 @@ export const RAID_BOSSES: BossEncounter[] = [
     ctRate: 2,
     genus: "Humanoid",
     moves: [{ lv: 1, name: "Umbral Surge", element: "Dark", ct: 4, power: 60, effects: "Blind 35" }, { lv: 2, name: "Nightmare Ball", element: "Dark", ct: 16, power: 300, effects: "Blind 65" }, { lv: 3, name: "Dark Laser", element: "Dark", ct: 20, power: 450, effects: "Blind 100" }, { lv: 4, name: "Dark Cannon", element: "Dark", ct: 4, power: 70, effects: "Blind 20" }, { lv: 5, name: "Dark Whisp", element: "Dark", ct: 30, power: 600, effects: "Blind 100" }, { lv: 6, name: "Dark Arrow", element: "Dark", ct: 8, power: 120, effects: "Blind 102" }, { lv: 7, name: "Apocalypse", element: "Dark", ct: 20, power: 400, effects: "Blind 100" }, { lv: 8, name: "Flame Waltz", element: "Dark", ct: 20, power: 450, effects: "Burn 100" }, { lv: 9, name: "Nightmare Bloom", element: "Dark", ct: 30, power: 600, effects: null }],
+    drops: [{ item: "Ancient Civilization Core", qty: "10", pct: 100.0 }, { item: "Witch's Crown", qty: "1", pct: 100.0 }, { item: "Training Crystal", qty: "10", pct: 100.0 }, { item: "Bellanoir Libero (Ultra) Slab", qty: "1", pct: 100.0 }, { item: "Applied Ranching Handbook I", qty: "2", pct: 33.3 }, { item: "Applied Transporting Handbook I", qty: "2", pct: 33.3 }, { item: "Applied Medicine Production Handbook I", qty: "2", pct: 33.3 }, { item: "Huge Dark Egg", qty: "1", pct: 10.0 }, { item: "Huge Dark Egg", qty: "1", pct: 90.0 }],
   },
   {
     title: "Incarnation of the Eternal Flame Blazamut Ryu",
@@ -627,6 +663,7 @@ export const RAID_BOSSES: BossEncounter[] = [
     ctRate: 2,
     genus: "FourLegged",
     moves: [{ lv: 1, name: "Magna Crush", element: "Dragon", ct: 30, power: 700, effects: "Burn 100" }, { lv: 2, name: "Brawn Impact", element: "Fire", ct: 30, power: 600, effects: "Burn 100" }, { lv: 3, name: "Comet Barrage", element: "Dragon", ct: 20, power: 450, effects: "Burn 100" }, { lv: 5, name: "Blast Cannon", element: "Dragon", ct: 12, power: 200, effects: "Burn 100" }, { lv: 6, name: "Dragon Meteor", element: "Dragon", ct: 30, power: 600, effects: "Burn 45" }, { lv: 7, name: "Beam Slicer", element: "Dragon", ct: 16, power: 350, effects: "Burn 100" }, { lv: 8, name: "Volcanic Rain", element: "Fire", ct: 20, power: 450, effects: "Burn 100" }, { lv: 9, name: "Fire Ball", element: "Fire", ct: 30, power: 600, effects: "Burn 100" }, { lv: 10, name: "Flame Wall", element: "Fire", ct: 12, power: 250, effects: "Burn 100" }, { lv: 11, name: "Flame Funnel", element: "Fire", ct: 16, power: 300, effects: "Burn 100" }],
+    drops: [{ item: "Ancient Civilization Core", qty: "2-4", pct: 100.0 }, { item: "Blazamut Ryu (Ultra) Slab", qty: "1", pct: 100.0 }, { item: "Training Manual (XL)", qty: "5-7", pct: 100.0 }, { item: "Dragon Skill Fruit: Beam Slicer", qty: "1", pct: 100.0 }, { item: "Applied Mining Handbook I", qty: "1", pct: 33.3 }, { item: "Applied Lumbering Handbook I", qty: "1", pct: 33.3 }, { item: "Applied Gathering Handbook I", qty: "1", pct: 33.3 }, { item: "Huge Dragon Egg", qty: "1", pct: 10.0 }, { item: "Huge Dragon Egg", qty: "1", pct: 90.0 }],
   },
   {
     title: "Incarnation of the Eternal Flame (Ultra) Blazamut Ryu",
@@ -649,6 +686,7 @@ export const RAID_BOSSES: BossEncounter[] = [
     ctRate: 2,
     genus: "FourLegged",
     moves: [{ lv: 1, name: "Magna Crush", element: "Dragon", ct: 30, power: 700, effects: "Burn 100" }, { lv: 2, name: "Brawn Impact", element: "Fire", ct: 30, power: 600, effects: "Burn 100" }, { lv: 3, name: "Meteorain", element: "Dragon", ct: 30, power: 700, effects: "Burn 100" }, { lv: 5, name: "Blast Cannon", element: "Dragon", ct: 12, power: 200, effects: "Burn 100" }, { lv: 6, name: "Dragon Meteor", element: "Dragon", ct: 30, power: 600, effects: "Burn 45" }, { lv: 7, name: "Beam Slicer", element: "Dragon", ct: 16, power: 350, effects: "Burn 100" }, { lv: 8, name: "Volcanic Rain", element: "Fire", ct: 20, power: 450, effects: "Burn 100" }, { lv: 9, name: "Fire Ball", element: "Fire", ct: 30, power: 600, effects: "Burn 100" }, { lv: 10, name: "Ignis Rage", element: "Fire", ct: 24, power: 500, effects: "Burn 100" }, { lv: 11, name: "Flame Funnel", element: "Fire", ct: 16, power: 300, effects: "Burn 100" }],
+    drops: [{ item: "Ancient Civilization Core", qty: "10", pct: 100.0 }, { item: "Horns of Supremacy", qty: "1", pct: 100.0 }, { item: "Training Crystal", qty: "10", pct: 100.0 }, { item: "Blazamut Ryu (Ultra) Slab", qty: "1", pct: 100.0 }, { item: "Applied Mining Handbook I", qty: "2", pct: 33.3 }, { item: "Applied Lumbering Handbook I", qty: "2", pct: 33.3 }, { item: "Applied Gathering Handbook I", qty: "2", pct: 33.3 }, { item: "Huge Dragon Egg", qty: "1", pct: 10.0 }, { item: "Huge Dragon Egg", qty: "1", pct: 90.0 }],
   },
   {
     title: "Invader from Space Xenolord",
@@ -671,6 +709,7 @@ export const RAID_BOSSES: BossEncounter[] = [
     ctRate: 2,
     genus: "Bird",
     moves: [{ lv: 1, name: "Satellite Bit", element: "Dragon", ct: 20, power: 400, effects: null }, { lv: 2, name: "Astral Ray", element: "Dark", ct: 24, power: 500, effects: "Burn 100" }, { lv: 3, name: "Beam Slash", element: "Dragon", ct: 20, power: 450, effects: null }, { lv: 4, name: "Cosmic Meteor", element: "Dragon", ct: 30, power: 600, effects: "Burn 100" }, { lv: 5, name: "Blast Cannon", element: "Dragon", ct: 12, power: 200, effects: "Burn 100" }, { lv: 6, name: "Dragon Meteor", element: "Dragon", ct: 30, power: 600, effects: "Burn 45" }, { lv: 7, name: "Beam Slicer", element: "Dragon", ct: 16, power: 350, effects: "Burn 100" }, { lv: 8, name: "Comet Barrage", element: "Dragon", ct: 20, power: 450, effects: "Burn 100" }, { lv: 9, name: "Charge Cannon", element: "Dragon", ct: 20, power: 400, effects: "Burn 100" }, { lv: 10, name: "Dark Whisp", element: "Dark", ct: 30, power: 600, effects: "Blind 100" }, { lv: 11, name: "Nightmare Ball", element: "Dark", ct: 16, power: 300, effects: "Blind 65" }, { lv: 12, name: "Omega Laser", element: "Dragon", ct: 30, power: 700, effects: null }],
+    drops: [{ item: "Ancient Civilization Core", qty: "3-6", pct: 100.0 }, { item: "Xenolord (Ultra) Slab", qty: "1", pct: 100.0 }, { item: "Training Crystal", qty: "4-5", pct: 100.0 }, { item: "Dragon Skill Fruit: Dragon Meteor", qty: "1", pct: 100.0 }, { item: "Applied Handiwork Handbook I", qty: "1", pct: 33.3 }, { item: "Applied Generating Electricity Handbook I", qty: "1", pct: 33.3 }, { item: "Applied Cooling Handbook I", qty: "1", pct: 33.3 }, { item: "Huge Dark Egg", qty: "1", pct: 10.0 }, { item: "Huge Dark Egg", qty: "1", pct: 90.0 }],
   },
   {
     title: "Invader from Space (Ultra) Xenolord",
@@ -693,6 +732,7 @@ export const RAID_BOSSES: BossEncounter[] = [
     ctRate: 2,
     genus: "Bird",
     moves: [{ lv: 1, name: "Satellite Bit", element: "Dragon", ct: 20, power: 400, effects: null }, { lv: 2, name: "Astral Ray", element: "Dark", ct: 24, power: 500, effects: "Burn 100" }, { lv: 3, name: "Omega Laser", element: "Dragon", ct: 30, power: 700, effects: null }, { lv: 4, name: "Beam Slash", element: "Dragon", ct: 20, power: 450, effects: null }, { lv: 5, name: "Cosmic Meteor", element: "Dragon", ct: 30, power: 600, effects: "Burn 100" }, { lv: 6, name: "Blast Cannon", element: "Dragon", ct: 12, power: 200, effects: "Burn 100" }, { lv: 7, name: "Fire Ball", element: "Fire", ct: 30, power: 600, effects: "Burn 100" }, { lv: 8, name: "Dragon Meteor", element: "Dragon", ct: 30, power: 600, effects: "Burn 45" }, { lv: 9, name: "Beam Slicer", element: "Dragon", ct: 16, power: 350, effects: "Burn 100" }, { lv: 10, name: "Meteorain", element: "Dragon", ct: 30, power: 700, effects: "Burn 100" }, { lv: 11, name: "Charge Cannon", element: "Dragon", ct: 20, power: 400, effects: "Burn 100" }, { lv: 12, name: "Dark Whisp", element: "Dark", ct: 30, power: 600, effects: "Blind 100" }, { lv: 13, name: "Nightmare Ball", element: "Dark", ct: 16, power: 300, effects: "Blind 65" }, { lv: 14, name: "Flame Wall", element: "Fire", ct: 12, power: 250, effects: "Burn 100" }, { lv: 15, name: "Flame Funnel", element: "Fire", ct: 16, power: 300, effects: "Burn 100" }, { lv: 16, name: "Ignis Rage", element: "Fire", ct: 24, power: 500, effects: "Burn 100" }, { lv: 17, name: "Rocky Impact", element: "Ground", ct: 30, power: 600, effects: "Muddy 100" }, { lv: 18, name: "Holy Burst", element: "Neutral", ct: 30, power: 700, effects: null }],
+    drops: [{ item: "Ancient Civilization Core", qty: "10", pct: 100.0 }, { item: "Xenolord (Ultra) Slab", qty: "1", pct: 100.0 }, { item: "Training Crystal", qty: "10", pct: 100.0 }, { item: "Xenolord's head", qty: "1", pct: 100.0 }, { item: "Applied Handiwork Handbook I", qty: "2", pct: 33.3 }, { item: "Applied Generating Electricity Handbook I", qty: "2", pct: 33.3 }, { item: "Applied Cooling Handbook I", qty: "2", pct: 33.3 }, { item: "Huge Dark Egg", qty: "1", pct: 10.0 }, { item: "Huge Dark Egg", qty: "1", pct: 90.0 }],
   },
   {
     title: "Moon Lord",
@@ -715,6 +755,7 @@ export const RAID_BOSSES: BossEncounter[] = [
     ctRate: 1,
     genus: "Other",
     moves: [],
+    drops: [{ item: "Legendary Meowmere", qty: "1", pct: 22.22 }, { item: "Ancient Civilization Core", qty: "2-3", pct: 100.0 }, { item: "Training Manual (XL)", qty: "5-6", pct: 100.0 }, { item: "Legendary Meowmere", qty: "1", pct: 22.0 }, { item: "Moon Lord Mask", qty: "1", pct: 10.0 }, { item: "Celestial Sigil [Master]", qty: "1", pct: 100.0 }, { item: "Terra Blade Schematic 2", qty: "1", pct: 25.0 }, { item: "Vortex Beater Schematic 2", qty: "1", pct: 25.0 }, { item: "Nightglow Schematic 2", qty: "1", pct: 25.0 }, { item: "Terraprisma Schematic 2", qty: "1", pct: 25.0 }, { item: "Applied Planting Handbook I", qty: "1", pct: 33.3 }, { item: "Applied Handiwork Handbook I", qty: "1", pct: 33.3 }, { item: "Applied Gathering Handbook I", qty: "1", pct: 33.3 }],
   },
   {
     title: "[Master] Moon Lord",
@@ -737,6 +778,7 @@ export const RAID_BOSSES: BossEncounter[] = [
     ctRate: 1,
     genus: "Other",
     moves: [],
+    drops: [{ item: "Ancient Civilization Core", qty: "10", pct: 100.0 }, { item: "Celestial Sigil [Master]", qty: "1", pct: 100.0 }, { item: "Training Crystal", qty: "10", pct: 100.0 }, { item: "Moon Lord Mask", qty: "1", pct: 100.0 }, { item: "Terra Blade Schematic 4", qty: "1", pct: 25.0 }, { item: "Vortex Beater Schematic 4", qty: "1", pct: 25.0 }, { item: "Nightglow Schematic 4", qty: "1", pct: 25.0 }, { item: "Terraprisma Schematic 4", qty: "1", pct: 25.0 }, { item: "Moon Lord Statue Schematic", qty: "1", pct: 100.0 }, { item: "Applied Planting Handbook I", qty: "2", pct: 33.3 }, { item: "Applied Handiwork Handbook I", qty: "2", pct: 33.3 }, { item: "Applied Gathering Handbook I", qty: "2", pct: 33.3 }],
   },
   {
     title: "King of Salvation Hartalis",
@@ -759,6 +801,7 @@ export const RAID_BOSSES: BossEncounter[] = [
     ctRate: 2,
     genus: "FourLegged",
     moves: [{ lv: 1, name: "Circle Vine", element: "Grass", ct: 16, power: 300, effects: "Ivy-Covered 100" }, { lv: 2, name: "Crosswind", element: "Grass", ct: 24, power: 500, effects: "Ivy-Covered 100" }, { lv: 3, name: "Solar Blast", element: "Grass", ct: 20, power: 450, effects: "Ivy-Covered 100" }, { lv: 4, name: "Geyser Gush", element: "Water", ct: 30, power: 600, effects: "Soak 100" }, { lv: 5, name: "Curtain Splash", element: "Water", ct: 16, power: 300, effects: "Soak 100" }, { lv: 6, name: "Aqua Surge", element: "Water", ct: 24, power: 500, effects: "Soak 100" }, { lv: 7, name: "Wind Burst", element: "Grass", ct: 30, power: 600, effects: "Ivy-Covered 100" }],
+    drops: [{ item: "Ancient Civilization Core", qty: "4-7", pct: 100.0 }, { item: "Hartalis (Ultra) Slab", qty: "1", pct: 100.0 }, { item: "Training Crystal", qty: "4-6", pct: 100.0 }, { item: "Skill Fruit: Holy Burst", qty: "1", pct: 100.0 }, { item: "Applied Kindling Handbook I", qty: "1", pct: 33.3 }, { item: "Applied Watering Handbook I", qty: "1", pct: 33.3 }, { item: "Applied Planting Handbook I", qty: "1", pct: 33.3 }, { item: "Huge Common Egg", qty: "1", pct: 10.0 }, { item: "Huge Common Egg", qty: "1", pct: 90.0 }],
   },
   {
     title: "King of Salvation (Ultra) Hartalis",
@@ -781,5 +824,6 @@ export const RAID_BOSSES: BossEncounter[] = [
     ctRate: 2,
     genus: "FourLegged",
     moves: [{ lv: 1, name: "Circle Vine", element: "Grass", ct: 16, power: 300, effects: "Ivy-Covered 100" }, { lv: 2, name: "Crosswind", element: "Grass", ct: 24, power: 500, effects: "Ivy-Covered 100" }, { lv: 3, name: "Solar Blast", element: "Grass", ct: 20, power: 450, effects: "Ivy-Covered 100" }, { lv: 4, name: "Geyser Gush", element: "Water", ct: 30, power: 600, effects: "Soak 100" }, { lv: 5, name: "Curtain Splash", element: "Water", ct: 16, power: 300, effects: "Soak 100" }, { lv: 6, name: "Aqua Surge", element: "Water", ct: 24, power: 500, effects: "Soak 100" }, { lv: 7, name: "Wind Burst", element: "Grass", ct: 30, power: 600, effects: "Ivy-Covered 100" }],
+    drops: [{ item: "Ancient Civilization Core", qty: "10", pct: 100.0 }, { item: "Hartalis (Ultra) Slab", qty: "1", pct: 100.0 }, { item: "Training Crystal", qty: "10", pct: 100.0 }, { item: "Crown of Salvation", qty: "1", pct: 100.0 }, { item: "Applied Kindling Handbook I", qty: "2", pct: 33.3 }, { item: "Applied Watering Handbook I", qty: "2", pct: 33.3 }, { item: "Applied Planting Handbook I", qty: "2", pct: 33.3 }, { item: "Huge Common Egg", qty: "1", pct: 10.0 }, { item: "Huge Common Egg", qty: "1", pct: 90.0 }],
   },
 ];

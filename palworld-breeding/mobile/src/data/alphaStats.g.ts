@@ -6,6 +6,8 @@
  * before it was accepted; see data/alpha_stats_1_0.json for the
  * full capture and the drop list. */
 
+import type { BossDrop, BossMove } from './towerRaid.g';
+
 export interface AlphaStat {
   /** the game's own boss title, e.g. "Big Floof Lamball" */
   title: string;
@@ -19,6 +21,10 @@ export interface AlphaStat {
   hpRate: number | null; recvRate: number | null;
   /** catch-chance multiplier */
   capture: number | null;
+  /** the boss variant's own attack kit, and what beating it
+   * gives you — same shapes the tower/raid table uses */
+  moves: BossMove[];
+  drops: BossDrop[];
 }
 
 export const ALPHA_STATS: Record<string, AlphaStat[]> = {
@@ -32,7 +38,125 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Stone Blast",
+     "element": "Ground",
+     "ct": 4,
+     "power": 80,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 7,
+     "name": "Blast Cannon",
+     "element": "Dragon",
+     "ct": 12,
+     "power": 200,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 15,
+     "name": "Rockburst",
+     "element": "Ground",
+     "ct": 16,
+     "power": 300,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 22,
+     "name": "Charge Cannon",
+     "element": "Dragon",
+     "ct": 20,
+     "power": 400,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 30,
+     "name": "Sand Twister",
+     "element": "Ground",
+     "ct": 24,
+     "power": 500,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 40,
+     "name": "Rocky Impact",
+     "element": "Ground",
+     "ct": 30,
+     "power": 600,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 50,
+     "name": "Dragon Meteor",
+     "element": "Dragon",
+     "ct": 30,
+     "power": 600,
+     "effects": "Burn 45"
+    },
+    {
+     "lv": 70,
+     "name": "Missile Burst",
+     "element": "Ground",
+     "ct": 30,
+     "power": 700,
+     "effects": null
+    }
+   ],
+   "drops": [
+    {
+     "item": "Aegidron Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Dragon Stone",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "6-8",
+     "pct": 100.0
+    },
+    {
+     "item": "World Tree Holy Water",
+     "qty": "20-30",
+     "pct": 100.0
+    },
+    {
+     "item": "Dragon Radiant Gem",
+     "qty": "1-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Decayed Ancient Relic",
+     "qty": "1-10",
+     "pct": 50.0
+    },
+    {
+     "item": "Dormant Ancient Relic",
+     "qty": "1-5",
+     "pct": 25.0
+    },
+    {
+     "item": "Gorgeous Ancient Relic",
+     "qty": "1-3",
+     "pct": 15.0
+    },
+    {
+     "item": "Glowing Ancient Relic",
+     "qty": "1-2",
+     "pct": 12.5
+    },
+    {
+     "item": "Glistening Ancient Relic",
+     "qty": "1",
+     "pct": 10.0
+    }
+   ]
   }
  ],
  "Anubis": [
@@ -45,7 +169,93 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Stone Blast",
+     "element": "Ground",
+     "ct": 4,
+     "power": 80,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 7,
+     "name": "Power Bomb",
+     "element": "Neutral",
+     "ct": 8,
+     "power": 120,
+     "effects": null
+    },
+    {
+     "lv": 15,
+     "name": "Sand Tornado",
+     "element": "Ground",
+     "ct": 12,
+     "power": 200,
+     "effects": "Muddy 65"
+    },
+    {
+     "lv": 22,
+     "name": "Spinning Roundhouse",
+     "element": "Ground",
+     "ct": 16,
+     "power": 300,
+     "effects": null
+    },
+    {
+     "lv": 30,
+     "name": "Forceful Charge",
+     "element": "Ground",
+     "ct": 20,
+     "power": 400,
+     "effects": null
+    },
+    {
+     "lv": 40,
+     "name": "Ground Smash",
+     "element": "Ground",
+     "ct": 24,
+     "power": 500,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 50,
+     "name": "Rock Lance",
+     "element": "Ground",
+     "ct": 20,
+     "power": 400,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 55,
+     "name": "Sand Twister",
+     "element": "Ground",
+     "ct": 24,
+     "power": 500,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 70,
+     "name": "Rocky Impact",
+     "element": "Ground",
+     "ct": 30,
+     "power": 600,
+     "effects": "Muddy 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Anubis Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "5-7",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Arsox": [
@@ -58,7 +268,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Ignis Blast",
+     "element": "Fire",
+     "ct": 2,
+     "power": 40,
+     "effects": "Burn 50"
+    },
+    {
+     "lv": 7,
+     "name": "Blazing Horn",
+     "element": "Fire",
+     "ct": 4,
+     "power": 80,
+     "effects": "Burn 50"
+    },
+    {
+     "lv": 15,
+     "name": "Spirit Fire",
+     "element": "Fire",
+     "ct": 4,
+     "power": 80,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 22,
+     "name": "Flare Arrow",
+     "element": "Fire",
+     "ct": 8,
+     "power": 120,
+     "effects": "Burn 102"
+    },
+    {
+     "lv": 30,
+     "name": "Ignis Breath",
+     "element": "Fire",
+     "ct": 8,
+     "power": 160,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 40,
+     "name": "Ignis Rage",
+     "element": "Fire",
+     "ct": 24,
+     "power": 500,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 50,
+     "name": "Fire Ball",
+     "element": "Fire",
+     "ct": 30,
+     "power": 600,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 70,
+     "name": "Rocky Impact",
+     "element": "Ground",
+     "ct": 30,
+     "power": 600,
+     "effects": "Muddy 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Arsox Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Astegon": [
@@ -71,7 +359,98 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Dragon Cannon",
+     "element": "Dragon",
+     "ct": 2,
+     "power": 40,
+     "effects": "Burn 35"
+    },
+    {
+     "lv": 7,
+     "name": "Spirit Flame",
+     "element": "Dark",
+     "ct": 12,
+     "power": 200,
+     "effects": "Burn 102"
+    },
+    {
+     "lv": 15,
+     "name": "Dragon Burst",
+     "element": "Dragon",
+     "ct": 4,
+     "power": 80,
+     "effects": "Burn 50"
+    },
+    {
+     "lv": 22,
+     "name": "Nightmare Ball",
+     "element": "Dark",
+     "ct": 16,
+     "power": 300,
+     "effects": "Blind 65"
+    },
+    {
+     "lv": 30,
+     "name": "Dragon Breath",
+     "element": "Dragon",
+     "ct": 8,
+     "power": 160,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 35,
+     "name": "Firefist Breathstorm",
+     "element": "Dragon",
+     "ct": 20,
+     "power": 450,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 40,
+     "name": "Dark Laser",
+     "element": "Dark",
+     "ct": 20,
+     "power": 450,
+     "effects": "Blind 100"
+    },
+    {
+     "lv": 50,
+     "name": "Dragon Meteor",
+     "element": "Dragon",
+     "ct": 30,
+     "power": 600,
+     "effects": "Burn 45"
+    },
+    {
+     "lv": 70,
+     "name": "Dark Whisp",
+     "element": "Dark",
+     "ct": 30,
+     "power": 600,
+     "effects": "Blind 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Astegon Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Dragon Stone",
+     "qty": "4-6",
+     "pct": 100.0
+    },
+    {
+     "item": "Heat Resistant Refined Metal Armor Schematic 4",
+     "qty": "1",
+     "pct": 3.0
+    }
+   ]
   }
  ],
  "Azurmane": [
@@ -84,7 +463,98 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Spark Blast",
+     "element": "Electric",
+     "ct": 2,
+     "power": 50,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 7,
+     "name": "Shockwave",
+     "element": "Electric",
+     "ct": 4,
+     "power": 80,
+     "effects": "Electrify 103"
+    },
+    {
+     "lv": 15,
+     "name": "Lightning Streak",
+     "element": "Electric",
+     "ct": 8,
+     "power": 160,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 22,
+     "name": "TriSpark",
+     "element": "Electric",
+     "ct": 12,
+     "power": 250,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 30,
+     "name": "All Range Thunder",
+     "element": "Electric",
+     "ct": 24,
+     "power": 500,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 40,
+     "name": "Thunder Rail",
+     "element": "Electric",
+     "ct": 30,
+     "power": 600,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 45,
+     "name": "Flash Charge",
+     "element": "Electric",
+     "ct": 24,
+     "power": 500,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 50,
+     "name": "Bolt Blink",
+     "element": "Electric",
+     "ct": 30,
+     "power": 600,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 70,
+     "name": "Thunderstorm",
+     "element": "Electric",
+     "ct": 30,
+     "power": 600,
+     "effects": null
+    }
+   ],
+   "drops": [
+    {
+     "item": "Azurmane Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Energy Shotgun Schematic 4",
+     "qty": "1",
+     "pct": 3.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Azurobe": [
@@ -97,7 +567,90 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Aqua Gun",
+     "element": "Water",
+     "ct": 2,
+     "power": 50,
+     "effects": "Soak 50"
+    },
+    {
+     "lv": 7,
+     "name": "Dragon Cannon",
+     "element": "Dragon",
+     "ct": 2,
+     "power": 40,
+     "effects": "Burn 35"
+    },
+    {
+     "lv": 15,
+     "name": "Bubble Blast",
+     "element": "Water",
+     "ct": 4,
+     "power": 80,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 22,
+     "name": "Dragon Burst",
+     "element": "Dragon",
+     "ct": 4,
+     "power": 80,
+     "effects": "Burn 50"
+    },
+    {
+     "lv": 30,
+     "name": "Dragon Breath",
+     "element": "Dragon",
+     "ct": 8,
+     "power": 160,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 40,
+     "name": "Hydro Laser",
+     "element": "Water",
+     "ct": 20,
+     "power": 450,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 50,
+     "name": "Dragon Meteor",
+     "element": "Dragon",
+     "ct": 30,
+     "power": 600,
+     "effects": "Burn 45"
+    },
+    {
+     "lv": 70,
+     "name": "Geyser Gush",
+     "element": "Water",
+     "ct": 30,
+     "power": 600,
+     "effects": "Soak 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Azurobe Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Dragon Stone",
+     "qty": "5-6",
+     "pct": 100.0
+    },
+    {
+     "item": "Semi-Auto Rifle Schematic 4",
+     "qty": "1",
+     "pct": 3.0
+    }
+   ]
   }
  ],
  "Beakon": [
@@ -110,7 +663,98 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Air Cannon",
+     "element": "Neutral",
+     "ct": 2,
+     "power": 40,
+     "effects": null
+    },
+    {
+     "lv": 7,
+     "name": "Spark Blast",
+     "element": "Electric",
+     "ct": 2,
+     "power": 50,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 15,
+     "name": "Shockwave",
+     "element": "Electric",
+     "ct": 4,
+     "power": 80,
+     "effects": "Electrify 103"
+    },
+    {
+     "lv": 22,
+     "name": "Lightning Streak",
+     "element": "Electric",
+     "ct": 8,
+     "power": 160,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 26,
+     "name": "Lightning Dive",
+     "element": "Electric",
+     "ct": 8,
+     "power": 180,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 30,
+     "name": "Tri-Lightning",
+     "element": "Electric",
+     "ct": 12,
+     "power": 200,
+     "effects": "Electrify 103"
+    },
+    {
+     "lv": 40,
+     "name": "Sand Tornado",
+     "element": "Ground",
+     "ct": 12,
+     "power": 200,
+     "effects": "Muddy 65"
+    },
+    {
+     "lv": 50,
+     "name": "Lightning Bolt",
+     "element": "Electric",
+     "ct": 20,
+     "power": 450,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 70,
+     "name": "Thunderstorm",
+     "element": "Electric",
+     "ct": 30,
+     "power": 600,
+     "effects": null
+    }
+   ],
+   "drops": [
+    {
+     "item": "Beakon Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Plume",
+     "qty": "5-6",
+     "pct": 100.0
+    },
+    {
+     "item": "SMG Schematic 4",
+     "qty": "1",
+     "pct": 3.0
+    }
+   ]
   }
  ],
  "Blazamut": [
@@ -123,7 +767,98 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Power Shot",
+     "element": "Neutral",
+     "ct": 4,
+     "power": 80,
+     "effects": null
+    },
+    {
+     "lv": 7,
+     "name": "Ignis Blast",
+     "element": "Fire",
+     "ct": 2,
+     "power": 40,
+     "effects": "Burn 50"
+    },
+    {
+     "lv": 15,
+     "name": "Stone Blast",
+     "element": "Ground",
+     "ct": 4,
+     "power": 80,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 22,
+     "name": "Ignis Breath",
+     "element": "Fire",
+     "ct": 8,
+     "power": 160,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 30,
+     "name": "Ignis Rage",
+     "element": "Fire",
+     "ct": 24,
+     "power": 500,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 35,
+     "name": "Brawn Impact",
+     "element": "Fire",
+     "ct": 30,
+     "power": 600,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 40,
+     "name": "Fire Ball",
+     "element": "Fire",
+     "ct": 30,
+     "power": 600,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 50,
+     "name": "Rock Lance",
+     "element": "Ground",
+     "ct": 20,
+     "power": 400,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 70,
+     "name": "Rocky Impact",
+     "element": "Ground",
+     "ct": 30,
+     "power": 600,
+     "effects": "Muddy 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Blazamut Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Claw",
+     "qty": "5-7",
+     "pct": 100.0
+    },
+    {
+     "item": "Assault Rifle Schematic 4",
+     "qty": "1",
+     "pct": 3.0
+    }
+   ]
   }
  ],
  "Blazehowl": [
@@ -136,7 +871,98 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Ignis Blast",
+     "element": "Fire",
+     "ct": 2,
+     "power": 40,
+     "effects": "Burn 50"
+    },
+    {
+     "lv": 7,
+     "name": "Power Shot",
+     "element": "Neutral",
+     "ct": 4,
+     "power": 80,
+     "effects": null
+    },
+    {
+     "lv": 15,
+     "name": "Flare Arrow",
+     "element": "Fire",
+     "ct": 8,
+     "power": 120,
+     "effects": "Burn 102"
+    },
+    {
+     "lv": 22,
+     "name": "Ignis Breath",
+     "element": "Fire",
+     "ct": 8,
+     "power": 160,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 30,
+     "name": "Ignis Rage",
+     "element": "Fire",
+     "ct": 24,
+     "power": 500,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 35,
+     "name": "Volcanic Fang",
+     "element": "Fire",
+     "ct": 20,
+     "power": 400,
+     "effects": "Burn 50"
+    },
+    {
+     "lv": 40,
+     "name": "Fire Ball",
+     "element": "Fire",
+     "ct": 30,
+     "power": 600,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 50,
+     "name": "Pal Blast",
+     "element": "Neutral",
+     "ct": 20,
+     "power": 450,
+     "effects": null
+    },
+    {
+     "lv": 70,
+     "name": "Thunderstorm",
+     "element": "Electric",
+     "ct": 30,
+     "power": 600,
+     "effects": null
+    }
+   ],
+   "drops": [
+    {
+     "item": "Blazehowl Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Claw",
+     "qty": "4-5",
+     "pct": 100.0
+    },
+    {
+     "item": "Musket Schematic 4",
+     "qty": "1",
+     "pct": 3.0
+    }
+   ]
   }
  ],
  "Blazehowl Noct": [
@@ -149,7 +975,93 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Shadow Burst",
+     "element": "Dark",
+     "ct": 4,
+     "power": 80,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 7,
+     "name": "Flare Arrow",
+     "element": "Fire",
+     "ct": 8,
+     "power": 120,
+     "effects": "Burn 102"
+    },
+    {
+     "lv": 15,
+     "name": "Ignis Breath",
+     "element": "Fire",
+     "ct": 8,
+     "power": 160,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 22,
+     "name": "Spirit Flame",
+     "element": "Dark",
+     "ct": 12,
+     "power": 200,
+     "effects": "Burn 102"
+    },
+    {
+     "lv": 30,
+     "name": "Ignis Rage",
+     "element": "Fire",
+     "ct": 24,
+     "power": 500,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 35,
+     "name": "Volcanic Fang",
+     "element": "Fire",
+     "ct": 20,
+     "power": 400,
+     "effects": "Burn 50"
+    },
+    {
+     "lv": 40,
+     "name": "Fire Ball",
+     "element": "Fire",
+     "ct": 30,
+     "power": 600,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 50,
+     "name": "Dark Laser",
+     "element": "Dark",
+     "ct": 20,
+     "power": 450,
+     "effects": "Blind 100"
+    },
+    {
+     "lv": 70,
+     "name": "Dark Whisp",
+     "element": "Dark",
+     "ct": 30,
+     "power": 600,
+     "effects": "Blind 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "4-6",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Claw",
+     "qty": "4-6",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Braloha": [
@@ -162,7 +1074,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Bog Blast",
+     "element": "Ground",
+     "ct": 2,
+     "power": 40,
+     "effects": "Muddy 50"
+    },
+    {
+     "lv": 7,
+     "name": "Seed Mine",
+     "element": "Grass",
+     "ct": 8,
+     "power": 120,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 15,
+     "name": "Grass Tornado",
+     "element": "Grass",
+     "ct": 12,
+     "power": 200,
+     "effects": "Ivy-Covered 65"
+    },
+    {
+     "lv": 22,
+     "name": "Spine Vine",
+     "element": "Grass",
+     "ct": 12,
+     "power": 250,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 30,
+     "name": "Deep Breath",
+     "element": "Grass",
+     "ct": 20,
+     "power": 400,
+     "effects": "Ivy-Covered 50"
+    },
+    {
+     "lv": 40,
+     "name": "Solar Blast",
+     "element": "Grass",
+     "ct": 20,
+     "power": 450,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 50,
+     "name": "Rocky Impact",
+     "element": "Ground",
+     "ct": 30,
+     "power": 600,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 70,
+     "name": "Wind Burst",
+     "element": "Grass",
+     "ct": 30,
+     "power": 600,
+     "effects": "Ivy-Covered 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Dragon Stone",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Bristla": [
@@ -175,7 +1165,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "S",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Wind Cutter",
+     "element": "Grass",
+     "ct": 2,
+     "power": 40,
+     "effects": "Ivy-Covered 35"
+    },
+    {
+     "lv": 7,
+     "name": "Seed Machine Gun",
+     "element": "Grass",
+     "ct": 4,
+     "power": 80,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 15,
+     "name": "Ice Missile",
+     "element": "Ice",
+     "ct": 2,
+     "power": 40,
+     "effects": "Freeze 102"
+    },
+    {
+     "lv": 22,
+     "name": "Grass Tornado",
+     "element": "Grass",
+     "ct": 12,
+     "power": 200,
+     "effects": "Ivy-Covered 65"
+    },
+    {
+     "lv": 30,
+     "name": "Iceberg",
+     "element": "Ice",
+     "ct": 8,
+     "power": 120,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 40,
+     "name": "Spine Vine",
+     "element": "Grass",
+     "ct": 12,
+     "power": 250,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 50,
+     "name": "Solar Blast",
+     "element": "Grass",
+     "ct": 20,
+     "power": 450,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 70,
+     "name": "Wind Burst",
+     "element": "Grass",
+     "ct": 30,
+     "power": 600,
+     "effects": "Ivy-Covered 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "2-4",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "2-4",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Broncherry": [
@@ -188,7 +1256,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Wind Cutter",
+     "element": "Grass",
+     "ct": 2,
+     "power": 40,
+     "effects": "Ivy-Covered 35"
+    },
+    {
+     "lv": 7,
+     "name": "Bog Blast",
+     "element": "Ground",
+     "ct": 2,
+     "power": 40,
+     "effects": "Muddy 50"
+    },
+    {
+     "lv": 15,
+     "name": "Muscle Slam",
+     "element": "Grass",
+     "ct": 8,
+     "power": 120,
+     "effects": null
+    },
+    {
+     "lv": 22,
+     "name": "Seed Mine",
+     "element": "Grass",
+     "ct": 8,
+     "power": 120,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 30,
+     "name": "Grass Tornado",
+     "element": "Grass",
+     "ct": 12,
+     "power": 200,
+     "effects": "Ivy-Covered 65"
+    },
+    {
+     "lv": 40,
+     "name": "Spine Vine",
+     "element": "Grass",
+     "ct": 12,
+     "power": 250,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 50,
+     "name": "Solar Blast",
+     "element": "Grass",
+     "ct": 20,
+     "power": 450,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 70,
+     "name": "Wind Burst",
+     "element": "Grass",
+     "ct": 30,
+     "power": 600,
+     "effects": "Ivy-Covered 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Broncherry Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Dragon Stone",
+     "qty": "3-5",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Broncherry Aqua": [
@@ -201,7 +1347,93 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Aqua Gun",
+     "element": "Water",
+     "ct": 2,
+     "power": 50,
+     "effects": "Soak 50"
+    },
+    {
+     "lv": 7,
+     "name": "Bubble Blast",
+     "element": "Water",
+     "ct": 4,
+     "power": 80,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 15,
+     "name": "Muscle Slam",
+     "element": "Grass",
+     "ct": 8,
+     "power": 120,
+     "effects": null
+    },
+    {
+     "lv": 22,
+     "name": "Seed Mine",
+     "element": "Grass",
+     "ct": 8,
+     "power": 120,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 26,
+     "name": "Splash Tackle",
+     "element": "Water",
+     "ct": 12,
+     "power": 250,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 30,
+     "name": "Spine Vine",
+     "element": "Grass",
+     "ct": 12,
+     "power": 250,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 40,
+     "name": "Aqua Burst",
+     "element": "Water",
+     "ct": 12,
+     "power": 200,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 50,
+     "name": "Hydro Laser",
+     "element": "Water",
+     "ct": 20,
+     "power": 450,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 70,
+     "name": "Geyser Gush",
+     "element": "Water",
+     "ct": 30,
+     "power": 600,
+     "effects": "Soak 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Broncherry Aqua Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Dragon Stone",
+     "qty": "3-5",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Bushi": [
@@ -214,7 +1446,90 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Ignis Blast",
+     "element": "Fire",
+     "ct": 2,
+     "power": 40,
+     "effects": "Burn 50"
+    },
+    {
+     "lv": 7,
+     "name": "Wind Cutter",
+     "element": "Grass",
+     "ct": 2,
+     "power": 40,
+     "effects": "Ivy-Covered 35"
+    },
+    {
+     "lv": 15,
+     "name": "Icicle Cutter",
+     "element": "Ice",
+     "ct": 4,
+     "power": 80,
+     "effects": "Freeze 50"
+    },
+    {
+     "lv": 22,
+     "name": "Iaigiri",
+     "element": "Fire",
+     "ct": 8,
+     "power": 160,
+     "effects": "Burn 50"
+    },
+    {
+     "lv": 30,
+     "name": "Ignis Breath",
+     "element": "Fire",
+     "ct": 8,
+     "power": 160,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 40,
+     "name": "Lightning Strike",
+     "element": "Electric",
+     "ct": 16,
+     "power": 300,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 50,
+     "name": "Ignis Rage",
+     "element": "Fire",
+     "ct": 24,
+     "power": 500,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 70,
+     "name": "Fire Ball",
+     "element": "Fire",
+     "ct": 30,
+     "power": 600,
+     "effects": "Burn 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Bushi Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "3-5",
+     "pct": 100.0
+    },
+    {
+     "item": "Metal Helm Schematic 4",
+     "qty": "1",
+     "pct": 3.0
+    }
+   ]
   }
  ],
  "Bushi Noct": [
@@ -227,7 +1542,93 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Spirit Fire",
+     "element": "Fire",
+     "ct": 4,
+     "power": 80,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 7,
+     "name": "Umbral Surge",
+     "element": "Dark",
+     "ct": 4,
+     "power": 60,
+     "effects": "Blind 35"
+    },
+    {
+     "lv": 15,
+     "name": "Dark Cannon",
+     "element": "Dark",
+     "ct": 4,
+     "power": 70,
+     "effects": "Blind 20"
+    },
+    {
+     "lv": 18,
+     "name": "Iaigiri",
+     "element": "Fire",
+     "ct": 8,
+     "power": 160,
+     "effects": "Burn 50"
+    },
+    {
+     "lv": 22,
+     "name": "Dark Arrow",
+     "element": "Dark",
+     "ct": 8,
+     "power": 120,
+     "effects": "Blind 102"
+    },
+    {
+     "lv": 30,
+     "name": "Spirit Flame",
+     "element": "Dark",
+     "ct": 12,
+     "power": 200,
+     "effects": "Burn 102"
+    },
+    {
+     "lv": 40,
+     "name": "Flame Wall",
+     "element": "Fire",
+     "ct": 12,
+     "power": 250,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 50,
+     "name": "Apocalypse",
+     "element": "Dark",
+     "ct": 20,
+     "power": 400,
+     "effects": "Blind 100"
+    },
+    {
+     "lv": 70,
+     "name": "Dark Whisp",
+     "element": "Dark",
+     "ct": 30,
+     "power": 600,
+     "effects": "Blind 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Caprity": [
@@ -240,7 +1641,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.48,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Wind Cutter",
+     "element": "Grass",
+     "ct": 2,
+     "power": 40,
+     "effects": "Ivy-Covered 35"
+    },
+    {
+     "lv": 7,
+     "name": "Air Cannon",
+     "element": "Neutral",
+     "ct": 2,
+     "power": 40,
+     "effects": null
+    },
+    {
+     "lv": 15,
+     "name": "Bog Blast",
+     "element": "Ground",
+     "ct": 2,
+     "power": 40,
+     "effects": "Muddy 50"
+    },
+    {
+     "lv": 22,
+     "name": "Power Shot",
+     "element": "Neutral",
+     "ct": 4,
+     "power": 80,
+     "effects": null
+    },
+    {
+     "lv": 30,
+     "name": "Grass Tornado",
+     "element": "Grass",
+     "ct": 12,
+     "power": 200,
+     "effects": "Ivy-Covered 65"
+    },
+    {
+     "lv": 40,
+     "name": "Spine Vine",
+     "element": "Grass",
+     "ct": 12,
+     "power": 250,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 50,
+     "name": "Solar Blast",
+     "element": "Grass",
+     "ct": 20,
+     "power": 450,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 70,
+     "name": "Wind Burst",
+     "element": "Grass",
+     "ct": 30,
+     "power": 600,
+     "effects": "Ivy-Covered 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "1-2",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "1-2",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Caprity Noct": [
@@ -253,7 +1732,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Poison Fog",
+     "element": "Dark",
+     "ct": 30,
+     "power": 0,
+     "effects": "Poison 9999"
+    },
+    {
+     "lv": 7,
+     "name": "Wind Cutter",
+     "element": "Grass",
+     "ct": 2,
+     "power": 40,
+     "effects": "Ivy-Covered 35"
+    },
+    {
+     "lv": 15,
+     "name": "Poison Blast",
+     "element": "Dark",
+     "ct": 2,
+     "power": 30,
+     "effects": "Poison 100"
+    },
+    {
+     "lv": 22,
+     "name": "Multicutter",
+     "element": "Grass",
+     "ct": 8,
+     "power": 160,
+     "effects": "Ivy-Covered 35"
+    },
+    {
+     "lv": 30,
+     "name": "Poison Shower",
+     "element": "Dark",
+     "ct": 8,
+     "power": 160,
+     "effects": "Poison 100"
+    },
+    {
+     "lv": 40,
+     "name": "Circle Vine",
+     "element": "Grass",
+     "ct": 16,
+     "power": 300,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 50,
+     "name": "Dark Laser",
+     "element": "Dark",
+     "ct": 20,
+     "power": 450,
+     "effects": "Blind 100"
+    },
+    {
+     "lv": 70,
+     "name": "Dark Whisp",
+     "element": "Dark",
+     "ct": 30,
+     "power": 600,
+     "effects": "Blind 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Caprity Noct Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Cattiva": [
@@ -266,7 +1823,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "S",
    "hpRate": 1.0,
    "recvRate": 0.48,
-   "capture": 1.05
+   "capture": 1.05,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Punch Flurry",
+     "element": "Neutral",
+     "ct": 2,
+     "power": 40,
+     "effects": null
+    },
+    {
+     "lv": 7,
+     "name": "Air Cannon",
+     "element": "Neutral",
+     "ct": 2,
+     "power": 40,
+     "effects": null
+    },
+    {
+     "lv": 15,
+     "name": "Bog Blast",
+     "element": "Ground",
+     "ct": 2,
+     "power": 40,
+     "effects": "Muddy 50"
+    },
+    {
+     "lv": 22,
+     "name": "Power Shot",
+     "element": "Neutral",
+     "ct": 4,
+     "power": 80,
+     "effects": null
+    },
+    {
+     "lv": 30,
+     "name": "Wind Cutter",
+     "element": "Grass",
+     "ct": 2,
+     "power": 40,
+     "effects": "Ivy-Covered 35"
+    },
+    {
+     "lv": 40,
+     "name": "Seed Machine Gun",
+     "element": "Grass",
+     "ct": 4,
+     "power": 80,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 50,
+     "name": "Pal Blast",
+     "element": "Neutral",
+     "ct": 20,
+     "power": 450,
+     "effects": null
+    },
+    {
+     "lv": 70,
+     "name": "Holy Burst",
+     "element": "Neutral",
+     "ct": 30,
+     "power": 700,
+     "effects": null
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "1-2",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Claw",
+     "qty": "1-2",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Cawgnito": [
@@ -279,7 +1914,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Air Cannon",
+     "element": "Neutral",
+     "ct": 2,
+     "power": 40,
+     "effects": null
+    },
+    {
+     "lv": 7,
+     "name": "Dark Ball",
+     "element": "Dark",
+     "ct": 2,
+     "power": 50,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 15,
+     "name": "Phantom Peck",
+     "element": "Dark",
+     "ct": 4,
+     "power": 70,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 22,
+     "name": "Shadow Burst",
+     "element": "Dark",
+     "ct": 4,
+     "power": 80,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 30,
+     "name": "Spirit Flame",
+     "element": "Dark",
+     "ct": 12,
+     "power": 200,
+     "effects": "Burn 102"
+    },
+    {
+     "lv": 40,
+     "name": "Nightmare Ball",
+     "element": "Dark",
+     "ct": 16,
+     "power": 300,
+     "effects": "Blind 65"
+    },
+    {
+     "lv": 50,
+     "name": "Dark Laser",
+     "element": "Dark",
+     "ct": 20,
+     "power": 450,
+     "effects": "Blind 100"
+    },
+    {
+     "lv": 70,
+     "name": "Dark Whisp",
+     "element": "Dark",
+     "ct": 30,
+     "power": 600,
+     "effects": "Blind 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "1-2",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Plume",
+     "qty": "1-2",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Celaray": [
@@ -292,7 +2005,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.48,
-   "capture": 0.77
+   "capture": 0.77,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Hydro Jet",
+     "element": "Water",
+     "ct": 2,
+     "power": 40,
+     "effects": "Soak 35"
+    },
+    {
+     "lv": 7,
+     "name": "Aqua Gun",
+     "element": "Water",
+     "ct": 2,
+     "power": 50,
+     "effects": "Soak 50"
+    },
+    {
+     "lv": 15,
+     "name": "Power Shot",
+     "element": "Neutral",
+     "ct": 4,
+     "power": 80,
+     "effects": null
+    },
+    {
+     "lv": 22,
+     "name": "Bubble Blast",
+     "element": "Water",
+     "ct": 4,
+     "power": 80,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 30,
+     "name": "Seed Machine Gun",
+     "element": "Grass",
+     "ct": 4,
+     "power": 80,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 40,
+     "name": "Aqua Burst",
+     "element": "Water",
+     "ct": 12,
+     "power": 200,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 50,
+     "name": "Hydro Laser",
+     "element": "Water",
+     "ct": 20,
+     "power": 450,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 70,
+     "name": "Geyser Gush",
+     "element": "Water",
+     "ct": 30,
+     "power": 600,
+     "effects": "Soak 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "1-2",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Plume",
+     "qty": "1-2",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Celesdir": [
@@ -305,7 +2096,125 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Power Shot",
+     "element": "Neutral",
+     "ct": 4,
+     "power": 80,
+     "effects": null
+    },
+    {
+     "lv": 7,
+     "name": "Power Bomb",
+     "element": "Neutral",
+     "ct": 8,
+     "power": 120,
+     "effects": null
+    },
+    {
+     "lv": 15,
+     "name": "Air Blade",
+     "element": "Neutral",
+     "ct": 8,
+     "power": 160,
+     "effects": null
+    },
+    {
+     "lv": 22,
+     "name": "Comet Strike",
+     "element": "Dragon",
+     "ct": 8,
+     "power": 180,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 30,
+     "name": "Holy Burst",
+     "element": "Neutral",
+     "ct": 30,
+     "power": 700,
+     "effects": null
+    },
+    {
+     "lv": 40,
+     "name": "Pal Blast",
+     "element": "Neutral",
+     "ct": 20,
+     "power": 450,
+     "effects": null
+    },
+    {
+     "lv": 50,
+     "name": "Holy Nova",
+     "element": "Neutral",
+     "ct": 30,
+     "power": 700,
+     "effects": null
+    },
+    {
+     "lv": 70,
+     "name": "Radiant Barrage",
+     "element": "Neutral",
+     "ct": 30,
+     "power": 700,
+     "effects": null
+    }
+   ],
+   "drops": [
+    {
+     "item": "Celesdir Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "7-8",
+     "pct": 100.0
+    },
+    {
+     "item": "World Tree Holy Water",
+     "qty": "20-30",
+     "pct": 100.0
+    },
+    {
+     "item": "Neutral Radiant Gem",
+     "qty": "1-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Decayed Ancient Relic",
+     "qty": "1-10",
+     "pct": 50.0
+    },
+    {
+     "item": "Dormant Ancient Relic",
+     "qty": "1-5",
+     "pct": 25.0
+    },
+    {
+     "item": "Gorgeous Ancient Relic",
+     "qty": "1-3",
+     "pct": 15.0
+    },
+    {
+     "item": "Glowing Ancient Relic",
+     "qty": "1-2",
+     "pct": 12.5
+    },
+    {
+     "item": "Glistening Ancient Relic",
+     "qty": "1",
+     "pct": 10.0
+    }
+   ]
   }
  ],
  "Celesdir Noct": [
@@ -318,7 +2227,125 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Dark Cannon",
+     "element": "Dark",
+     "ct": 4,
+     "power": 70,
+     "effects": "Blind 20"
+    },
+    {
+     "lv": 7,
+     "name": "Dark Arrow",
+     "element": "Dark",
+     "ct": 8,
+     "power": 120,
+     "effects": "Blind 102"
+    },
+    {
+     "lv": 15,
+     "name": "Spirit Flame",
+     "element": "Dark",
+     "ct": 12,
+     "power": 200,
+     "effects": "Burn 102"
+    },
+    {
+     "lv": 22,
+     "name": "Nightmare Ball",
+     "element": "Dark",
+     "ct": 16,
+     "power": 300,
+     "effects": "Blind 65"
+    },
+    {
+     "lv": 30,
+     "name": "Apocalypse",
+     "element": "Dark",
+     "ct": 20,
+     "power": 400,
+     "effects": "Blind 100"
+    },
+    {
+     "lv": 40,
+     "name": "Dark Laser",
+     "element": "Dark",
+     "ct": 20,
+     "power": 450,
+     "effects": "Blind 100"
+    },
+    {
+     "lv": 50,
+     "name": "Dark Whisp",
+     "element": "Dark",
+     "ct": 30,
+     "power": 600,
+     "effects": "Blind 100"
+    },
+    {
+     "lv": 70,
+     "name": "Dark Nova",
+     "element": "Dark",
+     "ct": 30,
+     "power": 700,
+     "effects": "Blind 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Celesdir Noct Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "7-9",
+     "pct": 100.0
+    },
+    {
+     "item": "World Tree Holy Water",
+     "qty": "20-30",
+     "pct": 100.0
+    },
+    {
+     "item": "Dark Radiant Gem",
+     "qty": "1-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Decayed Ancient Relic",
+     "qty": "1-10",
+     "pct": 50.0
+    },
+    {
+     "item": "Dormant Ancient Relic",
+     "qty": "1-5",
+     "pct": 25.0
+    },
+    {
+     "item": "Gorgeous Ancient Relic",
+     "qty": "1-3",
+     "pct": 15.0
+    },
+    {
+     "item": "Glowing Ancient Relic",
+     "qty": "1-2",
+     "pct": 12.5
+    },
+    {
+     "item": "Glistening Ancient Relic",
+     "qty": "1",
+     "pct": 10.0
+    }
+   ]
   }
  ],
  "Chikipi": [
@@ -331,7 +2358,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "S",
    "hpRate": 1.0,
    "recvRate": 0.48,
-   "capture": 1.05
+   "capture": 1.05,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Chicken Rush",
+     "element": "Neutral",
+     "ct": 2,
+     "power": 30,
+     "effects": null
+    },
+    {
+     "lv": 7,
+     "name": "Air Cannon",
+     "element": "Neutral",
+     "ct": 2,
+     "power": 40,
+     "effects": null
+    },
+    {
+     "lv": 15,
+     "name": "Power Shot",
+     "element": "Neutral",
+     "ct": 4,
+     "power": 80,
+     "effects": null
+    },
+    {
+     "lv": 22,
+     "name": "Implode",
+     "element": "Neutral",
+     "ct": 16,
+     "power": 300,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 30,
+     "name": "Grass Tornado",
+     "element": "Grass",
+     "ct": 12,
+     "power": 200,
+     "effects": "Ivy-Covered 65"
+    },
+    {
+     "lv": 40,
+     "name": "Sand Tornado",
+     "element": "Ground",
+     "ct": 12,
+     "power": 200,
+     "effects": "Muddy 65"
+    },
+    {
+     "lv": 50,
+     "name": "Flare Storm",
+     "element": "Fire",
+     "ct": 12,
+     "power": 200,
+     "effects": "Burn 65"
+    },
+    {
+     "lv": 70,
+     "name": "Holy Burst",
+     "element": "Neutral",
+     "ct": 30,
+     "power": 700,
+     "effects": null
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "1-2",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Plume",
+     "qty": "1-2",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Chillet": [
@@ -344,7 +2449,103 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.48,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Ice Missile",
+     "element": "Ice",
+     "ct": 2,
+     "power": 40,
+     "effects": "Freeze 102"
+    },
+    {
+     "lv": 7,
+     "name": "Dragon Cannon",
+     "element": "Dragon",
+     "ct": 2,
+     "power": 40,
+     "effects": "Burn 35"
+    },
+    {
+     "lv": 11,
+     "name": "Rocket Slam",
+     "element": "Dragon",
+     "ct": 4,
+     "power": 80,
+     "effects": null
+    },
+    {
+     "lv": 15,
+     "name": "Dragon Burst",
+     "element": "Dragon",
+     "ct": 4,
+     "power": 80,
+     "effects": "Burn 50"
+    },
+    {
+     "lv": 22,
+     "name": "Icicle Cutter",
+     "element": "Ice",
+     "ct": 4,
+     "power": 80,
+     "effects": "Freeze 50"
+    },
+    {
+     "lv": 30,
+     "name": "Dragon Breath",
+     "element": "Dragon",
+     "ct": 8,
+     "power": 160,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 40,
+     "name": "Crystal Breath",
+     "element": "Ice",
+     "ct": 8,
+     "power": 160,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 50,
+     "name": "Dragon Meteor",
+     "element": "Dragon",
+     "ct": 30,
+     "power": 600,
+     "effects": "Burn 45"
+    },
+    {
+     "lv": 70,
+     "name": "Diamond Rain",
+     "element": "Ice",
+     "ct": 30,
+     "power": 600,
+     "effects": "Freeze 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Chillet Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Ice Organ",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "2-4",
+     "pct": 100.0
+    },
+    {
+     "item": "Cloth Outfit Schematic 4",
+     "qty": "1",
+     "pct": 3.0
+    }
+   ]
   }
  ],
  "Chillet Ignis": [
@@ -357,7 +2558,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.48,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Ignis Blast",
+     "element": "Fire",
+     "ct": 2,
+     "power": 40,
+     "effects": "Burn 50"
+    },
+    {
+     "lv": 7,
+     "name": "Dragon Burst",
+     "element": "Dragon",
+     "ct": 4,
+     "power": 80,
+     "effects": "Burn 50"
+    },
+    {
+     "lv": 15,
+     "name": "Flare Arrow",
+     "element": "Fire",
+     "ct": 8,
+     "power": 120,
+     "effects": "Burn 102"
+    },
+    {
+     "lv": 22,
+     "name": "Ignis Breath",
+     "element": "Fire",
+     "ct": 8,
+     "power": 160,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 30,
+     "name": "Rocket Slam",
+     "element": "Dragon",
+     "ct": 4,
+     "power": 80,
+     "effects": null
+    },
+    {
+     "lv": 40,
+     "name": "Flame Wall",
+     "element": "Fire",
+     "ct": 12,
+     "power": 250,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 50,
+     "name": "Fire Ball",
+     "element": "Fire",
+     "ct": 30,
+     "power": 600,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 70,
+     "name": "Dragon Meteor",
+     "element": "Dragon",
+     "ct": 30,
+     "power": 600,
+     "effects": "Burn 45"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Cinnamoth": [
@@ -370,7 +2649,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Air Cannon",
+     "element": "Neutral",
+     "ct": 2,
+     "power": 40,
+     "effects": null
+    },
+    {
+     "lv": 7,
+     "name": "Wind Cutter",
+     "element": "Grass",
+     "ct": 2,
+     "power": 40,
+     "effects": "Ivy-Covered 35"
+    },
+    {
+     "lv": 15,
+     "name": "Poison Fog",
+     "element": "Dark",
+     "ct": 30,
+     "power": 0,
+     "effects": "Poison 9999"
+    },
+    {
+     "lv": 22,
+     "name": "Sand Tornado",
+     "element": "Ground",
+     "ct": 12,
+     "power": 200,
+     "effects": "Muddy 65"
+    },
+    {
+     "lv": 30,
+     "name": "Seed Mine",
+     "element": "Grass",
+     "ct": 8,
+     "power": 120,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 40,
+     "name": "Grass Tornado",
+     "element": "Grass",
+     "ct": 12,
+     "power": 200,
+     "effects": "Ivy-Covered 65"
+    },
+    {
+     "lv": 50,
+     "name": "Solar Blast",
+     "element": "Grass",
+     "ct": 20,
+     "power": 450,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 70,
+     "name": "Wind Burst",
+     "element": "Grass",
+     "ct": 30,
+     "power": 600,
+     "effects": "Ivy-Covered 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "2-4",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Plume",
+     "qty": "2-4",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Clovee": [
@@ -383,7 +2740,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "S",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Air Cannon",
+     "element": "Neutral",
+     "ct": 2,
+     "power": 40,
+     "effects": null
+    },
+    {
+     "lv": 7,
+     "name": "Seed Machine Gun",
+     "element": "Grass",
+     "ct": 4,
+     "power": 80,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 15,
+     "name": "Seed Mine",
+     "element": "Grass",
+     "ct": 8,
+     "power": 120,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 22,
+     "name": "Air Blade",
+     "element": "Neutral",
+     "ct": 8,
+     "power": 160,
+     "effects": null
+    },
+    {
+     "lv": 30,
+     "name": "Grass Tornado",
+     "element": "Grass",
+     "ct": 12,
+     "power": 200,
+     "effects": "Ivy-Covered 65"
+    },
+    {
+     "lv": 40,
+     "name": "Solar Blast",
+     "element": "Grass",
+     "ct": 20,
+     "power": 450,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 50,
+     "name": "Crosswind",
+     "element": "Grass",
+     "ct": 24,
+     "power": 500,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 70,
+     "name": "Wind Burst",
+     "element": "Grass",
+     "ct": 30,
+     "power": 600,
+     "effects": "Ivy-Covered 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "1-2",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Cremis": [
@@ -396,7 +2831,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.48,
-   "capture": 0.91
+   "capture": 0.91,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Air Cannon",
+     "element": "Neutral",
+     "ct": 2,
+     "power": 40,
+     "effects": null
+    },
+    {
+     "lv": 7,
+     "name": "Bog Blast",
+     "element": "Ground",
+     "ct": 2,
+     "power": 40,
+     "effects": "Muddy 50"
+    },
+    {
+     "lv": 15,
+     "name": "Spark Blast",
+     "element": "Electric",
+     "ct": 2,
+     "power": 50,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 22,
+     "name": "Power Shot",
+     "element": "Neutral",
+     "ct": 4,
+     "power": 80,
+     "effects": null
+    },
+    {
+     "lv": 30,
+     "name": "Shockwave",
+     "element": "Electric",
+     "ct": 4,
+     "power": 80,
+     "effects": "Electrify 103"
+    },
+    {
+     "lv": 40,
+     "name": "Power Bomb",
+     "element": "Neutral",
+     "ct": 8,
+     "power": 120,
+     "effects": null
+    },
+    {
+     "lv": 50,
+     "name": "Lightning Bolt",
+     "element": "Electric",
+     "ct": 20,
+     "power": 450,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 70,
+     "name": "Holy Burst",
+     "element": "Neutral",
+     "ct": 30,
+     "power": 700,
+     "effects": null
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "1-2",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "1-2",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Croajiro": [
@@ -409,7 +2922,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "S",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Aqua Gun",
+     "element": "Water",
+     "ct": 2,
+     "power": 50,
+     "effects": "Soak 50"
+    },
+    {
+     "lv": 7,
+     "name": "Bubble Blast",
+     "element": "Water",
+     "ct": 4,
+     "power": 80,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 15,
+     "name": "Acid Rain",
+     "element": "Water",
+     "ct": 8,
+     "power": 120,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 22,
+     "name": "Aqua Burst",
+     "element": "Water",
+     "ct": 12,
+     "power": 200,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 30,
+     "name": "Splash",
+     "element": "Water",
+     "ct": 8,
+     "power": 160,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 40,
+     "name": "Curtain Splash",
+     "element": "Water",
+     "ct": 16,
+     "power": 300,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 50,
+     "name": "Hydro Laser",
+     "element": "Water",
+     "ct": 20,
+     "power": 450,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 70,
+     "name": "Geyser Gush",
+     "element": "Water",
+     "ct": 30,
+     "power": 600,
+     "effects": "Soak 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Cryolinx": [
@@ -422,7 +3013,93 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Power Shot",
+     "element": "Neutral",
+     "ct": 4,
+     "power": 80,
+     "effects": null
+    },
+    {
+     "lv": 7,
+     "name": "Ice Missile",
+     "element": "Ice",
+     "ct": 2,
+     "power": 40,
+     "effects": "Freeze 102"
+    },
+    {
+     "lv": 15,
+     "name": "Stone Cannon",
+     "element": "Ground",
+     "ct": 8,
+     "power": 120,
+     "effects": "Muddy 35"
+    },
+    {
+     "lv": 22,
+     "name": "Icicle Cutter",
+     "element": "Ice",
+     "ct": 4,
+     "power": 80,
+     "effects": "Freeze 50"
+    },
+    {
+     "lv": 30,
+     "name": "Iceberg",
+     "element": "Ice",
+     "ct": 8,
+     "power": 120,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 35,
+     "name": "Blizzard Claw",
+     "element": "Ice",
+     "ct": 16,
+     "power": 300,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 40,
+     "name": "Crystal Breath",
+     "element": "Ice",
+     "ct": 8,
+     "power": 160,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 50,
+     "name": "Blizzard Spike",
+     "element": "Ice",
+     "ct": 20,
+     "power": 450,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 70,
+     "name": "Diamond Rain",
+     "element": "Ice",
+     "ct": 30,
+     "power": 600,
+     "effects": "Freeze 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "6-8",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Claw",
+     "qty": "6-8",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Cryolinx Terra": [
@@ -435,7 +3112,93 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Power Shot",
+     "element": "Neutral",
+     "ct": 4,
+     "power": 80,
+     "effects": null
+    },
+    {
+     "lv": 7,
+     "name": "Stone Blast",
+     "element": "Ground",
+     "ct": 4,
+     "power": 80,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 15,
+     "name": "Stone Cannon",
+     "element": "Ground",
+     "ct": 8,
+     "power": 120,
+     "effects": "Muddy 35"
+    },
+    {
+     "lv": 22,
+     "name": "Sand Tornado",
+     "element": "Ground",
+     "ct": 12,
+     "power": 200,
+     "effects": "Muddy 65"
+    },
+    {
+     "lv": 30,
+     "name": "Stone Claw",
+     "element": "Ground",
+     "ct": 16,
+     "power": 300,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 35,
+     "name": "Rockburst",
+     "element": "Ground",
+     "ct": 16,
+     "power": 300,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 40,
+     "name": "Rock Lance",
+     "element": "Ground",
+     "ct": 20,
+     "power": 400,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 50,
+     "name": "Rocky Impact",
+     "element": "Ground",
+     "ct": 30,
+     "power": 600,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 70,
+     "name": "Thunderstorm",
+     "element": "Electric",
+     "ct": 30,
+     "power": 600,
+     "effects": null
+    }
+   ],
+   "drops": [
+    {
+     "item": "Cryolinx Terra Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Claw",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Daedream": [
@@ -448,7 +3211,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "S",
    "hpRate": 1.0,
    "recvRate": 0.48,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Dark Ball",
+     "element": "Dark",
+     "ct": 2,
+     "power": 50,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 7,
+     "name": "Poison Blast",
+     "element": "Dark",
+     "ct": 2,
+     "power": 30,
+     "effects": "Poison 100"
+    },
+    {
+     "lv": 15,
+     "name": "Shadow Burst",
+     "element": "Dark",
+     "ct": 4,
+     "power": 80,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 22,
+     "name": "Crystal Breath",
+     "element": "Ice",
+     "ct": 8,
+     "power": 160,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 30,
+     "name": "Spirit Flame",
+     "element": "Dark",
+     "ct": 12,
+     "power": 200,
+     "effects": "Burn 102"
+    },
+    {
+     "lv": 40,
+     "name": "Nightmare Ball",
+     "element": "Dark",
+     "ct": 16,
+     "power": 300,
+     "effects": "Blind 65"
+    },
+    {
+     "lv": 50,
+     "name": "Dark Laser",
+     "element": "Dark",
+     "ct": 20,
+     "power": 450,
+     "effects": "Blind 100"
+    },
+    {
+     "lv": 70,
+     "name": "Dark Whisp",
+     "element": "Dark",
+     "ct": 30,
+     "power": 600,
+     "effects": "Blind 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "1-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "1-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Dandilord": [
@@ -461,7 +3302,180 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.04,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Dark Cannon",
+     "element": "Dark",
+     "ct": 4,
+     "power": 70,
+     "effects": "Blind 20"
+    },
+    {
+     "lv": 7,
+     "name": "Seed Mine",
+     "element": "Grass",
+     "ct": 8,
+     "power": 120,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 15,
+     "name": "Circle Vine",
+     "element": "Grass",
+     "ct": 16,
+     "power": 300,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 22,
+     "name": "Dark Laser",
+     "element": "Dark",
+     "ct": 20,
+     "power": 450,
+     "effects": "Blind 100"
+    },
+    {
+     "lv": 30,
+     "name": "Dark Whisp",
+     "element": "Dark",
+     "ct": 30,
+     "power": 600,
+     "effects": "Blind 100"
+    },
+    {
+     "lv": 40,
+     "name": "Wind Burst",
+     "element": "Grass",
+     "ct": 30,
+     "power": 600,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 50,
+     "name": "Poison Promenade",
+     "element": "Dark",
+     "ct": 30,
+     "power": 700,
+     "effects": null
+    },
+    {
+     "lv": 70,
+     "name": "Toxic Dance",
+     "element": "Dark",
+     "ct": 30,
+     "power": 800,
+     "effects": null
+    }
+   ],
+   "drops": [
+    {
+     "item": "Dandilord's Petal",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "6-8",
+     "pct": 100.0
+    },
+    {
+     "item": "Toxin Filtering Membrane",
+     "qty": "5-10",
+     "pct": 100.0
+    },
+    {
+     "item": "World Tree Holy Water",
+     "qty": "20-30",
+     "pct": 100.0
+    },
+    {
+     "item": "Dark Radiant Gem",
+     "qty": "1-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Decayed Ancient Relic",
+     "qty": "1-10",
+     "pct": 100.0
+    },
+    {
+     "item": "Dormant Ancient Relic",
+     "qty": "1-5",
+     "pct": 50.0
+    },
+    {
+     "item": "Gorgeous Ancient Relic",
+     "qty": "1-3",
+     "pct": 30.0
+    },
+    {
+     "item": "Glowing Ancient Relic",
+     "qty": "1-2",
+     "pct": 25.0
+    },
+    {
+     "item": "Glistening Ancient Relic",
+     "qty": "1",
+     "pct": 20.0
+    },
+    {
+     "item": "Dandilord's Petal",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "6-8",
+     "pct": 100.0
+    },
+    {
+     "item": "Toxin Filtering Membrane",
+     "qty": "5-10",
+     "pct": 100.0
+    },
+    {
+     "item": "Dark Radiant Gem",
+     "qty": "1-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Decayed Ancient Relic",
+     "qty": "1-10",
+     "pct": 100.0
+    },
+    {
+     "item": "Dormant Ancient Relic",
+     "qty": "1-5",
+     "pct": 50.0
+    },
+    {
+     "item": "Gorgeous Ancient Relic",
+     "qty": "1-3",
+     "pct": 30.0
+    },
+    {
+     "item": "Glowing Ancient Relic",
+     "qty": "1-2",
+     "pct": 25.0
+    },
+    {
+     "item": "Glistening Ancient Relic",
+     "qty": "1",
+     "pct": 20.0
+    },
+    {
+     "item": "World Tree Holy Water",
+     "qty": "60-80",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Dazemu": [
@@ -474,7 +3488,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Bog Blast",
+     "element": "Ground",
+     "ct": 2,
+     "power": 40,
+     "effects": "Muddy 50"
+    },
+    {
+     "lv": 7,
+     "name": "Power Shot",
+     "element": "Neutral",
+     "ct": 4,
+     "power": 80,
+     "effects": null
+    },
+    {
+     "lv": 15,
+     "name": "Stone Blast",
+     "element": "Ground",
+     "ct": 4,
+     "power": 80,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 22,
+     "name": "Stone Cannon",
+     "element": "Ground",
+     "ct": 8,
+     "power": 120,
+     "effects": "Muddy 35"
+    },
+    {
+     "lv": 30,
+     "name": "Earth Dash",
+     "element": "Ground",
+     "ct": 12,
+     "power": 250,
+     "effects": null
+    },
+    {
+     "lv": 40,
+     "name": "Rockburst",
+     "element": "Ground",
+     "ct": 16,
+     "power": 300,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 50,
+     "name": "Sand Twister",
+     "element": "Ground",
+     "ct": 24,
+     "power": 500,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 70,
+     "name": "Rocky Impact",
+     "element": "Ground",
+     "ct": 30,
+     "power": 600,
+     "effects": "Muddy 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Plume",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Dazzi": [
@@ -487,7 +3579,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Air Cannon",
+     "element": "Neutral",
+     "ct": 2,
+     "power": 40,
+     "effects": null
+    },
+    {
+     "lv": 7,
+     "name": "Shockwave",
+     "element": "Electric",
+     "ct": 4,
+     "power": 80,
+     "effects": "Electrify 103"
+    },
+    {
+     "lv": 15,
+     "name": "Acid Rain",
+     "element": "Water",
+     "ct": 8,
+     "power": 120,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 22,
+     "name": "Lightning Streak",
+     "element": "Electric",
+     "ct": 8,
+     "power": 160,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 30,
+     "name": "Tri-Lightning",
+     "element": "Electric",
+     "ct": 12,
+     "power": 200,
+     "effects": "Electrify 103"
+    },
+    {
+     "lv": 40,
+     "name": "Lightning Strike",
+     "element": "Electric",
+     "ct": 16,
+     "power": 300,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 50,
+     "name": "Lightning Bolt",
+     "element": "Electric",
+     "ct": 20,
+     "power": 450,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 70,
+     "name": "Thunderstorm",
+     "element": "Electric",
+     "ct": 30,
+     "power": 600,
+     "effects": null
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "1-2",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "1-2",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Dazzi Noct": [
@@ -500,7 +3670,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "S",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Air Cannon",
+     "element": "Neutral",
+     "ct": 2,
+     "power": 40,
+     "effects": null
+    },
+    {
+     "lv": 7,
+     "name": "Shadow Burst",
+     "element": "Dark",
+     "ct": 4,
+     "power": 80,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 15,
+     "name": "Dark Arrow",
+     "element": "Dark",
+     "ct": 8,
+     "power": 120,
+     "effects": "Blind 102"
+    },
+    {
+     "lv": 22,
+     "name": "Acid Rain",
+     "element": "Water",
+     "ct": 8,
+     "power": 120,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 30,
+     "name": "Tri-Lightning",
+     "element": "Electric",
+     "ct": 12,
+     "power": 200,
+     "effects": "Electrify 103"
+    },
+    {
+     "lv": 40,
+     "name": "Apocalypse",
+     "element": "Dark",
+     "ct": 20,
+     "power": 400,
+     "effects": "Blind 100"
+    },
+    {
+     "lv": 50,
+     "name": "Thunder Rain",
+     "element": "Electric",
+     "ct": 20,
+     "power": 400,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 70,
+     "name": "Dark Whisp",
+     "element": "Dark",
+     "ct": 30,
+     "power": 600,
+     "effects": "Blind 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Dazzi Noct Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Depresso": [
@@ -513,7 +3761,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "S",
    "hpRate": 1.0,
    "recvRate": 0.48,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Poison Blast",
+     "element": "Dark",
+     "ct": 2,
+     "power": 30,
+     "effects": "Poison 100"
+    },
+    {
+     "lv": 7,
+     "name": "Bog Blast",
+     "element": "Ground",
+     "ct": 2,
+     "power": 40,
+     "effects": "Muddy 50"
+    },
+    {
+     "lv": 15,
+     "name": "Dark Ball",
+     "element": "Dark",
+     "ct": 2,
+     "power": 50,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 22,
+     "name": "Ice Missile",
+     "element": "Ice",
+     "ct": 2,
+     "power": 40,
+     "effects": "Freeze 102"
+    },
+    {
+     "lv": 30,
+     "name": "Shadow Burst",
+     "element": "Dark",
+     "ct": 4,
+     "power": 80,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 40,
+     "name": "Nightmare Ball",
+     "element": "Dark",
+     "ct": 16,
+     "power": 300,
+     "effects": "Blind 65"
+    },
+    {
+     "lv": 50,
+     "name": "Dark Laser",
+     "element": "Dark",
+     "ct": 20,
+     "power": 450,
+     "effects": "Blind 100"
+    },
+    {
+     "lv": 70,
+     "name": "Dark Whisp",
+     "element": "Dark",
+     "ct": 30,
+     "power": 600,
+     "effects": "Blind 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "1-2",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "1-2",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Digtoise": [
@@ -526,7 +3852,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Aqua Gun",
+     "element": "Water",
+     "ct": 2,
+     "power": 50,
+     "effects": "Soak 50"
+    },
+    {
+     "lv": 7,
+     "name": "Stone Blast",
+     "element": "Ground",
+     "ct": 4,
+     "power": 80,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 15,
+     "name": "Shell Spin",
+     "element": "Ground",
+     "ct": 8,
+     "power": 120,
+     "effects": null
+    },
+    {
+     "lv": 22,
+     "name": "Stone Cannon",
+     "element": "Ground",
+     "ct": 8,
+     "power": 120,
+     "effects": "Muddy 35"
+    },
+    {
+     "lv": 30,
+     "name": "Sand Tornado",
+     "element": "Ground",
+     "ct": 12,
+     "power": 200,
+     "effects": "Muddy 65"
+    },
+    {
+     "lv": 40,
+     "name": "Aqua Burst",
+     "element": "Water",
+     "ct": 12,
+     "power": 200,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 50,
+     "name": "Rock Lance",
+     "element": "Ground",
+     "ct": 20,
+     "power": 400,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 70,
+     "name": "Rocky Impact",
+     "element": "Ground",
+     "ct": 30,
+     "power": 600,
+     "effects": "Muddy 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Claw",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Dinossom": [
@@ -539,7 +3943,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.0,
    "recvRate": 0.48,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Wind Cutter",
+     "element": "Grass",
+     "ct": 2,
+     "power": 40,
+     "effects": "Ivy-Covered 35"
+    },
+    {
+     "lv": 7,
+     "name": "Botanical Smash",
+     "element": "Grass",
+     "ct": 4,
+     "power": 80,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 15,
+     "name": "Dragon Burst",
+     "element": "Dragon",
+     "ct": 4,
+     "power": 80,
+     "effects": "Burn 50"
+    },
+    {
+     "lv": 22,
+     "name": "Seed Mine",
+     "element": "Grass",
+     "ct": 8,
+     "power": 120,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 30,
+     "name": "Dragon Breath",
+     "element": "Dragon",
+     "ct": 8,
+     "power": 160,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 40,
+     "name": "Spine Vine",
+     "element": "Grass",
+     "ct": 12,
+     "power": 250,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 50,
+     "name": "Solar Blast",
+     "element": "Grass",
+     "ct": 20,
+     "power": 450,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 70,
+     "name": "Wind Burst",
+     "element": "Grass",
+     "ct": 30,
+     "power": 600,
+     "effects": "Ivy-Covered 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "1-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Dragon Stone",
+     "qty": "1-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Dinossom Lux": [
@@ -552,7 +4034,93 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Shockwave",
+     "element": "Electric",
+     "ct": 4,
+     "power": 80,
+     "effects": "Electrify 103"
+    },
+    {
+     "lv": 7,
+     "name": "Plasma Funnel",
+     "element": "Electric",
+     "ct": 8,
+     "power": 120,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 15,
+     "name": "Botanical Smash",
+     "element": "Grass",
+     "ct": 4,
+     "power": 80,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 22,
+     "name": "Dragon Breath",
+     "element": "Dragon",
+     "ct": 8,
+     "power": 160,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 30,
+     "name": "Tri-Lightning",
+     "element": "Electric",
+     "ct": 12,
+     "power": 200,
+     "effects": "Electrify 103"
+    },
+    {
+     "lv": 35,
+     "name": "Lightning Smash",
+     "element": "Electric",
+     "ct": 16,
+     "power": 300,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 40,
+     "name": "Lightning Strike",
+     "element": "Electric",
+     "ct": 16,
+     "power": 300,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 50,
+     "name": "Lightning Bolt",
+     "element": "Electric",
+     "ct": 20,
+     "power": 450,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 70,
+     "name": "Thunderstorm",
+     "element": "Electric",
+     "ct": 30,
+     "power": 600,
+     "effects": null
+    }
+   ],
+   "drops": [
+    {
+     "item": "Dinossom Lux Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Dragon Stone",
+     "qty": "5-7",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Direhowl": [
@@ -565,7 +4133,98 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.48,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Double Fang",
+     "element": "Neutral",
+     "ct": 2,
+     "power": 40,
+     "effects": null
+    },
+    {
+     "lv": 2,
+     "name": "Fierce Fang",
+     "element": "Neutral",
+     "ct": 2,
+     "power": 50,
+     "effects": null
+    },
+    {
+     "lv": 7,
+     "name": "Bog Blast",
+     "element": "Ground",
+     "ct": 2,
+     "power": 40,
+     "effects": "Muddy 50"
+    },
+    {
+     "lv": 15,
+     "name": "Air Cannon",
+     "element": "Neutral",
+     "ct": 2,
+     "power": 40,
+     "effects": null
+    },
+    {
+     "lv": 22,
+     "name": "Power Shot",
+     "element": "Neutral",
+     "ct": 4,
+     "power": 80,
+     "effects": null
+    },
+    {
+     "lv": 30,
+     "name": "Ignis Blast",
+     "element": "Fire",
+     "ct": 2,
+     "power": 40,
+     "effects": "Burn 50"
+    },
+    {
+     "lv": 40,
+     "name": "Power Bomb",
+     "element": "Neutral",
+     "ct": 8,
+     "power": 120,
+     "effects": null
+    },
+    {
+     "lv": 50,
+     "name": "Pal Blast",
+     "element": "Neutral",
+     "ct": 20,
+     "power": 450,
+     "effects": null
+    },
+    {
+     "lv": 70,
+     "name": "Holy Burst",
+     "element": "Neutral",
+     "ct": 30,
+     "power": 700,
+     "effects": null
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "1-2",
+     "pct": 100.0
+    },
+    {
+     "item": "Ruby",
+     "qty": "1",
+     "pct": 3.0
+    },
+    {
+     "item": "Precious Claw",
+     "qty": "1-2",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Dogen": [
@@ -578,7 +4237,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Air Cannon",
+     "element": "Neutral",
+     "ct": 2,
+     "power": 40,
+     "effects": null
+    },
+    {
+     "lv": 7,
+     "name": "Power Shot",
+     "element": "Neutral",
+     "ct": 4,
+     "power": 80,
+     "effects": null
+    },
+    {
+     "lv": 15,
+     "name": "Stone Cannon",
+     "element": "Ground",
+     "ct": 8,
+     "power": 120,
+     "effects": "Muddy 35"
+    },
+    {
+     "lv": 22,
+     "name": "Power Bomb",
+     "element": "Neutral",
+     "ct": 8,
+     "power": 120,
+     "effects": null
+    },
+    {
+     "lv": 30,
+     "name": "Air Blade",
+     "element": "Neutral",
+     "ct": 8,
+     "power": 160,
+     "effects": null
+    },
+    {
+     "lv": 40,
+     "name": "Wholehearted Stance",
+     "element": "Neutral",
+     "ct": 20,
+     "power": 450,
+     "effects": null
+    },
+    {
+     "lv": 50,
+     "name": "Pal Blast",
+     "element": "Neutral",
+     "ct": 20,
+     "power": 450,
+     "effects": null
+    },
+    {
+     "lv": 70,
+     "name": "Holy Burst",
+     "element": "Neutral",
+     "ct": 30,
+     "power": 700,
+     "effects": null
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Dualith": [
@@ -591,7 +4328,125 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Bog Blast",
+     "element": "Ground",
+     "ct": 2,
+     "power": 40,
+     "effects": "Muddy 50"
+    },
+    {
+     "lv": 7,
+     "name": "Stone Blast",
+     "element": "Ground",
+     "ct": 4,
+     "power": 80,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 15,
+     "name": "Seed Mine",
+     "element": "Grass",
+     "ct": 8,
+     "power": 120,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 22,
+     "name": "Rockburst",
+     "element": "Ground",
+     "ct": 16,
+     "power": 300,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 30,
+     "name": "Solar Blast",
+     "element": "Grass",
+     "ct": 20,
+     "power": 450,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 40,
+     "name": "Rocket Arm",
+     "element": "Ground",
+     "ct": 30,
+     "power": 600,
+     "effects": null
+    },
+    {
+     "lv": 50,
+     "name": "Wind Burst",
+     "element": "Grass",
+     "ct": 30,
+     "power": 600,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 70,
+     "name": "Root Cannon",
+     "element": "Grass",
+     "ct": 30,
+     "power": 700,
+     "effects": "Ivy-Covered 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Dualith Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "7-9",
+     "pct": 100.0
+    },
+    {
+     "item": "World Tree Holy Water",
+     "qty": "20-30",
+     "pct": 100.0
+    },
+    {
+     "item": "Ground Radiant Gem",
+     "qty": "1-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Decayed Ancient Relic",
+     "qty": "1-10",
+     "pct": 50.0
+    },
+    {
+     "item": "Dormant Ancient Relic",
+     "qty": "1-5",
+     "pct": 25.0
+    },
+    {
+     "item": "Gorgeous Ancient Relic",
+     "qty": "1-3",
+     "pct": 15.0
+    },
+    {
+     "item": "Glowing Ancient Relic",
+     "qty": "1-2",
+     "pct": 12.5
+    },
+    {
+     "item": "Glistening Ancient Relic",
+     "qty": "1",
+     "pct": 10.0
+    }
+   ]
   }
  ],
  "Dualith Noct": [
@@ -604,7 +4459,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Umbral Surge",
+     "element": "Dark",
+     "ct": 4,
+     "power": 60,
+     "effects": "Blind 35"
+    },
+    {
+     "lv": 7,
+     "name": "Dark Cannon",
+     "element": "Dark",
+     "ct": 4,
+     "power": 70,
+     "effects": "Blind 20"
+    },
+    {
+     "lv": 15,
+     "name": "Dark Arrow",
+     "element": "Dark",
+     "ct": 8,
+     "power": 120,
+     "effects": "Blind 102"
+    },
+    {
+     "lv": 22,
+     "name": "Rockburst",
+     "element": "Ground",
+     "ct": 16,
+     "power": 300,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 30,
+     "name": "Dark Laser",
+     "element": "Dark",
+     "ct": 20,
+     "power": 450,
+     "effects": "Blind 100"
+    },
+    {
+     "lv": 40,
+     "name": "Rocket Arm",
+     "element": "Ground",
+     "ct": 30,
+     "power": 600,
+     "effects": null
+    },
+    {
+     "lv": 50,
+     "name": "Dark Whisp",
+     "element": "Dark",
+     "ct": 30,
+     "power": 600,
+     "effects": "Blind 100"
+    },
+    {
+     "lv": 70,
+     "name": "Dark Root",
+     "element": "Dark",
+     "ct": 30,
+     "power": 700,
+     "effects": null
+    }
+   ],
+   "drops": [
+    {
+     "item": "Dualith Noct Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Dumud": [
@@ -617,7 +4550,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.48,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Bog Blast",
+     "element": "Ground",
+     "ct": 2,
+     "power": 40,
+     "effects": "Muddy 50"
+    },
+    {
+     "lv": 7,
+     "name": "Aqua Gun",
+     "element": "Water",
+     "ct": 2,
+     "power": 50,
+     "effects": "Soak 50"
+    },
+    {
+     "lv": 15,
+     "name": "Stone Blast",
+     "element": "Ground",
+     "ct": 4,
+     "power": 80,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 22,
+     "name": "Bubble Blast",
+     "element": "Water",
+     "ct": 4,
+     "power": 80,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 30,
+     "name": "Aqua Burst",
+     "element": "Water",
+     "ct": 12,
+     "power": 200,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 40,
+     "name": "Rock Lance",
+     "element": "Ground",
+     "ct": 20,
+     "power": 400,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 50,
+     "name": "Hydro Laser",
+     "element": "Water",
+     "ct": 20,
+     "power": 450,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 70,
+     "name": "Geyser Gush",
+     "element": "Water",
+     "ct": 30,
+     "power": 600,
+     "effects": "Soak 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Dumud Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "3-4",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Dynamoff": [
@@ -630,7 +4641,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Spark Blast",
+     "element": "Electric",
+     "ct": 2,
+     "power": 50,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 7,
+     "name": "Shockwave",
+     "element": "Electric",
+     "ct": 4,
+     "power": 80,
+     "effects": "Electrify 103"
+    },
+    {
+     "lv": 15,
+     "name": "Electric Ball",
+     "element": "Electric",
+     "ct": 8,
+     "power": 100,
+     "effects": "Electrify 50"
+    },
+    {
+     "lv": 22,
+     "name": "Air Blade",
+     "element": "Neutral",
+     "ct": 8,
+     "power": 160,
+     "effects": null
+    },
+    {
+     "lv": 30,
+     "name": "Tri-Lightning",
+     "element": "Electric",
+     "ct": 12,
+     "power": 200,
+     "effects": "Electrify 103"
+    },
+    {
+     "lv": 40,
+     "name": "Lightning Strike",
+     "element": "Electric",
+     "ct": 16,
+     "power": 300,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 50,
+     "name": "Thunder Rain",
+     "element": "Electric",
+     "ct": 20,
+     "power": 400,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 70,
+     "name": "Thunderstorm",
+     "element": "Electric",
+     "ct": 30,
+     "power": 600,
+     "effects": null
+    }
+   ],
+   "drops": [
+    {
+     "item": "Dynamoff Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Plume",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Eidrolon": [
@@ -643,7 +4732,125 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Dragon Burst",
+     "element": "Dragon",
+     "ct": 4,
+     "power": 80,
+     "effects": "Burn 50"
+    },
+    {
+     "lv": 7,
+     "name": "Dragon Breath",
+     "element": "Dragon",
+     "ct": 8,
+     "power": 160,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 15,
+     "name": "Beam Slicer",
+     "element": "Dragon",
+     "ct": 16,
+     "power": 350,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 22,
+     "name": "Comet Barrage",
+     "element": "Dragon",
+     "ct": 20,
+     "power": 450,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 30,
+     "name": "Tail Slash",
+     "element": "Dragon",
+     "ct": 24,
+     "power": 550,
+     "effects": null
+    },
+    {
+     "lv": 40,
+     "name": "Dragon Meteor",
+     "element": "Dragon",
+     "ct": 30,
+     "power": 600,
+     "effects": "Burn 45"
+    },
+    {
+     "lv": 50,
+     "name": "Blazing Beam",
+     "element": "Dragon",
+     "ct": 30,
+     "power": 700,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 70,
+     "name": "Meteorain",
+     "element": "Dragon",
+     "ct": 30,
+     "power": 700,
+     "effects": "Burn 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Eidrolon Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Dragon Stone",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "7-9",
+     "pct": 100.0
+    },
+    {
+     "item": "World Tree Holy Water",
+     "qty": "20-30",
+     "pct": 100.0
+    },
+    {
+     "item": "Dragon Radiant Gem",
+     "qty": "1-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Decayed Ancient Relic",
+     "qty": "1-10",
+     "pct": 50.0
+    },
+    {
+     "item": "Dormant Ancient Relic",
+     "qty": "1-5",
+     "pct": 25.0
+    },
+    {
+     "item": "Gorgeous Ancient Relic",
+     "qty": "1-3",
+     "pct": 15.0
+    },
+    {
+     "item": "Glowing Ancient Relic",
+     "qty": "1-2",
+     "pct": 12.5
+    },
+    {
+     "item": "Glistening Ancient Relic",
+     "qty": "1",
+     "pct": 10.0
+    }
+   ]
   }
  ],
  "Eikthyrdeer": [
@@ -656,7 +4863,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.48,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Power Shot",
+     "element": "Neutral",
+     "ct": 4,
+     "power": 80,
+     "effects": null
+    },
+    {
+     "lv": 7,
+     "name": "Antler Uppercut",
+     "element": "Neutral",
+     "ct": 4,
+     "power": 90,
+     "effects": null
+    },
+    {
+     "lv": 15,
+     "name": "Stone Blast",
+     "element": "Ground",
+     "ct": 4,
+     "power": 80,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 22,
+     "name": "Stone Cannon",
+     "element": "Ground",
+     "ct": 8,
+     "power": 120,
+     "effects": "Muddy 35"
+    },
+    {
+     "lv": 30,
+     "name": "Power Bomb",
+     "element": "Neutral",
+     "ct": 8,
+     "power": 120,
+     "effects": null
+    },
+    {
+     "lv": 40,
+     "name": "Rock Lance",
+     "element": "Ground",
+     "ct": 20,
+     "power": 400,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 50,
+     "name": "Pal Blast",
+     "element": "Neutral",
+     "ct": 20,
+     "power": 450,
+     "effects": null
+    },
+    {
+     "lv": 70,
+     "name": "Holy Burst",
+     "element": "Neutral",
+     "ct": 30,
+     "power": 700,
+     "effects": null
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "1-2",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "1-2",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Elizabee": [
@@ -669,7 +4954,90 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Air Cannon",
+     "element": "Neutral",
+     "ct": 2,
+     "power": 40,
+     "effects": null
+    },
+    {
+     "lv": 7,
+     "name": "Wind Cutter",
+     "element": "Grass",
+     "ct": 2,
+     "power": 40,
+     "effects": "Ivy-Covered 35"
+    },
+    {
+     "lv": 15,
+     "name": "Poison Blast",
+     "element": "Dark",
+     "ct": 2,
+     "power": 30,
+     "effects": "Poison 100"
+    },
+    {
+     "lv": 22,
+     "name": "Spinning Staff",
+     "element": "Grass",
+     "ct": 8,
+     "power": 160,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 30,
+     "name": "Grass Tornado",
+     "element": "Grass",
+     "ct": 12,
+     "power": 200,
+     "effects": "Ivy-Covered 65"
+    },
+    {
+     "lv": 40,
+     "name": "Spine Vine",
+     "element": "Grass",
+     "ct": 12,
+     "power": 250,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 50,
+     "name": "Solar Blast",
+     "element": "Grass",
+     "ct": 20,
+     "power": 450,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 70,
+     "name": "Wind Burst",
+     "element": "Grass",
+     "ct": 30,
+     "power": 600,
+     "effects": "Ivy-Covered 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Elizabee Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Plume",
+     "qty": "5-6",
+     "pct": 100.0
+    },
+    {
+     "item": "Double-Barreled Shotgun Schematic 4",
+     "qty": "1",
+     "pct": 3.0
+    }
+   ]
   }
  ],
  "Elphidran": [
@@ -682,7 +5050,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Dragon Cannon",
+     "element": "Dragon",
+     "ct": 2,
+     "power": 40,
+     "effects": "Burn 35"
+    },
+    {
+     "lv": 7,
+     "name": "Dragon Burst",
+     "element": "Dragon",
+     "ct": 4,
+     "power": 80,
+     "effects": "Burn 50"
+    },
+    {
+     "lv": 15,
+     "name": "Flare Arrow",
+     "element": "Fire",
+     "ct": 8,
+     "power": 120,
+     "effects": "Burn 102"
+    },
+    {
+     "lv": 22,
+     "name": "Mystic Whirlwind",
+     "element": "Dragon",
+     "ct": 8,
+     "power": 150,
+     "effects": null
+    },
+    {
+     "lv": 30,
+     "name": "Dragon Breath",
+     "element": "Dragon",
+     "ct": 8,
+     "power": 160,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 40,
+     "name": "Pal Blast",
+     "element": "Neutral",
+     "ct": 20,
+     "power": 450,
+     "effects": null
+    },
+    {
+     "lv": 50,
+     "name": "Dragon Meteor",
+     "element": "Dragon",
+     "ct": 30,
+     "power": 600,
+     "effects": "Burn 45"
+    },
+    {
+     "lv": 70,
+     "name": "Wind Burst",
+     "element": "Grass",
+     "ct": 30,
+     "power": 600,
+     "effects": "Ivy-Covered 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Elphidran Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Plume",
+     "qty": "4-5",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Eye of Cthulhu": [
@@ -695,7 +5141,37 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 1.0,
-   "capture": 1.0
+   "capture": 1.0,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Lock-On Lunge",
+     "element": "Dark",
+     "ct": 15,
+     "power": 300,
+     "effects": null
+    },
+    {
+     "lv": 2,
+     "name": "Servant Call",
+     "element": "Dark",
+     "ct": 10,
+     "power": 300,
+     "effects": null
+    }
+   ],
+   "drops": [
+    {
+     "item": "Hallowed Bar",
+     "qty": "20-30",
+     "pct": 100.0
+    },
+    {
+     "item": "Eye of Cthulhu Mask",
+     "qty": "1",
+     "pct": 10.0
+    }
+   ]
   }
  ],
  "Faleris Aqua": [
@@ -708,7 +5184,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Hydro Jet",
+     "element": "Water",
+     "ct": 2,
+     "power": 40,
+     "effects": "Soak 35"
+    },
+    {
+     "lv": 7,
+     "name": "Bubble Blast",
+     "element": "Water",
+     "ct": 4,
+     "power": 80,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 15,
+     "name": "Acid Rain",
+     "element": "Water",
+     "ct": 8,
+     "power": 120,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 22,
+     "name": "Splash",
+     "element": "Water",
+     "ct": 8,
+     "power": 160,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 30,
+     "name": "Curtain Splash",
+     "element": "Water",
+     "ct": 16,
+     "power": 300,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 40,
+     "name": "Phoenix Tide",
+     "element": "Water",
+     "ct": 16,
+     "power": 320,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 50,
+     "name": "Hydro Laser",
+     "element": "Water",
+     "ct": 20,
+     "power": 450,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 70,
+     "name": "Geyser Gush",
+     "element": "Water",
+     "ct": 30,
+     "power": 600,
+     "effects": "Soak 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Faleris Aqua Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Plume",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Felbat": [
@@ -721,7 +5275,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Poison Blast",
+     "element": "Dark",
+     "ct": 2,
+     "power": 30,
+     "effects": "Poison 100"
+    },
+    {
+     "lv": 7,
+     "name": "Dark Ball",
+     "element": "Dark",
+     "ct": 2,
+     "power": 50,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 15,
+     "name": "Shadow Burst",
+     "element": "Dark",
+     "ct": 4,
+     "power": 80,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 22,
+     "name": "Spirit Flame",
+     "element": "Dark",
+     "ct": 12,
+     "power": 200,
+     "effects": "Burn 102"
+    },
+    {
+     "lv": 30,
+     "name": "Nightmare Ball",
+     "element": "Dark",
+     "ct": 16,
+     "power": 300,
+     "effects": "Blind 65"
+    },
+    {
+     "lv": 40,
+     "name": "Ignis Rage",
+     "element": "Fire",
+     "ct": 24,
+     "power": 500,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 50,
+     "name": "Dark Laser",
+     "element": "Dark",
+     "ct": 20,
+     "power": 450,
+     "effects": "Blind 100"
+    },
+    {
+     "lv": 70,
+     "name": "Dark Whisp",
+     "element": "Dark",
+     "ct": 30,
+     "power": 600,
+     "effects": "Blind 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Felbat Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "1-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Fenglope": [
@@ -734,7 +5366,90 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Air Cannon",
+     "element": "Neutral",
+     "ct": 2,
+     "power": 40,
+     "effects": null
+    },
+    {
+     "lv": 7,
+     "name": "Aqua Gun",
+     "element": "Water",
+     "ct": 2,
+     "power": 50,
+     "effects": "Soak 50"
+    },
+    {
+     "lv": 15,
+     "name": "Cloud Tempest",
+     "element": "Neutral",
+     "ct": 8,
+     "power": 120,
+     "effects": null
+    },
+    {
+     "lv": 22,
+     "name": "Acid Rain",
+     "element": "Water",
+     "ct": 8,
+     "power": 120,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 30,
+     "name": "Aqua Burst",
+     "element": "Water",
+     "ct": 12,
+     "power": 200,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 40,
+     "name": "Blizzard Spike",
+     "element": "Ice",
+     "ct": 20,
+     "power": 450,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 50,
+     "name": "Pal Blast",
+     "element": "Neutral",
+     "ct": 20,
+     "power": 450,
+     "effects": null
+    },
+    {
+     "lv": 70,
+     "name": "Holy Burst",
+     "element": "Neutral",
+     "ct": 30,
+     "power": 700,
+     "effects": null
+    }
+   ],
+   "drops": [
+    {
+     "item": "Fenglope Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "3-5",
+     "pct": 100.0
+    },
+    {
+     "item": "Makeshift Handgun Schematic 4",
+     "qty": "1",
+     "pct": 3.0
+    }
+   ]
   }
  ],
  "Fenglope Lux": [
@@ -747,7 +5462,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Shockwave",
+     "element": "Electric",
+     "ct": 4,
+     "power": 80,
+     "effects": "Electrify 103"
+    },
+    {
+     "lv": 7,
+     "name": "Lightning Streak",
+     "element": "Electric",
+     "ct": 8,
+     "power": 160,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 15,
+     "name": "Acid Rain",
+     "element": "Water",
+     "ct": 8,
+     "power": 120,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 22,
+     "name": "Thunder Tempest",
+     "element": "Electric",
+     "ct": 16,
+     "power": 300,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 30,
+     "name": "Thunder Rain",
+     "element": "Electric",
+     "ct": 20,
+     "power": 400,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 40,
+     "name": "Lightning Bolt",
+     "element": "Electric",
+     "ct": 20,
+     "power": 450,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 50,
+     "name": "Thunderstorm",
+     "element": "Electric",
+     "ct": 30,
+     "power": 600,
+     "effects": null
+    },
+    {
+     "lv": 70,
+     "name": "Thunder Rail",
+     "element": "Electric",
+     "ct": 30,
+     "power": 600,
+     "effects": "Electrify 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Fenglope Lux Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Finsider": [
@@ -760,7 +5553,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Aqua Gun",
+     "element": "Water",
+     "ct": 2,
+     "power": 50,
+     "effects": "Soak 50"
+    },
+    {
+     "lv": 7,
+     "name": "Bubble Blast",
+     "element": "Water",
+     "ct": 4,
+     "power": 80,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 15,
+     "name": "Power Bomb",
+     "element": "Neutral",
+     "ct": 8,
+     "power": 120,
+     "effects": null
+    },
+    {
+     "lv": 22,
+     "name": "Torrential Blast",
+     "element": "Water",
+     "ct": 12,
+     "power": 250,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 30,
+     "name": "Trigger Happy",
+     "element": "Water",
+     "ct": 16,
+     "power": 300,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 40,
+     "name": "Curtain Splash",
+     "element": "Water",
+     "ct": 16,
+     "power": 300,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 50,
+     "name": "Hydro Laser",
+     "element": "Water",
+     "ct": 20,
+     "power": 450,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 70,
+     "name": "Geyser Gush",
+     "element": "Water",
+     "ct": 30,
+     "power": 600,
+     "effects": "Soak 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Flambelle": [
@@ -773,7 +5644,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "S",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.77
+   "capture": 0.77,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Ignis Blast",
+     "element": "Fire",
+     "ct": 2,
+     "power": 40,
+     "effects": "Burn 50"
+    },
+    {
+     "lv": 7,
+     "name": "Spirit Fire",
+     "element": "Fire",
+     "ct": 4,
+     "power": 80,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 15,
+     "name": "Flare Arrow",
+     "element": "Fire",
+     "ct": 8,
+     "power": 120,
+     "effects": "Burn 102"
+    },
+    {
+     "lv": 22,
+     "name": "Spirit Flame",
+     "element": "Dark",
+     "ct": 12,
+     "power": 200,
+     "effects": "Burn 102"
+    },
+    {
+     "lv": 30,
+     "name": "Flare Storm",
+     "element": "Fire",
+     "ct": 12,
+     "power": 200,
+     "effects": "Burn 65"
+    },
+    {
+     "lv": 40,
+     "name": "Ignis Rage",
+     "element": "Fire",
+     "ct": 24,
+     "power": 500,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 50,
+     "name": "Fire Ball",
+     "element": "Fire",
+     "ct": 30,
+     "power": 600,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 70,
+     "name": "Rocky Impact",
+     "element": "Ground",
+     "ct": 30,
+     "power": 600,
+     "effects": "Muddy 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "1-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "1-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Flaracle": [
@@ -786,7 +5735,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Ignis Blast",
+     "element": "Fire",
+     "ct": 2,
+     "power": 40,
+     "effects": "Burn 50"
+    },
+    {
+     "lv": 7,
+     "name": "Flare Arrow",
+     "element": "Fire",
+     "ct": 8,
+     "power": 120,
+     "effects": "Burn 102"
+    },
+    {
+     "lv": 15,
+     "name": "Ignis Breath",
+     "element": "Fire",
+     "ct": 8,
+     "power": 160,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 22,
+     "name": "Flame Wall",
+     "element": "Fire",
+     "ct": 12,
+     "power": 250,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 30,
+     "name": "Flame Funnel",
+     "element": "Fire",
+     "ct": 16,
+     "power": 300,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 40,
+     "name": "Dark Laser",
+     "element": "Dark",
+     "ct": 20,
+     "power": 450,
+     "effects": "Blind 100"
+    },
+    {
+     "lv": 50,
+     "name": "Volcanic Rain",
+     "element": "Fire",
+     "ct": 20,
+     "power": 450,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 70,
+     "name": "Fire Ball",
+     "element": "Fire",
+     "ct": 30,
+     "power": 600,
+     "effects": "Burn 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Flaracle Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Flopie": [
@@ -799,7 +5826,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Wind Cutter",
+     "element": "Grass",
+     "ct": 2,
+     "power": 40,
+     "effects": "Ivy-Covered 35"
+    },
+    {
+     "lv": 7,
+     "name": "Air Cannon",
+     "element": "Neutral",
+     "ct": 2,
+     "power": 40,
+     "effects": null
+    },
+    {
+     "lv": 15,
+     "name": "Hydro Jet",
+     "element": "Water",
+     "ct": 2,
+     "power": 40,
+     "effects": "Soak 35"
+    },
+    {
+     "lv": 22,
+     "name": "Seed Machine Gun",
+     "element": "Grass",
+     "ct": 4,
+     "power": 80,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 30,
+     "name": "Bubble Blast",
+     "element": "Water",
+     "ct": 4,
+     "power": 80,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 40,
+     "name": "Grass Tornado",
+     "element": "Grass",
+     "ct": 12,
+     "power": 200,
+     "effects": "Ivy-Covered 65"
+    },
+    {
+     "lv": 50,
+     "name": "Solar Blast",
+     "element": "Grass",
+     "ct": 20,
+     "power": 450,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 70,
+     "name": "Wind Burst",
+     "element": "Grass",
+     "ct": 30,
+     "power": 600,
+     "effects": "Ivy-Covered 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "2-4",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "1-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Foxcicle": [
@@ -812,7 +5917,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Air Cannon",
+     "element": "Neutral",
+     "ct": 2,
+     "power": 40,
+     "effects": null
+    },
+    {
+     "lv": 7,
+     "name": "Ice Missile",
+     "element": "Ice",
+     "ct": 2,
+     "power": 40,
+     "effects": "Freeze 102"
+    },
+    {
+     "lv": 15,
+     "name": "Icicle Cutter",
+     "element": "Ice",
+     "ct": 4,
+     "power": 80,
+     "effects": "Freeze 50"
+    },
+    {
+     "lv": 22,
+     "name": "Spirit Flame",
+     "element": "Dark",
+     "ct": 12,
+     "power": 200,
+     "effects": "Burn 102"
+    },
+    {
+     "lv": 30,
+     "name": "Iceberg",
+     "element": "Ice",
+     "ct": 8,
+     "power": 120,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 40,
+     "name": "Crystal Breath",
+     "element": "Ice",
+     "ct": 8,
+     "power": 160,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 50,
+     "name": "Blizzard Spike",
+     "element": "Ice",
+     "ct": 20,
+     "power": 450,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 70,
+     "name": "Diamond Rain",
+     "element": "Ice",
+     "ct": 30,
+     "power": 600,
+     "effects": "Freeze 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Foxicle Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "6-8",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Foxparks": [
@@ -825,7 +6008,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "S",
    "hpRate": 1.0,
    "recvRate": 0.48,
-   "capture": 0.77
+   "capture": 0.77,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Ignis Blast",
+     "element": "Fire",
+     "ct": 2,
+     "power": 40,
+     "effects": "Burn 50"
+    },
+    {
+     "lv": 7,
+     "name": "Bog Blast",
+     "element": "Ground",
+     "ct": 2,
+     "power": 40,
+     "effects": "Muddy 50"
+    },
+    {
+     "lv": 15,
+     "name": "Spirit Fire",
+     "element": "Fire",
+     "ct": 4,
+     "power": 80,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 22,
+     "name": "Flare Arrow",
+     "element": "Fire",
+     "ct": 8,
+     "power": 120,
+     "effects": "Burn 102"
+    },
+    {
+     "lv": 30,
+     "name": "Ignis Breath",
+     "element": "Fire",
+     "ct": 8,
+     "power": 160,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 40,
+     "name": "Spirit Flame",
+     "element": "Dark",
+     "ct": 12,
+     "power": 200,
+     "effects": "Burn 102"
+    },
+    {
+     "lv": 50,
+     "name": "Fire Ball",
+     "element": "Fire",
+     "ct": 30,
+     "power": 600,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 70,
+     "name": "Dragon Meteor",
+     "element": "Dragon",
+     "ct": 30,
+     "power": 600,
+     "effects": "Burn 45"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "1-2",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "1-2",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Foxparks Cryst": [
@@ -838,7 +6099,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "S",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.77
+   "capture": 0.77,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Ice Missile",
+     "element": "Ice",
+     "ct": 2,
+     "power": 40,
+     "effects": "Freeze 102"
+    },
+    {
+     "lv": 7,
+     "name": "Hydro Jet",
+     "element": "Water",
+     "ct": 2,
+     "power": 40,
+     "effects": "Soak 35"
+    },
+    {
+     "lv": 15,
+     "name": "Icicle Cutter",
+     "element": "Ice",
+     "ct": 4,
+     "power": 80,
+     "effects": "Freeze 50"
+    },
+    {
+     "lv": 22,
+     "name": "Iceberg",
+     "element": "Ice",
+     "ct": 8,
+     "power": 120,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 30,
+     "name": "Crystal Breath",
+     "element": "Ice",
+     "ct": 8,
+     "power": 160,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 40,
+     "name": "Icicle Bullet",
+     "element": "Ice",
+     "ct": 12,
+     "power": 250,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 50,
+     "name": "Blizzard Spike",
+     "element": "Ice",
+     "ct": 20,
+     "power": 450,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 70,
+     "name": "Diamond Rain",
+     "element": "Ice",
+     "ct": 30,
+     "power": 600,
+     "effects": "Freeze 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Foxparks Cryst Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Frostallion": [
@@ -851,7 +6190,106 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 2.728395,
    "recvRate": 0.18,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Air Cannon",
+     "element": "Neutral",
+     "ct": 2,
+     "power": 40,
+     "effects": null
+    },
+    {
+     "lv": 7,
+     "name": "Ice Missile",
+     "element": "Ice",
+     "ct": 2,
+     "power": 40,
+     "effects": "Freeze 102"
+    },
+    {
+     "lv": 15,
+     "name": "Icicle Cutter",
+     "element": "Ice",
+     "ct": 4,
+     "power": 80,
+     "effects": "Freeze 50"
+    },
+    {
+     "lv": 22,
+     "name": "Iceberg",
+     "element": "Ice",
+     "ct": 8,
+     "power": 120,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 30,
+     "name": "Crystal Wing",
+     "element": "Ice",
+     "ct": 30,
+     "power": 700,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 40,
+     "name": "Crystal Breath",
+     "element": "Ice",
+     "ct": 8,
+     "power": 160,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 50,
+     "name": "Blizzard Spike",
+     "element": "Ice",
+     "ct": 20,
+     "power": 450,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 55,
+     "name": "Holy Burst",
+     "element": "Neutral",
+     "ct": 30,
+     "power": 700,
+     "effects": null
+    },
+    {
+     "lv": 60,
+     "name": "Double Blizzard Spike",
+     "element": "Ice",
+     "ct": 30,
+     "power": 700,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 70,
+     "name": "Absolute Frost",
+     "element": "Ice",
+     "ct": 30,
+     "power": 700,
+     "effects": "Freeze 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Frostallion Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "6-8",
+     "pct": 100.0
+    },
+    {
+     "item": "Plasma Cannon Schematic 4",
+     "qty": "1",
+     "pct": 3.0
+    }
+   ]
   }
  ],
  "Frostallion Noct": [
@@ -864,7 +6302,114 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 2.728395,
    "recvRate": 0.18,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Air Cannon",
+     "element": "Neutral",
+     "ct": 2,
+     "power": 40,
+     "effects": null
+    },
+    {
+     "lv": 7,
+     "name": "Dark Ball",
+     "element": "Dark",
+     "ct": 2,
+     "power": 50,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 15,
+     "name": "Shadow Burst",
+     "element": "Dark",
+     "ct": 4,
+     "power": 80,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 22,
+     "name": "Spirit Flame",
+     "element": "Dark",
+     "ct": 12,
+     "power": 200,
+     "effects": "Burn 102"
+    },
+    {
+     "lv": 30,
+     "name": "Crystal Wing",
+     "element": "Ice",
+     "ct": 30,
+     "power": 700,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 40,
+     "name": "Nightmare Ball",
+     "element": "Dark",
+     "ct": 16,
+     "power": 300,
+     "effects": "Blind 65"
+    },
+    {
+     "lv": 45,
+     "name": "Dark Wing",
+     "element": "Dark",
+     "ct": 30,
+     "power": 700,
+     "effects": "Blind 100"
+    },
+    {
+     "lv": 50,
+     "name": "Dark Laser",
+     "element": "Dark",
+     "ct": 20,
+     "power": 450,
+     "effects": "Blind 100"
+    },
+    {
+     "lv": 55,
+     "name": "Double Blizzard Spike",
+     "element": "Ice",
+     "ct": 30,
+     "power": 700,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 60,
+     "name": "Dark Whisp",
+     "element": "Dark",
+     "ct": 30,
+     "power": 600,
+     "effects": "Blind 100"
+    },
+    {
+     "lv": 70,
+     "name": "Absolute Frost",
+     "element": "Ice",
+     "ct": 30,
+     "power": 700,
+     "effects": "Freeze 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Frostallion Noct Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "6-8",
+     "pct": 100.0
+    },
+    {
+     "item": "Overheat Rifle Schematic 4",
+     "qty": "1",
+     "pct": 3.0
+    }
+   ]
   }
  ],
  "Frostplume": [
@@ -877,7 +6422,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Ice Missile",
+     "element": "Ice",
+     "ct": 2,
+     "power": 40,
+     "effects": "Freeze 102"
+    },
+    {
+     "lv": 7,
+     "name": "Icicle Cutter",
+     "element": "Ice",
+     "ct": 4,
+     "power": 80,
+     "effects": "Freeze 50"
+    },
+    {
+     "lv": 15,
+     "name": "Iceberg",
+     "element": "Ice",
+     "ct": 8,
+     "power": 120,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 22,
+     "name": "Crystal Breath",
+     "element": "Ice",
+     "ct": 8,
+     "power": 160,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 30,
+     "name": "Freeze Wall",
+     "element": "Ice",
+     "ct": 12,
+     "power": 200,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 40,
+     "name": "Icicle Bullet",
+     "element": "Ice",
+     "ct": 12,
+     "power": 250,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 50,
+     "name": "Diamond Rain",
+     "element": "Ice",
+     "ct": 30,
+     "power": 600,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 70,
+     "name": "Absolute Frost",
+     "element": "Ice",
+     "ct": 30,
+     "power": 700,
+     "effects": "Freeze 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Plume",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Fuack": [
@@ -890,7 +6513,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "S",
    "hpRate": 1.0,
    "recvRate": 0.48,
-   "capture": 0.77
+   "capture": 0.77,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Aqua Gun",
+     "element": "Water",
+     "ct": 2,
+     "power": 50,
+     "effects": "Soak 50"
+    },
+    {
+     "lv": 7,
+     "name": "Power Shot",
+     "element": "Neutral",
+     "ct": 4,
+     "power": 80,
+     "effects": null
+    },
+    {
+     "lv": 15,
+     "name": "Hydro Jet",
+     "element": "Water",
+     "ct": 2,
+     "power": 40,
+     "effects": "Soak 35"
+    },
+    {
+     "lv": 22,
+     "name": "Ice Missile",
+     "element": "Ice",
+     "ct": 2,
+     "power": 40,
+     "effects": "Freeze 102"
+    },
+    {
+     "lv": 30,
+     "name": "Bubble Blast",
+     "element": "Water",
+     "ct": 4,
+     "power": 80,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 40,
+     "name": "Aqua Burst",
+     "element": "Water",
+     "ct": 12,
+     "power": 200,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 50,
+     "name": "Hydro Laser",
+     "element": "Water",
+     "ct": 20,
+     "power": 450,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 70,
+     "name": "Geyser Gush",
+     "element": "Water",
+     "ct": 30,
+     "power": 600,
+     "effects": "Soak 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "1-2",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "1-2",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Fuddler": [
@@ -903,7 +6604,93 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.48,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Bog Blast",
+     "element": "Ground",
+     "ct": 2,
+     "power": 40,
+     "effects": "Muddy 50"
+    },
+    {
+     "lv": 5,
+     "name": "Fuddler Tunneler",
+     "element": "Ground",
+     "ct": 4,
+     "power": 60,
+     "effects": "Muddy 50"
+    },
+    {
+     "lv": 7,
+     "name": "Power Shot",
+     "element": "Neutral",
+     "ct": 4,
+     "power": 80,
+     "effects": null
+    },
+    {
+     "lv": 15,
+     "name": "Stone Blast",
+     "element": "Ground",
+     "ct": 4,
+     "power": 80,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 22,
+     "name": "Stone Cannon",
+     "element": "Ground",
+     "ct": 8,
+     "power": 120,
+     "effects": "Muddy 35"
+    },
+    {
+     "lv": 30,
+     "name": "Power Bomb",
+     "element": "Neutral",
+     "ct": 8,
+     "power": 120,
+     "effects": null
+    },
+    {
+     "lv": 40,
+     "name": "Sand Tornado",
+     "element": "Ground",
+     "ct": 12,
+     "power": 200,
+     "effects": "Muddy 65"
+    },
+    {
+     "lv": 50,
+     "name": "Rock Lance",
+     "element": "Ground",
+     "ct": 20,
+     "power": 400,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 70,
+     "name": "Rocky Impact",
+     "element": "Ground",
+     "ct": 30,
+     "power": 600,
+     "effects": "Muddy 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "1-2",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Claw",
+     "qty": "1-2",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Galeclaw": [
@@ -916,7 +6703,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Gale Claw",
+     "element": "Neutral",
+     "ct": 4,
+     "power": 80,
+     "effects": null
+    },
+    {
+     "lv": 7,
+     "name": "Air Cannon",
+     "element": "Neutral",
+     "ct": 2,
+     "power": 40,
+     "effects": null
+    },
+    {
+     "lv": 15,
+     "name": "Bog Blast",
+     "element": "Ground",
+     "ct": 2,
+     "power": 40,
+     "effects": "Muddy 50"
+    },
+    {
+     "lv": 22,
+     "name": "Wind Cutter",
+     "element": "Grass",
+     "ct": 2,
+     "power": 40,
+     "effects": "Ivy-Covered 35"
+    },
+    {
+     "lv": 30,
+     "name": "Sand Tornado",
+     "element": "Ground",
+     "ct": 12,
+     "power": 200,
+     "effects": "Muddy 65"
+    },
+    {
+     "lv": 40,
+     "name": "Grass Tornado",
+     "element": "Grass",
+     "ct": 12,
+     "power": 200,
+     "effects": "Ivy-Covered 65"
+    },
+    {
+     "lv": 50,
+     "name": "Pal Blast",
+     "element": "Neutral",
+     "ct": 20,
+     "power": 450,
+     "effects": null
+    },
+    {
+     "lv": 70,
+     "name": "Holy Burst",
+     "element": "Neutral",
+     "ct": 30,
+     "power": 700,
+     "effects": null
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "2-4",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Plume",
+     "qty": "2-4",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Ghangler": [
@@ -929,7 +6794,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Aqua Gun",
+     "element": "Water",
+     "ct": 2,
+     "power": 50,
+     "effects": "Soak 50"
+    },
+    {
+     "lv": 7,
+     "name": "Dark Ball",
+     "element": "Dark",
+     "ct": 2,
+     "power": 50,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 15,
+     "name": "Dark Arrow",
+     "element": "Dark",
+     "ct": 8,
+     "power": 120,
+     "effects": "Blind 102"
+    },
+    {
+     "lv": 22,
+     "name": "Spirit Flame",
+     "element": "Dark",
+     "ct": 12,
+     "power": 200,
+     "effects": "Burn 102"
+    },
+    {
+     "lv": 30,
+     "name": "Lantern Sweep",
+     "element": "Water",
+     "ct": 20,
+     "power": 450,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 40,
+     "name": "Dark Laser",
+     "element": "Dark",
+     "ct": 20,
+     "power": 450,
+     "effects": "Blind 100"
+    },
+    {
+     "lv": 50,
+     "name": "Aqua Surge",
+     "element": "Water",
+     "ct": 24,
+     "power": 500,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 70,
+     "name": "Geyser Gush",
+     "element": "Water",
+     "ct": 30,
+     "power": 600,
+     "effects": "Soak 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Claw",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Gildane": [
@@ -942,7 +6885,101 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Double Fang (Ground)",
+     "element": "Ground",
+     "ct": 2,
+     "power": 40,
+     "effects": "Muddy 50"
+    },
+    {
+     "lv": 2,
+     "name": "Fierce Fang (Ground)",
+     "element": "Ground",
+     "ct": 2,
+     "power": 50,
+     "effects": "Muddy 50"
+    },
+    {
+     "lv": 3,
+     "name": "Power Shot",
+     "element": "Neutral",
+     "ct": 4,
+     "power": 80,
+     "effects": null
+    },
+    {
+     "lv": 7,
+     "name": "Bog Blast",
+     "element": "Ground",
+     "ct": 2,
+     "power": 40,
+     "effects": "Muddy 50"
+    },
+    {
+     "lv": 15,
+     "name": "Stone Blast",
+     "element": "Ground",
+     "ct": 4,
+     "power": 80,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 22,
+     "name": "Power Bomb",
+     "element": "Neutral",
+     "ct": 8,
+     "power": 120,
+     "effects": null
+    },
+    {
+     "lv": 30,
+     "name": "Rockburst",
+     "element": "Ground",
+     "ct": 16,
+     "power": 300,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 40,
+     "name": "Crash Dash",
+     "element": "Ground",
+     "ct": 24,
+     "power": 500,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 50,
+     "name": "Rocky Impact",
+     "element": "Ground",
+     "ct": 30,
+     "power": 600,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 70,
+     "name": "Holy Burst",
+     "element": "Neutral",
+     "ct": 30,
+     "power": 700,
+     "effects": null
+    }
+   ],
+   "drops": [
+    {
+     "item": "Gildane Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Gloopie": [
@@ -955,7 +6992,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Hydro Jet",
+     "element": "Water",
+     "ct": 2,
+     "power": 40,
+     "effects": "Soak 35"
+    },
+    {
+     "lv": 7,
+     "name": "Shadow Burst",
+     "element": "Dark",
+     "ct": 4,
+     "power": 80,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 15,
+     "name": "Smoke Jet",
+     "element": "Water",
+     "ct": 8,
+     "power": 120,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 22,
+     "name": "Splash",
+     "element": "Water",
+     "ct": 8,
+     "power": 160,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 30,
+     "name": "Nightmare Ball",
+     "element": "Dark",
+     "ct": 16,
+     "power": 300,
+     "effects": "Blind 65"
+    },
+    {
+     "lv": 40,
+     "name": "Torrential Blast",
+     "element": "Water",
+     "ct": 12,
+     "power": 250,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 50,
+     "name": "Hydro Slicer",
+     "element": "Water",
+     "ct": 16,
+     "power": 350,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 70,
+     "name": "Dark Whisp",
+     "element": "Dark",
+     "ct": 30,
+     "power": 600,
+     "effects": "Blind 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Gobfin": [
@@ -968,7 +7083,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Hydro Jet",
+     "element": "Water",
+     "ct": 2,
+     "power": 40,
+     "effects": "Soak 35"
+    },
+    {
+     "lv": 7,
+     "name": "Power Shot",
+     "element": "Neutral",
+     "ct": 4,
+     "power": 80,
+     "effects": null
+    },
+    {
+     "lv": 15,
+     "name": "Aqua Gun",
+     "element": "Water",
+     "ct": 2,
+     "power": 50,
+     "effects": "Soak 50"
+    },
+    {
+     "lv": 22,
+     "name": "Bubble Blast",
+     "element": "Water",
+     "ct": 4,
+     "power": 80,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 30,
+     "name": "Icicle Cutter",
+     "element": "Ice",
+     "ct": 4,
+     "power": 80,
+     "effects": "Freeze 50"
+    },
+    {
+     "lv": 40,
+     "name": "Aqua Burst",
+     "element": "Water",
+     "ct": 12,
+     "power": 200,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 50,
+     "name": "Hydro Laser",
+     "element": "Water",
+     "ct": 20,
+     "power": 450,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 70,
+     "name": "Geyser Gush",
+     "element": "Water",
+     "ct": 30,
+     "power": 600,
+     "effects": "Soak 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "2-4",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Claw",
+     "qty": "2-4",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Gobfin Ignis": [
@@ -981,7 +7174,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Ignis Blast",
+     "element": "Fire",
+     "ct": 2,
+     "power": 40,
+     "effects": "Burn 50"
+    },
+    {
+     "lv": 7,
+     "name": "Power Shot",
+     "element": "Neutral",
+     "ct": 4,
+     "power": 80,
+     "effects": null
+    },
+    {
+     "lv": 15,
+     "name": "Spirit Fire",
+     "element": "Fire",
+     "ct": 4,
+     "power": 80,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 22,
+     "name": "Flare Arrow",
+     "element": "Fire",
+     "ct": 8,
+     "power": 120,
+     "effects": "Burn 102"
+    },
+    {
+     "lv": 30,
+     "name": "Lightning Streak",
+     "element": "Electric",
+     "ct": 8,
+     "power": 160,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 40,
+     "name": "Fire Ball",
+     "element": "Fire",
+     "ct": 30,
+     "power": 600,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 50,
+     "name": "Ignis Rage",
+     "element": "Fire",
+     "ct": 24,
+     "power": 500,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 70,
+     "name": "Thunderstorm",
+     "element": "Electric",
+     "ct": 30,
+     "power": 600,
+     "effects": null
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "2-4",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Claw",
+     "qty": "2-4",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Gorirat": [
@@ -994,7 +7265,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Bog Blast",
+     "element": "Ground",
+     "ct": 2,
+     "power": 40,
+     "effects": "Muddy 50"
+    },
+    {
+     "lv": 7,
+     "name": "Power Shot",
+     "element": "Neutral",
+     "ct": 4,
+     "power": 80,
+     "effects": null
+    },
+    {
+     "lv": 15,
+     "name": "Ground Pound",
+     "element": "Neutral",
+     "ct": 8,
+     "power": 120,
+     "effects": null
+    },
+    {
+     "lv": 22,
+     "name": "Stone Blast",
+     "element": "Ground",
+     "ct": 4,
+     "power": 80,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 30,
+     "name": "Seed Machine Gun",
+     "element": "Grass",
+     "ct": 4,
+     "power": 80,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 40,
+     "name": "Power Bomb",
+     "element": "Neutral",
+     "ct": 8,
+     "power": 120,
+     "effects": null
+    },
+    {
+     "lv": 50,
+     "name": "Pal Blast",
+     "element": "Neutral",
+     "ct": 20,
+     "power": 450,
+     "effects": null
+    },
+    {
+     "lv": 70,
+     "name": "Holy Burst",
+     "element": "Neutral",
+     "ct": 30,
+     "power": 700,
+     "effects": null
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "2-4",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Claw",
+     "qty": "2-4",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Gorirat Terra": [
@@ -1007,7 +7356,93 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Power Shot",
+     "element": "Neutral",
+     "ct": 4,
+     "power": 80,
+     "effects": null
+    },
+    {
+     "lv": 7,
+     "name": "Bog Blast",
+     "element": "Ground",
+     "ct": 2,
+     "power": 40,
+     "effects": "Muddy 50"
+    },
+    {
+     "lv": 15,
+     "name": "Stone Blast",
+     "element": "Ground",
+     "ct": 4,
+     "power": 80,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 22,
+     "name": "Stone Cannon",
+     "element": "Ground",
+     "ct": 8,
+     "power": 120,
+     "effects": "Muddy 35"
+    },
+    {
+     "lv": 30,
+     "name": "Ground Pound",
+     "element": "Neutral",
+     "ct": 8,
+     "power": 120,
+     "effects": null
+    },
+    {
+     "lv": 35,
+     "name": "Rumble Combo",
+     "element": "Ground",
+     "ct": 16,
+     "power": 300,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 40,
+     "name": "Rockburst",
+     "element": "Ground",
+     "ct": 16,
+     "power": 300,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 50,
+     "name": "Rock Lance",
+     "element": "Ground",
+     "ct": 20,
+     "power": 400,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 70,
+     "name": "Rocky Impact",
+     "element": "Ground",
+     "ct": 30,
+     "power": 600,
+     "effects": "Muddy 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Claw",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Grintale": [
@@ -1020,7 +7455,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Bog Blast",
+     "element": "Ground",
+     "ct": 2,
+     "power": 40,
+     "effects": "Muddy 50"
+    },
+    {
+     "lv": 7,
+     "name": "Power Shot",
+     "element": "Neutral",
+     "ct": 4,
+     "power": 80,
+     "effects": null
+    },
+    {
+     "lv": 15,
+     "name": "Cat Press",
+     "element": "Neutral",
+     "ct": 8,
+     "power": 120,
+     "effects": null
+    },
+    {
+     "lv": 22,
+     "name": "Stone Blast",
+     "element": "Ground",
+     "ct": 4,
+     "power": 80,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 30,
+     "name": "Stone Cannon",
+     "element": "Ground",
+     "ct": 8,
+     "power": 120,
+     "effects": "Muddy 35"
+    },
+    {
+     "lv": 40,
+     "name": "Power Bomb",
+     "element": "Neutral",
+     "ct": 8,
+     "power": 120,
+     "effects": null
+    },
+    {
+     "lv": 50,
+     "name": "Pal Blast",
+     "element": "Neutral",
+     "ct": 20,
+     "power": 450,
+     "effects": null
+    },
+    {
+     "lv": 70,
+     "name": "Holy Burst",
+     "element": "Neutral",
+     "ct": 30,
+     "power": 700,
+     "effects": null
+    }
+   ],
+   "drops": [
+    {
+     "item": "Grintale Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "3-4",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Grizzbolt": [
@@ -1033,7 +7546,93 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Spark Blast",
+     "element": "Electric",
+     "ct": 2,
+     "power": 50,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 7,
+     "name": "Shockwave",
+     "element": "Electric",
+     "ct": 4,
+     "power": 80,
+     "effects": "Electrify 103"
+    },
+    {
+     "lv": 15,
+     "name": "Lightning Claw",
+     "element": "Electric",
+     "ct": 8,
+     "power": 150,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 22,
+     "name": "Lightning Streak",
+     "element": "Electric",
+     "ct": 8,
+     "power": 160,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 30,
+     "name": "Tri-Lightning",
+     "element": "Electric",
+     "ct": 12,
+     "power": 200,
+     "effects": "Electrify 103"
+    },
+    {
+     "lv": 40,
+     "name": "Lightning Strike",
+     "element": "Electric",
+     "ct": 16,
+     "power": 300,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 50,
+     "name": "Lightning Bolt",
+     "element": "Electric",
+     "ct": 20,
+     "power": 450,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 55,
+     "name": "Heavy Thunder Tank",
+     "element": "Electric",
+     "ct": 24,
+     "power": 550,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 70,
+     "name": "Lethal Laser",
+     "element": "Electric",
+     "ct": 30,
+     "power": 600,
+     "effects": "Electrify 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Grizzbolt Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Claw",
+     "qty": "4-5",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Gumoss": [
@@ -1046,7 +7645,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.0,
    "recvRate": 0.48,
-   "capture": 0.91
+   "capture": 0.91,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Bog Blast",
+     "element": "Ground",
+     "ct": 2,
+     "power": 40,
+     "effects": "Muddy 50"
+    },
+    {
+     "lv": 7,
+     "name": "Wind Cutter",
+     "element": "Grass",
+     "ct": 2,
+     "power": 40,
+     "effects": "Ivy-Covered 35"
+    },
+    {
+     "lv": 15,
+     "name": "Stone Blast",
+     "element": "Ground",
+     "ct": 4,
+     "power": 80,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 22,
+     "name": "Seed Machine Gun",
+     "element": "Grass",
+     "ct": 4,
+     "power": 80,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 30,
+     "name": "Seed Mine",
+     "element": "Grass",
+     "ct": 8,
+     "power": 120,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 40,
+     "name": "Sand Tornado",
+     "element": "Ground",
+     "ct": 12,
+     "power": 200,
+     "effects": "Muddy 65"
+    },
+    {
+     "lv": 50,
+     "name": "Solar Blast",
+     "element": "Grass",
+     "ct": 20,
+     "power": 450,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 70,
+     "name": "Wind Burst",
+     "element": "Grass",
+     "ct": 30,
+     "power": 600,
+     "effects": "Ivy-Covered 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Gumoss Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "2",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Hangyu": [
@@ -1059,7 +7736,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Bog Blast",
+     "element": "Ground",
+     "ct": 2,
+     "power": 40,
+     "effects": "Muddy 50"
+    },
+    {
+     "lv": 7,
+     "name": "Air Cannon",
+     "element": "Neutral",
+     "ct": 2,
+     "power": 40,
+     "effects": null
+    },
+    {
+     "lv": 15,
+     "name": "Wind Cutter",
+     "element": "Grass",
+     "ct": 2,
+     "power": 40,
+     "effects": "Ivy-Covered 35"
+    },
+    {
+     "lv": 22,
+     "name": "Power Shot",
+     "element": "Neutral",
+     "ct": 4,
+     "power": 80,
+     "effects": null
+    },
+    {
+     "lv": 30,
+     "name": "Power Bomb",
+     "element": "Neutral",
+     "ct": 8,
+     "power": 120,
+     "effects": null
+    },
+    {
+     "lv": 40,
+     "name": "Sand Tornado",
+     "element": "Ground",
+     "ct": 12,
+     "power": 200,
+     "effects": "Muddy 65"
+    },
+    {
+     "lv": 50,
+     "name": "Rock Lance",
+     "element": "Ground",
+     "ct": 20,
+     "power": 400,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 70,
+     "name": "Rocky Impact",
+     "element": "Ground",
+     "ct": 30,
+     "power": 600,
+     "effects": "Muddy 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Helzephyr Lux": [
@@ -1072,7 +7827,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Spark Blast",
+     "element": "Electric",
+     "ct": 2,
+     "power": 50,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 7,
+     "name": "Shockwave",
+     "element": "Electric",
+     "ct": 4,
+     "power": 80,
+     "effects": "Electrify 103"
+    },
+    {
+     "lv": 15,
+     "name": "Dark Arrow",
+     "element": "Dark",
+     "ct": 8,
+     "power": 120,
+     "effects": "Blind 102"
+    },
+    {
+     "lv": 22,
+     "name": "Nightmare Ball",
+     "element": "Dark",
+     "ct": 16,
+     "power": 300,
+     "effects": "Blind 65"
+    },
+    {
+     "lv": 30,
+     "name": "TriSpark",
+     "element": "Electric",
+     "ct": 12,
+     "power": 250,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 40,
+     "name": "Thunder Rain",
+     "element": "Electric",
+     "ct": 20,
+     "power": 400,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 50,
+     "name": "Thunderstorm",
+     "element": "Electric",
+     "ct": 30,
+     "power": 600,
+     "effects": null
+    },
+    {
+     "lv": 70,
+     "name": "Thunder Rail",
+     "element": "Electric",
+     "ct": 30,
+     "power": 600,
+     "effects": "Electrify 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Plume",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Herbil": [
@@ -1085,7 +7918,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "S",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Wind Cutter",
+     "element": "Grass",
+     "ct": 2,
+     "power": 40,
+     "effects": "Ivy-Covered 35"
+    },
+    {
+     "lv": 7,
+     "name": "Seed Machine Gun",
+     "element": "Grass",
+     "ct": 4,
+     "power": 80,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 15,
+     "name": "Grass Tornado",
+     "element": "Grass",
+     "ct": 12,
+     "power": 200,
+     "effects": "Ivy-Covered 65"
+    },
+    {
+     "lv": 22,
+     "name": "Air Blade",
+     "element": "Neutral",
+     "ct": 8,
+     "power": 160,
+     "effects": null
+    },
+    {
+     "lv": 30,
+     "name": "Konoha Flip",
+     "element": "Grass",
+     "ct": 12,
+     "power": 250,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 40,
+     "name": "Reflect Leaf",
+     "element": "Grass",
+     "ct": 20,
+     "power": 400,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 50,
+     "name": "Crosswind",
+     "element": "Grass",
+     "ct": 24,
+     "power": 500,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 70,
+     "name": "Wind Burst",
+     "element": "Grass",
+     "ct": 30,
+     "power": 600,
+     "effects": "Ivy-Covered 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Hoocrates": [
@@ -1098,7 +8009,90 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.48,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Air Cannon",
+     "element": "Neutral",
+     "ct": 2,
+     "power": 40,
+     "effects": null
+    },
+    {
+     "lv": 7,
+     "name": "Dark Ball",
+     "element": "Dark",
+     "ct": 2,
+     "power": 50,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 15,
+     "name": "Shadow Burst",
+     "element": "Dark",
+     "ct": 4,
+     "power": 80,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 22,
+     "name": "Sand Tornado",
+     "element": "Ground",
+     "ct": 12,
+     "power": 200,
+     "effects": "Muddy 65"
+    },
+    {
+     "lv": 30,
+     "name": "Spirit Flame",
+     "element": "Dark",
+     "ct": 12,
+     "power": 200,
+     "effects": "Burn 102"
+    },
+    {
+     "lv": 40,
+     "name": "Nightmare Ball",
+     "element": "Dark",
+     "ct": 16,
+     "power": 300,
+     "effects": "Blind 65"
+    },
+    {
+     "lv": 50,
+     "name": "Dark Laser",
+     "element": "Dark",
+     "ct": 20,
+     "power": 450,
+     "effects": "Blind 100"
+    },
+    {
+     "lv": 70,
+     "name": "Dark Whisp",
+     "element": "Dark",
+     "ct": 30,
+     "power": 600,
+     "effects": "Blind 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "1-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Advanced Technical Manual",
+     "qty": "1",
+     "pct": 1.0
+    },
+    {
+     "item": "Precious Plume",
+     "qty": "1-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Icelyn": [
@@ -1111,7 +8105,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Ice Missile",
+     "element": "Ice",
+     "ct": 2,
+     "power": 40,
+     "effects": "Freeze 102"
+    },
+    {
+     "lv": 7,
+     "name": "Icicle Cutter",
+     "element": "Ice",
+     "ct": 4,
+     "power": 80,
+     "effects": "Freeze 50"
+    },
+    {
+     "lv": 15,
+     "name": "Iceberg",
+     "element": "Ice",
+     "ct": 8,
+     "power": 120,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 22,
+     "name": "Crystal Breath",
+     "element": "Ice",
+     "ct": 8,
+     "power": 160,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 30,
+     "name": "Freeze Wall",
+     "element": "Ice",
+     "ct": 12,
+     "power": 200,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 40,
+     "name": "Blizzard Spike",
+     "element": "Ice",
+     "ct": 20,
+     "power": 450,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 50,
+     "name": "Diamond Rain",
+     "element": "Ice",
+     "ct": 30,
+     "power": 600,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 70,
+     "name": "Absolute Frost",
+     "element": "Ice",
+     "ct": 30,
+     "power": 700,
+     "effects": "Freeze 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Plume",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Incineram": [
@@ -1124,7 +8196,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Ignis Blast",
+     "element": "Fire",
+     "ct": 2,
+     "power": 40,
+     "effects": "Burn 50"
+    },
+    {
+     "lv": 7,
+     "name": "Spirit Fire",
+     "element": "Fire",
+     "ct": 4,
+     "power": 80,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 15,
+     "name": "Flare Arrow",
+     "element": "Fire",
+     "ct": 8,
+     "power": 120,
+     "effects": "Burn 102"
+    },
+    {
+     "lv": 22,
+     "name": "Hellfire Claw",
+     "element": "Fire",
+     "ct": 12,
+     "power": 200,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 30,
+     "name": "Shadow Burst",
+     "element": "Dark",
+     "ct": 4,
+     "power": 80,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 40,
+     "name": "Fire Ball",
+     "element": "Fire",
+     "ct": 30,
+     "power": 600,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 50,
+     "name": "Ignis Rage",
+     "element": "Fire",
+     "ct": 24,
+     "power": 500,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 70,
+     "name": "Dark Whisp",
+     "element": "Dark",
+     "ct": 30,
+     "power": 600,
+     "effects": "Blind 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Claw",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Jelliette": [
@@ -1137,7 +8287,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Hydro Jet",
+     "element": "Water",
+     "ct": 2,
+     "power": 40,
+     "effects": "Soak 35"
+    },
+    {
+     "lv": 7,
+     "name": "Aqua Gun",
+     "element": "Water",
+     "ct": 2,
+     "power": 50,
+     "effects": "Soak 50"
+    },
+    {
+     "lv": 15,
+     "name": "Bubble Blast",
+     "element": "Water",
+     "ct": 4,
+     "power": 80,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 22,
+     "name": "Aqua Burst",
+     "element": "Water",
+     "ct": 12,
+     "power": 200,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 30,
+     "name": "Curtain Splash",
+     "element": "Water",
+     "ct": 16,
+     "power": 300,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 40,
+     "name": "Hydro Slicer",
+     "element": "Water",
+     "ct": 16,
+     "power": 350,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 50,
+     "name": "Aqua Surge",
+     "element": "Water",
+     "ct": 24,
+     "power": 500,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 70,
+     "name": "Geyser Gush",
+     "element": "Water",
+     "ct": 30,
+     "power": 600,
+     "effects": "Soak 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Jellroy": [
@@ -1150,7 +8378,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Poison Blast",
+     "element": "Dark",
+     "ct": 2,
+     "power": 30,
+     "effects": "Poison 100"
+    },
+    {
+     "lv": 7,
+     "name": "Umbral Surge",
+     "element": "Dark",
+     "ct": 4,
+     "power": 60,
+     "effects": "Blind 35"
+    },
+    {
+     "lv": 15,
+     "name": "Bubble Blast",
+     "element": "Water",
+     "ct": 4,
+     "power": 80,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 22,
+     "name": "Spirit Flame",
+     "element": "Dark",
+     "ct": 12,
+     "power": 200,
+     "effects": "Burn 102"
+    },
+    {
+     "lv": 30,
+     "name": "Poison Shower",
+     "element": "Dark",
+     "ct": 8,
+     "power": 160,
+     "effects": "Poison 100"
+    },
+    {
+     "lv": 40,
+     "name": "Hydro Slicer",
+     "element": "Water",
+     "ct": 16,
+     "power": 350,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 50,
+     "name": "Dark Whisp",
+     "element": "Dark",
+     "ct": 30,
+     "power": 600,
+     "effects": "Blind 100"
+    },
+    {
+     "lv": 70,
+     "name": "Geyser Gush",
+     "element": "Water",
+     "ct": 30,
+     "power": 600,
+     "effects": "Soak 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Jetragon": [
@@ -1163,7 +8469,106 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 2.6666667,
    "recvRate": 0.18,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Spirit Fire",
+     "element": "Fire",
+     "ct": 4,
+     "power": 80,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 7,
+     "name": "Dragon Burst",
+     "element": "Dragon",
+     "ct": 4,
+     "power": 80,
+     "effects": "Burn 50"
+    },
+    {
+     "lv": 15,
+     "name": "Flare Storm",
+     "element": "Fire",
+     "ct": 12,
+     "power": 200,
+     "effects": "Burn 65"
+    },
+    {
+     "lv": 22,
+     "name": "Dragon Breath",
+     "element": "Dragon",
+     "ct": 8,
+     "power": 160,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 30,
+     "name": "Beam Comet",
+     "element": "Dragon",
+     "ct": 30,
+     "power": 700,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 40,
+     "name": "Fire Ball",
+     "element": "Fire",
+     "ct": 30,
+     "power": 600,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 50,
+     "name": "Dragon Meteor",
+     "element": "Dragon",
+     "ct": 30,
+     "power": 600,
+     "effects": "Burn 45"
+    },
+    {
+     "lv": 55,
+     "name": "Beam Slicer",
+     "element": "Dragon",
+     "ct": 16,
+     "power": 350,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 60,
+     "name": "Meteorain",
+     "element": "Dragon",
+     "ct": 30,
+     "power": 700,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 70,
+     "name": "Star Mine",
+     "element": "Neutral",
+     "ct": 20,
+     "power": 400,
+     "effects": null
+    }
+   ],
+   "drops": [
+    {
+     "item": "Jetragon Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Dragon Stone",
+     "qty": "7-9",
+     "pct": 100.0
+    },
+    {
+     "item": "Rocket Launcher Schematic 4",
+     "qty": "1",
+     "pct": 3.0
+    }
+   ]
   }
  ],
  "Jormuntide": [
@@ -1176,7 +8581,93 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Aqua Gun",
+     "element": "Water",
+     "ct": 2,
+     "power": 50,
+     "effects": "Soak 50"
+    },
+    {
+     "lv": 7,
+     "name": "Dragon Cannon",
+     "element": "Dragon",
+     "ct": 2,
+     "power": 40,
+     "effects": "Burn 35"
+    },
+    {
+     "lv": 15,
+     "name": "Dragon Breath",
+     "element": "Dragon",
+     "ct": 8,
+     "power": 160,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 22,
+     "name": "Aqua Burst",
+     "element": "Water",
+     "ct": 12,
+     "power": 200,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 30,
+     "name": "Tri-Lightning",
+     "element": "Electric",
+     "ct": 12,
+     "power": 200,
+     "effects": "Electrify 103"
+    },
+    {
+     "lv": 35,
+     "name": "Slither Slam",
+     "element": "Water",
+     "ct": 20,
+     "power": 400,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 40,
+     "name": "Hydro Laser",
+     "element": "Water",
+     "ct": 20,
+     "power": 450,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 50,
+     "name": "Dragon Meteor",
+     "element": "Dragon",
+     "ct": 30,
+     "power": 600,
+     "effects": "Burn 45"
+    },
+    {
+     "lv": 70,
+     "name": "Geyser Gush",
+     "element": "Water",
+     "ct": 30,
+     "power": 600,
+     "effects": "Soak 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Jormuntide Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Dragon Stone",
+     "qty": "5-6",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Katress": [
@@ -1189,7 +8680,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Ignis Blast",
+     "element": "Fire",
+     "ct": 2,
+     "power": 40,
+     "effects": "Burn 50"
+    },
+    {
+     "lv": 7,
+     "name": "Dark Ball",
+     "element": "Dark",
+     "ct": 2,
+     "power": 50,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 15,
+     "name": "Flare Arrow",
+     "element": "Fire",
+     "ct": 8,
+     "power": 120,
+     "effects": "Burn 102"
+    },
+    {
+     "lv": 22,
+     "name": "Shadow Burst",
+     "element": "Dark",
+     "ct": 4,
+     "power": 80,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 30,
+     "name": "Spirit Flame",
+     "element": "Dark",
+     "ct": 12,
+     "power": 200,
+     "effects": "Burn 102"
+    },
+    {
+     "lv": 40,
+     "name": "Nightmare Ball",
+     "element": "Dark",
+     "ct": 16,
+     "power": 300,
+     "effects": "Blind 65"
+    },
+    {
+     "lv": 50,
+     "name": "Dark Laser",
+     "element": "Dark",
+     "ct": 20,
+     "power": 450,
+     "effects": "Blind 100"
+    },
+    {
+     "lv": 70,
+     "name": "Dark Whisp",
+     "element": "Dark",
+     "ct": 30,
+     "power": 600,
+     "effects": "Blind 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Katress Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "2-4",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Katress Ignis": [
@@ -1202,7 +8771,90 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Ignis Blast",
+     "element": "Fire",
+     "ct": 2,
+     "power": 40,
+     "effects": "Burn 50"
+    },
+    {
+     "lv": 7,
+     "name": "Dark Cannon",
+     "element": "Dark",
+     "ct": 4,
+     "power": 70,
+     "effects": "Blind 20"
+    },
+    {
+     "lv": 15,
+     "name": "Flare Arrow",
+     "element": "Fire",
+     "ct": 8,
+     "power": 120,
+     "effects": "Burn 102"
+    },
+    {
+     "lv": 22,
+     "name": "Flare Storm",
+     "element": "Fire",
+     "ct": 12,
+     "power": 200,
+     "effects": "Burn 65"
+    },
+    {
+     "lv": 30,
+     "name": "Flame Wall",
+     "element": "Fire",
+     "ct": 12,
+     "power": 250,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 40,
+     "name": "Flame Funnel",
+     "element": "Fire",
+     "ct": 16,
+     "power": 300,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 50,
+     "name": "Fire Ball",
+     "element": "Fire",
+     "ct": 30,
+     "power": 600,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 70,
+     "name": "Dark Whisp",
+     "element": "Dark",
+     "ct": 30,
+     "power": 600,
+     "effects": "Blind 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Advanced Technical Manual",
+     "qty": "1",
+     "pct": 1.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "1-2",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Kelpsea": [
@@ -1215,7 +8867,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Hydro Jet",
+     "element": "Water",
+     "ct": 2,
+     "power": 40,
+     "effects": "Soak 35"
+    },
+    {
+     "lv": 7,
+     "name": "Dragon Cannon",
+     "element": "Dragon",
+     "ct": 2,
+     "power": 40,
+     "effects": "Burn 35"
+    },
+    {
+     "lv": 15,
+     "name": "Aqua Gun",
+     "element": "Water",
+     "ct": 2,
+     "power": 50,
+     "effects": "Soak 50"
+    },
+    {
+     "lv": 22,
+     "name": "Bubble Blast",
+     "element": "Water",
+     "ct": 4,
+     "power": 80,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 30,
+     "name": "Power Bomb",
+     "element": "Neutral",
+     "ct": 8,
+     "power": 120,
+     "effects": null
+    },
+    {
+     "lv": 40,
+     "name": "Aqua Burst",
+     "element": "Water",
+     "ct": 12,
+     "power": 200,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 50,
+     "name": "Hydro Laser",
+     "element": "Water",
+     "ct": 20,
+     "power": 450,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 70,
+     "name": "Geyser Gush",
+     "element": "Water",
+     "ct": 30,
+     "power": 600,
+     "effects": "Soak 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "1-2",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "1-2",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Kelpsea Ignis": [
@@ -1228,7 +8958,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Ignis Blast",
+     "element": "Fire",
+     "ct": 2,
+     "power": 40,
+     "effects": "Burn 50"
+    },
+    {
+     "lv": 7,
+     "name": "Dragon Cannon",
+     "element": "Dragon",
+     "ct": 2,
+     "power": 40,
+     "effects": "Burn 35"
+    },
+    {
+     "lv": 15,
+     "name": "Spirit Fire",
+     "element": "Fire",
+     "ct": 4,
+     "power": 80,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 22,
+     "name": "Flare Arrow",
+     "element": "Fire",
+     "ct": 8,
+     "power": 120,
+     "effects": "Burn 102"
+    },
+    {
+     "lv": 30,
+     "name": "Dragon Burst",
+     "element": "Dragon",
+     "ct": 4,
+     "power": 80,
+     "effects": "Burn 50"
+    },
+    {
+     "lv": 40,
+     "name": "Ignis Breath",
+     "element": "Fire",
+     "ct": 8,
+     "power": 160,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 50,
+     "name": "Fire Ball",
+     "element": "Fire",
+     "ct": 30,
+     "power": 600,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 70,
+     "name": "Dragon Meteor",
+     "element": "Dragon",
+     "ct": 30,
+     "power": 600,
+     "effects": "Burn 45"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "1-2",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "1-2",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Kikit": [
@@ -1241,7 +9049,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "S",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Power Shot",
+     "element": "Neutral",
+     "ct": 4,
+     "power": 80,
+     "effects": null
+    },
+    {
+     "lv": 7,
+     "name": "Bog Blast",
+     "element": "Ground",
+     "ct": 2,
+     "power": 40,
+     "effects": "Muddy 50"
+    },
+    {
+     "lv": 15,
+     "name": "Stone Blast",
+     "element": "Ground",
+     "ct": 4,
+     "power": 80,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 22,
+     "name": "Power Bomb",
+     "element": "Neutral",
+     "ct": 8,
+     "power": 120,
+     "effects": null
+    },
+    {
+     "lv": 30,
+     "name": "Sand Tornado",
+     "element": "Ground",
+     "ct": 12,
+     "power": 200,
+     "effects": "Muddy 65"
+    },
+    {
+     "lv": 40,
+     "name": "Rockburst",
+     "element": "Ground",
+     "ct": 16,
+     "power": 300,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 50,
+     "name": "Rock Lance",
+     "element": "Ground",
+     "ct": 20,
+     "power": 400,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 70,
+     "name": "Rocky Impact",
+     "element": "Ground",
+     "ct": 30,
+     "power": 600,
+     "effects": "Muddy 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Claw",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Killamari": [
@@ -1254,7 +9140,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.48,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Hydro Jet",
+     "element": "Water",
+     "ct": 2,
+     "power": 40,
+     "effects": "Soak 35"
+    },
+    {
+     "lv": 7,
+     "name": "Poison Blast",
+     "element": "Dark",
+     "ct": 2,
+     "power": 30,
+     "effects": "Poison 100"
+    },
+    {
+     "lv": 15,
+     "name": "Dark Ball",
+     "element": "Dark",
+     "ct": 2,
+     "power": 50,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 22,
+     "name": "Shadow Burst",
+     "element": "Dark",
+     "ct": 4,
+     "power": 80,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 30,
+     "name": "Acid Rain",
+     "element": "Water",
+     "ct": 8,
+     "power": 120,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 40,
+     "name": "Nightmare Ball",
+     "element": "Dark",
+     "ct": 16,
+     "power": 300,
+     "effects": "Blind 65"
+    },
+    {
+     "lv": 50,
+     "name": "Dark Laser",
+     "element": "Dark",
+     "ct": 20,
+     "power": 450,
+     "effects": "Blind 100"
+    },
+    {
+     "lv": 70,
+     "name": "Dark Whisp",
+     "element": "Dark",
+     "ct": 30,
+     "power": 600,
+     "effects": "Blind 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "1-2",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "1-2",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Kingpaca": [
@@ -1267,7 +9231,90 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Bog Blast",
+     "element": "Ground",
+     "ct": 2,
+     "power": 40,
+     "effects": "Muddy 50"
+    },
+    {
+     "lv": 7,
+     "name": "Power Shot",
+     "element": "Neutral",
+     "ct": 4,
+     "power": 80,
+     "effects": null
+    },
+    {
+     "lv": 15,
+     "name": "Power Bomb",
+     "element": "Neutral",
+     "ct": 8,
+     "power": 120,
+     "effects": null
+    },
+    {
+     "lv": 22,
+     "name": "Kingly Slam",
+     "element": "Neutral",
+     "ct": 12,
+     "power": 200,
+     "effects": null
+    },
+    {
+     "lv": 30,
+     "name": "Tri-Lightning",
+     "element": "Electric",
+     "ct": 12,
+     "power": 200,
+     "effects": "Electrify 103"
+    },
+    {
+     "lv": 40,
+     "name": "Rock Lance",
+     "element": "Ground",
+     "ct": 20,
+     "power": 400,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 50,
+     "name": "Pal Blast",
+     "element": "Neutral",
+     "ct": 20,
+     "power": 450,
+     "effects": null
+    },
+    {
+     "lv": 70,
+     "name": "Holy Burst",
+     "element": "Neutral",
+     "ct": 30,
+     "power": 700,
+     "effects": null
+    }
+   ],
+   "drops": [
+    {
+     "item": "Kingpaca Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "3-5",
+     "pct": 100.0
+    },
+    {
+     "item": "Metal Armor Schematic 4",
+     "qty": "1",
+     "pct": 3.0
+    }
+   ]
   }
  ],
  "Kingpaca Cryst": [
@@ -1280,7 +9327,93 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Ice Missile",
+     "element": "Ice",
+     "ct": 2,
+     "power": 40,
+     "effects": "Freeze 102"
+    },
+    {
+     "lv": 7,
+     "name": "Icicle Cutter",
+     "element": "Ice",
+     "ct": 4,
+     "power": 80,
+     "effects": "Freeze 50"
+    },
+    {
+     "lv": 15,
+     "name": "Iceberg",
+     "element": "Ice",
+     "ct": 8,
+     "power": 120,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 22,
+     "name": "Kingly Slam",
+     "element": "Neutral",
+     "ct": 12,
+     "power": 200,
+     "effects": null
+    },
+    {
+     "lv": 30,
+     "name": "Crystal Breath",
+     "element": "Ice",
+     "ct": 8,
+     "power": 160,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 40,
+     "name": "Aqua Burst",
+     "element": "Water",
+     "ct": 12,
+     "power": 200,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 45,
+     "name": "Frozen Press",
+     "element": "Ice",
+     "ct": 20,
+     "power": 400,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 50,
+     "name": "Blizzard Spike",
+     "element": "Ice",
+     "ct": 20,
+     "power": 450,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 70,
+     "name": "Diamond Rain",
+     "element": "Ice",
+     "ct": 30,
+     "power": 600,
+     "effects": "Freeze 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Kingpaca Cryst Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "5-7",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Kitsun Noct": [
@@ -1293,7 +9426,101 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Double Fang (Dark)",
+     "element": "Dark",
+     "ct": 2,
+     "power": 40,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 2,
+     "name": "Fierce Fang (Dark)",
+     "element": "Dark",
+     "ct": 2,
+     "power": 50,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 3,
+     "name": "Dark Cannon",
+     "element": "Dark",
+     "ct": 4,
+     "power": 70,
+     "effects": "Blind 20"
+    },
+    {
+     "lv": 7,
+     "name": "Spirit Fire",
+     "element": "Fire",
+     "ct": 4,
+     "power": 80,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 15,
+     "name": "Spirit Flame",
+     "element": "Dark",
+     "ct": 12,
+     "power": 200,
+     "effects": "Burn 102"
+    },
+    {
+     "lv": 22,
+     "name": "Daring Shadowstorm",
+     "element": "Dark",
+     "ct": 12,
+     "power": 250,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 30,
+     "name": "Nightmare Ball",
+     "element": "Dark",
+     "ct": 16,
+     "power": 300,
+     "effects": "Blind 65"
+    },
+    {
+     "lv": 40,
+     "name": "Flame Funnel",
+     "element": "Fire",
+     "ct": 16,
+     "power": 300,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 50,
+     "name": "Dark Whisp",
+     "element": "Dark",
+     "ct": 30,
+     "power": 600,
+     "effects": "Blind 100"
+    },
+    {
+     "lv": 70,
+     "name": "Dragon Meteor",
+     "element": "Dragon",
+     "ct": 30,
+     "power": 600,
+     "effects": "Burn 45"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Kitsun Noct Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Knocklem": [
@@ -1306,7 +9533,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.0,
    "recvRate": 0.48,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Power Shot",
+     "element": "Neutral",
+     "ct": 4,
+     "power": 80,
+     "effects": null
+    },
+    {
+     "lv": 7,
+     "name": "Stone Blast",
+     "element": "Ground",
+     "ct": 4,
+     "power": 80,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 15,
+     "name": "Stone Cannon",
+     "element": "Ground",
+     "ct": 8,
+     "power": 120,
+     "effects": "Muddy 35"
+    },
+    {
+     "lv": 22,
+     "name": "Rockburst",
+     "element": "Ground",
+     "ct": 16,
+     "power": 300,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 30,
+     "name": "Rock Lance",
+     "element": "Ground",
+     "ct": 20,
+     "power": 400,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 40,
+     "name": "Ground Cutter",
+     "element": "Ground",
+     "ct": 20,
+     "power": 450,
+     "effects": null
+    },
+    {
+     "lv": 50,
+     "name": "Sand Twister",
+     "element": "Ground",
+     "ct": 24,
+     "power": 500,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 70,
+     "name": "Rocky Impact",
+     "element": "Ground",
+     "ct": 30,
+     "power": 600,
+     "effects": "Muddy 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Knocklem Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "6-7",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Lamball": [
@@ -1319,7 +9624,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.48,
-   "capture": 1.05
+   "capture": 1.05,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Roly Poly",
+     "element": "Neutral",
+     "ct": 2,
+     "power": 40,
+     "effects": null
+    },
+    {
+     "lv": 7,
+     "name": "Air Cannon",
+     "element": "Neutral",
+     "ct": 2,
+     "power": 40,
+     "effects": null
+    },
+    {
+     "lv": 15,
+     "name": "Power Shot",
+     "element": "Neutral",
+     "ct": 4,
+     "power": 80,
+     "effects": null
+    },
+    {
+     "lv": 22,
+     "name": "Implode",
+     "element": "Neutral",
+     "ct": 16,
+     "power": 300,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 30,
+     "name": "Electric Ball",
+     "element": "Electric",
+     "ct": 8,
+     "power": 100,
+     "effects": "Electrify 50"
+    },
+    {
+     "lv": 40,
+     "name": "Power Bomb",
+     "element": "Neutral",
+     "ct": 8,
+     "power": 120,
+     "effects": null
+    },
+    {
+     "lv": 50,
+     "name": "Pal Blast",
+     "element": "Neutral",
+     "ct": 20,
+     "power": 450,
+     "effects": null
+    },
+    {
+     "lv": 70,
+     "name": "Holy Burst",
+     "element": "Neutral",
+     "ct": 30,
+     "power": 700,
+     "effects": null
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "1-2",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "1-2",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Lapiron": [
@@ -1332,7 +9715,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Bog Blast",
+     "element": "Ground",
+     "ct": 2,
+     "power": 40,
+     "effects": "Muddy 50"
+    },
+    {
+     "lv": 7,
+     "name": "Stone Blast",
+     "element": "Ground",
+     "ct": 4,
+     "power": 80,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 15,
+     "name": "Stone Cannon",
+     "element": "Ground",
+     "ct": 8,
+     "power": 120,
+     "effects": "Muddy 35"
+    },
+    {
+     "lv": 22,
+     "name": "Sand Tornado",
+     "element": "Ground",
+     "ct": 12,
+     "power": 200,
+     "effects": "Muddy 65"
+    },
+    {
+     "lv": 30,
+     "name": "Rockburst",
+     "element": "Ground",
+     "ct": 16,
+     "power": 300,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 40,
+     "name": "Rock Lance",
+     "element": "Ground",
+     "ct": 20,
+     "power": 400,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 50,
+     "name": "Sand Twister",
+     "element": "Ground",
+     "ct": 24,
+     "power": 500,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 70,
+     "name": "Rocky Impact",
+     "element": "Ground",
+     "ct": 30,
+     "power": 600,
+     "effects": "Muddy 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Leezpunk": [
@@ -1345,7 +9806,90 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.48,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Poison Blast",
+     "element": "Dark",
+     "ct": 2,
+     "power": 30,
+     "effects": "Poison 100"
+    },
+    {
+     "lv": 7,
+     "name": "Dark Ball",
+     "element": "Dark",
+     "ct": 2,
+     "power": 50,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 15,
+     "name": "Shadow Burst",
+     "element": "Dark",
+     "ct": 4,
+     "power": 80,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 22,
+     "name": "Spirit Flame",
+     "element": "Dark",
+     "ct": 12,
+     "power": 200,
+     "effects": "Burn 102"
+    },
+    {
+     "lv": 30,
+     "name": "Nightmare Ball",
+     "element": "Dark",
+     "ct": 16,
+     "power": 300,
+     "effects": "Blind 65"
+    },
+    {
+     "lv": 40,
+     "name": "Ignis Breath",
+     "element": "Fire",
+     "ct": 8,
+     "power": 160,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 50,
+     "name": "Dark Laser",
+     "element": "Dark",
+     "ct": 20,
+     "power": 450,
+     "effects": "Blind 100"
+    },
+    {
+     "lv": 70,
+     "name": "Dark Whisp",
+     "element": "Dark",
+     "ct": 30,
+     "power": 600,
+     "effects": "Blind 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "1-2",
+     "pct": 100.0
+    },
+    {
+     "item": "Silver Key",
+     "qty": "1",
+     "pct": 2.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "1-2",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Leezpunk Ignis": [
@@ -1358,7 +9902,90 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Ignis Blast",
+     "element": "Fire",
+     "ct": 2,
+     "power": 40,
+     "effects": "Burn 50"
+    },
+    {
+     "lv": 7,
+     "name": "Poison Blast",
+     "element": "Dark",
+     "ct": 2,
+     "power": 30,
+     "effects": "Poison 100"
+    },
+    {
+     "lv": 15,
+     "name": "Spirit Fire",
+     "element": "Fire",
+     "ct": 4,
+     "power": 80,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 22,
+     "name": "Ignis Breath",
+     "element": "Fire",
+     "ct": 8,
+     "power": 160,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 30,
+     "name": "Flare Storm",
+     "element": "Fire",
+     "ct": 12,
+     "power": 200,
+     "effects": "Burn 65"
+    },
+    {
+     "lv": 40,
+     "name": "Ignis Rage",
+     "element": "Fire",
+     "ct": 24,
+     "power": 500,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 50,
+     "name": "Fire Ball",
+     "element": "Fire",
+     "ct": 30,
+     "power": 600,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 70,
+     "name": "Thunderstorm",
+     "element": "Electric",
+     "ct": 30,
+     "power": 600,
+     "effects": null
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "1-2",
+     "pct": 100.0
+    },
+    {
+     "item": "Silver Key",
+     "qty": "1",
+     "pct": 2.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "1-2",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Lifmunk": [
@@ -1371,7 +9998,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "S",
    "hpRate": 1.0,
    "recvRate": 0.48,
-   "capture": 0.63
+   "capture": 0.63,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Wind Cutter",
+     "element": "Grass",
+     "ct": 2,
+     "power": 40,
+     "effects": "Ivy-Covered 35"
+    },
+    {
+     "lv": 7,
+     "name": "Air Cannon",
+     "element": "Neutral",
+     "ct": 2,
+     "power": 40,
+     "effects": null
+    },
+    {
+     "lv": 15,
+     "name": "Power Shot",
+     "element": "Neutral",
+     "ct": 4,
+     "power": 80,
+     "effects": null
+    },
+    {
+     "lv": 22,
+     "name": "Seed Machine Gun",
+     "element": "Grass",
+     "ct": 4,
+     "power": 80,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 30,
+     "name": "Power Bomb",
+     "element": "Neutral",
+     "ct": 8,
+     "power": 120,
+     "effects": null
+    },
+    {
+     "lv": 40,
+     "name": "Spine Vine",
+     "element": "Grass",
+     "ct": 12,
+     "power": 250,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 50,
+     "name": "Solar Blast",
+     "element": "Grass",
+     "ct": 20,
+     "power": 450,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 70,
+     "name": "Wind Burst",
+     "element": "Grass",
+     "ct": 30,
+     "power": 600,
+     "effects": "Ivy-Covered 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "1-2",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "1-2",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Loupmoon": [
@@ -1384,7 +10089,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Dark Ball",
+     "element": "Dark",
+     "ct": 2,
+     "power": 50,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 7,
+     "name": "Jumping Claw",
+     "element": "Dark",
+     "ct": 4,
+     "power": 80,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 15,
+     "name": "Shadow Burst",
+     "element": "Dark",
+     "ct": 4,
+     "power": 80,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 22,
+     "name": "Icicle Cutter",
+     "element": "Ice",
+     "ct": 4,
+     "power": 80,
+     "effects": "Freeze 50"
+    },
+    {
+     "lv": 30,
+     "name": "Spirit Flame",
+     "element": "Dark",
+     "ct": 12,
+     "power": 200,
+     "effects": "Burn 102"
+    },
+    {
+     "lv": 40,
+     "name": "Nightmare Ball",
+     "element": "Dark",
+     "ct": 16,
+     "power": 300,
+     "effects": "Blind 65"
+    },
+    {
+     "lv": 50,
+     "name": "Dark Laser",
+     "element": "Dark",
+     "ct": 20,
+     "power": 450,
+     "effects": "Blind 100"
+    },
+    {
+     "lv": 70,
+     "name": "Dark Whisp",
+     "element": "Dark",
+     "ct": 30,
+     "power": 600,
+     "effects": "Blind 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "1-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Claw",
+     "qty": "1-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Loupmoon Cryst": [
@@ -1397,7 +10180,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Ice Missile",
+     "element": "Ice",
+     "ct": 2,
+     "power": 40,
+     "effects": "Freeze 102"
+    },
+    {
+     "lv": 7,
+     "name": "Icicle Cutter",
+     "element": "Ice",
+     "ct": 4,
+     "power": 80,
+     "effects": "Freeze 50"
+    },
+    {
+     "lv": 15,
+     "name": "Snow Claw",
+     "element": "Ice",
+     "ct": 8,
+     "power": 160,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 22,
+     "name": "Freeze Wall",
+     "element": "Ice",
+     "ct": 12,
+     "power": 200,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 30,
+     "name": "Icicle Bullet",
+     "element": "Ice",
+     "ct": 12,
+     "power": 250,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 40,
+     "name": "Icicle Line",
+     "element": "Ice",
+     "ct": 16,
+     "power": 300,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 50,
+     "name": "Blizzard Spike",
+     "element": "Ice",
+     "ct": 20,
+     "power": 450,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 70,
+     "name": "Diamond Rain",
+     "element": "Ice",
+     "ct": 30,
+     "power": 600,
+     "effects": "Freeze 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Loupmoon Cryst Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Claw",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Lovander": [
@@ -1410,7 +10271,101 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Power Shot",
+     "element": "Neutral",
+     "ct": 4,
+     "power": 80,
+     "effects": null
+    },
+    {
+     "lv": 7,
+     "name": "Poison Blast",
+     "element": "Dark",
+     "ct": 2,
+     "power": 30,
+     "effects": "Poison 100"
+    },
+    {
+     "lv": 15,
+     "name": "Shadow Burst",
+     "element": "Dark",
+     "ct": 4,
+     "power": 80,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 22,
+     "name": "Acid Rain",
+     "element": "Water",
+     "ct": 8,
+     "power": 120,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 30,
+     "name": "Power Bomb",
+     "element": "Neutral",
+     "ct": 8,
+     "power": 120,
+     "effects": null
+    },
+    {
+     "lv": 35,
+     "name": "Poison Shower",
+     "element": "Dark",
+     "ct": 8,
+     "power": 160,
+     "effects": "Poison 100"
+    },
+    {
+     "lv": 40,
+     "name": "Implode",
+     "element": "Neutral",
+     "ct": 16,
+     "power": 300,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 50,
+     "name": "Pal Blast",
+     "element": "Neutral",
+     "ct": 20,
+     "power": 450,
+     "effects": null
+    },
+    {
+     "lv": 55,
+     "name": "Dark Laser",
+     "element": "Dark",
+     "ct": 20,
+     "power": 450,
+     "effects": "Blind 100"
+    },
+    {
+     "lv": 70,
+     "name": "Dark Whisp",
+     "element": "Dark",
+     "ct": 30,
+     "power": 600,
+     "effects": "Blind 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "2-4",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "2-4",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Lullu": [
@@ -1423,7 +10378,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Wind Cutter",
+     "element": "Grass",
+     "ct": 2,
+     "power": 40,
+     "effects": "Ivy-Covered 35"
+    },
+    {
+     "lv": 7,
+     "name": "Seed Machine Gun",
+     "element": "Grass",
+     "ct": 4,
+     "power": 80,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 15,
+     "name": "Multicutter",
+     "element": "Grass",
+     "ct": 8,
+     "power": 160,
+     "effects": "Ivy-Covered 35"
+    },
+    {
+     "lv": 22,
+     "name": "Grass Tornado",
+     "element": "Grass",
+     "ct": 12,
+     "power": 200,
+     "effects": "Ivy-Covered 65"
+    },
+    {
+     "lv": 30,
+     "name": "Holy Burst",
+     "element": "Neutral",
+     "ct": 30,
+     "power": 700,
+     "effects": null
+    },
+    {
+     "lv": 40,
+     "name": "Circle Vine",
+     "element": "Grass",
+     "ct": 16,
+     "power": 300,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 50,
+     "name": "Solar Blast",
+     "element": "Grass",
+     "ct": 20,
+     "power": 450,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 70,
+     "name": "Wind Burst",
+     "element": "Grass",
+     "ct": 30,
+     "power": 600,
+     "effects": "Ivy-Covered 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Lunaris": [
@@ -1436,7 +10469,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Air Cannon",
+     "element": "Neutral",
+     "ct": 2,
+     "power": 40,
+     "effects": null
+    },
+    {
+     "lv": 7,
+     "name": "Power Shot",
+     "element": "Neutral",
+     "ct": 4,
+     "power": 80,
+     "effects": null
+    },
+    {
+     "lv": 15,
+     "name": "Icicle Cutter",
+     "element": "Ice",
+     "ct": 4,
+     "power": 80,
+     "effects": "Freeze 50"
+    },
+    {
+     "lv": 22,
+     "name": "Plasma Funnel",
+     "element": "Electric",
+     "ct": 8,
+     "power": 120,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 30,
+     "name": "Power Bomb",
+     "element": "Neutral",
+     "ct": 8,
+     "power": 120,
+     "effects": null
+    },
+    {
+     "lv": 40,
+     "name": "Blizzard Spike",
+     "element": "Ice",
+     "ct": 20,
+     "power": 450,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 50,
+     "name": "Pal Blast",
+     "element": "Neutral",
+     "ct": 20,
+     "power": 450,
+     "effects": null
+    },
+    {
+     "lv": 70,
+     "name": "Holy Burst",
+     "element": "Neutral",
+     "ct": 30,
+     "power": 700,
+     "effects": null
+    }
+   ],
+   "drops": [
+    {
+     "item": "Lunaris Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "4-6",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Lyleen": [
@@ -1449,7 +10560,93 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Wind Cutter",
+     "element": "Grass",
+     "ct": 2,
+     "power": 40,
+     "effects": "Ivy-Covered 35"
+    },
+    {
+     "lv": 7,
+     "name": "Seed Machine Gun",
+     "element": "Grass",
+     "ct": 4,
+     "power": 80,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 15,
+     "name": "Seed Mine",
+     "element": "Grass",
+     "ct": 8,
+     "power": 120,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 22,
+     "name": "Aqua Burst",
+     "element": "Water",
+     "ct": 12,
+     "power": 200,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 30,
+     "name": "Grass Tornado",
+     "element": "Grass",
+     "ct": 12,
+     "power": 200,
+     "effects": "Ivy-Covered 65"
+    },
+    {
+     "lv": 40,
+     "name": "Spine Vine",
+     "element": "Grass",
+     "ct": 12,
+     "power": 250,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 50,
+     "name": "Solar Blast",
+     "element": "Grass",
+     "ct": 20,
+     "power": 450,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 55,
+     "name": "Bountiful Protection",
+     "element": "Grass",
+     "ct": 240,
+     "power": 0,
+     "effects": null
+    },
+    {
+     "lv": 70,
+     "name": "Wind Burst",
+     "element": "Grass",
+     "ct": 30,
+     "power": 600,
+     "effects": "Ivy-Covered 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Lyleen Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "6-7",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Lyleen Noct": [
@@ -1462,7 +10659,98 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Dark Ball",
+     "element": "Dark",
+     "ct": 2,
+     "power": 50,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 7,
+     "name": "Icicle Cutter",
+     "element": "Ice",
+     "ct": 4,
+     "power": 80,
+     "effects": "Freeze 50"
+    },
+    {
+     "lv": 15,
+     "name": "Shadow Burst",
+     "element": "Dark",
+     "ct": 4,
+     "power": 80,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 22,
+     "name": "Crystal Breath",
+     "element": "Ice",
+     "ct": 8,
+     "power": 160,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 30,
+     "name": "Nightmare Ball",
+     "element": "Dark",
+     "ct": 16,
+     "power": 300,
+     "effects": "Blind 65"
+    },
+    {
+     "lv": 40,
+     "name": "Blizzard Spike",
+     "element": "Ice",
+     "ct": 20,
+     "power": 450,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 45,
+     "name": "Star Mine",
+     "element": "Neutral",
+     "ct": 20,
+     "power": 400,
+     "effects": null
+    },
+    {
+     "lv": 50,
+     "name": "Dark Laser",
+     "element": "Dark",
+     "ct": 20,
+     "power": 450,
+     "effects": "Blind 100"
+    },
+    {
+     "lv": 70,
+     "name": "Dark Whisp",
+     "element": "Dark",
+     "ct": 30,
+     "power": 600,
+     "effects": "Blind 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Lyleen Noct Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "6-7",
+     "pct": 100.0
+    },
+    {
+     "item": "Laser Rifle Schematic 4",
+     "qty": "1",
+     "pct": 3.0
+    }
+   ]
   }
  ],
  "Mammorest": [
@@ -1475,7 +10763,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Bog Blast",
+     "element": "Ground",
+     "ct": 2,
+     "power": 40,
+     "effects": "Muddy 50"
+    },
+    {
+     "lv": 7,
+     "name": "Seed Machine Gun",
+     "element": "Grass",
+     "ct": 4,
+     "power": 80,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 15,
+     "name": "Power Bomb",
+     "element": "Neutral",
+     "ct": 8,
+     "power": 120,
+     "effects": null
+    },
+    {
+     "lv": 22,
+     "name": "Grass Tornado",
+     "element": "Grass",
+     "ct": 12,
+     "power": 200,
+     "effects": "Ivy-Covered 65"
+    },
+    {
+     "lv": 30,
+     "name": "Earth Impact",
+     "element": "Ground",
+     "ct": 16,
+     "power": 300,
+     "effects": null
+    },
+    {
+     "lv": 40,
+     "name": "Spine Vine",
+     "element": "Grass",
+     "ct": 12,
+     "power": 250,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 50,
+     "name": "Solar Blast",
+     "element": "Grass",
+     "ct": 20,
+     "power": 450,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 70,
+     "name": "Wind Burst",
+     "element": "Grass",
+     "ct": 30,
+     "power": 600,
+     "effects": "Ivy-Covered 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Mammorest Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "5-6",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Mammorest Cryst": [
@@ -1488,7 +10854,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Stone Cannon",
+     "element": "Ground",
+     "ct": 8,
+     "power": 120,
+     "effects": "Muddy 35"
+    },
+    {
+     "lv": 7,
+     "name": "Icicle Cutter",
+     "element": "Ice",
+     "ct": 4,
+     "power": 80,
+     "effects": "Freeze 50"
+    },
+    {
+     "lv": 15,
+     "name": "Power Bomb",
+     "element": "Neutral",
+     "ct": 8,
+     "power": 120,
+     "effects": null
+    },
+    {
+     "lv": 22,
+     "name": "Iceberg",
+     "element": "Ice",
+     "ct": 8,
+     "power": 120,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 30,
+     "name": "Earth Impact",
+     "element": "Ground",
+     "ct": 16,
+     "power": 300,
+     "effects": null
+    },
+    {
+     "lv": 40,
+     "name": "Crystal Breath",
+     "element": "Ice",
+     "ct": 8,
+     "power": 160,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 50,
+     "name": "Blizzard Spike",
+     "element": "Ice",
+     "ct": 20,
+     "power": 450,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 70,
+     "name": "Diamond Rain",
+     "element": "Ice",
+     "ct": 30,
+     "power": 600,
+     "effects": "Freeze 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "5-6",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "5-6",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Maraith": [
@@ -1501,7 +10945,93 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Ignis Blast",
+     "element": "Fire",
+     "ct": 2,
+     "power": 40,
+     "effects": "Burn 50"
+    },
+    {
+     "lv": 7,
+     "name": "Dark Ball",
+     "element": "Dark",
+     "ct": 2,
+     "power": 50,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 15,
+     "name": "Flare Arrow",
+     "element": "Fire",
+     "ct": 8,
+     "power": 120,
+     "effects": "Burn 102"
+    },
+    {
+     "lv": 22,
+     "name": "Shadow Burst",
+     "element": "Dark",
+     "ct": 4,
+     "power": 80,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 30,
+     "name": "Spirit Flame",
+     "element": "Dark",
+     "ct": 12,
+     "power": 200,
+     "effects": "Burn 102"
+    },
+    {
+     "lv": 35,
+     "name": "Spirit Dash",
+     "element": "Dark",
+     "ct": 16,
+     "power": 300,
+     "effects": "Blind 100"
+    },
+    {
+     "lv": 40,
+     "name": "Nightmare Ball",
+     "element": "Dark",
+     "ct": 16,
+     "power": 300,
+     "effects": "Blind 65"
+    },
+    {
+     "lv": 50,
+     "name": "Dark Laser",
+     "element": "Dark",
+     "ct": 20,
+     "power": 450,
+     "effects": "Blind 100"
+    },
+    {
+     "lv": 70,
+     "name": "Dark Whisp",
+     "element": "Dark",
+     "ct": 30,
+     "power": 600,
+     "effects": "Blind 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "2-4",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Claw",
+     "qty": "2-4",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Mau": [
@@ -1514,7 +11044,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "S",
    "hpRate": 1.0,
    "recvRate": 0.48,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Bog Blast",
+     "element": "Ground",
+     "ct": 2,
+     "power": 40,
+     "effects": "Muddy 50"
+    },
+    {
+     "lv": 7,
+     "name": "Dark Ball",
+     "element": "Dark",
+     "ct": 2,
+     "power": 50,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 15,
+     "name": "Shadow Burst",
+     "element": "Dark",
+     "ct": 4,
+     "power": 80,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 22,
+     "name": "Sand Tornado",
+     "element": "Ground",
+     "ct": 12,
+     "power": 200,
+     "effects": "Muddy 65"
+    },
+    {
+     "lv": 30,
+     "name": "Spirit Flame",
+     "element": "Dark",
+     "ct": 12,
+     "power": 200,
+     "effects": "Burn 102"
+    },
+    {
+     "lv": 40,
+     "name": "Nightmare Ball",
+     "element": "Dark",
+     "ct": 16,
+     "power": 300,
+     "effects": "Blind 65"
+    },
+    {
+     "lv": 50,
+     "name": "Dark Laser",
+     "element": "Dark",
+     "ct": 20,
+     "power": 450,
+     "effects": "Blind 100"
+    },
+    {
+     "lv": 70,
+     "name": "Dark Whisp",
+     "element": "Dark",
+     "ct": 30,
+     "power": 600,
+     "effects": "Blind 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "1-2",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Claw",
+     "qty": "1-2",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Mau Cryst": [
@@ -1527,7 +11135,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "S",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Ice Missile",
+     "element": "Ice",
+     "ct": 2,
+     "power": 40,
+     "effects": "Freeze 102"
+    },
+    {
+     "lv": 7,
+     "name": "Air Cannon",
+     "element": "Neutral",
+     "ct": 2,
+     "power": 40,
+     "effects": null
+    },
+    {
+     "lv": 15,
+     "name": "Bog Blast",
+     "element": "Ground",
+     "ct": 2,
+     "power": 40,
+     "effects": "Muddy 50"
+    },
+    {
+     "lv": 22,
+     "name": "Icicle Cutter",
+     "element": "Ice",
+     "ct": 4,
+     "power": 80,
+     "effects": "Freeze 50"
+    },
+    {
+     "lv": 30,
+     "name": "Iceberg",
+     "element": "Ice",
+     "ct": 8,
+     "power": 120,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 40,
+     "name": "Crystal Breath",
+     "element": "Ice",
+     "ct": 8,
+     "power": 160,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 50,
+     "name": "Blizzard Spike",
+     "element": "Ice",
+     "ct": 20,
+     "power": 450,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 70,
+     "name": "Diamond Rain",
+     "element": "Ice",
+     "ct": 30,
+     "power": 600,
+     "effects": "Freeze 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Claw",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Melpaca": [
@@ -1540,7 +11226,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.0,
    "recvRate": 0.48,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Air Cannon",
+     "element": "Neutral",
+     "ct": 2,
+     "power": 40,
+     "effects": null
+    },
+    {
+     "lv": 7,
+     "name": "Fluffy Tackle",
+     "element": "Neutral",
+     "ct": 2,
+     "power": 50,
+     "effects": null
+    },
+    {
+     "lv": 15,
+     "name": "Bog Blast",
+     "element": "Ground",
+     "ct": 2,
+     "power": 40,
+     "effects": "Muddy 50"
+    },
+    {
+     "lv": 22,
+     "name": "Power Shot",
+     "element": "Neutral",
+     "ct": 4,
+     "power": 80,
+     "effects": null
+    },
+    {
+     "lv": 30,
+     "name": "Shockwave",
+     "element": "Electric",
+     "ct": 4,
+     "power": 80,
+     "effects": "Electrify 103"
+    },
+    {
+     "lv": 40,
+     "name": "Power Bomb",
+     "element": "Neutral",
+     "ct": 8,
+     "power": 120,
+     "effects": null
+    },
+    {
+     "lv": 50,
+     "name": "Pal Blast",
+     "element": "Neutral",
+     "ct": 20,
+     "power": 450,
+     "effects": null
+    },
+    {
+     "lv": 70,
+     "name": "Holy Burst",
+     "element": "Neutral",
+     "ct": 30,
+     "power": 700,
+     "effects": null
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "1-2",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "1-2",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Menasting": [
@@ -1553,7 +11317,98 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Bog Blast",
+     "element": "Ground",
+     "ct": 2,
+     "power": 40,
+     "effects": "Muddy 50"
+    },
+    {
+     "lv": 7,
+     "name": "Poison Blast",
+     "element": "Dark",
+     "ct": 2,
+     "power": 30,
+     "effects": "Poison 100"
+    },
+    {
+     "lv": 15,
+     "name": "Shadow Burst",
+     "element": "Dark",
+     "ct": 4,
+     "power": 80,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 22,
+     "name": "Stone Cannon",
+     "element": "Ground",
+     "ct": 8,
+     "power": 120,
+     "effects": "Muddy 35"
+    },
+    {
+     "lv": 30,
+     "name": "Nightmare Ball",
+     "element": "Dark",
+     "ct": 16,
+     "power": 300,
+     "effects": "Blind 65"
+    },
+    {
+     "lv": 35,
+     "name": "Jumping Stinger",
+     "element": "Ground",
+     "ct": 16,
+     "power": 350,
+     "effects": "Poison 100"
+    },
+    {
+     "lv": 40,
+     "name": "Rock Lance",
+     "element": "Ground",
+     "ct": 20,
+     "power": 400,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 50,
+     "name": "Dark Laser",
+     "element": "Dark",
+     "ct": 20,
+     "power": 450,
+     "effects": "Blind 100"
+    },
+    {
+     "lv": 70,
+     "name": "Dark Whisp",
+     "element": "Dark",
+     "ct": 30,
+     "power": 600,
+     "effects": "Blind 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Menasting Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Claw",
+     "qty": "5-7",
+     "pct": 100.0
+    },
+    {
+     "item": "Cold Resistant Refined Metal Armor Schematic 4",
+     "qty": "1",
+     "pct": 3.0
+    }
+   ]
   }
  ],
  "Menasting Terra": [
@@ -1566,7 +11421,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Bog Blast",
+     "element": "Ground",
+     "ct": 2,
+     "power": 40,
+     "effects": "Muddy 50"
+    },
+    {
+     "lv": 7,
+     "name": "Stone Blast",
+     "element": "Ground",
+     "ct": 4,
+     "power": 80,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 15,
+     "name": "Stone Cannon",
+     "element": "Ground",
+     "ct": 8,
+     "power": 120,
+     "effects": "Muddy 35"
+    },
+    {
+     "lv": 22,
+     "name": "Sand Tornado",
+     "element": "Ground",
+     "ct": 12,
+     "power": 200,
+     "effects": "Muddy 65"
+    },
+    {
+     "lv": 30,
+     "name": "Jumping Stinger",
+     "element": "Ground",
+     "ct": 16,
+     "power": 350,
+     "effects": "Poison 100"
+    },
+    {
+     "lv": 40,
+     "name": "Rock Lance",
+     "element": "Ground",
+     "ct": 20,
+     "power": 400,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 50,
+     "name": "Rockburst",
+     "element": "Ground",
+     "ct": 16,
+     "power": 300,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 70,
+     "name": "Rocky Impact",
+     "element": "Ground",
+     "ct": 30,
+     "power": 600,
+     "effects": "Muddy 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Menasting Terra Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Claw",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Moldron": [
@@ -1579,7 +11512,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Spirit Fire",
+     "element": "Fire",
+     "ct": 4,
+     "power": 80,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 7,
+     "name": "Ignis Breath",
+     "element": "Fire",
+     "ct": 8,
+     "power": 160,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 15,
+     "name": "Flame Wall",
+     "element": "Fire",
+     "ct": 12,
+     "power": 250,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 22,
+     "name": "Rockburst",
+     "element": "Ground",
+     "ct": 16,
+     "power": 300,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 30,
+     "name": "Volcanic Rain",
+     "element": "Fire",
+     "ct": 20,
+     "power": 450,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 40,
+     "name": "Rocky Impact",
+     "element": "Ground",
+     "ct": 30,
+     "power": 600,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 50,
+     "name": "Magma Spit",
+     "element": "Fire",
+     "ct": 30,
+     "power": 600,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 70,
+     "name": "Magma Laser",
+     "element": "Fire",
+     "ct": 30,
+     "power": 700,
+     "effects": "Burn 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Moldron Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Dragon Stone",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Moldron Cryst": [
@@ -1592,7 +11603,125 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Iceberg",
+     "element": "Ice",
+     "ct": 8,
+     "power": 120,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 7,
+     "name": "Crystal Breath",
+     "element": "Ice",
+     "ct": 8,
+     "power": 160,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 15,
+     "name": "Icicle Line",
+     "element": "Ice",
+     "ct": 16,
+     "power": 300,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 22,
+     "name": "Rockburst",
+     "element": "Ground",
+     "ct": 16,
+     "power": 300,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 30,
+     "name": "Blizzard Spike",
+     "element": "Ice",
+     "ct": 20,
+     "power": 450,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 40,
+     "name": "Rocky Impact",
+     "element": "Ground",
+     "ct": 30,
+     "power": 600,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 50,
+     "name": "Ice Spit",
+     "element": "Ice",
+     "ct": 30,
+     "power": 600,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 70,
+     "name": "Ice Laser",
+     "element": "Ice",
+     "ct": 30,
+     "power": 700,
+     "effects": "Freeze 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Moldron Cryst Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Dragon Stone",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "6-8",
+     "pct": 100.0
+    },
+    {
+     "item": "World Tree Holy Water",
+     "qty": "20-30",
+     "pct": 100.0
+    },
+    {
+     "item": "Ice Radiant Gem",
+     "qty": "1-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Decayed Ancient Relic",
+     "qty": "1-10",
+     "pct": 50.0
+    },
+    {
+     "item": "Dormant Ancient Relic",
+     "qty": "1-5",
+     "pct": 25.0
+    },
+    {
+     "item": "Gorgeous Ancient Relic",
+     "qty": "1-3",
+     "pct": 15.0
+    },
+    {
+     "item": "Glowing Ancient Relic",
+     "qty": "1-2",
+     "pct": 12.5
+    },
+    {
+     "item": "Glistening Ancient Relic",
+     "qty": "1",
+     "pct": 10.0
+    }
+   ]
   }
  ],
  "Mossanda": [
@@ -1605,7 +11734,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Power Shot",
+     "element": "Neutral",
+     "ct": 4,
+     "power": 80,
+     "effects": null
+    },
+    {
+     "lv": 7,
+     "name": "Seed Machine Gun",
+     "element": "Grass",
+     "ct": 4,
+     "power": 80,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 15,
+     "name": "Stone Cannon",
+     "element": "Ground",
+     "ct": 8,
+     "power": 120,
+     "effects": "Muddy 35"
+    },
+    {
+     "lv": 22,
+     "name": "Crushing Punch",
+     "element": "Grass",
+     "ct": 8,
+     "power": 120,
+     "effects": null
+    },
+    {
+     "lv": 30,
+     "name": "Seed Mine",
+     "element": "Grass",
+     "ct": 8,
+     "power": 120,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 40,
+     "name": "Spine Vine",
+     "element": "Grass",
+     "ct": 12,
+     "power": 250,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 50,
+     "name": "Solar Blast",
+     "element": "Grass",
+     "ct": 20,
+     "power": 450,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 70,
+     "name": "Wind Burst",
+     "element": "Grass",
+     "ct": 30,
+     "power": 600,
+     "effects": "Ivy-Covered 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "2-4",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "2-4",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Mossanda Lux": [
@@ -1618,7 +11825,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Spark Blast",
+     "element": "Electric",
+     "ct": 2,
+     "power": 50,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 7,
+     "name": "Shockwave",
+     "element": "Electric",
+     "ct": 4,
+     "power": 80,
+     "effects": "Electrify 103"
+    },
+    {
+     "lv": 15,
+     "name": "Lightning Streak",
+     "element": "Electric",
+     "ct": 8,
+     "power": 160,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 22,
+     "name": "Blast Punch",
+     "element": "Electric",
+     "ct": 8,
+     "power": 180,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 30,
+     "name": "Tri-Lightning",
+     "element": "Electric",
+     "ct": 12,
+     "power": 200,
+     "effects": "Electrify 103"
+    },
+    {
+     "lv": 40,
+     "name": "Lightning Strike",
+     "element": "Electric",
+     "ct": 16,
+     "power": 300,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 50,
+     "name": "Lightning Bolt",
+     "element": "Electric",
+     "ct": 20,
+     "power": 450,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 70,
+     "name": "Thunder Rail",
+     "element": "Electric",
+     "ct": 30,
+     "power": 600,
+     "effects": "Electrify 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Mossanda Lux Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "4-6",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Mozzarina": [
@@ -1631,7 +11916,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Power Shot",
+     "element": "Neutral",
+     "ct": 4,
+     "power": 80,
+     "effects": null
+    },
+    {
+     "lv": 7,
+     "name": "Bog Blast",
+     "element": "Ground",
+     "ct": 2,
+     "power": 40,
+     "effects": "Muddy 50"
+    },
+    {
+     "lv": 15,
+     "name": "Air Cannon",
+     "element": "Neutral",
+     "ct": 2,
+     "power": 40,
+     "effects": null
+    },
+    {
+     "lv": 22,
+     "name": "Stone Blast",
+     "element": "Ground",
+     "ct": 4,
+     "power": 80,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 30,
+     "name": "Stone Cannon",
+     "element": "Ground",
+     "ct": 8,
+     "power": 120,
+     "effects": "Muddy 35"
+    },
+    {
+     "lv": 40,
+     "name": "Power Bomb",
+     "element": "Neutral",
+     "ct": 8,
+     "power": 120,
+     "effects": null
+    },
+    {
+     "lv": 50,
+     "name": "Pal Blast",
+     "element": "Neutral",
+     "ct": 20,
+     "power": 450,
+     "effects": null
+    },
+    {
+     "lv": 70,
+     "name": "Holy Burst",
+     "element": "Neutral",
+     "ct": 30,
+     "power": 700,
+     "effects": null
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "1-2",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "1-2",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Muffly": [
@@ -1644,7 +12007,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "S",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Air Cannon",
+     "element": "Neutral",
+     "ct": 2,
+     "power": 40,
+     "effects": null
+    },
+    {
+     "lv": 7,
+     "name": "Icicle Cutter",
+     "element": "Ice",
+     "ct": 4,
+     "power": 80,
+     "effects": "Freeze 50"
+    },
+    {
+     "lv": 15,
+     "name": "Air Blade",
+     "element": "Neutral",
+     "ct": 8,
+     "power": 160,
+     "effects": null
+    },
+    {
+     "lv": 22,
+     "name": "Crystal Breath",
+     "element": "Ice",
+     "ct": 8,
+     "power": 160,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 30,
+     "name": "Icicle Bullet",
+     "element": "Ice",
+     "ct": 12,
+     "power": 250,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 40,
+     "name": "Icicle Line",
+     "element": "Ice",
+     "ct": 16,
+     "power": 300,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 50,
+     "name": "Blizzard Spike",
+     "element": "Ice",
+     "ct": 20,
+     "power": 450,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 70,
+     "name": "Diamond Rain",
+     "element": "Ice",
+     "ct": 30,
+     "power": 600,
+     "effects": "Freeze 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "1-2",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Plume",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Munchill": [
@@ -1657,7 +12098,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Aqua Gun",
+     "element": "Water",
+     "ct": 2,
+     "power": 50,
+     "effects": "Soak 50"
+    },
+    {
+     "lv": 7,
+     "name": "Icicle Cutter",
+     "element": "Ice",
+     "ct": 4,
+     "power": 80,
+     "effects": "Freeze 50"
+    },
+    {
+     "lv": 15,
+     "name": "Crystal Breath",
+     "element": "Ice",
+     "ct": 8,
+     "power": 160,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 22,
+     "name": "Chaotic Spray",
+     "element": "Ice",
+     "ct": 8,
+     "power": 180,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 30,
+     "name": "Freeze Wall",
+     "element": "Ice",
+     "ct": 12,
+     "power": 200,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 40,
+     "name": "Torrential Blast",
+     "element": "Water",
+     "ct": 12,
+     "power": 250,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 50,
+     "name": "Diamond Rain",
+     "element": "Ice",
+     "ct": 30,
+     "power": 600,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 70,
+     "name": "Geyser Gush",
+     "element": "Water",
+     "ct": 30,
+     "power": 600,
+     "effects": "Soak 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Mycora": [
@@ -1670,7 +12189,125 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Wind Cutter",
+     "element": "Grass",
+     "ct": 2,
+     "power": 40,
+     "effects": "Ivy-Covered 35"
+    },
+    {
+     "lv": 7,
+     "name": "Poison Blast",
+     "element": "Dark",
+     "ct": 2,
+     "power": 30,
+     "effects": "Poison 100"
+    },
+    {
+     "lv": 15,
+     "name": "Grass Tornado",
+     "element": "Grass",
+     "ct": 12,
+     "power": 200,
+     "effects": "Ivy-Covered 65"
+    },
+    {
+     "lv": 22,
+     "name": "Wind Edge",
+     "element": "Grass",
+     "ct": 12,
+     "power": 200,
+     "effects": "Ivy-Covered 35"
+    },
+    {
+     "lv": 30,
+     "name": "Poison Shower",
+     "element": "Dark",
+     "ct": 8,
+     "power": 160,
+     "effects": "Poison 100"
+    },
+    {
+     "lv": 40,
+     "name": "Solar Blast",
+     "element": "Grass",
+     "ct": 20,
+     "power": 450,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 50,
+     "name": "Crosswind",
+     "element": "Grass",
+     "ct": 24,
+     "power": 500,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 70,
+     "name": "Wind Burst",
+     "element": "Grass",
+     "ct": 30,
+     "power": 600,
+     "effects": "Ivy-Covered 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Mycora Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "7-9",
+     "pct": 100.0
+    },
+    {
+     "item": "World Tree Holy Water",
+     "qty": "20-30",
+     "pct": 100.0
+    },
+    {
+     "item": "Ground Radiant Gem",
+     "qty": "1-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Decayed Ancient Relic",
+     "qty": "1-10",
+     "pct": 50.0
+    },
+    {
+     "item": "Dormant Ancient Relic",
+     "qty": "1-5",
+     "pct": 25.0
+    },
+    {
+     "item": "Gorgeous Ancient Relic",
+     "qty": "1-3",
+     "pct": 15.0
+    },
+    {
+     "item": "Glowing Ancient Relic",
+     "qty": "1-2",
+     "pct": 12.5
+    },
+    {
+     "item": "Glistening Ancient Relic",
+     "qty": "1",
+     "pct": 10.0
+    }
+   ]
   }
  ],
  "Necromus": [
@@ -1683,7 +12320,106 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.8552631,
    "recvRate": 0.18,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Shadow Burst",
+     "element": "Dark",
+     "ct": 4,
+     "power": 80,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 7,
+     "name": "Spirit Fire",
+     "element": "Fire",
+     "ct": 4,
+     "power": 80,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 15,
+     "name": "Spirit Flame",
+     "element": "Dark",
+     "ct": 12,
+     "power": 200,
+     "effects": "Burn 102"
+    },
+    {
+     "lv": 22,
+     "name": "Nightmare Ball",
+     "element": "Dark",
+     "ct": 16,
+     "power": 300,
+     "effects": "Blind 65"
+    },
+    {
+     "lv": 30,
+     "name": "Rock Lance",
+     "element": "Ground",
+     "ct": 20,
+     "power": 400,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 40,
+     "name": "Twin Spears",
+     "element": "Dark",
+     "ct": 30,
+     "power": 700,
+     "effects": null
+    },
+    {
+     "lv": 50,
+     "name": "Dark Laser",
+     "element": "Dark",
+     "ct": 20,
+     "power": 450,
+     "effects": "Blind 100"
+    },
+    {
+     "lv": 55,
+     "name": "Apocalypse",
+     "element": "Dark",
+     "ct": 20,
+     "power": 400,
+     "effects": "Blind 100"
+    },
+    {
+     "lv": 60,
+     "name": "Rocky Impact",
+     "element": "Ground",
+     "ct": 30,
+     "power": 600,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 70,
+     "name": "Dark Whisp",
+     "element": "Dark",
+     "ct": 30,
+     "power": 600,
+     "effects": "Blind 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "6-8",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "6-8",
+     "pct": 100.0
+    },
+    {
+     "item": "Hexolite Helmet Schematic 4",
+     "qty": "1",
+     "pct": 3.0
+    }
+   ]
   }
  ],
  "Needoll": [
@@ -1696,7 +12432,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "S",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Seed Machine Gun",
+     "element": "Grass",
+     "ct": 4,
+     "power": 80,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 7,
+     "name": "Seed Mine",
+     "element": "Grass",
+     "ct": 8,
+     "power": 120,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 15,
+     "name": "Spine Vine",
+     "element": "Grass",
+     "ct": 12,
+     "power": 250,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 22,
+     "name": "Circle Vine",
+     "element": "Grass",
+     "ct": 16,
+     "power": 300,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 30,
+     "name": "Reflect Leaf",
+     "element": "Grass",
+     "ct": 20,
+     "power": 400,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 40,
+     "name": "Solar Blast",
+     "element": "Grass",
+     "ct": 20,
+     "power": 450,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 50,
+     "name": "Crosswind",
+     "element": "Grass",
+     "ct": 24,
+     "power": 500,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 70,
+     "name": "Wind Burst",
+     "element": "Grass",
+     "ct": 30,
+     "power": 600,
+     "effects": "Ivy-Covered 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Needoll Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Neptilius": [
@@ -1709,7 +12523,98 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 3.738395,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Aqua Gun",
+     "element": "Water",
+     "ct": 2,
+     "power": 50,
+     "effects": "Soak 50"
+    },
+    {
+     "lv": 7,
+     "name": "Bubble Blast",
+     "element": "Water",
+     "ct": 4,
+     "power": 80,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 15,
+     "name": "Splash",
+     "element": "Water",
+     "ct": 8,
+     "power": 160,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 22,
+     "name": "Torrential Blast",
+     "element": "Water",
+     "ct": 12,
+     "power": 250,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 30,
+     "name": "Curtain Splash",
+     "element": "Water",
+     "ct": 16,
+     "power": 300,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 40,
+     "name": "Aqua Surge",
+     "element": "Water",
+     "ct": 24,
+     "power": 500,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 50,
+     "name": "Geyser Gush",
+     "element": "Water",
+     "ct": 30,
+     "power": 600,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 60,
+     "name": "Thalassonic Laser",
+     "element": "Water",
+     "ct": 30,
+     "power": 700,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 70,
+     "name": "Thunderstorm",
+     "element": "Electric",
+     "ct": 30,
+     "power": 600,
+     "effects": null
+    }
+   ],
+   "drops": [
+    {
+     "item": "Neptilius Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Dragon Stone",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Charge Rifle Schematic 4",
+     "qty": "1",
+     "pct": 3.0
+    }
+   ]
   }
  ],
  "Nitemary": [
@@ -1722,7 +12627,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Dark Ball",
+     "element": "Dark",
+     "ct": 2,
+     "power": 50,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 7,
+     "name": "Umbral Surge",
+     "element": "Dark",
+     "ct": 4,
+     "power": 60,
+     "effects": "Blind 35"
+    },
+    {
+     "lv": 15,
+     "name": "Dark Cannon",
+     "element": "Dark",
+     "ct": 4,
+     "power": 70,
+     "effects": "Blind 20"
+    },
+    {
+     "lv": 22,
+     "name": "Dark Arrow",
+     "element": "Dark",
+     "ct": 8,
+     "power": 120,
+     "effects": "Blind 102"
+    },
+    {
+     "lv": 30,
+     "name": "Spirit Flame",
+     "element": "Dark",
+     "ct": 12,
+     "power": 200,
+     "effects": "Burn 102"
+    },
+    {
+     "lv": 40,
+     "name": "Nightmare Ball",
+     "element": "Dark",
+     "ct": 16,
+     "power": 300,
+     "effects": "Blind 65"
+    },
+    {
+     "lv": 50,
+     "name": "Dark Whisp",
+     "element": "Dark",
+     "ct": 30,
+     "power": 600,
+     "effects": "Blind 100"
+    },
+    {
+     "lv": 70,
+     "name": "Fire Ball",
+     "element": "Fire",
+     "ct": 30,
+     "power": 600,
+     "effects": "Burn 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Nitemary Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Nitewing": [
@@ -1735,7 +12718,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.48,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Air Cannon",
+     "element": "Neutral",
+     "ct": 2,
+     "power": 40,
+     "effects": null
+    },
+    {
+     "lv": 7,
+     "name": "Tornado Attack",
+     "element": "Neutral",
+     "ct": 4,
+     "power": 80,
+     "effects": null
+    },
+    {
+     "lv": 15,
+     "name": "Wind Cutter",
+     "element": "Grass",
+     "ct": 2,
+     "power": 40,
+     "effects": "Ivy-Covered 35"
+    },
+    {
+     "lv": 22,
+     "name": "Power Bomb",
+     "element": "Neutral",
+     "ct": 8,
+     "power": 120,
+     "effects": null
+    },
+    {
+     "lv": 30,
+     "name": "Sand Tornado",
+     "element": "Ground",
+     "ct": 12,
+     "power": 200,
+     "effects": "Muddy 65"
+    },
+    {
+     "lv": 40,
+     "name": "Grass Tornado",
+     "element": "Grass",
+     "ct": 12,
+     "power": 200,
+     "effects": "Ivy-Covered 65"
+    },
+    {
+     "lv": 50,
+     "name": "Pal Blast",
+     "element": "Neutral",
+     "ct": 20,
+     "power": 450,
+     "effects": null
+    },
+    {
+     "lv": 70,
+     "name": "Holy Burst",
+     "element": "Neutral",
+     "ct": 30,
+     "power": 700,
+     "effects": null
+    }
+   ],
+   "drops": [
+    {
+     "item": "Nitewing Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Plume",
+     "qty": "3-4",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Nox": [
@@ -1748,7 +12809,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.48,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Air Cannon",
+     "element": "Neutral",
+     "ct": 2,
+     "power": 40,
+     "effects": null
+    },
+    {
+     "lv": 7,
+     "name": "Dark Ball",
+     "element": "Dark",
+     "ct": 2,
+     "power": 50,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 15,
+     "name": "Shadow Burst",
+     "element": "Dark",
+     "ct": 4,
+     "power": 80,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 22,
+     "name": "Power Bomb",
+     "element": "Neutral",
+     "ct": 8,
+     "power": 120,
+     "effects": null
+    },
+    {
+     "lv": 30,
+     "name": "Spirit Flame",
+     "element": "Dark",
+     "ct": 12,
+     "power": 200,
+     "effects": "Burn 102"
+    },
+    {
+     "lv": 40,
+     "name": "Nightmare Ball",
+     "element": "Dark",
+     "ct": 16,
+     "power": 300,
+     "effects": "Blind 65"
+    },
+    {
+     "lv": 50,
+     "name": "Dark Laser",
+     "element": "Dark",
+     "ct": 20,
+     "power": 450,
+     "effects": "Blind 100"
+    },
+    {
+     "lv": 70,
+     "name": "Dark Whisp",
+     "element": "Dark",
+     "ct": 30,
+     "power": 600,
+     "effects": "Blind 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Nyafia": [
@@ -1761,7 +12900,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Poison Fog",
+     "element": "Dark",
+     "ct": 30,
+     "power": 0,
+     "effects": "Poison 9999"
+    },
+    {
+     "lv": 7,
+     "name": "Poison Blast",
+     "element": "Dark",
+     "ct": 2,
+     "power": 30,
+     "effects": "Poison 100"
+    },
+    {
+     "lv": 15,
+     "name": "Stone Blast",
+     "element": "Ground",
+     "ct": 4,
+     "power": 80,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 22,
+     "name": "Shadow Burst",
+     "element": "Dark",
+     "ct": 4,
+     "power": 80,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 30,
+     "name": "Poison Shower",
+     "element": "Dark",
+     "ct": 8,
+     "power": 160,
+     "effects": "Poison 100"
+    },
+    {
+     "lv": 40,
+     "name": "Nightmare Ball",
+     "element": "Dark",
+     "ct": 16,
+     "power": 300,
+     "effects": "Blind 65"
+    },
+    {
+     "lv": 50,
+     "name": "Dark Laser",
+     "element": "Dark",
+     "ct": 20,
+     "power": 450,
+     "effects": "Blind 100"
+    },
+    {
+     "lv": 70,
+     "name": "Dark Whisp",
+     "element": "Dark",
+     "ct": 30,
+     "power": 600,
+     "effects": "Blind 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Nyafia Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Omascul": [
@@ -1774,7 +12991,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Dark Ball",
+     "element": "Dark",
+     "ct": 2,
+     "power": 50,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 7,
+     "name": "Umbral Surge",
+     "element": "Dark",
+     "ct": 4,
+     "power": 60,
+     "effects": "Blind 35"
+    },
+    {
+     "lv": 15,
+     "name": "Dark Cannon",
+     "element": "Dark",
+     "ct": 4,
+     "power": 70,
+     "effects": "Blind 20"
+    },
+    {
+     "lv": 22,
+     "name": "Shadow Burst",
+     "element": "Dark",
+     "ct": 4,
+     "power": 80,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 30,
+     "name": "Nightmare Ball",
+     "element": "Dark",
+     "ct": 16,
+     "power": 300,
+     "effects": "Blind 65"
+    },
+    {
+     "lv": 40,
+     "name": "Soul Drain",
+     "element": "Dark",
+     "ct": 20,
+     "power": 400,
+     "effects": null
+    },
+    {
+     "lv": 50,
+     "name": "Dark Laser",
+     "element": "Dark",
+     "ct": 20,
+     "power": 450,
+     "effects": "Blind 100"
+    },
+    {
+     "lv": 70,
+     "name": "Dark Whisp",
+     "element": "Dark",
+     "ct": 30,
+     "power": 600,
+     "effects": "Blind 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Omascul Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Ophydia": [
@@ -1787,7 +13082,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Bubble Blast",
+     "element": "Water",
+     "ct": 4,
+     "power": 80,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 7,
+     "name": "Seed Mine",
+     "element": "Grass",
+     "ct": 8,
+     "power": 120,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 15,
+     "name": "Torrential Blast",
+     "element": "Water",
+     "ct": 12,
+     "power": 250,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 22,
+     "name": "Circle Vine",
+     "element": "Grass",
+     "ct": 16,
+     "power": 300,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 30,
+     "name": "Hydro Laser",
+     "element": "Water",
+     "ct": 20,
+     "power": 450,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 40,
+     "name": "Wind Burst",
+     "element": "Grass",
+     "ct": 30,
+     "power": 600,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 50,
+     "name": "Lotus Bloom",
+     "element": "Grass",
+     "ct": 30,
+     "power": 700,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 70,
+     "name": "Geyser Gush",
+     "element": "Water",
+     "ct": 30,
+     "power": 600,
+     "effects": "Soak 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ophydia Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Dragon Stone",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Paladius": [
@@ -1800,7 +13173,106 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.8552631,
    "recvRate": 0.18,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Power Shot",
+     "element": "Neutral",
+     "ct": 4,
+     "power": 80,
+     "effects": null
+    },
+    {
+     "lv": 7,
+     "name": "Ice Missile",
+     "element": "Ice",
+     "ct": 2,
+     "power": 40,
+     "effects": "Freeze 102"
+    },
+    {
+     "lv": 15,
+     "name": "Iceberg",
+     "element": "Ice",
+     "ct": 8,
+     "power": 120,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 22,
+     "name": "Power Bomb",
+     "element": "Neutral",
+     "ct": 8,
+     "power": 120,
+     "effects": null
+    },
+    {
+     "lv": 30,
+     "name": "Blizzard Spike",
+     "element": "Ice",
+     "ct": 20,
+     "power": 450,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 40,
+     "name": "Spear Thrust",
+     "element": "Neutral",
+     "ct": 30,
+     "power": 700,
+     "effects": null
+    },
+    {
+     "lv": 50,
+     "name": "Pal Blast",
+     "element": "Neutral",
+     "ct": 20,
+     "power": 450,
+     "effects": null
+    },
+    {
+     "lv": 55,
+     "name": "Absolute Frost",
+     "element": "Ice",
+     "ct": 30,
+     "power": 700,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 60,
+     "name": "Holy Burst",
+     "element": "Neutral",
+     "ct": 30,
+     "power": 700,
+     "effects": null
+    },
+    {
+     "lv": 70,
+     "name": "Radiant Barrage",
+     "element": "Neutral",
+     "ct": 30,
+     "power": 700,
+     "effects": null
+    }
+   ],
+   "drops": [
+    {
+     "item": "Twin Knights Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "6-8",
+     "pct": 100.0
+    },
+    {
+     "item": "Lightweight Hexolite Armor Schematic 4",
+     "qty": "1",
+     "pct": 3.0
+    }
+   ]
   }
  ],
  "Palumba": [
@@ -1813,7 +13285,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Seed Machine Gun",
+     "element": "Grass",
+     "ct": 4,
+     "power": 80,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 7,
+     "name": "Seed Mine",
+     "element": "Grass",
+     "ct": 8,
+     "power": 120,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 15,
+     "name": "Grass Tornado",
+     "element": "Grass",
+     "ct": 12,
+     "power": 200,
+     "effects": "Ivy-Covered 65"
+    },
+    {
+     "lv": 22,
+     "name": "Wind Edge",
+     "element": "Grass",
+     "ct": 12,
+     "power": 200,
+     "effects": "Ivy-Covered 35"
+    },
+    {
+     "lv": 30,
+     "name": "Dash Kick",
+     "element": "Grass",
+     "ct": 16,
+     "power": 300,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 40,
+     "name": "Reflect Leaf",
+     "element": "Grass",
+     "ct": 20,
+     "power": 400,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 50,
+     "name": "Crosswind",
+     "element": "Grass",
+     "ct": 24,
+     "power": 500,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 70,
+     "name": "Wind Burst",
+     "element": "Grass",
+     "ct": 30,
+     "power": 600,
+     "effects": "Ivy-Covered 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "4-6",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Plume",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Pengullet": [
@@ -1826,7 +13376,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "S",
    "hpRate": 1.0,
    "recvRate": 0.48,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Ice Missile",
+     "element": "Ice",
+     "ct": 2,
+     "power": 40,
+     "effects": "Freeze 102"
+    },
+    {
+     "lv": 7,
+     "name": "Hydro Jet",
+     "element": "Water",
+     "ct": 2,
+     "power": 40,
+     "effects": "Soak 35"
+    },
+    {
+     "lv": 15,
+     "name": "Aqua Gun",
+     "element": "Water",
+     "ct": 2,
+     "power": 50,
+     "effects": "Soak 50"
+    },
+    {
+     "lv": 22,
+     "name": "Icicle Cutter",
+     "element": "Ice",
+     "ct": 4,
+     "power": 80,
+     "effects": "Freeze 50"
+    },
+    {
+     "lv": 30,
+     "name": "Iceberg",
+     "element": "Ice",
+     "ct": 8,
+     "power": 120,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 40,
+     "name": "Blizzard Spike",
+     "element": "Ice",
+     "ct": 20,
+     "power": 450,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 50,
+     "name": "Hydro Laser",
+     "element": "Water",
+     "ct": 20,
+     "power": 450,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 70,
+     "name": "Geyser Gush",
+     "element": "Water",
+     "ct": 30,
+     "power": 600,
+     "effects": "Soak 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "1-2",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "1-2",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Penking": [
@@ -1839,7 +13467,90 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.48,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Aqua Gun",
+     "element": "Water",
+     "ct": 2,
+     "power": 50,
+     "effects": "Soak 50"
+    },
+    {
+     "lv": 7,
+     "name": "Iceberg",
+     "element": "Ice",
+     "ct": 8,
+     "power": 120,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 15,
+     "name": "Emperor Slide",
+     "element": "Ice",
+     "ct": 8,
+     "power": 140,
+     "effects": "Freeze 50"
+    },
+    {
+     "lv": 22,
+     "name": "Crystal Breath",
+     "element": "Ice",
+     "ct": 8,
+     "power": 160,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 30,
+     "name": "Aqua Burst",
+     "element": "Water",
+     "ct": 12,
+     "power": 200,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 40,
+     "name": "Blizzard Spike",
+     "element": "Ice",
+     "ct": 20,
+     "power": 450,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 50,
+     "name": "Hydro Laser",
+     "element": "Water",
+     "ct": 20,
+     "power": 450,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 70,
+     "name": "Geyser Gush",
+     "element": "Water",
+     "ct": 30,
+     "power": 600,
+     "effects": "Soak 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Penking Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "3-4",
+     "pct": 100.0
+    },
+    {
+     "item": "Feathered Hair Band Schematic 4",
+     "qty": "1",
+     "pct": 3.0
+    }
+   ]
   }
  ],
  "Pierdon": [
@@ -1852,7 +13563,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Bog Blast",
+     "element": "Ground",
+     "ct": 2,
+     "power": 40,
+     "effects": "Muddy 50"
+    },
+    {
+     "lv": 7,
+     "name": "Stone Blast",
+     "element": "Ground",
+     "ct": 4,
+     "power": 80,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 15,
+     "name": "Stone Cannon",
+     "element": "Ground",
+     "ct": 8,
+     "power": 120,
+     "effects": "Muddy 35"
+    },
+    {
+     "lv": 22,
+     "name": "Rockburst",
+     "element": "Ground",
+     "ct": 16,
+     "power": 300,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 30,
+     "name": "Rock Lance",
+     "element": "Ground",
+     "ct": 20,
+     "power": 400,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 40,
+     "name": "Sand Twister",
+     "element": "Ground",
+     "ct": 24,
+     "power": 500,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 50,
+     "name": "Horn Burst",
+     "element": "Ground",
+     "ct": 30,
+     "power": 600,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 70,
+     "name": "Rocky Impact",
+     "element": "Ground",
+     "ct": 30,
+     "power": 600,
+     "effects": "Muddy 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Pierdon Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Pierdon Cryst": [
@@ -1865,7 +13654,125 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Ice Missile",
+     "element": "Ice",
+     "ct": 2,
+     "power": 40,
+     "effects": "Freeze 102"
+    },
+    {
+     "lv": 7,
+     "name": "Icicle Cutter",
+     "element": "Ice",
+     "ct": 4,
+     "power": 80,
+     "effects": "Freeze 50"
+    },
+    {
+     "lv": 15,
+     "name": "Iceberg",
+     "element": "Ice",
+     "ct": 8,
+     "power": 120,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 22,
+     "name": "Icicle Line",
+     "element": "Ice",
+     "ct": 16,
+     "power": 300,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 30,
+     "name": "Blizzard Spike",
+     "element": "Ice",
+     "ct": 20,
+     "power": 450,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 40,
+     "name": "Diamond Rain",
+     "element": "Ice",
+     "ct": 30,
+     "power": 600,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 50,
+     "name": "Ice Burst",
+     "element": "Ice",
+     "ct": 30,
+     "power": 600,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 70,
+     "name": "Absolute Frost",
+     "element": "Ice",
+     "ct": 30,
+     "power": 700,
+     "effects": "Freeze 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Pierdon Cryst Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "4-6",
+     "pct": 100.0
+    },
+    {
+     "item": "World Tree Holy Water",
+     "qty": "20-30",
+     "pct": 100.0
+    },
+    {
+     "item": "Ice Radiant Gem",
+     "qty": "1-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Decayed Ancient Relic",
+     "qty": "1-10",
+     "pct": 50.0
+    },
+    {
+     "item": "Dormant Ancient Relic",
+     "qty": "1-5",
+     "pct": 25.0
+    },
+    {
+     "item": "Gorgeous Ancient Relic",
+     "qty": "1-3",
+     "pct": 15.0
+    },
+    {
+     "item": "Glowing Ancient Relic",
+     "qty": "1-2",
+     "pct": 12.5
+    },
+    {
+     "item": "Glistening Ancient Relic",
+     "qty": "1",
+     "pct": 10.0
+    }
+   ]
   }
  ],
  "Polapup": [
@@ -1878,7 +13785,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Ice Missile",
+     "element": "Ice",
+     "ct": 2,
+     "power": 40,
+     "effects": "Freeze 102"
+    },
+    {
+     "lv": 7,
+     "name": "Aqua Gun",
+     "element": "Water",
+     "ct": 2,
+     "power": 50,
+     "effects": "Soak 50"
+    },
+    {
+     "lv": 15,
+     "name": "Iceberg",
+     "element": "Ice",
+     "ct": 8,
+     "power": 120,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 22,
+     "name": "Splash",
+     "element": "Water",
+     "ct": 8,
+     "power": 160,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 30,
+     "name": "Freeze Wall",
+     "element": "Ice",
+     "ct": 12,
+     "power": 200,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 40,
+     "name": "Icicle Line",
+     "element": "Ice",
+     "ct": 16,
+     "power": 300,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 50,
+     "name": "Aqua Surge",
+     "element": "Water",
+     "ct": 24,
+     "power": 500,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 70,
+     "name": "Diamond Rain",
+     "element": "Ice",
+     "ct": 30,
+     "power": 600,
+     "effects": "Freeze 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Prixter Lux": [
@@ -1891,7 +13876,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Bog Blast",
+     "element": "Ground",
+     "ct": 2,
+     "power": 40,
+     "effects": "Muddy 50"
+    },
+    {
+     "lv": 7,
+     "name": "Shockwave",
+     "element": "Electric",
+     "ct": 4,
+     "power": 80,
+     "effects": "Electrify 103"
+    },
+    {
+     "lv": 15,
+     "name": "Lightning Streak",
+     "element": "Electric",
+     "ct": 8,
+     "power": 160,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 22,
+     "name": "Sand Tornado",
+     "element": "Ground",
+     "ct": 12,
+     "power": 200,
+     "effects": "Muddy 65"
+    },
+    {
+     "lv": 30,
+     "name": "TriSpark",
+     "element": "Electric",
+     "ct": 12,
+     "power": 250,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 40,
+     "name": "All Range Thunder",
+     "element": "Electric",
+     "ct": 24,
+     "power": 500,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 50,
+     "name": "Thunder Uppercut",
+     "element": "Electric",
+     "ct": 30,
+     "power": 600,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 70,
+     "name": "Lethal Laser",
+     "element": "Electric",
+     "ct": 30,
+     "power": 600,
+     "effects": "Electrify 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Prixter Lux Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Prunelia": [
@@ -1904,7 +13967,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Poison Fog",
+     "element": "Dark",
+     "ct": 30,
+     "power": 0,
+     "effects": "Poison 9999"
+    },
+    {
+     "lv": 7,
+     "name": "Wind Cutter",
+     "element": "Grass",
+     "ct": 2,
+     "power": 40,
+     "effects": "Ivy-Covered 35"
+    },
+    {
+     "lv": 15,
+     "name": "Poison Blast",
+     "element": "Dark",
+     "ct": 2,
+     "power": 30,
+     "effects": "Poison 100"
+    },
+    {
+     "lv": 22,
+     "name": "Seed Mine",
+     "element": "Grass",
+     "ct": 8,
+     "power": 120,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 30,
+     "name": "Poison Shower",
+     "element": "Dark",
+     "ct": 8,
+     "power": 160,
+     "effects": "Poison 100"
+    },
+    {
+     "lv": 40,
+     "name": "Spine Vine",
+     "element": "Grass",
+     "ct": 12,
+     "power": 250,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 50,
+     "name": "Solar Blast",
+     "element": "Grass",
+     "ct": 20,
+     "power": 450,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 70,
+     "name": "Wind Burst",
+     "element": "Grass",
+     "ct": 30,
+     "power": 600,
+     "effects": "Ivy-Covered 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Prunelia Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Puffolt": [
@@ -1917,7 +14058,93 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "S",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Double Fang (Electric)",
+     "element": "Electric",
+     "ct": 2,
+     "power": 40,
+     "effects": "Electrify 50"
+    },
+    {
+     "lv": 2,
+     "name": "Fierce Fang (Electric)",
+     "element": "Electric",
+     "ct": 2,
+     "power": 50,
+     "effects": "Electrify 50"
+    },
+    {
+     "lv": 7,
+     "name": "Shockwave",
+     "element": "Electric",
+     "ct": 4,
+     "power": 80,
+     "effects": "Electrify 103"
+    },
+    {
+     "lv": 15,
+     "name": "Electric Ball",
+     "element": "Electric",
+     "ct": 8,
+     "power": 100,
+     "effects": "Electrify 50"
+    },
+    {
+     "lv": 22,
+     "name": "TriSpark",
+     "element": "Electric",
+     "ct": 12,
+     "power": 250,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 30,
+     "name": "Lightning Strike",
+     "element": "Electric",
+     "ct": 16,
+     "power": 300,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 40,
+     "name": "Lightning Bolt",
+     "element": "Electric",
+     "ct": 20,
+     "power": 450,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 50,
+     "name": "All Range Thunder",
+     "element": "Electric",
+     "ct": 24,
+     "power": 500,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 70,
+     "name": "Thunder Rail",
+     "element": "Electric",
+     "ct": 30,
+     "power": 600,
+     "effects": "Electrify 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "1-2",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Pyrin": [
@@ -1930,7 +14157,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Bog Blast",
+     "element": "Ground",
+     "ct": 2,
+     "power": 40,
+     "effects": "Muddy 50"
+    },
+    {
+     "lv": 7,
+     "name": "Ignis Blast",
+     "element": "Fire",
+     "ct": 2,
+     "power": 40,
+     "effects": "Burn 50"
+    },
+    {
+     "lv": 15,
+     "name": "Spirit Fire",
+     "element": "Fire",
+     "ct": 4,
+     "power": 80,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 22,
+     "name": "Flare Arrow",
+     "element": "Fire",
+     "ct": 8,
+     "power": 120,
+     "effects": "Burn 102"
+    },
+    {
+     "lv": 30,
+     "name": "Ignis Charge",
+     "element": "Fire",
+     "ct": 16,
+     "power": 300,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 40,
+     "name": "Ignis Rage",
+     "element": "Fire",
+     "ct": 24,
+     "power": 500,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 50,
+     "name": "Fire Ball",
+     "element": "Fire",
+     "ct": 30,
+     "power": 600,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 70,
+     "name": "Rocky Impact",
+     "element": "Ground",
+     "ct": 30,
+     "power": 600,
+     "effects": "Muddy 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Pyrin Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Claw",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Pyrin Noct": [
@@ -1943,7 +14248,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Ignis Blast",
+     "element": "Fire",
+     "ct": 2,
+     "power": 40,
+     "effects": "Burn 50"
+    },
+    {
+     "lv": 7,
+     "name": "Shadow Burst",
+     "element": "Dark",
+     "ct": 4,
+     "power": 80,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 15,
+     "name": "Ignis Breath",
+     "element": "Fire",
+     "ct": 8,
+     "power": 160,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 22,
+     "name": "Spirit Flame",
+     "element": "Dark",
+     "ct": 12,
+     "power": 200,
+     "effects": "Burn 102"
+    },
+    {
+     "lv": 30,
+     "name": "Dark Charge",
+     "element": "Dark",
+     "ct": 16,
+     "power": 300,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 40,
+     "name": "Ignis Rage",
+     "element": "Fire",
+     "ct": 24,
+     "power": 500,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 50,
+     "name": "Dark Laser",
+     "element": "Dark",
+     "ct": 20,
+     "power": 450,
+     "effects": "Blind 100"
+    },
+    {
+     "lv": 70,
+     "name": "Dark Whisp",
+     "element": "Dark",
+     "ct": 30,
+     "power": 600,
+     "effects": "Blind 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Claw",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Quivern": [
@@ -1956,7 +14339,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Dragon Cannon",
+     "element": "Dragon",
+     "ct": 2,
+     "power": 40,
+     "effects": "Burn 35"
+    },
+    {
+     "lv": 7,
+     "name": "Spirit Fire",
+     "element": "Fire",
+     "ct": 4,
+     "power": 80,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 15,
+     "name": "Acid Rain",
+     "element": "Water",
+     "ct": 8,
+     "power": 120,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 22,
+     "name": "Dragon Breath",
+     "element": "Dragon",
+     "ct": 8,
+     "power": 160,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 30,
+     "name": "Grass Tornado",
+     "element": "Grass",
+     "ct": 12,
+     "power": 200,
+     "effects": "Ivy-Covered 65"
+    },
+    {
+     "lv": 40,
+     "name": "Aqua Burst",
+     "element": "Water",
+     "ct": 12,
+     "power": 200,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 50,
+     "name": "Dragon Meteor",
+     "element": "Dragon",
+     "ct": 30,
+     "power": 600,
+     "effects": "Burn 45"
+    },
+    {
+     "lv": 70,
+     "name": "Diamond Rain",
+     "element": "Ice",
+     "ct": 30,
+     "power": 600,
+     "effects": "Freeze 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Quivern Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Plume",
+     "qty": "2-4",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Quivern Botan": [
@@ -1969,7 +14430,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Dragon Cannon",
+     "element": "Dragon",
+     "ct": 2,
+     "power": 40,
+     "effects": "Burn 35"
+    },
+    {
+     "lv": 7,
+     "name": "Wind Cutter",
+     "element": "Grass",
+     "ct": 2,
+     "power": 40,
+     "effects": "Ivy-Covered 35"
+    },
+    {
+     "lv": 15,
+     "name": "Seed Machine Gun",
+     "element": "Grass",
+     "ct": 4,
+     "power": 80,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 22,
+     "name": "Dragon Breath",
+     "element": "Dragon",
+     "ct": 8,
+     "power": 160,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 30,
+     "name": "Grass Tornado",
+     "element": "Grass",
+     "ct": 12,
+     "power": 200,
+     "effects": "Ivy-Covered 65"
+    },
+    {
+     "lv": 40,
+     "name": "Comet Strike",
+     "element": "Dragon",
+     "ct": 8,
+     "power": 180,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 50,
+     "name": "Circle Vine",
+     "element": "Grass",
+     "ct": 16,
+     "power": 300,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 70,
+     "name": "Wind Burst",
+     "element": "Grass",
+     "ct": 30,
+     "power": 600,
+     "effects": "Ivy-Covered 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Plume",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Ragnahawk": [
@@ -1982,7 +14521,93 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Air Cannon",
+     "element": "Neutral",
+     "ct": 2,
+     "power": 40,
+     "effects": null
+    },
+    {
+     "lv": 7,
+     "name": "Spirit Fire",
+     "element": "Fire",
+     "ct": 4,
+     "power": 80,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 15,
+     "name": "Flare Arrow",
+     "element": "Fire",
+     "ct": 8,
+     "power": 120,
+     "effects": "Burn 102"
+    },
+    {
+     "lv": 22,
+     "name": "Sand Tornado",
+     "element": "Ground",
+     "ct": 12,
+     "power": 200,
+     "effects": "Muddy 65"
+    },
+    {
+     "lv": 26,
+     "name": "Rush Beak",
+     "element": "Fire",
+     "ct": 12,
+     "power": 200,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 30,
+     "name": "Flare Storm",
+     "element": "Fire",
+     "ct": 12,
+     "power": 200,
+     "effects": "Burn 65"
+    },
+    {
+     "lv": 40,
+     "name": "Ignis Breath",
+     "element": "Fire",
+     "ct": 8,
+     "power": 160,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 50,
+     "name": "Fire Ball",
+     "element": "Fire",
+     "ct": 30,
+     "power": 600,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 70,
+     "name": "Thunderstorm",
+     "element": "Electric",
+     "ct": 30,
+     "power": 600,
+     "effects": null
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "4-6",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Plume",
+     "qty": "4-6",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Rayhound": [
@@ -1995,7 +14620,109 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Double Fang (Electric)",
+     "element": "Electric",
+     "ct": 2,
+     "power": 40,
+     "effects": "Electrify 50"
+    },
+    {
+     "lv": 2,
+     "name": "Fierce Fang (Electric)",
+     "element": "Electric",
+     "ct": 2,
+     "power": 50,
+     "effects": "Electrify 50"
+    },
+    {
+     "lv": 3,
+     "name": "Bog Blast",
+     "element": "Ground",
+     "ct": 2,
+     "power": 40,
+     "effects": "Muddy 50"
+    },
+    {
+     "lv": 7,
+     "name": "Shockwave",
+     "element": "Electric",
+     "ct": 4,
+     "power": 80,
+     "effects": "Electrify 103"
+    },
+    {
+     "lv": 15,
+     "name": "Spark Blast",
+     "element": "Electric",
+     "ct": 2,
+     "power": 50,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 22,
+     "name": "Stone Blast",
+     "element": "Ground",
+     "ct": 4,
+     "power": 80,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 26,
+     "name": "Beckon Lightning",
+     "element": "Electric",
+     "ct": 8,
+     "power": 100,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 30,
+     "name": "Electric Ball",
+     "element": "Electric",
+     "ct": 8,
+     "power": 100,
+     "effects": "Electrify 50"
+    },
+    {
+     "lv": 40,
+     "name": "Lightning Streak",
+     "element": "Electric",
+     "ct": 8,
+     "power": 160,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 50,
+     "name": "Lightning Bolt",
+     "element": "Electric",
+     "ct": 20,
+     "power": 450,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 70,
+     "name": "Thunderstorm",
+     "element": "Electric",
+     "ct": 30,
+     "power": 600,
+     "effects": null
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "4-6",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Plume",
+     "qty": "4-6",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Reindrix": [
@@ -2008,7 +14735,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Air Cannon",
+     "element": "Neutral",
+     "ct": 2,
+     "power": 40,
+     "effects": null
+    },
+    {
+     "lv": 7,
+     "name": "Ice Missile",
+     "element": "Ice",
+     "ct": 2,
+     "power": 40,
+     "effects": "Freeze 102"
+    },
+    {
+     "lv": 15,
+     "name": "Icicle Cutter",
+     "element": "Ice",
+     "ct": 4,
+     "power": 80,
+     "effects": "Freeze 50"
+    },
+    {
+     "lv": 22,
+     "name": "Freezing Charge",
+     "element": "Ice",
+     "ct": 8,
+     "power": 120,
+     "effects": "Freeze 50"
+    },
+    {
+     "lv": 30,
+     "name": "Iceberg",
+     "element": "Ice",
+     "ct": 8,
+     "power": 120,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 40,
+     "name": "Crystal Breath",
+     "element": "Ice",
+     "ct": 8,
+     "power": 160,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 50,
+     "name": "Blizzard Spike",
+     "element": "Ice",
+     "ct": 20,
+     "power": 450,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 70,
+     "name": "Diamond Rain",
+     "element": "Ice",
+     "ct": 30,
+     "power": 600,
+     "effects": "Freeze 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "6-8",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "6-8",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Renjishi": [
@@ -2021,7 +14826,125 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Ignis Blast",
+     "element": "Fire",
+     "ct": 2,
+     "power": 40,
+     "effects": "Burn 50"
+    },
+    {
+     "lv": 7,
+     "name": "Spirit Fire",
+     "element": "Fire",
+     "ct": 4,
+     "power": 80,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 15,
+     "name": "Ignis Breath",
+     "element": "Fire",
+     "ct": 8,
+     "power": 160,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 22,
+     "name": "Flame Wall",
+     "element": "Fire",
+     "ct": 12,
+     "power": 250,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 30,
+     "name": "Flame Funnel",
+     "element": "Fire",
+     "ct": 16,
+     "power": 300,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 40,
+     "name": "Volcanic Rain",
+     "element": "Fire",
+     "ct": 20,
+     "power": 450,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 50,
+     "name": "Ignis Rage",
+     "element": "Fire",
+     "ct": 24,
+     "power": 500,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 70,
+     "name": "Fire Ball",
+     "element": "Fire",
+     "ct": 30,
+     "power": 600,
+     "effects": "Burn 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Renjishi Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "7-9",
+     "pct": 100.0
+    },
+    {
+     "item": "World Tree Holy Water",
+     "qty": "20-30",
+     "pct": 100.0
+    },
+    {
+     "item": "Fire Radiant Gem",
+     "qty": "1-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Decayed Ancient Relic",
+     "qty": "1-10",
+     "pct": 50.0
+    },
+    {
+     "item": "Dormant Ancient Relic",
+     "qty": "1-5",
+     "pct": 25.0
+    },
+    {
+     "item": "Gorgeous Ancient Relic",
+     "qty": "1-3",
+     "pct": 15.0
+    },
+    {
+     "item": "Glowing Ancient Relic",
+     "qty": "1-2",
+     "pct": 12.5
+    },
+    {
+     "item": "Glistening Ancient Relic",
+     "qty": "1",
+     "pct": 10.0
+    }
+   ]
   }
  ],
  "Reptyro": [
@@ -2034,7 +14957,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Ignis Blast",
+     "element": "Fire",
+     "ct": 2,
+     "power": 40,
+     "effects": "Burn 50"
+    },
+    {
+     "lv": 7,
+     "name": "Stone Blast",
+     "element": "Ground",
+     "ct": 4,
+     "power": 80,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 15,
+     "name": "Stone Cannon",
+     "element": "Ground",
+     "ct": 8,
+     "power": 120,
+     "effects": "Muddy 35"
+    },
+    {
+     "lv": 22,
+     "name": "Ignis Breath",
+     "element": "Fire",
+     "ct": 8,
+     "power": 160,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 30,
+     "name": "Volcanic Burst",
+     "element": "Fire",
+     "ct": 16,
+     "power": 300,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 40,
+     "name": "Ignis Rage",
+     "element": "Fire",
+     "ct": 24,
+     "power": 500,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 50,
+     "name": "Rock Lance",
+     "element": "Ground",
+     "ct": 20,
+     "power": 400,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 70,
+     "name": "Fire Ball",
+     "element": "Fire",
+     "ct": 30,
+     "power": 600,
+     "effects": "Burn 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Reptyro Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "3-5",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Reptyro Cryst": [
@@ -2047,7 +15048,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Ice Missile",
+     "element": "Ice",
+     "ct": 2,
+     "power": 40,
+     "effects": "Freeze 102"
+    },
+    {
+     "lv": 7,
+     "name": "Stone Blast",
+     "element": "Ground",
+     "ct": 4,
+     "power": 80,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 15,
+     "name": "Iceberg",
+     "element": "Ice",
+     "ct": 8,
+     "power": 120,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 22,
+     "name": "Crystal Breath",
+     "element": "Ice",
+     "ct": 8,
+     "power": 160,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 30,
+     "name": "Frost Burst",
+     "element": "Ice",
+     "ct": 20,
+     "power": 400,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 40,
+     "name": "Blizzard Spike",
+     "element": "Ice",
+     "ct": 20,
+     "power": 450,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 50,
+     "name": "Rock Lance",
+     "element": "Ground",
+     "ct": 20,
+     "power": 400,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 70,
+     "name": "Diamond Rain",
+     "element": "Ice",
+     "ct": 30,
+     "power": 600,
+     "effects": "Freeze 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "3-5",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "3-5",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Ribbuny": [
@@ -2060,7 +15139,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "S",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Air Cannon",
+     "element": "Neutral",
+     "ct": 2,
+     "power": 40,
+     "effects": null
+    },
+    {
+     "lv": 7,
+     "name": "Power Shot",
+     "element": "Neutral",
+     "ct": 4,
+     "power": 80,
+     "effects": null
+    },
+    {
+     "lv": 15,
+     "name": "Ice Missile",
+     "element": "Ice",
+     "ct": 2,
+     "power": 40,
+     "effects": "Freeze 102"
+    },
+    {
+     "lv": 22,
+     "name": "Blizzard Spike",
+     "element": "Ice",
+     "ct": 20,
+     "power": 450,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 30,
+     "name": "Power Bomb",
+     "element": "Neutral",
+     "ct": 8,
+     "power": 120,
+     "effects": null
+    },
+    {
+     "lv": 40,
+     "name": "Iceberg",
+     "element": "Ice",
+     "ct": 8,
+     "power": 120,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 50,
+     "name": "Pal Blast",
+     "element": "Neutral",
+     "ct": 20,
+     "power": 450,
+     "effects": null
+    },
+    {
+     "lv": 70,
+     "name": "Holy Burst",
+     "element": "Neutral",
+     "ct": 30,
+     "power": 700,
+     "effects": null
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "1-2",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "1-2",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Ribbuny Botan": [
@@ -2073,7 +15230,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "S",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Wind Cutter",
+     "element": "Grass",
+     "ct": 2,
+     "power": 40,
+     "effects": "Ivy-Covered 35"
+    },
+    {
+     "lv": 7,
+     "name": "Bog Blast",
+     "element": "Ground",
+     "ct": 2,
+     "power": 40,
+     "effects": "Muddy 50"
+    },
+    {
+     "lv": 15,
+     "name": "Seed Machine Gun",
+     "element": "Grass",
+     "ct": 4,
+     "power": 80,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 22,
+     "name": "Seed Mine",
+     "element": "Grass",
+     "ct": 8,
+     "power": 120,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 30,
+     "name": "Wind Edge",
+     "element": "Grass",
+     "ct": 12,
+     "power": 200,
+     "effects": "Ivy-Covered 35"
+    },
+    {
+     "lv": 40,
+     "name": "Circle Vine",
+     "element": "Grass",
+     "ct": 16,
+     "power": 300,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 50,
+     "name": "Solar Blast",
+     "element": "Grass",
+     "ct": 20,
+     "power": 450,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 70,
+     "name": "Wind Burst",
+     "element": "Grass",
+     "ct": 30,
+     "power": 600,
+     "effects": "Ivy-Covered 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ribbuny Botan Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Robinquill": [
@@ -2086,7 +15321,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Wind Cutter",
+     "element": "Grass",
+     "ct": 2,
+     "power": 40,
+     "effects": "Ivy-Covered 35"
+    },
+    {
+     "lv": 7,
+     "name": "Power Shot",
+     "element": "Neutral",
+     "ct": 4,
+     "power": 80,
+     "effects": null
+    },
+    {
+     "lv": 15,
+     "name": "Focus Shot",
+     "element": "Grass",
+     "ct": 8,
+     "power": 120,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 22,
+     "name": "Seed Mine",
+     "element": "Grass",
+     "ct": 8,
+     "power": 120,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 30,
+     "name": "Grass Tornado",
+     "element": "Grass",
+     "ct": 12,
+     "power": 200,
+     "effects": "Ivy-Covered 65"
+    },
+    {
+     "lv": 40,
+     "name": "Spine Vine",
+     "element": "Grass",
+     "ct": 12,
+     "power": 250,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 50,
+     "name": "Solar Blast",
+     "element": "Grass",
+     "ct": 20,
+     "power": 450,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 70,
+     "name": "Wind Burst",
+     "element": "Grass",
+     "ct": 30,
+     "power": 600,
+     "effects": "Ivy-Covered 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "2-4",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "2-4",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Robinquill Terra": [
@@ -2099,7 +15412,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Bog Blast",
+     "element": "Ground",
+     "ct": 2,
+     "power": 40,
+     "effects": "Muddy 50"
+    },
+    {
+     "lv": 7,
+     "name": "Wind Cutter",
+     "element": "Grass",
+     "ct": 2,
+     "power": 40,
+     "effects": "Ivy-Covered 35"
+    },
+    {
+     "lv": 15,
+     "name": "Focus Shot",
+     "element": "Grass",
+     "ct": 8,
+     "power": 120,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 22,
+     "name": "Stone Blast",
+     "element": "Ground",
+     "ct": 4,
+     "power": 80,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 30,
+     "name": "Sand Tornado",
+     "element": "Ground",
+     "ct": 12,
+     "power": 200,
+     "effects": "Muddy 65"
+    },
+    {
+     "lv": 40,
+     "name": "Solar Blast",
+     "element": "Grass",
+     "ct": 20,
+     "power": 450,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 50,
+     "name": "Rock Lance",
+     "element": "Ground",
+     "ct": 20,
+     "power": 400,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 70,
+     "name": "Rocky Impact",
+     "element": "Ground",
+     "ct": 30,
+     "power": 600,
+     "effects": "Muddy 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "2-4",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "2-4",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Rooby": [
@@ -2112,7 +15503,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "S",
    "hpRate": 1.0,
    "recvRate": 0.48,
-   "capture": 0.77
+   "capture": 0.77,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Ignis Blast",
+     "element": "Fire",
+     "ct": 2,
+     "power": 40,
+     "effects": "Burn 50"
+    },
+    {
+     "lv": 7,
+     "name": "Power Shot",
+     "element": "Neutral",
+     "ct": 4,
+     "power": 80,
+     "effects": null
+    },
+    {
+     "lv": 15,
+     "name": "Spirit Fire",
+     "element": "Fire",
+     "ct": 4,
+     "power": 80,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 22,
+     "name": "Flare Arrow",
+     "element": "Fire",
+     "ct": 8,
+     "power": 120,
+     "effects": "Burn 102"
+    },
+    {
+     "lv": 30,
+     "name": "Flare Storm",
+     "element": "Fire",
+     "ct": 12,
+     "power": 200,
+     "effects": "Burn 65"
+    },
+    {
+     "lv": 40,
+     "name": "Ignis Rage",
+     "element": "Fire",
+     "ct": 24,
+     "power": 500,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 50,
+     "name": "Fire Ball",
+     "element": "Fire",
+     "ct": 30,
+     "power": 600,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 70,
+     "name": "Wind Burst",
+     "element": "Grass",
+     "ct": 30,
+     "power": 600,
+     "effects": "Ivy-Covered 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "1-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "1-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Rushoar": [
@@ -2125,7 +15594,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.48,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Reckless Charge",
+     "element": "Ground",
+     "ct": 4,
+     "power": 60,
+     "effects": null
+    },
+    {
+     "lv": 7,
+     "name": "Bog Blast",
+     "element": "Ground",
+     "ct": 2,
+     "power": 40,
+     "effects": "Muddy 50"
+    },
+    {
+     "lv": 15,
+     "name": "Power Shot",
+     "element": "Neutral",
+     "ct": 4,
+     "power": 80,
+     "effects": null
+    },
+    {
+     "lv": 22,
+     "name": "Stone Blast",
+     "element": "Ground",
+     "ct": 4,
+     "power": 80,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 30,
+     "name": "Power Bomb",
+     "element": "Neutral",
+     "ct": 8,
+     "power": 120,
+     "effects": null
+    },
+    {
+     "lv": 40,
+     "name": "Rock Lance",
+     "element": "Ground",
+     "ct": 20,
+     "power": 400,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 50,
+     "name": "Pal Blast",
+     "element": "Neutral",
+     "ct": 20,
+     "power": 450,
+     "effects": null
+    },
+    {
+     "lv": 70,
+     "name": "Rocky Impact",
+     "element": "Ground",
+     "ct": 30,
+     "power": 600,
+     "effects": "Muddy 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "1-2",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Claw",
+     "qty": "1-2",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Shroomer": [
@@ -2138,7 +15685,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Poison Blast",
+     "element": "Dark",
+     "ct": 2,
+     "power": 30,
+     "effects": "Poison 100"
+    },
+    {
+     "lv": 7,
+     "name": "Seed Machine Gun",
+     "element": "Grass",
+     "ct": 4,
+     "power": 80,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 15,
+     "name": "Grass Tornado",
+     "element": "Grass",
+     "ct": 12,
+     "power": 200,
+     "effects": "Ivy-Covered 65"
+    },
+    {
+     "lv": 22,
+     "name": "Seed Mine",
+     "element": "Grass",
+     "ct": 8,
+     "power": 120,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 30,
+     "name": "Spine Vine",
+     "element": "Grass",
+     "ct": 12,
+     "power": 250,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 40,
+     "name": "Circle Vine",
+     "element": "Grass",
+     "ct": 16,
+     "power": 300,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 50,
+     "name": "Solar Blast",
+     "element": "Grass",
+     "ct": 20,
+     "power": 450,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 70,
+     "name": "Wind Burst",
+     "element": "Grass",
+     "ct": 30,
+     "power": 600,
+     "effects": "Ivy-Covered 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Shroomer Noct": [
@@ -2151,7 +15776,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Poison Blast",
+     "element": "Dark",
+     "ct": 2,
+     "power": 30,
+     "effects": "Poison 100"
+    },
+    {
+     "lv": 7,
+     "name": "Shadow Burst",
+     "element": "Dark",
+     "ct": 4,
+     "power": 80,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 15,
+     "name": "Grass Tornado",
+     "element": "Grass",
+     "ct": 12,
+     "power": 200,
+     "effects": "Ivy-Covered 65"
+    },
+    {
+     "lv": 22,
+     "name": "Seed Mine",
+     "element": "Grass",
+     "ct": 8,
+     "power": 120,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 30,
+     "name": "Nightmare Ball",
+     "element": "Dark",
+     "ct": 16,
+     "power": 300,
+     "effects": "Blind 65"
+    },
+    {
+     "lv": 40,
+     "name": "Circle Vine",
+     "element": "Grass",
+     "ct": 16,
+     "power": 300,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 50,
+     "name": "Dark Laser",
+     "element": "Dark",
+     "ct": 20,
+     "power": 450,
+     "effects": "Blind 100"
+    },
+    {
+     "lv": 70,
+     "name": "Dark Whisp",
+     "element": "Dark",
+     "ct": 30,
+     "power": 600,
+     "effects": "Blind 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Sibelyx": [
@@ -2164,7 +15867,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Ice Missile",
+     "element": "Ice",
+     "ct": 2,
+     "power": 40,
+     "effects": "Freeze 102"
+    },
+    {
+     "lv": 7,
+     "name": "Icicle Cutter",
+     "element": "Ice",
+     "ct": 4,
+     "power": 80,
+     "effects": "Freeze 50"
+    },
+    {
+     "lv": 15,
+     "name": "Iceberg",
+     "element": "Ice",
+     "ct": 8,
+     "power": 120,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 22,
+     "name": "Crystal Breath",
+     "element": "Ice",
+     "ct": 8,
+     "power": 160,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 30,
+     "name": "Spirit Flame",
+     "element": "Dark",
+     "ct": 12,
+     "power": 200,
+     "effects": "Burn 102"
+    },
+    {
+     "lv": 40,
+     "name": "Aqua Burst",
+     "element": "Water",
+     "ct": 12,
+     "power": 200,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 50,
+     "name": "Blizzard Spike",
+     "element": "Ice",
+     "ct": 20,
+     "power": 450,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 70,
+     "name": "Diamond Rain",
+     "element": "Ice",
+     "ct": 30,
+     "power": 600,
+     "effects": "Freeze 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Sibelyx Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "5-6",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Silvance": [
@@ -2177,7 +15958,180 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.0,
    "recvRate": 0.04,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Air Blade",
+     "element": "Neutral",
+     "ct": 8,
+     "power": 160,
+     "effects": null
+    },
+    {
+     "lv": 7,
+     "name": "Reflect Leaf",
+     "element": "Grass",
+     "ct": 20,
+     "power": 400,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 15,
+     "name": "Blizzard Spike",
+     "element": "Ice",
+     "ct": 20,
+     "power": 450,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 22,
+     "name": "Crosswind",
+     "element": "Grass",
+     "ct": 24,
+     "power": 500,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 30,
+     "name": "Wind Burst",
+     "element": "Grass",
+     "ct": 30,
+     "power": 600,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 40,
+     "name": "Holy Burst",
+     "element": "Neutral",
+     "ct": 30,
+     "power": 700,
+     "effects": null
+    },
+    {
+     "lv": 50,
+     "name": "Giant Spore",
+     "element": "Grass",
+     "ct": 30,
+     "power": 700,
+     "effects": null
+    },
+    {
+     "lv": 70,
+     "name": "Spore Burst",
+     "element": "Grass",
+     "ct": 30,
+     "power": 800,
+     "effects": null
+    }
+   ],
+   "drops": [
+    {
+     "item": "Silvance's Plume",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "6-8",
+     "pct": 100.0
+    },
+    {
+     "item": "Explosion-Resistant Fiber",
+     "qty": "5-10",
+     "pct": 100.0
+    },
+    {
+     "item": "World Tree Holy Water",
+     "qty": "20-30",
+     "pct": 100.0
+    },
+    {
+     "item": "Grass Radiant Gem",
+     "qty": "1-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Decayed Ancient Relic",
+     "qty": "1-10",
+     "pct": 100.0
+    },
+    {
+     "item": "Dormant Ancient Relic",
+     "qty": "1-5",
+     "pct": 50.0
+    },
+    {
+     "item": "Gorgeous Ancient Relic",
+     "qty": "1-3",
+     "pct": 30.0
+    },
+    {
+     "item": "Glowing Ancient Relic",
+     "qty": "1-2",
+     "pct": 25.0
+    },
+    {
+     "item": "Glistening Ancient Relic",
+     "qty": "1",
+     "pct": 20.0
+    },
+    {
+     "item": "Silvance's Plume",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "6-8",
+     "pct": 100.0
+    },
+    {
+     "item": "Explosion-Resistant Fiber",
+     "qty": "5-10",
+     "pct": 100.0
+    },
+    {
+     "item": "World Tree Holy Water",
+     "qty": "60-80",
+     "pct": 100.0
+    },
+    {
+     "item": "Grass Radiant Gem",
+     "qty": "1-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Decayed Ancient Relic",
+     "qty": "1-10",
+     "pct": 100.0
+    },
+    {
+     "item": "Dormant Ancient Relic",
+     "qty": "1-5",
+     "pct": 50.0
+    },
+    {
+     "item": "Gorgeous Ancient Relic",
+     "qty": "1-3",
+     "pct": 30.0
+    },
+    {
+     "item": "Glowing Ancient Relic",
+     "qty": "1-2",
+     "pct": 25.0
+    },
+    {
+     "item": "Glistening Ancient Relic",
+     "qty": "1",
+     "pct": 20.0
+    }
+   ]
   }
  ],
  "Silvegis": [
@@ -2190,7 +16144,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Dragon Cannon",
+     "element": "Dragon",
+     "ct": 2,
+     "power": 40,
+     "effects": "Burn 35"
+    },
+    {
+     "lv": 7,
+     "name": "Icicle Cutter",
+     "element": "Ice",
+     "ct": 4,
+     "power": 80,
+     "effects": "Freeze 50"
+    },
+    {
+     "lv": 15,
+     "name": "Iceberg",
+     "element": "Ice",
+     "ct": 8,
+     "power": 120,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 22,
+     "name": "Dragon Breath",
+     "element": "Dragon",
+     "ct": 8,
+     "power": 160,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 30,
+     "name": "Blast Cannon",
+     "element": "Dragon",
+     "ct": 12,
+     "power": 200,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 40,
+     "name": "Charge Cannon",
+     "element": "Dragon",
+     "ct": 20,
+     "power": 400,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 50,
+     "name": "Aegis Charge",
+     "element": "Dragon",
+     "ct": 30,
+     "power": 600,
+     "effects": null
+    },
+    {
+     "lv": 70,
+     "name": "Dragon Meteor",
+     "element": "Dragon",
+     "ct": 30,
+     "power": 600,
+     "effects": "Burn 45"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Silvegis Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Dragon Stone",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Slowatt": [
@@ -2203,7 +16235,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Thunder Spear",
+     "element": "Electric",
+     "ct": 2,
+     "power": 40,
+     "effects": "Electrify 35"
+    },
+    {
+     "lv": 7,
+     "name": "Shockwave",
+     "element": "Electric",
+     "ct": 4,
+     "power": 80,
+     "effects": "Electrify 103"
+    },
+    {
+     "lv": 15,
+     "name": "Plasma Funnel",
+     "element": "Electric",
+     "ct": 8,
+     "power": 120,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 22,
+     "name": "Lightning Streak",
+     "element": "Electric",
+     "ct": 8,
+     "power": 160,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 30,
+     "name": "TriSpark",
+     "element": "Electric",
+     "ct": 12,
+     "power": 250,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 40,
+     "name": "Lightning Bolt",
+     "element": "Electric",
+     "ct": 20,
+     "power": 450,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 50,
+     "name": "All Range Thunder",
+     "element": "Electric",
+     "ct": 24,
+     "power": 500,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 70,
+     "name": "Thunder Rail",
+     "element": "Electric",
+     "ct": 30,
+     "power": 600,
+     "effects": "Electrify 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Slowatt Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Smokie": [
@@ -2216,7 +16326,101 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "S",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Double Fang (Dark)",
+     "element": "Dark",
+     "ct": 2,
+     "power": 40,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 2,
+     "name": "Fierce Fang (Dark)",
+     "element": "Dark",
+     "ct": 2,
+     "power": 50,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 3,
+     "name": "Bog Blast",
+     "element": "Ground",
+     "ct": 2,
+     "power": 40,
+     "effects": "Muddy 50"
+    },
+    {
+     "lv": 7,
+     "name": "Umbral Surge",
+     "element": "Dark",
+     "ct": 4,
+     "power": 60,
+     "effects": "Blind 35"
+    },
+    {
+     "lv": 15,
+     "name": "Dark Cannon",
+     "element": "Dark",
+     "ct": 4,
+     "power": 70,
+     "effects": "Blind 20"
+    },
+    {
+     "lv": 22,
+     "name": "Shadow Burst",
+     "element": "Dark",
+     "ct": 4,
+     "power": 80,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 30,
+     "name": "Nightmare Ball",
+     "element": "Dark",
+     "ct": 16,
+     "power": 300,
+     "effects": "Blind 65"
+    },
+    {
+     "lv": 40,
+     "name": "Comet Strike",
+     "element": "Dragon",
+     "ct": 8,
+     "power": 180,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 50,
+     "name": "Dark Laser",
+     "element": "Dark",
+     "ct": 20,
+     "power": 450,
+     "effects": "Blind 100"
+    },
+    {
+     "lv": 70,
+     "name": "Dark Whisp",
+     "element": "Dark",
+     "ct": 30,
+     "power": 600,
+     "effects": "Blind 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Smokie Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Snock": [
@@ -2229,7 +16433,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Shockwave",
+     "element": "Electric",
+     "ct": 4,
+     "power": 80,
+     "effects": "Electrify 103"
+    },
+    {
+     "lv": 7,
+     "name": "Lightning Streak",
+     "element": "Electric",
+     "ct": 8,
+     "power": 160,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 15,
+     "name": "TriSpark",
+     "element": "Electric",
+     "ct": 12,
+     "power": 250,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 22,
+     "name": "Lightning Strike",
+     "element": "Electric",
+     "ct": 16,
+     "power": 300,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 30,
+     "name": "Lightning Bolt",
+     "element": "Electric",
+     "ct": 20,
+     "power": 450,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 40,
+     "name": "All Range Thunder",
+     "element": "Electric",
+     "ct": 24,
+     "power": 500,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 50,
+     "name": "Shell Charge",
+     "element": "Electric",
+     "ct": 24,
+     "power": 500,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 70,
+     "name": "Thunder Rail",
+     "element": "Electric",
+     "ct": 30,
+     "power": 600,
+     "effects": "Electrify 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Snock Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Sootseer": [
@@ -2242,7 +16524,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Ignis Blast",
+     "element": "Fire",
+     "ct": 2,
+     "power": 40,
+     "effects": "Burn 50"
+    },
+    {
+     "lv": 7,
+     "name": "Dark Ball",
+     "element": "Dark",
+     "ct": 2,
+     "power": 50,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 15,
+     "name": "Spirit Fire",
+     "element": "Fire",
+     "ct": 4,
+     "power": 80,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 22,
+     "name": "Spirit Flame",
+     "element": "Dark",
+     "ct": 12,
+     "power": 200,
+     "effects": "Burn 102"
+    },
+    {
+     "lv": 30,
+     "name": "Nightmare Ball",
+     "element": "Dark",
+     "ct": 16,
+     "power": 300,
+     "effects": "Blind 65"
+    },
+    {
+     "lv": 40,
+     "name": "Flame Funnel",
+     "element": "Fire",
+     "ct": 16,
+     "power": 300,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 50,
+     "name": "Volcanic Rain",
+     "element": "Fire",
+     "ct": 20,
+     "power": 450,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 70,
+     "name": "Dark Whisp",
+     "element": "Dark",
+     "ct": 30,
+     "power": 600,
+     "effects": "Blind 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Souffline": [
@@ -2255,7 +16615,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Wind Cutter",
+     "element": "Grass",
+     "ct": 2,
+     "power": 40,
+     "effects": "Ivy-Covered 35"
+    },
+    {
+     "lv": 7,
+     "name": "Seed Machine Gun",
+     "element": "Grass",
+     "ct": 4,
+     "power": 80,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 15,
+     "name": "Seed Mine",
+     "element": "Grass",
+     "ct": 8,
+     "power": 120,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 22,
+     "name": "Grass Tornado",
+     "element": "Grass",
+     "ct": 12,
+     "power": 200,
+     "effects": "Ivy-Covered 65"
+    },
+    {
+     "lv": 30,
+     "name": "Reflect Leaf",
+     "element": "Grass",
+     "ct": 20,
+     "power": 400,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 40,
+     "name": "Solar Blast",
+     "element": "Grass",
+     "ct": 20,
+     "power": 450,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 50,
+     "name": "Crosswind",
+     "element": "Grass",
+     "ct": 24,
+     "power": 500,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 70,
+     "name": "Wind Burst",
+     "element": "Grass",
+     "ct": 30,
+     "power": 600,
+     "effects": "Ivy-Covered 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "1-2",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Splatterina": [
@@ -2268,7 +16706,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Dark Ball",
+     "element": "Dark",
+     "ct": 2,
+     "power": 50,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 7,
+     "name": "Umbral Surge",
+     "element": "Dark",
+     "ct": 4,
+     "power": 60,
+     "effects": "Blind 35"
+    },
+    {
+     "lv": 15,
+     "name": "Dark Cannon",
+     "element": "Dark",
+     "ct": 4,
+     "power": 70,
+     "effects": "Blind 20"
+    },
+    {
+     "lv": 22,
+     "name": "Shadow Burst",
+     "element": "Dark",
+     "ct": 4,
+     "power": 80,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 30,
+     "name": "Nightmare Ball",
+     "element": "Dark",
+     "ct": 16,
+     "power": 300,
+     "effects": "Blind 65"
+    },
+    {
+     "lv": 40,
+     "name": "Grudge Barrage",
+     "element": "Dark",
+     "ct": 24,
+     "power": 500,
+     "effects": "Blind 100"
+    },
+    {
+     "lv": 50,
+     "name": "Dark Whisp",
+     "element": "Dark",
+     "ct": 30,
+     "power": 600,
+     "effects": "Blind 100"
+    },
+    {
+     "lv": 70,
+     "name": "Fire Ball",
+     "element": "Fire",
+     "ct": 30,
+     "power": 600,
+     "effects": "Burn 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Splatterina Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Starryon": [
@@ -2281,7 +16797,93 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Bog Blast",
+     "element": "Ground",
+     "ct": 2,
+     "power": 40,
+     "effects": "Muddy 50"
+    },
+    {
+     "lv": 7,
+     "name": "Dark Ball",
+     "element": "Dark",
+     "ct": 2,
+     "power": 50,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 15,
+     "name": "Spirit Flame",
+     "element": "Dark",
+     "ct": 12,
+     "power": 200,
+     "effects": "Burn 102"
+    },
+    {
+     "lv": 22,
+     "name": "Nightmare Ball",
+     "element": "Dark",
+     "ct": 16,
+     "power": 300,
+     "effects": "Blind 65"
+    },
+    {
+     "lv": 30,
+     "name": "Ignis Rage",
+     "element": "Fire",
+     "ct": 24,
+     "power": 500,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 40,
+     "name": "Apocalypse",
+     "element": "Dark",
+     "ct": 20,
+     "power": 400,
+     "effects": "Blind 100"
+    },
+    {
+     "lv": 45,
+     "name": "Spectral Steed",
+     "element": "Dark",
+     "ct": 20,
+     "power": 450,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 50,
+     "name": "Lethal Step",
+     "element": "Dark",
+     "ct": 24,
+     "power": 550,
+     "effects": "Blind 100"
+    },
+    {
+     "lv": 70,
+     "name": "Dark Whisp",
+     "element": "Dark",
+     "ct": 30,
+     "power": 600,
+     "effects": "Blind 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Starryon Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Surfent": [
@@ -2294,7 +16896,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Hydro Jet",
+     "element": "Water",
+     "ct": 2,
+     "power": 40,
+     "effects": "Soak 35"
+    },
+    {
+     "lv": 7,
+     "name": "Dragon Cannon",
+     "element": "Dragon",
+     "ct": 2,
+     "power": 40,
+     "effects": "Burn 35"
+    },
+    {
+     "lv": 15,
+     "name": "Aqua Gun",
+     "element": "Water",
+     "ct": 2,
+     "power": 50,
+     "effects": "Soak 50"
+    },
+    {
+     "lv": 22,
+     "name": "Bubble Blast",
+     "element": "Water",
+     "ct": 4,
+     "power": 80,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 30,
+     "name": "Dragon Burst",
+     "element": "Dragon",
+     "ct": 4,
+     "power": 80,
+     "effects": "Burn 50"
+    },
+    {
+     "lv": 40,
+     "name": "Dragon Breath",
+     "element": "Dragon",
+     "ct": 8,
+     "power": 160,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 50,
+     "name": "Hydro Laser",
+     "element": "Water",
+     "ct": 20,
+     "power": 450,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 70,
+     "name": "Geyser Gush",
+     "element": "Water",
+     "ct": 30,
+     "power": 600,
+     "effects": "Soak 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "1-2",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "1-2",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Surfent Terra": [
@@ -2307,7 +16987,90 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Bog Blast",
+     "element": "Ground",
+     "ct": 2,
+     "power": 40,
+     "effects": "Muddy 50"
+    },
+    {
+     "lv": 7,
+     "name": "Dragon Cannon",
+     "element": "Dragon",
+     "ct": 2,
+     "power": 40,
+     "effects": "Burn 35"
+    },
+    {
+     "lv": 15,
+     "name": "Stone Blast",
+     "element": "Ground",
+     "ct": 4,
+     "power": 80,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 22,
+     "name": "Stone Cannon",
+     "element": "Ground",
+     "ct": 8,
+     "power": 120,
+     "effects": "Muddy 35"
+    },
+    {
+     "lv": 30,
+     "name": "Sand Tornado",
+     "element": "Ground",
+     "ct": 12,
+     "power": 200,
+     "effects": "Muddy 65"
+    },
+    {
+     "lv": 40,
+     "name": "Dragon Breath",
+     "element": "Dragon",
+     "ct": 8,
+     "power": 160,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 50,
+     "name": "Rock Lance",
+     "element": "Ground",
+     "ct": 20,
+     "power": 400,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 70,
+     "name": "Rocky Impact",
+     "element": "Ground",
+     "ct": 30,
+     "power": 600,
+     "effects": "Muddy 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Ore",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Suzaku": [
@@ -2320,7 +17083,90 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Air Cannon",
+     "element": "Neutral",
+     "ct": 2,
+     "power": 40,
+     "effects": null
+    },
+    {
+     "lv": 7,
+     "name": "Ignis Blast",
+     "element": "Fire",
+     "ct": 2,
+     "power": 40,
+     "effects": "Burn 50"
+    },
+    {
+     "lv": 15,
+     "name": "Spirit Fire",
+     "element": "Fire",
+     "ct": 4,
+     "power": 80,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 22,
+     "name": "Flare Arrow",
+     "element": "Fire",
+     "ct": 8,
+     "power": 120,
+     "effects": "Burn 102"
+    },
+    {
+     "lv": 30,
+     "name": "Ignis Breath",
+     "element": "Fire",
+     "ct": 8,
+     "power": 160,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 40,
+     "name": "Flare Storm",
+     "element": "Fire",
+     "ct": 12,
+     "power": 200,
+     "effects": "Burn 65"
+    },
+    {
+     "lv": 50,
+     "name": "Fire Ball",
+     "element": "Fire",
+     "ct": 30,
+     "power": 600,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 70,
+     "name": "Holy Burst",
+     "element": "Neutral",
+     "ct": 30,
+     "power": 700,
+     "effects": null
+    }
+   ],
+   "drops": [
+    {
+     "item": "Suzaku Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Plume",
+     "qty": "5-7",
+     "pct": 100.0
+    },
+    {
+     "item": "Pump-Action Shotgun Schematic 4",
+     "qty": "1",
+     "pct": 3.0
+    }
+   ]
   }
  ],
  "Suzaku Aqua": [
@@ -2333,7 +17179,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Hydro Jet",
+     "element": "Water",
+     "ct": 2,
+     "power": 40,
+     "effects": "Soak 35"
+    },
+    {
+     "lv": 7,
+     "name": "Ice Missile",
+     "element": "Ice",
+     "ct": 2,
+     "power": 40,
+     "effects": "Freeze 102"
+    },
+    {
+     "lv": 15,
+     "name": "Aqua Gun",
+     "element": "Water",
+     "ct": 2,
+     "power": 50,
+     "effects": "Soak 50"
+    },
+    {
+     "lv": 22,
+     "name": "Crystal Breath",
+     "element": "Ice",
+     "ct": 8,
+     "power": 160,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 30,
+     "name": "Aqua Burst",
+     "element": "Water",
+     "ct": 12,
+     "power": 200,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 40,
+     "name": "Blizzard Spike",
+     "element": "Ice",
+     "ct": 20,
+     "power": 450,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 50,
+     "name": "Hydro Laser",
+     "element": "Water",
+     "ct": 20,
+     "power": 450,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 70,
+     "name": "Geyser Gush",
+     "element": "Water",
+     "ct": 30,
+     "power": 600,
+     "effects": "Soak 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "5-7",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Plume",
+     "qty": "5-7",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Sweepa": [
@@ -2346,7 +17270,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.48,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Power Shot",
+     "element": "Neutral",
+     "ct": 4,
+     "power": 80,
+     "effects": null
+    },
+    {
+     "lv": 7,
+     "name": "Ice Missile",
+     "element": "Ice",
+     "ct": 2,
+     "power": 40,
+     "effects": "Freeze 102"
+    },
+    {
+     "lv": 15,
+     "name": "Icicle Cutter",
+     "element": "Ice",
+     "ct": 4,
+     "power": 80,
+     "effects": "Freeze 50"
+    },
+    {
+     "lv": 22,
+     "name": "Iceberg",
+     "element": "Ice",
+     "ct": 8,
+     "power": 120,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 30,
+     "name": "Crystal Breath",
+     "element": "Ice",
+     "ct": 8,
+     "power": 160,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 40,
+     "name": "Pal Blast",
+     "element": "Neutral",
+     "ct": 20,
+     "power": 450,
+     "effects": null
+    },
+    {
+     "lv": 50,
+     "name": "Blizzard Spike",
+     "element": "Ice",
+     "ct": 20,
+     "power": 450,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 70,
+     "name": "Diamond Rain",
+     "element": "Ice",
+     "ct": 30,
+     "power": 600,
+     "effects": "Freeze 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Sweepa Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "5-7",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Tanzee": [
@@ -2359,7 +17361,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "S",
    "hpRate": 1.0,
    "recvRate": 0.48,
-   "capture": 0.77
+   "capture": 0.77,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Wind Cutter",
+     "element": "Grass",
+     "ct": 2,
+     "power": 40,
+     "effects": "Ivy-Covered 35"
+    },
+    {
+     "lv": 7,
+     "name": "Bog Blast",
+     "element": "Ground",
+     "ct": 2,
+     "power": 40,
+     "effects": "Muddy 50"
+    },
+    {
+     "lv": 15,
+     "name": "Seed Machine Gun",
+     "element": "Grass",
+     "ct": 4,
+     "power": 80,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 22,
+     "name": "Seed Mine",
+     "element": "Grass",
+     "ct": 8,
+     "power": 120,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 30,
+     "name": "Stone Cannon",
+     "element": "Ground",
+     "ct": 8,
+     "power": 120,
+     "effects": "Muddy 35"
+    },
+    {
+     "lv": 40,
+     "name": "Grass Tornado",
+     "element": "Grass",
+     "ct": 12,
+     "power": 200,
+     "effects": "Ivy-Covered 65"
+    },
+    {
+     "lv": 50,
+     "name": "Solar Blast",
+     "element": "Grass",
+     "ct": 20,
+     "power": 450,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 70,
+     "name": "Wind Burst",
+     "element": "Grass",
+     "ct": 30,
+     "power": 600,
+     "effects": "Ivy-Covered 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "1-2",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Claw",
+     "qty": "1-2",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Tarantriss": [
@@ -2372,7 +17452,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Poison Fog",
+     "element": "Dark",
+     "ct": 30,
+     "power": 0,
+     "effects": "Poison 9999"
+    },
+    {
+     "lv": 7,
+     "name": "Poison Blast",
+     "element": "Dark",
+     "ct": 2,
+     "power": 30,
+     "effects": "Poison 100"
+    },
+    {
+     "lv": 15,
+     "name": "Umbral Surge",
+     "element": "Dark",
+     "ct": 4,
+     "power": 60,
+     "effects": "Blind 35"
+    },
+    {
+     "lv": 22,
+     "name": "Dark Arrow",
+     "element": "Dark",
+     "ct": 8,
+     "power": 120,
+     "effects": "Blind 102"
+    },
+    {
+     "lv": 30,
+     "name": "Webstrike Impact",
+     "element": "Dark",
+     "ct": 12,
+     "power": 250,
+     "effects": "Poison 100"
+    },
+    {
+     "lv": 40,
+     "name": "Poison Shower",
+     "element": "Dark",
+     "ct": 8,
+     "power": 160,
+     "effects": "Poison 100"
+    },
+    {
+     "lv": 50,
+     "name": "Apocalypse",
+     "element": "Dark",
+     "ct": 20,
+     "power": 400,
+     "effects": "Blind 100"
+    },
+    {
+     "lv": 70,
+     "name": "Dark Whisp",
+     "element": "Dark",
+     "ct": 30,
+     "power": 600,
+     "effects": "Blind 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Tarantris Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Teafant": [
@@ -2385,7 +17543,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.48,
-   "capture": 0.91
+   "capture": 0.91,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Aqua Gun",
+     "element": "Water",
+     "ct": 2,
+     "power": 50,
+     "effects": "Soak 50"
+    },
+    {
+     "lv": 7,
+     "name": "Hydro Jet",
+     "element": "Water",
+     "ct": 2,
+     "power": 40,
+     "effects": "Soak 35"
+    },
+    {
+     "lv": 15,
+     "name": "Bog Blast",
+     "element": "Ground",
+     "ct": 2,
+     "power": 40,
+     "effects": "Muddy 50"
+    },
+    {
+     "lv": 22,
+     "name": "Bubble Blast",
+     "element": "Water",
+     "ct": 4,
+     "power": 80,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 30,
+     "name": "Acid Rain",
+     "element": "Water",
+     "ct": 8,
+     "power": 120,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 40,
+     "name": "Aqua Burst",
+     "element": "Water",
+     "ct": 12,
+     "power": 200,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 50,
+     "name": "Hydro Laser",
+     "element": "Water",
+     "ct": 20,
+     "power": 450,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 70,
+     "name": "Geyser Gush",
+     "element": "Water",
+     "ct": 30,
+     "power": 600,
+     "effects": "Soak 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "1-2",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "1-2",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Tetroise": [
@@ -2398,7 +17634,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Stone Blast",
+     "element": "Ground",
+     "ct": 4,
+     "power": 80,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 7,
+     "name": "Stone Cannon",
+     "element": "Ground",
+     "ct": 8,
+     "power": 120,
+     "effects": "Muddy 35"
+    },
+    {
+     "lv": 15,
+     "name": "Sand Tornado",
+     "element": "Ground",
+     "ct": 12,
+     "power": 200,
+     "effects": "Muddy 65"
+    },
+    {
+     "lv": 22,
+     "name": "Rockburst",
+     "element": "Ground",
+     "ct": 16,
+     "power": 300,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 30,
+     "name": "Rock Lance",
+     "element": "Ground",
+     "ct": 20,
+     "power": 400,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 40,
+     "name": "Sand Twister",
+     "element": "Ground",
+     "ct": 24,
+     "power": 500,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 50,
+     "name": "Cube Press",
+     "element": "Ground",
+     "ct": 30,
+     "power": 600,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 70,
+     "name": "Rocky Impact",
+     "element": "Ground",
+     "ct": 30,
+     "power": 600,
+     "effects": "Muddy 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Tetroise Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Tetroise Primo": [
@@ -2411,7 +17725,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Power Shot",
+     "element": "Neutral",
+     "ct": 4,
+     "power": 80,
+     "effects": null
+    },
+    {
+     "lv": 7,
+     "name": "Power Bomb",
+     "element": "Neutral",
+     "ct": 8,
+     "power": 120,
+     "effects": null
+    },
+    {
+     "lv": 15,
+     "name": "Air Blade",
+     "element": "Neutral",
+     "ct": 8,
+     "power": 160,
+     "effects": null
+    },
+    {
+     "lv": 22,
+     "name": "Icicle Line",
+     "element": "Ice",
+     "ct": 16,
+     "power": 300,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 30,
+     "name": "Pal Blast",
+     "element": "Neutral",
+     "ct": 20,
+     "power": 450,
+     "effects": null
+    },
+    {
+     "lv": 40,
+     "name": "Diamond Rain",
+     "element": "Ice",
+     "ct": 30,
+     "power": 600,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 50,
+     "name": "Holy Burst",
+     "element": "Neutral",
+     "ct": 30,
+     "power": 700,
+     "effects": null
+    },
+    {
+     "lv": 70,
+     "name": "Holy Press",
+     "element": "Neutral",
+     "ct": 30,
+     "power": 700,
+     "effects": null
+    }
+   ],
+   "drops": [
+    {
+     "item": "Tetroise Primo Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Tocotoco": [
@@ -2424,7 +17816,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.48,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Implode",
+     "element": "Neutral",
+     "ct": 16,
+     "power": 300,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 7,
+     "name": "Air Cannon",
+     "element": "Neutral",
+     "ct": 2,
+     "power": 40,
+     "effects": null
+    },
+    {
+     "lv": 15,
+     "name": "Power Shot",
+     "element": "Neutral",
+     "ct": 4,
+     "power": 80,
+     "effects": null
+    },
+    {
+     "lv": 22,
+     "name": "Megaton Implode",
+     "element": "Neutral",
+     "ct": 60,
+     "power": 1200,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 30,
+     "name": "Sand Tornado",
+     "element": "Ground",
+     "ct": 12,
+     "power": 200,
+     "effects": "Muddy 65"
+    },
+    {
+     "lv": 40,
+     "name": "Power Bomb",
+     "element": "Neutral",
+     "ct": 8,
+     "power": 120,
+     "effects": null
+    },
+    {
+     "lv": 50,
+     "name": "Pal Blast",
+     "element": "Neutral",
+     "ct": 20,
+     "power": 450,
+     "effects": null
+    },
+    {
+     "lv": 70,
+     "name": "Holy Burst",
+     "element": "Neutral",
+     "ct": 30,
+     "power": 700,
+     "effects": null
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "1-2",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Plume",
+     "qty": "1-2",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Tombat": [
@@ -2437,7 +17907,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.48,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Air Cannon",
+     "element": "Neutral",
+     "ct": 2,
+     "power": 40,
+     "effects": null
+    },
+    {
+     "lv": 7,
+     "name": "Poison Blast",
+     "element": "Dark",
+     "ct": 2,
+     "power": 30,
+     "effects": "Poison 100"
+    },
+    {
+     "lv": 15,
+     "name": "Dark Ball",
+     "element": "Dark",
+     "ct": 2,
+     "power": 50,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 22,
+     "name": "Shadow Burst",
+     "element": "Dark",
+     "ct": 4,
+     "power": 80,
+     "effects": "Blind 50"
+    },
+    {
+     "lv": 30,
+     "name": "Spirit Flame",
+     "element": "Dark",
+     "ct": 12,
+     "power": 200,
+     "effects": "Burn 102"
+    },
+    {
+     "lv": 40,
+     "name": "Nightmare Ball",
+     "element": "Dark",
+     "ct": 16,
+     "power": 300,
+     "effects": "Blind 65"
+    },
+    {
+     "lv": 50,
+     "name": "Dark Laser",
+     "element": "Dark",
+     "ct": 20,
+     "power": 450,
+     "effects": "Blind 100"
+    },
+    {
+     "lv": 70,
+     "name": "Dark Whisp",
+     "element": "Dark",
+     "ct": 30,
+     "power": 600,
+     "effects": "Blind 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Claw",
+     "qty": "1-2",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Tropicaw": [
@@ -2450,7 +17998,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Wind Cutter",
+     "element": "Grass",
+     "ct": 2,
+     "power": 40,
+     "effects": "Ivy-Covered 35"
+    },
+    {
+     "lv": 7,
+     "name": "Seed Machine Gun",
+     "element": "Grass",
+     "ct": 4,
+     "power": 80,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 15,
+     "name": "Grass Tornado",
+     "element": "Grass",
+     "ct": 12,
+     "power": 200,
+     "effects": "Ivy-Covered 65"
+    },
+    {
+     "lv": 22,
+     "name": "Wind Edge",
+     "element": "Grass",
+     "ct": 12,
+     "power": 200,
+     "effects": "Ivy-Covered 35"
+    },
+    {
+     "lv": 30,
+     "name": "Reflect Leaf",
+     "element": "Grass",
+     "ct": 20,
+     "power": 400,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 40,
+     "name": "Crosswind",
+     "element": "Grass",
+     "ct": 24,
+     "power": 500,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 50,
+     "name": "Flower Stomp",
+     "element": "Grass",
+     "ct": 24,
+     "power": 550,
+     "effects": null
+    },
+    {
+     "lv": 70,
+     "name": "Wind Burst",
+     "element": "Grass",
+     "ct": 30,
+     "power": 600,
+     "effects": "Ivy-Covered 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Plume",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Turtacle": [
@@ -2463,7 +18089,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Hydro Jet",
+     "element": "Water",
+     "ct": 2,
+     "power": 40,
+     "effects": "Soak 35"
+    },
+    {
+     "lv": 7,
+     "name": "Bubble Blast",
+     "element": "Water",
+     "ct": 4,
+     "power": 80,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 15,
+     "name": "Hydro Spin",
+     "element": "Water",
+     "ct": 8,
+     "power": 160,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 22,
+     "name": "Aqua Burst",
+     "element": "Water",
+     "ct": 12,
+     "power": 200,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 30,
+     "name": "Torrential Blast",
+     "element": "Water",
+     "ct": 12,
+     "power": 250,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 40,
+     "name": "Hydro Slicer",
+     "element": "Water",
+     "ct": 16,
+     "power": 350,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 50,
+     "name": "Hydro Laser",
+     "element": "Water",
+     "ct": 20,
+     "power": 450,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 70,
+     "name": "Geyser Gush",
+     "element": "Water",
+     "ct": 30,
+     "power": 600,
+     "effects": "Soak 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "1-2",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Univolt": [
@@ -2476,7 +18180,93 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.63
+   "capture": 0.63,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Spark Blast",
+     "element": "Electric",
+     "ct": 2,
+     "power": 50,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 7,
+     "name": "Shockwave",
+     "element": "Electric",
+     "ct": 4,
+     "power": 80,
+     "effects": "Electrify 103"
+    },
+    {
+     "lv": 11,
+     "name": "Lightning Gale",
+     "element": "Electric",
+     "ct": 8,
+     "power": 120,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 15,
+     "name": "Lock-on Laser",
+     "element": "Electric",
+     "ct": 8,
+     "power": 140,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 22,
+     "name": "Lightning Streak",
+     "element": "Electric",
+     "ct": 8,
+     "power": 160,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 30,
+     "name": "Tri-Lightning",
+     "element": "Electric",
+     "ct": 12,
+     "power": 200,
+     "effects": "Electrify 103"
+    },
+    {
+     "lv": 40,
+     "name": "Lightning Strike",
+     "element": "Electric",
+     "ct": 16,
+     "power": 300,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 50,
+     "name": "Lightning Bolt",
+     "element": "Electric",
+     "ct": 20,
+     "power": 450,
+     "effects": "Electrify 100"
+    },
+    {
+     "lv": 70,
+     "name": "Thunder Rail",
+     "element": "Electric",
+     "ct": 30,
+     "power": 600,
+     "effects": "Electrify 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Univolt Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Claw",
+     "qty": "4-6",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Vaelet": [
@@ -2489,7 +18279,90 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Poison Fog",
+     "element": "Dark",
+     "ct": 30,
+     "power": 0,
+     "effects": "Poison 9999"
+    },
+    {
+     "lv": 7,
+     "name": "Wind Cutter",
+     "element": "Grass",
+     "ct": 2,
+     "power": 40,
+     "effects": "Ivy-Covered 35"
+    },
+    {
+     "lv": 15,
+     "name": "Poison Blast",
+     "element": "Dark",
+     "ct": 2,
+     "power": 30,
+     "effects": "Poison 100"
+    },
+    {
+     "lv": 22,
+     "name": "Seed Mine",
+     "element": "Grass",
+     "ct": 8,
+     "power": 120,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 30,
+     "name": "Grass Tornado",
+     "element": "Grass",
+     "ct": 12,
+     "power": 200,
+     "effects": "Ivy-Covered 65"
+    },
+    {
+     "lv": 40,
+     "name": "Nightmare Ball",
+     "element": "Dark",
+     "ct": 16,
+     "power": 300,
+     "effects": "Blind 65"
+    },
+    {
+     "lv": 50,
+     "name": "Solar Blast",
+     "element": "Grass",
+     "ct": 20,
+     "power": 450,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 70,
+     "name": "Wind Burst",
+     "element": "Grass",
+     "ct": 30,
+     "power": 600,
+     "effects": "Ivy-Covered 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Vaelet Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "4-5",
+     "pct": 100.0
+    },
+    {
+     "item": "Handgun Schematic 4",
+     "qty": "1",
+     "pct": 3.0
+    }
+   ]
   }
  ],
  "Valentail": [
@@ -2502,7 +18375,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Bog Blast",
+     "element": "Ground",
+     "ct": 2,
+     "power": 40,
+     "effects": "Muddy 50"
+    },
+    {
+     "lv": 7,
+     "name": "Air Cannon",
+     "element": "Neutral",
+     "ct": 2,
+     "power": 40,
+     "effects": null
+    },
+    {
+     "lv": 15,
+     "name": "Power Shot",
+     "element": "Neutral",
+     "ct": 4,
+     "power": 80,
+     "effects": null
+    },
+    {
+     "lv": 22,
+     "name": "Power Bomb",
+     "element": "Neutral",
+     "ct": 8,
+     "power": 120,
+     "effects": null
+    },
+    {
+     "lv": 30,
+     "name": "Air Blade",
+     "element": "Neutral",
+     "ct": 8,
+     "power": 160,
+     "effects": null
+    },
+    {
+     "lv": 40,
+     "name": "Sand Tornado",
+     "element": "Ground",
+     "ct": 12,
+     "power": 200,
+     "effects": "Muddy 65"
+    },
+    {
+     "lv": 50,
+     "name": "Pal Blast",
+     "element": "Neutral",
+     "ct": 20,
+     "power": 450,
+     "effects": null
+    },
+    {
+     "lv": 70,
+     "name": "Holy Burst",
+     "element": "Neutral",
+     "ct": 30,
+     "power": 700,
+     "effects": null
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "1-2",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Vanwyrm": [
@@ -2515,7 +18466,93 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Air Cannon",
+     "element": "Neutral",
+     "ct": 2,
+     "power": 40,
+     "effects": null
+    },
+    {
+     "lv": 7,
+     "name": "Ignis Blast",
+     "element": "Fire",
+     "ct": 2,
+     "power": 40,
+     "effects": "Burn 50"
+    },
+    {
+     "lv": 15,
+     "name": "Spirit Fire",
+     "element": "Fire",
+     "ct": 4,
+     "power": 80,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 22,
+     "name": "Ignis Breath",
+     "element": "Fire",
+     "ct": 8,
+     "power": 160,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 26,
+     "name": "Flame Breath",
+     "element": "Fire",
+     "ct": 12,
+     "power": 200,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 30,
+     "name": "Nightmare Ball",
+     "element": "Dark",
+     "ct": 16,
+     "power": 300,
+     "effects": "Blind 65"
+    },
+    {
+     "lv": 40,
+     "name": "Fire Ball",
+     "element": "Fire",
+     "ct": 30,
+     "power": 600,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 50,
+     "name": "Dark Laser",
+     "element": "Dark",
+     "ct": 20,
+     "power": 450,
+     "effects": "Blind 100"
+    },
+    {
+     "lv": 70,
+     "name": "Dark Whisp",
+     "element": "Dark",
+     "ct": 30,
+     "power": 600,
+     "effects": "Blind 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "4-6",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Plume",
+     "qty": "4-6",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Vanwyrm Cryst": [
@@ -2528,7 +18565,93 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Air Cannon",
+     "element": "Neutral",
+     "ct": 2,
+     "power": 40,
+     "effects": null
+    },
+    {
+     "lv": 7,
+     "name": "Ice Missile",
+     "element": "Ice",
+     "ct": 2,
+     "power": 40,
+     "effects": "Freeze 102"
+    },
+    {
+     "lv": 15,
+     "name": "Icicle Cutter",
+     "element": "Ice",
+     "ct": 4,
+     "power": 80,
+     "effects": "Freeze 50"
+    },
+    {
+     "lv": 22,
+     "name": "Crystal Breath",
+     "element": "Ice",
+     "ct": 8,
+     "power": 160,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 26,
+     "name": "Tempest Blizzard",
+     "element": "Ice",
+     "ct": 12,
+     "power": 200,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 30,
+     "name": "Nightmare Ball",
+     "element": "Dark",
+     "ct": 16,
+     "power": 300,
+     "effects": "Blind 65"
+    },
+    {
+     "lv": 40,
+     "name": "Blizzard Spike",
+     "element": "Ice",
+     "ct": 20,
+     "power": 450,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 50,
+     "name": "Dark Laser",
+     "element": "Dark",
+     "ct": 20,
+     "power": 450,
+     "effects": "Blind 100"
+    },
+    {
+     "lv": 70,
+     "name": "Diamond Rain",
+     "element": "Ice",
+     "ct": 30,
+     "power": 600,
+     "effects": "Freeze 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "5-7",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Plume",
+     "qty": "5-7",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Verdash": [
@@ -2541,7 +18664,98 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Wind Cutter",
+     "element": "Grass",
+     "ct": 2,
+     "power": 40,
+     "effects": "Ivy-Covered 35"
+    },
+    {
+     "lv": 7,
+     "name": "Stone Cannon",
+     "element": "Ground",
+     "ct": 8,
+     "power": 120,
+     "effects": "Muddy 35"
+    },
+    {
+     "lv": 15,
+     "name": "Seed Machine Gun",
+     "element": "Grass",
+     "ct": 4,
+     "power": 80,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 22,
+     "name": "Stone Blast",
+     "element": "Ground",
+     "ct": 4,
+     "power": 80,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 30,
+     "name": "Grass Tornado",
+     "element": "Grass",
+     "ct": 12,
+     "power": 200,
+     "effects": "Ivy-Covered 65"
+    },
+    {
+     "lv": 35,
+     "name": "Leaping Roundhouse",
+     "element": "Grass",
+     "ct": 12,
+     "power": 250,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 40,
+     "name": "Spine Vine",
+     "element": "Grass",
+     "ct": 12,
+     "power": 250,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 50,
+     "name": "Solar Blast",
+     "element": "Grass",
+     "ct": 20,
+     "power": 450,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 70,
+     "name": "Wind Burst",
+     "element": "Grass",
+     "ct": 30,
+     "power": 600,
+     "effects": "Ivy-Covered 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Verdash Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "4-6",
+     "pct": 100.0
+    },
+    {
+     "item": "Single-Shot Rifle Schematic 4",
+     "qty": "1",
+     "pct": 3.0
+    }
+   ]
   }
  ],
  "Vixy": [
@@ -2554,7 +18768,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.48,
-   "capture": 0.91
+   "capture": 0.91,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Air Cannon",
+     "element": "Neutral",
+     "ct": 2,
+     "power": 40,
+     "effects": null
+    },
+    {
+     "lv": 7,
+     "name": "Bog Blast",
+     "element": "Ground",
+     "ct": 2,
+     "power": 40,
+     "effects": "Muddy 50"
+    },
+    {
+     "lv": 15,
+     "name": "Power Shot",
+     "element": "Neutral",
+     "ct": 4,
+     "power": 80,
+     "effects": null
+    },
+    {
+     "lv": 22,
+     "name": "Wind Cutter",
+     "element": "Grass",
+     "ct": 2,
+     "power": 40,
+     "effects": "Ivy-Covered 35"
+    },
+    {
+     "lv": 30,
+     "name": "Seed Machine Gun",
+     "element": "Grass",
+     "ct": 4,
+     "power": 80,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 40,
+     "name": "Power Bomb",
+     "element": "Neutral",
+     "ct": 8,
+     "power": 120,
+     "effects": null
+    },
+    {
+     "lv": 50,
+     "name": "Pal Blast",
+     "element": "Neutral",
+     "ct": 20,
+     "power": 450,
+     "effects": null
+    },
+    {
+     "lv": 70,
+     "name": "Holy Burst",
+     "element": "Neutral",
+     "ct": 30,
+     "power": 700,
+     "effects": null
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "1-2",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "1-2",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Warsect Terra": [
@@ -2567,7 +18859,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Bog Blast",
+     "element": "Ground",
+     "ct": 2,
+     "power": 40,
+     "effects": "Muddy 50"
+    },
+    {
+     "lv": 7,
+     "name": "Seed Machine Gun",
+     "element": "Grass",
+     "ct": 4,
+     "power": 80,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 15,
+     "name": "Giga Horn",
+     "element": "Ground",
+     "ct": 12,
+     "power": 250,
+     "effects": null
+    },
+    {
+     "lv": 22,
+     "name": "Stone Cannon",
+     "element": "Ground",
+     "ct": 8,
+     "power": 120,
+     "effects": "Muddy 35"
+    },
+    {
+     "lv": 30,
+     "name": "Wind Edge",
+     "element": "Grass",
+     "ct": 12,
+     "power": 200,
+     "effects": "Ivy-Covered 35"
+    },
+    {
+     "lv": 40,
+     "name": "Rockburst",
+     "element": "Ground",
+     "ct": 16,
+     "power": 300,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 50,
+     "name": "Rocky Impact",
+     "element": "Ground",
+     "ct": 30,
+     "power": 600,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 70,
+     "name": "Thunder Rail",
+     "element": "Electric",
+     "ct": 30,
+     "power": 600,
+     "effects": "Electrify 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Warsect Terra Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Plume",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Whalaska": [
@@ -2580,7 +18950,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Ice Missile",
+     "element": "Ice",
+     "ct": 2,
+     "power": 40,
+     "effects": "Freeze 102"
+    },
+    {
+     "lv": 7,
+     "name": "Icicle Cutter",
+     "element": "Ice",
+     "ct": 4,
+     "power": 80,
+     "effects": "Freeze 50"
+    },
+    {
+     "lv": 15,
+     "name": "Iceberg",
+     "element": "Ice",
+     "ct": 8,
+     "power": 120,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 22,
+     "name": "Splash",
+     "element": "Water",
+     "ct": 8,
+     "power": 160,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 30,
+     "name": "Freeze Wall",
+     "element": "Ice",
+     "ct": 12,
+     "power": 200,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 40,
+     "name": "High Breach",
+     "element": "Ice",
+     "ct": 30,
+     "power": 600,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 50,
+     "name": "Geyser Gush",
+     "element": "Water",
+     "ct": 30,
+     "power": 600,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 70,
+     "name": "Diamond Rain",
+     "element": "Ice",
+     "ct": 30,
+     "power": 600,
+     "effects": "Freeze 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Whalaska Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Claw",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Whalaska Ignis": [
@@ -2593,7 +19041,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Ignis Blast",
+     "element": "Fire",
+     "ct": 2,
+     "power": 40,
+     "effects": "Burn 50"
+    },
+    {
+     "lv": 7,
+     "name": "Flare Arrow",
+     "element": "Fire",
+     "ct": 8,
+     "power": 120,
+     "effects": "Burn 102"
+    },
+    {
+     "lv": 15,
+     "name": "Iceberg",
+     "element": "Ice",
+     "ct": 8,
+     "power": 120,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 22,
+     "name": "Flame Wall",
+     "element": "Fire",
+     "ct": 12,
+     "power": 250,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 30,
+     "name": "Freeze Wall",
+     "element": "Ice",
+     "ct": 12,
+     "power": 200,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 40,
+     "name": "Volcanic Rain",
+     "element": "Fire",
+     "ct": 20,
+     "power": 450,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 50,
+     "name": "High Breach",
+     "element": "Ice",
+     "ct": 30,
+     "power": 600,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 70,
+     "name": "Fire Ball",
+     "element": "Fire",
+     "ct": 30,
+     "power": 600,
+     "effects": "Burn 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Whalaska Ignis Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Claw",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Wistella": [
@@ -2606,7 +19132,125 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Dark Cannon",
+     "element": "Dark",
+     "ct": 4,
+     "power": 70,
+     "effects": "Blind 20"
+    },
+    {
+     "lv": 7,
+     "name": "Dark Arrow",
+     "element": "Dark",
+     "ct": 8,
+     "power": 120,
+     "effects": "Blind 102"
+    },
+    {
+     "lv": 15,
+     "name": "Comet Strike",
+     "element": "Dragon",
+     "ct": 8,
+     "power": 180,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 22,
+     "name": "Nightmare Ball",
+     "element": "Dark",
+     "ct": 16,
+     "power": 300,
+     "effects": "Blind 65"
+    },
+    {
+     "lv": 30,
+     "name": "Comet Barrage",
+     "element": "Dragon",
+     "ct": 20,
+     "power": 450,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 40,
+     "name": "Star Mine",
+     "element": "Neutral",
+     "ct": 20,
+     "power": 400,
+     "effects": null
+    },
+    {
+     "lv": 50,
+     "name": "Dragon Meteor",
+     "element": "Dragon",
+     "ct": 30,
+     "power": 600,
+     "effects": "Burn 45"
+    },
+    {
+     "lv": 70,
+     "name": "Dark Whisp",
+     "element": "Dark",
+     "ct": 30,
+     "power": 600,
+     "effects": "Blind 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Wistella Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Entrails",
+     "qty": "2-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "7-8",
+     "pct": 100.0
+    },
+    {
+     "item": "World Tree Holy Water",
+     "qty": "20-30",
+     "pct": 100.0
+    },
+    {
+     "item": "Electric Radiant Gem",
+     "qty": "1-3",
+     "pct": 100.0
+    },
+    {
+     "item": "Decayed Ancient Relic",
+     "qty": "1-10",
+     "pct": 50.0
+    },
+    {
+     "item": "Dormant Ancient Relic",
+     "qty": "1-5",
+     "pct": 25.0
+    },
+    {
+     "item": "Gorgeous Ancient Relic",
+     "qty": "1-3",
+     "pct": 15.0
+    },
+    {
+     "item": "Glowing Ancient Relic",
+     "qty": "1-2",
+     "pct": 12.5
+    },
+    {
+     "item": "Glistening Ancient Relic",
+     "qty": "1",
+     "pct": 10.0
+    }
+   ]
   }
  ],
  "Wixen": [
@@ -2619,7 +19263,90 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Ignis Blast",
+     "element": "Fire",
+     "ct": 2,
+     "power": 40,
+     "effects": "Burn 50"
+    },
+    {
+     "lv": 7,
+     "name": "Spirit Fire",
+     "element": "Fire",
+     "ct": 4,
+     "power": 80,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 15,
+     "name": "Flare Arrow",
+     "element": "Fire",
+     "ct": 8,
+     "power": 120,
+     "effects": "Burn 102"
+    },
+    {
+     "lv": 22,
+     "name": "Spirit Flame",
+     "element": "Dark",
+     "ct": 12,
+     "power": 200,
+     "effects": "Burn 102"
+    },
+    {
+     "lv": 30,
+     "name": "Flare Storm",
+     "element": "Fire",
+     "ct": 12,
+     "power": 200,
+     "effects": "Burn 65"
+    },
+    {
+     "lv": 40,
+     "name": "Fire Ball",
+     "element": "Fire",
+     "ct": 30,
+     "power": 600,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 50,
+     "name": "Dragon Meteor",
+     "element": "Dragon",
+     "ct": 30,
+     "power": 600,
+     "effects": "Burn 45"
+    },
+    {
+     "lv": 70,
+     "name": "Holy Burst",
+     "element": "Neutral",
+     "ct": 30,
+     "power": 700,
+     "effects": null
+    }
+   ],
+   "drops": [
+    {
+     "item": "Wixen Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Advanced Technical Manual",
+     "qty": "1",
+     "pct": 1.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "4-5",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Wixen Noct": [
@@ -2632,7 +19359,90 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "L",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Umbral Surge",
+     "element": "Dark",
+     "ct": 4,
+     "power": 60,
+     "effects": "Blind 35"
+    },
+    {
+     "lv": 7,
+     "name": "Dark Cannon",
+     "element": "Dark",
+     "ct": 4,
+     "power": 70,
+     "effects": "Blind 20"
+    },
+    {
+     "lv": 15,
+     "name": "Dark Arrow",
+     "element": "Dark",
+     "ct": 8,
+     "power": 120,
+     "effects": "Blind 102"
+    },
+    {
+     "lv": 22,
+     "name": "Flare Storm",
+     "element": "Fire",
+     "ct": 12,
+     "power": 200,
+     "effects": "Burn 65"
+    },
+    {
+     "lv": 30,
+     "name": "Spirit Flame",
+     "element": "Dark",
+     "ct": 12,
+     "power": 200,
+     "effects": "Burn 102"
+    },
+    {
+     "lv": 40,
+     "name": "Flame Wall",
+     "element": "Fire",
+     "ct": 12,
+     "power": 250,
+     "effects": "Burn 100"
+    },
+    {
+     "lv": 50,
+     "name": "Apocalypse",
+     "element": "Dark",
+     "ct": 20,
+     "power": 400,
+     "effects": "Blind 100"
+    },
+    {
+     "lv": 70,
+     "name": "Dark Whisp",
+     "element": "Dark",
+     "ct": 30,
+     "power": 600,
+     "effects": "Blind 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "4-5",
+     "pct": 100.0
+    },
+    {
+     "item": "Advanced Technical Manual",
+     "qty": "1",
+     "pct": 1.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "2-3",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Woolipop": [
@@ -2645,7 +19455,85 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "M",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Air Cannon",
+     "element": "Neutral",
+     "ct": 2,
+     "power": 40,
+     "effects": null
+    },
+    {
+     "lv": 7,
+     "name": "Bog Blast",
+     "element": "Ground",
+     "ct": 2,
+     "power": 40,
+     "effects": "Muddy 50"
+    },
+    {
+     "lv": 15,
+     "name": "Power Shot",
+     "element": "Neutral",
+     "ct": 4,
+     "power": 80,
+     "effects": null
+    },
+    {
+     "lv": 22,
+     "name": "Wind Cutter",
+     "element": "Grass",
+     "ct": 2,
+     "power": 40,
+     "effects": "Ivy-Covered 35"
+    },
+    {
+     "lv": 30,
+     "name": "Bubble Blast",
+     "element": "Water",
+     "ct": 4,
+     "power": 80,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 40,
+     "name": "Power Bomb",
+     "element": "Neutral",
+     "ct": 8,
+     "power": 120,
+     "effects": null
+    },
+    {
+     "lv": 50,
+     "name": "Pal Blast",
+     "element": "Neutral",
+     "ct": 20,
+     "power": 450,
+     "effects": null
+    },
+    {
+     "lv": 70,
+     "name": "Holy Burst",
+     "element": "Neutral",
+     "ct": 30,
+     "power": 700,
+     "effects": null
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "1-2",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "1-2",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Wumpo": [
@@ -2658,7 +19546,93 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Ice Missile",
+     "element": "Ice",
+     "ct": 2,
+     "power": 40,
+     "effects": "Freeze 102"
+    },
+    {
+     "lv": 7,
+     "name": "Wind Cutter",
+     "element": "Grass",
+     "ct": 2,
+     "power": 40,
+     "effects": "Ivy-Covered 35"
+    },
+    {
+     "lv": 15,
+     "name": "Icicle Cutter",
+     "element": "Ice",
+     "ct": 4,
+     "power": 80,
+     "effects": "Freeze 50"
+    },
+    {
+     "lv": 22,
+     "name": "Iceberg",
+     "element": "Ice",
+     "ct": 8,
+     "power": 120,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 30,
+     "name": "Crystal Breath",
+     "element": "Ice",
+     "ct": 8,
+     "power": 160,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 35,
+     "name": "Snow Bowling",
+     "element": "Ice",
+     "ct": 20,
+     "power": 400,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 40,
+     "name": "Blizzard Spike",
+     "element": "Ice",
+     "ct": 20,
+     "power": 450,
+     "effects": "Freeze 100"
+    },
+    {
+     "lv": 50,
+     "name": "Solar Blast",
+     "element": "Grass",
+     "ct": 20,
+     "power": 450,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 70,
+     "name": "Diamond Rain",
+     "element": "Ice",
+     "ct": 30,
+     "power": 600,
+     "effects": "Freeze 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "6-8",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "6-8",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Wumpo Botan": [
@@ -2671,7 +19645,93 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "XL",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Wind Cutter",
+     "element": "Grass",
+     "ct": 2,
+     "power": 40,
+     "effects": "Ivy-Covered 35"
+    },
+    {
+     "lv": 7,
+     "name": "Aqua Gun",
+     "element": "Water",
+     "ct": 2,
+     "power": 50,
+     "effects": "Soak 50"
+    },
+    {
+     "lv": 15,
+     "name": "Seed Mine",
+     "element": "Grass",
+     "ct": 8,
+     "power": 120,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 22,
+     "name": "Grass Tornado",
+     "element": "Grass",
+     "ct": 12,
+     "power": 200,
+     "effects": "Ivy-Covered 65"
+    },
+    {
+     "lv": 30,
+     "name": "Spine Vine",
+     "element": "Grass",
+     "ct": 12,
+     "power": 250,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 35,
+     "name": "Lawn Bowling",
+     "element": "Grass",
+     "ct": 20,
+     "power": 400,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 40,
+     "name": "Aqua Burst",
+     "element": "Water",
+     "ct": 12,
+     "power": 200,
+     "effects": "Soak 100"
+    },
+    {
+     "lv": 50,
+     "name": "Solar Blast",
+     "element": "Grass",
+     "ct": 20,
+     "power": 450,
+     "effects": "Ivy-Covered 100"
+    },
+    {
+     "lv": 70,
+     "name": "Wind Burst",
+     "element": "Grass",
+     "ct": 30,
+     "power": 600,
+     "effects": "Ivy-Covered 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Wumpo Botan Bounty Token",
+     "qty": "1",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "5-6",
+     "pct": 100.0
+    }
+   ]
   }
  ],
  "Yakumo": [
@@ -2684,7 +19744,101 @@ export const ALPHA_STATS: Record<string, AlphaStat[]> = {
    "size": "S",
    "hpRate": 1.0,
    "recvRate": 0.24,
-   "capture": 0.7
+   "capture": 0.7,
+   "moves": [
+    {
+     "lv": 1,
+     "name": "Double Fang",
+     "element": "Neutral",
+     "ct": 2,
+     "power": 40,
+     "effects": null
+    },
+    {
+     "lv": 2,
+     "name": "Fierce Fang",
+     "element": "Neutral",
+     "ct": 2,
+     "power": 50,
+     "effects": null
+    },
+    {
+     "lv": 3,
+     "name": "Bog Blast",
+     "element": "Ground",
+     "ct": 2,
+     "power": 40,
+     "effects": "Muddy 50"
+    },
+    {
+     "lv": 7,
+     "name": "Power Shot",
+     "element": "Neutral",
+     "ct": 4,
+     "power": 80,
+     "effects": null
+    },
+    {
+     "lv": 15,
+     "name": "Stone Blast",
+     "element": "Ground",
+     "ct": 4,
+     "power": 80,
+     "effects": "Muddy 100"
+    },
+    {
+     "lv": 22,
+     "name": "Power Bomb",
+     "element": "Neutral",
+     "ct": 8,
+     "power": 120,
+     "effects": null
+    },
+    {
+     "lv": 30,
+     "name": "Air Blade",
+     "element": "Neutral",
+     "ct": 8,
+     "power": 160,
+     "effects": null
+    },
+    {
+     "lv": 40,
+     "name": "Holy Burst",
+     "element": "Neutral",
+     "ct": 30,
+     "power": 700,
+     "effects": null
+    },
+    {
+     "lv": 50,
+     "name": "Pal Blast",
+     "element": "Neutral",
+     "ct": 20,
+     "power": 450,
+     "effects": null
+    },
+    {
+     "lv": 70,
+     "name": "Rocky Impact",
+     "element": "Ground",
+     "ct": 30,
+     "power": 600,
+     "effects": "Muddy 100"
+    }
+   ],
+   "drops": [
+    {
+     "item": "Ancient Civilization Parts",
+     "qty": "2-4",
+     "pct": 100.0
+    },
+    {
+     "item": "Precious Pelt",
+     "qty": "2-4",
+     "pct": 100.0
+    }
+   ]
   }
  ]
 };

@@ -35,6 +35,11 @@ import time
 import urllib.request
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from fetch_tower_raid_stats import (  # noqa: E402
+    ELEMENT_MAP, parse_drops, parse_skills, split_variant_sections,
+)
+
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "data" / "alpha_stats_1_0.json"
 UA = "PalforgeDataPipeline/1.0 (companion app; contact: palandre.99@gmail.com)"
@@ -144,6 +149,7 @@ def main() -> None:
           + (f" ({len(unparsed_lines)} lines unparsed)" if unparsed_lines else ""))
     rows: dict[str, list[dict]] = {}
     dropped: list[str] = []
+    unmapped_skills: list[str] = []
     for i, (name, title, lv) in enumerate(jobs, 1):
         page, err = fetch(slug_for(title))
         if page is None:
@@ -159,7 +165,26 @@ def main() -> None:
             dropped.append(
                 f"{title}: CombiRank {params.get('combi')} != ours {ours}")
             continue
-        rows.setdefault(name, []).append({"title": title, "lv": lv, **params})
+        # the boss's OWN section carries its attacks and its drop table;
+        # a page also renders the plain species, so pick the BOSS_ one
+        # and fall back to the whole page rather than inventing a kit
+        sections = split_variant_sections(page)
+        seg = next((v for k, v in sections.items() if k.startswith("BOSS_")),
+                   page)
+        skills, bad = [], None
+        for sk in parse_skills(seg):
+            el = ELEMENT_MAP.get(sk["element"])
+            if el is None:
+                bad = f"{sk['name']}: element {sk['element']}"
+                break
+            skills.append({**sk, "element": el})
+        if bad:
+            unmapped_skills.append(f"{title}: {bad}")
+            skills = []
+        rows.setdefault(name, []).append({
+            "title": title, "lv": lv, **params,
+            "moves": skills, "drops": parse_drops(seg),
+        })
         if i % 20 == 0:
             print(f"  {i}/{len(jobs)} fetched, {len(dropped)} dropped so far",
                   flush=True)
@@ -169,10 +194,16 @@ def main() -> None:
         "source": (
             "paldb.cc per-boss pages (raw DT_PalMonsterParameter row per "
             "variant), fetched 2026-08-18; validated per row: page CombiRank "
-            "must equal our oracle-tested combi_rank or the row is dropped"),
+            "must equal our oracle-tested combi_rank or the row is dropped. "
+            "Each boss's own section also yields its attack kit and its "
+            "drop table, parsed by the same code the tower/raid fetcher "
+            "uses; a skill whose element does not map into our nine is "
+            "reported and that boss ships without a kit, never with a "
+            "guessed one."),
         "fetched": len(rows),
         "unparsed_lines": unparsed_lines,
         "dropped": dropped,
+        "unmapped_skills": unmapped_skills,
         "bosses": rows,
     }
     OUT.write_text(
