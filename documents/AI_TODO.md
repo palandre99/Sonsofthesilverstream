@@ -12708,3 +12708,25 @@ a dirty marker (`b7209f5*`). The dirty file was
 and **outside `mobile/`, which is the only tree `eas update` bundles.**
 It could not reach the phone. So the gate is not "is anything dirty" but
 "is anything dirty INSIDE mobile/": `git diff --numstat -- palworld-breeding/mobile`.
+
+### The new strips at phone width — measured, and a judgement recorded
+
+At 375px the group strip shows **three chips; the other eight scroll**.
+Measured: the page itself does NOT scroll horizontally (`documentElement`
+overflow 0), so nothing is broken — the strip is a horizontal scroller
+and behaves like one. Chip positions: Schematics ends at x=124, Pal gear
+at 231, Materials at 346, and Consumables starts at 374 — one pixel
+inside the edge, so no chip visibly peeks.
+
+**Left as it is, deliberately.** A horizontal chip strip is a pattern
+iOS players swipe without being told, the three shown are the three
+biggest groups, and the Filters sheet still lists all eleven with the
+same counts. Forcing a peek would mean tampering with chip widths that
+are set by their own text. **Recorded rather than churned** — if the CEO
+finds himself missing the Meds or Gliders chips, the fix is a wrap to two
+rows and this is the note that says so.
+
+Also verified clean at this width: Spheres tab (Capture sphere 10 ·
+Sphere module 6, ordered by capture power), and the ammo card, which
+carries description, numbers, craft, from-scratch, build, "Fits these
+weapons" and where-to-find.
