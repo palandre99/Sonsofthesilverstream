@@ -37,13 +37,18 @@ function towerPairs(): TowerPair[] {
   return pairs;
 }
 
-function TowerRow({ pair, onOpen }: { pair: TowerPair; onOpen: () => void }) {
+function TowerRow({ pair, onOpen, playerLevel }: {
+  pair: TowerPair; onOpen: () => void; playerLevel: number | undefined;
+}) {
   const { base, hard } = pair;
   const name = shortName(base.title);
   const doneBase = isBeaten(base.bp);
   const doneHard = hard ? isBeaten(hard.bp) : false;
   const allDone = doneBase && (!hard || doneHard);
   const weak = weaknessLabel(base.elements);
+  const lvTone = playerLevel == null ? T.muted
+    : playerLevel >= base.lv ? T.ok
+      : base.lv - playerLevel <= 5 ? T.warn : T.bad;
   return (
     <Pressable
       onPress={() => {
@@ -73,7 +78,8 @@ function TowerRow({ pair, onOpen }: { pair: TowerPair; onOpen: () => void }) {
             {doneHard && <Badge kind="gold">hard too</Badge>}
           </View>
           <Text style={{ color: T.muted, fontSize: 12, marginTop: 2 }} numberOfLines={1}>
-            Lv {base.lv} · {fmtHp(base.fightHp)} HP
+            <Text style={{ color: lvTone, fontWeight: '800' }}>Lv {base.lv}</Text>
+            {` · ${fmtHp(base.fightHp)} HP`}
             {hard ? ` · Hard: Lv ${hard.lv}` : ''}
           </Text>
           <Text style={{ color: T.faint, fontSize: 11.5, marginTop: 2 }} numberOfLines={1}>
@@ -143,7 +149,8 @@ export function TowerScreen() {
 
       <View style={{ gap: 9 }}>
         {pairs.map((p) => (
-          <TowerRow key={p.base.bp} pair={p} onOpen={() => setOpen(p)} />
+          <TowerRow key={p.base.bp} pair={p} playerLevel={playerLevel}
+            onOpen={() => setOpen(p)} />
         ))}
       </View>
 

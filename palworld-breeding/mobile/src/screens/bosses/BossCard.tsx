@@ -18,6 +18,7 @@ import type { BossEncounter } from '../../data/towerRaid.g';
 import { ownedCounterRows } from '../../bosses/counterPicks';
 import { boxKeyOf } from '../../logic/recommend';
 import { fmtHp, levelFit, shortName } from '../../logic/bossText';
+import { towerSpot } from '../../bosses/whereTower';
 import { isBeaten, loadRecord, onRecordChange, toggleBeaten } from '../../bosses/record';
 import itemsJson from '../../data/items_1_0.json';
 import {
@@ -60,6 +61,11 @@ export function BossCard({ base, hard, onClose }: {
     [boxKeyOf(boxNames), enc.elements, enc.moves],
   );
   const fitColor = { ok: T.ok, warn: T.warn, bad: T.bad, plain: T.muted }[fit.tone];
+  // where the tower actually stands, from the map lane's own spots
+  const spot = useMemo(
+    () => (enc.slab ? null : towerSpot(enc.title, enc.arena)),
+    [enc],
+  );
 
   return (
     <Modal visible animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
@@ -171,12 +177,22 @@ export function BossCard({ base, hard, onClose }: {
                 </Text>
               </>
             ) : (
-              <Text style={[s.body, { marginTop: 6 }]}>
-                {enc.arena && !enc.arena.includes('？')
-                  ? `Fought at ${enc.arena}.`
-                  : 'Its arena stays hidden until the story takes you there — '
-                    + 'the game lists it as ???.'}
-              </Text>
+              <>
+                <Text style={[s.body, { marginTop: 6 }]}>
+                  {enc.arena && !enc.arena.includes('？')
+                    ? `Fought at ${enc.arena}.`
+                    : 'Its arena stays hidden until the story takes you there — '
+                      + 'the game lists it as ???.'}
+                </Text>
+                {/* the map's own spot for this tower, when the two
+                    datasets agree on which one it is */}
+                {spot && (
+                  <Text style={[s.body, { marginTop: 4 }]}>
+                    {`It stands at ${spot.x}, ${spot.y}`}
+                    {spot.from ? ` — ${spot.from}.` : '.'}
+                  </Text>
+                )}
+              </>
             )}
             <View style={[s.wrap, { marginTop: 10 }]}>
               {!enc.slab && (
