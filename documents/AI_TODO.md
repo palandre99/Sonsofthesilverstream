@@ -12480,3 +12480,26 @@ and chest tables, then merchants.
 
 Gates: mobile `tsc --noEmit` clean, `npx vitest run` 1093/1093. Two older
 tests pinned the fallback chain and now pin it with `sourceText` in it.
+
+**AND I DID IT AGAIN, ONE COMMIT LATER.** The IL93 commit swept in **20
+lines of the Bosses lane's `ui/SuggestedGoals.tsx`** — not because I
+edited it, but because I staged with `git add -A palworld-breeding/mobile/src`.
+That adds everything under the tree, including whatever the other session
+has in flight. Their work is now inside a commit with my message on it,
+and published.
+
+The publish-gate rule I wrote two entries ago was about CHECKING before
+publishing. It did not stop this, because by the time I checked, I had
+already staged their file — so the gate saw a clean tree and said go.
+
+**The rule that actually stops it: NEVER `git add -A <dir>`. Stage the
+exact files you edited, by path, every time.** A directory add cannot
+tell your work from someone else's.
+
+Damage: their code compiles (whole-tree `tsc --noEmit` clean) and the
+suite is green at 1093, so nothing is broken — but their change shipped
+before they chose to ship it, twice in one session.
+
+Publishing note: the preview export CRASHED once again (exit 1 this
+time), and an identical retry succeeded. Both channels confirmed on
+`dca256b`.
