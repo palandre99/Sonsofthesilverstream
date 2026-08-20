@@ -11707,3 +11707,11 @@ wrong (234→233 when the real figure stayed 234) and the suite caught it.
 
 **Both queued data gaps are now closed — one fixed, one refused with
 evidence.**
+
+**Publish note (operational, worth knowing):** the `preview` publish of
+IL74 CRASHED the bundler — `expo export` exited 3221226505 (0xC0000409,
+a Windows stack-buffer abort) after `development` had already gone out.
+An identical retry succeeded. If it had been silenced, his everyday app
+would have sat a version behind the dev one with nothing to show it.
+**Read the eas output, every time, on both channels.** `channel:list`
+confirms both now carry IL74 (10 seconds / 1 minute ago).
