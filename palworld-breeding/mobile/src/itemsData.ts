@@ -807,7 +807,30 @@ export function rankAxisOf(kind: string): string | null {
   if (fams.length >= 2 && noStats) {
     const sets = fams.map((i) => new Set(
       (ITEM_FACTS[i]?.effects ?? []).map(([k]) => k)));
-    axis = [...(sets[0] ?? [])].find((l) => sets.every((s) => s.has(l))) ?? null;
+    const shared = [...(sets[0] ?? [])].filter((l) => sets.every((s) => s.has(l)));
+    // IL91: this took the FIRST label every family shares, and for
+    // medicine that is "Nutrition" — which reads 1 on every single one.
+    // The card then promised "most Nutrition first" over a list where
+    // four of five tied at 1: a ranking that ranks nothing. Take the
+    // shared label that actually SEPARATES them, and if none does, rank
+    // by nothing and say so.
+    // A label only earns the ranking if it SEPARATES the kind. Nutrition
+    // across medicine has two distinct values — 360 on one tonic and 1 on
+    // the other thirteen — which is not an ordering, it is a tie with an
+    // exception. Demand distinct values on at least half of them, and
+    // allow a label carried by most (not all) families, since what a
+    // medicine is actually judged on is Health Recovery and four of the
+    // fourteen do not list it.
+    const common = new Map<string, number>();
+    for (const set of sets) for (const l of set) common.set(l, (common.get(l) ?? 0) + 1);
+    let best = 0;
+    for (const [label, carried] of common) {
+      if (carried * 2 < fams.length) continue;          // must be on most
+      const seen = new Set(fams.map((i) => effectNumber(i, label) ?? -1));
+      const spread = seen.size;
+      if (spread * 2 >= fams.length && spread > best) { best = spread; axis = label; }
+    }
+    if (best < 2) axis = null;
   }
   KIND_AXIS.set(kind, axis);
   return axis;
@@ -823,8 +846,31 @@ export function rankValueOf(id: string): number {
   return Math.max(...familyOf(id).map((f) => effectNumber(f, axis) ?? -1));
 }
 
+/** What a "how it stacks up" list is really ordered by.
+ *
+ * IL91: medicine has no stat and no effect that separates it, so the
+ * list fell back to `familyPowerOf` — which for a medicine is its
+ * NUTRITION, 1 on thirteen of the fourteen. The card then printed those
+ * 1s beside a heading promising an order. When nothing separates a kind
+ * but its tier, say tier and show tiers. */
+export function rivalBasis(kind: string): 'stat' | 'effect' | 'tier' {
+  const fams = collapseFamilies(ITEM_IDS.filter((i) => kindWord(i) === kind));
+  if (fams.some((i) => familyOf(i).some(
+    (t) => ITEM_STATS[t]?.atk != null || ITEM_STATS[t]?.def != null))) return 'stat';
+  return rankAxisOf(kind) ? 'effect' : 'tier';
+}
+
+/** The number a rivals row sorts on, and what it shows. */
+export const rivalSortOf = (id: string): number => rankValueOf(id);
+export const rivalShowOf = (id: string): string => String(rankValueOf(id));
+
 export function rivalsOf(id: string): string[] {
   const kind = kindWord(id);
+  // Nothing that separates the kind means no board at all — the rule
+  // that has always applied to Ore and Wood, now applied to medicine
+  // too. Showing thirteen 1s under a heading promising an order was
+  // worse than showing nothing.
+  if (rivalBasis(kind) === 'tier') return [];
   const bases = collapseFamilies(
     ITEM_IDS.filter((i) => kindWord(i) === kind));
   return bases

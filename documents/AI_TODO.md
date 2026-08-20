@@ -12362,3 +12362,48 @@ four items whose pages 404 — already known and already honest.
 
 Gates: mobile `tsc --noEmit` clean across the WHOLE tree including the
 Bosses lane, `npx vitest run` 1081/1081.
+
+---
+
+## IL91 — a leaderboard that ranked nothing (2026-08-20)
+
+Opening a medicine card as a player:
+
+```
+How it stacks up
+Every medicine in the game, most Nutrition first
+#1 Nutrient Tonic            360
+#2 Advanced Recovery Meds      1
+#3 High Grade Medical Supplies 1
+#4 High Quality Recovery Meds  1
+```
+
+**Thirteen of the fourteen medicines read 1.** You do not take medicine
+to be fed, and a board where every entry ties is not an ordering. The
+axis was picked as "the first effect label every family in the kind
+shares" — and Nutrition is the only one meds all carry.
+
+**Two rules now.** A label must be carried by MOST of the kind (not all)
+and must SEPARATE most of it. That refuses Nutrition for medicine, and it
+also **gains** two boards that the old all-or-nothing rule had refused:
+gliders now rank by Speed (five distinct values across five gliders) and
+bait by fishing hit bar size. Withholding those helped nobody.
+
+Where nothing separates a kind, **there is no board** — the rule Ore and
+Wood have always had, now applied to medicine too. Verified live: the
+medicine card has no board; the bow card reads *"Every bow in the game,
+strongest first — #1 Mechanical Bow 24000"*.
+
+**A wrong turn I caught before it shipped.** My first fix ranked those
+kinds by TIER instead of hiding the board. It read fine on the medicine
+card — and quietly turned every unrankable kind into a rarity board
+nobody asked for: `rivalsOf('Coal')` went from 0 entries to 14. The test
+that had pinned "Coal has no board" caught it. Showing nothing is the
+honest answer, and the smaller change.
+
+The heading also stopped fibbing about weapons: a kind ranked on a stat
+now says **"strongest first"** rather than "best tier first".
+
+Gates: mobile `tsc --noEmit` clean, `npx vitest run` 1086/1086. Two older
+tests were re-pinned: gliders/bait DO get an axis now, and the row shows
+`rivalShowOf`.

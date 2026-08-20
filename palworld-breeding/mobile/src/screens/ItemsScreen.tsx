@@ -26,7 +26,7 @@ import {
   buildTime, buildTotals, captureRank, effectRank, gearAgainst, guardKinds,
   guardLevel, hasTierCosts, saysTheSame,
   ITEM_IDS,
-  rankAxisOf,
+  rankAxisOf, rivalBasis, rivalShowOf,
   rankValueOf, rivalsOf, rollupOfMats,
   schematicsFor, spokenCraftTime, spokenTime, suggestItems,
   BUFF_LABELS, familyLine, statLine,
@@ -1391,7 +1391,9 @@ function ItemDetail({ id, trail = [], onClose, onBack, onOpenItem }: {
                       stat — "most EXP first" beats a bare number */}
                   {axis
                     ? `Every ${kindPhrase(id)} in the game, most ${axis} first`
-                    : `Every ${kindPhrase(id)} in the game, best tier first`}
+                    : rivalBasis(kindWord(id)) === 'stat'
+                      ? `Every ${kindPhrase(id)} in the game, strongest first`
+                      : `Every ${kindPhrase(id)} in the game, best tier first`}
                 </Text>
                 <View style={{ marginTop: 6 }}>
                   {rows.map((rid) => {
@@ -1419,7 +1421,7 @@ function ItemDetail({ id, trail = [], onClose, onBack, onOpenItem }: {
                           fontSize: 12.5, fontWeight: here ? '800' : '600', flex: 1,
                         }} numberOfLines={1}>{ITEMS[rid].name}</Text>
                         <Text style={{ color: T.muted, fontSize: 12 }}>
-                          {rankValueOf(rid)}
+                          {rivalShowOf(rid)}
                         </Text>
                       </Pressable>
                     );

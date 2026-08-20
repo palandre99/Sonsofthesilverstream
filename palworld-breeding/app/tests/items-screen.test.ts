@@ -15,6 +15,7 @@ import {
   kindsInGroup, kindWord, palForGear, palsDropping, palsHatchingFrom,
   rawMaterialsFor,
   rankAxisOf, rankValueOf, recipeOf, hasTierCosts, rivalsOf, rollupOfMats,
+  rivalBasis, rivalShowOf, rivalSortOf,
   saysTheSame,
   familyLine, statLine, familyPowerAxisOf, suggestItems,
   groupOf, ITEM_IDS,
@@ -964,17 +965,29 @@ describe('a kind with no attack still gets a rank (IL42)', () => {
   });
 
   it('a kind that shares NO number is left unranked, not invented', () => {
-    // Ore, Gliders and Bait carry no common figure; ranking them would
-    // be exactly the invented meaning the rule exists to prevent
-    for (const kind of ['Ore', 'Glider', 'Fishing bait', 'Wood']) {
+    // Ore and Wood carry no common figure; ranking them would be exactly
+    // the invented meaning the rule exists to prevent.
+    for (const kind of ['Ore', 'Wood']) {
       expect(rankAxisOf(kind), `${kind} got an invented axis`).toBeNull();
     }
     expect(rivalsOf('Coal')).toEqual([]);
   });
 
+  it('IL91 widened this: a number carried by MOST, that separates most', () => {
+    // Gliders and bait were unranked under the old rule because one
+    // member lacked the number. Speed across the gliders is five
+    // distinct values on five gliders — that is a real ordering and
+    // withholding it helped nobody.
+    expect(rankAxisOf('Glider')).toBe('Speed');
+    expect(rankAxisOf('Fishing bait')).toBe('Fishing hit bar size');
+    // ...while medicine, whose only shared number is 1 on thirteen of
+    // fourteen, is still refused
+    expect(rankAxisOf('Medicine')).toBeNull();
+  });
+
   it('the board says what it ranks by when it is not the stat', () => {
     expect(code).toContain('most ${axis} first');
-    expect(code).toContain('{rankValueOf(rid)}');
+    expect(code).toContain('{rivalShowOf(rid)}');
   });
 });
 
@@ -2351,5 +2364,46 @@ describe('an implant card can plan the breed it points at (IL90)', () => {
     expect(block).toContain('setWant(');
     // a parent has four slots and the payload must not overflow them
     expect(block).toContain('.slice(0, SLOTS)');
+  });
+});
+
+describe('a rivals list is ordered by something that separates (IL91)', () => {
+  it('medicine has no number that tells one from another', () => {
+    const meds = collapseFamilies(idsInGroup('meds'));
+    const nutrition = meds.map((i) => effectNumber(i, 'Nutrition'));
+    // 13 of the 14 read 1 — an ordering that orders nothing
+    expect(nutrition.filter((n) => n === 1).length).toBeGreaterThan(10);
+    expect(rankAxisOf('Medicine')).toBeNull();
+    expect(rivalBasis('Medicine')).toBe('tier');
+  });
+
+  it('so it gets no board at all, rather than a false one', () => {
+    // the same rule Ore and Wood have always had. A first cut ranked
+    // medicine by TIER instead, which quietly turned every unrankable
+    // kind — coal, ore, wood — into a rarity board nobody asked for.
+    const med = itemIdByName('Advanced Recovery Meds')!;
+    expect(rivalsOf(med)).toEqual([]);
+    expect(rivalsOf('Coal')).toEqual([]);
+    // and a kind that CAN be ranked still is
+    expect(rivalsOf(itemIdByName('Advanced Bow')!).length).toBe(5);
+  });
+
+  it('a kind with a real stat still ranks and shows the stat', () => {
+    const bow = itemIdByName('Advanced Bow')!;
+    expect(rivalBasis('Bow')).toBe('stat');
+    expect(rivalShowOf(itemIdByName('Mechanical Bow')!)).toBe('24000');
+  });
+
+  it('an axis must separate most of the kind to be used at all', () => {
+    // gliders gained one: Speed is 5 distinct values across 5 gliders
+    expect(rankAxisOf('Glider')).toBe('Speed');
+    // and no kind is left ranking on a number that ties its members
+    for (const kind of new Set(ITEM_IDS.map(kindWord))) {
+      const ax = rankAxisOf(kind);
+      if (!ax) continue;
+      const fams = collapseFamilies(ITEM_IDS.filter((i) => kindWord(i) === kind));
+      const distinct = new Set(fams.map((i) => effectNumber(i, ax) ?? -1)).size;
+      expect(distinct * 2, `${kind} on ${ax}`).toBeGreaterThanOrEqual(fams.length);
+    }
   });
 });
