@@ -579,6 +579,33 @@ and the one missing dataset identified: the element chart.*
       GAME hides behind "？？？" and their cards say so. Coverage pinned
       in tower-spot.test.ts so a refresh that breaks the join fails loud.
       Tower rows also now tint level-by-reach like the alpha/raid rows.
+- [x] B18 DONE 2026-08-19: read-aloud pass on every string the fane
+      shows. Four phrases a player would not say, all replaced: "No
+      element edge either way" -> "No element advantage either way";
+      "more you own with the same element edge" -> "more you own that
+      also hit it for double"; "in this fight's own kit" -> "the 9 it
+      uses at this difficulty"; and the Tower page credited "the game's
+      own boss ROWS" — a row is a database word — now "read from the
+      game's own files".
+- [x] B19 DONE 2026-08-19: every suggested pal now carries the button
+      the CEO asked for by name. Breeding routes had one; CATCHABLE pals
+      had none (you had to know that tapping the row opened the card
+      with the spawn map). Now "Where to catch" / "Breeding plan", never
+      both, because a route is one or the other. Measured at 375 px on a
+      real catch row (the QA box was cleared so catch rows appear): 116
+      px wide, right edge 345 of 375, 36 px tall.
+- [ ] B20 CHECKED AND REFUSED 2026-08-19 — the alpha respawn stays
+      COMMUNITY-MEASURED, and here is why so nobody re-hunts it: the
+      game's own DT_PalSpawnerPlacement really does carry a
+      RespawnCoolTime column (visible in the atlas build manifest, 8,253
+      rows), but our pinned upstream does NOT publish it — the shipped
+      spawns extract carries only id/pal/region/kind/coords/
+      availability/levels/weight, 0 rows with any respawn field
+      (checked against build 24575149, all 64,753 Palpagos rows). So a
+      datamined respawn needs either a new upstream that publishes that
+      column or our own extraction from the server package. Until then
+      the ~1 hour figure ships labelled community-measured, as it does
+      today. REOPEN if an upstream starts publishing it.
 - [ ] B14 FOR THE ITEMS LANE (found by this lane's drop cross-check,
       2026-08-19): items_1_0.json is MISSING 11 real items that boss
       drop tables reference — all 8 tower Key Spheres (Envy, Pride,
