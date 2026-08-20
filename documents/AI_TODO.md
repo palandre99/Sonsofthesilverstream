@@ -2312,20 +2312,29 @@ work always"):**
    and reported with the reasoning. Only true CEO-only blockers (Apple
    logins, purchases, money, his own device) stop a tick.
 
-- [ ] IL38 FOUND BY IL37's EYE PASS 2026-08-20: THE TOP-BAR SEARCH
-      RETURNS THE SAME WEAPON FIVE TIMES. Searching "Old Bow" in the
-      magnifier gives five rows all reading "Old Bow, Bow. Open it" —
-      the base plus its four rarity tiers, indistinguishable. The index
-      collapses families (IL19's `collapseFamilies`) but
-      `SearchEverything` searches raw ids, so every multi-tier weapon
-      and armor floods the overlay with duplicates. Found by chasing a
-      different question — "are the variant cards even reachable?" —
-      and the answer is yes, which is exactly why this reads as noise.
-      Decide between collapsing to the family (one row, opens the base,
-      matching the index) or labelling each row with its tier word.
-      MEASURE FIRST: how many of the ~1,892 items are tier variants
-      sharing a name, and what the overlay looks like for the worst
-      case, before choosing. The CEO has rejected messy list UI twice.
+- [x] IL38 2026-08-20: THE SEARCH SHOWS EACH THING ONCE — and the fix
+      turned out to be about RESULTS, not tidiness. Searching "Old Bow"
+      gave five identical rows (the base and its four rarity tiers);
+      searching "bow" spent the whole 14-row budget on those duplicates
+      and never showed the Mechanical, Advanced or Compound Bow at all.
+      That is the real damage: the overlay was hiding matches, not just
+      repeating itself.
+      MEASURED BEFORE CHOOSING, as the entry demanded: 506 of the 1,892
+      items (26.7%) share a name with a tier of themselves, across 118
+      families, 90 of them five deep. "armor" was 224 raw rows for 126
+      real things.
+      MY CALL — collapse to the family, not label each tier. The item
+      index already made this decision (IL19) and a second model on the
+      same catalogue is how a UI starts feeling arbitrary; the tier a
+      player wants is on the card anyway. Same helper, so there is one
+      collapsing rule in the app. Rows now read "Old Bow, Bow · 5 tiers
+      up to Legendary", matching the index's own phrasing, and rank by
+      the family's best like the index does.
+      Verified on screen: 0 duplicates across "Old Bow" / "armor" /
+      "bow"; "bow" now lists four DIFFERENT bows; rows are uniform
+      height, none past the 375px edge; the hit still lands on the real
+      card. Tests pin the behaviour (no query may repeat a name) rather
+      than the source alone, plus the crowding-out itself. 879 green.
 - [x] IL37 2026-08-20: NO CARD SHOWS THE PLAYER "en Text" ANY MORE.
       Sixteen cards displayed that raw parse artifact where the
       description belongs — the Metal Armor, Refined Metal Armor, Old

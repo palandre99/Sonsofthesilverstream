@@ -18,7 +18,10 @@ import { Btn, PalIcon, SearchInput, s } from './kit';
 import { ItemIcon } from './ItemIcon';
 import { Icon } from './Icon';
 import { pals } from '../store';
-import { ITEMS, kindWord, searchItems, sortItems } from '../itemsData';
+import {
+  collapseFamilies, familyOf, ITEM_STATS, ITEMS, kindWord, searchItems,
+  sortItems, tierWord,
+} from '../itemsData';
 import { DOMAINS } from '../nav/domains';
 import { navigateTo } from '../nav/intent';
 
@@ -56,12 +59,25 @@ function hitsFor(q: string): Hit[] {
       sub: (pals[n].elements ?? []).join(' · ') || 'Pal',
       domain: 'breeding', tab: 'paldex',
     }));
-  const itemHits: Hit[] = sortItems(searchItems(q), 'power')
+  // One row per FAMILY, exactly as the item index does (IL38). 506 of
+  // the 1,892 items share their name with a rarity tier of themselves,
+  // so searching raw ids returned "Old Bow, Bow" five identical times —
+  // and worse, those duplicates ate the 14-row budget and hid the other
+  // bows completely. The tier a player wants is on the card either way.
+  const itemHits: Hit[] = sortItems(collapseFamilies(searchItems(q)), 'power', true)
     .slice(0, 14)
-    .map((id) => ({
-      kind: 'item', id, title: ITEMS[id].name, sub: kindWord(id),
-      domain: 'items', tab: 'allitems',
-    }));
+    .map((id) => {
+      const fam = familyOf(id);
+      const top = fam[fam.length - 1];
+      const topWord = ITEM_STATS[top]?.tier ?? tierWord(ITEMS[top].rarity);
+      return {
+        kind: 'item' as const, id, title: ITEMS[id].name,
+        sub: fam.length > 1
+          ? `${kindWord(id)} · ${fam.length} tiers up to ${topWord}`
+          : kindWord(id),
+        domain: 'items', tab: 'allitems',
+      };
+    });
   const screenHits = SCREEN_HITS.filter(
     (h) => h.title.toLowerCase().includes(needle));
   return [...palHits, ...itemHits, ...screenHits];

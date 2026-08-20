@@ -7,7 +7,9 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { ITEMS, searchItems } from '../../mobile/src/itemsData';
+import {
+  collapseFamilies, ITEMS, searchItems,
+} from '../../mobile/src/itemsData';
 import palsJson from '../../mobile/src/data/pals_1_0.json';
 
 const read = (rel: string) => readFileSync(join(__dirname, '../..', rel), 'utf8');
@@ -61,5 +63,40 @@ describe('it is one tap from anywhere, and says so plainly', () => {
     expect(overlay).toContain('Nothing matches');
     expect(overlay, 'counted label would read "1 results"')
       .toContain("hits.length === 1 ? '1 result'");
+  });
+});
+
+describe('the search shows each thing once (IL38)', () => {
+  const collapsed = (q: string) => collapseFamilies(searchItems(q));
+
+  it('a five-tier weapon is one result, not five identical rows', () => {
+    const raw = searchItems('Old Bow').filter((i) => ITEMS[i].name === 'Old Bow');
+    expect(raw.length).toBe(5);           // the base and its four tiers
+    const once = collapsed('Old Bow').filter((i) => ITEMS[i].name === 'Old Bow');
+    expect(once.length).toBe(1);
+  });
+
+  it('no query can return the same name twice', () => {
+    for (const q of ['bow', 'armor', 'sword', 'shotgun', 'helm']) {
+      const names = collapsed(q).map((i) => ITEMS[i].name);
+      expect(new Set(names).size, `"${q}" repeats a name`).toBe(names.length);
+    }
+  });
+
+  it('duplicates were eating the result budget, not just looking untidy', () => {
+    // 14 rows is the cap; "armor" raw is 224 rows for 126 real things, so
+    // the tiers alone could fill the list and hide everything else
+    const raw = searchItems('armor');
+    expect(raw.length).toBeGreaterThan(200);
+    expect(collapsed('armor').length).toBeLessThan(raw.length);
+    const first14 = raw.slice(0, 14).map((i) => ITEMS[i].name);
+    expect(new Set(first14).size).toBeLessThan(14);
+  });
+
+  it('the overlay collapses and says how many tiers a family has', () => {
+    expect(overlay).toContain('collapseFamilies(searchItems(q))');
+    expect(overlay).toContain('tiers up to ${topWord}');
+    // and it ranks by the family's best, the way the index does
+    expect(overlay).toContain("'power', true");
   });
 });
