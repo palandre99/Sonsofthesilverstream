@@ -2609,6 +2609,28 @@ work always"):**
       never a long sleep chain, so no step is lost to the timeout. Only
       then decide whether anything is actually broken. Do NOT tell the
       CEO anything is broken until a clean run says so twice.
+- [x] IL63 2026-08-20: AN ARMOUR CARD SAID THE SAME THING TWICE. The
+      card-level sweep's first real find. A Cold-Resistant Ancient
+      Armor card printed its resistances under "Wears the passives" and
+      then AGAIN as the opening of "What it grants" — the same three
+      facts, word for word, four lines apart. It also listed "Attack Up
+      (S)" at Lv. 1, 2, 3 AND 4, which is the per-tier chip noise IL1
+      already stripped out of the Health rows once.
+      Now the grants line drops whatever the passives line has already
+      said and keeps only the BEST level of a passive that repeats:
+      "What it grants — Attack Up (S) Lv. 4". Nothing true is lost; the
+      tier table below still carries every tier.
+      SCOPED BY THE DATA, not by guesswork: only the family BASE carries
+      a passives line, so only its card dedupes. The tier variants have
+      none and still show their resistances there — verified, and the
+      test says so in as many words. The logic moved into itemsData so
+      the test asserts the REAL output rather than source strings, and
+      one test guards against the opposite failure (a silent wipe of
+      grants). 1,002 green.
+      METHOD NOTE, earned the hard way: the item card and the pal card
+      have DIFFERENT signals — an item card is proven open by its
+      "Close"/"Share" buttons, a pal card by [role="dialog"]. Check for
+      the right one; assuming a single signal is what cost three ticks.
 - [x] IL61 2026-08-20: THERE WAS NEVER A BUG. IL58, IL59 AND IL60 ARE
       ALL WITHDRAWN — three framings of a fault that does not exist,
       every one of them an artefact of MY TEST.

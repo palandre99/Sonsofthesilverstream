@@ -16,7 +16,7 @@ import itemsJson from './data/items_1_0.json';
 import statsJson from './data/item_stats_1_0.json';
 import palsJson from './data/pals_1_0.json';
 import passivesJson from './data/passives_1_0.json';
-import { ITEM_FACTS, type CraftRow } from './itemFacts';
+import { equipPassiveName, ITEM_FACTS, type CraftRow } from './itemFacts';
 
 export interface ItemInfo {
   name: string;
@@ -571,6 +571,37 @@ export function palForGear(id: string): string | null {
     if (Object.hasOwn(PAL_TABLE, cand)) return cand;
   }
   return null;
+}
+
+/** "What it grants", minus what the card has already said (IL63).
+ *
+ * An armour card printed its resistances TWICE — once as "Wears the
+ * passives" (from the stat card) and again as the first entries of
+ * "What it grants" (from the page chips) — a few lines apart, word for
+ * word. And a passive that exists at several tiers arrived four times
+ * over: "Attack Up (S) Lv. 1 · Lv. 2 · Lv. 3 · Lv. 4", which is the
+ * per-tier chip noise IL1 already stripped out of the Health rows.
+ *
+ * So: drop anything the passives line already states, and keep only the
+ * BEST level of a passive that repeats. Nothing is invented and nothing
+ * true is lost — the tier table below still shows every tier. */
+export function grantsToShow(id: string): string[] {
+  const said = new Set(
+    (ITEM_STATS[id]?.passives ?? []).map(equipPassiveName));
+  const best = new Map<string, { level: number; text: string }>();
+  const plain: string[] = [];
+  for (const g of ITEM_FACTS[id]?.grants ?? []) {
+    if (said.has(g)) continue;
+    const m = /^(.*) Lv\. (\d+)$/.exec(g);
+    if (!m) {
+      if (!plain.includes(g)) plain.push(g);
+      continue;
+    }
+    const lvl = Number(m[2]);
+    const seen = best.get(m[1]);
+    if (!seen || lvl > seen.level) best.set(m[1], { level: lvl, text: g });
+  }
+  return [...plain, ...[...best.values()].map((v) => v.text)];
 }
 
 /** Nothing anywhere says how to get this item: no recipe, no tier

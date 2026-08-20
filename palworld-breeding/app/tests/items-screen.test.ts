@@ -8,7 +8,7 @@ import { join } from 'node:path';
 import {
   ammoForWeapon, buildTime, buildTotals, collapseFamilies, effectNumber, familyOf,
   familyPowerOf, gearAgainst, guardKinds, guardLevel, spokenTime,
-  hasNoKnownSource,
+  grantsToShow, hasNoKnownSource,
   idsInGroup, implantPassive, ITEM_GROUPS, ITEM_STATS, ITEMS, itemIdByName, KIND_WORDS,
   kindsInGroup, kindWord, palForGear, palsDropping, palsHatchingFrom,
   rawMaterialsFor,
@@ -18,6 +18,7 @@ import {
 } from '../../mobile/src/itemsData';
 import palsJson from '../../mobile/src/data/pals_1_0.json';
 import FACTS from '../../mobile/src/data/item_facts_1_0.json';
+import { equipPassiveName } from '../../mobile/src/itemFacts';
 import {
   shareTextForBuild, shareTextForItem,
 } from '../../mobile/src/itemShare';
@@ -1477,5 +1478,50 @@ describe('a glyph button still says a word out loud (IL62)', () => {
     const kit = readFileSync(
       join(__dirname, '../../mobile/src/ui/kit.tsx'), 'utf8');
     expect(kit).toContain('accessibilityLabel={a11yLabel ?? label}');
+  });
+});
+
+describe('a card never says the same thing twice (IL63)', () => {
+  // the FAMILY BASE is what a collapsed row opens, and it is the only
+  // tier that carries a passives line — the variants have none, so
+  // their cards still show the resistances under "What it grants"
+  const armour = 'AncientArmorCold';
+
+  it('the resistances are not printed twice on one card', () => {
+    // "Wears the passives" already states them; "What it grants" used
+    // to repeat all three, word for word, a few lines below
+    const worn = new Set(
+      (ITEM_STATS[armour]?.passives ?? []).map(equipPassiveName));
+    expect(worn.size).toBe(3);
+    for (const g of grantsToShow(armour)) {
+      expect(worn.has(g), `"${g}" is already on the passives line`).toBe(false);
+    }
+  });
+
+  it('a passive that repeats per tier shows only its best level', () => {
+    const shown = grantsToShow(armour);
+    expect(shown).toEqual(['Attack Up (S) Lv. 4']);
+    // the raw data really does carry all four
+    const raw = (FACTS as { facts: Record<string, { grants?: string[] }> })
+      .facts[armour]!.grants!;
+    expect(raw.filter((g) => g.startsWith('Attack Up (S)')).length).toBe(4);
+  });
+
+  it('grants that are NOT duplicates still show', () => {
+    const withGrants = Object.keys(ITEMS).filter((i) =>
+      (FACTS as { facts: Record<string, { grants?: string[] }> }).facts[i]?.grants?.length
+      && !(ITEM_STATS[i]?.passives ?? []).length);
+    expect(withGrants.length).toBeGreaterThan(50);
+    const sample = withGrants[0];
+    expect(grantsToShow(sample).length).toBeGreaterThan(0);
+  });
+
+  it('no item loses every grant it had', () => {
+    // the section is hidden when nothing survives — make sure that is
+    // rare and deliberate, not a silent wipe of real facts
+    const facts = (FACTS as { facts: Record<string, { grants?: string[] }> }).facts;
+    const had = Object.keys(ITEMS).filter((i) => facts[i]?.grants?.length);
+    const emptied = had.filter((i) => grantsToShow(i).length === 0);
+    expect(emptied.length / had.length).toBeLessThan(0.2);
   });
 });

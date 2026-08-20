@@ -20,7 +20,7 @@ import { Badge, Btn, Card, PageHead, SearchInput, s } from '../ui/kit';
 import {
   ammoForWeapon, collapseFamilies, effectNumber, familyOf, familyPowerOf,
   groupOf, hasNoKnownSource, idsInGroup, implantPassive, ITEM_GROUPS,
-  palForGear,
+  grantsToShow, palForGear,
   ITEM_STATS, ITEMS,
   kindPhrase, kindsInGroup, kindWord, palsDropping, palsHatchingFrom, rawMaterialsFor,
   buildTime, buildTotals, gearAgainst, guardKinds, guardLevel, ITEM_IDS,
@@ -692,11 +692,11 @@ function ItemDetail({ id, trail = [], onClose, onBack, onOpenItem }: {
             );
           })()}
 
-          {facts?.grants && facts.grants.length > 0 && (
+          {grantsToShow(id).length > 0 && (
             <Card style={{ marginTop: 10 }}>
               <Text style={s.h3}>What it grants</Text>
               <Text style={[s.body, { marginTop: 5, fontSize: 12.5 }]}>
-                {facts.grants.join(' · ')}
+                {grantsToShow(id).join(' · ')}
               </Text>
             </Card>
           )}
