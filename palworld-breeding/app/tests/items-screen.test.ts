@@ -2563,3 +2563,31 @@ describe('a stat label on a row is capitalised like the rest (IL95)', () => {
     expect(statLine(adv)).toBe('Durability 21000');
   });
 });
+
+describe('a rank counts only what can be ranked (IL96)', () => {
+  it('the penalties are out of the field, not just out of the order', () => {
+    const quiche = itemIdByName('Mushroom Quiche')!;
+    const r = effectRank(quiche, 'SAN resist')!;
+    expect(r.rank).toBe(1);
+    // twelve items carry SAN resist; three are the juices with big
+    // negatives, which cannot hold a place — so the field is nine
+    const carriers = ITEM_IDS.filter((i) => effectNumber(i, 'SAN resist') != null);
+    const rankable = carriers.filter((i) => (effectNumber(i, 'SAN resist') ?? 0) > 0);
+    expect(carriers.length).toBe(12);
+    expect(rankable.length).toBe(9);
+    expect(r.of).toBe(9);
+  });
+
+  it('every rank in the catalogue names a field you could count to', () => {
+    for (const id of ITEM_IDS) {
+      for (const [label] of (ITEM_FACTS[id]?.effects ?? [])) {
+        const r = effectRank(id, label);
+        if (!r) continue;
+        const rankable = ITEM_IDS.filter(
+          (i) => (effectNumber(i, label) ?? -1) > 0).length;
+        expect(r.of, `${ITEMS[id].name} ${label}`).toBe(rankable);
+        expect(r.rank).toBeLessThanOrEqual(r.of);
+      }
+    }
+  });
+});

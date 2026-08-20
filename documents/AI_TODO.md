@@ -12625,3 +12625,35 @@ Gates: mobile `tsc --noEmit` clean, `npx vitest run` 1099/1099.
   on "Advanced Bow" returns *5 results — Advanced Bow (Bow · 5 tiers up
   to Legendary)* plus its four schematics. Pals, items and screens in one
   place, one tap from the header.
+
+---
+
+## IL96 — "#1 of 12" on a field of nine (2026-08-20)
+
+Straight after taking penalties out of the ranking, the Mushroom Quiche
+card still read:
+
+```
+SAN resist    50 · #1 of 12
+```
+
+Twelve items carry SAN resist; **three of them are the juices with the
+big negatives**, which no longer get a place. So the field said twelve
+and nobody could have found #10, #11 or #12. The denominator is now the
+items that can actually hold a place:
+
+```
+SAN            23 · #14 of 73   (was 80)
+Hunger resist  50 · #1 of 8     (was 9)
+SAN resist     50 · #1 of 9     (was 12)
+```
+
+Verified live on the same card. A test now walks **every ranked effect in
+the catalogue** and pins that its stated field equals the count of
+rankable carriers, and that no rank exceeds its own field.
+
+Gates: mobile `tsc --noEmit` clean, `npx vitest run` 1101/1101.
+
+**Worth noting for the next worker:** this was created by the previous
+fix an hour earlier. Removing a thing from an ordering is not finished
+until you have also removed it from the count of the ordering.

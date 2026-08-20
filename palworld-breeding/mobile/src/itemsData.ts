@@ -743,8 +743,11 @@ export function effectRank(
   if (mine < 0) return null;
   let table = EFFECT_RANKS.get(label);
   if (!table) {
+    // IL96: the field is the items that CAN be placed. Penalties lost
+    // their rank, so counting them in the total left "#1 of 12" on a
+    // list where only nine are rankable and nobody could find #10.
     const carriers = ITEM_IDS
-      .filter((i) => effectNumber(i, label) != null)
+      .filter((i) => (effectNumber(i, label) ?? -1) > 0)
       .sort((a, b) => (effectNumber(b, label) ?? 0) - (effectNumber(a, label) ?? 0));
     table = new Map();
     let rank = 0;
