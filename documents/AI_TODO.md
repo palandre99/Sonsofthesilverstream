@@ -2527,6 +2527,19 @@ work always"):**
       The publish ritual forbids shipping over another session's
       unfinished work. Committed and pushed; publish the moment the
       tree is clean of their changes.
+- [x] IL56 2026-08-20: THE LAST BLANK GROUPS — CHECKED, NOTHING TO FIX.
+      The 12 work-suitability handbooks, 9 awakening crystals, 5 rank-up
+      starfruits and 5 treasure maps all have empty effects and grants,
+      so their rows fall back to a kind word. Each one carries its
+      meaning in its NAME already — "Applied Cooling Handbook I", "Dark
+      Awakening Crystal", "Starfruit *1" — and repeating that on the
+      line would be noise, the same conclusion IL27 reached for the
+      skill fruits.
+      The one that looked like a real defect was the five items ALL
+      named "Treasure Map": five identical rows would be IL38's
+      duplicate problem again. They are not — TreasureMap01..05 is a
+      family and already collapses to a single row. Verified rather
+      than assumed. Nothing shipped, which is the honest outcome.
 - [x] IL55 2026-08-20: TWO SORTS THAT MEANT NOTHING. Measured what
       "Strongest first" actually orders by, per tab.
       SPHERES ranked -1 across all ten, so the tab was ALPHABETICAL
