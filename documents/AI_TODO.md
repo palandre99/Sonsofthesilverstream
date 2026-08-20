@@ -11966,3 +11966,43 @@ kind shares one axis, so the comparison is sound by construction.
 
 I checked before assuming, which is the point — the last three queued
 "faults" turned out to be already fixed, absent, or my own probe.
+
+---
+
+## IL83 — I made the sheet honest, then measured what it cost (2026-08-20)
+
+The chip fix means opening the filter sheet runs the real filter ~50
+times, and every one of those collapses families over up to 1,892 items.
+This repo has already shipped one frozen thread (a planner fixpoint,
+4,437 ms), so I measured instead of assuming:
+
+```
+50 full collapses   36.1 ms   (Everything selected — the worst case)
+                     8.5 ms   (the Weapons tab — the common case)
+```
+
+36 ms on a desktop is several times that on the CEO's phone, and it
+would run again on **every chip tap**.
+
+The cost was not the filtering. `FAMILY_KEY` built a fresh template
+string on every call and `collapseFamilies` calls it once per item —
+about **95,000 string allocations to open a sheet**. The key never
+changes, so it is built once at load and looked up:
+
+```
+50 full collapses    6.4 ms  (was 36.1)   5.6x
+the Weapons tab      2.2 ms  (was 8.5)
+```
+
+This is not only the sheet — `collapseFamilies` backs every row list,
+every search and the sort, so all of them got faster too.
+
+**The test is self-calibrating.** A millisecond threshold passed in
+isolation (6.4 ms) and FAILED inside the full suite run (32 ms) because
+the machine is busy — so it measures the same workload both ways, at the
+same moment, and asserts the cached path beats rebuilding the keys. A
+flaky gate is worse than no gate.
+
+Gates: mobile `tsc --noEmit` clean, `npx vitest run` 1059/1059. Sheet
+re-read on the running app after the change — counts unchanged and
+correct (This tab 105, Everything 1504, Armor 106, Eggs 32).

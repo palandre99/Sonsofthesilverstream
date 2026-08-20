@@ -986,8 +986,18 @@ export function statRank(id: string, stat: 'atk' | 'def' | 'hp'):
  * versions of it." So the list shows ONE row per family and the card
  * keeps the tier table. Indexed once at load — familyOf used to rescan
  * all 1,892 ids per call, which a collapsing list would do 1,892 times. */
+/** IL83: this built a fresh template string every call, and
+ * `collapseFamilies` calls it once per item. The filter sheet now counts
+ * 50 chips by running the real filter for each, which meant ~95,000
+ * string allocations to open it — 36 ms on a desktop, and this repo has
+ * already shipped one frozen thread. The key never changes, so build it
+ * once and look it up. */
+const KEY_OF = new Map<string, string>();
+for (const id of ITEM_IDS) {
+  KEY_OF.set(id, `${ITEMS[id]?.name ?? id}|${ITEMS[id]?.category ?? ''}`);
+}
 const FAMILY_KEY = (id: string): string =>
-  `${ITEMS[id]?.name ?? id}|${ITEMS[id]?.category ?? ''}`;
+  KEY_OF.get(id) ?? `${ITEMS[id]?.name ?? id}|${ITEMS[id]?.category ?? ''}`;
 
 const FAMILIES = new Map<string, string[]>();
 for (const id of ITEM_IDS) {

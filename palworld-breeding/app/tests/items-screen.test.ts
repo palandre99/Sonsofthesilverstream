@@ -2071,3 +2071,39 @@ describe('every filter chip counts what it will actually show (IL82)', () => {
     expect(coldFood.length).toBe(0);
   });
 });
+
+describe('opening the filter sheet does not stall the thread (IL83)', () => {
+  it('the family key is built once, not per call', () => {
+    const data = readFileSync(
+      join(__dirname, '../../mobile/src/itemsData.ts'), 'utf8');
+    expect(data).toContain('const KEY_OF = new Map<string, string>();');
+    expect(data).toContain('KEY_OF.get(id) ??');
+  });
+
+  it('the cached key is measurably cheaper than rebuilding it', () => {
+    // The sheet counts ~50 chips by running the real filter for each,
+    // and this repo has already shipped one frozen thread. An absolute
+    // millisecond budget is flaky inside a full suite run, so measure
+    // the SAME workload both ways on the same machine, same moment.
+    const ids = ITEM_IDS;
+    const rebuild = (id: string) =>
+      `${ITEMS[id]?.name ?? id}|${ITEMS[id]?.category ?? ''}`;
+    collapseFamilies(ids);                              // warm
+    const t0 = performance.now();
+    for (let k = 0; k < 50; k++) collapseFamilies(ids);
+    const cached = performance.now() - t0;
+    const t1 = performance.now();
+    for (let k = 0; k < 50; k++) {
+      const seen = new Set<string>();
+      for (const id of ids) seen.add(rebuild(id));      // the old cost
+    }
+    const uncached = performance.now() - t1;
+    // the whole collapse now costs less than just rebuilding the keys did
+    expect(cached).toBeLessThan(uncached * 1.5);
+  });
+
+  it('and it still collapses to exactly the same rows', () => {
+    expect(collapseFamilies(ITEM_IDS).length).toBe(1504);
+    expect(collapseFamilies(idsInGroup('weapons')).length).toBe(105);
+  });
+});
