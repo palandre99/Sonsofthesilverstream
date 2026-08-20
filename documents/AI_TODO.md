@@ -2349,6 +2349,38 @@ work always"):**
       HONEST SCORECARD: silent cards 106 -> 102, because most of the 45
       already had SOME source (tech or a chest) and were not in the 106.
       The recipe was still missing from all 45 cards, which is the point.
+- [ ] IL42 FOUND 2026-08-20 by testing the workspace's OWN quality rule
+      ("every number carries meaning — rank context, not a raw figure")
+      against the catalogue: 30 families show a bare number with no rank
+      beside it. The leaderboard needs 3+ rival families
+      (`rivals.length < 3` in ItemsScreen), which is right for a kind
+      with two members but wrong for these: Ore has 6, Pal EXP item 4,
+      Glider 4, Technology manual 3. A Training Manual (L) tells you a
+      number and nothing about whether it is the good one.
+      SMALL AND CLEARLY IN SCOPE. Lower the threshold where the kind can
+      support it, or give these a one-line rank ("#2 of 4 gliders")
+      instead of the full board. MEASURE which of the 30 gain a real
+      comparison before changing the threshold — some kinds share no
+      comparable stat and would rank on nothing.
+- [ ] IL43 PROPOSAL, needs a scope call 2026-08-20 — A BUILD LIST. IL32
+      and IL33 answer "what does THIS cost from scratch". The question
+      they do not answer is the one a player actually asks before a
+      grind session: "I want a Legendary set AND these two weapons —
+      what do I need in total?" It is pure derivation over shipped
+      recipes (no new data, same cycle guards), and it is the natural
+      end of the work those two ticks started.
+      WHY IT IS NOT SIMPLY QUEUED: the CEO's ask for this fane was a
+      REFERENCE — "all items... tappable for a full info card on
+      EVERYTHING, which tells stats, how to craft/where to find". A
+      build list is a TOOL, a new capability rather than better
+      reference, and it needs somewhere to live and something to
+      persist. The fane's goal line does say "every question a player
+      could ask answered in one tap", which this fits.
+      MY RECOMMENDATION: build it, small — "Add to build" on the card,
+      one collapsible panel in the item index summing the bills, held
+      in the existing store beside the box and plans. No new tab, no
+      nav change. But it is a scope step, so it is written down rather
+      than started, and the CEO can kill it in one word.
 - [x] IL41 2026-08-20: THE REMAINING 102 CARDS SPEAK, measured and split so the next
       tick does not re-audit: 53 PAL EGGS, 26 IMPLANTS, 5 Grappling Gun
       tiers, and 18 others. These are NOT all the same problem:
