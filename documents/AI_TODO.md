@@ -2427,7 +2427,39 @@ work always"):**
       now show together ("Lv 57 ×1 building"), eye-verified, and the
       row is still 343×58 with nothing clipped. Pinned by a test that
       reads inside the build branch for the level marker. 918 green.
-- [ ] IL49 A WHOLE-FANE EYE SWEEP 2026-08-20: the fane gained a great
+- [x] IL50 2026-08-20: ARMOUR IS FINDABLE BY WHAT IT PROTECTS YOU FROM.
+      The CEO said the fane is far from done, and this was the clearest
+      example: 213 of the 264 armour pieces carry a resistance and the
+      LIST showed none of it, so choosing cold gear meant opening cards
+      one at a time. Rows now read "Defense 840–1092 · Cold 3 · Heat 2"
+      (short form, because the full sentence does not fit beside a
+      defence number at 375px — measured, nothing clipped), and a new
+      "Protects against" filter answers "what do I wear in the cold?"
+      in one tap: Cold 33 · Heat 33 · Ice 15 · Fire 11 · Dark 13 ·
+      Neutral 11 · Water 8 · Grass 7 · Dragon 4 · Electric 4 · Earth 3
+      · Ground 1. Ranked strongest protection first; the family's best
+      tier decides, so a collapsed row is never dropped for its Common
+      tier granting nothing.
+      THE GUARD LIST IS DERIVED FROM THE SHIPPED GRANTS, never
+      hardcoded, so a data refresh that adds one appears for free.
+      CAUGHT BY PRINTING THE LIST INSTEAD OF TRUSTING IT: one grant
+      carries TWO protections — "Heat Resistance Lv. 3 / Cold
+      Resistance Lv. 3" — and a naive parse invented a guard literally
+      named "Heat Resistance Lv. 3 / Cold". Grants are split before
+      parsing now; Cold went 30 -> 33 families as a result, and the
+      test asserts no guard name contains "Lv." or a slash.
+      NOT PUBLISHED YET — the Bosses lane has uncommitted work in the
+      tree (bossText.ts, regenerated tower/raid data, three screens).
+      The publish ritual forbids shipping over another session's
+      unfinished work. Committed and pushed; publish the moment the
+      tree is clean of their changes.
+- [ ] IL49 A WHOLE-FANE EYE SWEEP 2026-08-20 — PARTLY DONE: all five
+      tabs swept at 375×812 and structurally CLEAN (uniform 57px rows,
+      no clipped text, nothing past the edge, no sideways scroll on any
+      tab). That sweep is what turned up IL50: the tabs look right, but
+      the Armor tab was not SAYING enough. Card-shape half still to do
+      (weapon/armor/food/sphere/schematic/egg/implant/raw material with
+      a build list empty and full). the fane gained a great
       deal of UI this week — MatChips on four surfaces (IL34), the
       "what it really costs" accordion (IL33), honest empty states
       (IL41), leaderboard subtitles (IL42), the build panel with its

@@ -480,6 +480,61 @@ export function spokenTime(seconds: number): string {
   return `${seconds}s`;
 }
 
+/* ---- what gear protects you from (IL50) ---------------------------
+ * The question armour is actually chosen by. 213 of the 264 armour
+ * pieces carry a resistance and nothing in the fane could answer "what
+ * do I wear in the cold?" — the grants were card-only. The list of
+ * guards is derived from the SHIPPED grant strings, never hardcoded, so
+ * a data refresh that renames or adds one is picked up for free. */
+const GUARD_RE = /^(.+?) (?:Resistance|Damage Reduction) Lv\. (\d)$/;
+
+/** One grant string can carry TWO protections — the Hexolite plate
+ * grants "Heat Resistance Lv. 3 / Cold Resistance Lv. 3". Reading it
+ * whole produced a guard literally named "Heat Resistance Lv. 3 /
+ * Cold" (caught by printing the guard list instead of trusting it), so
+ * every grant is split before it is parsed. */
+const guardParts = (g: string): [string, number][] => g.split(' / ')
+  .map((part) => GUARD_RE.exec(part.trim()))
+  .filter((m): m is RegExpExecArray => m != null)
+  .map((m) => [m[1], Number(m[2])]);
+
+let GUARDS: string[] | null = null;
+/** Every protection the catalogue actually grants, commonest first. */
+export function guardKinds(): string[] {
+  if (GUARDS) return GUARDS;
+  const count = new Map<string, number>();
+  for (const f of Object.values(ITEM_FACTS)) {
+    for (const g of f.grants ?? []) {
+      for (const [k] of guardParts(g)) count.set(k, (count.get(k) ?? 0) + 1);
+    }
+  }
+  GUARDS = [...count].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+    .map(([k]) => k);
+  return GUARDS;
+}
+
+/** The strongest level of `guard` this item grants, or 0 for none. */
+export function guardLevel(id: string, guard: string): number {
+  let best = 0;
+  for (const g of ITEM_FACTS[id]?.grants ?? []) {
+    for (const [k, lv] of guardParts(g)) {
+      if (k === guard) best = Math.max(best, lv);
+    }
+  }
+  return best;
+}
+
+/** Anything that protects against `guard`, best protection first — the
+ * family's best tier decides, so a collapsed row is ranked by what the
+ * family can reach. */
+export function gearAgainst(guard: string): string[] {
+  return collapseFamilies(ITEM_IDS.filter((i) => guardLevel(i, guard) > 0))
+    .sort((a, b) => Math.max(...familyOf(b).map((i) => guardLevel(i, guard)))
+      - Math.max(...familyOf(a).map((i) => guardLevel(i, guard)))
+      || familyPowerOf(b) - familyPowerOf(a)
+      || ITEMS[a].name.localeCompare(ITEMS[b].name));
+}
+
 /** Nothing anywhere says how to get this item: no recipe, no tier
  * craft, no technology node, no research, no drop, no chest, no shop,
  * and no pal drops it (IL41). 102 items are in this state. A card that

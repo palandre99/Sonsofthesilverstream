@@ -22,7 +22,8 @@ import {
   groupOf, hasNoKnownSource, idsInGroup, implantPassive, ITEM_GROUPS,
   ITEM_STATS, ITEMS,
   kindPhrase, kindsInGroup, kindWord, palsDropping, palsHatchingFrom, rawMaterialsFor,
-  buildTime, buildTotals, rankAxisOf, rankValueOf, rivalsOf, rollupOfMats,
+  buildTime, buildTotals, gearAgainst, guardKinds, guardLevel, rankAxisOf,
+  rankValueOf, rivalsOf, rollupOfMats,
   schematicsFor, spokenTime,
   searchItems, sortItems, statRank, TAB_GROUPS, teachesOf, TIER_WORDS,
   tierWord, usedInOf, weaponsForAmmo, type ItemSort,
@@ -62,6 +63,8 @@ interface ItemFilters {
   expand: boolean;
   /** IL21: only what the player's own technology level can unlock */
   reachable: boolean;
+  /** IL50: only gear that protects against this ("Cold", "Fire"…) */
+  guard: string | null;
 }
 
 /** The family's easiest unlock level — a bow you can already build at 12
@@ -84,7 +87,29 @@ function applyItemFilters(f: ItemFilters, q: string, level?: number): string[] {
     // items with no technology entry aren't locked BY tech — they stay
     ids = ids.filter((i) => (unlockLevel(i) ?? 0) <= level);
   }
+  if (f.guard) {
+    // the family's BEST tier decides, so a collapsed row is not dropped
+    // because its Common tier grants nothing (IL50)
+    const g = f.guard;
+    ids = ids.filter((i) => familyOf(i).some((t) => guardLevel(t, g) > 0));
+  }
   return f.expand ? ids : collapseFamilies(ids);
+}
+
+/** Armour is chosen by what it PROTECTS you from, not by its defence
+ * number — 213 of the 264 armour pieces carry a resistance and the row
+ * showed none of it, so picking cold gear meant opening cards one at a
+ * time (IL50). Kept short: the game says "Cold Resistance Lv. 2", the
+ * row says "Cold 2", because the row has ~200px and the full sentence
+ * does not fit beside a defence number. */
+const SHORT_GRANT = /^(Cold|Heat) Resistance Lv\. (\d)$/;
+function guardBits(id: string): string[] {
+  const out: string[] = [];
+  for (const g of ITEM_FACTS[id]?.grants ?? []) {
+    const m = SHORT_GRANT.exec(g);
+    if (m) out.push(`${m[1]} ${m[2]}`);
+  }
+  return out;
 }
 
 function statLine(id: string): string {
@@ -92,6 +117,7 @@ function statLine(id: string): string {
   const bits: string[] = [];
   if (st?.atk != null) bits.push(`Attack ${st.atk}`);
   if (st?.def != null) bits.push(`Defense ${st.def}`);
+  bits.push(...guardBits(id));
   if (st?.hp != null) bits.push(`+${st.hp} Health`);
   if (st?.durability != null) bits.push(`durability ${st.durability}`);
   if (st?.magazine != null) bits.push(`${st.magazine} round${st.magazine === 1 ? '' : 's'}`);
@@ -149,7 +175,9 @@ function familyLine(fam: string[]): string {
   const atk = span('atk');
   if (atk) return `Attack ${atk}`;
   const def = span('def');
-  if (def) return `Defense ${def}`;
+  // a collapsed armour row returned here and hid its resistance too —
+  // the family shares it, so read it off the base tier (IL50)
+  if (def) return [`Defense ${def}`, ...guardBits(fam[0])].join(' · ');
   return statLine(fam[0]) || kindWord(fam[0]);
 }
 
@@ -1367,7 +1395,10 @@ function ItemFilterSheet({ filters, sort, home, onApply, onClose }: {
           <Text style={[s.h2, { flex: 1 }]}>Filter & sort</Text>
           <Btn small label="Reset"
             onPress={() => {
-              setF({ group: home, kind: null, tiers: [], expand: false, reachable: false });
+              setF({
+                group: home, kind: null, tiers: [], expand: false,
+                reachable: false, guard: null,
+              });
               setSk('power');
             }} />
         </View>
@@ -1398,6 +1429,18 @@ function ItemFilterSheet({ filters, sort, home, onApply, onClose }: {
               <Chip key={g.id} on={f.group === g.id}
                 label={`${g.label} · ${idsInGroup(g.id).length}`}
                 onPress={() => pickGroup(g.id)} />
+            ))}
+          </Section>
+          <Section title="Protects against">
+            {/* the question armour is actually chosen by (IL50). The
+                list is derived from the shipped grants, so a data
+                refresh that adds a resistance shows up here for free */}
+            <Chip on={!f.guard} label="Anything"
+              onPress={() => setF({ ...f, guard: null })} />
+            {guardKinds().map((g) => (
+              <Chip key={g} on={f.guard === g}
+                label={`${g} · ${gearAgainst(g).length}`}
+                onPress={() => setF({ ...f, guard: f.guard === g ? null : g })} />
             ))}
           </Section>
           <Section title="Technology">
@@ -1457,6 +1500,7 @@ export function ItemsScreen({ initialGroup = 'weapons' }: { initialGroup?: strin
   const [q, setQ] = useState('');
   const [filters, setFilters] = useState<ItemFilters>({
     group: initialGroup, kind: null, tiers: [], expand: false, reachable: false,
+    guard: null,
   });
   const [sort, setSort] = useState<ItemSort>('power');
   const [sheet, setSheet] = useState(false);
@@ -1496,6 +1540,7 @@ export function ItemsScreen({ initialGroup = 'weapons' }: { initialGroup?: strin
       : ITEM_GROUPS.find((g) => g.id === filters.group)?.label ?? filters.group);
   }
   if (filters.kind) activeBits.push(filters.kind);
+  if (filters.guard) activeBits.push(`protects from ${filters.guard}`);
   if (filters.reachable && level != null) activeBits.push(`Lv ${level} or lower`);
   if (filters.expand) activeBits.push('every tier');
   if (filters.tiers.length) activeBits.push(filters.tiers.join('/'));
@@ -1523,7 +1568,7 @@ export function ItemsScreen({ initialGroup = 'weapons' }: { initialGroup?: strin
           </Text>
           <Pressable
             onPress={() => {
-              setFilters({ group: initialGroup, kind: null, tiers: [], expand: false, reachable: false });
+              setFilters({ group: initialGroup, kind: null, tiers: [], expand: false, reachable: false, guard: null });
               setSort('power');
             }}
             accessibilityRole="button"

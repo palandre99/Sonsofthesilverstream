@@ -7,7 +7,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import {
   ammoForWeapon, buildTime, buildTotals, collapseFamilies, effectNumber, familyOf,
-  familyPowerOf, spokenTime,
+  familyPowerOf, gearAgainst, guardKinds, guardLevel, spokenTime,
   hasNoKnownSource,
   idsInGroup, implantPassive, ITEM_GROUPS, ITEM_STATS, ITEMS, itemIdByName, KIND_WORDS,
   kindsInGroup, kindWord, palsDropping, palsHatchingFrom, rawMaterialsFor,
@@ -1110,7 +1110,10 @@ describe('the build list knows what your level can reach (IL46)', () => {
 
   it('warns only when a level is actually set — no level, no claim', () => {
     expect(code).toContain('const level = getPlayerLevel();');
-    expect(code).toContain("level == null\n    ? [] : ids.filter((i) => (unlockLevel(i) ?? 0) > level);");
+    // whitespace-insensitive: this pinned an exact line break once and
+    // broke on a reflow that changed nothing about the behaviour
+    expect(code.replace(/\s+/g, ' ')).toContain(
+      'level == null ? [] : ids.filter((i) => (unlockLevel(i) ?? 0) > level);');
   });
 
   it('says it collapsed too, where a player reads before farming', () => {
@@ -1237,5 +1240,63 @@ describe('the shared build carries the time too (IL30 lesson, IL47 tick)', () =>
     const txt = shareTextForBuild({ BeamSword: 1 }, '1.0');
     expect(txt.trimEnd().endsWith(
       'Palworld 1.0 · read from the game files · Paldexia')).toBe(true);
+  });
+});
+
+describe('gear is findable by what it protects you from (IL50)', () => {
+  const code = readFileSync(
+    join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+
+  it('the guard list is derived from the data, not hardcoded', () => {
+    const kinds = guardKinds();
+    expect(kinds).toContain('Cold');
+    expect(kinds).toContain('Heat');
+    expect(kinds).toContain('Dragon');
+    // 12 real protections — and NOT the malformed one a naive parse made
+    expect(kinds.length).toBe(12);
+    for (const k of kinds) {
+      expect(k, `"${k}" is a mangled grant string, not a protection`)
+        .not.toMatch(/Resistance|Lv\.|\//);
+    }
+  });
+
+  it('one grant string can carry TWO protections', () => {
+    // "Heat Resistance Lv. 3 / Cold Resistance Lv. 3" — reading it whole
+    // invented a guard called "Heat Resistance Lv. 3 / Cold"
+    const hex = Object.keys(ITEMS)
+      .find((i) => ITEMS[i].name === 'Cold Resistant Hexolite Armor')!;
+    expect(guardLevel(hex, 'Cold')).toBe(3);
+    expect(gearAgainst('Cold').length).toBe(33);
+    expect(gearAgainst('Heat').length).toBe(33);
+  });
+
+  it('the strongest protection comes first', () => {
+    const cold = gearAgainst('Cold');
+    const levels = cold.map((i) => Math.max(
+      ...familyOf(i).map((t) => guardLevel(t, 'Cold'))));
+    for (let n = 1; n < levels.length; n++) {
+      expect(levels[n]).toBeLessThanOrEqual(levels[n - 1]);
+    }
+    expect(levels[0]).toBe(3);
+  });
+
+  it('nothing without that protection survives the filter', () => {
+    for (const id of gearAgainst('Fire')) {
+      expect(familyOf(id).some((t) => guardLevel(t, 'Fire') > 0)).toBe(true);
+    }
+  });
+
+  it('the row shows it, short enough to sit beside a defence number', () => {
+    expect(code).toContain('const SHORT_GRANT =');
+    expect(code).toContain('function guardBits(');
+    expect(code).toContain('bits.push(...guardBits(id));');
+    // and a collapsed family row shows it too
+    expect(code).toContain("[`Defense ${def}`, ...guardBits(fam[0])].join(' · ')");
+  });
+
+  it('the filter is wired end to end', () => {
+    expect(code).toContain('<Section title="Protects against">');
+    expect(code).toContain('familyOf(i).some((t) => guardLevel(t, g) > 0)');
+    expect(code).toContain('protects from ${filters.guard}');
   });
 });
