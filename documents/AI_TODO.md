@@ -2312,6 +2312,25 @@ work always"):**
    and reported with the reasoning. Only true CEO-only blockers (Apple
    logins, purchases, money, his own device) stop a tick.
 
+- [ ] IL37 FOUND BY IL36's OWN AUDIT 2026-08-20: SIXTEEN CARDS SHOW THE
+      PLAYER THE STRING "en Text" WHERE THE DESCRIPTION BELONGS. Found
+      by auditing what the card actually DISPLAYS (`facts.desc ??
+      item.description`), not what the payload holds — the difference is
+      the whole finding. 44 items carry the upstream "en Text" parse
+      artifact; the facts sweep already rescues 28 of them with a real
+      description, leaving 16 visible: the Metal Armor and Refined Metal
+      Armor tiers 2–5 among them.
+      ROOT CAUSE, same shape as IL36: `fetch_items_index.py` inherits a
+      base row's description only when the variant's own is EMPTY
+      (`if not it["description"]`) — a broken-but-present string sails
+      through, exactly like a plausible-looking name defeats the family
+      pass. Fix: treat "en Text" as missing in that condition, re-run
+      the generator (it writes all three copies), and pin it with the
+      display-level measurement, not the payload-level one: ZERO cards
+      may show "en Text". Verify one on screen (Metal Armor tier 2).
+      Also worth carrying forward: the audit found 0 names with
+      underscores, 0 cards with no description at all, and 0 showing
+      markup or literal escapes — so this is the last known text defect.
 - [x] IL36 2026-08-20: THE LAST CODE NAME IS GONE — the weapon that read
       "GrapplingGun" now reads "Grappling Gun" on all five tiers, and
       searching for it by its real name finds it. Fixed at the SOURCE
