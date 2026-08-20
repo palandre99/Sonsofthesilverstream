@@ -1,4 +1,4 @@
-/** Palforge — app shell (CEO architecture, 2026-08-15):
+/** Paldexia — app shell (CEO architecture, 2026-08-15):
  * side panel = main domains; bottom bar = the current domain's tabs with the
  * Paldex anchored in the center slot — except the Items domain, whose center
  * anchor is the full item index itself (CEO 2026-08-18). Coming-soon

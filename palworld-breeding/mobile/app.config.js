@@ -34,7 +34,7 @@ module.exports = ({ config }) => {
   // Regenerate with `python scripts/make-dev-icon.py` after any icon change.
   return {
     ...config,
-    name: 'Palforge DEV',
+    name: 'Paldexia DEV',
     scheme: 'palforge-dev',
     icon: './assets/icon-dev.png',
     ios: {
