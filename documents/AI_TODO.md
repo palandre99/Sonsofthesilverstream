@@ -2609,6 +2609,26 @@ work always"):**
       never a long sleep chain, so no step is lost to the timeout. Only
       then decide whether anything is actually broken. Do NOT tell the
       CEO anything is broken until a clean run says so twice.
+- [ ] IL64 FOUND BY THE CARD SWEEP 2026-08-20: a food card ends "What
+      it does" with "Recovery Time 600" — a bare number with no unit
+      and no meaning, which is exactly what this workspace forbids.
+      600 what? THE UPSTREAM DOES NOT SAY: the cached page chip is
+      literally ["Recovery Time", "600"], so a unit cannot be stated
+      without inventing one. Seconds is a good guess (food carries 60,
+      600 and 1800, which read as 1m / 10m / 30m) — a GUESS, and the
+      law forbids shipping it as fact.
+      HONEST OPTIONS, pick one and say why:
+        (a) give it RANK instead of a unit — "600 · #2 longest of 38"
+            is factually true, adds meaning, claims no unit, and
+            matches the app's own idiom (statRank does this for attack
+            and defence). Careful: rank must not imply longer is
+            better, because nobody has established that either.
+        (b) leave it and accept a meaningless number.
+        (c) drop it from the card — but it is a shipped fact, and IL41
+            spent a whole tick putting facts back.
+      RECOMMEND (a). Whatever is chosen, write down WHY in the ledger.
+      Also still unswept section-by-section: sphere, schematic, egg and
+      accessory cards.
 - [x] IL63 2026-08-20: AN ARMOUR CARD SAID THE SAME THING TWICE. The
       card-level sweep's first real find. A Cold-Resistant Ancient
       Armor card printed its resistances under "Wears the passives" and
