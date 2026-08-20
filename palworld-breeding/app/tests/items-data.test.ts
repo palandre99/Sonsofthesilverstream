@@ -203,3 +203,44 @@ describe("every item has a picture — the CEO's order (IL35)", () => {
     expect(tool).toContain('"GrapplingGun": "Grappling Gun"');
   });
 });
+
+describe('no player ever sees a code name (IL36)', () => {
+  const items = (JSON.parse(readFileSync(
+    join(__dirname, '../../data/items_1_0.json'), 'utf8')) as {
+      items: Record<string, { name: string; nameFromCodeName?: boolean }>;
+    }).items;
+
+  it('not one name in the catalogue is a run-together code name', () => {
+    const codey = Object.entries(items)
+      .filter(([, it]) => /[a-z0-9][A-Z]/.test(it.name) && !it.name.includes(' '))
+      .map(([id, it]) => `${id} -> ${it.name}`);
+    expect(codey).toEqual([]);
+  });
+
+  it('the Grappling Gun reads as words on all five tiers', () => {
+    for (const id of ['GrapplingGun', 'GrapplingGun2', 'GrapplingGun3',
+      'GrapplingGun4', 'GrapplingGun5']) {
+      expect(items[id].name).toBe('Grappling Gun');
+    }
+    // only the base row was repaired from its id; the tiers inherit it
+    expect(items.GrapplingGun.nameFromCodeName).toBe(true);
+    expect(items.GrapplingGun2.nameFromCodeName).toBeUndefined();
+  });
+
+  it('one-word names that ARE their own id stay untouched', () => {
+    // the rule must never "fix" Cake into something else — 52 of the 53
+    // name-equals-id rows are legitimately single words
+    for (const id of ['Cake', 'Coal', 'Bone', 'Katana', 'Sword', 'Wood']) {
+      expect(items[id].name).toBe(id);
+      expect(items[id].nameFromCodeName).toBeUndefined();
+    }
+  });
+
+  it('numbered variants are left to the family pass, not split', () => {
+    // splitting those produced "Treasure Map02" on the first cut
+    for (const id of ['TreasureMap02', 'TreasureMap05']) {
+      expect(items[id].name).toBe('Treasure Map');
+      expect(items[id].nameFromCodeName).toBeUndefined();
+    }
+  });
+});

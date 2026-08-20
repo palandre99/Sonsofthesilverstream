@@ -2312,23 +2312,35 @@ work always"):**
    and reported with the reasoning. Only true CEO-only blockers (Apple
    logins, purchases, money, his own device) stop a tick.
 
-- [ ] IL36 FOUND BY IL35 2026-08-20: ONE item in the catalogue shows the
-      CEO a raw code name. Measured, not guessed: 53 items have a name
-      equal to their id, but 52 of those are legitimately one word
-      (Coal, Wood, Bone, Katana, Sword…). "GrapplingGun" is the ONLY
-      CamelCase-with-no-space name in all 1,892 — 5 items share it —
-      and paldb's page for it is titled "Grappling Gun", which is also
-      how the icon fetch finally found it (IL35). Fix at the SOURCE
-      (`tools/fetch_items_index.py` name repair), not by patching the
-      JSON, then re-run the generator and keep the three copies byte-
-      identical. Pin it with the same measurement: zero CamelCase names.
-      NOT part of this, and NOT to be "fixed" without deciding the
-      source of truth first: our "Shield Ultra" and "Glider Tera" are
+- [x] IL36 2026-08-20: THE LAST CODE NAME IS GONE — the weapon that read
+      "GrapplingGun" now reads "Grappling Gun" on all five tiers, and
+      searching for it by its real name finds it. Fixed at the SOURCE
+      (`tools/fetch_items_index.py`), not by patching the JSON, so the
+      next data refresh keeps the repair; the generator writes all three
+      copies itself and the byte-identity gate passed.
+      THE RULE IS NARROW BY MEASUREMENT: 53 items carry a name equal to
+      their id and 52 are legitimately ONE word (Cake, Coal, Bone,
+      Katana, Sword) — "GrapplingGun" was the only name in all 1,892
+      with a capital inside a word. Splitting at that boundary is a
+      typographic transform of the id, not an invented name, and it
+      lands on exactly what paldb's own page is titled — corroboration
+      from a source that was never used to pick the name.
+      MY FIRST CUT WAS WRONG AND THE RUN'S OWN OUTPUT SAID SO: it
+      reported 9 splits where I predicted 1, because the numbered
+      variants matched too — producing "Grappling Gun2" and, worse,
+      "Treasure Map02" on four items that had been CORRECT before, since
+      a plausible-looking name stops the family pass from repairing it.
+      The rule now touches base rows only and the variants inherit.
+      Reading the count instead of trusting it is the whole reason that
+      never shipped. Four tests pin it: zero code names anywhere, all
+      five tiers, the one-word names left alone, and the numbered
+      variants left to the family pass. 872 green.
+      STILL OPEN, DELIBERATELY: our "Shield Ultra" and "Glider Tera" are
       titled "Ultra Shield" and "Glider Legendary" on paldb. Our
-      backbone is built from the game's own tables, so a different page
-      TITLE is not evidence our name is wrong — only the icon filename
-      was used as evidence at IL35. Decide which source wins for display
-      names before touching either.
+      backbone comes from the game's own tables, so a different page
+      TITLE is not evidence our name is wrong — only the icon FILENAME
+      was used as evidence at IL35. Needs a source-of-truth decision,
+      not a guess; not touching either name until then.
       1,892 of 1,892, up from 1,879. The CEO asked for this outright
       ("every item needs an image also") and it was 13 items short; the
       gap was found by auditing his words against the shipped data

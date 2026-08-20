@@ -20170,7 +20170,7 @@
    "nameFromBase": true
   },
   "GrapplingGun": {
-   "name": "GrapplingGun",
+   "name": "Grappling Gun",
    "description": "It fires a hook that latches on to distant targets, pulling the user's body towards the target.\nIt allows for easy movement between places with varying elevation.",
    "category": "Weapon",
    "subcategory": "WeaponGrapplingGun",
@@ -20179,10 +20179,11 @@
    "maxStack": 1,
    "weight": 0,
    "price": 5210,
-   "icon": "GrapplingGun"
+   "icon": "GrapplingGun",
+   "nameFromCodeName": true
   },
   "GrapplingGun2": {
-   "name": "GrapplingGun",
+   "name": "Grappling Gun",
    "description": "It fires a hook that latches on to distant targets, pulling the user's body towards the target.\nSince it's upgraded, it now has greater range.",
    "category": "Weapon",
    "subcategory": "WeaponGrapplingGun",
@@ -20195,7 +20196,7 @@
    "nameFromBase": true
   },
   "GrapplingGun3": {
-   "name": "GrapplingGun",
+   "name": "Grappling Gun",
    "description": "It fires a hook that latches on to distant targets, pulling the user's body towards the target.\nUsing data from prototype versions, its capabilities have been further increased.",
    "category": "Weapon",
    "subcategory": "WeaponGrapplingGun",
@@ -20208,7 +20209,7 @@
    "nameFromBase": true
   },
   "GrapplingGun4": {
-   "name": "GrapplingGun",
+   "name": "Grappling Gun",
    "description": "It fires a hook that latches on to distant targets, pulling the user's body towards the target.\nAs a result of research, it has achieved overwhelming mobility.",
    "category": "Weapon",
    "subcategory": "WeaponGrapplingGun",
@@ -20221,7 +20222,7 @@
    "nameFromBase": true
   },
   "GrapplingGun5": {
-   "name": "GrapplingGun",
+   "name": "Grappling Gun",
    "description": "It fires a hook that latches on to distant targets, pulling the user's body towards the target. \nWith new materials, cooldown time has been significantly reduced.",
    "category": "Weapon",
    "subcategory": "WeaponGrapplingGun",

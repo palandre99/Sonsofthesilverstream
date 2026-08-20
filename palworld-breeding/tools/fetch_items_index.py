@@ -88,6 +88,34 @@ def main() -> None:
         m = _re.fullmatch(r"([A-Za-z0-9]+) \d", name)
         return bool(m and m.group(1) in iid)
 
+    # A run-together code name is never something the game shows a player.
+    # Measured across the catalogue: 53 items carry a name equal to their
+    # id, and 52 are legitimately ONE word (Cake, Coal, Bone, Katana,
+    # Sword) — those must not be touched. Exactly one is a code name,
+    # "GrapplingGun", on 5 rows, and it is the only name in all 1,892 with
+    # a capital letter inside a word. Splitting it at that boundary is a
+    # typographic transform of the id, not an invented name, and it lands
+    # on "Grappling Gun" — which is independently what paldb's own page
+    # for the item is titled (checked 2026-08-20 while chasing its icon).
+    # Runs BEFORE the family pass so the numbered variants then inherit a
+    # clean base name instead of five copies of the code name.
+    def camel_split(s: str) -> str:
+        return _re.sub(r"(?<=[a-z0-9])(?=[A-Z])", " ", s)
+
+    # ONLY the base row: a trailing digit means this is a rarity variant,
+    # and splitting those produced "Grappling Gun2" / "Treasure Map02" on
+    # the first cut — names that LOOK valid, so the family pass below
+    # stopped flagging them and they never inherited. Caught by reading
+    # the run's own output instead of trusting the count.
+    code_named = 0
+    for iid, it in items.items():
+        if it["name"] == iid and _re.search(r"[a-z0-9][A-Z]", iid) \
+                and "_" not in iid and not _re.search(r"\d$", iid):
+            it["name"] = camel_split(iid)
+            it["nameFromCodeName"] = True
+            code_named += 1
+    print(f"split {code_named} run-together code names into display names")
+
     unresolved = []
     derived = 0
     for iid, it in items.items():
