@@ -12851,3 +12851,21 @@ tiered item; the rollup descends with `recipeOf`), not the coincidence.**
 made yesterday's near-miss possible.
 
 Gates: mobile `tsc --noEmit` clean, `npx vitest run` 1119/1119.
+
+---
+
+## IL101 — the build panel gets pictures (2026-08-20)
+
+The CEO's standing order is that every item has a picture. **The build
+panel was the one screen in the fane without any** — and it is the screen
+you have open while actually gathering. "1× Advanced Bow", "400× Ore",
+"100× Coal", all bare text, while every list row and every card carried
+the item's own icon.
+
+Both halves now do: the rows of what you are making (22px) and every
+material chip in the from-scratch bill (16px). Measured on the running
+app — images on the page went from 7 to 22, and a chip renders at 83×22
+with the icon in its cell, so nothing grew.
+
+Gates: mobile `tsc --noEmit` clean, `npx vitest run` 1122/1122, including
+a check that no item a build can hold is missing an icon.

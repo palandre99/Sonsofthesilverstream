@@ -314,9 +314,16 @@ function MatChips({ rows, onOpenItem, dim = false }: {
             accessibilityRole="button"
             accessibilityLabel={`${r.n} ${it.name}. Open its card`}
             style={({ pressed }) => ({
-              paddingVertical: 3, paddingHorizontal: 7, borderRadius: T.rSm,
+              flexDirection: 'row', alignItems: 'center', gap: 5,
+              paddingVertical: 3, paddingRight: 7, paddingLeft: 4,
+              borderRadius: T.rSm,
               backgroundColor: pressed ? T.raised : T.surface2,
             })}>
+            {/* IL101: the build panel was the one screen in the fane with
+                no pictures on it — the one you have open while actually
+                gathering. Every row and card already carries the item's
+                own icon; these carry it too now. */}
+            <ItemIcon icon={it.icon} size={16} />
             <Text style={{
               color: dim ? T.muted : T.accentInk,
               fontSize: 11.5, fontWeight: '700',
@@ -391,6 +398,7 @@ function BuildPanel({ onOpenItem }: { onOpenItem: (id: string) => void }) {
                 <Text style={{ color: T.ink, width: 34, fontSize: 12.5, fontWeight: '800', textAlign: 'right' }}>
                   {list[i]}×
                 </Text>
+                <ItemIcon icon={ITEMS[i].icon} size={22} />
                 <Pressable
                   onPress={() => onOpenItem(i)}
                   accessibilityRole="button"

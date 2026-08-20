@@ -2710,3 +2710,27 @@ describe('the bill uses one recipe resolver the whole way down (IL100)', () => {
     expect(fam.map(ore)).toEqual([200, 250, 300, 350, 400]);
   });
 });
+
+describe('the build panel has pictures like everything else (IL101)', () => {
+  it('the material chips carry the item icon', () => {
+    const code = readFileSync(
+      join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+    const chips = code.slice(code.indexOf('function MatChips'),
+      code.indexOf('function MatChips') + 1600);
+    expect(chips).toContain('<ItemIcon icon={it.icon} size={16} />');
+    expect(chips).toContain("flexDirection: 'row', alignItems: 'center'");
+  });
+
+  it('and so do the rows of what you are making', () => {
+    const code = readFileSync(
+      join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+    expect(code).toContain('<ItemIcon icon={ITEMS[i].icon} size={22} />');
+  });
+
+  it('every item a build can hold resolves to a sprite cell', () => {
+    // the panel can show any craftable item and any of its materials;
+    // all 1,892 already resolve, so nothing in it can render blank
+    const missing = ITEM_IDS.filter((i) => !ITEMS[i].icon);
+    expect(missing).toEqual([]);
+  });
+});
