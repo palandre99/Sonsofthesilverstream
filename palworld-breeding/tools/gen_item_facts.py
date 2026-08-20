@@ -71,6 +71,21 @@ EFFECT_LABELS: dict[str, str] = {
     "FishingMaxDistance": "Fishing distance",
     "HitBarSizeRate": "Fishing hit bar size",
     "Trust": "Trust", "Power": "Power",
+    # IL74: the three stat fruits shipped carrying ONLY "Nutrition 1", so
+    # a Life Fruit row headlined how little it feeds you. The real number
+    # was in the cache all along under a label nothing mapped — the page
+    # says "HP IV +10". Kept in the game's own words; "IV" is the term the
+    # page uses and the only change is HP -> Health, which the rest of the
+    # app already makes.
+    "HP IV": "Health IV", "Attack IV": "Attack IV",
+    "Defense IV": "Defense IV",
+    "ExplosionResist": "Explosion resist",
+    # Deliberately still unmapped, one item each, because every one of
+    # them would need INTERPRETING to mean anything and the doctrine is
+    # raw fact or nothing: EnemyAddDropPercent / ItemLotteryAddDropPercent
+    # (Alluring Bait, 40), SearchProbabilityRate (High Quality Bait, 1.5),
+    # FullStomachKeep (Nutrient Tonic, 100), LeanBackAndKnockbackInvalid
+    # (Salt-Grilled Skutlass, 1 — a flag, not a quantity).
 }
 
 

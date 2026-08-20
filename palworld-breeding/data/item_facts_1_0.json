@@ -6,10 +6,10 @@
   "tech": "paldb /en/Technologies: level, point cost, ancient flag per node; joined to items by the node id each item page carries"
  },
  "counts": {
-  "recipeRows": 3766,
+  "recipeRows": 3769,
   "recipeRefusals": 0,
-  "withRecipe": 1355,
-  "tech": 391,
+  "withRecipe": 1360,
+  "tech": 392,
   "techRefusals": 0,
   "descs": 1333,
   "descRefusals": 0,
@@ -56079,6 +56079,10 @@
     [
      "Nutrition",
      "1"
+    ],
+    [
+     "Defense IV",
+     "+10"
     ]
    ],
    "craftWork": 2000,
@@ -56220,6 +56224,10 @@
     [
      "Nutrition",
      "1"
+    ],
+    [
+     "Attack IV",
+     "+10"
     ]
    ],
    "craftWork": 2000,
@@ -56365,6 +56373,10 @@
     [
      "Nutrition",
      "1"
+    ],
+    [
+     "Health IV",
+     "+10"
     ]
    ],
    "craftWork": 2000,
@@ -60879,6 +60891,121 @@
    ],
    "craftWork": 500,
    "craftTime": "16m40s"
+  },
+  "GrapplingGun": {
+   "recipe": [
+    {
+     "id": "Pal_crystal_S",
+     "n": 10
+    },
+    {
+     "id": "CopperIngot",
+     "n": 10
+    },
+    {
+     "id": "PalCrystal_Ex",
+     "n": 1
+    }
+   ],
+   "tech": {
+    "level": 12,
+    "cost": 1,
+    "ancient": true
+   },
+   "craftWork": 200,
+   "craftTime": "6m40s"
+  },
+  "GrapplingGun2": {
+   "recipe": [
+    {
+     "id": "Pal_crystal_S",
+     "n": 10
+    },
+    {
+     "id": "CopperIngot",
+     "n": 10
+    },
+    {
+     "id": "PalCrystal_Ex",
+     "n": 1
+    }
+   ],
+   "tech": {
+    "level": 12,
+    "cost": 1,
+    "ancient": true
+   },
+   "craftWork": 200,
+   "craftTime": "6m40s"
+  },
+  "GrapplingGun3": {
+   "recipe": [
+    {
+     "id": "Pal_crystal_S",
+     "n": 10
+    },
+    {
+     "id": "CopperIngot",
+     "n": 10
+    },
+    {
+     "id": "PalCrystal_Ex",
+     "n": 1
+    }
+   ],
+   "tech": {
+    "level": 12,
+    "cost": 1,
+    "ancient": true
+   },
+   "craftWork": 200,
+   "craftTime": "6m40s"
+  },
+  "GrapplingGun4": {
+   "recipe": [
+    {
+     "id": "Pal_crystal_S",
+     "n": 10
+    },
+    {
+     "id": "CopperIngot",
+     "n": 10
+    },
+    {
+     "id": "PalCrystal_Ex",
+     "n": 1
+    }
+   ],
+   "tech": {
+    "level": 12,
+    "cost": 1,
+    "ancient": true
+   },
+   "craftWork": 200,
+   "craftTime": "6m40s"
+  },
+  "GrapplingGun5": {
+   "recipe": [
+    {
+     "id": "Pal_crystal_S",
+     "n": 10
+    },
+    {
+     "id": "CopperIngot",
+     "n": 10
+    },
+    {
+     "id": "PalCrystal_Ex",
+     "n": 1
+    }
+   ],
+   "tech": {
+    "level": 12,
+    "cost": 1,
+    "ancient": true
+   },
+   "craftWork": 200,
+   "craftTime": "6m40s"
   },
   "Gratin": {
    "recipe": [
@@ -83872,6 +83999,10 @@
     [
      "SAN",
      "15"
+    ],
+    [
+     "Explosion resist",
+     "100"
     ],
     [
      "Recovery Time",

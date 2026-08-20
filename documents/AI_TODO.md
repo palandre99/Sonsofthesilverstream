@@ -11638,3 +11638,72 @@ Gates: mobile `tsc --noEmit` clean, `npx vitest run` 1030/1030.
 **Data gaps 1 and 2 remain open** and need a pipeline fetch, not code:
 Life/Power/Stout Fruit carry only `Nutrition 1`, and Glider Tera has no
 speed where the other four gliders do.
+
+---
+
+## IL74 — both data gaps closed, and 5 items got a source they never had (2026-08-20)
+
+### Gap 1: the stat fruits — the number was in the cache all along
+
+Life Fruit shipped carrying only `Nutrition 1`. The fetched page had said
+the real thing since the first run; nothing mapped the label:
+
+```
+Life_Fruit   [["Nutrition","1"], ["HP IV","+10"]]
+Power_Fruit  [["Nutrition","1"], ["Attack IV","+10"]]
+Stout_Fruit  [["Nutrition","1"], ["Defense IV","+10"]]
+```
+
+I audited **every** chip label the generator discards rather than fixing
+three items by hand. Nine, each on a single item. Four now ship, in the
+game's own words with no semantics added — `Health IV`, `Attack IV`,
+`Defense IV`, `Explosion resist`. Five stay unmapped ON PURPOSE, because
+each would need INTERPRETING to mean anything: `EnemyAddDropPercent` and
+`ItemLotteryAddDropPercent` (Alluring Bait, 40), `SearchProbabilityRate`
+(High Quality Bait, 1.5), `FullStomachKeep` (Nutrient Tonic, 100),
+`LeanBackAndKnockbackInvalid` (Salt-Grilled Skutlass, 1 — a flag, not a
+quantity). Raw fact or nothing.
+
+Rows now lead with the reason you use the thing:
+
+```
+Life Fruit   Legendary  Nutrition 1 · Health IV +10 · Consumables
+Power Fruit  Legendary  Nutrition 1 · Attack IV +10 · Consumables
+Stout Fruit  Legendary  Nutrition 1 · Defense IV +10 · Consumables
+```
+
+### Gap 2: Glider Tera — REFUSED, no page exists
+
+`Glider_Tera` is HTTP 404 on paldb, under the same slug it has today. No
+speed number exists to ship, so none is shipped. Alongside it: Shield
+Ultra, `Blueprint_Accessory_Avoid_1_fix`, and Disposable Implant: Demon's
+Hand. Four items, genuinely absent — same class as B14. **Do not retry.**
+
+### The find: 5 items gained a source, and it was our own bug
+
+The 404 list held 14 items. Nine of them had a DIFFERENT slug today than
+when they were fetched, because IL36 repaired their broken names — the
+page had 404'd under `GrapplingGun`, and the item is called "Grappling
+Gun" now. `fetch_item_pages.py --retry-errors` recomputes slugs from
+current names, so one run recovered `Grappling_Gun`, whose page lists all
+five tier ids.
+
+**102 items that could not answer "how do I get this?" became 97.** The
+Grappling Gun card now reads: unlocks at level 12 for 1 ancient
+technology point, 200 work, 10× Paldium Fragment · 10× Ingot · 1× Ancient
+Civilization Parts. Verified on the running app.
+
+The other eight renamed slugs were already in the cache under their
+correct names; their `_5` tier ids simply are not listed on those pages.
+
+Data delta: +134 lines, −3 (three counters). All three copies byte-identical.
+Counters moved up, never down: recipeRows 3766→3769, withRecipe 1355→1360,
+tech 391→392.
+
+Gates: mobile `tsc --noEmit` clean, `npx vitest run` 1030/1030. **Nine
+tests failed on purpose** and were re-pinned to the new true values —
+that is the measured-fact tests doing their job. One of my re-pins was
+wrong (234→233 when the real figure stayed 234) and the suite caught it.
+
+**Both queued data gaps are now closed — one fixed, one refused with
+evidence.**

@@ -1039,7 +1039,11 @@ function guardBits(id: string): string[] {
  * repeat the label on the card, but a compact row cannot say "600
  * what?" honestly, and a duration nobody can read is worse than
  * silence. The card still shows every effect verbatim. */
-export const BUFF_LABELS = ['Work Speed', 'EXP increase', 'Hunger resist', 'SAN resist'];
+// IL74 adds the three stat fruits' own numbers. A Life Fruit row led
+// with "Nutrition 1" — true, and the least interesting thing about it.
+// Nobody eats one to be fed; they use it to raise a pal's Health.
+export const BUFF_LABELS = ['Work Speed', 'EXP increase', 'Hunger resist',
+  'SAN resist', 'Health IV', 'Attack IV', 'Defense IV', 'Explosion resist'];
 function buffBits(id: string): string[] {
   const out: string[] = [];
   for (const label of BUFF_LABELS) {

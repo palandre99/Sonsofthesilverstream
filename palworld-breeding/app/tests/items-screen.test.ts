@@ -726,7 +726,7 @@ describe('the screen speaks plainly and cites its sources', () => {
     // crafted, so the bill says something the recipe did not. The 11
     // items the game loops back on itself are not among them. Rose from
     // 1,071 when IL40 recovered 45 recipes from Production rows.
-    expect(withDepth).toBe(1088);
+    expect(withDepth).toBe(1093);
     // Anything told to you as "go and get this" must genuinely be
     // uncraftable — except the items the game loops back on itself,
     // which are listed here BY NAME rather than waved through.
@@ -891,12 +891,17 @@ describe('a card with no source says so, instead of just ending (IL41)', () => {
 
   it('102 items genuinely have nowhere recorded to get them', () => {
     const silent = Object.keys(ITEMS).filter(hasNoKnownSource);
-    expect(silent.length).toBe(102);
+    expect(silent.length).toBe(97);
     // and the split the ledger records, so a regression is legible
     const sub = (s: string) => silent.filter((i) => ITEMS[i].subcategory === s).length;
     expect(sub('MaterialPalEgg')).toBe(53);
     expect(sub('Essential_PassiveSkillChange')).toBe(26);
-    expect(sub('WeaponGrapplingGun')).toBe(5);
+    // IL74: the five Grappling Guns used to be here. Their paldb page
+    // 404'd under the item's OLD broken name ("GrapplingGun"), and once
+    // IL36 repaired the name to "Grappling Gun" the slug was right — a
+    // retry fetched the page and all five gained a recipe and a tech
+    // level. 102 sourceless items became 97.
+    expect(sub('WeaponGrapplingGun')).toBe(0);
   });
 
   it('anything with a recipe, a drop or a shop is NOT called sourceless', () => {
@@ -1163,10 +1168,10 @@ describe('the build list knows what your level can reach (IL46)', () => {
     const facts = (FACTS as { facts: Record<string, {
       tech?: { level: number }; recipe?: unknown }> }).facts;
     const levelled = Object.keys(facts).filter((i) => facts[i].tech?.level);
-    expect(levelled.length).toBe(701);
+    expect(levelled.length).toBe(706);
     // 681 of those are things you CRAFT — the ones a build list holds
     const craftable = levelled.filter((i) => facts[i].recipe);
-    expect(craftable.length).toBe(681);
+    expect(craftable.length).toBe(686);   // +5, the Grappling Guns (IL74)
     // the family's EASIEST tier is what unlockLevel reports (IL21)
     expect(facts.BeamSword!.tech!.level).toBe(57);
   });
@@ -1222,11 +1227,11 @@ describe('the build list says how long, and what it cannot time (IL47)', () => {
       recipe?: unknown; craftTime?: string }> }).facts;
     const craftable = Object.keys(facts).filter((i) => facts[i].recipe);
     const timed = craftable.filter((i) => facts[i].craftTime);
-    expect(craftable.length).toBe(1416);
+    expect(craftable.length).toBe(1421);
     // 740 carry a craft TIME (739 carry both a time and a work amount —
     // one records a time with no work, which is why the two counts in
     // the ledger differ by one)
-    expect(timed.length).toBe(740);
+    expect(timed.length).toBe(745);
   });
 });
 
@@ -1336,8 +1341,11 @@ describe('food says why you would cook it (IL52)', () => {
     expect(ROW_CODE).toContain('bits.push(...buffs);');
     // one buff fits the row; the rest are counted, not trailed off
     expect(ROW_CODE).toContain('+${buffs.length - 1} more');
+    // IL74 appended the three stat fruits' IV labels; the four cooking
+    // buffs this test exists for still lead the list
     expect(ROW_CODE).toContain("const BUFF_LABELS = ['Work Speed', 'EXP increase', "
-      + "'Hunger resist', 'SAN resist'];");
+      + "'Hunger resist',\n  'SAN resist', 'Health IV', 'Attack IV', 'Defense IV',"
+      + " 'Explosion resist'];");
   });
 
   it('Recovery Time stays off the row — its meaning is not established', () => {
@@ -1671,7 +1679,7 @@ describe('craft times are spoken, not machine shorthand (IL69)', () => {
   it('every shipped craft time survives the formatter with its numbers intact', () => {
     const times = ITEM_IDS
       .map((i) => ITEM_FACTS[i]?.craftTime).filter((t): t is string => !!t);
-    expect(times.length).toBe(740);
+    expect(times.length).toBe(745);       // +5, the Grappling Guns (IL74)
     const withZero = times.filter((t) => /(^|[hms])0[hms]/.test(t));
     expect(withZero.length).toBe(234);         // 234 cards read "... 0s"
     for (const t of times) {
@@ -1697,7 +1705,7 @@ describe('a material row says what the material is for (IL70)', () => {
     expect(feeds.length).toBe(142);
     const charcoal = itemIdByName('Charcoal')!;
     expect(usedInOf(charcoal).map((i) => ITEMS[i].name)).toEqual(['Gunpowder']);
-    expect(usedInOf(itemIdByName('Ingot')!).length).toBe(233);
+    expect(usedInOf(itemIdByName('Ingot')!).length).toBe(234);
   });
 
   it('one use is named, many are counted', () => {
@@ -1760,7 +1768,7 @@ describe('no row ends at its kind word when a real fact exists (IL72)', () => {
   });
 
   it('247 rows had nothing but their kind, and the eggs are the worst of it', () => {
-    expect(dead.length).toBe(247);
+    expect(dead.length).toBe(246);
     const eggs = dead.filter((id) => palsHatchingFrom(id).length > 0);
     expect(eggs.length).toBe(26);
   });
@@ -1792,7 +1800,7 @@ describe('no row ends at its kind word when a real fact exists (IL72)', () => {
     // 209 rows gained a real fact; what is left is 20 bounty tokens, 14
     // pieces of pal gear whose NAME already names the pal, 3 handbooks
     // and 1 material — nothing of theirs is being withheld
-    expect(dead.length - left.length).toBe(209);
+    expect(dead.length - left.length).toBe(208);
   });
 });
 
