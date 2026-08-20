@@ -332,8 +332,14 @@ function ItemRow({ id, showGroup, collapsed, level, onOpen }: {
                 the 138 saddles both read "Pal gear", so every row said
                 "Pal gear · Pal gear" (IL53). Say it once. */}
             {line || unlockText || usedText || kindWord(id)}
+            {/* IL71: the same word twice, row edition. IL53 stopped
+                "Pal gear · Pal gear" with an exact match, so a skill
+                fruit row still read "Skill fruit · Skill fruits" — the
+                plural walked straight past it, 93 times. Same one-word
+                test the cards use. */}
             {showGroup && groupOf(id)
-              && groupOf(id) !== (line || unlockText || usedText || kindWord(id))
+              && !saysTheSame(groupOf(id)!,
+                line || unlockText || usedText || kindWord(id))
               ? `  ·  ${groupOf(id)}` : ''}
           </Text>
           {/* the player's own state outranks the game's trivia — a row

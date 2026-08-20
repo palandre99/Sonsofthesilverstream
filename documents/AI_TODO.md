@@ -11517,3 +11517,41 @@ behaviour they guard (never print the kind twice) is unchanged.
 
 **Row sweep status:** weapons clean · materials fixed. Next: key items,
 gliders, skill fruits, spheres, eggs, consumables.
+
+---
+
+## IL71 — the same word twice, row edition (2026-08-20)
+
+IL53 stopped "Pal gear · Pal gear" with an exact string match. IL66 found
+that an exact match is not enough on the CARDS. It is not enough on the
+ROWS either — **93 skill fruit rows read "Skill fruit · Skill fruits"**,
+and the glider rows read "Glider · Gliders". The plural walked straight
+past the guard, in exactly the same way, in a second place.
+
+Both surfaces now use the one `saysTheSame` test. Live rows:
+
+```
+Dark Skill Fruit: Apocalypse   Epic       Skill fruit
+Glider Tera                    Epic       Glider
+```
+
+Gates: mobile `tsc --noEmit` clean, `npx vitest run` 1023/1023. The IL53
+test that pinned the exact match now pins the one-word test — the
+behaviour it guards is unchanged and strictly wider.
+
+### DATA GAPS FOUND WHILE SWEEPING (queued, NOT invented)
+
+1. **The three stat fruits carry no stat.** Life Fruit, Power Fruit and
+   Stout Fruit ship with a single effect, `Nutrition 1`, so their rows
+   headline how little they feed you rather than what they do. Their
+   internal ids (`Fruit_hp_01`, `Fruit_attack_01`, `Fruit__defense_01`)
+   name the stat, but **the amount is not in our data and will not be
+   guessed.** Next pipeline run should fetch their real effect text.
+2. **Glider Tera has no speed** where the other four gliders do
+   (50 / 65 / 80 / 1000). Same fetch.
+3. **Wing Pack reads Speed 1000** against 50–80 for every other glider.
+   It is the shipped datamined figure, so it stands — but it wants the
+   IL64 rank treatment so a player sees it is the outlier, not a typo.
+
+**Row sweep status:** weapons clean · materials (IL70) · skill fruits and
+gliders (IL71). Next: key items, consumables, meds, gear.

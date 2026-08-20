@@ -1365,8 +1365,11 @@ describe('a row with no numbers still says something (IL53)', () => {
 
   it('the kind is never printed twice', () => {
     // every saddle read "Pal gear · Pal gear": the line fell back to the
-    // kind and the search view then appended the identical group label
-    expect(code).toContain("groupOf(id) !== (line || unlockText || usedText || kindWord(id))");
+    // kind and the search view then appended the identical group label.
+    // IL71 widened the guard from an exact match to the one-word test,
+    // because "Skill fruit · Skill fruits" walked past the exact one.
+    expect(code).toContain(
+      '!saysTheSame(groupOf(id)!,\n                line || unlockText || usedText || kindWord(id))');
   });
 
   it('the unlock level fills a blank line, but never doubles the marker', () => {
@@ -1698,5 +1701,25 @@ describe('a material row says what the material is for (IL70)', () => {
       join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
     // order matters: "can I make this yet" beats "what is it for"
     expect(code).toContain('{line || unlockText || usedText || kindWord(id)}');
+  });
+});
+
+describe('a row never says the same word twice either (IL71)', () => {
+  it('the row uses the one-word test, not an exact match', () => {
+    const code = readFileSync(
+      join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+    const block = code.slice(code.indexOf('IL71'), code.indexOf('IL71') + 700);
+    expect(block).toContain('!saysTheSame(groupOf(id)!,');
+    expect(code).not.toContain('groupOf(id) !== (line');
+  });
+
+  it('the skill fruits are the group that proves it', () => {
+    // 93 rows read "Skill fruit · Skill fruits" — kind and group are one
+    // word, and IL53's exact match let the plural through
+    const fruits = ITEM_IDS.filter((id) => groupOf(id) === 'Skill fruits');
+    expect(fruits.length).toBe(93);
+    for (const id of fruits) {
+      expect(saysTheSame(kindWord(id), groupOf(id)!)).toBe(true);
+    }
   });
 });
