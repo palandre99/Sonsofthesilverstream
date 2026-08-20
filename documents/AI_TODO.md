@@ -674,6 +674,18 @@ and the one missing dataset identified: the element chart.*
       the sheet opens fine, with and without the edit. A dying harness
       makes a working feature look broken; check the server is alive
       before believing a "nothing happened" result.
+- [x] B26 DONE 2026-08-19 (autonomous tick, published eefa228): a boss
+      record you can get OUT of. I shipped tracking across 205 alphas,
+      22 tower fights and 11 raids with no reset — the only way back was
+      205 taps. My own trap. "Clear my boss record…" now sits on the
+      Alphas tab using the Paldex's own guard: first tap ARMS, the armed
+      state says exactly what goes (every beaten/caught tick, towers and
+      raids too) and what stays (collection and plan), "Keep it" backs
+      out, and the control is absent entirely when the record is empty.
+      Whole sequence walked on the render: ticks survive arming, survive
+      "Keep it", vanish on confirm, control then disappears.
+      LESSON, general: every store this lane adds needs its exit built
+      in the same commit as its entrance.
 - [ ] B14 FOR THE ITEMS LANE (found by this lane's drop cross-check,
       2026-08-19): items_1_0.json is MISSING 11 real items that boss
       drop tables reference — all 8 tower Key Spheres (Envy, Pride,
