@@ -127,7 +127,7 @@ export function TowerScreen() {
     <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 28 }}>
       <PageHead
         title="Tower bosses"
-        sub={`All ${pairs.length} fights on the tower list, in the order you’ll meet them — levels, health bars and attack kits from the game’s own boss rows.`}
+        sub={`All ${pairs.length} fights on the tower list, in the order you’ll meet them — levels, health bars and the attacks each one uses, read from the game’s own files.`}
         stamp
       />
 

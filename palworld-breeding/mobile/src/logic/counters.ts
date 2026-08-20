@@ -168,7 +168,7 @@ export function matchupLabel(row: CounterRow, bossName: string): string {
         : 'careful — it takes double from this fight');
     }
   }
-  if (!bits.length) return 'No element edge either way.';
+  if (!bits.length) return 'No element advantage either way.';
   const s = bits.join(', and ');
   return s.charAt(0).toUpperCase() + s.slice(1)
     + (poor ? ' — a poor pick.' : '.');

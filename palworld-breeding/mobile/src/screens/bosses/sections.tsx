@@ -139,7 +139,7 @@ export function ReadySection({ elements, moves, bossName, onLeave }: {
           )}
           {ownedMoreWithEdge > 0 && (
             <Text style={[s.body, { fontSize: 12, color: T.faint, marginTop: 4 }]}>
-              …and {ownedMoreWithEdge} more you own with the same element edge.
+              …and {ownedMoreWithEdge} more you own that also hit it for double.
             </Text>
           )}
         </View>
@@ -189,7 +189,7 @@ export function MovesList({ moves }: { moves: BossMove[] }) {
   return (
     <View style={{ marginTop: 10, gap: 7 }}>
       <Text style={[s.body, { fontSize: 12, color: T.faint }]}>
-        Its attacks — {moves.length} in this fight’s own kit:
+        Its attacks — the {moves.length} it uses at this difficulty:
       </Text>
       {moves.map((m) => {
         const c = ELEMENT_COLORS[m.element.toLowerCase()] ?? ELEMENT_COLORS.neutral;
