@@ -1647,21 +1647,34 @@ export function ItemsScreen({ initialGroup = 'weapons' }: { initialGroup?: strin
   // is skipped while searching, where the query owns the list.
   const homeGroup = initialGroup;
   const groupStrip = useMemo(() => {
-    if (searching || (filters.group !== 'other' && filters.group !== homeGroup
-      && !ITEM_GROUPS.some((g) => g.id === filters.group))) return [];
-    if (homeGroup !== 'other') return [];
-    return ITEM_GROUPS
-      // the four with their own bottom tab are already one tap away —
-      // repeating them here would be two ways to the same list
-      .filter((g) => !TAB_GROUPS.includes(g.id))
-      .map((g) => ({
-        id: g.id,
-        label: g.label,
-        n: applyItemFilters({ ...filters, group: g.id, kind: null }, '', level).length,
+    if (searching) return [];
+    if (homeGroup === 'other') {
+      return ITEM_GROUPS
+        // the four with their own bottom tab are already one tap away —
+        // repeating them here would be two ways to the same list
+        .filter((g) => !TAB_GROUPS.includes(g.id))
+        .map((g) => ({
+          id: g.id,
+          label: g.label,
+          n: applyItemFilters({ ...filters, group: g.id, kind: null }, '', level).length,
+        }))
+        .filter((g) => g.n > 0)
+        .sort((a, b) => b.n - a.n);
+    }
+    // IL88: a tab holding ONE group has the same problem one level down —
+    // the Weapons tab is 105 rows of eleven different weapon classes, and
+    // "show me the bows" was buried in the sheet exactly as the groups
+    // were. Same strip, filtering by kind instead.
+    return kindsInGroup(filters.group)
+      .map((k) => ({
+        id: k.kind,
+        label: k.kind,
+        n: applyItemFilters({ ...filters, kind: k.kind }, '', level).length,
       }))
-      .filter((g) => g.n > 0)
+      .filter((k) => k.n > 0)
       .sort((a, b) => b.n - a.n);
   }, [filters, level, searching, homeGroup]);
+  const stripPicksKind = homeGroup !== 'other';
 
   // ...and the same for filters: which single chip, dropped, brings the
   // list back? Only computed on an empty list, so it costs nothing in
@@ -1774,13 +1787,16 @@ export function ItemsScreen({ initialGroup = 'weapons' }: { initialGroup?: strin
         <ScrollView horizontal showsHorizontalScrollIndicator={false}
           contentContainerStyle={{ gap: 6, paddingBottom: 8 }}>
           {groupStrip.map((g) => (
-            <Chip key={g.id} on={filters.group === g.id}
+            <Chip key={g.id}
+              on={stripPicksKind ? filters.kind === g.id : filters.group === g.id}
               label={`${g.label} · ${g.n}`}
-              onPress={() => setFilters({
-                ...filters,
-                group: filters.group === g.id ? homeGroup : g.id,
-                kind: null,
-              })} />
+              onPress={() => setFilters(stripPicksKind
+                ? { ...filters, kind: filters.kind === g.id ? null : g.id }
+                : {
+                  ...filters,
+                  group: filters.group === g.id ? homeGroup : g.id,
+                  kind: null,
+                })} />
           ))}
         </ScrollView>
       )}

@@ -12224,3 +12224,30 @@ Gates: mobile `tsc --noEmit` clean, `npx vitest run` 1072/1072.
 re-armed wakeup, so the loop stopped dead. Re-arming by hand at the end
 of every turn means one forgotten call kills it. There is now a cron
 (`*/3 * * * *`, job c9d39b74) that fires whether or not I remember.
+
+---
+
+## IL88 — the same strip one level down: a tab's own classes (2026-08-20)
+
+The Weapons tab had the identical fault to the centre tab, one level in:
+**105 rows spanning eleven weapon classes**, and "show me the bows" was
+buried in the filter sheet exactly as the groups had been. Same strip,
+picking a KIND instead of a group:
+
+```
+Melee weapon · 33   Assault rifle · 14   Rocket launcher · 11
+Handgun · 11        Thrown weapon · 11   Shotgun · 8
+Fishing rod · 6     Bow · 5              Gatling gun · 2   …
+```
+
+One tap gives the five bows, strongest first — Mechanical Bow 20000–24000
+down to Three Shot Bow 40. Verified on the running app. Tapping the
+chosen class again clears it, the same rule every chip in this fane
+follows.
+
+So: centre tab picks a group, a single-group tab picks a class, one
+component, and neither appears while searching.
+
+Gates: mobile `tsc --noEmit` clean, `npx vitest run` 1075/1075. The IL87
+test that pinned "only the centre tab has a strip" now pins what is still
+true — it never runs while searching and never renders empty.

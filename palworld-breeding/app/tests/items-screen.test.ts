@@ -2247,9 +2247,43 @@ describe('the centre tab is navigable, not a 1,183-row dump (IL87)', () => {
   it('it only appears where it helps', () => {
     const code = readFileSync(
       join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
-    // not on a weapons tab, which holds one kind of thing; not while
-    // searching, where the query owns the list
-    expect(code).toContain("if (homeGroup !== 'other') return [];");
+    // IL88 gave the single-group tabs their own strip (by class), so
+    // the centre tab is no longer the only one — what stays true is that
+    // the strip never runs while searching, where the query owns the
+    // list, and never renders empty.
+    expect(code).toContain('if (searching) return [];');
     expect(code).toContain('{!searching && groupStrip.length > 0 && (');
+    expect(code).toContain("if (homeGroup === 'other') {");
+  });
+});
+
+describe('a single-group tab offers its classes too (IL88)', () => {
+  it('the Weapons tab really is eleven different classes', () => {
+    const kinds = kindsInGroup('weapons');
+    expect(kinds.length).toBeGreaterThan(10);
+    const names = kinds.map((k) => k.kind);
+    for (const k of ['Melee weapon', 'Assault rifle', 'Bow', 'Shotgun']) {
+      expect(names).toContain(k);
+    }
+    const bows = collapseFamilies(
+      idsInGroup('weapons').filter((i) => kindWord(i) === 'Bow'));
+    expect(bows.length).toBe(5);
+  });
+
+  it('the strip picks a KIND there and a GROUP on the centre tab', () => {
+    const code = readFileSync(
+      join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+    const block = code.slice(code.indexOf('IL88'), code.indexOf('IL88') + 700);
+    expect(block).toContain('kindsInGroup(filters.group)');
+    expect(code).toContain("const stripPicksKind = homeGroup !== 'other';");
+    expect(code.replace(/\s+/g, ' ')).toContain(
+      'on={stripPicksKind ? filters.kind === g.id : filters.group === g.id}');
+  });
+
+  it('tapping the chosen class again clears it', () => {
+    const code = readFileSync(
+      join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+    expect(code.replace(/\s+/g, ' ')).toContain(
+      '{ ...filters, kind: filters.kind === g.id ? null : g.id }');
   });
 });
