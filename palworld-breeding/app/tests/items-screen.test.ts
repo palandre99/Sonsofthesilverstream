@@ -186,6 +186,24 @@ describe('the item share sheet says what the screen says', () => {
     }
   });
 
+  it('a shared egg carries its hatch list (IL30 drift fix)', () => {
+    const commonEgg = Object.keys(ITEMS).find(
+      (i) => ITEMS[i].name === 'Common Egg');
+    const txt = shareTextForItem(commonEgg!, '1.0');
+    expect(txt).toContain('Hatches: ');
+    // the first six of the egg's real pool, in the order the data holds
+    const listed = palsHatchingFrom(commonEgg!).slice(0, 6);
+    for (const pal of listed) expect(txt).toContain(pal);
+    expect(txt, 'a long hatch list must be capped, not dumped')
+      .toMatch(/\+\d+ more/);
+  });
+
+  it('a shared craft carries its work and time', () => {
+    const txt = shareTextForItem('Cake', '1.0');
+    expect(txt).toContain('2,000 work');
+    expect(txt).toContain('1h6m40s at Handiwork Lv. 1');
+  });
+
   it('the screen sends exactly this composer through the native sheet', () => {
     const code = readFileSync(
       join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');

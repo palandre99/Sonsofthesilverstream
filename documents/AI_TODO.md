@@ -2368,6 +2368,19 @@ work always"):**
       offline-complete, blueprint §5 criterion 7). Stays unbuilt until a
       datamined formula appears. What IS provable already ships: the 10
       spheres' exact capture powers and the module cross-links.
+- [x] IL30 2026-08-20: SHARE-TEXT DRIFT AUDIT. The card gained hatch
+      lists (IL5) and craft work/times (IL11) but the share composer
+      never learned them — a shared EGG said nothing about what hatches,
+      which is the only thing an egg is for. Both added: "Hatches:
+      Cattiva, Cave Bat, ... +17 more" (capped at 6, honest count) and
+      "2,000 work — about 1h6m40s at Handiwork Lv. 1". Read the real
+      payloads with a temporary probe (deleted same tick) rather than
+      trusting assertions alone. A wrong first assertion was corrected
+      to the data's real order instead of being forced. 853 green.
+      STANDING LESSON: every card section added from here must be
+      considered for the share composer in the same tick — they drift
+      apart silently and only the catalogue-wide property test noticed
+      nothing was wrong (because nothing was WRONG, just missing).
 - [x] IL29 2026-08-20: ONE FIXED CARD ANATOMY (blueprint §5 criterion
       4). Audited the card's SHAPE rather than its content and found a
       real ordering bug: on an egg card, "Hatches into these pals" sat

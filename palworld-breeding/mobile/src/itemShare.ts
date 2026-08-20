@@ -8,8 +8,8 @@
  * react-native; the screen passes breeding.game_version.
  */
 import {
-  implantPassive, ITEM_STATS, ITEMS, kindWord, palsDropping, statRank,
-  tierWord,
+  implantPassive, ITEM_STATS, ITEMS, kindWord, palsDropping,
+  palsHatchingFrom, statRank, tierWord,
 } from './itemsData';
 import { equipPassiveName, ITEM_FACTS } from './itemFacts';
 
@@ -49,7 +49,17 @@ export function shareTextForItem(id: string, gameVersion: string): string {
   if (imp) lines.push(`Gives the passive ${imp.name} — ${imp.effects}`);
   for (const g of facts?.grants ?? []) lines.push(g);
   for (const [k, v] of facts?.effects ?? []) lines.push(`${k} ${v}`);
+  // an egg shared without its hatch list is useless (IL30 drift fix)
+  const hatchers = palsHatchingFrom(id);
+  if (hatchers.length) {
+    lines.push(`Hatches: ${hatchers.slice(0, 6).join(', ')}`
+      + (hatchers.length > 6 ? ` +${hatchers.length - 6} more` : ''));
+  }
   if (facts?.tech) lines.push(techSentence(facts.tech));
+  if (facts?.craftWork != null) {
+    lines.push(`${facts.craftWork.toLocaleString()} work`
+      + (facts.craftTime ? ` — about ${facts.craftTime} at Handiwork Lv. 1` : ''));
+  }
   if (facts?.recipe) {
     lines.push('Craft: ' + facts.recipe
       .map((r) => `${r.n}× ${ITEMS[r.id]?.name ?? r.id}`).join(' · '));
