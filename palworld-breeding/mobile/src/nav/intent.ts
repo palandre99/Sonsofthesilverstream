@@ -21,6 +21,12 @@ export interface NavIntent {
    * `item` opens an item's card in the Items fane (pal drops -> item) */
   payload?: {
     pal?: string; item?: string; mode?: 'pair' | 'reverse'; fromCard?: string;
+    /** an item by NAME, plus how many of it the sender worked out you
+     * need. The breeding screens cannot use `item` because resolving a
+     * name to an id means importing the whole 2.4 MB item table into
+     * their startup path; they know the name and the count, and the
+     * Items fane already holds the table, so it does the lookup. */
+    itemNamed?: string; qty?: number;
     /** open this exact boss when the destination is a Bosses tab —
      * the alpha's own title, which is unique across the 205 */
     boss?: string;

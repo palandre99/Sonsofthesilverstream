@@ -12006,3 +12006,54 @@ flaky gate is worse than no gate.
 Gates: mobile `tsc --noEmit` clean, `npx vitest run` 1059/1059. Sheet
 re-read on the running app after the change — counts unchanged and
 correct (This tab 105, Everything 1504, Armor 106, Eggs 32).
+
+---
+
+## IL84 — the breeding plan hands its cakes to the build list (2026-08-20)
+
+**Phase F of `09_ITEMS_PLAN.md`, the half that was never built.** The plan
+promised item cards "linked from the Paldex and the breeding helper cards
+(cake ingredients become tappable)". The Paldex half shipped long ago —
+a pal's drop chip opens the item. The breeding half did not.
+
+The Odds Lab already computes the exact sentence a player acts on:
+**"12 cycles on Vegetable Cake"** — and then left them to work out what
+twelve cakes cost. Under it now:
+
+```
+[ What 12 Vegetable Cakes cost ]
+```
+
+One tap lands on the Items fane with **12 Vegetable Cakes on the build
+list and the card open**, so the player sees the recipe and the full
+gather list for twelve, not just a claim that something happened.
+
+Proved end to end on the running app, not in source: clicked the button
+on the Odds Lab, landed on `Tools & Items · Items`, the card was open,
+and `palforge-default-build` read `{"Cake":1}`.
+
+**The payload carries a NAME, not an id.** Resolving a name to an id
+means importing the 2.4 MB item table, and the breeding screens must not
+pull that into their startup path — the store was kept clear of it for
+the same reason. `nav/intent.ts` gained `itemNamed` + `qty`; the Items
+fane already holds the table and does the lookup.
+
+All five cakes resolve to real items carrying full recipes (Cake,
+Mushroom Cake, Vegetable Cake, Extravagant Vegetable Cake, Special Cake).
+
+Caught on the eye pass: the button read **"What 1 Cake cost"**. Fixed to
+agree — "What 1 Cake costs" / "What 12 Cakes cost".
+
+Gates: mobile `tsc --noEmit` clean, `npx vitest run` 1063/1063.
+
+### CHECKED AND CLEAN — no fix needed, recorded so nobody re-opens it
+
+- **The fane at 375px.** Nothing overflows the page, nothing is clipped
+  that should not be. Long schematic names DO truncate — "Multi Guided
+  Missile Launcher Schematic 1" needs 303px against 194px — and 247 of
+  the 380 tiered schematic names are long enough to lose their trailing
+  tier digit. **This is not a fault**: the rarity chip sits beside every
+  one of them, unclipped and fully visible at 375px (measured: Uncommon
+  at x=281 w=68, Rare x=322 w=27, Epic x=325 w=24, Legendary x=287 w=62),
+  and Uncommon/Rare/Epic/Legendary IS tier 1/2/3/4. The earlier finding
+  that a separate tier marker would be duplicate information stands.

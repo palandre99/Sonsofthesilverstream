@@ -6,6 +6,7 @@ import { Badge, Btn, Card, PageHead, s } from '../ui/kit';
 import { Icon } from '../ui/Icon';
 import { pals, passives } from '../store';
 import { cleanEffect } from '../data/palText';
+import { navigateTo } from '../nav/intent';
 import {
   attemptsFor, CAKES, cakeById, ivOdds, mutationPlan, oddsTable, passiveOdds,
   type CakeId,
@@ -506,6 +507,30 @@ function PassivesTab() {
                 ? `${cycles(Math.ceil(odds.eggsFor90 / c.eggsPerCycle))} on ${c.name}`
                 : 'not reachable'} />
           </View>
+          {/* IL84: the plan says "12 cycles on Vegetable Cake" and then
+              left the player to work out what twelve cakes cost. The
+              Items fane holds the recipe and the build list; this hands
+              the count straight to it. Sent as a NAME, not an id — the
+              breeding screens must not pull the 2.4 MB item table into
+              their startup path just to look one up. */}
+          {isFinite(odds.eggsFor90) && (
+            <View style={{ marginTop: 10 }}>
+              <Btn small
+                label={(() => {
+                  const n = Math.ceil(odds.eggsFor90 / c.eggsPerCycle);
+                  return n === 1
+                    ? `What 1 ${c.name} costs`
+                    : `What ${n} ${c.name}s cost`;
+                })()}
+                onPress={() => navigateTo({
+                  domain: 'items', tab: 'allitems',
+                  payload: {
+                    itemNamed: c.name,
+                    qty: Math.ceil(odds.eggsFor90 / c.eggsPerCycle),
+                  },
+                })} />
+            </View>
+          )}
         </>
       )}
 

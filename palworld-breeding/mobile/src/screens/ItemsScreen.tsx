@@ -21,7 +21,7 @@ import {
   ammoForWeapon, collapseFamilies, effectNumber, familyOf, familyPowerOf,
   groupOf, hasNoKnownSource, idsInGroup, implantPassive, ITEM_GROUPS,
   grantsToShow, palForGear,
-  ITEM_STATS, ITEMS,
+  ITEM_STATS, ITEMS, itemIdByName,
   kindPhrase, kindsInGroup, kindWord, palsDropping, palsHatchingFrom, rawMaterialsFor,
   buildTime, buildTotals, captureRank, effectRank, gearAgainst, guardKinds,
   guardLevel, hasTierCosts, saysTheSame,
@@ -1640,6 +1640,18 @@ export function ItemsScreen({ initialGroup = 'weapons' }: { initialGroup?: strin
     const apply = () => {
       const p = takeIntentPayload('allitems');
       if (p?.item) setOpen(p.item);
+      // IL84: a breeding plan arrives as a NAME and a COUNT — "12
+      // Vegetable Cakes" — because the sender cannot resolve ids without
+      // loading the whole item table. Resolve it here, put the cakes on
+      // the build list, and open the card so the player sees what they
+      // just committed to rather than being told it happened.
+      if (p?.itemNamed) {
+        const hit = itemIdByName(p.itemNamed);
+        if (hit) {
+          if (p.qty && p.qty > 0) void setBuildQty(hit, p.qty);
+          setOpen(hit);
+        }
+      }
     };
     apply(); // payload waiting from before this screen mounted
     return onNavIntent(apply);

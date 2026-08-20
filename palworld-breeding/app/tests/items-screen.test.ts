@@ -24,6 +24,7 @@ import {
 import palsJson from '../../mobile/src/data/pals_1_0.json';
 import FACTS from '../../mobile/src/data/item_facts_1_0.json';
 import { equipPassiveName, ITEM_FACTS } from '../../mobile/src/itemFacts';
+import { CAKES } from '../../mobile/src/engine/odds';
 
 /** IL72 moved statLine/familyLine into itemsData so the index could be
  * measured. The row's text is now assembled across both files, so the
@@ -2105,5 +2106,44 @@ describe('opening the filter sheet does not stall the thread (IL83)', () => {
   it('and it still collapses to exactly the same rows', () => {
     expect(collapseFamilies(ITEM_IDS).length).toBe(1504);
     expect(collapseFamilies(idsInGroup('weapons')).length).toBe(105);
+  });
+});
+
+describe('a breeding plan hands its cakes to the build list (IL84)', () => {
+  it('every cake the odds screen offers is a real item with a recipe', () => {
+    for (const c of CAKES) {
+      const id = itemIdByName(c.name);
+      expect(id, `${c.name} must resolve`).toBeTruthy();
+      expect(ITEM_FACTS[id!]?.recipe?.length).toBeGreaterThan(0);
+    }
+    // the one the plan reaches for most
+    const veg = itemIdByName('Vegetable Cake')!;
+    expect(ITEM_FACTS[veg]!.recipe!.find((r) => r.id === 'Flour')?.n).toBe(8);
+  });
+
+  it('the hand-off carries a NAME, so breeding never loads the item table', () => {
+    const odds = readFileSync(
+      join(__dirname, '../../mobile/src/screens/OddsScreen.tsx'), 'utf8');
+    expect(odds).toContain("itemNamed: c.name");
+    expect(odds).toContain("domain: 'items', tab: 'allitems'");
+    // importing itemsData here would put 2.4MB of facts in the breeding
+    // screen's startup path — the reason the payload takes a name at all
+    expect(odds).not.toContain("from '../itemsData'");
+  });
+
+  it('the Items fane resolves the name and sets the quantity', () => {
+    const code = readFileSync(
+      join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+    const block = code.slice(code.indexOf('IL84'), code.indexOf('IL84') + 900);
+    expect(block).toContain('itemIdByName(p.itemNamed)');
+    expect(block).toContain('setBuildQty(hit, p.qty)');
+    expect(block).toContain('setOpen(hit)');
+  });
+
+  it('the count says one cake or many, with the verb to match', () => {
+    const odds = readFileSync(
+      join(__dirname, '../../mobile/src/screens/OddsScreen.tsx'), 'utf8');
+    expect(odds).toContain('`What 1 ${c.name} costs`');
+    expect(odds).toContain('`What ${n} ${c.name}s cost`');
   });
 });
