@@ -176,13 +176,29 @@ function ItemRow({ id, showGroup, collapsed, level, onOpen }: {
   const word = ITEM_STATS[id]?.tier ?? tierWord(it.rarity);
   const topWord = ITEM_STATS[fam[tiers - 1]]?.tier
     ?? tierWord(ITEMS[fam[tiers - 1]].rarity);
+  const inBuild = buildQty(id);
+  // only things you MAKE go on a build list — holding a raw material
+  // would add a row nobody asked for
+  const facts = ITEM_FACTS[id];
+  const craftable = !!(facts?.recipe || facts?.crafts || facts?.recipesMore);
   return (
     <Pressable
       onPress={() => onOpen(id)}
+      // IL45: a button in this row was MEASURED and refused — long
+      // names already clip here ("Disposable Implant: Demon's Hand"
+      // needs 252px in a 199px slot), so another control would make
+      // the list worse to read. A long-press costs no width at all.
+      onLongPress={craftable ? () => {
+        void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        void addToBuild(id);
+      } : undefined}
       accessibilityRole="button"
-      accessibilityLabel={tiers > 1
-        ? `${it.name}, ${tiers} tiers up to ${topWord}. Open its card`
-        : `${it.name}, ${word}. Open its card`}
+      accessibilityLabel={(tiers > 1
+        ? `${it.name}, ${tiers} tiers up to ${topWord}`
+        : `${it.name}, ${word}`)
+        + (inBuild > 0 ? `, ${inBuild} on your build list` : '')
+        + '. Open its card'
+        + (craftable ? '. Hold to add it to your build' : '')}
       style={({ pressed }) => ({
         flexDirection: 'row', alignItems: 'center', gap: 10,
         paddingVertical: 8, paddingHorizontal: 10, borderRadius: 12,
@@ -208,7 +224,13 @@ function ItemRow({ id, showGroup, collapsed, level, onOpen }: {
             {line || kindWord(id)}
             {showGroup && groupOf(id) ? `  ·  ${groupOf(id)}` : ''}
           </Text>
-          {lockedAt != null ? (
+          {/* the player's own state outranks the game's trivia — a row
+              on the build list says so before it says its weight */}
+          {inBuild > 0 ? (
+            <Text style={{ color: T.accentInk, fontSize: 11, fontWeight: '800' }}>
+              ×{inBuild} building
+            </Text>
+          ) : lockedAt != null ? (
             <Text style={{ color: T.goldInk, fontSize: 11, fontWeight: '700' }}>
               Lv {lockedAt}
             </Text>
@@ -691,8 +713,18 @@ function ItemDetail({ id, trail = [], onClose, onBack, onOpenItem }: {
                       onPress={() => { void addToBuild(id); }} />
                   </>
                 ) : (
-                  <Btn small label="Add to my build"
-                    onPress={() => { void addToBuild(id); }} />
+                  <>
+                    <Btn small label="Add to my build"
+                      onPress={() => { void addToBuild(id); }} />
+                    {/* the long-press shortcut is invisible unless it is
+                        taught, and this is exactly where a player is
+                        already thinking about their build (IL45) */}
+                    <Text style={[s.body, {
+                      fontSize: 11, color: T.faint, flex: 1,
+                    }]}>
+                      or hold any row in the list
+                    </Text>
+                  </>
                 )}
               </View>
             </Card>
@@ -1372,6 +1404,7 @@ export function ItemsScreen({ initialGroup = 'weapons' }: { initialGroup?: strin
   const [open, setOpen] = useState<string | null>(null);
   /** the cards tapped through to reach `open`, oldest first */
   const [trail, setTrail] = useState<string[]>([]);
+  useAppVersion();          // rows carry a build marker now (IL45)
 
   const searching = q.trim().length > 0;
   const level = getPlayerLevel();

@@ -2403,16 +2403,27 @@ work always"):**
       actually sends. The app already had the idiom (the Paldex ships
       "Share my list…", PaldexScreen.tsx:390), so this matched a
       pattern rather than inventing one.
-- [ ] IL45 FOUND BY IL43 2026-08-20: building a list is slower than it
-      should be. "Add to my build" lives only at the foot of an item's
-      CARD, so assembling a five-item list means five searches, five
-      card opens and five scrolls to the bottom. The index row is where
-      a player is already looking. MEASURE FIRST whether a row control
-      fits 375px without crowding the icon, name, stat line and level
-      marker — the CEO has rejected busy rows twice, and a row that
-      gains a button it does not need is exactly that. If it does not
-      fit, a long-press with haptics is the honest alternative (the
-      screen already imports expo-haptics).
+- [x] IL45 2026-08-20: HOLD A ROW TO ADD IT — and the measurement said
+      NO BUTTON, so there is none. The row is 343px wide and its name
+      slot is 199px; "Disposable Implant: Demon's Hand" already needs
+      252px and clips TODAY. A control would have taken ~40px more and
+      made every long name worse — exactly the busy row the CEO has
+      rejected twice. So the shortcut costs zero width: long-press,
+      with the success haptic the app already uses.
+      A HIDDEN GESTURE IS A USELESS ONE, so it is taught and it is
+      visible: the card's Add button now reads "or hold any row in the
+      list" right beside it, every row's spoken label ends "Hold to add
+      it to your build", and a row already on the list shows "×2
+      building" where its weight used to sit — the player's own state
+      outranks the game's trivia. Only craftable rows respond; holding
+      a raw material would add a row nobody asked for.
+      VERIFIED AS A GESTURE, not as code: a synthetic long-press added
+      the Mechanical Bow and did NOT open its card, a short press still
+      opens the card, and the row is still 343×58 with nothing clipped.
+      (React Native Web ignores synthetic PointerEvents for long-press —
+      it wants the mouse sequence — which is why the first attempt read
+      as a no-op and needed the right events, not a code change.)
+      913 green.
 - [x] IL43 2026-08-20: THE BUILD LIST — what a whole grind costs. IL32
       and IL33 answer "what does THIS cost from scratch". The question
       they do not answer is the one a player actually asks before a

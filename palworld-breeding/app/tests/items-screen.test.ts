@@ -1050,3 +1050,40 @@ describe('the build list can leave the phone (IL44)', () => {
     expect(code).toContain('shareTextForBuild(list, breeding.game_version)');
   });
 });
+
+describe('adding to the build costs the row no width (IL45)', () => {
+  const code = readFileSync(
+    join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+
+  it('holding a row adds it, and the row gains NO button', () => {
+    expect(code).toContain('onLongPress={craftable ?');
+    expect(code).toContain('Haptics.NotificationFeedbackType.Success');
+    // the measurement that decided this is recorded where it was made
+    expect(code).toContain('needs 252px in a 199px slot');
+  });
+
+  it('only things you make can be held — a raw material cannot', () => {
+    expect(code).toContain(
+      "const craftable = !!(facts?.recipe || facts?.crafts || facts?.recipesMore);");
+    // Wood carries facts (where it is found, what it is for) but no
+    // RECIPE — you gather it. The Beam Sword you make.
+    const facts = (FACTS as { facts: Record<string, {
+      recipe?: unknown; crafts?: unknown; recipesMore?: unknown }> }).facts;
+    const makeable = (i: string) =>
+      !!(facts[i]?.recipe || facts[i]?.crafts || facts[i]?.recipesMore);
+    expect(makeable('Wood')).toBe(false);
+    expect(makeable('BeamSword')).toBe(true);
+  });
+
+  it('a row on the build list SAYS so, outranking the weight', () => {
+    expect(code).toContain('×{inBuild} building');
+    expect(code).toContain('{inBuild > 0 ? (');
+    // and the screen re-renders when the list changes
+    expect(code).toContain('useAppVersion();          // rows carry a build marker');
+  });
+
+  it('the gesture is taught, not hidden', () => {
+    expect(code).toContain('or hold any row in the list');
+    expect(code).toContain('Hold to add it to your build');
+  });
+});
