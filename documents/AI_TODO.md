@@ -513,6 +513,61 @@ and the one missing dataset identified: the element chart.*
       Dumud, catch Lv 1". A saved-squad EDITOR stays deliberately
       deferred (this ledger line is its record) — the tab answers "who
       do I bring", the editor is a later nicety.
+- [x] B12 DONE 2026-08-19 (f717939): WHAT WINNING GETS YOU + THE ALPHA
+      CARD. Every tower/raid/alpha fight now carries the game's own drop
+      table with its own odds (fetch_tower_raid_stats.py grew a
+      per-variant Possible Drops parser; the alpha fetcher reuses it
+      rather than copying — it imports the tower fetcher's parsers).
+      Zoe Hard pays Key Sphere + hat + crystal + a 10% schematic where
+      Normal pays one key. All 205 alphas now open a REAL Boss Card
+      (AlphaCard.tsx) instead of only linking to the pal card: counters
+      from the box, the E133 measured differences, their OWN attack kit
+      (10 for Paladius, 0 unmapped across all 205), the spawn map, drops,
+      beaten/caught. The card's pieces were extracted to sections.tsx +
+      logic/bossText.ts so tower/raid/alpha cards cannot drift apart.
+      Facts the tests found: ONE fight (Nullstar Calamity) has no drop
+      table upstream — the card says so; the game's own table lists some
+      drops TWICE (verified on the Dandilord source page: 21 rows, Holy
+      Water at 20-30 AND 60-80), so identical rows collapse to a line
+      that admits it. 40 new tests (15 bossText + 25 boss-data).
+- [x] B13 DONE 2026-08-19 (83544f5): CROSS-LINKS. All 299 pal cards
+      carry a fight line under the element chips ("Its Fire/Ground
+      attacks hit Electric, Grass and Ice for double · takes double from
+      Water") from the SAME chart the fane ranks with — and it honours
+      cancelling pairs (Reptyro is not listed as weak to Grass). A pal
+      with a fixed boss gets "Prep this fight" → opens that exact boss's
+      card (NavIntent payload gained `boss`, AlphasScreen consumes it;
+      walked end-to-end on the render). Read-aloud caught "Electric and
+      Grass and Ice" — listWords now joins lists like a person writes
+      them, shared and tested.
+- [x] B10 DONE 2026-08-19 (83544f5): Astralym's missing portrait fixed —
+      and the real finding was WHY: icons.g.ts claimed it was "GENERATED
+      by scripts in package.json" and NO such script exists anywhere in
+      the repo, so 298 portraits had been gathered by hand and the 299th
+      was simply forgotten. tools/fetch_pal_icons.py now sweeps
+      pals_1_0.json, downloads what is missing (the CDN 403s a bare tool
+      UA — browser headers, same source, same bytes) and rewrites the
+      map from what is actually on disk. 299/299 mapped.
+- [ ] B14 FOR THE ITEMS LANE (found by this lane's drop cross-check,
+      2026-08-19): items_1_0.json is MISSING 11 real items that boss
+      drop tables reference — all 8 tower Key Spheres (Envy, Pride,
+      Greed, Sloth, Gluttony, Lust, Wrath, Original Sin) plus
+      Dandilord's Petal, Silvance's Plume and Modified Pal's
+      Contaminated Core. The Key Spheres are TOWER PROGRESSION items, so
+      this is a real hole in the Items fane, not a curiosity. 22 of 234
+      boss drop rows fail to resolve against the index; the count is
+      pinned in boss-data.test.ts so the day it is fixed the test says
+      so. Likely the atlas extractor filters them; paldb has pages for
+      each.
+- [ ] B15 FOR THE MAP LANE (found on the alpha card's render,
+      2026-08-19): PalMap nests a button inside a button — the outer
+      "See {pal}'s spawns bigger" Pressable wraps MapPreview, which
+      contains its own "Open on the full map" Pressable. React logs a
+      hydration error on web and it is a tap-conflict risk on device.
+      Pre-existing (the pal card has shown it all along); the alpha card
+      just made it loud. Their files, so reported not touched — the fix
+      is the one this lane used on its own rows: put the inner verb
+      BESIDE the tappable area, not inside it.
 - [ ] B8 Phase E: cross-links (pal-card strong/weak chips, NavIntent
       payload extension, map-side "Prep this fight" — REQUEST to the map
       lane, not an edit; Suggested Goals fighting → Teams).
