@@ -267,6 +267,36 @@ describe('the level filter uses the player’s own profile (IL21)', () => {
   });
 });
 
+describe('eggs with no listed pals say so (IL26)', () => {
+  const code = readFileSync(
+    join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+
+  it('no card shows a tier table made only of dashes', () => {
+    expect(code).toContain('family.some((fid) => statLine(fid))');
+  });
+
+  it('the honest empty state exists and names the gap', () => {
+    expect(code).toContain('What hatches from it');
+    expect(code).toContain("don&apos;t list which pals come out of this");
+    expect(code, 'the empty state must only apply to eggs')
+      .toContain("if (ITEMS[id].subcategory !== 'MaterialPalEgg') return null;");
+  });
+
+  it('it offers the breeding suite, which is what an egg-holder wants', () => {
+    expect(code).toContain("navigateTo({ domain: 'breeding', tab: 'calc' })");
+  });
+
+  it('the eggs it covers are exactly the ones the data cannot name', () => {
+    const eggs = Object.keys(ITEMS)
+      .filter((i) => ITEMS[i].subcategory === 'MaterialPalEgg');
+    const unnamed = eggs.filter((i) => palsHatchingFrom(i).length === 0);
+    expect(unnamed.length).toBe(10);
+    for (const id of unnamed) {
+      expect(ITEMS[id].name).toMatch(/Mutated|Ominous|Dragon Egg/);
+    }
+  });
+});
+
 describe('implants name their passive, from the datamined table (IL25)', () => {
   it('all 40 implants resolve to a real passive with real effect text', () => {
     const implants = Object.keys(ITEMS).filter(

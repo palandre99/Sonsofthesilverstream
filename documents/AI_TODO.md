@@ -2368,6 +2368,16 @@ work always"):**
       offline-complete, blueprint §5 criterion 7). Stays unbuilt until a
       datamined formula appears. What IS provable already ships: the 10
       spheres' exact capture powers and the module cross-links.
+- [x] IL26 2026-08-20: honest empty states close the bare-card hunt.
+      The 10 Mutated/Ominous/Dragon eggs match no pal in the game's own
+      egg table, and silence on a card reads like a bug — they now say
+      "The game files don't list which pals come out of this egg" and
+      offer the breeding calculator, which is what a player holding an
+      egg wants next. THE RENDER PASS THEN CAUGHT ITS OWN BUG: right
+      below it sat "Every tier of this pal egg — Common —, Uncommon —",
+      a table made of em-dashes; stat-less families now skip the tier
+      table entirely. Both pinned. 843 green. CI green on the day's 7
+      pushed commits.
 - [x] IL25 2026-08-20: THE BAREST CARDS IN THE CATALOGUE GOT THEIR
       MEANING. A hunt for cards a player would find empty (accounting
       for runtime sections, not just payload keys) found 54 truly bare

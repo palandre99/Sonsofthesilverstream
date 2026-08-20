@@ -703,7 +703,30 @@ function ItemDetail({ id, onClose, onOpenItem }: {
 
           {(() => {
             const hatchers = palsHatchingFrom(id);
-            if (!hatchers.length) return null;
+            if (!hatchers.length) {
+              // IL26: the Mutated/Ominous/Dragon eggs match no pal in the
+              // game's own egg table. Silence reads like a bug, so the
+              // card says what we know and what we don't — and offers
+              // the breeding suite, which is what a player holding an
+              // egg actually wants next.
+              if (ITEMS[id].subcategory !== 'MaterialPalEgg') return null;
+              return (
+                <Card style={{ marginTop: 10 }}>
+                  <Text style={s.h3}>What hatches from it</Text>
+                  <Text style={[s.body, { marginTop: 4, fontSize: 12.5 }]}>
+                    The game files don&apos;t list which pals come out of this
+                    egg — only the common egg types name their pals.
+                  </Text>
+                  <View style={{ marginTop: 8 }}>
+                    <Btn small label="Open the breeding calculator"
+                      onPress={() => {
+                        onClose();
+                        navigateTo({ domain: 'breeding', tab: 'calc' });
+                      }} />
+                  </View>
+                </Card>
+              );
+            }
             return (
               <Card style={{ marginTop: 10 }}>
                 <Text style={s.h3}>
@@ -844,7 +867,10 @@ function ItemDetail({ id, onClose, onOpenItem }: {
             );
           })()}
 
-          {family.length > 1 && (
+          {/* a tier table of em-dashes is noise, not information — eggs
+              and other stat-less families skip it (caught on the IL26
+              render pass) */}
+          {family.length > 1 && family.some((fid) => statLine(fid)) && (
             <Card style={{ marginTop: 10 }}>
               <Text style={s.h3}>Every tier of this {kindWord(id).toLowerCase()}</Text>
               <View style={{ marginTop: 6, gap: 4 }}>
