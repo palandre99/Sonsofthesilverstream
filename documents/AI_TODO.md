@@ -2563,7 +2563,26 @@ work always"):**
       The publish ritual forbids shipping over another session's
       unfinished work. Committed and pushed; publish the moment the
       tree is clean of their changes.
-- [ ] IL58 A REAL BUG, FOUND 2026-08-20 AND BIGGER THAN THE ITEM THAT
+- [~] IL58 CORRECTED 2026-08-20 — I CALLED THIS A CONFIRMED BUG AND IT
+      IS NOT ONE. Re-tested with a longer wait and the top-bar search
+      DOES open the pal's card: Cattiva's card was on screen with its
+      own controls ("Male Cattiva: not yet", "Female Cattiva: not yet").
+      My original three "reproductions" all checked ~2.2 seconds after
+      the tap; the Paldex has to mount and the card animate, and that is
+      simply longer than that. I reported a false alarm to the CEO as
+      the top priority — wrong, and corrected here.
+      WHAT IS STILL UNKNOWN: the egg hatcher chip did not open a card
+      even after 6 seconds in one run, so the paths may genuinely
+      differ. I cannot tell yet, because every multi-step browser probe
+      I write times out at the tool's 30-second limit part-way through,
+      leaving the app in an unknown state and my readings inconsistent.
+      That is a METHOD problem, not a finding.
+      DO THIS INSTEAD OF MORE GUESSING: build the check as ONE short
+      script per step (tap, then a separate call to read the result),
+      never a long sleep chain, so no step is lost to the timeout. Only
+      then decide whether anything is actually broken. Do NOT tell the
+      CEO anything is broken until a clean run says so twice.
+- [ ] IL58-OLD (kept for the reasoning, claim withdrawn above)
       FOUND IT: EVERY JUMP TO A PAL CARD LANDS ON THE PALDEX WITHOUT
       OPENING THE CARD. Reproduced three independent ways at 375px:
         - a saddle card's new "Who wears it" link (IL57)
