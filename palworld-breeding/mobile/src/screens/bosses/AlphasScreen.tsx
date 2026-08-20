@@ -63,6 +63,10 @@ function buildRows(): AlphaRow[] {
 }
 
 type StatusFilter = 'all' | 'todo' | 'beaten' | 'caught';
+/** level first is the default because "what can I fight next" is the
+ * question this list exists to answer; the other two are for hunting a
+ * boss you already have in mind */
+type SortKey = 'level' | 'name' | 'element';
 
 function Tick({ on, label, iconOn, iconOff, onPress }: {
   on: boolean; label: string; iconOn: string; iconOff: string;
@@ -161,6 +165,7 @@ export function AlphasScreen() {
   const [status, setStatus] = useState<StatusFilter>('all');
   const [element, setElement] = useState<string | null>(null);
   const [inReach, setInReach] = useState(false);
+  const [sort, setSort] = useState<SortKey>('level');
   const [, bump] = useState(0);
   useEffect(() => {
     void loadRecord();
@@ -218,6 +223,22 @@ export function AlphasScreen() {
   const nextBeyond = nextUp ? null
     : rows.find((r) => !isBeaten(alphaBeatKey(r.title))) ?? null;
 
+  const ordered = useMemo(() => {
+    const out = [...shown];
+    if (sort === 'name') {
+      out.sort((a, b) => (a.title < b.title ? -1 : a.title > b.title ? 1 : 0));
+    } else if (sort === 'element') {
+      out.sort((a, b) => (a.elements[0] ?? '').localeCompare(b.elements[0] ?? '')
+        || (a.lv ?? 999) - (b.lv ?? 999));
+    }
+    return out;   // 'level' is the order buildRows already produced
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shown.length, sort, query, status, element, inReach]);
+
+  const SORTS: [SortKey, string][] = [
+    ['level', 'Easiest first'], ['name', 'By name'], ['element', 'By element'],
+  ];
+
   const FILTERS: [StatusFilter, string][] = [
     ['all', 'All'], ['todo', 'Still to beat'],
     ['beaten', 'Beaten'], ['caught', 'Caught'],
@@ -225,7 +246,7 @@ export function AlphasScreen() {
 
   return (
     <FlatList
-      data={shown}
+      data={ordered}
       keyExtractor={(r) => r.title}
       contentContainerStyle={{ padding: 16, paddingBottom: 28, gap: 8 }}
       initialNumToRender={12}
@@ -328,6 +349,32 @@ export function AlphasScreen() {
                     <Image source={ELEMENT_ICONS[el]} style={{ width: 13, height: 13 }} />
                   )}
                   <Text style={[s.chipText, { color: on ? c.fg : T.muted }]}>{el}</Text>
+                </Pressable>
+              );
+            })}
+          </View>
+
+          <View style={[s.wrap, { marginTop: 8 }]}>
+            {SORTS.map(([id, label]) => {
+              const on = sort === id;
+              return (
+                <Pressable key={id}
+                  onPress={() => {
+                    void Haptics.selectionAsync();
+                    setSort(id);
+                  }}
+                  accessibilityRole="button"
+                  accessibilityState={{ selected: on }}
+                  accessibilityLabel={label}
+                  style={[s.chip, {
+                    backgroundColor: on ? T.accentSoft : T.surface2,
+                    borderWidth: 1, borderColor: on ? T.accent : 'transparent',
+                    paddingVertical: 5, paddingHorizontal: 11,
+                  }]}
+                >
+                  <Text style={[s.chipText, { color: on ? T.accentInk : T.muted }]}>
+                    {label}
+                  </Text>
                 </Pressable>
               );
             })}
