@@ -257,16 +257,26 @@ export interface PassiveRow {
   effects: string;
 }
 
+/** Curly vs straight apostrophes differ between the two tables
+ * ("Demon's Hand" / "Demon’s Hand") — 2 of 21 disposable implants were
+ * lost to it before this normalization. */
+const passiveKey = (s: string): string => s.replace(/[’']/g, "'").trim();
+
 const PASSIVE_BY_NAME = new Map<string, PassiveRow>(
   (passivesJson as unknown as { passives: PassiveRow[] }).passives
-    .map((p) => [p.name, p]));
+    .map((p) => [passiveKey(p.name), p]));
+
+const PASSIVE_ITEM_SUBS = new Set([
+  'Essential_PassiveSkillChange',   // the 40 permanent implants
+  'ConsumePassiveSkillChange',      // the 21 disposable ones
+]);
 
 /** The passive an implant grants, with the game's own effect text. */
 export function implantPassive(id: string): PassiveRow | null {
   const it = ITEMS[id];
-  if (it?.subcategory !== 'Essential_PassiveSkillChange') return null;
-  const key = it.name.includes(': ') ? it.name.split(': ')[1] : it.name;
-  return PASSIVE_BY_NAME.get(key) ?? null;
+  if (!it || !PASSIVE_ITEM_SUBS.has(it.subcategory ?? '')) return null;
+  const key = it.name.includes(': ') ? it.name.split(': ').slice(1).join(': ') : it.name;
+  return PASSIVE_BY_NAME.get(passiveKey(key)) ?? null;
 }
 
 /* ---- reverse recipes: what can I MAKE with this? (IL20) ------------

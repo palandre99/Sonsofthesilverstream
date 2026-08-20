@@ -298,6 +298,29 @@ describe('eggs with no listed pals say so (IL26)', () => {
 });
 
 describe('implants name their passive, from the datamined table (IL25)', () => {
+  it('the disposable implants join too, curly apostrophes and all (IL27)', () => {
+    const disposable = Object.keys(ITEMS).filter(
+      (i) => ITEMS[i].subcategory === 'ConsumePassiveSkillChange');
+    expect(disposable.length).toBe(21);
+    const joined = disposable.filter((i) => implantPassive(i) != null);
+    // 20 of 21. The one exception is REAL, not a bug: "Disposable
+    // Implant: World Tree's Bounty" names a passive our datamined table
+    // (114 rows) does not carry — the nearest name is "World Tree
+    // Seedbed", and matching those would be inventing a fact.
+    expect(joined.length).toBe(20);
+    const missing = disposable.filter((i) => implantPassive(i) == null);
+    expect(ITEMS[missing[0]].name).toBe("Disposable Implant: World Tree's Bounty");
+    // the curly-apostrophe pair now joins
+    const demon = disposable.find((i) => ITEMS[i].name.includes('Hand'));
+    expect(implantPassive(demon!)?.name).toContain('Hand');
+  });
+
+  it('the row line carries the passive, not just "Passive skill item"', () => {
+    const code = readFileSync(
+      join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+    expect(code).toContain('bits.push(`${imp.name} · ${imp.effects}`)');
+  });
+
   it('all 40 implants resolve to a real passive with real effect text', () => {
     const implants = Object.keys(ITEMS).filter(
       (i) => ITEMS[i].subcategory === 'Essential_PassiveSkillChange');

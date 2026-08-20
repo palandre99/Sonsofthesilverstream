@@ -104,6 +104,12 @@ function statLine(id: string): string {
     }
   }
   if (!bits.length) {
+    // an implant row's whole point is its passive (IL27 — the card
+    // gained it at IL25 but the row still said "Passive skill item")
+    const imp = implantPassive(id);
+    if (imp) bits.push(`${imp.name} · ${imp.effects}`);
+  }
+  if (!bits.length) {
     // spheres show their capture power; accessories their grant; gliders
     // and meds their first effect (IL16 — the data was already shipped,
     // the rows just never used it)

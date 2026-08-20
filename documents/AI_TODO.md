@@ -2368,6 +2368,19 @@ work always"):**
       offline-complete, blueprint §5 criterion 7). Stays unbuilt until a
       datamined formula appears. What IS provable already ships: the 10
       spheres' exact capture powers and the module cross-links.
+- [x] IL27 2026-08-20: the audit went one level deeper — 605 LIST ROWS
+      still showed only a kind word. The fixable slice was the passive
+      items: implant CARDS gained their passive at IL25 but the ROWS
+      still read "Passive skill item", and the 21 disposable implants
+      had no passive at all. Both now read "Demon God · Attack +30%,
+      Defense +5%" in the list. A curly-apostrophe normalization
+      recovered 2 that were silently failing to match. HONEST
+      EXCEPTION, pinned by name: "Disposable Implant: World Tree's
+      Bounty" names a passive our 114-row datamined table does not
+      carry (nearest is "World Tree Seedbed") — matching those would be
+      inventing a fact, so it shows no passive. Skill fruits (93) and
+      saddles (138) were checked and deliberately left: their meaning
+      is already in their own names. 845 green, eye-verified.
 - [x] IL26 2026-08-20: honest empty states close the bare-card hunt.
       The 10 Mutated/Ominous/Dragon eggs match no pal in the game's own
       egg table, and silence on a card reads like a bug — they now say
