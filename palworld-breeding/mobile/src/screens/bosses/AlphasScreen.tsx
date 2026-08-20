@@ -11,7 +11,7 @@ import { FlatList, Pressable, Text, View } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { T } from '../../theme';
 import { getPlayerLevel, pals } from '../../store';
-import { navigateTo } from '../../nav/intent';
+import { onNavIntent, takeIntentPayload } from '../../nav/intent';
 import { Badge, Card, DataStamp, PalIcon, SearchInput, s } from '../../ui/kit';
 import { Icon } from '../../ui/Icon';
 import { ALPHA_STATS, type AlphaStat } from '../../data/alphaStats.g';
@@ -165,6 +165,19 @@ export function AlphasScreen() {
 
   const rows = useMemo(buildRows, []);
   const playerLevel = getPlayerLevel();
+
+  // arriving from a pal card's "prep this fight" opens that exact boss
+  useEffect(() => {
+    const apply = () => {
+      const t = takeIntentPayload('alphas')?.boss;
+      if (t) {
+        const hit = rows.find((r) => r.title === t);
+        if (hit) setOpen(hit);
+      }
+    };
+    apply();
+    return onNavIntent(apply);
+  }, [rows]);
 
   const beatenCountAll = rows.filter((r) => isBeaten(alphaBeatKey(r.title))).length;
   const caughtCountAll = rows.filter((r) => isBeaten(alphaCaughtKey(r.title))).length;

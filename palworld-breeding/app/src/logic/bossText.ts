@@ -11,6 +11,7 @@
  * the web port instead of waiting to be rewritten.
  */
 import type { BossDrop } from '../data/towerRaid.g';
+import { ELEMENT_CHART } from '../data/elementChart.g';
 
 /** The name a player uses: "Zoe & Grizzbolt", not the full ceremonial
  * title. Every paired boss in the data is "<one word> & <one word>" at
@@ -113,4 +114,43 @@ function bestPct(rows: BossDrop[]): number {
 /** 100% is "always" to a player; anything else keeps its number. */
 function pctWords(pct: number): string {
   return pct >= 100 ? 'always' : `${pct}% of the time`;
+}
+
+/** What a pal's own elements mean in a fight, for its Paldex card:
+ * what its attacks beat, and what beats it. Both halves come from the
+ * same chart the Bosses fane ranks with, so a card and a boss page can
+ * never disagree. Returns null when the pal has no element at all. */
+export function matchupSummary(elements: string[]):
+{ strongAgainst: string[]; weakTo: string[] } | null {
+  if (!elements.length) return null;
+  const strong = new Set<string>();
+  for (const el of elements) {
+    for (const t of ELEMENT_CHART[el]?.strong ?? []) strong.add(t);
+  }
+  // what hits THIS pal for double: an attacking element is only a real
+  // threat if the pal's OTHER element does not cancel it (Reptyro takes
+  // even damage from Grass), so the multiplier decides, not the chart row
+  const weak = new Set<string>();
+  for (const atk of Object.keys(ELEMENT_CHART)) {
+    let m = 1;
+    for (const el of elements) {
+      const row = ELEMENT_CHART[atk];
+      if (row?.strong.includes(el)) m *= 2;
+      else if (row?.weak.includes(el)) m *= 0.5;
+    }
+    if (m > 1) weak.add(atk);
+  }
+  return {
+    strongAgainst: [...strong].sort(),
+    weakTo: [...weak].sort(),
+  };
+}
+
+/** "Fire", "Fire and Water", "Electric, Grass and Ice" — three or more
+ * joined with "and" between every pair reads like a child's list, and
+ * the pal card printed exactly that on every dual-element pal. */
+export function listWords(items: string[]): string {
+  if (items.length <= 1) return items[0] ?? '';
+  if (items.length === 2) return `${items[0]} and ${items[1]}`;
+  return `${items.slice(0, -1).join(', ')} and ${items[items.length - 1]}`;
 }

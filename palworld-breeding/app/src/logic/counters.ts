@@ -21,6 +21,7 @@
  * not know them.
  */
 import { ELEMENT_CHART } from '../data/elementChart.g';
+import { listWords } from './bossText';
 
 /** damage multiplier of one attack element into one defending element */
 function cell(attack: string, defend: string): number {
@@ -192,5 +193,5 @@ export function weaknessLabel(bossElements: string[]): string {
     return 'Its element pairing cancels every counter — no element hits '
       + 'it for extra damage.';
   }
-  return `Weak to ${[...counters].sort().join(' and ')} attacks.`;
+  return `Weak to ${listWords([...counters].sort())} attacks.`;
 }

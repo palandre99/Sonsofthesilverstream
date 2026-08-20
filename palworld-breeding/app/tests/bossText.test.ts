@@ -5,7 +5,7 @@
  */
 import { describe, expect, it } from 'vitest';
 import {
-  effectWords, fmtHp, groupDrops, levelFit, shortName,
+  effectWords, fmtHp, groupDrops, levelFit, listWords, matchupSummary, shortName,
 } from '../src/logic/bossText';
 import { RAID_BOSSES, TOWER_BOSSES } from '../src/data/towerRaid.g';
 
@@ -116,5 +116,48 @@ describe('the drop table as a player reads it', () => {
       const items = new Set(b.drops.map((d) => d.item));
       expect(new Set(groupDrops(b.drops).map((l) => l.item))).toEqual(items);
     }
+  });
+});
+
+describe('what a pal card says its element means', () => {
+  it('names what it beats and what beats it', () => {
+    expect(matchupSummary(['Fire'])).toEqual({
+      strongAgainst: ['Grass', 'Ice'], weakTo: ['Water'],
+    });
+  });
+
+  it('a dual pal keeps both halves of its offense', () => {
+    expect(matchupSummary(['Fire', 'Water'])!.strongAgainst)
+      .toEqual(['Fire', 'Grass', 'Ice']);
+  });
+
+  it('an element pairing that CANCELS a threat does not list it', () => {
+    // Reptyro is Fire/Ground: Grass doubles the Ground half and is halved
+    // by the Fire half, so it lands even — it is not a weakness
+    expect(matchupSummary(['Fire', 'Ground'])!.weakTo).not.toContain('Grass');
+    expect(matchupSummary(['Fire', 'Ground'])!.weakTo).toEqual(['Water']);
+  });
+
+  it('says nothing at all for a pal with no element', () => {
+    expect(matchupSummary([])).toBeNull();
+  });
+
+  it('Neutral pals beat nothing and fear only Dark', () => {
+    expect(matchupSummary(['Neutral'])).toEqual({
+      strongAgainst: [], weakTo: ['Dark'],
+    });
+  });
+});
+
+describe('lists read like a person wrote them', () => {
+  it('joins two with “and”, three or more with commas', () => {
+    expect(listWords(['Fire'])).toBe('Fire');
+    expect(listWords(['Fire', 'Water'])).toBe('Fire and Water');
+    expect(listWords(['Electric', 'Grass', 'Ice']))
+      .toBe('Electric, Grass and Ice');
+  });
+
+  it('says nothing for an empty list', () => {
+    expect(listWords([])).toBe('');
   });
 });

@@ -19,7 +19,12 @@ export interface NavIntent {
    * one-tap way BACK to that card (CEO 2026-08-15: without it you had to
    * re-scroll the whole Paldex to reopen the pal you came from);
    * `item` opens an item's card in the Items fane (pal drops -> item) */
-  payload?: { pal?: string; item?: string; mode?: 'pair' | 'reverse'; fromCard?: string };
+  payload?: {
+    pal?: string; item?: string; mode?: 'pair' | 'reverse'; fromCard?: string;
+    /** open this exact boss when the destination is a Bosses tab —
+     * the alpha's own title, which is unique across the 205 */
+    boss?: string;
+  };
 }
 
 let pending: NavIntent | null = null;

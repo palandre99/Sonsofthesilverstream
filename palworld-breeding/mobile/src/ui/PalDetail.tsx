@@ -26,6 +26,7 @@ import { ALPHA_SPOTS } from '../data/alphaSpots.g';
 import { PALCALC_FACTS } from '../data/palcalcFacts.g';
 import { ALPHA_STATS } from '../data/alphaStats.g';
 import { bossLine } from '../alphaFacts';
+import { listWords, matchupSummary } from '../logic/bossText';
 
 /** The real ceiling of each stat, read from the data instead of guessed. The
  * bar used to divide by a hard-coded 150 and clamp, so all nine pals with 150
@@ -289,6 +290,24 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
               <ElementChips name={name} />
               {p.nocturnal ? <Badge kind="plain">nocturnal</Badge> : null}
             </View>
+            {/* what its element MEANS in a fight — same chart the Bosses
+                fane ranks counters with, so a card and a boss page can
+                never disagree */}
+            {(() => {
+              const m = matchupSummary(p.elements ?? []);
+              if (!m) return null;
+              return (
+                <Text style={{ color: T.faint, fontSize: 11.5, marginTop: 4 }}>
+                  {m.strongAgainst.length
+                    ? `Its ${p.elements!.join('/')} attacks hit ${
+                      listWords(m.strongAgainst)} for double`
+                    : 'No element it hits for double'}
+                  {m.weakTo.length
+                    ? ` · takes double from ${listWords(m.weakTo)}`
+                    : ' · nothing hits it for double'}
+                </Text>
+              );
+            })()}
           </View>
           <Btn label="✕" onPress={onClose} small />
         </View>
@@ -421,6 +440,15 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
               <Text style={[s.body, { fontSize: 12 }]}>
                 {bossLine(a2, { hp: p.hp, atk: p.atk, def: p.def, size: p.size })}
               </Text>
+              <View style={[s.wrap, { marginTop: 6 }]}>
+                <Btn small label="Prep this fight" onPress={() => {
+                  onClose();
+                  navigateTo({
+                    domain: 'bosses', tab: 'alphas',
+                    payload: { boss: a2.title },
+                  });
+                }} />
+              </View>
             </View>
           ))}
           {p.food != null && (
