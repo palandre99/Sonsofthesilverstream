@@ -141,19 +141,65 @@ copies moved together (E139 law):
 6. Respawn timers: ONE community-measured constant with variance and
    source, labelled in the UI exactly as such.
 
-## 6. Product build order (each phase shippable + published + eye-verified)
+## 6. WHAT EXISTS NOW (built 2026-08-18/19, all published)
 
-- **Phase A — Tower tab + the Boss Card** (campaign list, full anatomy,
-  counter block, map preview, Normal/Hard tracking on the found.ts
-  pattern). Phase-A bar: instantly the best tower guide in existence.
-- **Phase B — Alphas tab** (browse + filters + tracking + respawn note).
-- **Phase C — Raids tab** (roster, prep checklist, fight + Ultra toggle,
-  rewards).
-- **Phase D — Teams tab** (coverage matrix, ranked squads, gap rows;
-  saved-squad editor deliberately deferred, logged).
-- **Phase E — cross-links** (pal cards gain strong/weak chips; NavIntent
-  payload extension; map-side "Prep this fight" requested via the ledger
-  — the map lane owns their card; Suggested Goals fighting → Teams).
+All five tabs are real screens. Nothing in this fane is a coming-soon.
+
+| Tab | What it is |
+|---|---|
+| **Tower** | 13 fights in level order, "next up" tuned to your level, per-difficulty beaten ticks, level tinted by reach |
+| **Alphas** | all 205 titled bosses, element + "at my level" filters, search, beaten AND caught ticks, "next up" line |
+| **Paldex** | the shared centre anchor, untouched |
+| **Raids** | the 6 summoned bosses, the slab named and its recipe + fragment sources, Ultra/Master toggle |
+| **Teams** | your box scored against all nine elements, gap advice per element |
+
+**The Boss Card** (one anatomy, three flavours — `screens/bosses/`):
+header → are-you-ready (your pals ranked, then what is worth getting with
+a Where-to-catch / Breeding-plan button) → the fight's numbers and its
+own attack list → where it is → what winning gives you → your record.
+Tower/raid cards come from `BossCard.tsx`, alphas from `AlphaCard.tsx`,
+and both render the SAME sections from `sections.tsx` so they cannot
+drift apart.
+
+**Shared brains:** `logic/counters.ts` (matchups, parity-gated),
+`logic/bossText.ts` (wording rules, parity-gated), `bosses/
+counterPicks.ts` (who to bring / who to get — one module so the card and
+Teams agree), `bosses/record.ts` (per-profile beaten/caught),
+`bosses/whereTower.ts` (map join), `bosses/summoning.ts` (slab chain).
+
+## 6b. REFRESHING THE DATA AFTER A GAME PATCH
+
+Run in this order from `palworld-breeding/`. Every tool reports refusals
+rather than shipping a guess, so **read the output** — a silent drop is
+the thing these guards exist to prevent.
+
+```bash
+python3 tools/fetch_element_chart.py      # 2 wikis must agree cell-for-cell
+python3 tools/gen_element_chart.py        # -> both trees
+
+python3 tools/fetch_tower_raid_stats.py   # ~35 pages, ~2 min
+python3 tools/gen_tower_raid.py           # -> both trees
+
+python3 tools/fetch_alpha_stats.py        # ~207 pages, ~4 min
+python3 tools/gen_alpha_stats.py          # -> mobile
+
+python3 tools/fetch_pal_icons.py          # any new species' portrait
+```
+
+Then `npx vitest run` in `app/`. The boss tests pin counts on purpose
+(22 tower rows, 11 raid rows, 205 alphas, 234 drop rows, 11 of 13 tower
+map joins): **a changed count is a red test, not a silent change.** When
+the game really did change, update the pin in the same commit as the
+data and say so in the message.
+
+Known-fragile joins, all guarded by a test:
+- boss title -> map spot: the tables disagree by hand ("Bjorn & Bastigor"
+  vs the map's "Bjorn & Bastagor Tower"), so `whereTower.ts` tries three
+  keys and takes a spot only when exactly one matches;
+- slab code -> item: slab codes ARE item ids, so this breaks only if the
+  Items lane's index changes shape;
+- 22 drop names still do not resolve against the items index — that is
+  the items backbone's gap (B14), not ours, and it is pinned.
 
 ## 7. Gates and guards
 
