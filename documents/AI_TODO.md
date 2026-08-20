@@ -11609,3 +11609,32 @@ read off the running app, not the source.
 
 **Row sweep status:** weapons, materials, skill fruits, gliders, eggs,
 key items, consumables, schematics, pal gear — all swept.
+
+---
+
+## IL73 — seven digits with no separators (2026-08-20)
+
+Found while checking the third queued data gap. The Wing Pack card read:
+
+```
+Sells for      6508680 gold
+Stacks to      9999
+```
+
+The ROW has grouped its thousands since IL72; the card — which is where a
+player actually reads the number — had not. Both now do:
+`6,508,680 gold`. Verified on the running app.
+
+**Data gap 3 is CLOSED, and not by me.** "Wing Pack reads Speed 1000
+against 50–80" already has its rank context — IL64's effect ranks cover
+the glider card, which reads `Speed 1000 · #1 of 4`. I queued work that
+was already done; checking the card before queueing would have caught it.
+The ROW still shows a bare `Speed 1000`, left deliberately: the list is
+sorted by that number, so the ordering already says it, and the row has
+~200px.
+
+Gates: mobile `tsc --noEmit` clean, `npx vitest run` 1030/1030.
+
+**Data gaps 1 and 2 remain open** and need a pipeline fetch, not code:
+Life/Power/Stout Fruit carry only `Nutrition 1`, and Glider Tera has no
+speed where the other four gliders do.

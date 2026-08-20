@@ -569,11 +569,17 @@ function ItemDetail({ id, trail = [], onClose, onBack, onOpenItem }: {
                 {it.weight != null && it.weight > 0 && (
                   <Fact label="Weight" value={String(it.weight)} />
                 )}
+                {/* IL73: the Wing Pack card read "6508680 gold" — seven
+                    digits with no separators, and a stack of "9999" the
+                    same. The row has grouped its thousands since IL72;
+                    the card, which is where a player actually reads the
+                    number, had not. */}
                 {it.price != null && it.price > 0 && (
-                  <Fact label="Sells for" value={`${it.price} gold`} />
+                  <Fact label="Sells for"
+                    value={`${it.price.toLocaleString()} gold`} />
                 )}
                 {it.maxStack != null && it.maxStack > 1 && (
-                  <Fact label="Stacks to" value={String(it.maxStack)} />
+                  <Fact label="Stacks to" value={it.maxStack.toLocaleString()} />
                 )}
               </View>
             </Card>

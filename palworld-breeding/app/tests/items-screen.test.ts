@@ -1795,3 +1795,21 @@ describe('no row ends at its kind word when a real fact exists (IL72)', () => {
     expect(dead.length - left.length).toBe(209);
   });
 });
+
+describe('big numbers on a card are grouped (IL73)', () => {
+  it('the price and the stack size both group their thousands', () => {
+    const code = readFileSync(
+      join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+    const block = code.slice(code.indexOf('IL73'), code.indexOf('IL73') + 800);
+    expect(block).toContain('${it.price.toLocaleString()} gold');
+    expect(block).toContain('it.maxStack.toLocaleString()');
+    expect(block).not.toContain('`${it.price} gold`');
+  });
+
+  it('there are prices long enough to need it', () => {
+    const wing = itemIdByName('Wing Pack')!;
+    expect(ITEMS[wing].price).toBe(6508680);
+    const long = ITEM_IDS.filter((i) => (ITEMS[i].price ?? 0) >= 10000);
+    expect(long.length).toBeGreaterThan(100);
+  });
+});
