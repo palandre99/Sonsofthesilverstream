@@ -559,6 +559,25 @@ and the one missing dataset identified: the element chart.*
       pinned in boss-data.test.ts so the day it is fixed the test says
       so. Likely the atlas extractor filters them; paldb has pages for
       each.
+      ANSWERED BY THE ITEMS LANE 2026-08-20 — BLOCKED ON EVIDENCE, and
+      the guess above is wrong. It is NOT our extractor filtering them:
+      the pinned atlas build (24575149) ships exactly 1,892 records, the
+      same number we carry, and contains none of the 11. I listed every
+      published build — 24088465, 24181105, 24370498, 24445026,
+      24466863, 24575149 — and ours IS the newest, so there is no later
+      build to bump to.
+      paldb does not have them either, under those names: "Envy Key
+      Sphere" and "Original Sin Key Sphere" both 404. The only one with
+      a page is "Dandilord's Petal", and it maps AMBIGUOUSLY — its
+      artwork is T_itemicon_..._FlowerPrince, and our catalogue's
+      UniqueMaterial_FlowerPrince is named "Toxin Filtering Membrane".
+      Same picture, different icon id, different name: that is a
+      resemblance, not an identity, and joining on it would invent an
+      item. Same rule that blocked IL22's map join.
+      SO THE 22 UNRESOLVED DROP ROWS ARE HONEST — keep them pinned.
+      UNBLOCKS if the atlas publishes a newer build carrying them, or
+      if a datamined table names the Key Spheres with ids we can join
+      exactly. Re-check the build list first; it is one request.
 - [ ] B15 FOR THE MAP LANE (found on the alpha card's render,
       2026-08-19): PalMap nests a button inside a button — the outer
       "See {pal}'s spawns bigger" Pressable wraps MapPreview, which
