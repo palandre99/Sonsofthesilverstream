@@ -2312,7 +2312,7 @@ work always"):**
    and reported with the reasoning. Only true CEO-only blockers (Apple
    logins, purchases, money, his own device) stop a tick.
 
-- [ ] IL40 FOUND 2026-08-20 by testing the CEO's own ask ("tells stats,
+- [x] IL40 2026-08-20 (found and DONE the same day) by testing the CEO's own ask ("tells stats,
       how to craft/where to find and so on") against every card: 106 of
       the 1,892 cards CANNOT ANSWER "how do I get this?" — no recipe, no
       tier craft, no tech node, no drop, no chest, no shop, no research,
@@ -2328,10 +2328,42 @@ work always"):**
       These pages' Production rows probably lack those ids, so they were
       correctly refused rather than mis-parsed — the fix is to find what
       identity those rows DO carry, not to loosen the rule.
-      NEXT TICK: sweep all 106 pages, count how many have a Production
-      section, and report the exact-identity join rate. Ship what joins;
-      for the rest say plainly on the card that the game files record no
-      source, the way IL26 did for the eggs. Never fuzzy-match.
+      DONE 2026-08-20 — and the cause was NOT what this entry guessed.
+      I predicted the Production rows lacked the hover ids IL2 requires.
+      They do not: they parse perfectly. The generator was THROWING THE
+      MATERIALS AWAY. A base Production row (no schematic) only ever
+      contributed its work amount and Lv.1 time; the `recipe` came from
+      a separate sweep, and when that sweep found nothing the row's
+      ingredients were discarded even though the row proves itself
+      exactly as a tier row does — product hover is the page's own id,
+      every material name resolves against the backbone.
+      45 ITEMS GAINED THE ONLY RECIPE EVIDENCE THEY HAD: Charcoal (2
+      Wood), Fire Arrow, Crossbow, Cloth Outfit, the Fire Awakening
+      Crystal (50 Fire Radiant Gem · 10 World Tree Holy Water), the pal
+      gloves and the pal hats. It never overwrites a validated recipe —
+      the guard is `not f.get("recipe")` — and 6 rows were still refused
+      because a material name did not resolve, which is the rule working.
+      Eye-verified: Charcoal's card reads "10 work — about 20s with
+      Handiwork Lv. 1 · 2× Wood", with Wood tappable. The from-scratch
+      bill grew with it, 1,071 -> 1,088 items.
+      HONEST SCORECARD: silent cards 106 -> 102, because most of the 45
+      already had SOME source (tech or a chest) and were not in the 106.
+      The recipe was still missing from all 45 cards, which is the point.
+- [ ] IL41 THE REMAINING 102 2026-08-20, measured and split so the next
+      tick does not re-audit: 53 PAL EGGS, 26 IMPLANTS, 5 Grappling Gun
+      tiers, and 18 others. These are NOT all the same problem:
+      - The 53 eggs already answer "what is this" (they list what
+        hatches). What they cannot say is where an egg comes from —
+        and the honest answer is breeding, which this app HAS. IL26
+        already offers the breeding calculator on the 10 eggs with no
+        hatch table; extend that to all 53.
+      - The 26 implants have NO source anywhere upstream (probed: their
+        pages carry Stats and nothing else). Say so plainly, the IL26
+        way — "the game files record no source for this" — rather than
+        leaving a card that looks unfinished. Never invent one.
+      - The 5 Grappling Gun tiers have no page at all upstream, which is
+        the same gap that hid its icon and its name (IL35, IL36).
+      Decide per group; do not write one message for all three.
 - [x] IL39 2026-08-20: THE SEARCH COUNT TELLS THE TRUTH NOW. The header
       counted the rows it DREW, not the matches that exist — "armor"
       said "14 results" when 130 things matched, "a" said 26 for 1,627 —

@@ -701,10 +701,11 @@ describe('the screen speaks plainly and cites its sources', () => {
       for (const r of roll.gather) expect(steps.has(r.id)).toBe(false);
       if (roll.steps.length) withDepth++;
     }
-    // 1,355 items are craftable; these are the ones whose ingredients
-    // are themselves crafted, so the bill says something the recipe did
-    // not. The 11 items the game loops back on itself are not among them.
-    expect(withDepth).toBe(1071);
+    // These are the craftable items whose ingredients are themselves
+    // crafted, so the bill says something the recipe did not. The 11
+    // items the game loops back on itself are not among them. Rose from
+    // 1,071 when IL40 recovered 45 recipes from Production rows.
+    expect(withDepth).toBe(1088);
     // Anything told to you as "go and get this" must genuinely be
     // uncraftable — except the items the game loops back on itself,
     // which are listed here BY NAME rather than waved through.

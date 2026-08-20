@@ -261,3 +261,45 @@ describe('three copies, byte-identical (the E139 law)', () => {
     expect(b).toBe(c);
   });
 });
+
+describe('a base Production row is recipe evidence too (IL40)', () => {
+  const facts = (JSON.parse(readFileSync(
+    join(__dirname, '../../data/item_facts_1_0.json'), 'utf8')) as {
+      counts: Record<string, number>;
+      facts: Record<string, { recipe?: { id: string; n: number }[] }>;
+    });
+  const items = (JSON.parse(readFileSync(
+    join(__dirname, '../../data/items_1_0.json'), 'utf8')) as {
+      items: Record<string, { name: string }>;
+    }).items;
+
+  it('45 items got the only recipe evidence they had', () => {
+    // the recipe sweep found nothing for these; their page's base
+    // Production row proves itself the same way a tier row does
+    expect(facts.counts.recipeFromProduction).toBe(45);
+  });
+
+  it('the recovered recipes name real items and real amounts', () => {
+    const charcoal = facts.facts.Charcoal?.recipe;
+    expect(charcoal).toEqual([{ id: 'Wood', n: 2 }]);
+    const crystal = facts.facts.PalAwakening_Fire?.recipe;
+    expect(crystal?.map((r) => `${r.n}x ${items[r.id].name}`)).toEqual([
+      '50x Fire Radiant Gem', '10x World Tree Holy Water',
+    ]);
+  });
+
+  it('every recovered ingredient resolves against the backbone', () => {
+    for (const [id, f] of Object.entries(facts.facts)) {
+      for (const r of f.recipe ?? []) {
+        expect(items[r.id], `${id} lists unknown ingredient ${r.id}`).toBeTruthy();
+        expect(r.n).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it('it never overwrites a recipe the sweep already validated', () => {
+    const tool = readFileSync(
+      join(__dirname, '../../tools/gen_item_facts.py'), 'utf8');
+    expect(tool).toContain('if not f.get("recipe") and tc["product"] in ids:');
+  });
+});

@@ -328,13 +328,28 @@ def main() -> None:
                     # base-tier rows duplicate `recipe`; only the
                     # schematic tiers carry new, provable attribution
                     crafts.append(tc)
-                elif "schematic" not in tc and "craftWork" not in f:
+                elif "schematic" not in tc:
                     # the base row still tells us the base craft's work
                     # and Lv.1 time
-                    if tc.get("work") is not None:
-                        f["craftWork"] = tc["work"]
-                    if tc.get("t1"):
-                        f["craftTime"] = tc["t1"]
+                    if "craftWork" not in f:
+                        if tc.get("work") is not None:
+                            f["craftWork"] = tc["work"]
+                        if tc.get("t1"):
+                            f["craftTime"] = tc["t1"]
+                    # ...and for 46 items it is the ONLY recipe evidence
+                    # that exists: the recipe sweep found nothing for the
+                    # Crossbow, Charcoal, Fire Arrow or the pal hats, so
+                    # their cards could not say how to make them at all
+                    # (IL40). The row proves itself exactly as a tier row
+                    # does — the product hover is this page's own id and
+                    # every material name resolves against the backbone —
+                    # so the same evidence that is good enough for a tier
+                    # is good enough here. Never overwrites a recipe the
+                    # sweep already validated.
+                    if not f.get("recipe") and tc["product"] in ids:
+                        f["recipe"] = tc["mats"]
+                        counts["recipeFromProduction"] = \
+                            counts.get("recipeFromProduction", 0) + 1
         if crafts:
             f["crafts"] = crafts
             counts["tierCrafts"] += len(crafts)

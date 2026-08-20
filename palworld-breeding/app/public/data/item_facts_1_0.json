@@ -1,7 +1,7 @@
 {
  "source": {
   "backbone": "items_1_0.json (atlas build 24575149)",
-  "pages": "paldb.cc item pages, captured 2026-08-19 — stats/recipes/tech/sources accepted only at exact internal-id identity with the backbone",
+  "pages": "paldb.cc item pages, captured 2026-08-20 — stats/recipes/tech/sources accepted only at exact internal-id identity with the backbone",
   "descriptions": "the game's own strings; where the raw string carries placeholder tags, the shipped text is paldb's rendering of the game's name tables, cross-checked: every item link's text must equal the backbone name for its internal id",
   "tech": "paldb /en/Technologies: level, point cost, ancient flag per node; joined to items by the node id each item page carries"
  },
@@ -21,8 +21,9 @@
   "tierCraftRefusals": 498,
   "grants": 360,
   "research": 360,
+  "recipeFromProduction": 45,
   "descsFromBackbone": 1,
-  "taggedDescriptions": 1306
+  "taggedDescriptions": 1334
  },
  "mapObjectNames": {
   "Altar": "Summoning Altar",
@@ -7344,6 +7345,20 @@
    },
    "craftWork": 40,
    "craftTime": "1m20s",
+   "recipe": [
+    {
+     "id": "Wood",
+     "n": 2
+    },
+    {
+     "id": "Stone",
+     "n": 2
+    },
+    {
+     "id": "FireOrgan",
+     "n": 1
+    }
+   ],
    "shops": [
     "Caravan merchant",
     "Dungeon merchant",
@@ -7365,6 +7380,20 @@
    },
    "craftWork": 40,
    "craftTime": "1m20s",
+   "recipe": [
+    {
+     "id": "Wood",
+     "n": 2
+    },
+    {
+     "id": "Stone",
+     "n": 2
+    },
+    {
+     "id": "Venom",
+     "n": 1
+    }
+   ],
    "shops": [
     "Caravan merchant",
     "Dungeon merchant"
@@ -8513,7 +8542,21 @@
     "cost": 1
    },
    "craftWork": 20,
-   "craftTime": "40s"
+   "craftTime": "40s",
+   "recipe": [
+    {
+     "id": "Wood",
+     "n": 5
+    },
+    {
+     "id": "Fiber",
+     "n": 10
+    },
+    {
+     "id": "Leather",
+     "n": 3
+    }
+   ]
   },
   "AutoMealPouch_Tier2": {
    "tech": {
@@ -8521,7 +8564,21 @@
     "cost": 2
    },
    "craftWork": 80,
-   "craftTime": "2m40s"
+   "craftTime": "2m40s",
+   "recipe": [
+    {
+     "id": "Wood",
+     "n": 10
+    },
+    {
+     "id": "Fiber",
+     "n": 30
+    },
+    {
+     "id": "Leather",
+     "n": 10
+    }
+   ]
   },
   "AutoMealPouch_Tier3": {
    "tech": {
@@ -8529,7 +8586,21 @@
     "cost": 3
    },
    "craftWork": 300,
-   "craftTime": "10m0s"
+   "craftTime": "10m0s",
+   "recipe": [
+    {
+     "id": "Wood",
+     "n": 20
+    },
+    {
+     "id": "Fiber",
+     "n": 50
+    },
+    {
+     "id": "Leather",
+     "n": 20
+    }
+   ]
   },
   "AutoMealPouch_Tier4": {
    "recipe": [
@@ -8603,7 +8674,17 @@
     "cost": 1
    },
    "craftWork": 5,
-   "craftTime": "10s"
+   "craftTime": "10s",
+   "recipe": [
+    {
+     "id": "Stone",
+     "n": 5
+    },
+    {
+     "id": "Wood",
+     "n": 5
+    }
+   ]
   },
   "Axe_Tier_01": {
    "tech": {
@@ -8611,7 +8692,21 @@
     "cost": 2
    },
    "craftWork": 50,
-   "craftTime": "1m40s"
+   "craftTime": "1m40s",
+   "recipe": [
+    {
+     "id": "Stone",
+     "n": 15
+    },
+    {
+     "id": "Wood",
+     "n": 20
+    },
+    {
+     "id": "CopperIngot",
+     "n": 15
+    }
+   ]
   },
   "Axe_Tier_02": {
    "recipe": [
@@ -9035,6 +9130,12 @@
     "cost": 1
    },
    "craftTime": "15s",
+   "recipe": [
+    {
+     "id": "Wood",
+     "n": 5
+    }
+   ],
    "desc": "A Wooden Club for close range combat.\nCan beat a small Pal to a pulp if need be."
   },
   "Bat2": {
@@ -9043,7 +9144,17 @@
     "cost": 1
    },
    "craftWork": 20,
-   "craftTime": "40s"
+   "craftTime": "40s",
+   "recipe": [
+    {
+     "id": "Wood",
+     "n": 30
+    },
+    {
+     "id": "Stone",
+     "n": 10
+    }
+   ]
   },
   "Bat3": {
    "recipe": [
@@ -36696,6 +36807,24 @@
    },
    "craftWork": 150,
    "craftTime": "5m0s",
+   "recipe": [
+    {
+     "id": "Wood",
+     "n": 50
+    },
+    {
+     "id": "Stone",
+     "n": 40
+    },
+    {
+     "id": "CopperIngot",
+     "n": 10
+    },
+    {
+     "id": "MachineParts",
+     "n": 2
+    }
+   ],
    "crafts": [
     {
      "product": "BowGun_2",
@@ -36807,6 +36936,24 @@
    },
    "craftWork": 150,
    "craftTime": "5m0s",
+   "recipe": [
+    {
+     "id": "Wood",
+     "n": 50
+    },
+    {
+     "id": "Stone",
+     "n": 40
+    },
+    {
+     "id": "CopperIngot",
+     "n": 10
+    },
+    {
+     "id": "MachineParts",
+     "n": 2
+    }
+   ],
    "crafts": [
     {
      "product": "BowGun_2",
@@ -36918,6 +37065,24 @@
    },
    "craftWork": 150,
    "craftTime": "5m0s",
+   "recipe": [
+    {
+     "id": "Wood",
+     "n": 50
+    },
+    {
+     "id": "Stone",
+     "n": 40
+    },
+    {
+     "id": "CopperIngot",
+     "n": 10
+    },
+    {
+     "id": "MachineParts",
+     "n": 2
+    }
+   ],
    "crafts": [
     {
      "product": "BowGun_2",
@@ -37029,6 +37194,24 @@
    },
    "craftWork": 150,
    "craftTime": "5m0s",
+   "recipe": [
+    {
+     "id": "Wood",
+     "n": 50
+    },
+    {
+     "id": "Stone",
+     "n": 40
+    },
+    {
+     "id": "CopperIngot",
+     "n": 10
+    },
+    {
+     "id": "MachineParts",
+     "n": 2
+    }
+   ],
    "crafts": [
     {
      "product": "BowGun_2",
@@ -37140,6 +37323,24 @@
    },
    "craftWork": 150,
    "craftTime": "5m0s",
+   "recipe": [
+    {
+     "id": "Wood",
+     "n": 50
+    },
+    {
+     "id": "Stone",
+     "n": 40
+    },
+    {
+     "id": "CopperIngot",
+     "n": 10
+    },
+    {
+     "id": "MachineParts",
+     "n": 2
+    }
+   ],
    "crafts": [
     {
      "product": "BowGun_2",
@@ -37251,6 +37452,20 @@
    },
    "craftWork": 80,
    "craftTime": "2m40s",
+   "recipe": [
+    {
+     "id": "Wood",
+     "n": 50
+    },
+    {
+     "id": "Stone",
+     "n": 12
+    },
+    {
+     "id": "Fiber",
+     "n": 30
+    }
+   ],
    "desc": "An enhanced bow that allows three arrows to be fired simultaneously.\nBy some strange mechanism, it only consumes a single Arrow when fired."
   },
   "BronzeSword": {
@@ -37850,6 +38065,12 @@
   "Charcoal": {
    "craftWork": 10,
    "craftTime": "20s",
+   "recipe": [
+    {
+     "id": "Wood",
+     "n": 2
+    }
+   ],
    "research": [
     "Kindling Lv1",
     "Kindling Lv2",
@@ -39204,6 +39425,16 @@
    },
    "craftWork": 20,
    "craftTime": "40s",
+   "recipe": [
+    {
+     "id": "Cloth",
+     "n": 2
+    },
+    {
+     "id": "Fiber",
+     "n": 7
+    }
+   ],
    "crafts": [
     {
      "product": "ClothArmor_2",
@@ -39290,6 +39521,16 @@
    },
    "craftWork": 40,
    "craftTime": "1m20s",
+   "recipe": [
+    {
+     "id": "Cloth",
+     "n": 3
+    },
+    {
+     "id": "IceOrgan",
+     "n": 2
+    }
+   ],
    "crafts": [
     {
      "product": "ClothArmorCold_2",
@@ -39376,6 +39617,16 @@
    },
    "craftWork": 40,
    "craftTime": "1m20s",
+   "recipe": [
+    {
+     "id": "Cloth",
+     "n": 3
+    },
+    {
+     "id": "IceOrgan",
+     "n": 2
+    }
+   ],
    "crafts": [
     {
      "product": "ClothArmorCold_2",
@@ -39462,6 +39713,16 @@
    },
    "craftWork": 40,
    "craftTime": "1m20s",
+   "recipe": [
+    {
+     "id": "Cloth",
+     "n": 3
+    },
+    {
+     "id": "IceOrgan",
+     "n": 2
+    }
+   ],
    "crafts": [
     {
      "product": "ClothArmorCold_2",
@@ -39548,6 +39809,16 @@
    },
    "craftWork": 40,
    "craftTime": "1m20s",
+   "recipe": [
+    {
+     "id": "Cloth",
+     "n": 3
+    },
+    {
+     "id": "IceOrgan",
+     "n": 2
+    }
+   ],
    "crafts": [
     {
      "product": "ClothArmorCold_2",
@@ -39634,6 +39905,16 @@
    },
    "craftWork": 40,
    "craftTime": "1m20s",
+   "recipe": [
+    {
+     "id": "Cloth",
+     "n": 3
+    },
+    {
+     "id": "IceOrgan",
+     "n": 2
+    }
+   ],
    "crafts": [
     {
      "product": "ClothArmorCold_2",
@@ -40330,6 +40611,16 @@
    },
    "craftWork": 20,
    "craftTime": "40s",
+   "recipe": [
+    {
+     "id": "Cloth",
+     "n": 2
+    },
+    {
+     "id": "Fiber",
+     "n": 7
+    }
+   ],
    "crafts": [
     {
      "product": "ClothArmor_2",
@@ -40416,6 +40707,16 @@
    },
    "craftWork": 20,
    "craftTime": "40s",
+   "recipe": [
+    {
+     "id": "Cloth",
+     "n": 2
+    },
+    {
+     "id": "Fiber",
+     "n": 7
+    }
+   ],
    "crafts": [
     {
      "product": "ClothArmor_2",
@@ -40502,6 +40803,16 @@
    },
    "craftWork": 20,
    "craftTime": "40s",
+   "recipe": [
+    {
+     "id": "Cloth",
+     "n": 2
+    },
+    {
+     "id": "Fiber",
+     "n": 7
+    }
+   ],
    "crafts": [
     {
      "product": "ClothArmor_2",
@@ -40588,6 +40899,16 @@
    },
    "craftWork": 20,
    "craftTime": "40s",
+   "recipe": [
+    {
+     "id": "Cloth",
+     "n": 2
+    },
+    {
+     "id": "Fiber",
+     "n": 7
+    }
+   ],
    "crafts": [
     {
      "product": "ClothArmor_2",
@@ -49777,6 +50098,16 @@
    },
    "craftWork": 2000,
    "craftTime": "1h6m40s",
+   "recipe": [
+    {
+     "id": "Thermal_Core",
+     "n": 1
+    },
+    {
+     "id": "StainlessSteel",
+     "n": 2
+    }
+   ],
    "shops": [
     "Caravan merchant"
    ],
@@ -52792,6 +53123,16 @@
    },
    "craftWork": 500,
    "craftTime": "16m40s",
+   "recipe": [
+    {
+     "id": "StainlessSteel",
+     "n": 3
+    },
+    {
+     "id": "Thermal_Core",
+     "n": 1
+    }
+   ],
    "drops": [
     {
      "src": "Syndicate Elite",
@@ -59249,6 +59590,12 @@
   "GYM_Head_Desert": {
    "craftWork": 150,
    "craftTime": "5m0s",
+   "recipe": [
+    {
+     "id": "Cloth",
+     "n": 1
+    }
+   ],
    "drops": [
     {
      "src": "PIDF Commander Marcus & Faleris Lv.78 (Tower Hard)",
@@ -59260,6 +59607,12 @@
   "GYM_Head_Electric": {
    "craftWork": 150,
    "craftTime": "5m0s",
+   "recipe": [
+    {
+     "id": "Cloth",
+     "n": 1
+    }
+   ],
    "drops": [
     {
      "src": "Brothers of the Eternal Pyre Soul Leader Axel & Orserk Lv.76 (Tower Hard)",
@@ -59271,6 +59624,12 @@
   "GYM_Head_Forest": {
    "craftWork": 150,
    "craftTime": "5m0s",
+   "recipe": [
+    {
+     "id": "Cloth",
+     "n": 1
+    }
+   ],
    "drops": [
     {
      "src": "Free Pal Alliance Founder Lily & Lyleen Lv.74 (Tower Hard)",
@@ -59282,6 +59641,12 @@
   "GYM_Head_Grass": {
    "craftWork": 150,
    "craftTime": "5m0s",
+   "recipe": [
+    {
+     "id": "Cloth",
+     "n": 1
+    }
+   ],
    "drops": [
     {
      "src": "Rayne Syndicate Boss Zoe & Grizzbolt Lv.72 (Tower Hard)",
@@ -59293,6 +59658,12 @@
   "GYM_Head_Sakurajima": {
    "craftWork": 150,
    "craftTime": "5m0s",
+   "recipe": [
+    {
+     "id": "Cloth",
+     "n": 1
+    }
+   ],
    "drops": [
     {
      "src": "Leader of the Moonflowers Saya & Selyne Lv.80 (Tower Hard)",
@@ -59304,6 +59675,12 @@
   "GYM_Head_Snow": {
    "craftWork": 150,
    "craftTime": "5m0s",
+   "recipe": [
+    {
+     "id": "Cloth",
+     "n": 1
+    }
+   ],
    "drops": [
     {
      "src": "PAL Genetic Research Unit Commander Victor & Shadowbeak Lv.80 (Tower Hard)",
@@ -59315,6 +59692,12 @@
   "GYM_Head_Viking": {
    "craftWork": 150,
    "craftTime": "5m0s",
+   "recipe": [
+    {
+     "id": "Cloth",
+     "n": 1
+    }
+   ],
    "drops": [
     {
      "src": "Jarl of Feybreak  Bjorn & Bastigor Lv.80 (Tower Hard)",
@@ -60453,7 +60836,17 @@
     ]
    ],
    "craftWork": 40,
-   "craftTime": "1m20s"
+   "craftTime": "1m20s",
+   "recipe": [
+    {
+     "id": "Wood",
+     "n": 10
+    },
+    {
+     "id": "Cloth",
+     "n": 2
+    }
+   ]
   },
   "Glider_Super": {
    "recipe": [
@@ -64210,6 +64603,12 @@
   "HeadEquip023": {
    "craftWork": 10,
    "craftTime": "20s",
+   "recipe": [
+    {
+     "id": "Cloth",
+     "n": 1
+    }
+   ],
    "grants": [
     "Grass Damage Reduction Lv. 1"
    ],
@@ -64221,6 +64620,12 @@
   "HeadEquip024": {
    "craftWork": 10,
    "craftTime": "20s",
+   "recipe": [
+    {
+     "id": "Cloth",
+     "n": 1
+    }
+   ],
    "grants": [
     "Ice Damage Reduction Lv. 1"
    ],
@@ -64336,6 +64741,12 @@
   "HeadEquip027": {
    "craftWork": 10,
    "craftTime": "20s",
+   "recipe": [
+    {
+     "id": "Cloth",
+     "n": 1
+    }
+   ],
    "grants": [
     "Dark Damage Reduction Lv. 1"
    ],
@@ -64400,6 +64811,12 @@
   "HeadEquip029": {
    "craftWork": 10,
    "craftTime": "20s",
+   "recipe": [
+    {
+     "id": "Cloth",
+     "n": 1
+    }
+   ],
    "grants": [
     "Neutral Damage Reduction Lv. 1"
    ],
@@ -64411,6 +64828,12 @@
   "HeadEquip030": {
    "craftWork": 10,
    "craftTime": "20s",
+   "recipe": [
+    {
+     "id": "Cloth",
+     "n": 1
+    }
+   ],
    "grants": [
     "Earth Damage Reduction Lv. 1"
    ],
@@ -64528,6 +64951,12 @@
   "HeadEquip033": {
    "craftWork": 10,
    "craftTime": "20s",
+   "recipe": [
+    {
+     "id": "Cloth",
+     "n": 1
+    }
+   ],
    "grants": [
     "Neutral Damage Reduction Lv. 1"
    ],
@@ -64606,6 +65035,12 @@
   "HeadEquip048": {
    "craftWork": 150,
    "craftTime": "5m0s",
+   "recipe": [
+    {
+     "id": "Cloth",
+     "n": 1
+    }
+   ],
    "drops": [
     {
      "src": "High Keeper of the Azure Covenant Auri & Shaolong Lv.80 (Tower Hard)",
@@ -64617,6 +65052,12 @@
   "HeadEquip049": {
    "craftWork": 150,
    "craftTime": "5m0s",
+   "recipe": [
+    {
+     "id": "Cloth",
+     "n": 1
+    }
+   ],
    "drops": [
     {
      "src": "Blightstar Calamity Zenara & Astralym Lv.100 (Tower Hard)",
@@ -85933,6 +86374,16 @@
    },
    "craftWork": 2000,
    "craftTime": "1h6m40s",
+   "recipe": [
+    {
+     "id": "Thermal_Core",
+     "n": 1
+    },
+    {
+     "id": "StainlessSteel",
+     "n": 1
+    }
+   ],
    "shops": [
     "Caravan merchant"
    ],
@@ -86770,6 +87221,16 @@
   "PalAwakening_Fire": {
    "craftWork": 300,
    "craftTime": "10m0s",
+   "recipe": [
+    {
+     "id": "PalAwakening_Material_Fire",
+     "n": 50
+    },
+    {
+     "id": "WorldTreeHolyWater",
+     "n": 10
+    }
+   ],
    "desc": "A crystal formed from condensed World Tree energy.\nIt awakens Fire Pals, releasing their hidden power."
   },
   "PalAwakening_Grass": {
@@ -97044,7 +97505,17 @@
     "cost": 1
    },
    "craftWork": 5,
-   "craftTime": "10s"
+   "craftTime": "10s",
+   "recipe": [
+    {
+     "id": "Stone",
+     "n": 5
+    },
+    {
+     "id": "Wood",
+     "n": 5
+    }
+   ]
   },
   "Pickaxe_Tier_01": {
    "tech": {
@@ -97052,7 +97523,21 @@
     "cost": 2
    },
    "craftWork": 50,
-   "craftTime": "1m40s"
+   "craftTime": "1m40s",
+   "recipe": [
+    {
+     "id": "Stone",
+     "n": 15
+    },
+    {
+     "id": "Wood",
+     "n": 20
+    },
+    {
+     "id": "CopperIngot",
+     "n": 15
+    }
+   ]
   },
   "Pickaxe_Tier_02": {
    "recipe": [
@@ -103335,6 +103820,20 @@
    },
    "craftWork": 10,
    "craftTime": "20s",
+   "recipe": [
+    {
+     "id": "Wood",
+     "n": 10
+    },
+    {
+     "id": "Fiber",
+     "n": 5
+    },
+    {
+     "id": "MachineParts",
+     "n": 1
+    }
+   ],
    "desc": "Planks made from processed wood for easier use.\nMore versatile than raw logs, with a wide variety of uses.\nCan be crafted at Primitive Workbench."
   },
   "PumpActionShotgun": {
@@ -124457,6 +124956,20 @@
   "SkillUnlock_FlyingManta_Thunder": {
    "craftWork": 120,
    "craftTime": "4m0s",
+   "recipe": [
+    {
+     "id": "Cloth",
+     "n": 10
+    },
+    {
+     "id": "ElectricOrgan",
+     "n": 5
+    },
+    {
+     "id": "Pal_crystal_S",
+     "n": 6
+    }
+   ],
    "desc": "Gloves for modifying the performance of the equipped glider, if Celaray Lux is in your team."
   },
   "SkillUnlock_Garm": {
@@ -124855,11 +125368,39 @@
   "SkillUnlock_Hedgehog": {
    "craftWork": 50,
    "craftTime": "1m40s",
+   "recipe": [
+    {
+     "id": "Cloth",
+     "n": 5
+    },
+    {
+     "id": "ElectricOrgan",
+     "n": 5
+    },
+    {
+     "id": "Pal_crystal_S",
+     "n": 5
+    }
+   ],
    "desc": "Rubber gloves for handling Jolthog.\nActivate its Partner Skill to throw Jolthog\nas a shock grenade."
   },
   "SkillUnlock_Hedgehog_Ice": {
    "craftWork": 60,
    "craftTime": "2m0s",
+   "recipe": [
+    {
+     "id": "Cloth",
+     "n": 6
+    },
+    {
+     "id": "IceOrgan",
+     "n": 6
+    },
+    {
+     "id": "Pal_crystal_S",
+     "n": 6
+    }
+   ],
    "desc": "Rubber gloves for handling Jolthog Cryst.\nActivate its Partner Skill to throw Jolthog Cryst\nas an ice grenade."
   },
   "SkillUnlock_Horus": {
@@ -133482,7 +134023,17 @@
     "cost": 2
    },
    "craftWork": 10,
-   "craftTime": "20s"
+   "craftTime": "20s",
+   "recipe": [
+    {
+     "id": "Wood",
+     "n": 18
+    },
+    {
+     "id": "Stone",
+     "n": 6
+    }
+   ]
   },
   "Spear_2": {
    "tech": {
@@ -133490,7 +134041,21 @@
     "cost": 2
    },
    "craftWork": 100,
-   "craftTime": "3m20s"
+   "craftTime": "3m20s",
+   "recipe": [
+    {
+     "id": "Wood",
+     "n": 27
+    },
+    {
+     "id": "Stone",
+     "n": 12
+    },
+    {
+     "id": "CopperIngot",
+     "n": 10
+    }
+   ]
   },
   "Spear_3": {
    "tech": {
@@ -133498,7 +134063,21 @@
     "cost": 3
    },
    "craftWork": 1000,
-   "craftTime": "33m20s"
+   "craftTime": "33m20s",
+   "recipe": [
+    {
+     "id": "Wood",
+     "n": 36
+    },
+    {
+     "id": "Stone",
+     "n": 18
+    },
+    {
+     "id": "IronIngot",
+     "n": 10
+    }
+   ]
   },
   "Spear_ForestBoss": {
    "recipe": [
@@ -140182,7 +140761,17 @@
     "cost": 1
    },
    "craftWork": 10,
-   "craftTime": "20s"
+   "craftTime": "20s",
+   "recipe": [
+    {
+     "id": "Wood",
+     "n": 2
+    },
+    {
+     "id": "Stone",
+     "n": 2
+    }
+   ]
   },
   "TreasureBoxKey01": {
    "drops": [
@@ -141500,6 +142089,20 @@
    },
    "craftWork": 20,
    "craftTime": "40s",
+   "recipe": [
+    {
+     "id": "Wood",
+     "n": 30
+    },
+    {
+     "id": "Stone",
+     "n": 5
+    },
+    {
+     "id": "Fiber",
+     "n": 15
+    }
+   ],
    "crafts": [
     {
      "product": "WeakerBow_2",
@@ -141570,6 +142173,20 @@
    },
    "craftWork": 20,
    "craftTime": "40s",
+   "recipe": [
+    {
+     "id": "Wood",
+     "n": 30
+    },
+    {
+     "id": "Stone",
+     "n": 5
+    },
+    {
+     "id": "Fiber",
+     "n": 15
+    }
+   ],
    "crafts": [
     {
      "product": "WeakerBow_2",
@@ -141640,6 +142257,20 @@
    },
    "craftWork": 20,
    "craftTime": "40s",
+   "recipe": [
+    {
+     "id": "Wood",
+     "n": 30
+    },
+    {
+     "id": "Stone",
+     "n": 5
+    },
+    {
+     "id": "Fiber",
+     "n": 15
+    }
+   ],
    "crafts": [
     {
      "product": "WeakerBow_2",
@@ -141710,6 +142341,20 @@
    },
    "craftWork": 20,
    "craftTime": "40s",
+   "recipe": [
+    {
+     "id": "Wood",
+     "n": 30
+    },
+    {
+     "id": "Stone",
+     "n": 5
+    },
+    {
+     "id": "Fiber",
+     "n": 15
+    }
+   ],
    "crafts": [
     {
      "product": "WeakerBow_2",
@@ -141780,6 +142425,20 @@
    },
    "craftWork": 20,
    "craftTime": "40s",
+   "recipe": [
+    {
+     "id": "Wood",
+     "n": 30
+    },
+    {
+     "id": "Stone",
+     "n": 5
+    },
+    {
+     "id": "Fiber",
+     "n": 15
+    }
+   ],
    "crafts": [
     {
      "product": "WeakerBow_2",
