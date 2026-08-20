@@ -12695,3 +12695,10 @@ the lesson it guarded (never silently show nothing) is intact.
 **Cross-links are now symmetric in every direction the fane has:** pal →
 item, item → pal, breeding → item, item → breeding, item → its products,
 and filter → the setting it depends on.
+
+**Publish-gate nuance worth knowing.** The IL97 preview publish reported
+a dirty marker (`b7209f5*`). The dirty file was
+`app/tests/mobile-goals-rank.test.ts` — 33 lines of another lane's work,
+and **outside `mobile/`, which is the only tree `eas update` bundles.**
+It could not reach the phone. So the gate is not "is anything dirty" but
+"is anything dirty INSIDE mobile/": `git diff --numstat -- palworld-breeding/mobile`.
