@@ -11845,3 +11845,46 @@ Gates: mobile `tsc --noEmit` clean, `npx vitest run` 1043/1043.
 **Next unswept surface:** search and sort. "Strongest" ranks by
 attack-else-defence-else-nutrition-else-capture, which is apples to
 oranges down a mixed list — CHECK IT before calling it a fault.
+
+---
+
+## IL79 + IL80 — search and sort swept; two real faults (2026-08-20)
+
+**IL79 — "Strongest first" was comparing a cake to a gun.** `powerOf`
+falls through attack → defence → nutrition → capture power and the sort
+compared whatever it found as if the numbers measured the same thing.
+Measured down the full index, the exact flip:
+
+```
+Vegetable Cake (696 nutrition)  ABOVE  Laser Gatling Gun (689 attack)
+```
+
+The sort now separates the axes first and ranks by value within each. **A
+single-kind list is unchanged** — every weapon shares one axis, so the
+Weapons tab orders exactly as it always did, and the test pins that. The
+mixed list now runs weapons, then armour, then food, then spheres, then
+the things with no number; measured across all 1,504 rows, **zero pairs
+are out of axis order**, where before the cake/gun flip was the first of
+many.
+
+**IL80 — the filter sheet promised a number it would not deliver.** With
+"Advanced Bow" in the search box the sheet's button read **"Show 105
+items"** and tapping it produced **"5 items found"**. The count was
+computed with an empty query while the box still held one. Both numbers
+now come from the same call with the same query: **"Show 5 items"** →
+**"5 items found"**. Verified on the running app.
+
+**Checked and NOT changed:** search matches names, kind words, grants,
+effect labels and implant passives, but not descriptions — that is
+deliberate and documented at the haystack. No fuzzy matching either: a
+misspelling returns nothing. Logged below rather than fixed, because a
+guess about what someone meant is the opposite of this app's promise.
+
+Gates: mobile `tsc --noEmit` clean, `npx vitest run` 1048/1048.
+
+### QUEUED, with evidence
+
+- **A misspelling is a dead end.** "grapling" returns zero rows and the
+  screen says so honestly, but offers nothing. A "did you mean" needs an
+  edit-distance pass over 1,892 names — cheap, and it never has to guess
+  silently: it can OFFER and let the player choose.

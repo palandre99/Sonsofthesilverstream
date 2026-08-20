@@ -263,6 +263,26 @@ export const powerOf = (id: string): number =>
   // rather than because it is the best one (IL55)
   ?? captureNumber(id) ?? -1;
 
+/** WHICH number `powerOf` found — 0 attack, 1 defence, 2 nutrition,
+ * 3 capture power, 4 nothing.
+ *
+ * IL79: "Strongest first" compared those numbers to each other as if
+ * they measured the same thing, so down a mixed list a **Vegetable Cake
+ * (696 nutrition) sat above a Laser Gatling Gun (689 attack)**. They are
+ * not comparable and the app should not pretend they are. Sorting the
+ * axes apart costs nothing on a single-kind list — every item there
+ * shares one axis, so the order is exactly what it always was. */
+export const powerAxisOf = (id: string): number =>
+  ITEM_STATS[id]?.atk != null ? 0
+    : ITEM_STATS[id]?.def != null ? 1
+      : effectNumber(id, 'Nutrition') != null ? 2
+        : captureNumber(id) != null ? 3 : 4;
+
+/** The axis a whole family is ranked on — its base tier's, since every
+ * tier of a thing measures the same way. */
+export const familyPowerAxisOf = (id: string): number =>
+  Math.min(...familyOf(id).map(powerAxisOf));
+
 /** Where a sphere's capture power sits among all of them (IL65). The
  * ROW has ranked spheres since IL55, but the CARD said a bare "Capture
  * Power 33" — 33 out of what? Ten spheres run from 7 to 64, and that
@@ -821,7 +841,9 @@ export const familyPowerOf = (id: string): number =>
 
 export function sortItems(ids: string[], sort: ItemSort, byFamily = false): string[] {
   if (byFamily && sort === 'power') {
-    return [...ids].sort((a, b) => familyPowerOf(b) - familyPowerOf(a)
+    return [...ids].sort((a, b) =>
+      familyPowerAxisOf(a) - familyPowerAxisOf(b)
+      || familyPowerOf(b) - familyPowerOf(a)
       || ITEMS[a].name.localeCompare(ITEMS[b].name));
   }
   const out = [...ids];
@@ -832,8 +854,10 @@ export function sortItems(ids: string[], sort: ItemSort, byFamily = false): stri
     out.sort((a, b) => (ITEMS[b].rarity ?? 0) - (ITEMS[a].rarity ?? 0)
       || ITEMS[a].name.localeCompare(ITEMS[b].name));
   } else {
-    // strongest first; stat-less items keep name order at the tail
-    out.sort((a, b) => powerOf(b) - powerOf(a)
+    // strongest first WITHIN one kind of number; stat-less items keep
+    // name order at the tail
+    out.sort((a, b) => powerAxisOf(a) - powerAxisOf(b)
+      || powerOf(b) - powerOf(a)
       || ITEMS[a].name.localeCompare(ITEMS[b].name)
       || (ITEMS[a].rarity ?? 0) - (ITEMS[b].rarity ?? 0));
   }

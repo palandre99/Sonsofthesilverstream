@@ -1438,8 +1438,8 @@ const Section = ({ title, children }: {
   </View>
 );
 
-function ItemFilterSheet({ filters, sort, home, onApply, onClose }: {
-  filters: ItemFilters; sort: ItemSort; home: string;
+function ItemFilterSheet({ filters, sort, home, query, onApply, onClose }: {
+  filters: ItemFilters; sort: ItemSort; home: string; query: string;
   onApply: (f: ItemFilters, sk: ItemSort) => void; onClose: () => void;
 }) {
   const [f, setF] = useState<ItemFilters>(filters);
@@ -1461,7 +1461,11 @@ function ItemFilterSheet({ filters, sort, home, onApply, onClose }: {
     });
   const pickSort = (k: ItemSort) => setSk(sk === k ? 'power' : k);
 
-  const n = applyItemFilters(f, '', level).length;
+  // IL80: this counted with an EMPTY query while the search box still
+  // held one, so with "Advanced Bow" typed the button promised "Show 105
+  // items" and the list then said "5 items found". The button is a
+  // promise about what the next tap shows; count what it will show.
+  const n = applyItemFilters(f, query, level).length;
   return (
     <Modal visible animationType="slide" presentationStyle="pageSheet"
       onRequestClose={onClose}>
@@ -1730,6 +1734,7 @@ export function ItemsScreen({ initialGroup = 'weapons' }: { initialGroup?: strin
       )}
       {sheet && (
         <ItemFilterSheet filters={filters} sort={sort} home={initialGroup}
+          query={q}
           onApply={(f, sk) => { setFilters(f); setSort(sk); setSheet(false); }}
           onClose={() => setSheet(false)} />
       )}

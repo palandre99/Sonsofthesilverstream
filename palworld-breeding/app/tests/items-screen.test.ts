@@ -16,7 +16,7 @@ import {
   rawMaterialsFor,
   rankAxisOf, rankValueOf, recipeOf, hasTierCosts, rivalsOf, rollupOfMats,
   saysTheSame,
-  familyLine, statLine,
+  familyLine, statLine, familyPowerAxisOf,
   groupOf, ITEM_IDS,
   schematicsFor, searchItems, spokenCraftTime, sortItems, statRank, TAB_GROUPS, teachesOf,
   tierWord, usedInOf, weaponsForAmmo,
@@ -1937,5 +1937,54 @@ describe('a shared item does not contradict itself (IL78)', () => {
     const raw = ITEM_FACTS[bow]!.craftTime!;
     expect(spokenCraftTime(raw)).toBe('5h 33m 20s');
     expect(spokenTime(buildTime({ [bow]: 1 }).seconds)).toBe('5h 33m 20s');
+  });
+});
+
+describe('"Strongest" never compares two different numbers (IL79)', () => {
+  const rows = () => sortItems(collapseFamilies(ITEM_IDS), 'power', true);
+
+  it('a cake no longer outranks a gatling gun', () => {
+    // the fault, exactly: Vegetable Cake carries Nutrition 696 and the
+    // Laser Gatling Gun carries Attack 689, and 696 > 689
+    const cake = itemIdByName('Vegetable Cake')!;
+    const gun = itemIdByName('Laser Gatling Gun')!;
+    expect(familyPowerOf(cake)).toBe(696);
+    expect(familyPowerOf(gun)).toBe(689);
+    const r = rows();
+    expect(r.indexOf(gun)).toBeLessThan(r.indexOf(cake));
+  });
+
+  it('no pair anywhere in the index is out of axis order', () => {
+    const r = rows();
+    for (let k = 1; k < r.length; k++) {
+      expect(familyPowerAxisOf(r[k])).toBeGreaterThanOrEqual(
+        familyPowerAxisOf(r[k - 1]));
+    }
+  });
+
+  it('a single-kind list is ordered exactly as it always was', () => {
+    // every weapon shares one axis, so grouping changes nothing there
+    const guns = collapseFamilies(idsInGroup('weapons'));
+    const sorted = sortItems(guns, 'power', true);
+    const byValue = [...guns].sort((a, b) => familyPowerOf(b) - familyPowerOf(a)
+      || ITEMS[a].name.localeCompare(ITEMS[b].name));
+    expect(sorted.map((i) => ITEMS[i].name).slice(0, 15))
+      .toEqual(byValue.map((i) => ITEMS[i].name).slice(0, 15));
+  });
+});
+
+describe('the filter sheet promises what it will show (IL80)', () => {
+  it('the button counts the search box too', () => {
+    const code = readFileSync(
+      join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+    expect(code).toContain('const n = applyItemFilters(f, query, level).length;');
+    expect(code).not.toContain("applyItemFilters(f, '', level)");
+    // and the query actually reaches it
+    expect(code.replace(/\s+/g, ' ')).toContain('query={q}');
+  });
+
+  it('the two numbers come from one function', () => {
+    // "Advanced Bow" across everything: 5 rows, and the button said 105
+    expect(collapseFamilies(searchItems('Advanced Bow')).length).toBe(5);
   });
 });
