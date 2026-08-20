@@ -2427,6 +2427,25 @@ work always"):**
       now show together ("Lv 57 ×1 building"), eye-verified, and the
       row is still 343×58 with nothing clipped. Pinned by a test that
       reads inside the build branch for the level marker. 918 green.
+- [ ] IL49 A WHOLE-FANE EYE SWEEP 2026-08-20: the fane gained a great
+      deal of UI this week — MatChips on four surfaces (IL34), the
+      "what it really costs" accordion (IL33), honest empty states
+      (IL41), leaderboard subtitles (IL42), the build panel with its
+      list/warning/time lines (IL43/46/47), and a two-part row marker
+      (IL45/46). Each was eye-checked ALONE, in isolation, on the card
+      or screen it changed. Nothing has looked at the five tabs
+      end-to-end since.
+      Every real defect this week came from LOOKING (the overlapping
+      chips, "pal exp item", "1 thing" vs "5 things", the hidden Lv
+      marker), and the CEO judges by looking. So: open all five tabs at
+      375×812, open a card of each shape (weapon with tiers, armor,
+      food, sphere, schematic, egg, implant, raw material), and with a
+      build list BOTH empty and full. Look for wrapped labels, clipped
+      text, doubled markers, sections in the wrong order, anything that
+      reads as unfinished.
+      Report what is found even if the answer is "nothing" — a clean
+      sweep that is actually clean is a result. Fix only what is real;
+      do not redesign on a whim.
 - [x] IL48 2026-08-20: MEASURED — no lag, but one real coupling found.: the Items screen has grown a
       lot since IL28 last measured it (0.013 ms per row, 17 ms for a
       full 1,892-item collapse+sort) and NOTHING has been measured
