@@ -2609,7 +2609,33 @@ work always"):**
       never a long sleep chain, so no step is lost to the timeout. Only
       then decide whether anything is actually broken. Do NOT tell the
       CEO anything is broken until a clean run says so twice.
-- [ ] IL59 THE REAL, NARROWED FINDING 2026-08-20 (supersedes IL58):
+- [ ] IL60 THE ACTUAL SHAPE 2026-08-20 (supersedes IL58 and IL59, both
+      of which I framed wrongly): OPENING A PAL CARD FAILS WHENEVER THE
+      JUMP CROSSES A DOMAIN. It has nothing to do with which control
+      sends it.
+      PROVED BY ONE CHANGE OF VARIABLE — the same top-bar search, fired
+      from two places:
+        from the Breeding domain (Paldex already showing) -> card OPENS
+        from the Items domain (must switch domain)        -> NO card
+      And the egg hatcher chip, which lives in Items, fails for the
+      same reason — not because it is an item card, which is what IL59
+      claimed.
+      HYPOTHESIS THAT NOW FITS EVERYTHING: crossing domains REMOUNTS
+      PaldexScreen. The listener fires first and calls setOpen(pal) on
+      the OLD instance; the remount then throws that state away, and
+      the fresh instance's mount-time apply() finds nothing because
+      takeIntentPayload already cleared the payload. Staying inside
+      Breeding never remounts, so it works there.
+      A ONE-FRAME DELAY DOES NOT FIX IT — tested, killed, reverted. The
+      modal-timing idea in IL59 was wrong.
+      LIKELY FIX, needs care: stop `takeIntentPayload` destroying the
+      payload before the destination has actually mounted — e.g. clear
+      it only when the next navigateTo arrives, or have the taker
+      acknowledge. nav/intent.ts is SHARED with the Bosses lane (their
+      boss cards route through it), so agree the semantics with them
+      before changing it, and check their screens still preselect.
+      TEST METHOD: one short javascript_exec per step; "Close" is the
+      only reliable proof a card is open.
       a pal link fired from INSIDE AN ITEM CARD does not open the pal's
       card; the same link fired from the TOP-BAR SEARCH does. Both call
       navigateTo with the identical payload, so the mailbox is fine.
