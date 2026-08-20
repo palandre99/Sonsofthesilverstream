@@ -225,11 +225,22 @@ function ItemRow({ id, showGroup, collapsed, level, onOpen }: {
             {showGroup && groupOf(id) ? `  ·  ${groupOf(id)}` : ''}
           </Text>
           {/* the player's own state outranks the game's trivia — a row
-              on the build list says so before it says its weight */}
+              on the build list says so before it says its weight.
+              BOTH show together when both apply: IL45's marker was
+              REPLACING the out-of-reach level, so adding a thing you
+              cannot build yet quietly hid the one warning about it
+              (self-caught at IL46, the tick that reads these levels). */}
           {inBuild > 0 ? (
-            <Text style={{ color: T.accentInk, fontSize: 11, fontWeight: '800' }}>
-              ×{inBuild} building
-            </Text>
+            <View style={[s.row, { gap: 5 }]}>
+              {lockedAt != null && (
+                <Text style={{ color: T.goldInk, fontSize: 11, fontWeight: '700' }}>
+                  Lv {lockedAt}
+                </Text>
+              )}
+              <Text style={{ color: T.accentInk, fontSize: 11, fontWeight: '800' }}>
+                ×{inBuild} building
+              </Text>
+            </View>
           ) : lockedAt != null ? (
             <Text style={{ color: T.goldInk, fontSize: 11, fontWeight: '700' }}>
               Lv {lockedAt}
@@ -318,6 +329,14 @@ function BuildPanel({ onOpenItem }: { onOpenItem: (id: string) => void }) {
   if (!ids.length) return null;
   const totals = buildTotals(list);
   const things = ids.reduce((a, i) => a + list[i], 0);
+  // IL46: the row already says "Lv 67" when the player's own technology
+  // level cannot reach a thing, and this panel ignored it — so a list
+  // could send someone off to farm 376 Ore for something twenty levels
+  // away. Only when a level is actually SET (IL21's rule: no level, no
+  // claim), and never a block — planning ahead is allowed.
+  const level = getPlayerLevel();
+  const locked = level == null
+    ? [] : ids.filter((i) => (unlockLevel(i) ?? 0) > level);
   return (
     <Card style={{ marginBottom: 8 }}>
       <Pressable
@@ -331,9 +350,17 @@ function BuildPanel({ onOpenItem }: { onOpenItem: (id: string) => void }) {
         <Text style={[s.h3, { flex: 1 }]}>
           My build — {things} thing{things === 1 ? '' : 's'}
         </Text>
-        <Text style={{ color: T.muted, fontSize: 12 }}>
-          {totals.gather.length} to gather
-        </Text>
+        {/* collapsed, this line is all a player reads before going off
+            to farm — so an out-of-reach item outranks the count */}
+        {locked.length > 0 ? (
+          <Text style={{ color: T.goldInk, fontSize: 12, fontWeight: '700' }}>
+            {locked.length} out of reach
+          </Text>
+        ) : (
+          <Text style={{ color: T.muted, fontSize: 12 }}>
+            {totals.gather.length} to gather
+          </Text>
+        )}
       </Pressable>
       {open && (
         <View style={{ marginTop: 8 }}>
@@ -361,6 +388,16 @@ function BuildPanel({ onOpenItem }: { onOpenItem: (id: string) => void }) {
               </View>
             ))}
           </View>
+          {locked.length > 0 && (
+            <Text style={[s.body, {
+              fontSize: 12, color: T.goldInk, marginTop: 6,
+            }]}>
+              {locked.length === 1
+                ? `${ITEMS[locked[0]].name} needs technology level ${unlockLevel(locked[0])} — you are level ${level}.`
+                : `${locked.length} of these need a higher technology level than ${level}: `
+                  + locked.map((i) => `${ITEMS[i].name} (Lv ${unlockLevel(i)})`).join(', ')}
+            </Text>
+          )}
           <Text style={[s.body, {
             fontSize: 11.5, color: T.muted, marginTop: 8, paddingTop: 8,
             borderTopWidth: 1, borderTopColor: T.line,

@@ -2403,7 +2403,7 @@ work always"):**
       actually sends. The app already had the idiom (the Paldex ships
       "Share my list…", PaldexScreen.tsx:390), so this matched a
       pattern rather than inventing one.
-- [ ] IL46 FOUND BY IL45 2026-08-20: THE BUILD LIST DOES NOT KNOW WHAT
+- [x] IL46 2026-08-20: THE BUILD LIST KNOWS WHAT
       THE ROW ABOVE IT KNOWS. IL21 already marks a row "Lv 67" in gold
       when the player's own technology level cannot reach it, and IL43's
       panel ignores that entirely — so a player can assemble a list,
@@ -2412,11 +2412,21 @@ work always"):**
       shipped and already used: 681 of the 1,421 craftable items carry a
       technology level (min 1, median 45, max 80), and `unlockLevel()`
       lives in the same file as the panel.
-      Say it in the panel the way the row says it: "2 of these need a
-      higher technology level — Lv 67, Lv 71". Only when the player HAS
-      set a level (IL21's rule; no level set means no claim), and never
-      as a blocker — a player planning ahead is allowed to want a thing
-      they cannot build yet. This is honesty, not a gate.
+      DONE 2026-08-20. Collapsed, the panel now reads "My build — 3
+      things · 1 out of reach" in gold, because that ONE line is all a
+      player reads before going off to farm. Opened, it names it: "Beam
+      Sword needs technology level 57 — you are level 40." It warns and
+      never blocks — the Beam Sword's 169 Ore is still counted in the
+      totals, because planning ahead is allowed. Silent unless a level
+      is actually set (IL21's rule: no level, no claim), and a test
+      pins that the panel never filters the list or disables anything.
+      A REGRESSION OF MY OWN, CAUGHT BY THIS TICK: IL45's "×1 building"
+      marker REPLACED the row's gold "Lv 57", so adding a thing you
+      cannot build yet quietly hid the only warning about it — the
+      exact failure this item exists to fix, one screen earlier. Both
+      now show together ("Lv 57 ×1 building"), eye-verified, and the
+      row is still 343×58 with nothing clipped. Pinned by a test that
+      reads inside the build branch for the level marker. 918 green.
 - [ ] IL47 FOUND BY IL45 2026-08-20: the build panel counts MATERIALS
       but never TIME. 742 of the craftable items ship a work amount and
       a Handiwork Lv. 1 time (Beam Sword: 5,000 work, 2h46m40s), the

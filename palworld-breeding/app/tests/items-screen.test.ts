@@ -1087,3 +1087,54 @@ describe('adding to the build costs the row no width (IL45)', () => {
     expect(code).toContain('Hold to add it to your build');
   });
 });
+
+describe('the build list knows what your level can reach (IL46)', () => {
+  const code = readFileSync(
+    join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+
+  it('warns only when a level is actually set — no level, no claim', () => {
+    expect(code).toContain('const level = getPlayerLevel();');
+    expect(code).toContain("level == null\n    ? [] : ids.filter((i) => (unlockLevel(i) ?? 0) > level);");
+  });
+
+  it('says it collapsed too, where a player reads before farming', () => {
+    expect(code).toContain('{locked.length} out of reach');
+    expect(code).toContain('needs technology level ${unlockLevel(locked[0])}');
+  });
+
+  it('it is a warning, never a block — nothing is removed or disabled', () => {
+    // scoped to the PANEL: the index's own "what I can build" filter
+    // (IL21) legitimately does filter by level, and must not be caught
+    const panel = code.slice(code.indexOf('function BuildPanel('),
+      code.indexOf('const techLine = techSentence;'));
+    expect(panel).toContain('ids.filter((i) => (unlockLevel(i) ?? 0) > level)');
+    expect(panel, 'the panel dropped items instead of warning')
+      .not.toMatch(/ids\s*=\s*ids\.filter/);
+    expect(panel).not.toContain('disabled={locked');
+    // the totals are still computed from the WHOLE list
+    expect(panel).toContain('buildTotals(list)');
+  });
+
+  it('a build marker no longer HIDES the out-of-reach level (self-caught)', () => {
+    // IL45 replaced the gold Lv marker with "xN building", so adding a
+    // thing you cannot build yet hid the only warning about it
+    expect(code).toContain('{lockedAt != null && (');
+    expect(code).toContain('×{inBuild} building');
+    const rowBlock = code.slice(code.indexOf('{inBuild > 0 ? ('),
+      code.indexOf('{it.weight != null'));
+    expect(rowBlock, 'the level marker is not inside the build branch')
+      .toContain('Lv {lockedAt}');
+  });
+
+  it('the levels it quotes are the real shipped ones', () => {
+    const facts = (FACTS as { facts: Record<string, {
+      tech?: { level: number }; recipe?: unknown }> }).facts;
+    const levelled = Object.keys(facts).filter((i) => facts[i].tech?.level);
+    expect(levelled.length).toBe(701);
+    // 681 of those are things you CRAFT — the ones a build list holds
+    const craftable = levelled.filter((i) => facts[i].recipe);
+    expect(craftable.length).toBe(681);
+    // the family's EASIEST tier is what unlockLevel reports (IL21)
+    expect(facts.BeamSword!.tech!.level).toBe(57);
+  });
+});
