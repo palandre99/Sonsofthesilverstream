@@ -2320,3 +2320,36 @@ describe('a material card says what it is for (IL89)', () => {
       "made.length === 1 ? 'What it makes' : 'What you can make with it'");
   });
 });
+
+describe('an implant card can plan the breed it points at (IL90)', () => {
+  it('implants really do name a passive the breeding side knows', () => {
+    const brave = itemIdByName('Implant: Brave')!;
+    const p = implantPassive(brave)!;
+    expect(p.name).toBe('Brave');
+    expect(p.effects).toContain('Attack');
+    // and it is not a one-off: every implant resolves to a passive
+    const implants = ITEM_IDS.filter((i) => /^Implant: /.test(ITEMS[i].name));
+    expect(implants.length).toBeGreaterThan(20);
+    for (const i of implants) expect(implantPassive(i)).toBeTruthy();
+  });
+
+  it('the card sends the passive to the Odds Lab', () => {
+    const code = readFileSync(
+      join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+    const block = code.slice(code.indexOf('IL90'), code.indexOf('IL90') + 800);
+    expect(block).toContain('`Plan a breed for ${p.name}`');
+    expect(block).toContain("domain: 'breeding', tab: 'odds'");
+    expect(block).toContain('payload: { passive: p.name }');
+  });
+
+  it('the Odds Lab puts it on a parent AND ticks it as wanted', () => {
+    const odds = readFileSync(
+      join(__dirname, '../../mobile/src/screens/OddsScreen.tsx'), 'utf8');
+    const block = odds.slice(odds.indexOf('IL90'), odds.indexOf('IL90') + 900);
+    expect(block).toContain("takeIntentPayload('odds')");
+    expect(block).toContain('setA(');
+    expect(block).toContain('setWant(');
+    // a parent has four slots and the payload must not overflow them
+    expect(block).toContain('.slice(0, SLOTS)');
+  });
+});

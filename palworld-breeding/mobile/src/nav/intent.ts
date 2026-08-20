@@ -27,6 +27,9 @@ export interface NavIntent {
      * their startup path; they know the name and the count, and the
      * Items fane already holds the table, so it does the lookup. */
     itemNamed?: string; qty?: number;
+    /** a passive by its game name — an implant card knows which passive
+     * it grants and the Odds Lab is the screen that can plan for it */
+    passive?: string;
     /** open this exact boss when the destination is a Bosses tab —
      * the alpha's own title, which is unique across the 205 */
     boss?: string;

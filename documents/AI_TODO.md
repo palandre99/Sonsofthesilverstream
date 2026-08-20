@@ -12312,3 +12312,39 @@ not broken. It is simply ahead of where they meant it to be.
 4. When holding, keep building and publish the backlog once it clears.
 
 **Publishing is HELD from here** until AlphasScreen.tsx settles.
+
+---
+
+## IL90 — an implant card can plan the breed it points at (2026-08-20)
+
+An implant card names the passive it grants — *"The passive it gives:
+Brave, Tier 1, Attack +10%"* — and then stopped. The screen that can
+actually DO something about wanting Brave on a pal is one domain away,
+and the player was left to walk there and retype it.
+
+```
+The passive it gives
+Brave   TIER 1
+Attack +10%
+[ Plan a breed for Brave ]
+```
+
+One tap lands on the Odds Lab with **Brave on a parent and ticked as
+wanted** — `Pool 1 · wanted 1`, verified on the running app — so the
+odds on screen are already the ones the player came for. The payload
+carries the passive by name and respects the game's four-slot limit.
+
+That is the third cross-link this session and the pattern is now
+symmetric: pal → item, breeding → item (the cake hand-off), item →
+breeding.
+
+### CHECKED, NOT A FAULT — the fifth this session
+
+A probe said **42 cards are "thin"**, 30 of them implants. Opening one
+showed a full card: description, numbers, the passive with its tier and
+effect, and the honest sourceless line. My probe simply had not counted
+`implantPassive` as a section. The remaining twelve are the eggs and the
+four items whose pages 404 — already known and already honest.
+
+Gates: mobile `tsc --noEmit` clean across the WHOLE tree including the
+Bosses lane, `npx vitest run` 1081/1081.

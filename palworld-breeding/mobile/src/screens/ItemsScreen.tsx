@@ -622,6 +622,17 @@ function ItemDetail({ id, trail = [], onClose, onBack, onOpenItem }: {
                 <Text style={[s.body, { marginTop: 4, fontSize: 12.5 }]}>
                   {p.effects}
                 </Text>
+                {/* IL90: the card named the passive and stopped. The Odds
+                    Lab is the screen that can plan a breed for it, and it
+                    is one domain away — so send the passive rather than
+                    leaving the player to go and retype it. */}
+                <View style={{ marginTop: 10 }}>
+                  <Btn small label={`Plan a breed for ${p.name}`}
+                    onPress={() => navigateTo({
+                      domain: 'breeding', tab: 'odds',
+                      payload: { passive: p.name },
+                    })} />
+                </View>
               </Card>
             );
           })()}

@@ -6,7 +6,7 @@ import { Badge, Btn, Card, PageHead, s } from '../ui/kit';
 import { Icon } from '../ui/Icon';
 import { pals, passives } from '../store';
 import { cleanEffect } from '../data/palText';
-import { navigateTo } from '../nav/intent';
+import { navigateTo, onNavIntent, takeIntentPayload } from '../nav/intent';
 import {
   attemptsFor, CAKES, cakeById, ivOdds, mutationPlan, oddsTable, passiveOdds,
   type CakeId,
@@ -320,6 +320,21 @@ function PassivesTab() {
   const [want, setWant] = useState<string[]>(oddsSession.want);
   const [cake, setCake] = useState<CakeId>(oddsSession.cake);
   const [picking, setPicking] = useState<'a' | 'b' | null>(null);
+
+  // IL90: an implant card names the passive it grants and could go no
+  // further — the screen that can actually plan for that passive is this
+  // one. It arrives as a name, gets put on a parent AND ticked as wanted,
+  // so the odds below are already the ones the player came to see.
+  useEffect(() => {
+    const apply = () => {
+      const p = takeIntentPayload('odds');
+      if (!p?.passive) return;
+      setA((cur) => (cur.includes(p.passive!) ? cur : [...cur, p.passive!].slice(0, SLOTS)));
+      setWant((cur) => (cur.includes(p.passive!) ? cur : [...cur, p.passive!]));
+    };
+    apply();
+    return onNavIntent(apply);
+  }, []);
   useEffect(() => {
     oddsSession.a = a;
     oddsSession.b = b;
