@@ -12407,3 +12407,37 @@ now says **"strongest first"** rather than "best tier first".
 Gates: mobile `tsc --noEmit` clean, `npx vitest run` 1086/1086. Two older
 tests were re-pinned: gliders/bait DO get an axis now, and the row shows
 `rivalShowOf`.
+
+---
+
+## IL92 — "SAN resist -100000 · #12 of 12" (2026-08-20)
+
+Found by opening the Mysterious Mushroom Juice card as a player. It read:
+
+```
+SAN resist    -100000 · #12 of 12
+```
+
+Measured across the shipped data, **SAN resist runs from -100000 to +50**
+— three juices carry -100000 / -50000 / -25000, and everything else sits
+between -25 and +50. The big negatives are the game's way of saying this
+WRECKS you; they are not a quantity to place in a league table, and
+"#12 of 12" dressed a warning up as a losing score.
+
+**The number still shows, exactly as the files state it.** Only the rank
+is gone, and only where the value is negative — a penalty ranked among
+bonuses is incoherent whatever the label. The juice's own SAN 80 and
+Work Speed 600 keep their positions.
+
+Verified live: `SAN resist  -100000` now stands alone; the four positive
+effects beside it are unchanged.
+
+Gates: mobile `tsc --noEmit` clean, `npx vitest run` 1089/1089 — one test
+walks every negative effect in the catalogue and pins that none of them
+carries a rank.
+
+**Left alone deliberately:** `Recovery Time 10 · #44 of 46` on the same
+card. It is ranked and stays ranked — what the number MEANS is not
+established (the reason it is kept off the rows), but the ordering is at
+least real, and changing it would need a decision about meaning I cannot
+ground in the data.

@@ -732,7 +732,15 @@ const EFFECT_RANKS = new Map<string, Map<string, { rank: number; of: number }>>(
 export function effectRank(
   id: string, label: string,
 ): { rank: number; of: number } | null {
-  if (effectNumber(id, label) == null) return null;
+  const mine = effectNumber(id, label);
+  if (mine == null) return null;
+  // IL92: a Mysterious Mushroom Juice card read "SAN resist -100000 ·
+  // #12 of 12". SAN resist runs from -100000 to +50 in the game files —
+  // the big negatives are the game's way of saying this WRECKS you, not
+  // a quantity to place in a league table. A penalty ranked among
+  // bonuses is incoherent, so the number still shows, exactly as the
+  // files state it, and the rank does not.
+  if (mine < 0) return null;
   let table = EFFECT_RANKS.get(label);
   if (!table) {
     const carriers = ITEM_IDS

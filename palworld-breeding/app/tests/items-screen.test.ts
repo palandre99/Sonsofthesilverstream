@@ -2407,3 +2407,37 @@ describe('a rivals list is ordered by something that separates (IL91)', () => {
     }
   });
 });
+
+describe('a penalty is not ranked among bonuses (IL92)', () => {
+  it('SAN resist really does span a sentinel to a small bonus', () => {
+    const vals = ITEM_IDS
+      .map((i) => effectNumber(i, 'SAN resist'))
+      .filter((n): n is number => n != null);
+    expect(Math.min(...vals)).toBe(-100000);
+    expect(Math.max(...vals)).toBe(50);
+    const juice = itemIdByName('Mysterious Mushroom Juice')!;
+    expect(effectNumber(juice, 'SAN resist')).toBe(-100000);
+  });
+
+  it('the number still shows; the league position does not', () => {
+    const juice = itemIdByName('Mysterious Mushroom Juice')!;
+    expect(effectRank(juice, 'SAN resist')).toBeNull();
+    // ...while its positive effects keep theirs
+    expect(effectRank(juice, 'SAN')).not.toBeNull();
+    expect(effectRank(juice, 'Work Speed')).not.toBeNull();
+  });
+
+  it('every negative effect anywhere loses its rank, not just this one', () => {
+    let checked = 0;
+    for (const id of ITEM_IDS) {
+      for (const [label] of (ITEM_FACTS[id]?.effects ?? [])) {
+        const n = effectNumber(id, label);
+        if (n != null && n < 0) {
+          expect(effectRank(id, label), `${ITEMS[id].name} ${label}`).toBeNull();
+          checked++;
+        }
+      }
+    }
+    expect(checked).toBeGreaterThan(3);
+  });
+});
