@@ -2312,6 +2312,18 @@ work always"):**
    and reported with the reasoning. Only true CEO-only blockers (Apple
    logins, purchases, money, his own device) stop a tick.
 
+- [ ] IL34 FOUND BY IL33 2026-08-20: the tier block is the last place on
+      the card where item names are DEAD TEXT. IL31 made every item name
+      on a pal card a door and IL32 made the base bill tappable, but the
+      schematic tiers still render their materials as one "·"-joined
+      string — both the direct line (`c.mats`) and the from-scratch bill
+      I just added. So a player reading "40× Nightstar Sand" in a tier
+      cannot tap through to find out where Nightstar Sand comes from,
+      though the identical row one section above is a link. Fix by
+      rendering them as wrapped chips like the base section's "Crafted
+      along the way" row — the pattern already exists and already fits
+      375px in three rows. Check the chip count for the widest tier
+      first (max 10 gather + 11 steps measured at IL33).
 - [x] IL33 2026-08-20: THE TIER A PLAYER ACTUALLY BUILDS NOW ANSWERS THE
       SAME QUESTION. IL32 expanded the base recipe; the higher tiers —
       1,690 schematic crafts, and the ones people grind for — still
