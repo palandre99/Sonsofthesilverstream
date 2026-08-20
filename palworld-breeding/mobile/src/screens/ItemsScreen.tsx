@@ -1654,10 +1654,25 @@ function ItemFilterSheet({ filters, sort, home, query, onApply, onClose }: {
                 : 'Only what I can unlock'}
               onPress={() => setF({ ...f, reachable: true })} />
             {f.reachable && level == null && (
-              <Text style={[s.body, { fontSize: 11.5, color: T.goldInk, width: '100%' }]}>
-                Set your level on the Profiles screen and this filters to
-                what your technology can actually build.
-              </Text>
+              <View style={{ width: '100%', gap: 6, marginTop: 4 }}>
+                <Text style={[s.body, { fontSize: 11.5, color: T.goldInk }]}>
+                  This filters to what your technology can actually build,
+                  once it knows your level.
+                </Text>
+                {/* IL97: the old copy named the Profiles screen and left
+                    the player to go and find it — a dead end in a sheet
+                    that had already taken three taps to reach. Take them
+                    there instead; the sheet closes on the way so they do
+                    not come back to a stale filter. */}
+                <Btn small label="Set my level"
+                  onPress={() => {
+                    onClose();
+                    navigateTo({
+                      domain: 'settings', tab: 'profiles',
+                      payload: { editLevel: true },
+                    });
+                  }} />
+              </View>
             )}
           </Section>
           <Section title="Tiers">

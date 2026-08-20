@@ -343,8 +343,11 @@ describe('the level filter uses the player’s own profile (IL21)', () => {
   it('rows say the level they need, and the sheet says it plainly', () => {
     expect(code).toContain('Lv {lockedAt}');
     expect(code).toContain('Only what I can unlock');
+    // IL97 replaced the instruction with a button that goes there: the
+    // teaching stayed, the dead end did not
     expect(code, 'no level set must teach, not silently show nothing')
-      .toContain('Set your level on the Profiles screen');
+      .toContain('This filters to what your technology can actually build');
+    expect(code).toContain('label="Set my level"');
   });
 });
 
@@ -2589,5 +2592,36 @@ describe('a rank counts only what can be ranked (IL96)', () => {
         expect(r.rank).toBeLessThanOrEqual(r.of);
       }
     }
+  });
+});
+
+describe('the level hint takes you there instead of naming a screen (IL97)', () => {
+  it('the filter sheet sends an intent, not an instruction', () => {
+    const code = readFileSync(
+      join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+    const block = code.slice(code.indexOf('IL97'), code.indexOf('IL97') + 900);
+    expect(block).toContain('label="Set my level"');
+    expect(code.replace(/\s+/g, ' ')).toContain(
+      "domain: 'settings', tab: 'profiles', payload: { editLevel: true }");
+    // the old dead end is gone
+    expect(code).not.toContain('Set your level on the Profiles screen');
+  });
+
+  it('and it closes the sheet on the way out', () => {
+    const code = readFileSync(
+      join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+    const block = code.slice(code.indexOf('IL97'), code.indexOf('IL97') + 900);
+    expect(block).toContain('onClose();');
+  });
+
+  it('the Profiles screen opens the editor, not just the list', () => {
+    // the level lives inside a profile's own editor, so landing on the
+    // list of saves would still be one tap short
+    const settings = readFileSync(
+      join(__dirname, '../../mobile/src/screens/SettingsScreens.tsx'), 'utf8');
+    expect(settings).toContain("takeIntentPayload('profiles')");
+    expect(settings).toContain('if (!p?.editLevel) return;');
+    expect(settings).toContain('setManaging({ id: prof.id, name: prof.name });');
+    expect(settings).toContain('setEditLevel(');
   });
 });

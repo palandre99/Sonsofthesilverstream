@@ -27,6 +27,9 @@ export interface NavIntent {
      * their startup path; they know the name and the count, and the
      * Items fane already holds the table, so it does the lookup. */
     itemNamed?: string; qty?: number;
+    /** open the active profile's editor on arrival — the player came to
+     * set their level, not to look at a list of saves */
+    editLevel?: boolean;
     /** a passive by its game name — an implant card knows which passive
      * it grants and the Odds Lab is the screen that can plan for it */
     passive?: string;

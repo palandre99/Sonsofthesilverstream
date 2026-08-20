@@ -12657,3 +12657,41 @@ Gates: mobile `tsc --noEmit` clean, `npx vitest run` 1101/1101.
 **Worth noting for the next worker:** this was created by the previous
 fix an hour earlier. Removing a thing from an ordering is not finished
 until you have also removed it from the count of the ordering.
+
+---
+
+## IL97 — the last dead end in the fane (2026-08-20)
+
+The filter sheet's Technology section, when no level is set:
+
+> "Set your level on the Profiles screen and this filters to what your
+> technology can actually build."
+
+**It named a destination and would not take you there** — three taps deep
+in a sheet, told to go somewhere else and find it. The same fault the
+cake hand-off, the implant button and the material list all fixed today,
+hiding in the one place that gives instructions instead of facts.
+
+```
+This filters to what your technology can actually build, once it
+knows your level.
+[ Set my level ]
+```
+
+**And it goes the whole way.** The level does not live on the Profiles
+list — it lives inside a profile's own editor — so landing on the list
+would still have been one tap short. The intent carries `editLevel`, and
+the Profiles screen opens the active profile's editor on arrival.
+Verified live: tapping it lands on `Settings · Profiles` with the
+**"Player level (1–100)"** field already open.
+
+The sheet closes on the way out, so the player does not come back to a
+stale filter behind the screen they were sent to.
+
+Gates: mobile `tsc --noEmit` clean, `npx vitest run` 1104/1104. The older
+test that pinned the instruction now pins the teaching AND the button —
+the lesson it guarded (never silently show nothing) is intact.
+
+**Cross-links are now symmetric in every direction the fane has:** pal →
+item, item → pal, breeding → item, item → breeding, item → its products,
+and filter → the setting it depends on.

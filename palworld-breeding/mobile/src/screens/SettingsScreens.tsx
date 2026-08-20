@@ -6,6 +6,7 @@ import * as Haptics from 'expo-haptics';
 import { T } from '../theme';
 import { Btn, Card, PageHead, s } from '../ui/kit';
 import { Icon } from '../ui/Icon';
+import { onNavIntent, takeIntentPayload } from '../nav/intent';
 import * as Updates from 'expo-updates';
 import { Image } from 'react-native';
 
@@ -54,6 +55,24 @@ export function ProfilesScreen() {
   const [editLevel, setEditLevel] = useState('');
   const [armDelete, setArmDelete] = useState(false);
   const active = getActiveProfile();
+
+  // IL97: the Items filter sheet used to say "set your level on the
+  // Profiles screen" and leave the player to find it. It now sends them
+  // here — and the level lives inside a profile's own editor, so landing
+  // on the list would still be one tap short. Open the active profile's
+  // editor on arrival.
+  useEffect(() => {
+    const apply = () => {
+      const p = takeIntentPayload('profiles');
+      if (!p?.editLevel) return;
+      const prof = getActiveProfile();
+      setManaging({ id: prof.id, name: prof.name });
+      setEditName(prof.name);
+      setEditLevel(prof.playerLevel != null ? String(prof.playerLevel) : '');
+    };
+    apply();
+    return onNavIntent(apply);
+  }, []);
 
   return (
     <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
