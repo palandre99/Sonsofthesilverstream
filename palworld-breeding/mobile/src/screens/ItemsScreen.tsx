@@ -28,7 +28,7 @@ import {
   ITEM_IDS,
   rankAxisOf,
   rankValueOf, rivalsOf, rollupOfMats,
-  schematicsFor, spokenTime,
+  schematicsFor, spokenCraftTime, spokenTime,
   searchItems, sortItems, statRank, TAB_GROUPS, teachesOf, TIER_WORDS,
   tierWord, usedInOf, weaponsForAmmo, type ItemSort,
 } from '../itemsData';
@@ -553,9 +553,6 @@ function BuildPanel({ onOpenItem }: { onOpenItem: (id: string) => void }) {
 
 const techLine = techSentence;
 
-/** "1h6m40s" -> "1h 6m 40s" — the page's compact time, made readable. */
-const spaceTime = (t: string): string =>
-  t.replace(/([hms])(?=[0-9])/g, '$1 ');
 
 function ItemDetail({ id, trail = [], onClose, onBack, onOpenItem }: {
   id: string; trail?: string[]; onClose: () => void; onBack?: () => void;
@@ -757,7 +754,7 @@ function ItemDetail({ id, trail = [], onClose, onBack, onOpenItem }: {
               {facts.craftWork != null && (
                 <Text style={[s.body, { marginTop: 3, fontSize: 12, color: T.muted }]}>
                   {facts.craftTime
-                    ? `${facts.craftWork.toLocaleString()} work — about ${spaceTime(facts.craftTime)} with Handiwork Lv. 1`
+                    ? `${facts.craftWork.toLocaleString()} work — about ${spokenCraftTime(facts.craftTime)} with Handiwork Lv. 1`
                     : `${facts.craftWork.toLocaleString()} work`}
                 </Text>
               )}

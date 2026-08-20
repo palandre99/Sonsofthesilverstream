@@ -513,6 +513,23 @@ export function buildTime(list: Record<string, number>): BuildTime {
 }
 
 /** Seconds as something a player reads — "2h 47m", not 10000. */
+/** "1h6m40s" -> "1h 6m 40s" — the source's compact craft time, made
+ * readable, with the dead parts dropped.
+ *
+ * IL69: the source writes a full h/m/s triple whether or not each part is
+ * there, so the Air Dash Boots card read "about 50m 0s" — nobody says
+ * that, and 234 of the 740 craft times carried a zero part. The share
+ * text had it worse: it sent the raw "50m0s", unspaced, so every item
+ * the CEO shared went out in machine shorthand. One formatter now, used
+ * by the card and the share text both. Every non-zero number is kept
+ * exactly as the source states it; only the zeroes go. */
+export function spokenCraftTime(t: string): string {
+  const parts = t.match(/\d+[hms]/g);
+  if (!parts) return t;
+  const kept = parts.filter((p) => parseInt(p, 10) > 0);
+  return (kept.length ? kept : parts.slice(-1)).join(' ');
+}
+
 export function spokenTime(seconds: number): string {
   if (seconds <= 0) return '';
   const h = Math.floor(seconds / 3600);

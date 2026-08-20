@@ -9,7 +9,7 @@
  */
 import {
   buildTime, buildTotals, implantPassive, ITEM_STATS, ITEMS, kindPhrase,
-  palsDropping, spokenTime,
+  palsDropping, spokenCraftTime, spokenTime,
   palsHatchingFrom, rawMaterialsFor, statRank, tierWord,
 } from './itemsData';
 import { equipPassiveName, ITEM_FACTS } from './itemFacts';
@@ -106,7 +106,7 @@ export function shareTextForItem(id: string, gameVersion: string): string {
   if (facts?.tech) lines.push(techSentence(facts.tech));
   if (facts?.craftWork != null) {
     lines.push(`${facts.craftWork.toLocaleString()} work`
-      + (facts.craftTime ? ` — about ${facts.craftTime} at Handiwork Lv. 1` : ''));
+      + (facts.craftTime ? ` — about ${spokenCraftTime(facts.craftTime)} at Handiwork Lv. 1` : ''));
   }
   if (facts?.recipe) {
     lines.push('Craft: ' + facts.recipe

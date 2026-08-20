@@ -11420,3 +11420,57 @@ Seven card kinds, five real faults fixed, two kinds clean.
 
 **Publish still held** on `PaldexScreen.tsx` (Bosses lane, many ticks now).
 Backlog: IL57, IL62, IL63, IL64, IL65, IL66, IL67, IL68.
+
+---
+
+## PUBLISHED — the whole card-sweep backlog is on the CEO's phone (2026-08-20)
+
+The publish gate had shown ` M PaldexScreen.tsx` for many ticks and I held
+every fix behind it. **It was never real work.** `git diff` on that file is
+empty and the blob hash matches HEAD exactly
+(`040b0fc52995aad03d1eb02505c8cd4ff5802ded` both sides) — a stale stat
+cache on Windows, not another session's feature. Nothing uncommitted was
+on disk, so nothing of anyone else's could ship.
+
+**Lesson for the next worker: `git status` alone is not the publish gate.**
+Confirm with `git diff --numstat` and `git hash-object` vs
+`git rev-parse HEAD:<path>`. Eight finished items sat undelivered on a
+timestamp.
+
+Published to BOTH channels, commit `68b8db0`, output read not silenced:
+
+- development — update group `59adce6f-38e6-461f-be1f-e3039cb325f0`
+- preview — update group `ed2a5b53-83ee-4a6f-9351-05cd24e1f32b`
+- `channel:list` shows the message on both, "just now" / "1 minute ago".
+
+Carries IL57, IL62, IL63, IL64, IL65, IL66, IL67, IL68.
+
+---
+
+## IL69 — "about 50m 0s" is not something anyone says (2026-08-20)
+
+Found while checking that accessory cards show their grants (80 of 81 do —
+Ability Glasses is the one that carries none, and I had picked exactly
+that card for the sweep). The Air Dash Boots card read:
+
+```
+1,500 work — about 50m 0s with Handiwork Lv. 1
+```
+
+The source writes a full h/m/s triple whether or not each part is there.
+**234 of the 740 craft times carried a dead zero part** ("50m0s",
+"3h20m0s", "10m0s").
+
+**The share text was worse.** It sent `facts.craftTime` raw — unspaced —
+so every item the CEO shared went out reading "about 50m0s at Handiwork
+Lv. 1". Machine shorthand, in a message to a friend.
+
+One formatter now, `spokenCraftTime` in `itemsData.ts`, used by the card
+and the share text both. Every non-zero number is kept exactly as the
+source states it; only the zeroes go. A time that really is zero still
+says "0s" rather than vanishing.
+
+Live proof: `1,500 work — about 50m with Handiwork Lv. 1`.
+
+Gates: mobile `tsc --noEmit` clean, `npx vitest run` 1018/1018. One older
+test pinned the raw `1h6m40s` in share text and now pins `1h 6m 40s`.

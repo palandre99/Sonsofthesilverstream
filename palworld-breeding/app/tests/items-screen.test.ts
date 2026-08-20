@@ -16,7 +16,7 @@ import {
   rawMaterialsFor,
   rankAxisOf, rankValueOf, rivalsOf, rollupOfMats, saysTheSame,
   groupOf, ITEM_IDS,
-  schematicsFor, searchItems, sortItems, statRank, TAB_GROUPS, teachesOf,
+  schematicsFor, searchItems, spokenCraftTime, sortItems, statRank, TAB_GROUPS, teachesOf,
   tierWord, usedInOf, weaponsForAmmo,
 } from '../../mobile/src/itemsData';
 import palsJson from '../../mobile/src/data/pals_1_0.json';
@@ -249,7 +249,7 @@ describe('the item share sheet says what the screen says', () => {
   it('a shared craft carries its work and time', () => {
     const txt = shareTextForItem('Cake', '1.0');
     expect(txt).toContain('2,000 work');
-    expect(txt).toContain('1h6m40s at Handiwork Lv. 1');
+    expect(txt).toContain('1h 6m 40s at Handiwork Lv. 1');
   });
 
   it('the screen sends exactly this composer through the native sheet', () => {
@@ -1636,5 +1636,42 @@ describe('a schematic card does not claim you can craft it (IL67)', () => {
     const block = code.slice(code.indexOf('IL67'), code.indexOf('IL67') + 900);
     expect(block).toContain('What it costs to make ${ITEMS[t.id].name}');
     expect(block).toContain("'How to craft it'");
+  });
+});
+
+describe('craft times are spoken, not machine shorthand (IL69)', () => {
+  it('zero parts are dropped and the rest kept exactly', () => {
+    expect(spokenCraftTime('50m0s')).toBe('50m');
+    expect(spokenCraftTime('3h20m0s')).toBe('3h 20m');
+    expect(spokenCraftTime('1h6m40s')).toBe('1h 6m 40s');
+    expect(spokenCraftTime('30s')).toBe('30s');
+    expect(spokenCraftTime('0m30s')).toBe('30s');
+  });
+
+  it('a time that is genuinely zero still says something', () => {
+    expect(spokenCraftTime('0s')).toBe('0s');
+    expect(spokenCraftTime('0h0m0s')).toBe('0s');
+  });
+
+  it('every shipped craft time survives the formatter with its numbers intact', () => {
+    const times = ITEM_IDS
+      .map((i) => ITEM_FACTS[i]?.craftTime).filter((t): t is string => !!t);
+    expect(times.length).toBe(740);
+    const withZero = times.filter((t) => /(^|[hms])0[hms]/.test(t));
+    expect(withZero.length).toBe(234);         // 234 cards read "... 0s"
+    for (const t of times) {
+      const out = spokenCraftTime(t);
+      // no number is invented and none of the real ones is lost
+      const real = (t.match(/\d+[hms]/g) ?? []).filter((p) => parseInt(p, 10) > 0);
+      for (const p of real) expect(out).toContain(p);
+      expect(out).not.toMatch(/\b0[hms]\b/);
+    }
+  });
+
+  it('the share text uses the same formatter as the card', () => {
+    const share = readFileSync(
+      join(__dirname, '../../mobile/src/itemShare.ts'), 'utf8');
+    expect(share).toContain('spokenCraftTime(facts.craftTime)');
+    expect(share).not.toContain('about ${facts.craftTime}');
   });
 });
