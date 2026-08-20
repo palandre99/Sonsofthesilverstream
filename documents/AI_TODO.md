@@ -11474,3 +11474,46 @@ Live proof: `1,500 work — about 50m with Handiwork Lv. 1`.
 
 Gates: mobile `tsc --noEmit` clean, `npx vitest run` 1018/1018. One older
 test pinned the raw `1h6m40s` in share text and now pins `1h 6m 40s`.
+
+---
+
+## IL70 — a material row now says what the material is FOR (2026-08-20)
+
+**The row sweep starts, and the first group pays immediately.** Materials
+read like this:
+
+```
+Charcoal      Common   Ingot · Materials
+Ingot         Common   Ingot · Materials        <- said its own name back
+Hallowed Bar  Common   Ingot · Materials
+Coralum Ingot Common   Unlocks at Lv 62 · Materials
+```
+
+Three of those four rows told the player nothing, and one told them the
+name they had just read. A material carries no attack, defence or effect,
+so the line fell all the way through to its kind word.
+
+The question a player holding a material actually asks is *what is this
+for*, and the recipe join already ships — **142 items feed at least one
+recipe**. Named when there is exactly one, counted when there are many:
+
+```
+Charcoal        Common   Used to make Gunpowder · Materials
+Ingot           Common   Used in 233 recipes · Materials
+Hallowed Bar    Common   Used in 65 recipes · Materials
+Pal Metal Ingot Common   Used in 130 recipes · Materials
+Refined Ingot   Common   Used in 181 recipes · Materials
+```
+
+Live rows, read off the running app.
+
+It sits BELOW the unlock level in the fallback chain, so "Unlocks at Lv
+62" — which answers the better question, *can I make this yet* — is never
+displaced. Every count is the shipped recipe join; nothing estimated.
+
+Gates: mobile `tsc --noEmit` clean, `npx vitest run` 1021/1021. Two IL53
+tests pinned the old fallback expression and now pin the new one; the
+behaviour they guard (never print the kind twice) is unchanged.
+
+**Row sweep status:** weapons clean · materials fixed. Next: key items,
+gliders, skill fruits, spheres, eggs, consumables.

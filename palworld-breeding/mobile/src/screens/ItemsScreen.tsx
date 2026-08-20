@@ -272,6 +272,17 @@ function ItemRow({ id, showGroup, collapsed, level, onOpen }: {
   // saddles wants: can I make this yet? Skipped when the gold marker is
   // already showing that same level, so it is never said twice.
   const unlockText = !lockedAt && need != null ? `Unlocks at Lv ${need}` : null;
+  // IL70: a material carries no attack, defence or effect, so its row
+  // fell all the way through to its kind — "Charcoal · Ingot · Materials"
+  // and, worse, "Ingot · Ingot". The question a player holding a material
+  // asks is what it is FOR, and the recipe join already ships: 142 items
+  // feed at least one recipe. Named when there is only one, counted when
+  // there are many. Sits BELOW the unlock level, which answers the better
+  // question ("can I make this yet?") whenever it is known.
+  const usedIn = usedInOf(id);
+  const usedText = usedIn.length === 1
+    ? `Used to make ${ITEMS[usedIn[0]].name}`
+    : usedIn.length > 1 ? `Used in ${usedIn.length} recipes` : null;
   // only things you MAKE go on a build list — holding a raw material
   // would add a row nobody asked for
   const facts = ITEM_FACTS[id];
@@ -320,9 +331,9 @@ function ItemRow({ id, showGroup, collapsed, level, onOpen }: {
                 KIND, and the search view then appended its GROUP — for
                 the 138 saddles both read "Pal gear", so every row said
                 "Pal gear · Pal gear" (IL53). Say it once. */}
-            {line || unlockText || kindWord(id)}
+            {line || unlockText || usedText || kindWord(id)}
             {showGroup && groupOf(id)
-              && groupOf(id) !== (line || unlockText || kindWord(id))
+              && groupOf(id) !== (line || unlockText || usedText || kindWord(id))
               ? `  ·  ${groupOf(id)}` : ''}
           </Text>
           {/* the player's own state outranks the game's trivia — a row

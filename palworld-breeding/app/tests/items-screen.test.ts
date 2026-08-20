@@ -1366,13 +1366,13 @@ describe('a row with no numbers still says something (IL53)', () => {
   it('the kind is never printed twice', () => {
     // every saddle read "Pal gear · Pal gear": the line fell back to the
     // kind and the search view then appended the identical group label
-    expect(code).toContain("groupOf(id) !== (line || unlockText || kindWord(id))");
+    expect(code).toContain("groupOf(id) !== (line || unlockText || usedText || kindWord(id))");
   });
 
   it('the unlock level fills a blank line, but never doubles the marker', () => {
     expect(code).toContain(
       'const unlockText = !lockedAt && need != null ? `Unlocks at Lv ${need}` : null;');
-    expect(code).toContain('{line || unlockText || kindWord(id)}');
+    expect(code).toContain('{line || unlockText || usedText || kindWord(id)}');
   });
 });
 
@@ -1673,5 +1673,30 @@ describe('craft times are spoken, not machine shorthand (IL69)', () => {
       join(__dirname, '../../mobile/src/itemShare.ts'), 'utf8');
     expect(share).toContain('spokenCraftTime(facts.craftTime)');
     expect(share).not.toContain('about ${facts.craftTime}');
+  });
+});
+
+describe('a material row says what the material is for (IL70)', () => {
+  it('the recipe join backs every count the row can show', () => {
+    const feeds = ITEM_IDS.filter((i) => usedInOf(i).length > 0);
+    expect(feeds.length).toBe(142);
+    const charcoal = itemIdByName('Charcoal')!;
+    expect(usedInOf(charcoal).map((i) => ITEMS[i].name)).toEqual(['Gunpowder']);
+    expect(usedInOf(itemIdByName('Ingot')!).length).toBe(233);
+  });
+
+  it('one use is named, many are counted', () => {
+    const code = readFileSync(
+      join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+    const block = code.slice(code.indexOf('IL70'), code.indexOf('IL70') + 900);
+    expect(block).toContain('Used to make ${ITEMS[usedIn[0]].name}');
+    expect(block).toContain('Used in ${usedIn.length} recipes');
+  });
+
+  it('the unlock level still wins when the game states one', () => {
+    const code = readFileSync(
+      join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+    // order matters: "can I make this yet" beats "what is it for"
+    expect(code).toContain('{line || unlockText || usedText || kindWord(id)}');
   });
 });
