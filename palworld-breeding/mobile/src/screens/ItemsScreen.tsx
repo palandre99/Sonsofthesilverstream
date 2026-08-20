@@ -24,7 +24,7 @@ import {
   ITEM_STATS, ITEMS,
   kindPhrase, kindsInGroup, kindWord, palsDropping, palsHatchingFrom, rawMaterialsFor,
   buildTime, buildTotals, captureRank, effectRank, gearAgainst, guardKinds,
-  guardLevel,
+  guardLevel, saysTheSame,
   ITEM_IDS,
   rankAxisOf,
   rankValueOf, rivalsOf, rollupOfMats,
@@ -600,7 +600,7 @@ function ItemDetail({ id, trail = [], onClose, onBack, onOpenItem }: {
               <View style={[s.wrap, { marginTop: 4 }]}>
                 <TierChip id={id} size={13} />
                 {groupOf(id) && <Badge kind="plain">{groupOf(id)}</Badge>}
-                {kindWord(id) !== groupOf(id) && (
+                {!saysTheSame(kindWord(id), groupOf(id) ?? '') && (
                   <Badge kind="plain">{kindWord(id)}</Badge>
                 )}
               </View>
@@ -735,7 +735,17 @@ function ItemDetail({ id, trail = [], onClose, onBack, onOpenItem }: {
 
           {(facts?.recipe || facts?.tech) && (
             <Card style={{ marginTop: 10 }}>
-              <Text style={s.h3}>How to craft it</Text>
+              {/* IL67: a schematic is a chest drop — you can never craft
+                  one. The recipe it carries is what the WEAPON costs when
+                  you build it at this schematic's tier (Advanced Bow: 40
+                  Plastic at base, 70 with the Epic schematic). Headlining
+                  that "How to craft it" on 441 schematic cards told the
+                  player to gather 350 Ore for a thing that only drops. */}
+              <Text style={s.h3}>{(() => {
+                const t = teachesOf(id);
+                return t ? `What it costs to make ${ITEMS[t.id].name}`
+                  : 'How to craft it';
+              })()}</Text>
               {facts.tech && (
                 <Text style={[s.body, {
                   marginTop: 4, fontSize: 12.5,

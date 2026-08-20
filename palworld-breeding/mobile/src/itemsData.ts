@@ -201,6 +201,15 @@ export const KIND_WORDS: Record<string, string> = {
 };
 
 /** What kind of thing this item is, in a player's words. */
+/** IL66: a card shows a group chip and a kind chip, and used to drop the
+ * kind chip only when the two strings were byte-identical. "Schematics"
+ * and "Schematic" are not the same string but they are the same word to
+ * a player — 610 cards carried the word twice (490 schematics, 93 skill
+ * fruits, 18 consumables, 5 gliders, 4 key items). Compare case-folded
+ * and without a trailing plural s. */
+export const saysTheSame = (a: string, b: string): boolean =>
+  a.toLowerCase().replace(/s$/, '') === b.toLowerCase().replace(/s$/, '');
+
 export function kindWord(id: string): string {
   const it = ITEMS[id];
   if (!it) return 'Item';

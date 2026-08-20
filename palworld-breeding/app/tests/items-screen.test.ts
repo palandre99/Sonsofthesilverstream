@@ -14,13 +14,14 @@ import {
   idsInGroup, implantPassive, ITEM_GROUPS, ITEM_STATS, ITEMS, itemIdByName, KIND_WORDS,
   kindsInGroup, kindWord, palForGear, palsDropping, palsHatchingFrom,
   rawMaterialsFor,
-  rankAxisOf, rankValueOf, rivalsOf, rollupOfMats,
+  rankAxisOf, rankValueOf, rivalsOf, rollupOfMats, saysTheSame,
+  groupOf, ITEM_IDS,
   schematicsFor, searchItems, sortItems, statRank, TAB_GROUPS, teachesOf,
   tierWord, usedInOf, weaponsForAmmo,
 } from '../../mobile/src/itemsData';
 import palsJson from '../../mobile/src/data/pals_1_0.json';
 import FACTS from '../../mobile/src/data/item_facts_1_0.json';
-import { equipPassiveName } from '../../mobile/src/itemFacts';
+import { equipPassiveName, ITEM_FACTS } from '../../mobile/src/itemFacts';
 import {
   shareTextForBuild, shareTextForItem,
 } from '../../mobile/src/itemShare';
@@ -1584,5 +1585,49 @@ describe('a sphere card says how its capture power compares (IL65)', () => {
     const code = readFileSync(
       join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
     expect(code).toContain('${facts.capture} · #${r.rank} of ${r.of}');
+  });
+});
+
+describe('a card never says the same word twice (IL66)', () => {
+  it('a plural group and its singular kind count as one word', () => {
+    expect(saysTheSame('Schematics', 'Schematic')).toBe(true);
+    expect(saysTheSame('Skill fruits', 'Skill fruit')).toBe(true);
+    expect(saysTheSame('Gliders', 'Glider')).toBe(true);
+    expect(saysTheSame('Weapons', 'Bow')).toBe(false);
+    expect(saysTheSame('Armor', 'Head gear')).toBe(false);
+  });
+
+  it('no shipped item has a group and kind that read as one word', () => {
+    const doubled = ITEM_IDS.filter((id) => {
+      const g = groupOf(id), k = kindWord(id);
+      return g != null && k !== g && saysTheSame(k, g);
+    });
+    // 610 before the fix; the guard is now on the normalised words, so
+    // the card drops the second chip for every one of them.
+    expect(doubled.length).toBeGreaterThan(600);
+    const code = readFileSync(
+      join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+    expect(code).toContain("!saysTheSame(kindWord(id), groupOf(id) ?? '')");
+    expect(code).not.toContain('kindWord(id) !== groupOf(id)');
+  });
+});
+
+describe('a schematic card does not claim you can craft it (IL67)', () => {
+  it('the recipe on a schematic is the tier-scaled cost of what it teaches', () => {
+    const schem = ITEM_IDS.find((i) => ITEMS[i].name === 'Advanced Bow Schematic 3')!;
+    const taught = teachesOf(schem)!;
+    expect(ITEMS[taught.id].name).toBe('Advanced Bow');
+    const mine = ITEM_FACTS[schem]?.recipe?.find((r) => r.id === 'Plastic')?.n;
+    const base = ITEM_FACTS[taught.id]?.recipe?.find((r) => r.id === 'Plastic')?.n;
+    expect(base).toBe(40);
+    expect(mine).toBe(70);         // ×1.75 at this tier — a real number
+  });
+
+  it('the heading names the product when the item teaches one', () => {
+    const code = readFileSync(
+      join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+    const block = code.slice(code.indexOf('IL67'), code.indexOf('IL67') + 900);
+    expect(block).toContain('What it costs to make ${ITEMS[t.id].name}');
+    expect(block).toContain("'How to craft it'");
   });
 });

@@ -11336,3 +11336,43 @@ sphere fixed (IL65). Remaining: schematic, egg, accessory.
 **Publish still held** — `PaldexScreen.tsx` is the Bosses lane's and has
 been dirty for many ticks. Backlog waiting on it: IL57, IL62, IL63, IL64,
 IL65.
+
+---
+
+## IL66 + IL67 — schematic cards: one word said twice, and a lie in a heading (2026-08-20)
+
+**IL66 — 610 cards printed the same word twice.** A card shows a group
+chip and a kind chip, and dropped the kind chip only when the two strings
+matched byte for byte. "Schematics" and "Schematic" are different strings
+and the same word, so the header read `EPIC · SCHEMATICS · SCHEMATIC`.
+Tally from the shipped data: 490 schematics, 93 skill fruits, 18
+consumables, 5 gliders, 4 key items = **610 cards**.
+
+`saysTheSame(a, b)` compares case-folded and without a trailing plural s;
+the card's guard now uses it. Live proof — the header is now
+`Epic · SCHEMATICS · Close · Share`, one chip where there were two.
+
+**IL67 — a schematic card told you how to craft a thing you can't craft.**
+441 schematic cards headlined a recipe "How to craft it". A schematic is a
+chest drop; it has no recipe. What it actually carries is the **cost of
+building the weapon at that schematic's tier** — Advanced Bow is 40
+Plasteel at base and 70 with the Epic schematic (×1.75, both datamined,
+nothing invented). So the card was telling a player to gather 350 Ore to
+make a thing that only ever drops from a chest.
+
+The heading now names the product: **"What it costs to make Advanced Bow"**,
+falling back to "How to craft it" for everything that teaches nothing.
+Verified on the running app, not in source:
+
+```
+"Sells for","10000 gold","Stacks to","9999",
+"What it costs to make Advanced Bow","70×","Plasteel","43×","Carbon Fiber"
+```
+
+Gates: mobile `tsc --noEmit` clean, `npx vitest run` 1013/1013 (four new).
+
+**Sweep status:** weapon clean · armour (IL63) · food (IL64) · sphere
+(IL65) · schematic (IL66, IL67). Remaining: egg, accessory.
+
+**Publish still held** on `PaldexScreen.tsx` (Bosses lane). Backlog:
+IL57, IL62, IL63, IL64, IL65, IL66, IL67.
