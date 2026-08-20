@@ -62,7 +62,8 @@ describe('it is one tap from anywhere, and says so plainly', () => {
     expect(overlay).toContain('Type two letters to search every pal, every item and every');
     expect(overlay).toContain('Nothing matches');
     expect(overlay, 'counted label would read "1 results"')
-      .toContain("hits.length === 1 ? '1 result'");
+      // counts the TOTAL since IL39, but still never reads "1 results"
+      .toContain("total === 1 ? '1 result'");
   });
 });
 
@@ -98,5 +99,49 @@ describe('the search shows each thing once (IL38)', () => {
     expect(overlay).toContain('tiers up to ${topWord}');
     // and it ranks by the family's best, the way the index does
     expect(overlay).toContain("'power', true");
+  });
+});
+
+describe('the result count tells the truth (IL39)', () => {
+  const PAL_CAP = 20;
+  const ITEM_CAP = 50;
+  const pals = (palsJson as { pals: Record<string, unknown> }).pals;
+  /** the same arithmetic the overlay does */
+  const counts = (q: string) => {
+    const items = collapseFamilies(searchItems(q));
+    const palHits = Object.keys(pals)
+      .filter((n) => n.toLowerCase().includes(q.trim().toLowerCase()));
+    const shown = Math.min(items.length, ITEM_CAP)
+      + Math.min(palHits.length, PAL_CAP);
+    return { total: items.length + palHits.length, shown };
+  };
+
+  it('a big query reports what exists, not what fits', () => {
+    const armor = counts('armor');
+    // the old header said "14 results" for this
+    expect(armor.total).toBeGreaterThan(120);
+    expect(armor.shown).toBe(ITEM_CAP);
+    expect(armor.total).toBeGreaterThan(armor.shown);
+  });
+
+  it('a small query shows everything and hides nothing', () => {
+    const ingot = counts('ingot');
+    expect(ingot.total).toBeLessThan(ITEM_CAP);
+    expect(ingot.shown).toBe(ingot.total);
+  });
+
+  it('the caps are what the screen actually uses', () => {
+    expect(overlay).toContain('const PAL_CAP = 20;');
+    expect(overlay).toContain('const ITEM_CAP = 50;');
+    // the header counts the TOTAL, never the rows drawn
+    expect(overlay).toContain("`${total} results`");
+    expect(overlay).toContain('const hidden = total - hits.length;');
+    expect(overlay, 'the header went back to counting rows')
+      .not.toContain('`${hits.length} results`');
+  });
+
+  it('the list says out loud what it is not showing', () => {
+    expect(overlay).toContain('more matches are not shown');
+    expect(overlay).toContain('ListFooterComponent');
   });
 });

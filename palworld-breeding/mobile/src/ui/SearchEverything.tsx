@@ -48,12 +48,28 @@ const SCREEN_HITS: Hit[] = DOMAINS.flatMap((d) =>
       tab: t.id,
     })));
 
-function hitsFor(q: string): Hit[] {
+/* How many rows to draw. A row measures 59px on a phone, so 50 items is
+ * about four screens of scrolling — generous without being a list nobody
+ * can read. "armor" genuinely matches 130 things and "a" matches 1,627;
+ * the answer to those is a better query, not more scrolling, so the
+ * header says the true total and the footer says so out loud (IL39). */
+const PAL_CAP = 20;
+const ITEM_CAP = 50;
+
+interface Results {
+  /** the rows actually drawn */
+  hits: Hit[];
+  /** how many things really match — NOT the number of rows (IL39) */
+  total: number;
+}
+
+function hitsFor(q: string): Results {
   const needle = q.trim().toLowerCase();
-  if (needle.length < 2) return [];
-  const palHits: Hit[] = Object.keys(pals)
-    .filter((n) => n.toLowerCase().includes(needle))
-    .slice(0, 12)
+  if (needle.length < 2) return { hits: [], total: 0 };
+  const palAll = Object.keys(pals)
+    .filter((n) => n.toLowerCase().includes(needle));
+  const palHits: Hit[] = palAll
+    .slice(0, PAL_CAP)
     .map((n) => ({
       kind: 'pal', id: n, title: n,
       sub: (pals[n].elements ?? []).join(' · ') || 'Pal',
@@ -64,8 +80,9 @@ function hitsFor(q: string): Hit[] {
   // so searching raw ids returned "Old Bow, Bow" five identical times —
   // and worse, those duplicates ate the 14-row budget and hid the other
   // bows completely. The tier a player wants is on the card either way.
-  const itemHits: Hit[] = sortItems(collapseFamilies(searchItems(q)), 'power', true)
-    .slice(0, 14)
+  const itemAll = sortItems(collapseFamilies(searchItems(q)), 'power', true);
+  const itemHits: Hit[] = itemAll
+    .slice(0, ITEM_CAP)
     .map((id) => {
       const fam = familyOf(id);
       const top = fam[fam.length - 1];
@@ -80,13 +97,17 @@ function hitsFor(q: string): Hit[] {
     });
   const screenHits = SCREEN_HITS.filter(
     (h) => h.title.toLowerCase().includes(needle));
-  return [...palHits, ...itemHits, ...screenHits];
+  return {
+    hits: [...palHits, ...itemHits, ...screenHits],
+    total: palAll.length + itemAll.length + screenHits.length,
+  };
 }
 
 export function SearchEverything({ onClose }: { onClose: () => void }) {
   const [q, setQ] = useState('');
-  const hits = useMemo(() => hitsFor(q), [q]);
+  const { hits, total } = useMemo(() => hitsFor(q), [q]);
   const typing = q.trim().length >= 2;
+  const hidden = total - hits.length;
 
   const go = (h: Hit) => {
     onClose();
@@ -120,7 +141,8 @@ export function SearchEverything({ onClose }: { onClose: () => void }) {
           </Text>
         ) : (
           <Text style={[s.body, { fontSize: 12.5, marginBottom: 6 }]}>
-            {hits.length === 1 ? '1 result' : `${hits.length} results`}
+            {total === 1 ? '1 result' : `${total} results`}
+            {hidden > 0 ? ` — showing the closest ${hits.length}` : ''}
           </Text>
         )}
         <FlatList
@@ -160,6 +182,18 @@ export function SearchEverything({ onClose }: { onClose: () => void }) {
             </Pressable>
           )}
           contentContainerStyle={{ paddingBottom: 30 }}
+          ListFooterComponent={hidden > 0 ? (
+            /* the end of the list is where a player decides they have
+               seen everything — say plainly that they have not */
+            <Text style={[s.body, {
+              fontSize: 12, color: T.faint, paddingHorizontal: 10,
+              paddingTop: 4,
+            }]}>
+              {hidden === 1
+                ? '1 more match is not shown. Type a bit more to find it.'
+                : `${hidden} more matches are not shown. Type a bit more to narrow it down.`}
+            </Text>
+          ) : null}
         />
       </View>
     </Modal>

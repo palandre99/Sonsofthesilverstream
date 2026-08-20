@@ -2312,24 +2312,30 @@ work always"):**
    and reported with the reasoning. Only true CEO-only blockers (Apple
    logins, purchases, money, his own device) stop a tick.
 
-- [ ] IL39 FOUND BY IL38 2026-08-20: THE SEARCH'S RESULT COUNT IS A LIE,
-      and it is the same bug one level up. IL38 fixed the duplicates
-      eating the 14-row budget; the budget itself is still silent. The
-      header counts the rows it DREW, not the matches that exist, so:
-        "armor" says "14 results" for 130 real matches
-        "egg"   says "14 results" for  54
-        "pal"   says "16 results" for 346
-        "a"     says "26 results" for 1,627
-      A player reads that and believes they have seen everything. This
-      workspace's own rule is that every number carries meaning, and
-      this one carries the wrong one. The honest-truncation idiom
-      already exists in the codebase — IL20's "…and 17 more things it
-      goes into" — so use it rather than inventing a pattern: say the
-      true total, and say plainly that the rest are not shown. Decide
-      whether to also raise or page the cap; MEASURE the overlay's
-      scroll length at 375px before raising it, because 130 rows in a
-      modal is its own kind of unusable. Pals cap at 12 and items at 14
-      independently, so the fix belongs in both counts. — and the fix
+- [x] IL39 2026-08-20: THE SEARCH COUNT TELLS THE TRUTH NOW. The header
+      counted the rows it DREW, not the matches that exist — "armor"
+      said "14 results" when 130 things matched, "a" said 26 for 1,627 —
+      and nothing said the list had been cut, so a player would believe
+      they had seen everything. Same bug as IL38 one level up: IL38
+      stopped duplicates eating the budget; the budget itself was still
+      silent.
+      It now reads "131 results — showing the closest 51", with a line
+      at the END of the list, where a player decides they have seen
+      everything: "80 more matches are not shown. Type a bit more to
+      narrow it down." Small queries are unchanged — "ingot" says "10
+      results" with no footer, because nothing is hidden.
+      CAPS RAISED 14→50 items and 12→20 pals, measured first as the
+      entry demanded: the list is 1,390px over a 563px viewport, so 2.5
+      screens of scroll, and FlatList keeps only ~10 rows in the DOM, so
+      the bigger cap costs nothing. 130 rows WOULD have been unusable —
+      the answer to "armor" is a better query, which is what the footer
+      now asks for.
+      Tests pin the ARITHMETIC (total > shown for a big query, total ==
+      shown for a small one) rather than the wording alone, and one
+      guards against the header going back to counting rows. An older
+      test pinned the previous variable name; its intent — never render
+      "1 results" — was kept and re-pointed rather than deleted. 883
+      green. — and the fix
       turned out to be about RESULTS, not tidiness. Searching "Old Bow"
       gave five identical rows (the base and its four rarity tiers);
       searching "bow" spent the whole 14-row budget on those duplicates
