@@ -24,7 +24,7 @@ import {
   ITEM_STATS, ITEMS,
   kindPhrase, kindsInGroup, kindWord, palsDropping, palsHatchingFrom, rawMaterialsFor,
   buildTime, buildTotals, captureRank, effectRank, gearAgainst, guardKinds,
-  guardLevel, saysTheSame,
+  guardLevel, hasTierCosts, saysTheSame,
   ITEM_IDS,
   rankAxisOf,
   rankValueOf, rivalsOf, rollupOfMats,
@@ -475,8 +475,13 @@ function ItemDetail({ id, trail = [], onClose, onBack, onOpenItem }: {
 }) {
   // which schematic tier has its full cost opened out (one at a time)
   const [openTier, setOpenTier] = useState<string | null>(null);
+  // which tier a build add is for — the card's own item until picked
+  const [buyTier, setBuyTier] = useState<string>(id);
+  // the card is reused when you tap through to another item, so the
+  // picked tier has to follow it or the next card inherits this one's
+  useEffect(() => { setBuyTier(id); }, [id]);
   useAppVersion();                       // the build stepper reads the store
-  const wanted = buildQty(id);
+  const wanted = buildQty(buyTier);
   const cameFrom = trail.length ? ITEMS[trail[trail.length - 1]] : null;
   const it = ITEMS[id];
   const st = ITEM_STATS[id];
@@ -804,6 +809,27 @@ function ItemDetail({ id, trail = [], onClose, onBack, onOpenItem }: {
               {/* IL43: the one thing a per-item bill cannot do is add
                   up. This lives on things you MAKE — a stepper on all
                   1,892 cards would be clutter that answers nothing. */}
+              {/* IL77: a build could only ever be made for the base
+                  tier, and the gather list under it said so to nobody.
+                  These families price their tiers apart — an Advanced
+                  Bow is 40 Plastic at the bottom and 80 at the top — so
+                  the player picks which one they are making, and the
+                  whole bill follows. Shown only where the game gives
+                  per-tier costs AND the block count matches the tiers. */}
+              {hasTierCosts(id) && (
+                <View style={{ marginTop: 10 }}>
+                  <Text style={[s.body, { fontSize: 12, color: T.muted }]}>
+                    Which one are you making?
+                  </Text>
+                  <View style={[s.wrap, { marginTop: 6 }]}>
+                    {familyOf(id).map((tid) => (
+                      <Chip key={tid} on={tid === buyTier}
+                        label={ITEM_STATS[tid]?.tier ?? tierWord(ITEMS[tid].rarity)}
+                        onPress={() => setBuyTier(tid)} />
+                    ))}
+                  </View>
+                </View>
+              )}
               <View style={[s.row, {
                 gap: 8, marginTop: 10, paddingTop: 8,
                 borderTopWidth: 1, borderTopColor: T.line,
@@ -814,14 +840,14 @@ function ItemDetail({ id, trail = [], onClose, onBack, onOpenItem }: {
                       On your build list — {wanted}
                     </Text>
                     <Btn small label="−"
-                      onPress={() => { void setBuildQty(id, wanted - 1); }} />
+                      onPress={() => { void setBuildQty(buyTier, wanted - 1); }} />
                     <Btn small label="+"
-                      onPress={() => { void addToBuild(id); }} />
+                      onPress={() => { void addToBuild(buyTier); }} />
                   </>
                 ) : (
                   <>
                     <Btn small label="Add to my build"
-                      onPress={() => { void addToBuild(id); }} />
+                      onPress={() => { void addToBuild(buyTier); }} />
                     {/* the long-press shortcut is invisible unless it is
                         taught, and this is exactly where a player is
                         already thinking about their build (IL45) */}

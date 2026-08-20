@@ -14,7 +14,8 @@ import {
   idsInGroup, implantPassive, ITEM_GROUPS, ITEM_STATS, ITEMS, itemIdByName, KIND_WORDS,
   kindsInGroup, kindWord, palForGear, palsDropping, palsHatchingFrom,
   rawMaterialsFor,
-  rankAxisOf, rankValueOf, rivalsOf, rollupOfMats, saysTheSame,
+  rankAxisOf, rankValueOf, recipeOf, hasTierCosts, rivalsOf, rollupOfMats,
+  saysTheSame,
   familyLine, statLine,
   groupOf, ITEM_IDS,
   schematicsFor, searchItems, spokenCraftTime, sortItems, statRank, TAB_GROUPS, teachesOf,
@@ -1843,5 +1844,60 @@ describe('a build row says which tier it is buying for (IL75)', () => {
   it('a single-tier item is not labelled, because nothing can confuse it', () => {
     const wood = itemIdByName('Wood')!;
     expect(familyOf(wood).length).toBe(1);
+  });
+});
+
+describe('one craft time, not two (IL76)', () => {
+  it('under an hour the seconds are said, above it they are not', () => {
+    expect(spokenTime(400)).toBe('6m 40s');   // the card says 6m 40s too
+    expect(spokenTime(600)).toBe('10m');      // nothing to add
+    expect(spokenTime(10000)).toBe('2h 47m'); // seconds are noise here
+    expect(spokenTime(45)).toBe('45s');
+  });
+
+  it('the build panel and the card now agree on the same craft', () => {
+    const gun = itemIdByName('Grappling Gun')!;
+    const raw = ITEM_FACTS[gun]!.craftTime!;
+    expect(spokenCraftTime(raw)).toBe('6m 40s');
+    expect(spokenTime(buildTime({ [gun]: 1 }).seconds)).toBe('6m 40s');
+  });
+});
+
+describe('a build can be made for the tier you are actually making (IL77)', () => {
+  it('every tier id ships the BASE recipe, which is why this was wrong', () => {
+    for (const t of familyOf(itemIdByName('Advanced Bow')!)) {
+      expect(ITEM_FACTS[t]?.recipe?.find((r) => r.id === 'Plastic')?.n).toBe(40);
+    }
+  });
+
+  it('recipeOf reads the per-tier block instead', () => {
+    const fam = familyOf(itemIdByName('Advanced Bow')!);
+    const plastic = (id: string) =>
+      recipeOf(id)?.find((r) => r.id === 'Plastic')?.n;
+    expect(fam.map(plastic)).toEqual([40, 50, 60, 70, 80]);
+  });
+
+  it('the whole bill follows the tier, not just the recipe line', () => {
+    const fam = familyOf(itemIdByName('Advanced Bow')!);
+    // CopperOre is the internal id of the item shown as "Ore"
+    const ore = (id: string) =>
+      rawMaterialsFor(id).gather.find((g) => g.id === 'CopperOre')?.n;
+    // the Legendary end of this ladder is what the app printed: 400x Ore
+    expect(fam.map(ore)).toEqual([200, 250, 300, 350, 400]);
+  });
+
+  it('a family whose block count does not match its tiers is refused', () => {
+    const bad = ITEM_IDS.filter((id) => {
+      const fam = familyOf(id);
+      const more = ITEM_FACTS[fam[0]]?.recipesMore;
+      return fam.length > 1 && fam[0] === id
+        && !!more && more.length !== fam.length - 1;
+    });
+    expect(bad.length).toBeGreaterThan(0);   // two such families exist
+    for (const id of bad) {
+      expect(hasTierCosts(id)).toBe(false);
+      // and the base recipe stands, rather than a guessed block
+      expect(recipeOf(familyOf(id)[1])).toEqual(ITEM_FACTS[familyOf(id)[1]]?.recipe);
+    }
   });
 });

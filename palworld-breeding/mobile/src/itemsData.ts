@@ -422,8 +422,38 @@ export function rollupOfMats(mats: CraftRow[], product?: string): CraftRollup {
  * the item is not craftable; `steps` is empty when the recipe is
  * already all raw — the caller shows the section only when it adds
  * something the recipe did not already say. */
+/** The recipe for THIS tier, not for its family's base.
+ *
+ * IL77: every tier id in the game files carries the same recipe — all
+ * five Advanced Bows say 40 Plastic. The real per-tier costs live on the
+ * BASE item as `recipesMore`, one block per tier above it (50 / 60 / 70 /
+ * 80 Plastic), and until now only the card read them. A build list made
+ * for the Legendary tier was handing out the Common tier's shopping list.
+ *
+ * Block k belongs to family tier k+1, and that mapping is only trusted
+ * when the counts line up: 91 of the 118 multi-tier families carry
+ * per-tier costs, and TWO of them list four blocks for a two-tier family.
+ * Those two are refused — the base recipe stands rather than a guess. */
+export function recipeOf(id: string): CraftRow[] | undefined {
+  const fam = familyOf(id);
+  const k = fam.indexOf(id);
+  if (k > 0) {
+    const more = ITEM_FACTS[fam[0]]?.recipesMore;
+    if (more && more.length === fam.length - 1) return more[k - 1];
+  }
+  return ITEM_FACTS[id]?.recipe;
+}
+
+/** Does this family price its tiers separately, and can we trust the
+ * mapping? Only then is a per-tier build worth offering. */
+export function hasTierCosts(id: string): boolean {
+  const fam = familyOf(id);
+  const more = ITEM_FACTS[fam[0]]?.recipesMore;
+  return fam.length > 1 && !!more && more.length === fam.length - 1;
+}
+
 export function rawMaterialsFor(id: string): CraftRollup {
-  const recipe = ITEM_FACTS[id]?.recipe;
+  const recipe = recipeOf(id);
   if (!recipe) return { gather: [], steps: [] };
   return rollupOfMats(recipe, id);
 }
@@ -535,7 +565,16 @@ export function spokenTime(seconds: number): string {
   const h = Math.floor(seconds / 3600);
   const m = Math.round((seconds % 3600) / 60);
   if (h > 0) return m > 0 ? `${h}h ${m}m` : `${h}h`;
-  if (seconds >= 60) return `${Math.floor(seconds / 60)}m`;
+  if (seconds >= 60) {
+    // IL76: this dropped the leftover seconds, so a Grappling Gun card
+    // said "about 6m 40s" (the source's own words) while the build panel
+    // said "About 6m" for the very same craft. Two screens, one fact,
+    // two numbers. Under an hour the seconds are worth saying; above it
+    // they are noise and still get dropped.
+    const mm = Math.floor(seconds / 60);
+    const ss = seconds % 60;
+    return ss ? `${mm}m ${ss}s` : `${mm}m`;
+  }
   return `${seconds}s`;
 }
 

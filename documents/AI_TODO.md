@@ -11753,3 +11753,52 @@ comment that a test slices on.
   honest minimum shipped here; letting a player pick which tier they are
   making is the real fix, and it needs the per-tier recipes that IL67
   proved we hold.
+
+---
+
+## IL76 + IL77 — the build list stops lying about what you are making (2026-08-20)
+
+**IL76 — one craft time, not two.** The Grappling Gun card said "about 6m
+40s" (the source's own words) and the build panel said "About 6m" for the
+very same craft, because `spokenTime` threw the leftover seconds away.
+Under an hour the seconds are worth saying; above it they are noise and
+are still dropped. Both screens now read **"6m 40s"**. Verified live.
+
+**IL77 — a build can be made for the tier you are actually making.**
+
+The build could only ever be the base tier. The reason is in the game
+files: **every tier id carries the same recipe** — all five Advanced Bows
+say 40 Plastic. The real per-tier costs sit on the BASE item as
+`recipesMore`, one block per tier above it (50 / 60 / 70 / 80 Plastic),
+and until now only the card read them. A player making the Legendary bow
+was handed the Common bow's shopping list.
+
+`recipeOf(id)` now resolves the tier's own block, and `rawMaterialsFor`
+uses it — so the whole bill follows, not just the recipe line:
+
+```
+Advanced Bow   Common  200x Ore   Uncommon 250x   Rare 300x
+               Epic    350x       Legendary 400x
+```
+
+The card asks **"Which one are you making?"** with a chip per tier, and
+the build stores that tier. Read off the running app after picking
+Legendary: `{"SFBow_5":1}` and *"Advanced Bow Legendary · About 5h 33m ·
+400× Ore, 100× Coal, 50× Flame Organ, 40× Nightstar Sand, 6× Ancient
+Civilization Parts"*.
+
+**Where it REFUSES:** the block-to-tier mapping is only trusted when the
+counts line up. 91 of the 118 multi-tier families price their tiers
+apart — 84 as 5 tiers/4 blocks, 5 as 2 tiers/1 block — and **two list
+four blocks for a two-tier family**. Those two get no picker and keep the
+base recipe, rather than a guess. `hasTierCosts` is that gate and the
+test pins it.
+
+Not every multi-tier family has per-tier costs at all (the Grappling Gun
+has none), so there the tier changes nothing but the label, and no picker
+appears.
+
+Gates: mobile `tsc --noEmit` clean, `npx vitest run` 1039/1039.
+
+**Both queued items are done.** Next unswept surfaces: the share text,
+and search/sort behaviour.
