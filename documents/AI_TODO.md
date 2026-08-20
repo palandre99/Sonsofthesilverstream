@@ -2433,11 +2433,17 @@ work always"):**
       card already shows both, and the panel could total them — "about
       6h20m at Handiwork Lv. 1" answers "is this an evening or a
       weekend?", which is the second question after "what do I need?".
-      CHECK FIRST what share of a REAL list carries work data: 742 of
-      1,421 is barely half, so a total that silently ignores the other
-      half would be a wrong number — exactly what this app exists to
-      replace. If the coverage is partial, say so ("plus 3 things with
-      no time recorded") or do not ship the total at all.
+      COVERAGE MEASURED 2026-08-20, and it IS partial: 742 of the 1,416
+      items with a recipe carry a work amount — 52%. For the things a
+      player actually builds it is better but still short: 437 of 626
+      weapons, armour and accessories (70%). Missing outright: AI Core,
+      Attack Pendant, Ring of Water Resistance, Phantom Ring, Wumpo
+      Charm, Thermal Undershirt.
+      SO THE TOTAL MUST NAME WHAT IT LEFT OUT — "about 6h20m at
+      Handiwork Lv. 1, plus 2 things with no time recorded" — or not
+      ship. A bare total over half the data is precisely the number
+      this app exists to replace. Show the count of unmeasured items
+      beside it, never silently drop them.
 - [x] IL45 2026-08-20: HOLD A ROW TO ADD IT — and the measurement said
       NO BUTTON, so there is none. The row is 343px wide and its name
       slot is 199px; "Disposable Implant: Demon's Hand" already needs
