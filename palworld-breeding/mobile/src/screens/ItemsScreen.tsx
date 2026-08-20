@@ -387,6 +387,20 @@ function BuildPanel({ onOpenItem }: { onOpenItem: (id: string) => void }) {
                   <Text style={{ color: T.accentInk, fontSize: 12.5, fontWeight: '700' }}
                     numberOfLines={1}>
                     {ITEMS[i].name}
+                    {/* IL75: a build row said "1× Grappling Gun" for a
+                        weapon that has five tiers, and the gather list
+                        under it is the BASE tier's recipe, and the
+                        schematic work showed higher tiers cost 1.75×
+                        as much — so a player
+                        holding an Epic schematic was being handed the
+                        wrong shopping list with nothing to warn them.
+                        Say which tier it is — only when there is more
+                        than one to confuse it with. */}
+                    {familyOf(i).length > 1 && (
+                      <Text style={{ color: T.faint, fontWeight: '600' }}>
+                        {'  '}{ITEM_STATS[i]?.tier ?? tierWord(ITEMS[i].rarity)}
+                      </Text>
+                    )}
                   </Text>
                 </Pressable>
                 <Btn small label="Remove"

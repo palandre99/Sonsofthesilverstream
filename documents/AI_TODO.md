@@ -11715,3 +11715,41 @@ An identical retry succeeded. If it had been silenced, his everyday app
 would have sat a version behind the dev one with nothing to show it.
 **Read the eas output, every time, on both channels.** `channel:list`
 confirms both now carry IL74 (10 seconds / 1 minute ago).
+
+---
+
+## IL75 — the build list was handing out the wrong shopping list (2026-08-20)
+
+**New surface swept: the build list.** It reads well — "My build — 1
+thing / 3 to gather", what you are making, craft time, everything from
+scratch, what gets crafted along the way, share, clear. One real fault.
+
+A build row said **"1× Grappling Gun"** for a weapon with five tiers, and
+the gather list under it is the BASE tier's recipe. The schematic work
+established that higher tiers cost 1.75× as much, so a player holding an
+Epic schematic was being handed the wrong amounts with nothing to warn
+them. The stored key confirms it — `palforge-default-build =
+{"GrapplingGun":1}`, the base id.
+
+The row now names the tier, and only when there is more than one tier to
+confuse it with: **"1× Grappling Gun  Common"**. Verified on the running
+app.
+
+Gates: mobile `tsc --noEmit` clean, `npx vitest run` 1033/1033.
+
+**A trap for the next worker:** the source-slicing tests find their block
+with `code.indexOf('IL<n>')`. My IL75 comment mentioned IL67 by name and
+it sits EARLIER in the file, so the IL67 test started reading my comment
+instead of its own block. Do not name another ledger item inside a code
+comment that a test slices on.
+
+### QUEUED, with evidence
+
+- **The same craft time renders two ways.** The Grappling Gun card says
+  "about 6m 40s"; the build panel says "About 6m", because the panel
+  sums seconds and `spokenTime` drops the remainder. Both are honest and
+  they disagree on screen. Decide one.
+- **A build cannot be built for a chosen tier.** Naming the tier is the
+  honest minimum shipped here; letting a player pick which tier they are
+  making is the real fix, and it needs the per-tier recipes that IL67
+  proved we hold.

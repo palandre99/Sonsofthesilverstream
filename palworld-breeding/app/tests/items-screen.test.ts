@@ -1821,3 +1821,27 @@ describe('big numbers on a card are grouped (IL73)', () => {
     expect(long.length).toBeGreaterThan(100);
   });
 });
+
+describe('a build row says which tier it is buying for (IL75)', () => {
+  it('the shopping list belongs to ONE tier, so the row names it', () => {
+    const code = readFileSync(
+      join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+    const block = code.slice(code.indexOf('IL75'), code.indexOf('IL75') + 900);
+    expect(block).toContain('familyOf(i).length > 1');
+    expect(block).toContain('ITEM_STATS[i]?.tier ?? tierWord(ITEMS[i].rarity)');
+  });
+
+  it('the Grappling Gun is exactly the case that needed it', () => {
+    const gun = itemIdByName('Grappling Gun')!;
+    expect(familyOf(gun).length).toBe(5);
+    // the base recipe is what a build for `gun` gathers — the ids are
+    // the game's internal ones (CopperIngot is the item shown as "Ingot")
+    const base = ITEM_FACTS[gun]?.recipe?.find((r) => r.id === 'CopperIngot')?.n;
+    expect(base).toBe(10);
+  });
+
+  it('a single-tier item is not labelled, because nothing can confuse it', () => {
+    const wood = itemIdByName('Wood')!;
+    expect(familyOf(wood).length).toBe(1);
+  });
+});
