@@ -2540,3 +2540,26 @@ describe('a drop quantity reads the same way everywhere (IL94)', () => {
     expect(code).not.toMatch(/\{b\.n \? `\$\{b\.n\} · ` : ''\}/);
   });
 });
+
+describe('a stat label on a row is capitalised like the rest (IL95)', () => {
+  it('durability was the odd one out', () => {
+    const data = readFileSync(
+      join(__dirname, '../../mobile/src/itemsData.ts'), 'utf8');
+    const share = readFileSync(
+      join(__dirname, '../../mobile/src/itemShare.ts'), 'utf8');
+    expect(data).toContain('`Durability ${st.durability}`');
+    expect(data).not.toContain('`durability ${st.durability}`');
+    expect(share).toContain('`Durability ${st.durability}`');
+  });
+
+  it('a shield row shows durability and nothing else, so it led the line', () => {
+    const shields = collapseFamilies(
+      idsInGroup('armor').filter((i) => kindWord(i) === 'Shield'));
+    expect(shields.length).toBe(7);
+    const adv = itemIdByName('Advanced Shield')!;
+    expect(ITEM_STATS[adv]?.durability).toBe(21000);
+    expect(ITEM_STATS[adv]?.atk).toBeUndefined();
+    expect(ITEM_STATS[adv]?.def).toBeUndefined();
+    expect(statLine(adv)).toBe('Durability 21000');
+  });
+});

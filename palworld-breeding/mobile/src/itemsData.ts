@@ -1247,7 +1247,10 @@ export function statLine(id: string): string {
   if (st?.def != null) bits.push(`Defense ${st.def}`);
   bits.push(...guardBits(id));
   if (st?.hp != null) bits.push(`+${st.hp} Health`);
-  if (st?.durability != null) bits.push(`durability ${st.durability}`);
+  // IL95: every other stat on a row is capitalised — "Attack 20000",
+  // "Defense 840", "Speed 80". A shield row's ONLY stat is its
+  // durability, so it opened in lower case and read like a slip.
+  if (st?.durability != null) bits.push(`Durability ${st.durability}`);
   if (st?.magazine != null) bits.push(`${st.magazine} round${st.magazine === 1 ? '' : 's'}`);
   if (!bits.length) {
     // food and consumables compete on their effects, not combat stats

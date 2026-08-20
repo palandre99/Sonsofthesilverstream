@@ -12591,3 +12591,37 @@ Restarted with the documented command
 otherwise.** `curl -o /dev/null -w "%{http_code}" http://localhost:8087`
 answers it in a second, and the browser console will happily show you
 twenty minutes of errors you already fixed.
+
+---
+
+## IL95 — the one stat label that started in lower case (2026-08-20)
+
+Opened the Shield class from the Armor tab's new strip:
+
+```
+Advanced Shield   Epic        durability 21000
+Ancient Shield    Legendary   durability 22000
+```
+
+Every other stat on a row is capitalised — Attack 20000, Defense 840,
+Speed 80, Nutrition 738. A shield's ONLY stat is its durability, so the
+whole line opened in lower case and read like a slip. Fixed on the row
+and in the share text, both of which wrote it by hand.
+
+Verified live: `Advanced Shield | Epic | Durability 21000`.
+
+Gates: mobile `tsc --noEmit` clean, `npx vitest run` 1099/1099.
+
+### THREE MORE CHECKED, NONE A FAULT
+
+- **The Armor tab strip** works: Head gear 68 · Body armor 31 · Shield 7,
+  summing to the tab's 106, and its rows carry real scent
+  (`Defense 840–1092 · Cold 3 · Heat 2`).
+- **Sphere modules** show no capture number, and the description says
+  they increase capture power. Checked the data: **we do not hold a
+  number for them.** Omitting it is right; inventing one is the thing
+  this app exists not to do.
+- **Criterion 2's unified index** is real. "Search pals, items, screens…"
+  on "Advanced Bow" returns *5 results — Advanced Bow (Bow · 5 tiers up
+  to Legendary)* plus its four schematics. Pals, items and screens in one
+  place, one tap from the header.

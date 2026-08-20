@@ -90,7 +90,7 @@ export function shareTextForItem(id: string, gameVersion: string): string {
     const r = statRank(id, 'def');
     statBits.push(`Defense ${st.def}${r ? ` (#${r.rank} of ${r.of})` : ''}`);
   }
-  if (st?.durability != null) statBits.push(`durability ${st.durability}`);
+  if (st?.durability != null) statBits.push(`Durability ${st.durability}`);
   if (st?.magazine != null) {
     statBits.push(`${st.magazine} round${st.magazine === 1 ? '' : 's'}`);
   }
