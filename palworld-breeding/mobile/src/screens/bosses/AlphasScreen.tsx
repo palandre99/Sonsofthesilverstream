@@ -210,6 +210,14 @@ export function AlphasScreen() {
     return true;
   });
 
+  // the easiest fight still unbeaten — in reach of the player's level when
+  // they have set one, otherwise simply the easiest left
+  const nextUp = rows.find((r) => !isBeaten(alphaBeatKey(r.title))
+    && (playerLevel == null || (r.lv != null && r.lv <= playerLevel)))
+    ?? null;
+  const nextBeyond = nextUp ? null
+    : rows.find((r) => !isBeaten(alphaBeatKey(r.title))) ?? null;
+
   const FILTERS: [StatusFilter, string][] = [
     ['all', 'All'], ['todo', 'Still to beat'],
     ['beaten', 'Beaten'], ['caught', 'Caught'],
@@ -229,6 +237,25 @@ export function AlphasScreen() {
             beaten={beatenCountAll}
             caught={caughtCountAll}
           />
+          {(nextUp || nextBeyond) && (
+            <Card style={{ padding: 12, marginBottom: 10 }}>
+              <Text style={{ color: T.ink, fontWeight: '800', fontSize: 13.5 }}>
+                {nextUp
+                  ? `Next up: ${nextUp.title}${
+                    nextUp.lv != null ? ` (Lv ${nextUp.lv})` : ''}`
+                  : `Nothing left at your level — the easiest one still `
+                    + `standing is ${nextBeyond!.title}${
+                      nextBeyond!.lv != null ? ` (Lv ${nextBeyond!.lv})` : ''}`}
+              </Text>
+              <Text style={[s.body, { fontSize: 11.5, marginTop: 3 }]}>
+                {playerLevel == null
+                  ? 'The easiest one you have not ticked yet. Set your level '
+                    + 'on your save profile and this follows what you can '
+                    + 'actually fight.'
+                  : 'The easiest one you have not ticked yet.'}
+              </Text>
+            </Card>
+          )}
           <SearchInput value={query} onChange={setQuery}
             placeholder="Search a boss or a pal…" />
           <View style={[s.wrap, { marginTop: 8 }]}>
