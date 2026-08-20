@@ -2403,6 +2403,31 @@ work always"):**
       actually sends. The app already had the idiom (the Paldex ships
       "Share my list…", PaldexScreen.tsx:390), so this matched a
       pattern rather than inventing one.
+- [ ] IL46 FOUND BY IL45 2026-08-20: THE BUILD LIST DOES NOT KNOW WHAT
+      THE ROW ABOVE IT KNOWS. IL21 already marks a row "Lv 67" in gold
+      when the player's own technology level cannot reach it, and IL43's
+      panel ignores that entirely — so a player can assemble a list,
+      read a total of 376 Ore, go and farm it, and only then discover
+      two of the things on it are 20 levels away. The data is already
+      shipped and already used: 681 of the 1,421 craftable items carry a
+      technology level (min 1, median 45, max 80), and `unlockLevel()`
+      lives in the same file as the panel.
+      Say it in the panel the way the row says it: "2 of these need a
+      higher technology level — Lv 67, Lv 71". Only when the player HAS
+      set a level (IL21's rule; no level set means no claim), and never
+      as a blocker — a player planning ahead is allowed to want a thing
+      they cannot build yet. This is honesty, not a gate.
+- [ ] IL47 FOUND BY IL45 2026-08-20: the build panel counts MATERIALS
+      but never TIME. 742 of the craftable items ship a work amount and
+      a Handiwork Lv. 1 time (Beam Sword: 5,000 work, 2h46m40s), the
+      card already shows both, and the panel could total them — "about
+      6h20m at Handiwork Lv. 1" answers "is this an evening or a
+      weekend?", which is the second question after "what do I need?".
+      CHECK FIRST what share of a REAL list carries work data: 742 of
+      1,421 is barely half, so a total that silently ignores the other
+      half would be a wrong number — exactly what this app exists to
+      replace. If the coverage is partial, say so ("plus 3 things with
+      no time recorded") or do not ship the total at all.
 - [x] IL45 2026-08-20: HOLD A ROW TO ADD IT — and the measurement said
       NO BUTTON, so there is none. The row is 343px wide and its name
       slot is 199px; "Disposable Implant: Demon's Hand" already needs
