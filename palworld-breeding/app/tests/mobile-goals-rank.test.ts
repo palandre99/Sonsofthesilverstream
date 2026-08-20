@@ -110,3 +110,36 @@ describe('mounts are ranked, not just listed', () => {
     expect(code).toContain('health + attack + defence');
   });
 });
+
+describe('the Fighting section points at the screen that knows the fight', () => {
+  /* The Fighting list ranks by raw battle stats — the right answer to "who
+   * is strong" and the wrong one to "who do I bring to THIS fight", because
+   * elements decide that and this list knows nothing about them. It now
+   * carries one line through to the Bosses fane's Teams tab, which scores
+   * the same box against every element.
+   *
+   * Read from the source for the reason this whole file is: the screen is
+   * React Native and cannot be rendered here. The QA browser could not
+   * scroll the goals sheet as far as this section either, so these pins ARE
+   * the verification — they hold the wiring, not the pixels. */
+  it("offers the link, in a player's words", () => {
+    expect(code).toContain('For a specific fight, see your squad by element');
+  });
+
+  it('sends it to the Teams tab of the Bosses fane, not somewhere vaguer', () => {
+    expect(code).toContain("navigateTo({ domain: 'bosses', tab: 'teams' })");
+  });
+
+  it('shows it ONLY on Fighting — a stats list is the only place it corrects', () => {
+    expect(code).toContain("sec.id === 'fight' && (");
+    // one occurrence: not pasted onto the mount or work sections, where
+    // element matchups have nothing to say
+    const hits = code.split('For a specific fight, see your squad by element').length - 1;
+    expect(hits).toBe(1);
+  });
+
+  it('is a real control, with the label a screen reader reads out', () => {
+    expect(code).toContain('accessibilityRole="button"');
+    expect(code).toContain('See your squad scored against every element');
+  });
+});

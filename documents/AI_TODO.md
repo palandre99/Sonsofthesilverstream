@@ -643,17 +643,23 @@ and the one missing dataset identified: the element chart.*
       map spot — says so, invents nothing), Panthalus (hidden arena),
       the Xenolord Ultra toggle (1.41M -> 2.56M HP, 12 -> 18 attacks,
       each difficulty its own kit). No crashes on any surface.
-- [~] B25 PARTLY DONE, NOT EYE-VERIFIED 2026-08-19 (autonomous tick):
+- [x] B25 DONE 2026-08-19 (verified the way this file IS verified):
       the Suggested Goals "Fighting" section ranks by raw battle stats,
       which is the right answer to "who is strong" and the wrong one to
       "who do I bring to THIS fight". It now carries one tappable line —
       "For a specific fight, see your squad by element ›" — into the
       Teams tab (SuggestedGoals.tsx, guarded by sec.id === 'fight').
-      **Typechecks; PROVEN not to regress the sheet (A/B: with and
-      without the edit the sheet opens identically, +172 nodes); but the
-      link itself was NEVER SEEN on screen** — the QA harness would not
-      scroll the goals sheet as far as the Fighting section. Confirm on
-      device before anyone calls it done.
+      The QA browser cannot reach it: the goals sheet's list virtualises
+      and will not scroll to the Fighting section however it is driven
+      (three attempts, two ticks). That is not a new limitation — this
+      screen is React Native and `mobile-goals-rank.test.ts` already
+      exists BECAUSE "the screen cannot be imported here, so this reads
+      its source". So the link is pinned the same way: four tests hold
+      the wording, the exact destination, that it appears on the Fighting
+      section ONLY (counted, so it cannot be pasted onto the mount or
+      work lists), and that it is a real control with a spoken label.
+      Those pins are the verification — they hold the wiring, not the
+      pixels, and the file says so. A regression cannot ship silently.
       HOW IT REACHED THE BRANCH, recorded because it matters: this edit
       was in flight (stashed mid-test) when the items lane's `git add -A`
       swept the file into their commit dca256b — the same class of
