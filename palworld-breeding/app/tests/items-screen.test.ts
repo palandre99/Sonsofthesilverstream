@@ -777,6 +777,22 @@ describe('the screen speaks plainly and cites its sources', () => {
     expect(code).toContain('What it really costs');
   });
 
+  it('every material list on the card is tappable, none is flat text (IL34)', () => {
+    // one component draws them all, so there is one place to get right
+    expect(code).toContain('function MatChips(');
+    expect(code).toContain('accessibilityLabel={`${r.n} ${it.name}. Open its card`}');
+    // the four lists that used to be a joined string: the tier's own
+    // recipe, both halves of its from-scratch bill, and the
+    // recipesMore fallback
+    expect(code).toContain('<MatChips rows={c.mats} onOpenItem={onOpenItem} />');
+    expect(code).toContain('<MatChips rows={roll.gather} onOpenItem={onOpenItem} />');
+    expect(code).toContain('<MatChips rows={roll.steps} onOpenItem={onOpenItem} dim />');
+    expect(code).toContain('<MatChips key={i} rows={block} onOpenItem={onOpenItem} />');
+    // no material list may go back to being a joined string
+    expect(code, 'a material list is flat text again')
+      .not.toMatch(/\{(c\.mats|block)\.map\([^)]*\)\.join\(' · '\)\}/);
+  });
+
   it('the two Pal Souls loop back on each other, so neither claims a bill', () => {
     // Small is made from a Medium and a Medium from Smalls — expanding
     // either would tell you to gather what you are making

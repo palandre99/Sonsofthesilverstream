@@ -241,6 +241,42 @@ function IngredientRow({ row, onOpenItem }: {
   );
 }
 
+/** A material list as tappable chips (IL34). The card's rule since IL31
+ * is that every item name is a door; these lists were the last places
+ * where a name was flat text, so "40× Nightstar Sand" inside a tier now
+ * opens the same card the identical row above it does. Wraps, so a
+ * five-material tier and an eleven-step bill both fit a phone. */
+function MatChips({ rows, onOpenItem, dim = false }: {
+  rows: CraftRow[]; onOpenItem: (id: string) => void; dim?: boolean;
+}) {
+  return (
+    <View style={[s.row, { flexWrap: 'wrap', gap: 6, marginTop: 4 }]}>
+      {rows.map((r) => {
+        const it = ITEMS[r.id];
+        if (!it) return null;
+        return (
+          <Pressable
+            key={r.id}
+            onPress={() => onOpenItem(r.id)}
+            accessibilityRole="button"
+            accessibilityLabel={`${r.n} ${it.name}. Open its card`}
+            style={({ pressed }) => ({
+              paddingVertical: 3, paddingHorizontal: 7, borderRadius: T.rSm,
+              backgroundColor: pressed ? T.raised : T.surface2,
+            })}>
+            <Text style={{
+              color: dim ? T.muted : T.accentInk,
+              fontSize: 11.5, fontWeight: '700',
+            }}>
+              {r.n}× {it.name}
+            </Text>
+          </Pressable>
+        );
+      })}
+    </View>
+  );
+}
+
 const techLine = techSentence;
 
 /** "1h6m40s" -> "1h 6m 40s" — the page's compact time, made readable. */
@@ -451,23 +487,7 @@ function ItemDetail({ id, trail = [], onClose, onBack, onOpenItem }: {
                     }]}>
                       Crafted along the way, in this order:
                     </Text>
-                    <View style={[s.row, { flexWrap: 'wrap', gap: 6, marginTop: 4 }]}>
-                      {roll.steps.map((r) => (
-                        <Pressable
-                          key={r.id}
-                          onPress={() => onOpenItem(r.id)}
-                          accessibilityRole="button"
-                          accessibilityLabel={`${r.n} ${ITEMS[r.id].name}. Open its card`}
-                          style={({ pressed }) => ({
-                            paddingVertical: 3, paddingHorizontal: 7,
-                            borderRadius: T.rSm, backgroundColor: pressed ? T.raised : T.surface2,
-                          })}>
-                          <Text style={{ color: T.accentInk, fontSize: 11.5, fontWeight: '700' }}>
-                            {r.n}× {ITEMS[r.id].name}
-                          </Text>
-                        </Pressable>
-                      ))}
-                    </View>
+                    <MatChips rows={roll.steps} onOpenItem={onOpenItem} />
                   </View>
                 );
               })()}
@@ -508,9 +528,7 @@ function ItemDetail({ id, trail = [], onClose, onBack, onOpenItem }: {
                             </Pressable>
                           )}
                         </View>
-                        <Text style={[s.body, { fontSize: 12, marginTop: 2, color: T.faint }]}>
-                          {c.mats.map((r) => `${r.n}× ${ITEMS[r.id]?.name ?? r.id}`).join(' · ')}
-                        </Text>
+                        <MatChips rows={c.mats} onOpenItem={onOpenItem} />
                         {deep && (
                           <Pressable
                             onPress={() => setOpenTier(shown ? null : c.product)}
@@ -537,14 +555,13 @@ function ItemDetail({ id, trail = [], onClose, onBack, onOpenItem }: {
                             <Text style={[s.body, { fontSize: 11.5, color: T.muted }]}>
                               From scratch
                             </Text>
-                            <Text style={[s.body, { fontSize: 12, marginTop: 1, color: T.ink }]}>
-                              {roll.gather
-                                .map((r) => `${r.n}× ${ITEMS[r.id].name}`).join(' · ')}
+                            <MatChips rows={roll.gather} onOpenItem={onOpenItem} />
+                            <Text style={[s.body, {
+                              fontSize: 11.5, marginTop: 6, color: T.faint,
+                            }]}>
+                              Crafted along the way
                             </Text>
-                            <Text style={[s.body, { fontSize: 11.5, marginTop: 3, color: T.faint }]}>
-                              Crafted along the way: {roll.steps
-                                .map((r) => `${r.n}× ${ITEMS[r.id].name}`).join(' · ')}
-                            </Text>
+                            <MatChips rows={roll.steps} onOpenItem={onOpenItem} dim />
                           </View>
                         )}
                       </View>
@@ -557,9 +574,7 @@ function ItemDetail({ id, trail = [], onClose, onBack, onOpenItem }: {
                     Higher tiers are crafted with the schematic and cost more:
                   </Text>
                   {facts.recipesMore.map((block, i) => (
-                    <Text key={i} style={[s.body, { fontSize: 12, marginTop: 3, color: T.faint }]}>
-                      {block.map((r) => `${r.n}× ${ITEMS[r.id]?.name ?? r.id}`).join(' · ')}
-                    </Text>
+                    <MatChips key={i} rows={block} onOpenItem={onOpenItem} />
                   ))}
                 </View>
               )}

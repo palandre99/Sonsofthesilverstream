@@ -2312,18 +2312,22 @@ work always"):**
    and reported with the reasoning. Only true CEO-only blockers (Apple
    logins, purchases, money, his own device) stop a tick.
 
-- [ ] IL34 FOUND BY IL33 2026-08-20: the tier block is the last place on
-      the card where item names are DEAD TEXT. IL31 made every item name
-      on a pal card a door and IL32 made the base bill tappable, but the
-      schematic tiers still render their materials as one "·"-joined
-      string — both the direct line (`c.mats`) and the from-scratch bill
-      I just added. So a player reading "40× Nightstar Sand" in a tier
-      cannot tap through to find out where Nightstar Sand comes from,
-      though the identical row one section above is a link. Fix by
-      rendering them as wrapped chips like the base section's "Crafted
-      along the way" row — the pattern already exists and already fits
-      375px in three rows. Check the chip count for the widest tier
-      first (max 10 gather + 11 steps measured at IL33).
+- [x] IL34 2026-08-20: NO ITEM NAME ON THE CARD IS DEAD TEXT ANY MORE.
+      The audit found FOUR flat "·"-joined lists, not the one I logged:
+      a tier's own recipe, BOTH halves of the from-scratch bill I added
+      at IL33, and the `recipesMore` fallback (446 items, 1,769 blocks —
+      the branch for items whose tiers have no schematic rows). All four
+      are now tappable, so reading the Legendary Beam Sword's cost and
+      wondering where Nightstar Sand comes from is one tap, not a search
+      — verified live: the chip opens its card, which carries "Where to
+      find it", with "‹ Beam Sword" to come back.
+      MY CALL — ONE COMPONENT, not four copies. `MatChips` draws every
+      material list on the card, and the IL32 base section was folded
+      onto it too, so the chip that was written inline last tick is now
+      the same code as the rest. A test names all four call sites and
+      fails if any list goes back to being a joined string.
+      Verified 48 chips open at once on the widest card: none past the
+      375px edge, no overlap, nothing clipped. 865 green.
 - [x] IL33 2026-08-20: THE TIER A PLAYER ACTUALLY BUILDS NOW ANSWERS THE
       SAME QUESTION. IL32 expanded the base recipe; the higher tiers —
       1,690 schematic crafts, and the ones people grind for — still
