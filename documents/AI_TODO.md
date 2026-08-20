@@ -2609,7 +2609,33 @@ work always"):**
       never a long sleep chain, so no step is lost to the timeout. Only
       then decide whether anything is actually broken. Do NOT tell the
       CEO anything is broken until a clean run says so twice.
-- [ ] IL60 THE ACTUAL SHAPE 2026-08-20 (supersedes IL58 and IL59, both
+- [x] IL61 2026-08-20: THERE WAS NEVER A BUG. IL58, IL59 AND IL60 ARE
+      ALL WITHDRAWN — three framings of a fault that does not exist,
+      every one of them an artefact of MY TEST.
+      THE PROOF: instrumenting the mailbox showed it working perfectly
+      on the "failing" path — "SEND paldex" then "TAKE paldex
+      pending=paldex", the payload delivered to a matching tab. So I
+      stopped trusting my own signal and asked the DOM what was really
+      there: exactly one [role="dialog"], containing "Cattiva #2
+      Neutral…". The pal card was open the whole time.
+      WHY I KEPT READING IT AS BROKEN: I checked for an aria-label
+      "Close". The ITEM card's close button is labelled "Close"; the
+      PAL card's is labelled "✕". Every check said no-card because it
+      was looking for the wrong word, and I built two hypotheses and a
+      one-frame "fix" on top of that before questioning the ruler.
+      THE LESSON, worth more than the non-bug: to prove a modal is
+      open, ask for [role="dialog"] and read its TEXT. Never assert on
+      a label you assumed; find the label first. The same mistake
+      produced the "75 blank consumables" over-count (a probe that did
+      not replicate all of statLine's branches).
+      NOTHING WAS SHIPPED FOR ANY OF IT — the one-frame delay and both
+      instrumentations were reverted to the committed state.
+- [ ] IL62 A SMALL REAL ONE, found while disproving the above: the pal
+      card's close button is labelled "✕" to a screen reader, which
+      reads as nothing useful, while the item card next to it says
+      "Close". `mobile/src/ui/PalDetail.tsx`. One word. It is the
+      Breeding/Bosses lane's file — check `git status` and coordinate
+      before touching it, or hand it to them.
       of which I framed wrongly): OPENING A PAL CARD FAILS WHENEVER THE
       JUMP CROSSES A DOMAIN. It has nothing to do with which control
       sends it.
