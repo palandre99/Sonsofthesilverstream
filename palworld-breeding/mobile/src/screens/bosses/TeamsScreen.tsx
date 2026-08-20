@@ -157,7 +157,8 @@ export function TeamsScreen() {
                       why={matchupLabel(row, `a ${el} boss`)}
                       attain={attain}
                       onOpen={() => openPal(row.name)}
-                      onPlan={attain.kind === 'breed' ? () => planPal(row.name) : null} />
+                      onPlan={attain.kind === 'breed' ? () => planPal(row.name) : null}
+                      onWhere={attain.kind === 'catch' ? () => openPal(row.name) : null} />
                   ))}
                   {gaps != null && !gaps.length && (
                     <Text style={[s.body, { fontSize: 12, marginTop: 6 }]}>

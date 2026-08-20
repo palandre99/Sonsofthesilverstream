@@ -12,9 +12,13 @@ import { Badge, Btn, PalIcon, s } from '../../ui/kit';
 import { attainLabel, type Attain } from '../../logic/recommend';
 import type { CounterRow } from '../../logic/counters';
 
-export function CounterPalRow({ row, why, attain, onOpen, onPlan }: {
+export function CounterPalRow({ row, why, attain, onOpen, onPlan, onWhere }: {
   row: CounterRow; why: string; attain?: Attain | null;
-  onOpen: () => void; onPlan?: (() => void) | null;
+  onOpen: () => void;
+  /** breeding route -> the Planner */
+  onPlan?: (() => void) | null;
+  /** catchable -> its card, which carries the spawn map */
+  onWhere?: (() => void) | null;
 }) {
   const label = attain ? attainLabel(attain) : null;
   return (
@@ -41,7 +45,8 @@ export function CounterPalRow({ row, why, attain, onOpen, onPlan }: {
           </Text>
         </View>
       </Pressable>
-      {onPlan && <Btn small label="Plan it" onPress={onPlan} />}
+      {onWhere && <Btn small label="Where to catch" onPress={onWhere} />}
+      {onPlan && <Btn small label="Breeding plan" onPress={onPlan} />}
     </View>
   );
 }

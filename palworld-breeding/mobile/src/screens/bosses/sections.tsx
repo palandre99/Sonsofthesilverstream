@@ -150,8 +150,7 @@ export function ReadySection({ elements, moves, bossName, onLeave }: {
           <Text style={s.h3}>Worth getting for this fight</Text>
           <Text style={[s.body, { fontSize: 12, marginTop: 2 }]}>
             Pals that hit it for double, ranked the same way, closest to your
-            save first. Tap one for where to catch it; Plan it sends a
-            breeding route to the Planner.
+            save first — with the button that takes you where you need to go.
           </Text>
           <View style={{ marginTop: 6 }}>
             {suggestions == null && (
@@ -162,7 +161,8 @@ export function ReadySection({ elements, moves, bossName, onLeave }: {
                 why={matchupLabel(row, bossName)}
                 attain={attain}
                 onOpen={() => openPal(row.name)}
-                onPlan={attain.kind === 'breed' ? () => planPal(row.name) : null} />
+                onPlan={attain.kind === 'breed' ? () => planPal(row.name) : null}
+                onWhere={attain.kind === 'catch' ? () => openPal(row.name) : null} />
             ))}
             {suggestions != null && !suggestions.length && (
               <Text style={[s.body, { marginTop: 4 }]}>
