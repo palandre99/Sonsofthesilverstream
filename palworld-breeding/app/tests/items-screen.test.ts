@@ -2672,3 +2672,41 @@ describe('the app says what changed when the data was refreshed (IL98)', () => {
     expect(kit).toContain("navigateTo({ domain: 'breeding', tab: 'ref' })");
   });
 });
+
+describe('the bill uses one recipe resolver the whole way down (IL100)', () => {
+  it('the rollup descends with recipeOf, not the raw recipe', () => {
+    const data = readFileSync(
+      join(__dirname, '../../mobile/src/itemsData.ts'), 'utf8');
+    const walk = data.slice(data.indexOf('const walk = ('),
+      data.indexOf('const seed = new Set('));
+    expect(walk).toContain('for (const r of recipeOf(at) ?? []) {');
+    expect(walk).not.toContain('ITEM_FACTS[at]!.recipe!');
+  });
+
+  it('today the two agree, and the test says WHY rather than assuming', () => {
+    // no ingredient in the game is a non-base tier of a family that
+    // prices its tiers apart — so the resolver and the raw recipe read
+    // the same. If a refresh changes that, the rollup now follows the
+    // tier instead of silently costing the base.
+    const seen = new Set<string>();
+    let tiered = 0;
+    for (const id of ITEM_IDS) {
+      for (const r of (ITEM_FACTS[id]?.recipe ?? [])) {
+        if (seen.has(r.id)) continue;
+        seen.add(r.id);
+        const fam = familyOf(r.id);
+        if (fam.length > 1 && fam.indexOf(r.id) > 0 && hasTierCosts(r.id)) tiered++;
+      }
+    }
+    expect(seen.size).toBe(139);
+    expect(tiered).toBe(0);
+  });
+
+  it('a tiered product still bills its own tier from the top', () => {
+    const bow = itemIdByName('Advanced Bow')!;
+    const fam = familyOf(bow);
+    const ore = (id: string) =>
+      rawMaterialsFor(id).gather.find((g) => g.id === 'CopperOre')?.n;
+    expect(fam.map(ore)).toEqual([200, 250, 300, 350, 400]);
+  });
+});

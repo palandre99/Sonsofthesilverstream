@@ -12815,3 +12815,39 @@ refresh that introduces one fails loudly instead of quietly costing the
 CEO a morning of mining.
 
 Gates: mobile `tsc --noEmit` clean, `npx vitest run` 1116/1116.
+
+---
+
+## IL100 — one recipe resolver, the whole way down (2026-08-20)
+
+Continuing the audit of what I added today. The from-scratch bill walks
+down through crafted ingredients, and that walk read `ITEM_FACTS[at].recipe`
+directly while the top of the bill used the tier-aware `recipeOf`. **Two
+resolvers on one calculation.**
+
+**Measured before touching it: 0 of the 139 distinct ingredients in the
+game is a non-base tier of a family that prices its tiers apart**, so the
+two read identically today and no bill has ever been wrong. The suite
+confirms it — 1,119 green with the change, byte-identical behaviour.
+
+Changed anyway, because it is a trap rather than a bug: if a refresh ever
+makes an ingredient a tiered item, the walk would have quietly costed it
+at the base tier while the line above used the real one — and nothing
+would have failed. **The test pins the property (no ingredient is a
+tiered item; the rollup descends with `recipeOf`), not the coincidence.**
+
+### THE REST OF TODAY'S NEW DEPENDENCIES, AUDITED
+
+- **the egg → pal join** (drives "Hatches 20 pals" and the breeding
+  claim): already gated — 53 eggs, 43 joined, and the six that do not
+  join pinned BY NAME with the reason.
+- **the reverse recipe index** ("Used in 234 recipes", "What you can make
+  with it"): already gated — exact join both ways, unique names,
+  collapsed to families.
+- **craft-time strings, source tables, the one-word test, the sort axis**:
+  each pinned when it shipped.
+
+`recipesMore` was the only one that had no gate at all, which is what
+made yesterday's near-miss possible.
+
+Gates: mobile `tsc --noEmit` clean, `npx vitest run` 1119/1119.

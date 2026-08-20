@@ -405,7 +405,14 @@ export function rollupOfMats(mats: CraftRow[], product?: string): CraftRollup {
       return;
     }
     const next = new Set(path).add(at);
-    for (const r of ITEM_FACTS[at]!.recipe!) {
+    // IL100: one resolver the whole way down. Today no ingredient in the
+    // game is a non-base tier of a family that prices its tiers apart
+    // (measured: 0 of 139 distinct ingredients), so this reads the same
+    // as the raw recipe — but if a refresh ever makes one, the walk
+    // would have silently costed it at the base tier while the top of
+    // the bill used the real one. The test pins the property, not the
+    // coincidence.
+    for (const r of recipeOf(at) ?? []) {
       const need = r.n * qty;
       if (expands(r.id, next)) steps.set(r.id, (steps.get(r.id) ?? 0) + need);
       walk(r.id, need, next);
