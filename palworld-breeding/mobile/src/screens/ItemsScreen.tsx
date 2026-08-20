@@ -1466,6 +1466,13 @@ function ItemFilterSheet({ filters, sort, home, query, onApply, onClose }: {
   // items" and the list then said "5 items found". The button is a
   // promise about what the next tap shows; count what it will show.
   const n = applyItemFilters(f, query, level).length;
+  // IL82: and so is every chip. They counted RAW items while the list
+  // shows one row per family by default — "Assault rifle · 70" opened a
+  // list of 14. Worse, each counted in isolation, so a chip could
+  // promise 33 next to a group that leaves it 0. Every number here is
+  // now the result of the filter the tap would actually apply.
+  const shown = (patch: Partial<ItemFilters>) =>
+    applyItemFilters({ ...f, ...patch }, query, level).length;
   return (
     <Modal visible animationType="slide" presentationStyle="pageSheet"
       onRequestClose={onClose}>
@@ -1496,20 +1503,21 @@ function ItemFilterSheet({ filters, sort, home, query, onApply, onClose }: {
                 onPress={() => setF({ ...f, kind: null })} />
               {kinds.map((k) => (
                 <Chip key={k.kind} on={f.kind === k.kind}
-                  label={`${k.kind} · ${k.count}`}
+                  label={`${k.kind} · ${shown({ kind: k.kind })}`}
                   onPress={() => pickKind(k.kind)} />
               ))}
             </Section>
           )}
           <Section title="Show">
             <Chip on={f.group === home}
-              label={`This tab · ${idsInGroup(home).length}`}
+              label={`This tab · ${shown({ group: home, kind: null })}`}
               onPress={() => pickGroup(home)} />
-            <Chip on={f.group === 'all'} label={`Everything · ${idsInGroup('all').length}`}
+            <Chip on={f.group === 'all'}
+              label={`Everything · ${shown({ group: 'all', kind: null })}`}
               onPress={() => pickGroup('all')} />
             {ITEM_GROUPS.filter((g) => g.id !== home).map((g) => (
               <Chip key={g.id} on={f.group === g.id}
-                label={`${g.label} · ${idsInGroup(g.id).length}`}
+                label={`${g.label} · ${shown({ group: g.id, kind: null })}`}
                 onPress={() => pickGroup(g.id)} />
             ))}
           </Section>
@@ -1521,7 +1529,7 @@ function ItemFilterSheet({ filters, sort, home, query, onApply, onClose }: {
               onPress={() => setF({ ...f, guard: null })} />
             {guardKinds().map((g) => (
               <Chip key={g} on={f.guard === g}
-                label={`${g} · ${gearAgainst(g).length}`}
+                label={`${g} · ${shown({ guard: g })}`}
                 onPress={() => setF({ ...f, guard: f.guard === g ? null : g })} />
             ))}
           </Section>
@@ -1531,7 +1539,7 @@ function ItemFilterSheet({ filters, sort, home, query, onApply, onClose }: {
             <Chip on={!f.buff} label="Anything"
               onPress={() => setF({ ...f, buff: null })} />
             {BUFF_LABELS.map((b) => {
-              const n = ITEM_IDS.filter((i) => effectNumber(i, b) != null).length;
+              const n = shown({ buff: b });
               if (!n) return null;
               return (
                 <Chip key={b} on={f.buff === b} label={`${b} · ${n}`}

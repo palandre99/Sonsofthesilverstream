@@ -2030,3 +2030,44 @@ describe('a misspelling gets offered a way out (IL81)', () => {
     expect(code).toContain('searching && ids.length === 0 ? suggestItems(q) : []');
   });
 });
+
+describe('every filter chip counts what it will actually show (IL82)', () => {
+  const rows = (ids: string[]) => collapseFamilies(ids).length;
+
+  it('the raw counts the chips used to print were not the rows shown', () => {
+    // this is the gap the chips were printing across
+    expect(idsInGroup('weapons').length).toBe(310);
+    expect(rows(idsInGroup('weapons'))).toBe(105);
+    expect(ITEM_IDS.length).toBe(1892);
+    expect(rows(ITEM_IDS)).toBe(1504);
+    const rifles = idsInGroup('weapons')
+      .filter((i) => kindWord(i) === 'Assault rifle');
+    expect(rifles.length).toBe(70);      // the chip said 70
+    expect(rows(rifles)).toBe(14);       // the list showed 14
+  });
+
+  it('no chip computes its own number any more', () => {
+    const code = readFileSync(
+      join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+    for (const stale of [
+      '`This tab · ${idsInGroup(home).length}`',
+      '`${g.label} · ${idsInGroup(g.id).length}`',
+      '`${g} · ${gearAgainst(g).length}`',
+      '`${k.kind} · ${k.count}`',
+    ]) expect(code).not.toContain(stale);
+    expect(code).toContain(
+      'const shown = (patch: Partial<ItemFilters>) =>');
+    expect(code.replace(/\s+/g, ' ')).toContain(
+      'applyItemFilters({ ...f, ...patch }, query, level).length');
+  });
+
+  it('a count conditioned on the other chips is the point', () => {
+    // "Cold · 33" beside a Food group would have promised armour it
+    // could never show; the counter now runs the whole filter
+    const cold = ITEM_IDS.filter((i) => familyOf(i).some((t) => guardLevel(t, 'Cold') > 0));
+    expect(rows(cold)).toBeGreaterThan(0);
+    const coldFood = idsInGroup('food')
+      .filter((i) => familyOf(i).some((t) => guardLevel(t, 'Cold') > 0));
+    expect(coldFood.length).toBe(0);
+  });
+});

@@ -11923,3 +11923,46 @@ Gates: mobile `tsc --noEmit` clean, `npx vitest run` 1053/1053.
 **A note on verifying:** the first read after tapping a suggestion showed
 the OLD value — the probe ran in the same tick as the click, before
 React re-rendered. Read again before believing a click did nothing.
+
+---
+
+## IL82 — every filter chip was promising a number it could not deliver (2026-08-20)
+
+**Filter sheet swept. One fault, and it was on every chip in the sheet.**
+
+The chips counted RAW items while the list shows one row per family by
+default. Measured:
+
+```
+chip said            list showed
+Assault rifle · 70   14 rows
+Weapons · 310        105 rows
+Armor · 264          106 rows
+Everything · 1892    1504 rows
+```
+
+Worse, each chip counted in isolation, so "Cold · 33" could sit beside a
+Food group where it can only ever show 0 — there is no cold-resistant
+food in the game.
+
+Every number in the sheet is now the result of **the filter that tap
+would actually apply**, run through the same `applyItemFilters` the list
+uses, with the live search query included. So the counts also react to
+each other, which is what a filter sheet is for.
+
+Live proof — tapped "Assault rifle · 14", the button read **"Show 14
+items"**, and the list rendered **14 rows**. Before: chip 70, list 14.
+
+Gates: mobile `tsc --noEmit` clean, `npx vitest run` 1056/1056.
+
+### RIVALS SECTION: SWEPT, CLEAN — a result, not a fix
+
+"How it stacks up" was the other suspect this tick, because it ranks with
+`rankAxisOf`/`rankValueOf` and the sort had just been caught comparing
+nutrition to attack. It does not have that fault. Measured across the
+whole index: **338 rivals lists, zero that mix two axes, zero that
+contain an item with no number.** `rivalsOf` is scoped to one KIND and a
+kind shares one axis, so the comparison is sound by construction.
+
+I checked before assuming, which is the point — the last three queued
+"faults" turned out to be already fixed, absent, or my own probe.
