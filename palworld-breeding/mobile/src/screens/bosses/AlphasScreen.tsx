@@ -7,15 +7,17 @@
  * one community-measured figure on the screen and says so.
  */
 import React, { useEffect, useMemo, useState } from 'react';
-import { FlatList, Pressable, Text, View } from 'react-native';
+import { FlatList, Image, Pressable, Text, View } from 'react-native';
 import * as Haptics from 'expo-haptics';
-import { T } from '../../theme';
+import { ELEMENT_COLORS, T } from '../../theme';
 import { getPlayerLevel, pals } from '../../store';
 import { onNavIntent, takeIntentPayload } from '../../nav/intent';
 import { Badge, Card, DataStamp, PalIcon, SearchInput, s } from '../../ui/kit';
 import { Icon } from '../../ui/Icon';
 import { ALPHA_STATS, type AlphaStat } from '../../data/alphaStats.g';
 import { weaknessLabel } from '../../logic/counters';
+import { ELEMENTS } from '../../data/elements';
+import { ELEMENT_ICONS } from '../../data/statIcons';
 import { isBeaten, loadRecord, onRecordChange, toggleBeaten } from '../../bosses/record';
 import { AlphaCard, alphaBeatKey, alphaCaughtKey } from './AlphaCard';
 
@@ -157,6 +159,8 @@ export function AlphasScreen() {
   const [open, setOpen] = useState<AlphaRow | null>(null);
   const [query, setQuery] = useState('');
   const [status, setStatus] = useState<StatusFilter>('all');
+  const [element, setElement] = useState<string | null>(null);
+  const [inReach, setInReach] = useState(false);
   const [, bump] = useState(0);
   useEffect(() => {
     void loadRecord();
@@ -186,6 +190,12 @@ export function AlphasScreen() {
   const shown = rows.filter((r) => {
     if (q && !r.title.toLowerCase().includes(q)
       && !r.species.toLowerCase().includes(q)) return false;
+    if (element && !r.elements.includes(element)) return false;
+    // "in reach" means the fight is at or below the level the player told
+    // us; with no level set the filter has nothing honest to say, so the
+    // chip is not offered at all
+    if (inReach && playerLevel != null
+      && (r.lv == null || r.lv > playerLevel)) return false;
     const beaten = isBeaten(alphaBeatKey(r.title));
     const caught = isBeaten(alphaCaughtKey(r.title));
     if (status === 'todo') return !beaten;
@@ -240,6 +250,56 @@ export function AlphasScreen() {
               );
             })}
           </View>
+          {/* element + level filters: 205 bosses is a wall without them */}
+          <View style={[s.wrap, { marginTop: 8 }]}>
+            {playerLevel != null && (
+              <Pressable
+                onPress={() => {
+                  void Haptics.selectionAsync();
+                  setInReach((v) => !v);
+                }}
+                accessibilityRole="button"
+                accessibilityState={{ selected: inReach }}
+                accessibilityLabel={`Only bosses at or below level ${playerLevel}`}
+                style={[s.chip, {
+                  backgroundColor: inReach ? T.accentSoft : T.surface2,
+                  borderWidth: 1, borderColor: inReach ? T.accent : 'transparent',
+                  paddingVertical: 5, paddingHorizontal: 11,
+                }]}
+              >
+                <Text style={[s.chipText, { color: inReach ? T.accentInk : T.muted }]}>
+                  {`At my level (${playerLevel})`}
+                </Text>
+              </Pressable>
+            )}
+            {ELEMENTS.map((el) => {
+              const on = element === el;
+              const c = ELEMENT_COLORS[el.toLowerCase()] ?? ELEMENT_COLORS.neutral;
+              return (
+                <Pressable key={el}
+                  onPress={() => {
+                    void Haptics.selectionAsync();
+                    setElement(on ? null : el);
+                  }}
+                  accessibilityRole="button"
+                  accessibilityState={{ selected: on }}
+                  accessibilityLabel={`${el} bosses`}
+                  style={[s.chip, {
+                    backgroundColor: on ? c.bg : T.surface2,
+                    borderWidth: 1, borderColor: on ? c.fg : 'transparent',
+                    flexDirection: 'row', alignItems: 'center', gap: 4,
+                    paddingVertical: 4, paddingHorizontal: 8,
+                  }]}
+                >
+                  {ELEMENT_ICONS[el] && (
+                    <Image source={ELEMENT_ICONS[el]} style={{ width: 13, height: 13 }} />
+                  )}
+                  <Text style={[s.chipText, { color: on ? c.fg : T.muted }]}>{el}</Text>
+                </Pressable>
+              );
+            })}
+          </View>
+
           {shown.length !== rows.length && (
             <Text style={[s.body, { fontSize: 12, marginTop: 8 }]}>
               Showing {shown.length} of {rows.length} bosses.
