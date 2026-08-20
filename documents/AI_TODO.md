@@ -2312,7 +2312,23 @@ work always"):**
    and reported with the reasoning. Only true CEO-only blockers (Apple
    logins, purchases, money, his own device) stop a tick.
 
-- [x] IL35 2026-08-20: EVERY ITEM IN THE GAME NOW HAS A PICTURE —
+- [ ] IL36 FOUND BY IL35 2026-08-20: ONE item in the catalogue shows the
+      CEO a raw code name. Measured, not guessed: 53 items have a name
+      equal to their id, but 52 of those are legitimately one word
+      (Coal, Wood, Bone, Katana, Sword…). "GrapplingGun" is the ONLY
+      CamelCase-with-no-space name in all 1,892 — 5 items share it —
+      and paldb's page for it is titled "Grappling Gun", which is also
+      how the icon fetch finally found it (IL35). Fix at the SOURCE
+      (`tools/fetch_items_index.py` name repair), not by patching the
+      JSON, then re-run the generator and keep the three copies byte-
+      identical. Pin it with the same measurement: zero CamelCase names.
+      NOT part of this, and NOT to be "fixed" without deciding the
+      source of truth first: our "Shield Ultra" and "Glider Tera" are
+      titled "Ultra Shield" and "Glider Legendary" on paldb. Our
+      backbone is built from the game's own tables, so a different page
+      TITLE is not evidence our name is wrong — only the icon filename
+      was used as evidence at IL35. Decide which source wins for display
+      names before touching either.
       1,892 of 1,892, up from 1,879. The CEO asked for this outright
       ("every item needs an image also") and it was 13 items short; the
       gap was found by auditing his words against the shipped data
