@@ -12774,3 +12774,44 @@ Gates: mobile `tsc --noEmit` clean, `npx vitest run` 1112/1112, including
 a test that checks the generated claims against the shipped data itself.
 
 **All 15 AAA criteria are now built.**
+
+---
+
+## IL99 — the build list was about to spend a number that is not a price (2026-08-20)
+
+**Found by auditing my own feature.** The per-tier build shipped earlier
+today reads `recipesMore`, and I never wrote a data gate for it — so the
+one thing the CEO gathers real materials from had no guard at all.
+
+The blocks are structurally sound: **1,769 of them, zero unresolved
+ingredient ids, zero non-integer or non-positive counts, and not one
+block drops a material the base recipe needs.** But:
+
+```
+Excalibur:  30 → 90 → 180 → 360 → 45  Hallowed Bar
+```
+
+**Twenty-three blocks go backwards** — a higher tier costing LESS of the
+same material. Twenty-two of them sit in families the app already refused
+(their block count did not match their tiers), so nobody ever saw them.
+**Excalibur was trusted**, and a player building its top tier would have
+been handed 45 Hallowed Bar where the tier below needs 360.
+
+A falling ladder is not a price, so the family is refused and its base
+recipe stands — the same answer already given when the block count does
+not match the tiers. Excalibur's card now shows 30× Hallowed Bar at every
+tier and offers no picker; the Advanced Bow keeps its real ladder
+(40/50/60/70/80). 89 trusted families became 88.
+
+**A second bug inside the first.** My initial fix gated only
+`hasTierCosts` — the picker — while `recipeOf` kept its own separate
+check and went on returning the bad block. The UI refused the number and
+the resolver handed it out anyway. Both use one test now. **Gating the
+button is not gating the data.**
+
+The gate is now in `items-facts.test.ts` and pins all four properties,
+including that no trusted family carries a falling ladder — so a data
+refresh that introduces one fails loudly instead of quietly costing the
+CEO a morning of mining.
+
+Gates: mobile `tsc --noEmit` clean, `npx vitest run` 1116/1116.

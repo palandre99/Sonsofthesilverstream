@@ -457,9 +457,11 @@ export function rollupOfMats(mats: CraftRow[], product?: string): CraftRollup {
 export function recipeOf(id: string): CraftRow[] | undefined {
   const fam = familyOf(id);
   const k = fam.indexOf(id);
-  if (k > 0) {
+  // the same trust test the picker uses — gating one and not the other
+  // left the resolver still handing out a block the UI had refused
+  if (k > 0 && hasTierCosts(id)) {
     const more = ITEM_FACTS[fam[0]]?.recipesMore;
-    if (more && more.length === fam.length - 1) return more[k - 1];
+    if (more) return more[k - 1];
   }
   return ITEM_FACTS[id]?.recipe;
 }
@@ -469,7 +471,26 @@ export function recipeOf(id: string): CraftRow[] | undefined {
 export function hasTierCosts(id: string): boolean {
   const fam = familyOf(id);
   const more = ITEM_FACTS[fam[0]]?.recipesMore;
-  return fam.length > 1 && !!more && more.length === fam.length - 1;
+  if (!(fam.length > 1 && more && more.length === fam.length - 1)) return false;
+  return ladderRises(ITEM_FACTS[fam[0]]?.recipe ?? [], more);
+}
+
+/** IL99: a higher tier never costs LESS of the same material. Excalibur's
+ * blocks read 30 -> 90 -> 180 -> 360 -> 45 Hallowed Bar: the last one is
+ * not a price, and the build list was handing it to a player as a
+ * shopping list. Where the ladder goes backwards the whole family is
+ * refused and its base recipe stands — the same answer we already give
+ * when the block count does not match the tiers. */
+function ladderRises(base: CraftRow[], more: CraftRow[][]): boolean {
+  let prev = base;
+  for (const block of more) {
+    for (const row of block) {
+      const before = prev.find((p) => p.id === row.id);
+      if (before && row.n < before.n) return false;
+    }
+    prev = block;
+  }
+  return true;
 }
 
 export function rawMaterialsFor(id: string): CraftRollup {

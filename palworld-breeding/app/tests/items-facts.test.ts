@@ -5,6 +5,9 @@
  * only at exact internal-id identity with the atlas backbone.
  */
 import { describe, expect, it } from 'vitest';
+import {
+  familyOf, hasTierCosts, itemIdByName, recipeOf,
+} from '../../mobile/src/itemsData';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -301,5 +304,73 @@ describe('a base Production row is recipe evidence too (IL40)', () => {
     const tool = readFileSync(
       join(__dirname, '../../tools/gen_item_facts.py'), 'utf8');
     expect(tool).toContain('if not f.get("recipe") and tc["product"] in ids:');
+  });
+});
+
+describe('the per-tier cost blocks, which the build list spends (IL99)', () => {
+  const FACT_ROWS = F.facts;
+  const items = ITEMS;
+
+  it('every ingredient in every block resolves against the backbone', () => {
+    let blocks = 0;
+    for (const [id, f] of Object.entries(FACT_ROWS)) {
+      for (const block of f.recipesMore ?? []) {
+        blocks++;
+        for (const r of block) {
+          expect(items[r.id], `${id} block lists unknown ${r.id}`).toBeTruthy();
+          expect(Number.isInteger(r.n), `${id} ${r.id} n=${r.n}`).toBe(true);
+          expect(r.n).toBeGreaterThan(0);
+        }
+      }
+    }
+    expect(blocks).toBe(1769);
+  });
+
+  it('a block never drops an ingredient the base recipe needs', () => {
+    for (const [id, f] of Object.entries(FACT_ROWS)) {
+      const baseSet = new Set((f.recipe ?? []).map((r) => r.id));
+      if (!baseSet.size) continue;
+      for (const block of f.recipesMore ?? []) {
+        const set = new Set(block.map((r) => r.id));
+        for (const need of baseSet) {
+          expect(set.has(need), `${id} block drops ${need}`).toBe(true);
+        }
+      }
+    }
+  });
+
+  it('23 blocks go BACKWARDS, and none of them is trusted', () => {
+    // a higher tier costing less of the same material is not a price.
+    // Excalibur reads 30 -> 90 -> 180 -> 360 -> 45 Hallowed Bar.
+    let backwards = 0;
+    for (const [id, f] of Object.entries(FACT_ROWS)) {
+      let prev = f.recipe ?? [];
+      for (const block of f.recipesMore ?? []) {
+        for (const r of block) {
+          const before = prev.find((p) => p.id === r.id);
+          if (before && r.n < before.n) {
+            backwards++;
+            // whatever the family, the app must not spend these numbers
+            expect(hasTierCosts(id), `${id} trusts a falling ladder`).toBe(false);
+          }
+        }
+        prev = block;
+      }
+    }
+    expect(backwards).toBe(23);
+  });
+
+  it('the refusal reaches the resolver, not just the picker', () => {
+    const exc = itemIdByName('Excalibur')!;
+    expect(hasTierCosts(exc)).toBe(false);
+    // every tier falls back to the base recipe rather than the bad block
+    for (const t of familyOf(exc)) {
+      // "Hallowed Bar" is YakushimaIngot001 in the game's own ids
+      expect(recipeOf(t)?.find((r) => r.id === 'YakushimaIngot001')?.n).toBe(30);
+    }
+    // ...while a family with a real ladder keeps it
+    const bow = itemIdByName('Advanced Bow')!;
+    expect(familyOf(bow).map((t) => recipeOf(t)?.find((r) => r.id === 'Plastic')?.n))
+      .toEqual([40, 50, 60, 70, 80]);
   });
 });
