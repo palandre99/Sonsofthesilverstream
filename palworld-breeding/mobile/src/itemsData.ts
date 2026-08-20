@@ -547,6 +547,32 @@ export function gearAgainst(guard: string): string[] {
       || ITEMS[a].name.localeCompare(ITEMS[b].name));
 }
 
+/** The pal a saddle, harness or gloves belongs to (IL57). A pal's card
+ * has linked TO items since IL5/IL31, but 138 pieces of pal gear never
+ * linked back — "Arsox Saddle" sat on a card that never mentioned
+ * Arsox.
+ *
+ * Exact identity, longest prefix first: every split of the name is
+ * tried and the LONGEST remainder that is exactly a pal name wins.
+ * That order matters — taking the first match maps "Azurobe Cryst
+ * Saddle" to Azurobe, the wrong pal, and the variants (Cryst, Noct,
+ * Aqua, Lux, Ignis, Terra) are precisely where a saddle differs.
+ * All 138 resolve; nothing is fuzzy-matched. */
+const PAL_TABLE = (palsJson as unknown as {
+  pals: Record<string, unknown>;
+}).pals;
+
+export function palForGear(id: string): string | null {
+  if (ITEMS[id]?.subcategory !== 'Essential_PalGear') return null;
+  const words = ITEMS[id].name.split(' ');
+  for (let cut = words.length - 1; cut >= 1; cut--) {
+    const cand = words.slice(0, cut).join(' ')
+      .replace(/[’']s$/, '').replace(/[’']$/, '');
+    if (Object.hasOwn(PAL_TABLE, cand)) return cand;
+  }
+  return null;
+}
+
 /** Nothing anywhere says how to get this item: no recipe, no tier
  * craft, no technology node, no research, no drop, no chest, no shop,
  * and no pal drops it (IL41). 102 items are in this state. A card that

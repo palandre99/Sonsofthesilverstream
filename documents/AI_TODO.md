@@ -2563,6 +2563,43 @@ work always"):**
       The publish ritual forbids shipping over another session's
       unfinished work. Committed and pushed; publish the moment the
       tree is clean of their changes.
+- [ ] IL58 A REAL BUG, FOUND 2026-08-20 AND BIGGER THAN THE ITEM THAT
+      FOUND IT: EVERY JUMP TO A PAL CARD LANDS ON THE PALDEX WITHOUT
+      OPENING THE CARD. Reproduced three independent ways at 375px:
+        - a saddle card's new "Who wears it" link (IL57)
+        - the egg card's "Cattiva hatches from this egg" chip (IL26,
+          shipped weeks ago)
+        - the TOP-BAR SEARCH picking a pal (IL18b)
+      All three switch to the Paldex correctly and then nothing opens.
+      The reverse direction is fine — search -> an ITEM opens its card,
+      because the Items screen is already mounted when it fires.
+      WHAT IS RULED OUT: the shell listener (App.tsx:174) only sets
+      domain/tab and never touches the payload; 
+      only clears when the tab MATCHES, so a mismatched screen cannot
+      eat it; PaldexScreen renders  with no
+      other condition, so if  were set the card would show.
+      NOT YET PROVEN: an instrumented build never recorded the Paldex
+       running at all, which points at the destination screen
+      mounting without its effect seeing a pending intent — but the
+      probe may simply not have rebuilt. START THERE: instrument again,
+      confirm Metro rebuilt (change a visible string too), and find out
+      whether apply() runs and what it takes.
+      This is worth more than any row polish: it is the app's whole
+      cross-fane promise. There is a pal-map-return.test.ts guarding the
+      map direction — read it, it may already encode the working shape.
+- [x] IL57 2026-08-20: PAL GEAR LINKS BACK TO ITS PAL. A pal card has
+      linked TO items since IL5, but the 138 saddles, harnesses and
+      gloves never linked back — an "Arsox Saddle" card never mentioned
+      Arsox. Every one of the 138 now names its pal and offers it.
+      EXACT IDENTITY, LONGEST PREFIX FIRST — and the order is the whole
+      point: taking the first match maps "Azurobe Cryst Saddle" to
+      Azurobe, the WRONG pal, and the variants (Cryst, Noct, Aqua, Lux,
+      Ignis, Terra) are precisely what a saddle differs by. 138 of 138
+      resolve with nothing fuzzy-matched; the test pins both the
+      variant and the plain form.
+      SHIPPED KNOWING IT IS HALF-BLOCKED: the link lands on the Paldex
+      but the card does not open — see IL58, which is a pre-existing
+      fault on every pal link in the app, not something this added.
 - [x] IL56 2026-08-20: THE LAST BLANK GROUPS — CHECKED, NOTHING TO FIX.
       The 12 work-suitability handbooks, 9 awakening crystals, 5 rank-up
       starfruits and 5 treasure maps all have empty effects and grants,

@@ -10,7 +10,8 @@ import {
   familyPowerOf, gearAgainst, guardKinds, guardLevel, spokenTime,
   hasNoKnownSource,
   idsInGroup, implantPassive, ITEM_GROUPS, ITEM_STATS, ITEMS, itemIdByName, KIND_WORDS,
-  kindsInGroup, kindWord, palsDropping, palsHatchingFrom, rawMaterialsFor,
+  kindsInGroup, kindWord, palForGear, palsDropping, palsHatchingFrom,
+  rawMaterialsFor,
   rankAxisOf, rankValueOf, rivalsOf, rollupOfMats,
   schematicsFor, searchItems, sortItems, statRank, TAB_GROUPS, teachesOf,
   tierWord, usedInOf, weaponsForAmmo,
@@ -1429,5 +1430,38 @@ describe('a sort only claims meaning where it has any (IL55)', () => {
       const numbered = fams.filter((i) => familyPowerOf(i) > 0);
       expect(numbered.length / fams.length).toBeGreaterThan(0.5);
     }
+  });
+});
+
+describe('pal gear links back to its pal (IL57)', () => {
+  const code = readFileSync(
+    join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+
+  it('all 138 pieces resolve to a real pal', () => {
+    const gear = Object.keys(ITEMS)
+      .filter((i) => ITEMS[i].subcategory === 'Essential_PalGear');
+    expect(gear.length).toBe(138);
+    expect(gear.filter((i) => palForGear(i) != null).length).toBe(138);
+  });
+
+  it('the LONGEST name wins, so variants map to the variant', () => {
+    // taking the first match sends "Azurobe Cryst Saddle" to Azurobe —
+    // the wrong pal, and the variant is exactly what a saddle differs by
+    const cryst = Object.keys(ITEMS)
+      .find((i) => ITEMS[i].name === 'Azurobe Cryst Saddle')!;
+    expect(palForGear(cryst)).toBe('Azurobe Cryst');
+    const plain = Object.keys(ITEMS)
+      .find((i) => ITEMS[i].name === 'Azurobe Saddle')!;
+    expect(palForGear(plain)).toBe('Azurobe');
+  });
+
+  it('nothing that is not pal gear claims an owner', () => {
+    expect(palForGear('BeamSword')).toBeNull();
+    expect(palForGear('Wood')).toBeNull();
+  });
+
+  it('the card offers the pal, and closes itself on the way', () => {
+    expect(code).toContain('Who wears it');
+    expect(code).toContain("domain: 'breeding', tab: 'paldex', payload: { pal: owner }");
   });
 });

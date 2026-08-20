@@ -20,6 +20,7 @@ import { Badge, Btn, Card, PageHead, SearchInput, s } from '../ui/kit';
 import {
   ammoForWeapon, collapseFamilies, effectNumber, familyOf, familyPowerOf,
   groupOf, hasNoKnownSource, idsInGroup, implantPassive, ITEM_GROUPS,
+  palForGear,
   ITEM_STATS, ITEMS,
   kindPhrase, kindsInGroup, kindWord, palsDropping, palsHatchingFrom, rawMaterialsFor,
   buildTime, buildTotals, gearAgainst, guardKinds, guardLevel, ITEM_IDS,
@@ -1083,6 +1084,39 @@ function ItemDetail({ id, trail = [], onClose, onBack, onOpenItem }: {
                       </Text>
                     </Pressable>
                   ))}
+                </View>
+              </Card>
+            );
+          })()}
+
+          {(() => {
+            // IL57: a pal's card has linked TO items since IL5, but the
+            // 138 pieces of pal gear never linked back — an "Arsox
+            // Saddle" card never mentioned Arsox. One tap now.
+            const owner = palForGear(id);
+            if (!owner) return null;
+            return (
+              <Card style={{ marginTop: 10 }}>
+                <Text style={s.h3}>Who wears it</Text>
+                <View style={{ marginTop: 6, alignSelf: 'flex-start' }}>
+                  <Pressable
+                    onPress={() => {
+                      onClose();
+                      navigateTo({
+                        domain: 'breeding', tab: 'paldex', payload: { pal: owner },
+                      });
+                    }}
+                    accessibilityRole="button"
+                    accessibilityLabel={`${owner}. Open the pal's card`}
+                    style={({ pressed }) => ({
+                      backgroundColor: pressed ? T.surface2 : T.surface,
+                      borderWidth: 1, borderColor: T.accentSoft,
+                      borderRadius: 9, paddingHorizontal: 8, paddingVertical: 4,
+                    })}>
+                    <Text style={{ color: T.accentInk, fontSize: 12.5, fontWeight: '700' }}>
+                      {owner}
+                    </Text>
+                  </Pressable>
                 </View>
               </Card>
             );
