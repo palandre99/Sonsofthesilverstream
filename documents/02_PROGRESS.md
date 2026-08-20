@@ -118,14 +118,12 @@ now loud on the alpha card (B15).
 
 Gates: **974 tests** green, both trees typecheck, app build clean.
 
-**Next in the lane:** Phase E cross-links (B8) — pal-card strong/weak
-chips and the map's "Prep this fight" — QUEUED BEHIND COORDINATION: the
-items lane actively edited PalDetail.tsx and nav/intent.ts today, and
-those are exactly Phase E's files. Coordinate in the ledger before
-touching them. Open findings: Astralym missing from PAL_ICONS (B10),
-tower first-clear rewards not yet parsed (B11), verification.json copy
-divergence (B9). Alpha movesets extend the fetcher when the alpha Boss
-Card flavor lands.
+**Next in the lane:** the map's own "Prep this fight" on boss pins (the
+map lane owns that card — requested as B15's neighbour, not taken), and
+Suggested Goals' fighting category linking into Teams. Still open:
+verification.json copy divergence (B9), and the two cross-lane findings
+B14/B15. The real-device pass on this fane is the CEO's gate — the
+harness cannot prove how 205 rows and a modal feel on his phone.
 
 ## 2026-08-17 night -> 08-18 midday — A NEW SESSION'S HUNT, HIS FOUR ORDERS,
 ## AND THE BRUTAL EVAL (breeding lane, E128-E134)
