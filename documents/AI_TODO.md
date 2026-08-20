@@ -2609,7 +2609,29 @@ work always"):**
       never a long sleep chain, so no step is lost to the timeout. Only
       then decide whether anything is actually broken. Do NOT tell the
       CEO anything is broken until a clean run says so twice.
-- [ ] IL58-OLD (kept for the reasoning, claim withdrawn above)
+- [ ] IL59 THE REAL, NARROWED FINDING 2026-08-20 (supersedes IL58):
+      a pal link fired from INSIDE AN ITEM CARD does not open the pal's
+      card; the same link fired from the TOP-BAR SEARCH does. Both call
+      navigateTo with the identical payload, so the mailbox is fine.
+      TESTED THE RIGHT WAY THIS TIME — one short browser call per step
+      (tap, then a separate call to read), never a sleep chain, so no
+      step is lost to the tool's 30s timeout. Result, twice:
+        top-bar search -> Cattiva  = card OPENS (Close button present)
+        egg card hatcher -> Cattiva = lands on Paldex, NO card
+      HYPOTHESIS, not yet proven: both senders call onClose() and then
+      navigateTo, but the item-card version is dismissing a MODAL at the
+      same moment the Paldex tries to present its own. Two modals in
+      flight; the second never appears. The search overlay is also a
+      modal, but it belongs to the shell rather than the screen that is
+      being unmounted by the domain switch.
+      NEXT: prove it by delaying the navigateTo one frame after
+      onClose() in ItemsScreen (setTimeout 0 or InteractionManager) and
+      re-running the two-path check. If that fixes it, the same pattern
+      covers every item-card link: hatchers, "Who wears it" (IL57), and
+      the breeding-calculator buttons on the egg cards.
+      RELIABLE SIGNAL: the presence of an aria-label "Close" is what
+      proves a card is open — the male/female tick controls appear on
+      LIST rows too and fooled an earlier check.
       FOUND IT: EVERY JUMP TO A PAL CARD LANDS ON THE PALDEX WITHOUT
       OPENING THE CARD. Reproduced three independent ways at 375px:
         - a saddle card's new "Who wears it" link (IL57)
