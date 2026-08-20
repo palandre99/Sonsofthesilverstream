@@ -2368,6 +2368,33 @@ work always"):**
       offline-complete, blueprint §5 criterion 7). Stays unbuilt until a
       datamined formula appears. What IS provable already ships: the 10
       spheres' exact capture powers and the module cross-links.
+- [x] IL32 2026-08-20: THE SHOPPING LIST — found by the tick's own job
+      when the queue emptied, and it is the biggest single answer the
+      fane was missing. A recipe said "30 Plasteel, 1 Computer", which
+      is not an answer to "what do I go and get?": for 1,071 of the
+      1,355 craftable items the ingredients are THEMSELVES crafted.
+      Every such card now expands the whole tree — the Beam Sword's
+      four lines become 169 Ore, 100 Paldium Fragment, 20 Nightstar
+      Sand, 12 Coal, 4 Flame Organ, 4 HQ Pal Oil, 2 Sulfur — plus the
+      middle steps in BUILD ORDER (Plasteel first, Computer last), all
+      tappable. Pure derivation over the shipped recipes: every
+      ingredient id is a backbone id, so nothing is name-matched and no
+      number is invented. Cards whose recipe is already raw add nothing
+      (verified live on Refined Ingot). It travels in shares too, per
+      IL30's standing lesson.
+      THE PROBE EARNED ITS KEEP TWICE: (1) the game loops back on
+      itself in two places — a Small Pal Soul is made from a Medium and
+      a Medium from Smalls — so a naive walk printed "to build a Small
+      Pal Soul, gather 2 Small Pal Souls"; those 11 cycle members
+      (9 boss Slab Fragments + both Souls) now count as things you go
+      and get and claim no bill of their own, named BY NAME in the
+      test rather than waved through. (2) Three of my own assertions
+      were wrong and got corrected to what the data says, not forced:
+      build order puts Plasteel first (it ties Refined Ingot on depth
+      and beats it on quantity), a cycle-stopped item resolves to 1 not
+      4, and Medium Pal Soul is a legitimate leaf. 861 green, phone-size
+      eye pass at 375×812 (chips wrap to three rows, nothing past the
+      viewport, no overlap).
 - [x] IL31 2026-08-20: DRIFT AUDIT TURNED ON THE PAL CARD — every item
       name there is a door now. A pal's ranch produce and its egg type
       sat as dead badges while the drops beside them were tappable

@@ -16,7 +16,7 @@ import itemsJson from './data/items_1_0.json';
 import statsJson from './data/item_stats_1_0.json';
 import palsJson from './data/pals_1_0.json';
 import passivesJson from './data/passives_1_0.json';
-import { ITEM_FACTS } from './itemFacts';
+import { ITEM_FACTS, type CraftRow } from './itemFacts';
 
 export interface ItemInfo {
   name: string;
@@ -293,6 +293,83 @@ for (const [product, f] of Object.entries(ITEM_FACTS)) {
     list.add(product);
     USED_IN.set(m, list);
   }
+}
+
+/* ---- the shopping list: what a craft REALLY costs (IL32) -----------
+ * A recipe names its direct ingredients, but 1,082 of the 1,355
+ * craftable items are made of things that are themselves crafted, so
+ * "30 Plasteel" is not an answer to "what do I go get?". Expanding the
+ * tree to the items nobody crafts turns the Beam Sword's four lines
+ * into the real bill: 169 Ore, 100 Paldium Fragment, 12 Coal.
+ *
+ * Pure derivation over the shipped recipes — every ingredient id is a
+ * backbone id (verified catalogue-wide), so nothing is name-matched and
+ * no number is invented; the totals are the game's own multiplied out.
+ * Nine recipes list themselves as an ingredient upstream (the boss
+ * summon Parts), so the walk carries the path and stops on revisit —
+ * a self-referential item counts as something you go get. */
+export interface CraftRollup {
+  /** what you gather, hunt or buy — the tree's leaves, biggest first */
+  gather: CraftRow[];
+  /** the crafted middle steps, in build order (closest to raw first) */
+  steps: CraftRow[];
+}
+
+/** Does walking into this item tell you anything new? No, if it is not
+ * craftable, if it is already on the path, or if its whole recipe is
+ * itself (the 9 summon Parts) — those are things you go and get, so
+ * they are leaves and must never ALSO be listed as a crafting step. */
+const expands = (id: string, path: Set<string>): boolean => {
+  const rec = ITEM_FACTS[id]?.recipe;
+  return !!rec && !path.has(id) && rec.some((r) => r.id !== id);
+};
+
+const craftDepth = (id: string, path: Set<string>): number => {
+  if (!expands(id, path)) return 0;
+  const next = new Set(path).add(id);
+  return 1 + Math.max(...ITEM_FACTS[id]!.recipe!.map((r) => craftDepth(r.id, next)));
+};
+
+/** The full bill of materials for ONE of `id`. `gather` is empty when
+ * the item is not craftable; `steps` is empty when the recipe is
+ * already all raw — the caller shows the section only when it adds
+ * something the recipe did not already say. */
+export function rawMaterialsFor(id: string): CraftRollup {
+  const gather = new Map<string, number>();
+  const steps = new Map<string, number>();
+  const walk = (at: string, qty: number, path: Set<string>): void => {
+    if (!expands(at, path)) {
+      gather.set(at, (gather.get(at) ?? 0) + qty);
+      return;
+    }
+    const next = new Set(path).add(at);
+    for (const r of ITEM_FACTS[at]!.recipe!) {
+      const need = r.n * qty;
+      if (expands(r.id, next)) steps.set(r.id, (steps.get(r.id) ?? 0) + need);
+      walk(r.id, need, next);
+    }
+  };
+  if (ITEM_FACTS[id]?.recipe) walk(id, 1, new Set());
+  // Two items round-trip: a Small Pal Soul is made from a Medium, and a
+  // Medium from Smalls. Expanding either one ends up asking you to
+  // gather the very thing you are making, which is not an answer — so
+  // there is no from-scratch bill for them and the card just shows the
+  // recipe.
+  if (gather.has(id)) return { gather: [], steps: [] };
+  // The same loop can be reached from OUTSIDE it: anything crafted from
+  // Pal Souls walks into the Small/Medium round trip and stops there.
+  // Whatever the walk stopped on is a thing you go and get, so it must
+  // not also be listed as a step you craft.
+  for (const leaf of gather.keys()) steps.delete(leaf);
+  const rows = (m: Map<string, number>): CraftRow[] =>
+    [...m].map(([i, n]) => ({ id: i, n }));
+  return {
+    gather: rows(gather).sort((a, b) => b.n - a.n
+      || ITEMS[a.id].name.localeCompare(ITEMS[b.id].name)),
+    steps: rows(steps).sort((a, b) =>
+      craftDepth(a.id, new Set()) - craftDepth(b.id, new Set())
+      || b.n - a.n || ITEMS[a.id].name.localeCompare(ITEMS[b.id].name)),
+  };
 }
 
 /** The things this item helps craft — one row per family, best first. */

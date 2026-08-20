@@ -9,7 +9,7 @@
  */
 import {
   implantPassive, ITEM_STATS, ITEMS, kindWord, palsDropping,
-  palsHatchingFrom, statRank, tierWord,
+  palsHatchingFrom, rawMaterialsFor, statRank, tierWord,
 } from './itemsData';
 import { equipPassiveName, ITEM_FACTS } from './itemFacts';
 
@@ -63,6 +63,13 @@ export function shareTextForItem(id: string, gameVersion: string): string {
   if (facts?.recipe) {
     lines.push('Craft: ' + facts.recipe
       .map((r) => `${r.n}× ${ITEMS[r.id]?.name ?? r.id}`).join(' · '));
+    // the recipe alone under-sells the cost when its ingredients are
+    // themselves crafted — send the real shopping list too (IL32)
+    const roll = rawMaterialsFor(id);
+    if (roll.steps.length) {
+      lines.push('From scratch: ' + roll.gather
+        .map((r) => `${r.n}× ${ITEMS[r.id].name}`).join(' · '));
+    }
   }
   const sources: string[] = [];
   const pals = palsDropping(id);

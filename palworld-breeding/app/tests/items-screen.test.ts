@@ -8,7 +8,8 @@ import { join } from 'node:path';
 import {
   ammoForWeapon, collapseFamilies, effectNumber, familyOf, familyPowerOf,
   idsInGroup, implantPassive, ITEM_GROUPS, ITEM_STATS, ITEMS, itemIdByName, KIND_WORDS,
-  kindsInGroup, kindWord, palsDropping, palsHatchingFrom, rivalsOf,
+  kindsInGroup, kindWord, palsDropping, palsHatchingFrom, rawMaterialsFor,
+  rivalsOf,
   schematicsFor, searchItems, sortItems, statRank, TAB_GROUPS, teachesOf,
   tierWord, usedInOf, weaponsForAmmo,
 } from '../../mobile/src/itemsData';
@@ -673,6 +674,109 @@ describe('the screen speaks plainly and cites its sources', () => {
 
   it('a missing description says the truth instead of hiding the card', () => {
     expect(code).toContain('The game files carry no description for this item.');
+  });
+
+  it('the shopping list is the recipe multiplied out, not a new number (IL32)', () => {
+    const facts = (FACTS as { facts: Record<string, {
+      recipe?: { id: string; n: number }[] }> }).facts;
+    const craftable = Object.keys(facts).filter((i) => facts[i].recipe?.length);
+    expect(craftable.length).toBeGreaterThan(1000);
+    let withDepth = 0;
+    const craftableLeaves = new Set<string>();
+    for (const id of craftable) {
+      const roll = rawMaterialsFor(id);
+      // every row names a real item and a positive count
+      for (const r of [...roll.gather, ...roll.steps]) {
+        expect(ITEMS[r.id], `${id} rolled up to an unknown id ${r.id}`).toBeTruthy();
+        expect(r.n).toBeGreaterThan(0);
+      }
+      for (const r of roll.gather) craftableLeaves.add(r.id);
+      for (const r of roll.steps) {
+        expect(facts[r.id]!.recipe!.some((m) => m.id !== r.id)).toBe(true);
+      }
+      // you are never told to go and get the thing you are making
+      expect(roll.gather.some((r) => r.id === id)).toBe(false);
+      // the two lists never overlap, or a row would be both
+      const steps = new Set(roll.steps.map((r) => r.id));
+      for (const r of roll.gather) expect(steps.has(r.id)).toBe(false);
+      if (roll.steps.length) withDepth++;
+    }
+    // 1,355 items are craftable; these are the ones whose ingredients
+    // are themselves crafted, so the bill says something the recipe did
+    // not. The 11 items the game loops back on itself are not among them.
+    expect(withDepth).toBe(1071);
+    // Anything told to you as "go and get this" must genuinely be
+    // uncraftable — except the items the game loops back on itself,
+    // which are listed here BY NAME rather than waved through.
+    const craftableAsLeaf = [...craftableLeaves]
+      .filter((i) => facts[i]?.recipe?.length)
+      .map((i) => ITEMS[i].name).sort();
+    expect(craftableAsLeaf).toEqual([
+      'Bellanoir Libero (Ultra) Slab Fragment',
+      "Bellanoir Libero's Slab Fragment",
+      "Bellanoir's Slab Fragment",
+      'Blazamut Ryu (Ultra) Slab Fragment',
+      'Blazamut Ryu Slab Fragment',
+      'Hartalis (Ultra) Slab Fragment',
+      'Hartalis Slab Fragment',
+      'Medium Pal Soul',
+      'Xenolord (Ultra) Slab Fragment',
+      'Xenolord Slab Fragment',
+    ]);
+  });
+
+  it('the two Pal Souls loop back on each other, so neither claims a bill', () => {
+    // Small is made from a Medium and a Medium from Smalls — expanding
+    // either would tell you to gather what you are making
+    for (const id of ['PalUpgradeStone', 'PalUpgradeStone2']) {
+      const roll = rawMaterialsFor(id);
+      expect(roll.steps).toEqual([]);
+      expect(roll.gather).toEqual([]);
+    }
+  });
+
+  it('a recipe that is already raw adds no second list', () => {
+    // Refined Ingot is 2 Ore, and Ore is not crafted — nothing to expand
+    const flat = rawMaterialsFor('IronIngot');
+    expect(flat.steps).toEqual([]);
+    expect(flat.gather.length).toBeGreaterThan(0);
+  });
+
+  it("the Beam Sword's real cost is the ore, not the Plasteel", () => {
+    const roll = rawMaterialsFor('BeamSword');
+    const named = roll.gather.map((r) => `${r.n}× ${ITEMS[r.id].name}`);
+    expect(named[0]).toBe('169× Ore');
+    expect(named).toContain('100× Paldium Fragment');
+    expect(named).toContain('12× Coal');
+    // build order: the things made straight from ore come first, and the
+    // Computer — which needs three of the others — comes last
+    expect(ITEMS[roll.steps[0].id].name).toBe('Plasteel');
+    expect(ITEMS[roll.steps[roll.steps.length - 1].id].name).toBe('Computer');
+    // and it travels in a share
+    const txt = shareTextForItem('BeamSword', '0.3.5');
+    expect(txt).toContain('From scratch: 169× Ore');
+  });
+
+  it('a recipe that lists itself stops instead of looping forever', () => {
+    // 9 boss-summon Parts name themselves upstream; the walk must end
+    const self = Object.entries((FACTS as { facts: Record<string, {
+      recipe?: { id: string; n: number }[] }> }).facts)
+      .filter(([id, f]) => (f.recipe ?? []).some((r) => r.id === id))
+      .map(([id]) => id);
+    expect(self.length).toBe(9);
+    for (const id of self) {
+      const roll = rawMaterialsFor(id);
+      // it is a thing you go and get, so it never shows its own section
+      expect(roll.steps).toEqual([]);
+      expect(roll.gather).toEqual([]);
+    }
+    // and where one is an INGREDIENT it must not be in both lists at once
+    const user = Object.entries((FACTS as { facts: Record<string, {
+      recipe?: { id: string; n: number }[] }> }).facts)
+      .find(([, f]) => (f.recipe ?? []).some((r) => self.includes(r.id)))![0];
+    const roll = rawMaterialsFor(user);
+    expect(roll.steps.some((r) => self.includes(r.id))).toBe(false);
+    expect(roll.gather.some((r) => self.includes(r.id))).toBe(true);
   });
 
   it('all five Items tabs are registered live (CEO layout 2026-08-18)', () => {

@@ -20,7 +20,8 @@ import { Badge, Btn, Card, PageHead, SearchInput, s } from '../ui/kit';
 import {
   ammoForWeapon, collapseFamilies, effectNumber, familyOf, familyPowerOf,
   groupOf, idsInGroup, implantPassive, ITEM_GROUPS, ITEM_STATS, ITEMS,
-  kindsInGroup, kindWord, palsDropping, palsHatchingFrom, rivalsOf, schematicsFor,
+  kindsInGroup, kindWord, palsDropping, palsHatchingFrom, rawMaterialsFor,
+  rivalsOf, schematicsFor,
   searchItems, sortItems, statRank, TAB_GROUPS, teachesOf, TIER_WORDS,
   tierWord, usedInOf, weaponsForAmmo, type ItemSort,
 } from '../itemsData';
@@ -424,6 +425,50 @@ function ItemDetail({ id, trail = [], onClose, onBack, onOpenItem }: {
                   ))}
                 </View>
               )}
+              {(() => {
+                // IL32: the recipe says "30 Plasteel"; this says what
+                // that COSTS you at the ore. Only when the tree is
+                // deeper than the recipe — otherwise it repeats it.
+                const roll = rawMaterialsFor(id);
+                if (!roll.steps.length) return null;
+                return (
+                  <View style={{
+                    marginTop: 10, paddingTop: 8,
+                    borderTopWidth: 1, borderTopColor: T.line,
+                  }}>
+                    <Text style={[s.body, { fontSize: 12, color: T.muted }]}>
+                      Everything you need from scratch
+                    </Text>
+                    <View style={{ marginTop: 4 }}>
+                      {roll.gather.map((r) => (
+                        <IngredientRow key={r.id} row={r} onOpenItem={onOpenItem} />
+                      ))}
+                    </View>
+                    <Text style={[s.body, {
+                      fontSize: 12, color: T.faint, marginTop: 6,
+                    }]}>
+                      Crafted along the way, in this order:
+                    </Text>
+                    <View style={[s.row, { flexWrap: 'wrap', gap: 6, marginTop: 4 }]}>
+                      {roll.steps.map((r) => (
+                        <Pressable
+                          key={r.id}
+                          onPress={() => onOpenItem(r.id)}
+                          accessibilityRole="button"
+                          accessibilityLabel={`${r.n} ${ITEMS[r.id].name}. Open its card`}
+                          style={({ pressed }) => ({
+                            paddingVertical: 3, paddingHorizontal: 7,
+                            borderRadius: T.rSm, backgroundColor: pressed ? T.raised : T.surface2,
+                          })}>
+                          <Text style={{ color: T.accentInk, fontSize: 11.5, fontWeight: '700' }}>
+                            {r.n}× {ITEMS[r.id].name}
+                          </Text>
+                        </Pressable>
+                      ))}
+                    </View>
+                  </View>
+                );
+              })()}
               {facts.crafts && facts.crafts.length > 0 ? (
                 <View style={{ marginTop: 8 }}>
                   <Text style={[s.body, { fontSize: 12, color: T.muted }]}>
