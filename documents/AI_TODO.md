@@ -2379,17 +2379,30 @@ work always"):**
       the game's own acronyms. A shared `kindPhrase` now keeps EXP and
       SAN in capitals, and the share composer had the same bug and got
       the same fix. 896 green.
-- [ ] IL44 FOUND BY IL43 2026-08-20, and it is IL30's standing lesson
-      applied: a build list that cannot leave the phone is half a
-      feature. A shopping list is the single most shareable thing this
-      fane has ever produced — "here is exactly what we need to farm" —
-      and the app ALREADY has the idiom: the Paldex ships "Share my
-      list…" (PaldexScreen.tsx:390). So this is matching a pattern, not
-      inventing one. Compose it in `itemShare.ts` beside
-      `shareTextForItem` so the test asserts the REAL text, not source
-      strings, and carry the same provenance footer every share has.
-      Include what is being made, the gather totals, and the middle
-      steps; keep it paste-able into Discord without a wall.
+- [x] IL44 2026-08-20: THE BUILD LIST LEAVES THE PHONE. "Share my
+      build…" sits beside Clear in the panel and sends the list as
+      plain text: what you are making, the gather totals, the middle
+      steps, and the same provenance footer every share here carries.
+      Composed in `itemShare.ts` beside `shareTextForItem`, so the test
+      asserts the REAL output — not source strings — and the totals are
+      derived at share time, meaning a pasted list can never quote a
+      number the app has stopped believing.
+      VERIFIED BY INTERCEPTING THE SHARE ITSELF rather than trusting the
+      button: stubbed `navigator.share`, tapped it, and read what the OS
+      would have received — "My Palworld build — 2 things / 2× Charcoal
+      / Everything you need from scratch: / 4× Wood / Palworld 1.0 ·
+      read from the game files · Paldexia". Correct arithmetic, no
+      spurious "crafted along the way" when nothing is intermediate.
+      Honest empty cases pinned: an empty list, an unknown id and a
+      zero quantity all share NOTHING — never a header with no body.
+      909 green.
+      WHY IT WAS WORTH A TICK (the original reasoning): IL30's standing
+      lesson says a card section that cannot travel is half a feature,
+      and a shopping list is the most shareable thing this fane makes —
+      "here is exactly what we need to farm" is a message a player
+      actually sends. The app already had the idiom (the Paldex ships
+      "Share my list…", PaldexScreen.tsx:390), so this matched a
+      pattern rather than inventing one.
 - [ ] IL45 FOUND BY IL43 2026-08-20: building a list is slower than it
       should be. "Add to my build" lives only at the foot of an item's
       CARD, so assembling a five-item list means five searches, five

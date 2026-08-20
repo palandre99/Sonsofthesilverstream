@@ -30,7 +30,9 @@ import { equipPassiveName, ITEM_FACTS, type CraftRow } from '../itemFacts';
 import { ItemIcon } from '../ui/ItemIcon';
 import { Icon } from '../ui/Icon';
 import { navigateTo, onNavIntent, takeIntentPayload } from '../nav/intent';
-import { shareTextForItem, techSentence } from '../itemShare';
+import {
+  shareTextForBuild, shareTextForItem, techSentence,
+} from '../itemShare';
 import {
   addToBuild, breeding, buildQty, clearBuild, getBuildList, getPlayerLevel,
   setBuildQty, useAppVersion,
@@ -352,7 +354,13 @@ function BuildPanel({ onOpenItem }: { onOpenItem: (id: string) => void }) {
               <MatChips rows={totals.steps} onOpenItem={onOpenItem} dim />
             </>
           )}
-          <View style={{ marginTop: 10 }}>
+          <View style={[s.row, { gap: 8, marginTop: 10 }]}>
+            <Btn small label="Share my build…"
+              onPress={() => {
+                void Share.share({
+                  message: shareTextForBuild(list, breeding.game_version),
+                });
+              }} />
             <Btn small label="Clear my build"
               onPress={() => { void clearBuild(); }} />
           </View>

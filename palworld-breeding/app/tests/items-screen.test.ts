@@ -16,7 +16,9 @@ import {
 } from '../../mobile/src/itemsData';
 import palsJson from '../../mobile/src/data/pals_1_0.json';
 import FACTS from '../../mobile/src/data/item_facts_1_0.json';
-import { shareTextForItem } from '../../mobile/src/itemShare';
+import {
+  shareTextForBuild, shareTextForItem,
+} from '../../mobile/src/itemShare';
 
 describe('the groups cover the catalogue exactly once', () => {
   it('every item is in exactly one group', () => {
@@ -1009,5 +1011,42 @@ describe('the build list adds up what a whole grind costs (IL43)', () => {
   it('the panel hides completely until something is on the list', () => {
     expect(code).toContain('if (!ids.length) return null;');
     expect(code).toContain('<BuildPanel onOpenItem={setOpen} />');
+  });
+});
+
+describe('the build list can leave the phone (IL44)', () => {
+  const code = readFileSync(
+    join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+  const txt = shareTextForBuild({ Charcoal: 2, Bat: 3 }, '1.0');
+
+  it('says what you are making and what it really costs', () => {
+    expect(txt).toContain('My Palworld build — 5 things');
+    expect(txt).toContain('2× Charcoal');
+    expect(txt).toContain('3× Wooden Club');
+    // one Wood line, summed across both — the whole point of the list
+    expect(txt).toContain('19× Wood');
+    expect(txt).toContain('Everything you need from scratch:');
+  });
+
+  it('carries its provenance, like every other share here', () => {
+    expect(txt.trimEnd().endsWith(
+      'Palworld 1.0 · read from the game files · Paldexia')).toBe(true);
+  });
+
+  it('an empty list shares nothing at all, not a header', () => {
+    expect(shareTextForBuild({}, '1.0')).toBe('');
+    expect(shareTextForBuild({ NotAnItem: 2 }, '1.0')).toBe('');
+    expect(shareTextForBuild({ Charcoal: 0 }, '1.0')).toBe('');
+  });
+
+  it('a list of raw materials needs no "crafted along the way"', () => {
+    const raw = shareTextForBuild({ Wood: 20 }, '1.0');
+    expect(raw).toContain('20× Wood');
+    expect(raw).not.toContain('Crafted along the way');
+  });
+
+  it('the panel offers it, and sends the real composer', () => {
+    expect(code).toContain('Share my build…');
+    expect(code).toContain('shareTextForBuild(list, breeding.game_version)');
   });
 });

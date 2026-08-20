@@ -8,7 +8,7 @@
  * react-native; the screen passes breeding.game_version.
  */
 import {
-  implantPassive, ITEM_STATS, ITEMS, kindPhrase, palsDropping,
+  buildTotals, implantPassive, ITEM_STATS, ITEMS, kindPhrase, palsDropping,
   palsHatchingFrom, rawMaterialsFor, statRank, tierWord,
 } from './itemsData';
 import { equipPassiveName, ITEM_FACTS } from './itemFacts';
@@ -21,6 +21,37 @@ export function techSentence(
   if (t.ancient && pts) return `Ancient Technology — unlocks at level ${t.level} for ${pts}`;
   if (pts) return `Unlocks at level ${t.level} for ${pts}`;
   return `Unlocks at technology level ${t.level}`;
+}
+
+/** The build list as something you can paste to the people you play
+ * with (IL44) — the single most shareable thing this fane makes, since
+ * "here is exactly what we need to farm" is a message a player actually
+ * sends. Same shape as every other share here: what it is, the numbers,
+ * then where the numbers came from.
+ *
+ * Totals are DERIVED at share time from the shipped recipes, so a
+ * pasted list can never quote a figure the app no longer believes. */
+export function shareTextForBuild(
+  list: Record<string, number>, gameVersion: string,
+): string {
+  const ids = Object.keys(list).filter((i) => ITEMS[i] && list[i] > 0);
+  if (!ids.length) return '';
+  const totals = buildTotals(list);
+  const things = ids.reduce((a, i) => a + list[i], 0);
+  const lines: string[] = [
+    `My Palworld build — ${things} thing${things === 1 ? '' : 's'}`,
+    '',
+    ...ids.map((i) => `  ${list[i]}× ${ITEMS[i].name}`),
+    '',
+    'Everything you need from scratch:',
+    ...totals.gather.map((r) => `  ${r.n}× ${ITEMS[r.id].name}`),
+  ];
+  if (totals.steps.length) {
+    lines.push('', 'Crafted along the way, in this order:',
+      '  ' + totals.steps.map((r) => `${r.n}× ${ITEMS[r.id].name}`).join(' · '));
+  }
+  lines.push('', `Palworld ${gameVersion} · read from the game files · Paldexia`);
+  return lines.join('\n');
 }
 
 export function shareTextForItem(id: string, gameVersion: string): string {
