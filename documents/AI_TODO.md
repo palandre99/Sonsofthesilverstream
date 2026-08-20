@@ -2527,6 +2527,29 @@ work always"):**
       The publish ritual forbids shipping over another session's
       unfinished work. Committed and pushed; publish the moment the
       tree is clean of their changes.
+- [x] IL54 2026-08-20: AMMO SAYS WHAT SHOOTS IT. Ran the same question
+      across every remaining kind at once. Spheres were fine (Capture
+      Power 64) and schematics were fine (what they teach), but ALL 32
+      AMMO ROWS SAID NOTHING. The one thing a player holding ammo wants
+      is what it goes in, and the join already shipped — the same one
+      the card uses. Rows now read "For the Assault Rifle · Ammo", or
+      "For the Musket +1 more" when several take it.
+      25 of the 32 resolve. The other 7 — plain Arrow, Decal Ink,
+      Flamethrower Fuel, Fire Arrow, Poison Arrow, Rifle Ammo — fall
+      through to their kind rather than claim a weapon that cannot be
+      proved. Eye-verified, clip-free. 977 green.
+      CHECKED AND DELIBERATELY LEFT: the 93 skill fruits. Their row is
+      blank but their NAME already carries the skill ("Dark Skill
+      Fruit: Apocalypse") — repeating it would be noise, which is what
+      IL27 concluded and it still holds. Their descriptions DO carry raw
+      markup upstream (<activeSkillName id=|Apocalypse|/>), and the
+      pipeline already strips it: 0 of 1,892 cards show markup. Checked,
+      not assumed.
+      A COUNT OF MINE THAT WAS WRONG: the sweep reported "75 blank
+      consumables". The probe did not replicate statLine's implant
+      branch, so 21 of those 75 are not blank at all in the app. The
+      figure was an artefact of my approximation, and the two groups it
+      genuinely found (ammo, pal gear) are both fixed.
 - [x] IL53 2026-08-20: "PAL GEAR · PAL GEAR" — 138 rows said the same
       word twice. Found by continuing IL50/IL52's question ("what does
       a player choose by, and does the row show it?") into the saddles.

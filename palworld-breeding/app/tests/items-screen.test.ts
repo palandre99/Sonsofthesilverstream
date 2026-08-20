@@ -1370,3 +1370,30 @@ describe('a row with no numbers still says something (IL53)', () => {
     expect(code).toContain('{line || unlockText || kindWord(id)}');
   });
 });
+
+describe('ammo says what shoots it (IL54)', () => {
+  const code = readFileSync(
+    join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+
+  it('all 32 ammo rows had nothing to say', () => {
+    const ammo = Object.keys(ITEMS).filter((i) => ITEMS[i].category === 'Ammo');
+    expect(ammo.length).toBe(32);
+    // 25 resolve to a weapon; the rest are honestly left to their kind
+    const resolved = ammo.filter((a) => weaponsForAmmo(a).length > 0);
+    expect(resolved.length).toBe(25);
+  });
+
+  it('the join is the same one the card already used', () => {
+    const rifle = Object.keys(ITEMS)
+      .find((i) => ITEMS[i].name === 'Assault Rifle Ammo')!;
+    const guns = weaponsForAmmo(rifle).map((i) => ITEMS[i].name);
+    expect(guns).toContain('Assault Rifle');
+  });
+
+  it('unresolved ammo claims no weapon it cannot prove', () => {
+    const arrow = Object.keys(ITEMS).find((i) => ITEMS[i].name === 'Arrow')!;
+    expect(weaponsForAmmo(arrow)).toEqual([]);
+    expect(code).toContain("if (!bits.length && ITEMS[id].category === 'Ammo') {");
+    expect(code).toContain('For the ${ITEMS[guns[0]].name}');
+  });
+});

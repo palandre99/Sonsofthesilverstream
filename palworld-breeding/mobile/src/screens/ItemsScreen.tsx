@@ -172,6 +172,19 @@ function statLine(id: string): string {
     // 600 on every dish that has it, so it separates nothing.
     bits.push(...buffs);
   }
+  if (!bits.length && ITEMS[id].category === 'Ammo') {
+    // 32 of 32 ammo rows said NOTHING (IL54). The one thing a player
+    // holding ammo wants is what shoots it, and the join already ships
+    // — it is the same one the card uses. 25 of the 32 resolve; the
+    // other 7 (plain Arrow, Decal Ink, Flamethrower Fuel…) fall through
+    // to their kind rather than claim a weapon we cannot prove.
+    const guns = collapseFamilies(weaponsForAmmo(id));
+    if (guns.length) {
+      bits.push(guns.length === 1
+        ? `For the ${ITEMS[guns[0]].name}`
+        : `For the ${ITEMS[guns[0]].name} +${guns.length - 1} more`);
+    }
+  }
   if (!bits.length && ITEMS[id].category === 'Blueprint') {
     // a schematic row's whole point is what it teaches (IL15 — 490 rows
     // used to say nothing but "Schematic")
