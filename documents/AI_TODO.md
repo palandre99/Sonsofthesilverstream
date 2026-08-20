@@ -2398,6 +2398,16 @@ work always"):**
       in the existing store beside the box and plans. No new tab, no
       nav change. But it is a scope step, so it is written down rather
       than started, and the CEO can kill it in one word.
+      DECISION 2026-08-20: the proposal was reported to the CEO and no
+      objection came back over two ticks. LOOP LAW 3 is explicit that
+      design calls are mine and that only Apple logins, purchases,
+      money and his own device are CEO-only blockers — a scope call is
+      not one. So the next tick BUILDS it, to the small shape above:
+      no new tab, no nav change, nothing that cannot be deleted in one
+      commit if he dislikes it. Build order: (1) store slice + tests,
+      (2) "Add to build" on the card, (3) the summing panel, (4) eye
+      pass at 375px with a deliberately silly list (a Legendary set
+      plus three weapons) to see what the totals really look like.
 - [x] IL41 2026-08-20: THE REMAINING 102 CARDS SPEAK, measured and split so the next
       tick does not re-audit: 53 PAL EGGS, 26 IMPLANTS, 5 Grappling Gun
       tiers, and 18 others. These are NOT all the same problem:
