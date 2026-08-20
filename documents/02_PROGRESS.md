@@ -72,6 +72,52 @@ picking module. **All five tabs of Bosses & Raids are real screens.**
 Gates at close: 789 tests green, both trees typecheck, published through
 0e914c6 on both channels, confirmed.
 
+## 2026-08-19 (bosses lane, second block) — REWARDS, THE ALPHA CARD,
+## CROSS-LINKS, AND A MEASURED PASS
+
+**Every fight now says what winning gets you.** The fetchers grew a
+per-variant drop parser (the alpha fetcher IMPORTS the tower fetcher's
+parsers rather than copying them), so all 33 tower/raid encounters and
+all 205 alphas carry the game's own drop table with its own odds. Zoe &
+Grizzbolt on Hard pays the Key Sphere, Zoe's hat, a Training Crystal and
+a 10% schematic; Normal pays one key.
+
+**All 205 alphas got a real Boss Card.** Tapping one used to open the
+pal's card; it now opens the same anatomy the towers use — counters from
+your box, the E133 measured differences, its OWN attack kit (Paladius
+has ten, 0 of 205 had an unmappable skill), the spawn map, its drops,
+and beaten/caught ticks. The card's pieces were extracted so tower, raid
+and alpha cards physically cannot drift apart.
+
+**Every pal card now says what its element means in a fight**, from the
+same chart the fane ranks with — and it honours cancelling pairs
+(Reptyro is not listed as weak to Grass). A pal with a fixed boss has
+"Prep this fight" straight into that boss's card.
+
+**The last missing portrait, and why it was missing:** Astralym drew
+grey initials. The icon map claimed a generator "in package.json" that
+does not exist anywhere in the repo — 298 portraits had been gathered by
+hand and the 299th was forgotten. `tools/fetch_pal_icons.py` now does it
+properly; 299/299 mapped.
+
+**Measured, not assumed:** walked with a 117-pal box. Two real wastes
+found and cut (every card ranked the box twice per render, once
+uncached; the alpha list walked 205 rows twice per render) — list paint
+1836 ms → 1449 ms on the harness. NOT claimed: the card's ~2.0 s open is
+modal mount, which this project already has on record at ~1.0 s on the
+harness vs ~335 ms on device; no re-architecture was done on browser
+numbers. Edge cases walked clean: Moon Lord (no species, no element, no
+moveset) states every gap instead of faking it; Teams covers 9 of 9 with
+a full box; no console errors from this lane's screens.
+
+**Two findings handed to other lanes, not touched:** items_1_0.json is
+missing 11 real items the boss drop tables reference — all 8 tower Key
+Spheres (tower PROGRESSION items) plus three boss trophies (B14); and
+PalMap nests a button inside a button, pre-existing on the pal card and
+now loud on the alpha card (B15).
+
+Gates: **974 tests** green, both trees typecheck, app build clean.
+
 **Next in the lane:** Phase E cross-links (B8) — pal-card strong/weak
 chips and the map's "Prep this fight" — QUEUED BEHIND COORDINATION: the
 items lane actively edited PalDetail.tsx and nav/intent.ts today, and
