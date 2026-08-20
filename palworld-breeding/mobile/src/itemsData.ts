@@ -205,10 +205,16 @@ export const KIND_WORDS: Record<string, string> = {
  * kind chip only when the two strings were byte-identical. "Schematics"
  * and "Schematic" are not the same string but they are the same word to
  * a player — 610 cards carried the word twice (490 schematics, 93 skill
- * fruits, 18 consumables, 5 gliders, 4 key items). Compare case-folded
- * and without a trailing plural s. */
+ * fruits, 18 consumables, 5 gliders, 4 key items). Compare the two as
+ * one word: case-folded and singular.
+ *
+ * Irregular plurals count too — the first cut only stripped a trailing s,
+ * so "Accessories"/"Accessory" survived on all 81 accessory cards. Caught
+ * by looking at a card, not at the tally my own rule produced. */
+const oneOf = (s: string) =>
+  s.toLowerCase().replace(/ies$/, 'y').replace(/([^s])s$/, '$1');
 export const saysTheSame = (a: string, b: string): boolean =>
-  a.toLowerCase().replace(/s$/, '') === b.toLowerCase().replace(/s$/, '');
+  oneOf(a) === oneOf(b);
 
 export function kindWord(id: string): string {
   const it = ITEMS[id];

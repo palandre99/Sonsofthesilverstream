@@ -11376,3 +11376,47 @@ Gates: mobile `tsc --noEmit` clean, `npx vitest run` 1013/1013 (four new).
 
 **Publish still held** on `PaldexScreen.tsx` (Bosses lane). Backlog:
 IL57, IL62, IL63, IL64, IL65, IL66, IL67.
+
+---
+
+## IL68 — egg and accessory cards; the card sweep is finished (2026-08-20)
+
+**Egg cards: clean.** Read the Damp Egg card end to end. The 19 pals it
+hatches are each a real button — `"Celaray hatches from this egg. Open the
+…"` — and "Open the breeding calculator" sits under them. No egg in the
+game files carries a stack size, so the card omitting "Stacks to" is
+right, not a gap (checked all 53 before calling it).
+
+**A near-miss worth writing down.** Searching "Egg" showed one row on
+screen and I almost filed "search is broken". The header said `54 items
+found — across everything`, and the data agrees exactly: 54 collapsed
+rows. Only 25 were rendered because the list is virtualised and eggs sort
+last. Not a bug. That is the third time this month a "bug" was my own
+probe; the header count is the honest witness, not the row count.
+
+**Accessory cards: the IL66 fault again, on an irregular plural.** The
+card read `Rare · ACCESSORIES · ACCESSORY`. My IL66 rule only stripped a
+trailing s, so "Accessories" → "accessorie" never met "accessory" and all
+81 accessory cards kept the duplicate. The rule now singularises properly
+(`ies → y`), and refuses to treat a word that merely ends in s as a plural
+— "Glasses" must not collapse onto "Glass".
+
+**True tally: 691 cards** printed their own word twice — 490 schematics,
+93 skill fruits, 81 accessories, 18 consumables, 5 gliders, 4 key items.
+Live proof, same card as before the fix:
+
+```
+"Ability Glasses","Rare","ACCESSORIES","Close","Share"
+```
+
+I found this by opening a card, not by trusting the number my own rule
+produced. The 610 in the IL66 entry was that rule marking its own homework.
+
+Gates: mobile `tsc --noEmit` clean, `npx vitest run` 1014/1014.
+
+**THE CARD SWEEP IS DONE.** weapon clean · armour (IL63) · food (IL64) ·
+sphere (IL65) · schematic (IL66, IL67) · egg clean · accessory (IL68).
+Seven card kinds, five real faults fixed, two kinds clean.
+
+**Publish still held** on `PaldexScreen.tsx` (Bosses lane, many ticks now).
+Backlog: IL57, IL62, IL63, IL64, IL65, IL66, IL67, IL68.

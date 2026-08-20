@@ -1593,8 +1593,15 @@ describe('a card never says the same word twice (IL66)', () => {
     expect(saysTheSame('Schematics', 'Schematic')).toBe(true);
     expect(saysTheSame('Skill fruits', 'Skill fruit')).toBe(true);
     expect(saysTheSame('Gliders', 'Glider')).toBe(true);
+    expect(saysTheSame('Accessories', 'Accessory')).toBe(true);
     expect(saysTheSame('Weapons', 'Bow')).toBe(false);
     expect(saysTheSame('Armor', 'Head gear')).toBe(false);
+  });
+
+  it('a word that merely ends in s is not a plural', () => {
+    // "Glasses" must not collapse onto "Glass" — they are two things.
+    expect(saysTheSame('Glasses', 'Glass')).toBe(false);
+    expect(saysTheSame('Dress', 'Dres')).toBe(false);
   });
 
   it('no shipped item has a group and kind that read as one word', () => {
@@ -1602,9 +1609,9 @@ describe('a card never says the same word twice (IL66)', () => {
       const g = groupOf(id), k = kindWord(id);
       return g != null && k !== g && saysTheSame(k, g);
     });
-    // 610 before the fix; the guard is now on the normalised words, so
-    // the card drops the second chip for every one of them.
-    expect(doubled.length).toBeGreaterThan(600);
+    // 691 cards: 490 schematics, 93 skill fruits, 81 accessories, 18
+    // consumables, 5 gliders, 4 key items. The card drops the second chip.
+    expect(doubled.length).toBe(691);
     const code = readFileSync(
       join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
     expect(code).toContain("!saysTheSame(kindWord(id), groupOf(id) ?? '')");
