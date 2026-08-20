@@ -1208,7 +1208,9 @@ describe('the build list says how long, and what it cannot time (IL47)', () => {
   });
 
   it('reads as time a player speaks, not a pile of seconds', () => {
-    expect(spokenTime(10000)).toBe('2h 47m');
+    // 10000s IS 2h 46m 40s — the old line rounded it to "2h 47m" and
+    // printed a minute that never existed (IL78)
+    expect(spokenTime(10000)).toBe('2h 46m 40s');
     expect(spokenTime(3600)).toBe('1h');
     expect(spokenTime(600)).toBe('10m');
     expect(spokenTime(45)).toBe('45s');
@@ -1848,10 +1850,12 @@ describe('a build row says which tier it is buying for (IL75)', () => {
 });
 
 describe('one craft time, not two (IL76)', () => {
-  it('under an hour the seconds are said, above it they are not', () => {
+  it('every part the number has is said, and none it does not', () => {
     expect(spokenTime(400)).toBe('6m 40s');   // the card says 6m 40s too
     expect(spokenTime(600)).toBe('10m');      // nothing to add
-    expect(spokenTime(10000)).toBe('2h 47m'); // seconds are noise here
+    expect(spokenTime(3600)).toBe('1h');      // nor here
+    // IL78: this used to round to "2h 47m". 10000s is 2h 46m 40s.
+    expect(spokenTime(10000)).toBe('2h 46m 40s');
     expect(spokenTime(45)).toBe('45s');
   });
 
@@ -1899,5 +1903,39 @@ describe('a build can be made for the tier you are actually making (IL77)', () =
       // and the base recipe stands, rather than a guessed block
       expect(recipeOf(familyOf(id)[1])).toEqual(ITEM_FACTS[familyOf(id)[1]]?.recipe);
     }
+  });
+});
+
+describe('a shared item does not contradict itself (IL78)', () => {
+  const fam = () => familyOf(itemIdByName('Advanced Bow')!);
+
+  it('the craft line and the shopping list are the same tier', () => {
+    const top = shareTextForItem(fam()[4], '1.0');
+    // Legendary: 80 Plasteel rolls up to 400 Ore. It used to send the
+    // base tier's "40× Plasteel" above the Legendary "400× Ore".
+    expect(top).toContain('Craft: 80× Plasteel');
+    expect(top).toContain('From scratch: 400× Ore');
+    const base = shareTextForItem(fam()[0], '1.0');
+    expect(base).toContain('Craft: 40× Plasteel');
+    expect(base).toContain('From scratch: 200× Ore');
+  });
+
+  it('a shared build names the tier it is for', () => {
+    const txt = shareTextForBuild({ [fam()[4]]: 1 }, '1.0');
+    expect(txt).toContain('1× Advanced Bow (Legendary)');
+    expect(txt).toContain('400× Ore');
+  });
+
+  it('a single-tier item gets no tier in brackets', () => {
+    const txt = shareTextForBuild({ [itemIdByName('Wood')!]: 5 }, '1.0');
+    expect(txt).toContain('5× Wood');
+    expect(txt).not.toContain('5× Wood (');
+  });
+
+  it('the card, the panel and the share text all say one craft time', () => {
+    const bow = fam()[0];
+    const raw = ITEM_FACTS[bow]!.craftTime!;
+    expect(spokenCraftTime(raw)).toBe('5h 33m 20s');
+    expect(spokenTime(buildTime({ [bow]: 1 }).seconds)).toBe('5h 33m 20s');
   });
 });

@@ -11802,3 +11802,46 @@ Gates: mobile `tsc --noEmit` clean, `npx vitest run` 1039/1039.
 
 **Both queued items are done.** Next unswept surfaces: the share text,
 and search/sort behaviour.
+
+---
+
+## IL78 — a shared item was contradicting itself, and IL76 was half a fix (2026-08-20)
+
+**New surface swept: the share text.** Two faults, both exposed by IL77
+fixing the other half of the same fact.
+
+**1. The craft line and the shopping list disagreed.** A shared Legendary
+Advanced Bow read:
+
+```
+Craft: 40× Plasteel · 25× Carbon Fiber · 20× Nightstar Sand
+From scratch: 400× Ore · 100× Coal · 50× Flame Organ · ...
+```
+
+40 Plasteel cannot roll up to 400 Ore. The shopping list went through
+`rawMaterialsFor` (tier-aware since IL77) while the craft line read the
+family base's recipe straight off the facts. Both use `recipeOf` now —
+the share reads `Craft: 80× Plasteel` above `From scratch: 400× Ore`.
+
+**2. A shared build did not say which tier.** Same fault IL75 fixed on
+screen, still live in the message: `1× Advanced Bow` above a Legendary
+gather list. Now `1× Advanced Bow (Legendary)`, and a single-tier item
+gets no bracket because nothing can confuse it.
+
+**3. My IL76 fix was half a fix, and it was hiding a fabricated number.**
+I kept the leftover seconds only BELOW an hour, so a card still said
+"5h 33m 20s" where the build panel said "5h 33m" — the same disagreement
+I had claimed to close, moved rather than fixed. Worse, the old branch
+ROUNDED: `Math.round` turned 2h 46m 40s into **"2h 47m"**, a minute that
+does not exist in the data. `spokenTime` now says every part the number
+has and none it does not. Two tests pinned the rounded value and were
+corrected.
+
+Card, build panel and share text now print one craft time:
+**5h 33m 20s** everywhere. Verified on the running app.
+
+Gates: mobile `tsc --noEmit` clean, `npx vitest run` 1043/1043.
+
+**Next unswept surface:** search and sort. "Strongest" ranks by
+attack-else-defence-else-nutrition-else-capture, which is apples to
+oranges down a mixed list — CHECK IT before calling it a fault.

@@ -563,14 +563,21 @@ export function spokenCraftTime(t: string): string {
 export function spokenTime(seconds: number): string {
   if (seconds <= 0) return '';
   const h = Math.floor(seconds / 3600);
-  const m = Math.round((seconds % 3600) / 60);
-  if (h > 0) return m > 0 ? `${h}h ${m}m` : `${h}h`;
+  if (h > 0) {
+    // IL78: my first cut at this kept the seconds only BELOW an hour, so
+    // a card still said "5h 33m 20s" where the build panel said "5h 33m"
+    // — the same disagreement, moved rather than fixed. Worse, the old
+    // line ROUNDED: 2h 46m 40s was printed "2h 47m", a minute that never
+    // existed. Say every part the number actually has.
+    const mm = Math.floor((seconds % 3600) / 60);
+    const ss = seconds % 60;
+    return `${h}h${mm ? ` ${mm}m` : ''}${ss ? ` ${ss}s` : ''}`;
+  }
   if (seconds >= 60) {
     // IL76: this dropped the leftover seconds, so a Grappling Gun card
     // said "about 6m 40s" (the source's own words) while the build panel
     // said "About 6m" for the very same craft. Two screens, one fact,
-    // two numbers. Under an hour the seconds are worth saying; above it
-    // they are noise and still get dropped.
+    // two numbers.
     const mm = Math.floor(seconds / 60);
     const ss = seconds % 60;
     return ss ? `${mm}m ${ss}s` : `${mm}m`;

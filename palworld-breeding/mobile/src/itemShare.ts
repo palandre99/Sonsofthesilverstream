@@ -9,7 +9,7 @@
  */
 import {
   buildTime, buildTotals, implantPassive, ITEM_STATS, ITEMS, kindPhrase,
-  palsDropping, spokenCraftTime, spokenTime,
+  palsDropping, recipeOf, spokenCraftTime, spokenTime, familyOf,
   palsHatchingFrom, rawMaterialsFor, statRank, tierWord,
 } from './itemsData';
 import { equipPassiveName, ITEM_FACTS } from './itemFacts';
@@ -42,7 +42,11 @@ export function shareTextForBuild(
   const lines: string[] = [
     `My Palworld build — ${things} thing${things === 1 ? '' : 's'}`,
     '',
-    ...ids.map((i) => `  ${list[i]}× ${ITEMS[i].name}`),
+    // ...and name the tier, the same way the panel does — the gather
+    // list below belongs to one tier and nothing else said which
+    ...ids.map((i) => `  ${list[i]}× ${ITEMS[i].name}`
+      + (familyOf(i).length > 1
+        ? ` (${ITEM_STATS[i]?.tier ?? tierWord(ITEMS[i].rarity)})` : '')),
     '',
     'Everything you need from scratch:',
     ...totals.gather.map((r) => `  ${r.n}× ${ITEMS[r.id].name}`),
@@ -108,8 +112,13 @@ export function shareTextForItem(id: string, gameVersion: string): string {
     lines.push(`${facts.craftWork.toLocaleString()} work`
       + (facts.craftTime ? ` — about ${spokenCraftTime(facts.craftTime)} at Handiwork Lv. 1` : ''));
   }
-  if (facts?.recipe) {
-    lines.push('Craft: ' + facts.recipe
+  // IL78: this printed the FAMILY BASE's recipe while the shopping list
+  // two lines down was this tier's — so a shared Legendary Advanced Bow
+  // read "Craft: 40× Plasteel" above "From scratch: 400× Ore", two
+  // numbers that cannot both be true. One resolver for both.
+  const recipe = recipeOf(id);
+  if (recipe) {
+    lines.push('Craft: ' + recipe
       .map((r) => `${r.n}× ${ITEMS[r.id]?.name ?? r.id}`).join(' · '));
     // the recipe alone under-sells the cost when its ingredients are
     // themselves crafted — send the real shopping list too (IL32)
