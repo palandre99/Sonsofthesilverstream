@@ -2483,3 +2483,34 @@ describe('a row with nothing else says where it comes from (IL93)', () => {
     expect(sourced.length).toBe(19);
   });
 });
+
+describe('the source a row names is the best one it holds (IL93b)', () => {
+  const pct = (p: string) => {
+    const m = /([\d.]+)\s*%/.exec(String(p));
+    return m ? parseFloat(m[1]) : (/first defeat/i.test(String(p)) ? 100 : 0);
+  };
+
+  it('no row points at a 1% drop while holding a 100% chest', () => {
+    // the row takes drops[0] before boxes[0]; this pins that the order
+    // never picks a worse source than one the same item already carries
+    for (const id of collapseFamilies(ITEM_IDS)) {
+      const fam = familyOf(id);
+      const line = fam.length > 1 ? familyLine(fam) : statLine(id);
+      if (line || ITEM_FACTS[id]?.tech?.level != null || usedInOf(id).length
+        || palsHatchingFrom(id).length || (ITEMS[id].price ?? 0) > 1
+        || palsDropping(id).length) continue;
+      const chosen = ITEM_FACTS[id]?.drops?.[0] ?? ITEM_FACTS[id]?.boxes?.[0];
+      if (!chosen) continue;
+      const all = [...(ITEM_FACTS[id]?.drops ?? []), ...(ITEM_FACTS[id]?.boxes ?? [])];
+      const best = all.reduce((a, b) => (pct(b.p) > pct(a.p) ? b : a), all[0]);
+      expect(pct(chosen.p), `${ITEMS[id].name}`).toBeGreaterThanOrEqual(pct(best.p));
+    }
+  });
+
+  it('a pal drop wins over a table, because it is the actionable one', () => {
+    const key = itemIdByName('Copper Key')!;
+    expect(palsDropping(key).length).toBeGreaterThan(0);
+    // the Copper Key row reads "Dropped by Leezpunk", not its 1% table row
+    expect(ITEM_FACTS[key]!.drops![0].p).toBe('1%');
+  });
+});

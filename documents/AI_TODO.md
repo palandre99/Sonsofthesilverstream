@@ -12503,3 +12503,28 @@ before they chose to ship it, twice in one session.
 Publishing note: the preview export CRASHED once again (exit 1 this
 time), and an identical retry succeeded. Both channels confirmed on
 `dca256b`.
+
+---
+
+## IL93b — checking my own new rule, and two more non-faults (2026-08-20)
+
+**Self-check on the source line.** It takes `drops[0]` before `boxes[0]`,
+and the Copper Key holds a 1% drop AND a 100% chest — so the ordering
+could have named the worse source. Measured across every row that reaches
+the source fallback: **zero rows name a source worse than one they
+already hold.** A test now walks all of them and pins it, parsing the
+game's own probability strings (including "First Defeat", which is a
+guarantee, not a blank).
+
+The Copper Key reads **"Dropped by Leezpunk"** — the pal branch wins over
+both tables, which is the actionable answer.
+
+**Two more suspected faults that were not faults.** The Giga Glider card
+looked like it had lost its board and the Treasure Map looked like it had
+no source — both were me reading the DOM in the same tick as the click,
+before React re-rendered. Reading again showed *"Every glider in the game,
+most Speed first — #1 Wing Pack 1000, #2 Giga Glider 80"*, exactly as
+intended. That is the second and third time this session; the rule is in
+the loop prompt and I still walked into it twice.
+
+Gates: `npx vitest run` 1095/1095, mobile `tsc --noEmit` clean.
