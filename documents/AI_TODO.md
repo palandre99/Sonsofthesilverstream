@@ -2427,7 +2427,7 @@ work always"):**
       now show together ("Lv 57 ×1 building"), eye-verified, and the
       row is still 343×58 with nothing clipped. Pinned by a test that
       reads inside the build branch for the level marker. 918 green.
-- [ ] IL48 MEASURE, THEN DECIDE 2026-08-20: the Items screen has grown a
+- [x] IL48 2026-08-20: MEASURED — no lag, but one real coupling found.: the Items screen has grown a
       lot since IL28 last measured it (0.013 ms per row, 17 ms for a
       full 1,892-item collapse+sort) and NOTHING has been measured
       since. Added since: MatChips everywhere, a per-tier rollup on
@@ -2436,12 +2436,30 @@ work always"):**
       `buildTotals` + `buildTime` on every index render while the panel
       is open (IL43/47), and a `buildQty` lookup on EVERY ROW (IL45).
       The last one is the suspicious one: it runs per row, per render.
-      IL28's rule stands and is the whole point of this item — MEASURE
-      with a temporary probe, delete the probe in the same tick, and
-      only fix what the numbers actually show. Memoisation with no
-      measured lag behind it is theatre, and IL28 already refused it
-      once. If everything is still fast, the honest outcome is to say
-      so and ship nothing.
+      MEASURED 2026-08-20 (probes written, read, deleted same tick).
+      THERE IS NO LAG TO CHASE, and the honest outcome for the screen
+      is that nothing shipped:
+        full rebuild, collapse+sort 1,892 ....... 6.3 ms (was 17 at IL28)
+        14 rows incl. the IL45 build lookup ..... 0.009 ms
+        open the Beam Sword card (worst) ........ 0.35 ms
+        build panel totals + time, 10 items ..... 0.041 ms
+        rankValueOf across every family ......... 1.55 ms
+      The row lookup IL48 suspected costs nothing measurable. Memoising
+      any of this would be the theatre IL28 already refused.
+      WHAT THE COLD MEASUREMENT DID FIND was mine: importing itemsData
+      costs 555 ms cold, and only 30 ms of that is OUR index building —
+      the rest is JSON (items 115 ms, item_facts 356 ms). IL43 had made
+      `store.ts` import ITEMS for two id checks, so the BREEDING store
+      depended on the whole item catalogue. Removed; the id check moved
+      to where the list is read, and a junk id in a saved list was
+      eye-verified to render nothing rather than crash.
+      HONEST LIMIT, stated rather than overclaimed: this is a LAYERING
+      fix, not a proven startup win. App.tsx pulls itemsData anyway
+      through the top-bar search, and 356 ms is a node/vitest figure —
+      Hermes parses bundled JSON differently. Do NOT claim a launch
+      improvement without measuring the phone. If that is ever wanted,
+      the search overlay is the remaining door, and this one is now
+      shut. 929 green.
 - [x] IL47 2026-08-20: the build panel counts materials AND TIME
       but never TIME. 742 of the craftable items ship a work amount and
       a Handiwork Lv. 1 time (Beam Sword: 5,000 work, 2h46m40s), the

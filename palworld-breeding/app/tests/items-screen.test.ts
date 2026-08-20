@@ -1001,8 +1001,23 @@ describe('the build list adds up what a whole grind costs (IL43)', () => {
   it('the list is per world and survives a restart', () => {
     expect(store).toContain('build: `palforge-${profileId}-build`');
     expect(store).toContain("build: 'palforge-default-build'");
-    // and an id the catalogue forgot is dropped on load, like the box
-    expect(store).toContain('Object.hasOwn(ITEMS, i) && Number.isFinite(n) && n > 0');
+    // a malformed saved entry is dropped on load
+    expect(store).toContain('Number.isFinite(n) && n > 0');
+  });
+
+  it('the breeding store does not depend on the item catalogue (IL48)', () => {
+    // A LAYERING fix, and honestly not a startup win on its own: the
+    // top-bar search means App.tsx pulls itemsData anyway. But the
+    // breeding store has no business importing 2.4 MB of item facts
+    // for two id checks, and if the search is ever made lazy this is
+    // the other door that would have kept the cost. Measured
+    // 2026-08-20: items_1_0.json 115ms, item_facts_1_0.json 356ms,
+    // our own index building only 30ms.
+    expect(store, 'store imports the item catalogue again')
+      .not.toMatch(/^import .*from '\.\/itemsData'/m);
+    expect(store).not.toContain('Object.hasOwn(ITEMS');
+    // and the panel still refuses an id the catalogue has forgotten
+    expect(code).toContain("Object.keys(list).filter((i) => ITEMS[i])");
   });
 
   it('a slip on the stepper cannot ask for four billion Paldium', () => {

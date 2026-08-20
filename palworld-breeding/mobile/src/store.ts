@@ -12,7 +12,6 @@ import { BreedingEngine } from './engine/formula';
 import { derivations, planFor, stepId } from './engine/planner';
 import { ADVICE_VERSION, helperAdvice, type HelperAdvice } from './engine/helpers';
 import type { BreedingData, PlanStep } from './engine/types';
-import { ITEMS } from './itemsData';
 import breedingJson from './data/breeding_1_0.json';
 import palsJson from './data/pals_1_0.json';
 import passivesJson from './data/passives_1_0.json';
@@ -371,12 +370,16 @@ async function loadProfileData(): Promise<void> {
     const [b, c, p, bl] = await AsyncStorage.multiGet(
       [k.box, k.checks, k.plan, k.build]);
     if (bl[1]) {
-      // same hygiene the box gets: an id the catalogue no longer knows
-      // is dropped rather than rendered as a blank row
+      // Only the SHAPE is checked here. Whether an id still exists in
+      // the catalogue is checked where the list is read (buildTotals,
+      // buildTime, the panel, the share) — because importing the item
+      // catalogue into this file dragged 2.4 MB of item facts into app
+      // STARTUP, measured at IL48: App -> store -> itemsData. The box
+      // can validate against `pals` because the breeding engine needs
+      // that table anyway; the item tables are not needed to launch.
       const saved = JSON.parse(bl[1]) as Record<string, number>;
       state.build = Object.fromEntries(
-        Object.entries(saved)
-          .filter(([i, n]) => Object.hasOwn(ITEMS, i) && Number.isFinite(n) && n > 0));
+        Object.entries(saved).filter(([, n]) => Number.isFinite(n) && n > 0));
     }
     if (b[1]) {
       const saved = JSON.parse(b[1]) as Record<string, OwnedGenders>;
@@ -422,7 +425,6 @@ export const buildCount = (): number => Object.keys(state.build).length;
 
 /** Set how many of `id` the player wants; 0 or less removes it. */
 export async function setBuildQty(id: string, n: number): Promise<void> {
-  if (!Object.hasOwn(ITEMS, id)) return;
   const qty = Math.floor(n);
   const next = { ...state.build };
   if (!Number.isFinite(qty) || qty <= 0) delete next[id];

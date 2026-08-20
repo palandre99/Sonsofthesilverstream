@@ -326,7 +326,10 @@ function BuildPanel({ onOpenItem }: { onOpenItem: (id: string) => void }) {
   useAppVersion();
   const [open, setOpen] = useState(false);
   const list = getBuildList();
-  const ids = Object.keys(list);
+  // the store deliberately knows nothing about the catalogue (IL48 —
+  // importing it there put 2.4 MB of item facts in the startup path),
+  // so the id check lives here, where the names are actually rendered
+  const ids = Object.keys(list).filter((i) => ITEMS[i]);
   if (!ids.length) return null;
   const totals = buildTotals(list);
   const things = ids.reduce((a, i) => a + list[i], 0);
