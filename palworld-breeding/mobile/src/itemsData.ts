@@ -604,6 +604,43 @@ export function grantsToShow(id: string): string[] {
   return [...plain, ...[...best.values()].map((v) => v.text)];
 }
 
+/* ---- meaning for an effect number without a unit (IL64) ------------
+ * A food card ended "What it does" with "Recovery Time 600". 600 what?
+ * The upstream chip is literally ["Recovery Time", "600"] — no unit
+ * anywhere — and seconds is only a good guess, so it cannot be printed
+ * as fact. What CAN be said truthfully is where the number sits among
+ * the items that carry the same label.
+ *
+ * The wording is deliberately neutral ("#2 of 38", never "2nd best"):
+ * nobody has established whether a longer Recovery Time is good or
+ * bad, and a rank must not smuggle in a judgement the data does not
+ * make. Same shape as statRank, computed once per label. */
+const EFFECT_RANKS = new Map<string, Map<string, { rank: number; of: number }>>();
+export function effectRank(
+  id: string, label: string,
+): { rank: number; of: number } | null {
+  if (effectNumber(id, label) == null) return null;
+  let table = EFFECT_RANKS.get(label);
+  if (!table) {
+    const carriers = ITEM_IDS
+      .filter((i) => effectNumber(i, label) != null)
+      .sort((a, b) => (effectNumber(b, label) ?? 0) - (effectNumber(a, label) ?? 0));
+    table = new Map();
+    let rank = 0;
+    let last: number | null = null;
+    carriers.forEach((i, idx) => {
+      const v = effectNumber(i, label) ?? 0;
+      if (v !== last) {
+        rank = idx + 1;
+        last = v;
+      }
+      table!.set(i, { rank, of: carriers.length });
+    });
+    EFFECT_RANKS.set(label, table);
+  }
+  return table.get(id) ?? null;
+}
+
 /** Nothing anywhere says how to get this item: no recipe, no tier
  * craft, no technology node, no research, no drop, no chest, no shop,
  * and no pal drops it (IL41). 102 items are in this state. A card that

@@ -23,7 +23,8 @@ import {
   grantsToShow, palForGear,
   ITEM_STATS, ITEMS,
   kindPhrase, kindsInGroup, kindWord, palsDropping, palsHatchingFrom, rawMaterialsFor,
-  buildTime, buildTotals, gearAgainst, guardKinds, guardLevel, ITEM_IDS,
+  buildTime, buildTotals, effectRank, gearAgainst, guardKinds, guardLevel,
+  ITEM_IDS,
   rankAxisOf,
   rankValueOf, rivalsOf, rollupOfMats,
   schematicsFor, spokenTime,
@@ -705,9 +706,19 @@ function ItemDetail({ id, trail = [], onClose, onBack, onOpenItem }: {
             <Card style={{ marginTop: 10 }}>
               <Text style={s.h3}>What it does</Text>
               <View style={{ marginTop: 6, gap: 3 }}>
-                {facts.effects.map(([k, v]) => (
-                  <Fact key={k + v} label={k} value={v} />
-                ))}
+                {facts.effects.map(([k, v]) => {
+                  // IL64: "Recovery Time 600" — 600 WHAT? The upstream
+                  // carries no unit, so none is invented; instead the
+                  // number gets the one true thing that can be said
+                  // about it, where it sits among the items sharing
+                  // that label. Neutral wording on purpose: nobody has
+                  // established whether more is better.
+                  const r = effectRank(id, k);
+                  return (
+                    <Fact key={k + v} label={k}
+                      value={r && r.of > 2 ? `${v} · #${r.rank} of ${r.of}` : v} />
+                  );
+                })}
               </View>
             </Card>
           )}

@@ -2609,7 +2609,24 @@ work always"):**
       never a long sleep chain, so no step is lost to the timeout. Only
       then decide whether anything is actually broken. Do NOT tell the
       CEO anything is broken until a clean run says so twice.
-- [ ] IL64 FOUND BY THE CARD SWEEP 2026-08-20: a food card ends "What
+- [x] IL64 2026-08-20 (DONE, option (a) as recommended): every effect
+      number on a card now carries a rank instead of hanging there
+      meaningless. "Recovery Time 600" reads "600 · #3 of 46", and the
+      whole block gained the same: Nutrition 170 · #20 of 122, SAN 21 ·
+      #17 of 80, Work Speed 50 · #4 of 14, Hunger resist 25 · #4 of 9.
+      NO UNIT WAS INVENTED, which was the whole difficulty: the cached
+      chip is literally ["Recovery Time", "600"], so seconds stays a
+      guess and never reaches the screen. A rank is the one thing that
+      can be said truthfully about the number.
+      THE WORDING IS NEUTRAL ON PURPOSE — "#3 of 46", never "3rd
+      longest" or "3rd best". Nobody has established whether a longer
+      Recovery Time helps or hurts, and a rank must not smuggle in a
+      judgement the data does not make. A test pins that the effects
+      block contains no such word.
+      Ties share a rank (pinned), an item without the effect gets no
+      rank, and labels carried by fewer than three items get none —
+      "#1 of 2" is noise, not context. 1,006 green.
+- [ ] IL64-OLD FOUND BY THE CARD SWEEP 2026-08-20: a food card ends "What
       it does" with "Recovery Time 600" — a bare number with no unit
       and no meaning, which is exactly what this workspace forbids.
       600 what? THE UPSTREAM DOES NOT SAY: the cached page chip is

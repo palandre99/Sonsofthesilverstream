@@ -6,7 +6,8 @@ import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import {
-  ammoForWeapon, buildTime, buildTotals, collapseFamilies, effectNumber, familyOf,
+  ammoForWeapon, buildTime, buildTotals, collapseFamilies, effectNumber,
+  effectRank, familyOf,
   familyPowerOf, gearAgainst, guardKinds, guardLevel, spokenTime,
   grantsToShow, hasNoKnownSource,
   idsInGroup, implantPassive, ITEM_GROUPS, ITEM_STATS, ITEMS, itemIdByName, KIND_WORDS,
@@ -1523,5 +1524,40 @@ describe('a card never says the same thing twice (IL63)', () => {
     const had = Object.keys(ITEMS).filter((i) => facts[i]?.grants?.length);
     const emptied = had.filter((i) => grantsToShow(i).length === 0);
     expect(emptied.length / had.length).toBeLessThan(0.2);
+  });
+});
+
+describe('an effect number without a unit still means something (IL64)', () => {
+  const chowder = Object.keys(ITEMS).find((i) => ITEMS[i].name === 'Dumud Chowder')!;
+
+  it('"Recovery Time 600" gains a rank, since no unit can be stated', () => {
+    // the upstream chip is literally ["Recovery Time","600"] — seconds
+    // is a guess, and a guess is not shippable as a fact
+    const r = effectRank(chowder, 'Recovery Time')!;
+    expect(r).toEqual({ rank: 3, of: 46 });
+  });
+
+  it('ties share a rank, like the stat ranking does', () => {
+    const timed = Object.keys(ITEMS).filter((i) => effectNumber(i, 'Recovery Time') != null);
+    const sameValue = timed.filter((i) => effectNumber(i, 'Recovery Time') === 600);
+    expect(sameValue.length).toBeGreaterThan(1);
+    const ranks = new Set(sameValue.map((i) => effectRank(i, 'Recovery Time')!.rank));
+    expect(ranks.size).toBe(1);
+  });
+
+  it('an item without that effect gets no rank at all', () => {
+    expect(effectRank('BeamSword', 'Recovery Time')).toBeNull();
+    expect(effectRank(chowder, 'Nutrition')).not.toBeNull();
+  });
+
+  it('the wording never claims more is better', () => {
+    const code = readFileSync(
+      join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+    expect(code).toContain('#${r.rank} of ${r.of}');
+    // scoped to the effects block: "best" appears legitimately
+    // elsewhere ("best tier first"), so a file-wide match is wrong
+    const block = code.slice(code.indexOf('const r = effectRank(id, k);'),
+      code.indexOf('const r = effectRank(id, k);') + 400);
+    expect(block).not.toMatch(/best|worst|longest|strongest/i);
   });
 });
