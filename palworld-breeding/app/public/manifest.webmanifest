@@ -1,0 +1,18 @@
+{
+  "name": "Palforge — the Palworld companion",
+  "short_name": "Palforge",
+  "description": "The Palworld 1.0 breeding companion: calculator, route planner, odds lab and Paldex — verified against the game files. Works offline.",
+  "id": "palforge",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0C1618",
+  "theme_color": "#0C1618",
+  "categories": ["games", "utilities"],
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

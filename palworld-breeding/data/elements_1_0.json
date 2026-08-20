@@ -1,0 +1,91 @@
+{
+ "source": "palworld.wiki.gg Elements (revid 30073) + palworld.fandom.com Elements (revid 29952), fetched 2026-08-18; accepted only because both agree cell-for-cell AND the table is perfectly antisymmetric AND its vocabulary equals pals_1_0.json's 9 elements. Wiki-measured, not datamined: no pinned raw dump publishes the game's element table (atlas build-24575149 manifest checked, 11 tables, none of them elements; paldb /Elements is prose only).",
+ "label": "wiki-measured",
+ "multipliers": {
+  "strong": 2.0,
+  "weak": 0.5,
+  "neutral": 1.0
+ },
+ "rules": {
+  "attack": "one skill element vs each of the defender's elements; per-element multipliers multiply, so strong+weak on a dual-element pal cancels to 1x",
+  "sameElement": "a skill matching the defender's element is neutral (1x) \u2014 both sources state this explicitly",
+  "extremeCases": "0 of our 299 pals can take 4x or 0.25x (counted from pals_1_0.json at generation time, not copied from the wikis)"
+ },
+ "elements": {
+  "Dark": {
+   "strong": [
+    "Neutral"
+   ],
+   "weak": [
+    "Dragon"
+   ]
+  },
+  "Dragon": {
+   "strong": [
+    "Dark"
+   ],
+   "weak": [
+    "Ice"
+   ]
+  },
+  "Electric": {
+   "strong": [
+    "Water"
+   ],
+   "weak": [
+    "Ground"
+   ]
+  },
+  "Fire": {
+   "strong": [
+    "Grass",
+    "Ice"
+   ],
+   "weak": [
+    "Water"
+   ]
+  },
+  "Grass": {
+   "strong": [
+    "Ground"
+   ],
+   "weak": [
+    "Fire"
+   ]
+  },
+  "Ground": {
+   "strong": [
+    "Electric"
+   ],
+   "weak": [
+    "Grass"
+   ]
+  },
+  "Ice": {
+   "strong": [
+    "Dragon"
+   ],
+   "weak": [
+    "Fire"
+   ]
+  },
+  "Neutral": {
+   "strong": [],
+   "weak": [
+    "Dark"
+   ]
+  },
+  "Water": {
+   "strong": [
+    "Fire"
+   ],
+   "weak": [
+    "Electric"
+   ]
+  }
+ },
+ "counts": {
+  "elements": 9,
+  "strongEdges": 9
+ }
+}

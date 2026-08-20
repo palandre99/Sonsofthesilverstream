@@ -1,0 +1,289 @@
+/**
+ * The Items fane's backbone: 1,892 items from the build-pinned atlas index
+ * (fetched 2026-08-18, tools/fetch_items_index.py). These guards pin what
+ * the fetch VALIDATED, so a bad re-fetch or a hand edit fails here before
+ * it reaches a screen — and the three data copies must be byte-identical,
+ * because silent copy divergence already bit the pals data once (E139).
+ */
+import { describe, expect, it } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+
+interface Item {
+  name: string; description: string; category: string | null;
+  subcategory: string | null; rarity: number | null; rank: number | null;
+  maxStack: number | null; weight: number | null; price: number | null;
+  icon: string | null;
+}
+const payload = JSON.parse(readFileSync(
+  join(__dirname, '../public/data/items_1_0.json'), 'utf8'),
+) as { source: string; build: string; count: number; items: Record<string, Item> };
+
+const items = Object.entries(payload.items);
+
+describe('the backbone is what the fetch validated', () => {
+  it('carries its provenance and the build pin', () => {
+    expect(payload.build).toBe('24575149');
+    expect(payload.source).toContain('palworld-atlas-data');
+    expect(payload.count).toBe(items.length);
+  });
+
+  it('every item in the game, none invented: 1,892', () => {
+    expect(items.length).toBe(1892);
+  });
+
+  it('every item has a name; ids are the keys so they are unique by shape', () => {
+    for (const [id, it_] of items) {
+      expect(it_.name, `${id} has no name`).toBeTruthy();
+    }
+  });
+
+  it('the categories are exactly the twelve the game ships', () => {
+    const cats = [...new Set(items.map(([, it_]) => it_.category))].sort();
+    expect(cats).toEqual([
+      'Accessory', 'Ammo', 'Armor', 'Blueprint', 'CaptureItemModifier',
+      'Consume', 'Essential', 'Food', 'Glider', 'Material',
+      'SpecialWeapon', 'Weapon',
+    ]);
+  });
+
+  it('weights and prices are never negative', () => {
+    for (const [id, it_] of items) {
+      if (it_.weight != null) expect(it_.weight, id).toBeGreaterThanOrEqual(0);
+      if (it_.price != null) expect(it_.price, id).toBeGreaterThanOrEqual(0);
+    }
+  });
+
+  it('descriptions cover most of the catalogue, verbatim game text', () => {
+    const described = items.filter(([, it_]) => it_.description.length > 0);
+    // 1,924 description rows over 2,466 raw rows upstream — the shipped
+    // 1,892 keep the overwhelming share. Pin a floor, not the exact figure.
+    expect(described.length).toBeGreaterThan(1500);
+    for (const [id, it_] of items) {
+      expect(it_.description, `${id} kept a raw \\r`).not.toContain('\r');
+    }
+  });
+});
+
+describe('names are player-facing, never upstream artifacts', () => {
+  it('no "en Text" parse artifact anywhere', () => {
+    const bad = items.filter(([, it_]) => it_.name === 'en Text').map(([id]) => id);
+    expect(bad, 'the upstream name-table artifact reached the data').toEqual([]);
+  });
+
+  it('no unlocalized "{BaseId} N" names', () => {
+    const bad = items.filter(([id, it_]) =>
+      /^[A-Za-z0-9]+ \d$/.test(it_.name) && it_.name.split(' ')[0] !== ''
+      && id.includes(it_.name.split(' ')[0])).map(([id]) => id);
+    expect(bad, 'unlocalized rarity-variant names reached the data').toEqual([]);
+  });
+
+  it('the derived variants say so, and inherited exactly their family name', () => {
+    const derived = items.filter(([, it_]) =>
+      (it_ as unknown as { nameFromBase?: boolean }).nameFromBase);
+    // 354 originally + 8 id-shaped names (the TreasureMap class) + 5
+    // spaced-id names (the Octavia collab class, trailing-digit gated) —
+    // both recovered 2026-08-19
+    expect(derived.length).toBe(367);
+    // canary: the Uncommon Assault Rifle wears the family name
+    const ar2 = payload.items['AssaultRifle_Default2'] as unknown as
+      { name: string; nameFromBase?: boolean };
+    expect(ar2.name).toBe('Assault Rifle');
+    expect(ar2.nameFromBase).toBe(true);
+    // canary 2: the higher treasure maps wear their family's name now
+    const tm5 = payload.items['TreasureMap05'] as unknown as
+      { name: string; nameFromBase?: boolean };
+    expect(tm5.name).toBe('Treasure Map');
+    expect(tm5.nameFromBase).toBe(true);
+    // and clean single-word names that equal their id stayed untouched
+    expect((payload.items.Cake as unknown as { nameFromBase?: boolean })
+      .nameFromBase).toBeUndefined();
+  });
+});
+
+describe('the stats layer is exact-identity, validated', () => {
+  const statsPayload = JSON.parse(readFileSync(
+    join(__dirname, '../public/data/item_stats_1_0.json'), 'utf8'),
+  ) as {
+    count: number; refused: string[]; stillMissing: string[];
+    stats: Record<string, Record<string, number | string[]>>;
+  };
+
+  it('every stat row belongs to a real item, and nothing was refused', () => {
+    for (const id of Object.keys(statsPayload.stats)) {
+      expect(payload.items[id], `${id} has stats but no backbone row`).toBeTruthy();
+    }
+    expect(statsPayload.refused).toEqual([]);
+    // the six upstream-absent pages are known and named, not silent
+    expect(statsPayload.stillMissing.length).toBe(6);
+  });
+
+  it('coverage floors hold per category', () => {
+    const cat = (id: string) => payload.items[id].category;
+    const ids = Object.keys(statsPayload.stats);
+    expect(ids.filter((i) => cat(i) === 'Weapon').length).toBeGreaterThan(280);
+    expect(ids.filter((i) => cat(i) === 'Armor').length).toBeGreaterThan(250);
+  });
+
+  it('the canary row: Assault Rifle reads exactly as fetched 2026-08-18', () => {
+    expect(statsPayload.stats['AssaultRifle_Default1']).toMatchObject({
+      atk: 320, durability: 3000, magazine: 20,
+    });
+  });
+
+  it('every numeric stat is positive', () => {
+    for (const [id, row] of Object.entries(statsPayload.stats)) {
+      for (const [k, v] of Object.entries(row)) {
+        if (typeof v === 'number') expect(v, `${id}.${k}`).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it('the stats copies move together too', () => {
+    const canonical = readFileSync(
+      join(__dirname, '../../data/item_stats_1_0.json'), 'utf8');
+    const mobile = readFileSync(
+      join(__dirname, '../../mobile/src/data/item_stats_1_0.json'), 'utf8');
+    const app = readFileSync(
+      join(__dirname, '../public/data/item_stats_1_0.json'), 'utf8');
+    expect(mobile === canonical, 'mobile stats copy diverged').toBe(true);
+    expect(app === canonical, 'app stats copy diverged').toBe(true);
+  });
+});
+
+describe('the three copies move together', () => {
+  it('canonical, mobile and app copies are byte-identical', () => {
+    const canonical = readFileSync(
+      join(__dirname, '../../data/items_1_0.json'), 'utf8');
+    const mobile = readFileSync(
+      join(__dirname, '../../mobile/src/data/items_1_0.json'), 'utf8');
+    const app = readFileSync(
+      join(__dirname, '../public/data/items_1_0.json'), 'utf8');
+    expect(mobile === canonical, 'mobile items copy diverged from canonical').toBe(true);
+    expect(app === canonical, 'app items copy diverged from canonical').toBe(true);
+  });
+});
+
+describe("every item has a picture — the CEO's order (IL35)", () => {
+  const icons = readFileSync(
+    join(__dirname, '../../mobile/src/data/itemIcons.g.ts'), 'utf8');
+  const coords: Record<string, [number, number, number]> = JSON.parse(
+    icons.match(/ITEM_ICON_COORDS[^=]*=\s*(\{[\s\S]*?\});/)![1]);
+  const items = (JSON.parse(readFileSync(
+    join(__dirname, '../../data/items_1_0.json'), 'utf8')) as {
+      items: Record<string, { name: string; icon: string | null }>;
+    }).items;
+
+  it('all 1,892 items resolve to a sprite-sheet cell', () => {
+    const missing = Object.keys(items)
+      .filter((i) => coords[items[i].icon ?? ''] === undefined)
+      .map((i) => `${i} (icon=${items[i].icon})`);
+    // was 13 short on 2026-08-20 — six icons the first sweep lost.
+    // A regression here means the CEO sees the placeholder again.
+    expect(missing).toEqual([]);
+    expect(Object.keys(items).length).toBe(1892);
+  });
+
+  it('the six recovered icons are really on a sheet', () => {
+    for (const icon of ['Shield_05', 'Glider_Legendary', 'GrapplingGun',
+      'Launcher_Meteor', 'Octavia001_Armor', 'Octavia002_Armor']) {
+      expect(coords[icon], `${icon} fell off the sheet`).toBeTruthy();
+    }
+    expect(Object.keys(coords).length).toBe(722);
+  });
+
+  it('an overridden page must prove the texture is the icon we asked for', () => {
+    const tool = readFileSync(
+      join(__dirname, '../../tools/fetch_item_icons.py'), 'utf8');
+    expect(tool).toContain('def identity_ok(');
+    expect(tool).toContain('REFUSED');
+    // the three whose paldb name differs from ours
+    expect(tool).toContain('"Shield_05": "Ultra Shield"');
+    expect(tool).toContain('"Glider_Legendary": "Glider Legendary"');
+    expect(tool).toContain('"GrapplingGun": "Grappling Gun"');
+  });
+});
+
+describe('no player ever sees a code name (IL36)', () => {
+  const items = (JSON.parse(readFileSync(
+    join(__dirname, '../../data/items_1_0.json'), 'utf8')) as {
+      items: Record<string, { name: string; nameFromCodeName?: boolean }>;
+    }).items;
+
+  it('not one name in the catalogue is a run-together code name', () => {
+    const codey = Object.entries(items)
+      .filter(([, it]) => /[a-z0-9][A-Z]/.test(it.name) && !it.name.includes(' '))
+      .map(([id, it]) => `${id} -> ${it.name}`);
+    expect(codey).toEqual([]);
+  });
+
+  it('the Grappling Gun reads as words on all five tiers', () => {
+    for (const id of ['GrapplingGun', 'GrapplingGun2', 'GrapplingGun3',
+      'GrapplingGun4', 'GrapplingGun5']) {
+      expect(items[id].name).toBe('Grappling Gun');
+    }
+    // only the base row was repaired from its id; the tiers inherit it
+    expect(items.GrapplingGun.nameFromCodeName).toBe(true);
+    expect(items.GrapplingGun2.nameFromCodeName).toBeUndefined();
+  });
+
+  it('one-word names that ARE their own id stay untouched', () => {
+    // the rule must never "fix" Cake into something else — 52 of the 53
+    // name-equals-id rows are legitimately single words
+    for (const id of ['Cake', 'Coal', 'Bone', 'Katana', 'Sword', 'Wood']) {
+      expect(items[id].name).toBe(id);
+      expect(items[id].nameFromCodeName).toBeUndefined();
+    }
+  });
+
+  it('numbered variants are left to the family pass, not split', () => {
+    // splitting those produced "Treasure Map02" on the first cut
+    for (const id of ['TreasureMap02', 'TreasureMap05']) {
+      expect(items[id].name).toBe('Treasure Map');
+      expect(items[id].nameFromCodeName).toBeUndefined();
+    }
+  });
+});
+
+describe('no card shows the player a parse artifact (IL37)', () => {
+  const items = (JSON.parse(readFileSync(
+    join(__dirname, '../../data/items_1_0.json'), 'utf8')) as {
+      items: Record<string, {
+        name: string; description: string; descriptionFromBase?: boolean;
+      }>;
+    }).items;
+  const facts = (JSON.parse(readFileSync(
+    join(__dirname, '../../data/item_facts_1_0.json'), 'utf8')) as {
+      facts: Record<string, { desc?: string }>;
+    }).facts;
+
+  /** exactly what ItemDetail renders: facts.desc ?? the item's own */
+  const shown = (id: string): string => {
+    const d = facts[id]?.desc;
+    return d && d.trim() ? d : items[id].description ?? '';
+  };
+
+  it('not one of the 1,892 cards displays "en Text"', () => {
+    // measured at the DISPLAY, not in the payload — the facts sweep was
+    // already hiding 28 of the 44, which is luck, not correctness
+    const visible = Object.keys(items)
+      .filter((id) => /en Text/i.test(shown(id)))
+      .map((id) => `${id} (${items[id].name})`);
+    expect(visible).toEqual([]);
+  });
+
+  it('every card has words on it', () => {
+    const blank = Object.keys(items).filter((id) => !shown(id).trim());
+    expect(blank).toEqual([]);
+  });
+
+  it('the armor tiers inherited their family description', () => {
+    for (const id of ['CopperArmor_2', 'IronArmor_5', 'WeakerBow_3',
+      'PumpActionShotgun_4']) {
+      expect(items[id].descriptionFromBase).toBe(true);
+      expect(items[id].description).not.toBe('en Text');
+    }
+    // the base rows kept their own text, not a borrowed one
+    expect(items.CopperArmor.descriptionFromBase).toBeUndefined();
+  });
+});

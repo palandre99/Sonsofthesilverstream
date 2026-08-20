@@ -1,0 +1,213 @@
+/** The helper-pal brain: which pals make a breeding plan FASTER, scored
+ * the way a human player scores them — and what to do about each one.
+ *
+ * Every effect line is the game's own partner-skill data (pals_1_0.json,
+ * game dump) — nothing invented, nothing community-guessed. CEO claims
+ * verified against game data 2026-08-15: Braloha egg-production speed,
+ * Dynamoff incubation, Grintale extra eggs, Broncherry / Broncherry Aqua
+ * alpha-egg chance — all real partner skills, quoted near-verbatim.
+ */
+import type { BreedingEngine } from './formula';
+import { derivations, planFor } from './planner';
+import type { PlanStep } from './types';
+
+export interface HelperDef {
+  /** exact dataset species name */
+  name: string;
+  role: 'ranch' | 'speed' | 'luck' | 'base';
+  ingredient?: 'milk' | 'eggs' | 'honey' | 'berries';
+  /** importance 1–5, scored against the cake→egg→hatch pipeline */
+  score: 1 | 2 | 3 | 4 | 5;
+  /** the game's partner-skill effect, shortened but faithful */
+  effect: string;
+  /** plain-language why, shown with recommendations */
+  why: string;
+  confidence: 'game-data';
+}
+
+/** Ranked helper registry. Ranch pals that feed the cake recipe first,
+ * then the throughput multipliers, then luck and base helpers. */
+export const HELPERS: HelperDef[] = [
+  {
+    name: 'Chikipi', role: 'ranch', ingredient: 'eggs', score: 5,
+    effect: 'Sometimes lays an Egg when assigned to the Ranch',
+    why: 'Every cake needs 8 eggs — no eggs, no cakes, no breeding.',
+    confidence: 'game-data',
+  },
+  {
+    name: 'Mozzarina', role: 'ranch', ingredient: 'milk', score: 5,
+    effect: 'Sometimes drops Milk when assigned to the Ranch',
+    why: 'Every cake needs 7 milk, and the Ranch is the only hands-free source.',
+    confidence: 'game-data',
+  },
+  {
+    name: 'Beegarde', role: 'ranch', ingredient: 'honey', score: 5,
+    effect: 'Sometimes drops Honey when assigned to the Ranch',
+    why: 'Every cake needs 2 honey — the Ranch is the only steady source.',
+    confidence: 'game-data',
+  },
+  {
+    name: 'Caprity', role: 'ranch', ingredient: 'berries', score: 4,
+    effect: 'Sometimes drops Red Berries when assigned to the Ranch',
+    why: '8 berries per cake. A berry plantation works too — Caprity needs no farmhands.',
+    confidence: 'game-data',
+  },
+  {
+    name: 'Braloha', role: 'speed', score: 4,
+    effect: 'Breeding Farm egg production +20–50% while in your base',
+    why: 'Every step of this plan waits on the Breeding Farm — Braloha speeds all of them.',
+    confidence: 'game-data',
+  },
+  {
+    name: 'Dynamoff', role: 'speed', score: 4,
+    effect: 'Egg incubation time −20–40% while at your base',
+    why: 'Cuts the other big wait: hatching what you bred.',
+    confidence: 'game-data',
+  },
+  {
+    name: 'Grintale', role: 'luck', score: 4,
+    effect: '50–75% chance of an extra egg when you pick one up (in party)',
+    why: 'Free duplicate eggs — more shots at the stats you want without extra breeding.',
+    confidence: 'game-data',
+  },
+  {
+    name: 'Broncherry Aqua', role: 'luck', score: 3,
+    effect: 'Eggs you pick up: 45–55% chance to become an Alpha Pal Egg (in party)',
+    why: 'For alpha hunters — hatch the big versions.',
+    confidence: 'game-data',
+  },
+  {
+    name: 'Broncherry', role: 'luck', score: 2,
+    effect: 'Eggs you pick up: 35–45% chance to become an Alpha Pal Egg (in party)',
+    why: 'Weaker sibling of Broncherry Aqua — only if Aqua is out of reach.',
+    confidence: 'game-data',
+  },
+  {
+    name: 'Ribbuny', role: 'base', score: 2,
+    effect: '+1 Handiwork level for every other pal in your base',
+    why: 'Faster milling and crafting for the cake supply chain.',
+    confidence: 'game-data',
+  },
+];
+
+export const HELPER_NAMES: ReadonlySet<string> = new Set(HELPERS.map((h) => h.name));
+
+/** Bump when helperAdvice's CONTRACT changes (new fields, new coverage) so
+ * persisted plans recompute their advice on next open. v2 = catch-only
+ * suggestions for unreachable helpers (the Chikipi fix). v3 = honest
+ * late-phase notes: an accelerator bred in the back half of the plan no
+ * longer claims it "helps with everything after". */
+export const ADVICE_VERSION = 3;
+
+export interface HelperAdvice {
+  helper: HelperDef;
+  status: 'covered' | 'in-plan' | 'suggest';
+  /** for in-plan: the phase that breeds it */
+  phase?: number;
+  /** for suggest: exact extra steps if added (0 = free byproduct) */
+  addSteps?: number;
+  /** breeding can't reach it from this box — catching is the ONLY path.
+   * Skipping these silently is the bug that hid Chikipi, the game's egg
+   * pal, from a player with no eggs (CEO 2026-08-15). */
+  catchOnly?: boolean;
+  recommended: boolean;
+  /** one plain sentence tailored to the situation */
+  note: string;
+}
+
+/** Think like a player: covered → nothing to do; in the plan → point at the
+ * phase and pull it early; missing → price it (real re-plan) and recommend
+ * honestly. */
+export function helperAdvice(
+  engine: BreedingEngine,
+  ownedNames: string[],
+  ownedAny: (n: string) => boolean,
+  plan: { targets: string[]; steps: PlanStep[]; roster?: string[] },
+  /** optional derivations(engine, roster) — callers that just planned with
+   * the same roster can hand theirs over and skip the expensive pass */
+  precomputed?: ReturnType<typeof derivations>,
+): HelperAdvice[] {
+  // Cost math runs against the plan's ORIGINAL roster (falling back to the
+  // current box for old saves): ticking steps grows the box, and mixing a
+  // grown box with plan-time step counts made "+N steps" go negative.
+  const roster = plan.roster ?? ownedNames;
+  // derivations depends only on the roster — pay the expensive pass ONCE
+  // and reuse it for the base plan and every candidate (was: once per
+  // candidate, a measured multi-second JS-thread freeze).
+  const derivs = precomputed ?? derivations(engine, new Set(roster));
+  const base = planFor(engine, roster, plan.targets, derivs).steps.length;
+  // earliest phase that breeds each child (a child can appear via two steps)
+  const planChild = new Map<string, number>();
+  for (const s of plan.steps) {
+    const w = planChild.get(s.child);
+    if (w == null || s.wave < w) planChild.set(s.child, s.wave);
+  }
+  const nSteps = plan.steps.length;
+  const out: HelperAdvice[] = [];
+
+  for (const h of HELPERS) {
+    if (ownedAny(h.name)) {
+      out.push({
+        helper: h, status: 'covered', recommended: false,
+        note: 'In your Paldex — put it to work.',
+      });
+      continue;
+    }
+    const wave = planChild.get(h.name);
+    if (wave != null) {
+      // an accelerator that arrives in the BACK half of the plan speeds up
+      // almost nothing — telling the player to "do that branch first" is
+      // hollow advice there. Say it straight, and point at the wild route
+      // (hostile-review find, 2026-08-15).
+      const lastWave = Math.max(...plan.steps.map((st) => st.wave));
+      const late = lastWave > 1 && wave > lastWave / 2;
+      out.push({
+        helper: h, status: 'in-plan', phase: wave, recommended: false,
+        note: late
+          ? `This plan only breeds it in Phase ${wave} of ${lastWave} — most of the route is done by then. If you spot one in the wild, catch it early and it helps the whole way.`
+          : `This plan breeds it in Phase ${wave} — do that branch first so it helps with everything after.`,
+      });
+      continue;
+    }
+    const res = planFor(engine, roster, [...plan.targets, h.name], derivs);
+    if (res.unreachable.includes(h.name)) {
+      // Breeding can't reach it — but a player would just go CATCH one.
+      // Staying silent here is how Chikipi (8 eggs per cake!) went
+      // unmentioned to a player who owned none. Recommendation follows the
+      // SAME economy rules as breedable helpers (a catch costs ~a detour,
+      // not zero): ranch essentials early, speed/luck only on long plans.
+      const rec = h.role === 'ranch'
+        ? (h.score >= 5 ? nSteps >= 3 : nSteps >= 6)
+        : h.score >= 3 && nSteps >= 10;
+      out.push({
+        helper: h, status: 'suggest', catchOnly: true,
+        recommended: rec,
+        note: `Can't be bred from your box — catch one instead. ${h.why}`,
+      });
+      continue;
+    }
+    const addSteps = Math.max(0, res.steps.length - base);
+    // Ranch pals feed EVERY cake, so they matter from the first step of a
+    // real plan; the old nSteps>=6 gate let short plans starve. Speed/luck
+    // helpers still need a long plan to pay for themselves.
+    const recommended = addSteps === 0
+      || (h.role === 'ranch'
+        ? (h.score >= 5 ? nSteps >= 3 : nSteps >= 6) && addSteps <= 3
+        : h.score >= 3 && nSteps >= 10 && addSteps <= 3);
+    const note = addSteps === 0
+      ? `Free — your route already breeds it on the way. ${h.why}`
+      : recommended
+        ? `Worth it: +${addSteps} step${addSteps === 1 ? '' : 's'} against the ${nSteps} ahead. ${h.why}`
+        : `+${addSteps} step${addSteps === 1 ? '' : 's'} is a lot for this plan — your call. ${h.why}`;
+    out.push({ helper: h, status: 'suggest', addSteps, recommended, note });
+  }
+
+  const rank = (a: HelperAdvice): number =>
+    a.status === 'suggest' && a.recommended ? 0
+      : a.status === 'in-plan' ? 1
+        : a.status === 'suggest' ? 2 : 3;
+  return out.sort((a, b) =>
+    rank(a) - rank(b)
+    || (a.phase ?? 0) - (b.phase ?? 0)
+    || b.helper.score - a.helper.score);
+}

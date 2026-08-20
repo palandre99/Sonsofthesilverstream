@@ -1,0 +1,305 @@
+/** Settings domain: Profiles (live) and About (live).
+ * Worlds/Look are coming-soon tabs defined in nav/domains.ts. */
+import React, { useState , useEffect } from 'react';
+import { Modal, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
+import * as Haptics from 'expo-haptics';
+import { T } from '../theme';
+import { Btn, Card, PageHead, s } from '../ui/kit';
+import { Icon } from '../ui/Icon';
+import { onNavIntent, takeIntentPayload } from '../nav/intent';
+import * as Updates from 'expo-updates';
+import { Image } from 'react-native';
+
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const LOGO = require('../../assets/splash-icon.png');
+import {
+  createProfile, deleteProfile, getActiveProfile, getProfiles, profileStats,
+  renameProfile, setProfileLevel, switchProfile, useAppVersion,
+  type ProfileStats,
+} from '../store';
+
+/** What a world actually holds, in words — used by the row under its name
+ * and by the delete confirm, so the two can never disagree.
+ *
+ * Both said "N pals" with no singular ("1 pals"), and the delete confirm
+ * promised "and its plan" whether or not one existed — so deleting an empty,
+ * unplanned world read "Really delete \"X\" — its 0 pals and its plan?".
+ * A confirm has one job: say what disappears. */
+export function worldHolds(owned: number, planTotal: number): string {
+  const bits: string[] = [];
+  if (owned === 1) bits.push('1 pal');
+  else if (owned > 1) bits.push(`${owned} pals`);
+  if (planTotal > 0) bits.push('its plan');
+  if (!bits.length) return '';
+  return bits.length === 1 ? bits[0] : `${bits[0]} and ${bits[1]}`;
+}
+
+export function ProfilesScreen() {
+  const version = useAppVersion();
+  const [stats, setStats] = useState<Record<string, ProfileStats>>({});
+  useEffect(() => {
+    let dead = false;
+    void Promise.all(
+      getProfiles().map(async (p) => [p.id, await profileStats(p.id)] as const),
+    ).then((rows) => {
+      if (!dead) setStats(Object.fromEntries(rows));
+    });
+    return () => {
+      dead = true;
+    };
+  }, [version]);
+  const [naming, setNaming] = useState(false);
+  const [newName, setNewName] = useState('');
+  const [managing, setManaging] = useState<{ id: string; name: string } | null>(null);
+  const [editName, setEditName] = useState('');
+  const [editLevel, setEditLevel] = useState('');
+  const [armDelete, setArmDelete] = useState(false);
+  const active = getActiveProfile();
+
+  // IL97: the Items filter sheet used to say "set your level on the
+  // Profiles screen" and leave the player to find it. It now sends them
+  // here — and the level lives inside a profile's own editor, so landing
+  // on the list would still be one tap short. Open the active profile's
+  // editor on arrival.
+  useEffect(() => {
+    const apply = () => {
+      const p = takeIntentPayload('profiles');
+      if (!p?.editLevel) return;
+      const prof = getActiveProfile();
+      setManaging({ id: prof.id, name: prof.name });
+      setEditName(prof.name);
+      setEditLevel(prof.playerLevel != null ? String(prof.playerLevel) : '');
+    };
+    apply();
+    return onNavIntent(apply);
+  }, []);
+
+  return (
+    <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
+      <PageHead title="Save profiles"
+        sub="One profile per world or save — its own collection, plan and progress. World-save import lands in the Worlds tab." />
+      <Card style={{ gap: 8 }}>
+        {getProfiles().map((p) => {
+          const on = p.id === active.id;
+          return (
+            <View
+              key={p.id}
+              style={{
+                flexDirection: 'row', alignItems: 'center', gap: 8,
+                backgroundColor: on ? T.accentSoft : T.surface2,
+                borderWidth: 1, borderColor: on ? T.accent : T.line,
+                borderRadius: 10, paddingVertical: 6, paddingHorizontal: 12,
+              }}
+            >
+              <Pressable
+                onPress={() => {
+                  void Haptics.selectionAsync();
+                  void switchProfile(p.id);
+                }}
+                style={{ flexDirection: 'row', alignItems: 'center', gap: 8, flex: 1, paddingVertical: 5 }}
+              >
+                <View style={{
+                  width: 8, height: 8, borderRadius: 4,
+                  backgroundColor: on ? T.ok : T.line2,
+                }} />
+                <View style={{ flex: 1 }}>
+                  <Text style={{
+                    color: on ? T.accentInk : T.muted, fontWeight: '700', fontSize: 14,
+                  }}>{p.name}</Text>
+                  {stats[p.id] && (
+                    <Text style={{ color: T.faint, fontSize: 11 }}>
+                      {p.playerLevel != null ? `Lv ${p.playerLevel} · ` : ''}
+                      {stats[p.id].owned === 1 ? '1 pal'
+                        : stats[p.id].owned ? `${stats[p.id].owned} pals`
+                        : 'empty'}
+                      {stats[p.id].planTotal > 0
+                        ? ` · plan ${stats[p.id].planDone}/${stats[p.id].planTotal}`
+                        : ''}
+                    </Text>
+                  )}
+                </View>
+              </Pressable>
+              <Pressable
+                onPress={() => {
+                  void Haptics.selectionAsync();
+                  setEditName(p.name);
+                  setEditLevel(p.playerLevel != null ? String(p.playerLevel) : '');
+                  setArmDelete(false);
+                  setManaging({ id: p.id, name: p.name });
+                }}
+                /* the glyph draws 25 px; 8 of slop left it at 41, just under
+                   the 44 pt minimum — and this is the only way into renaming a
+                   world, setting its level, or deleting it */
+                hitSlop={10}
+                accessibilityRole="button"
+                accessibilityLabel={`Manage ${p.name}`}
+                style={({ pressed }) => [{
+                  paddingHorizontal: 8, paddingVertical: 4, borderRadius: 8,
+                  backgroundColor: pressed ? T.surface : 'transparent',
+                }]}
+              >
+                <Icon name="pencil-outline" size={17} color={T.muted} />
+              </Pressable>
+            </View>
+          );
+        })}
+        <Btn small label="+ New profile" onPress={() => setNaming(true)} />
+      </Card>
+
+      {managing && (
+        <Modal visible transparent animationType="fade"
+          onRequestClose={() => setManaging(null)}>
+          <View style={{
+            flex: 1, backgroundColor: 'rgba(0,0,0,0.55)',
+            alignItems: 'center', justifyContent: 'center', padding: 28,
+          }}>
+            <Card style={{ width: '100%' }}>
+              <Text style={s.h2}>Edit profile</Text>
+              <TextInput
+                value={editName}
+                onChangeText={setEditName}
+                // fourth cluster of raw TextInputs with no name — a
+                // placeholder stops being read the moment you type
+                accessibilityLabel="Profile name"
+                placeholder="Profile name"
+                placeholderTextColor={T.faint}
+                autoFocus
+                style={[s.search, { marginTop: 12 }]}
+              />
+              <Text style={[s.body, { marginTop: 12, fontSize: 12.5 }]}>
+                Your level in this world — suggestions only recommend catches
+                you can actually make. Leave empty and the app reads it from
+                your pals instead.
+              </Text>
+              <TextInput
+                value={editLevel}
+                onChangeText={(t) => setEditLevel(t.replace(/[^0-9]/g, ''))}
+                accessibilityLabel="Your player level in this world, 1 to 100"
+                placeholder="Player level (1–100)"
+                placeholderTextColor={T.faint}
+                keyboardType="number-pad"
+                maxLength={3}
+                style={[s.search, { marginTop: 6 }]}
+              />
+              <View style={[s.wrap, { marginTop: 12 }]}>
+                <Btn primary label="Save"
+                  onPress={() => {
+                    void renameProfile(managing.id, editName);
+                    // "0" is truthy as a string, and the store clamps to a
+                    // minimum of 1 — so typing 0 silently saved level 1.
+                    // Treat it as "I don't want a level set", which is what
+                    // the empty field already means.
+                    void setProfileLevel(managing.id,
+                      Number(editLevel) > 0 ? Number(editLevel) : undefined);
+                    setManaging(null);
+                  }} />
+                <Btn label="Cancel" onPress={() => setManaging(null)} />
+              </View>
+              {getProfiles().length > 1 && (
+                <View style={{ marginTop: 14, borderTopWidth: 1, borderTopColor: T.line, paddingTop: 12 }}>
+                  {/* "and its data" is a phrase, not an answer — the player
+                      cannot tell whether it means this world's pals or all of
+                      them. The confirm now counts exactly what disappears,
+                      from the same `profileStats` the row above already
+                      shows, and says the other worlds are untouched. */}
+                  <Btn danger
+                    label={armDelete
+                      ? (() => {
+                        const st = stats[managing.id];
+                        const holds = st ? worldHolds(st.owned, st.planTotal) : '';
+                        return holds
+                          ? `Really delete "${managing.name}" — ${holds}?`
+                          : `Really delete "${managing.name}"?`;
+                      })()
+                      : 'Delete this world…'}
+                    onPress={() => {
+                      if (!armDelete) { setArmDelete(true); return; }
+                      void deleteProfile(managing.id);
+                      setManaging(null);
+                    }} />
+                </View>
+              )}
+            </Card>
+          </View>
+        </Modal>
+      )}
+
+      <Modal visible={naming} transparent animationType="fade"
+        onRequestClose={() => setNaming(false)}>
+        <View style={{
+          flex: 1, backgroundColor: 'rgba(0,0,0,0.55)',
+          alignItems: 'center', justifyContent: 'center', padding: 28,
+        }}>
+          <Card style={{ width: '100%' }}>
+            <Text style={s.h2}>New save profile</Text>
+            <TextInput
+              value={newName}
+              onChangeText={setNewName}
+              accessibilityLabel="Name for the new save profile"
+              placeholder="e.g. Hardcore world"
+              placeholderTextColor={T.faint}
+              autoFocus
+              style={[s.search, { marginTop: 12 }]}
+            />
+            <View style={[s.wrap, { marginTop: 12 }]}>
+              <Btn primary label="Create"
+                onPress={() => {
+                  void createProfile(newName);
+                  setNewName('');
+                  setNaming(false);
+                }} />
+              <Btn label="Cancel" onPress={() => { setNewName(''); setNaming(false); }} />
+            </View>
+          </Card>
+        </View>
+      </Modal>
+    </ScrollView>
+  );
+}
+
+export function AboutScreen() {
+  return (
+    <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
+      <View style={{ alignItems: 'center', marginTop: 30, marginBottom: 18 }}>
+        <Image source={LOGO} style={{ width: 64, height: 64 }} />
+        <Text style={[s.h1, { marginTop: 8 }]}>Paldexia</Text>
+        <Text style={[s.body, { marginTop: 2 }]}>The Palworld companion with receipts</Text>
+      </View>
+      <Card style={{ marginBottom: 10 }}>
+        <Text style={s.h3}>This version</Text>
+        <Text style={[s.body, { marginTop: 4 }]}>
+          {Updates.isEmbeddedLaunch
+            ? 'Running the version that shipped with the install — an update will land shortly after opening.'
+            : `Update ${Updates.updateId?.slice(0, 8) ?? '?'} · ${Updates.createdAt ? new Date(Updates.createdAt).toLocaleString() : ''}`}
+        </Text>
+        <Text style={[s.body, { fontSize: 12, color: T.faint, marginTop: 2 }]}>
+          Channel {Updates.channel || 'dev'} · runtime {Updates.runtimeVersion || '—'}
+        </Text>
+      </Card>
+      <Card>
+        <Text style={s.h3}>Provably correct</Text>
+        <Text style={[s.body, { marginTop: 4 }]}>
+          Every breeding result is verified against all 44,851 outcomes computed
+          from the game files — zero mismatches. Probabilities come from the
+          game's own inheritance weights. Community-measured numbers are always
+          labelled as such.
+        </Text>
+      </Card>
+      <Card style={{ marginTop: 10 }}>
+        <Text style={s.h3}>Private by design</Text>
+        <Text style={[s.body, { marginTop: 4 }]}>
+          No ads, no accounts, no tracking. Your collection and plans live on
+          this device only.
+        </Text>
+      </Card>
+      <Card style={{ marginTop: 10 }}>
+        <Text style={s.h3}>Credits</Text>
+        <Text style={[s.body, { marginTop: 4 }]}>
+          Fan project — not affiliated with Pocketpair. Game data © Pocketpair.
+          Data sources: paldb.cc via palworld-kb, palcalc (game-file oracle),
+          PalDex icons (game dump).
+        </Text>
+      </Card>
+    </ScrollView>
+  );
+}

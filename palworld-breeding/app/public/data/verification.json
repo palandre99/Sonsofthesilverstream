@@ -1,0 +1,343 @@
+{
+ "checked": "2026-08-15",
+ "claims": [
+  {
+   "claim": "Species formula: the child is the species with CombiRank closest to ⌊(rankA+rankB+1)/2⌋",
+   "verdict": "confirmed",
+   "evidence": "Verified at code level in palcalc (open-source solver generated from the game files) and replayed here against all 44,851 precomputed 1.0 results with zero mismatches.",
+   "sources": [
+    "github.com/tylercamp/palcalc",
+    "paldb.gg/guides/breeding",
+    "palworld.wiki.gg/wiki/Breeding"
+   ]
+  },
+  {
+   "claim": "Tie-break: on an exact tie the higher CombiRank wins (a 1.0 change)",
+   "verdict": "confirmed",
+   "evidence": "All 14,021 tie pairs in the 1.0 oracle resolve to the higher rank (0 exceptions); the game field CombiDuplicatePriority = CombiRank×100. Old wiki text ('lowest index') is stale Early Access wording. Also matches the player test Turtacle+Aegidron→Nitemary.",
+   "sources": [
+    "github.com/tylercamp/palcalc",
+    "palbreed.org/breeding-guide",
+    "paldb.gg/guides/breeding"
+   ]
+  },
+  {
+   "claim": "Unique-recipe children are excluded from the generic pool (183 species remain)",
+   "verdict": "confirmed",
+   "evidence": "palcalc filters every DT_PalCombiUnique child out of the pool; with this model all 44,851 results match, without it 14,699 pairs mispredict. palworld.gg's ignoreCombi-39 model is wrong for 1.0.",
+   "sources": [
+    "github.com/tylercamp/palcalc",
+    "game8.co/games/Palworld/archives/441856"
+   ]
+  },
+  {
+   "claim": "Katress+Wixen is the game's only gender-dependent pair",
+   "verdict": "confirmed",
+   "evidence": "Exactly 2 gender-specific rows out of 44,851: female Katress + male Wixen → Katress Ignis; female Wixen + male Katress → Wixen Noct.",
+   "sources": [
+    "github.com/tylercamp/palcalc",
+    "game8.co/games/Palworld/archives/459275"
+   ]
+  },
+  {
+   "claim": "Same species + same species always yields that species",
+   "verdict": "confirmed",
+   "evidence": "Short-circuits in the game code before any other logic; 299/299 self-pairs in the oracle confirm it.",
+   "sources": [
+    "github.com/tylercamp/palcalc",
+    "palsphere.app/breeding"
+   ]
+  },
+  {
+   "claim": "\"164 unique combinations\" (the paldb view)",
+   "verdict": "plausible",
+   "evidence": "The game's raw table has 258 rows in total (many redundant X+X=X rows and event content). The 136 cross rows match paldb exactly — those are what the plan uses (134 regular + 2 gender-dependent). \"164\" is paldb's display choice, not wrong data.",
+   "sources": [
+    "github.com/Awy64/palworld-atlas-data",
+    "paldb.cc/en/Breeding_Farm"
+   ]
+  },
+  {
+   "claim": "The EA recipes for Lyleen, Grizzbolt, Faleris, Orserk and Shadowbeak were removed in 1.0",
+   "verdict": "confirmed",
+   "evidence": "Verified against the game's raw table using internal IDs: none of the five old pairs exist; all five species only have a self-pair row. (Mossanda+Grizzbolt=Mossanda Lux was kept, though.)",
+   "sources": [
+    "github.com/Awy64/palworld-atlas-data",
+    "allthings.how"
+   ]
+  },
+  {
+   "claim": "Condenser 1.0: 48 copies to 4★, split 4/8/12/24",
+   "verdict": "confirmed",
+   "evidence": "Patch-note recaps and several independent guides confirm 116→48; the per-star split matches the in-game player measurement. Note: Starfruit (Dog Coins) can substitute for copies.",
+   "sources": [
+    "nodecraft.com",
+    "palworld.wiki.gg",
+    "player measurement 2026-07-20"
+   ]
+  },
+  {
+   "claim": "Stars: +1 work suitability per star, 4★ raises all, partner skill = stars+1",
+   "verdict": "confirmed",
+   "evidence": "Confirmed in patch notes and wiki — but the 'best job first' order at intermediate stars is NOT confirmed anywhere; the game only says 'one of its suitabilities'.",
+   "sources": [
+    "minestrator.com",
+    "palworld.wiki.gg",
+    "game8.co"
+   ]
+  },
+  {
+   "claim": "Cake tiers: Cake 17 / Mushroom 30 / Vegetable 47 / Extravagant 60 / Special 74",
+   "verdict": "confirmed",
+   "evidence": "Tech levels, stations and effects confirmed by several sources (one outlier on the Special tier; the majority says 74).",
+   "sources": [
+    "keengamer.com",
+    "nodecraft.com",
+    "game8.co",
+    "fextralife"
+   ]
+  },
+  {
+   "claim": "Mutation chance: ~1% base, ~3% with Extravagant Vegetable Cake",
+   "verdict": "confirmed",
+   "evidence": "Confirmed — but the Vegetable Cake does NOT give 2% per egg: it gives 2 eggs at 1% each (≈2% per cycle). The earlier session's figure was imprecise on this point.",
+   "sources": [
+    "palmods.gg",
+    "palsphere.app",
+    "game8.co"
+   ]
+  },
+  {
+   "claim": "Mutant eggs: hatch as Alpha with 2★, IVs ~91–100, at least 2 rainbow passives",
+   "verdict": "confirmed",
+   "evidence": "2★ and Alpha status confirmed; '4 passives, at least 2 rainbow' per the wiki (not all are mutation-exclusive); the 91–100 IV range is guide consensus, the wiki only says 'very high'.",
+   "sources": [
+    "palworld.wiki.gg",
+    "game8.co"
+   ]
+  },
+  {
+   "claim": "The 5 rainbow passives: Immortality, Idiosyncratic, Babysitter, Heavily Armored, Skymarcher",
+   "verdict": "confirmed",
+   "evidence": "The exact same five on the wiki, game8 and paldb; 'Skirmisher' does not exist. They can be inherited onward through normal breeding once a parent has them.",
+   "sources": [
+    "palworld.wiki.gg",
+    "game8.co",
+    "paldb.cc/en/Mutation"
+   ]
+  },
+  {
+   "claim": "Work suitability goes to 10 with exponential scaling (Lv5=400 … Lv10=5400)",
+   "verdict": "confirmed",
+   "evidence": "The Handiwork value table (50/80/140/240/400/680/1100/1900/3200/5400) confirmed by several independent sources.",
+   "sources": [
+    "nodecraft.com",
+    "palworld.wiki.gg",
+    "thepalprofessor.com"
+   ]
+  },
+  {
+   "claim": "Pal Surgery Table (tech 38): implant passives for gold, implants not consumed",
+   "verdict": "confirmed",
+   "evidence": "Tech 38 confirmed; 10–50k gold per operation depending on rarity; standard implants are reusable (1.0 also has disposable implants from World Tree relics).",
+   "sources": [
+    "palworld.wiki.gg",
+    "datmodz"
+   ]
+  },
+  {
+   "claim": "The Pal Reverser swaps gender",
+   "verdict": "confirmed",
+   "evidence": "An item (not a station) used at the operating table; consumed on use; bought with Bounty Tokens / Battle Tickets and more.",
+   "sources": [
+    "gamespot.com",
+    "palworld.wiki.gg",
+    "paldb.cc"
+   ]
+  },
+  {
+   "claim": "IV inheritance: 30% father / 30% mother / 40% random per stat",
+   "verdict": "confirmed",
+   "evidence": "Confirmed by several sources incl. the arithmetic 0.6³ ≈ 21.6% for triple-100 with two perfect parents.",
+   "sources": [
+    "palworld.wiki.gg",
+    "game8.co",
+    "steam community"
+   ]
+  },
+  {
+   "claim": "Passive inheritance ~24% male / ~20% female per slot",
+   "verdict": "plausible",
+   "evidence": "All sources cite the same small EA-era dataset (~100 eggs); datamining suggests a different underlying mechanism (pooled draw). The direction 'male inherits more often' holds.",
+   "sources": [
+    "game8.co",
+    "various (same origin)"
+   ]
+  },
+  {
+   "claim": "\"10 species have no wild spawns\" (from the earlier session)",
+   "verdict": "contradicted",
+   "evidence": "DEBUNKED: all ten (Solenne, Renjishi, Univolt Cryst, Mycora, Venusa etc.) can be caught in the World Tree region (lvl 75+) as regular spawns or field bosses. 1.0 removed the breed-only category. At lvl 44, breeding is still the realistic route.",
+   "sources": [
+    "game8.co",
+    "palmods.gg",
+    "mobalytics.gg"
+   ]
+  },
+  {
+   "claim": "Astralym cannot be obtained in 1.0",
+   "verdict": "confirmed",
+   "evidence": "Story boss; cannot be caught, does not exist as an alpha, and is not a reward.",
+   "sources": [
+    "game8.co",
+    "palmods.gg"
+   ]
+  },
+  {
+   "claim": "All 12 aura pals (+1 work suitability to the base) check out",
+   "verdict": "confirmed",
+   "evidence": "All twelve confirmed per species (Ribbuny, Tetroise, Wumpo, Amione, Cinnamoth, Clovee, Eikthyrdeer Terra, Katress Ignis, Mycora, Petallia, Puffolt, Smokie Cryst). Never buffs the carrier, does not stack, works from the base. Oil Extraction has no aura.",
+   "sources": [
+    "palmods.gg",
+    "op.gg",
+    "game8.co",
+    "palworld.wiki.gg"
+   ]
+  },
+  {
+   "claim": "Sekhmet boosts Anubis; Braloha speeds up eggs; Dynamoff cuts incubation time",
+   "verdict": "confirmed",
+   "evidence": "Sekhmet's real skill is 'Desert Empress': Anubis work speed +20–40% (+ own workbench bonus). Braloha 'Balmy Weather': egg production +20–50%. Dynamoff 'Electro-Massage Incubation': incubation −20–40%.",
+   "sources": [
+    "game8.co",
+    "op.gg",
+    "palworld.wiki.gg"
+   ]
+  },
+  {
+   "claim": "Level cap 80; Breeding Farm tech 19; 299 species total",
+   "verdict": "confirmed",
+   "evidence": "Level cap 65→80 confirmed. Breeding Farm tech 19 (2 tech points). Species count: 287 Paldeck entries + the Terraria crossover (Sealed Realm of Terraria dungeon, all rank 3100) ≈ the dataset's 299; Astralym is unobtainable.",
+   "sources": [
+    "keengamer.com",
+    "games.gg",
+    "game8.co",
+    "xgamingserver.com"
+   ]
+  },
+  {
+   "claim": "Passive inheritance count is weighted 40/30/20/10 for drawing 1/2/3/4 passives from the parents' combined de-duplicated pool",
+   "verdict": "confirmed",
+   "evidence": "GameSettings.PassiveInheritNum = [4,3,2,1], read from the game files by palcalc's DB generator (PalCalc.GenDB/BuildDBProgram.cs, PalCalc.Model/db.json). Matches palworld.wiki.gg/Breeding's published mechanic."
+  },
+  {
+   "claim": "Random extra passives are an independent roll weighted 40/30/20/10 for adding 0/1/2/3 new passives, capped at 4 total slots",
+   "verdict": "confirmed",
+   "evidence": "GameSettings.PassiveRandomAddNum = [4,3,2,1] over 0..3 (same source). The engine's closed-form model built on these weights reproduces the community's measured 40/24/12/10 clean-inheritance table exactly (app/tests/odds.test.ts) and matches a 200k-egg Monte Carlo simulation."
+  },
+  {
+   "claim": "IV/talent inheritance takes 1/2/3 stat categories from the parents with weights 3/2/1 (50%/33.3%/16.7%); at least one is always inherited; each inherited category picks mother or father 50/50",
+   "verdict": "confirmed",
+   "evidence": "GameSettings.TalentInheritNum = [3,2,1] (same game-file source); community's '30/30/40 per stat' model (Austin John Gaming testing, palworld.wiki.gg) is the same distribution seen per-category."
+  },
+  {
+   "claim": "Vegetable Cake gives 2 eggs per cycle at the base ~1% mutation rate each (a throughput gain, not a 2% rate); Extravagant Vegetable Cake raises mutation to ~3% per egg",
+   "verdict": "plausible",
+   "evidence": "paldb.cc/en/Mutation (2026-07-18) and in-game item descriptions. The game's DA_BreedingItemEffectData table has not been published field-by-field, so cake numbers are community-measured, not datamined."
+  },
+  {
+   "claim": "Special Cake overrides the number of passives drawn from the parents (reported up to 6 carried)",
+   "verdict": "plausible",
+   "evidence": "In-game item description ('more likely to inherit multiple passive skills') + PassiveInheritCountOverride field name visible in palcalc's notes on DA_BreedingItemEffectData; exact override value not published."
+  },
+  {
+   "claim": "Five mutation-exclusive passives exist (Immortality, Idiosyncratic, Babysitter, Heavily Armored, Skymarcher); once obtained they are inheritable like normal passives",
+   "verdict": "confirmed",
+   "evidence": "paldb.cc/en/Mutation lists all five with inheritability; cross-checked against beliarance/palworld-kb passives dataset (mutation_exclusive flags)."
+  },
+  {
+   "claim": "Ribbuny Botan partner_effect completed: kb dump truncates after 'Weapon Assembly Line, or'; full sentence ends 'or other related facilities.'",
+   "verdict": "confirmed",
+   "evidence": "kb extraction truncated mid-sentence; full text fetched from paldb.cc/en/Ribbuny_Botan 2026-08-15 and patched into both dataset copies.",
+   "sources": [
+    "paldb.cc/en/Ribbuny_Botan"
+   ]
+  },
+  {
+   "claim": "Helper-pal partner skills (planner recommendations) are game text: Chikipi egg / Mozzarina milk / Beegarde honey / Caprity berries ranch drops; Braloha breeding-farm speed; Dynamoff incubation cut; Grintale extra egg on pickup; Broncherry + Broncherry Aqua alpha-egg chance; Ribbuny base handiwork aura",
+   "verdict": "confirmed",
+   "evidence": "All ten effects quoted near-verbatim from partner_effect in pals_1_0.json (beliarance/palworld-kb dump of the game files, 2026-07-20 extraction, revalidated against patch 1.0.3 notes). Registry: engine/helpers.ts, recorded 2026-08-15.",
+   "sources": [
+    "pals_1_0.json partner_effect (game dump via palworld-kb)"
+   ]
+  },
+  {
+   "claim": "Map projection: world coordinates are placed on the game's map texture with the game's own DT_WorldMapUIData bounds (Palpagos X -1099400..349400, Y -724400..724400; World Tree X 347351.5..689148.5, Y -818197..-476400), NOT palcalc's WorldToImageMatrix",
+   "verdict": "confirmed",
+   "evidence": "tools/verify_map_projection.py, reproducible. (1) Both regions are EXACTLY square (1,448,800 and 341,797 uu) matching square textures and mapping to [0,1] exactly, while palcalc's fitted matrix implies a region 8,711 uu out of square. (2) It wins a land-fit test over 58,504 datamined non-Water spawn points (86.86% vs 86.85%). (3) Residual bounded at 6 px of 4096 = 1.5 px at display size. (4) Cross-checked on a SECOND upstream's land-locked layers: 96.1% of fast-travel statues, 98.1% of dungeons and 100% of merchants land within 6 px of land. (5) All 79,714 points from both upstreams project inside [0,1] with zero exceptions.",
+   "sources": [
+    "Awy64/palworld-atlas-data build 24575149 (official dedicated-server package, 2026-08-12)",
+    "Nifrendil/pal-atlas src/lib/coords.ts (DT_WorldMapUIData via palworld-save-pal)",
+    "tools/verify_map_projection.py"
+   ]
+  },
+  {
+   "claim": "Map spawn data: 68,617 wild spawn points across 250 species, each with a level band and whether that band is night-only",
+   "verdict": "confirmed",
+   "evidence": "Extracted from DT_PalSpawnerPlacement + DT_PalWildSpawner via Awy64/palworld-atlas-data build 24575149 (a CI runner that downloads the OFFICIAL anonymous Palworld dedicated-server package, schema-validates and publishes; never commits game assets). Count matches its manifest exactly. 272 of 273 upstream pal names match our 299-pal Paldex verbatim. Guarded by app/tests/map.test.ts (114-test suite).",
+   "sources": [
+    "Awy64/palworld-atlas-data published/v1/builds/24575149/maps/*/spawns.json",
+    "manifest.json counts.wildSpawns = 68617"
+   ]
+  },
+  {
+   "claim": "The in-game map coordinate READOUT is translX 123930, translY 157935, scale 458.52 — so the numbers the app shows match the numbers on the player's screen",
+   "verdict": "confirmed",
+   "evidence": "Three independent projects agree: palcalc's WorldToMapMatrix, pal-atlas's GAME_READOUT, and palworld-atlas-data's own mapX/mapY column. Worked example locked in a unit test: alpha Anubis at world (-167230, 96430) -> readout (-134, -94) under all three.",
+   "sources": [
+    "palcalc GameConstants",
+    "Nifrendil/pal-atlas src/lib/coords.ts",
+    "palworld-atlas-data spawns.json mapX/mapY"
+   ]
+  },
+  {
+   "claim": "NOT datamined truth: 115 Pengullet spawn rows carry LvMin 35 > LvMax 34 in the game's own spawner table; we re-order the pair so the UI reads 'Lv 34-35'",
+   "verdict": "upstream defect, normalised",
+   "evidence": "Found by app/tests/map.test.ts asserting ordered level bands, traced to the source rows in palworld-atlas-data build 24575149. tools/extract_map_data.py swaps the pair and prints the count on every run, so the correction is never silent.",
+   "sources": [
+    "Awy64/palworld-atlas-data palpagos spawns.json (Pengullet rows)"
+   ]
+  },
+  {
+   "claim": "NOT the game's English name: palworld-atlas-data calls ElecSnail_Ground 'Snock Terra' (synthesised from the id suffix). The 1.0 game name is 'Snock Lux'",
+   "verdict": "upstream defect, overridden",
+   "evidence": "paldb.cc, game8 and the Palworld wiki all give 'Snock Lux' for the Electric/Ground World Tree variant, despite the suffix convention implying Terra. tools/extract_map_data.py maps it by palId through PAL_ID_OVERRIDES rather than trusting the upstream display name.",
+   "sources": [
+    "paldb.cc/en/Snock_Lux",
+    "game8.co Snock Lux",
+    "palworld.fandom.com"
+   ]
+  },
+  {
+   "claim": "The element strengths chart (9 elements, 9 strong edges, 2x/0.5x, dual-element multipliers multiply, same-element is neutral) as shipped in elements_1_0.json / elementChart.g.ts",
+   "verdict": "wiki-measured",
+   "evidence": "Not datamined: no pinned raw dump publishes the element table (atlas build-24575149 manifest checked, 11 source tables, none elements; paldb.cc /Elements is prose only). Accepted from two independent wikis ONLY because they agree cell-for-cell (palworld.wiki.gg revid 30073, palworld.fandom.com revid 29952, both fetched 2026-08-18), the table is perfectly antisymmetric (every strong edge mirrors a weak edge in both directions), and its vocabulary equals pals_1_0.json exactly. Also counted from our own data at generation time: 0 of 299 pals can take 4x or 0.25x. elements.test.ts pins every cell and the three-copy identity.",
+   "sources": [
+    "palworld.wiki.gg/wiki/Elements revid 30073",
+    "palworld.fandom.com/wiki/Elements revid 29952",
+    "tools/fetch_element_chart.py"
+   ]
+  },
+  {
+   "claim": "Every tower-boss and summoned-raid encounter per difficulty (22 tower rows incl. Hard modes and the three Lv-78 story fights; 11 raid rows incl. Ultra/Master) with level, fight HP, elements, fight multipliers and the boss variant’s own move list, as shipped in tower_raid_1_0.json / towerRaid.g.ts",
+   "verdict": "verified",
+   "evidence": "paldb.cc /en/Tower + /en/Raid encounter tables joined to each boss page’s per-variant raw DT_PalMonsterParameter section (fetched 2026-08-18). A row shipped only when the variant section’s own Code row equals the list entry’s data-pal-id, the IsTowerBoss/IsRaidBoss flag state was recorded, and the element agreed between the list icon tooltip and the raw row enum after mapping; every skill element maps into our nine. 33 of 33 rows accepted, 0 refusals, 10 recorded notes (story fights lacking the tower flag; Zenara/Moon Lord genuinely element-less; Moon Lord has no pal species or skill list). Internal consistency spot-proof: Zoe Normal fight HP 12,900 = Lv-10 HP 1,075 x EnemyMaxHPRate 12 exactly. Species resolved from Tribe via our own icon codenames (e.g. GYM_ElecPanda -> Grizzbolt).",
+   "sources": [
+    "paldb.cc /en/Tower",
+    "paldb.cc /en/Raid",
+    "per-boss paldb.cc pages (variant sections)",
+    "tools/fetch_tower_raid_stats.py"
+   ]
+  }
+ ]
+}

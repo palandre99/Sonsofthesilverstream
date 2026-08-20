@@ -1,0 +1,51 @@
+{
+  "expo": {
+    "name": "Paldexia",
+    "slug": "hatchlab",
+    "scheme": "palforge",
+    "version": "1.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0C1618"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.palandre.hatchlab",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "package": "com.palandre.hatchlab",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0C1618"
+      },
+      "edgeToEdgeEnabled": true
+    },
+    "updates": {
+      "enabled": true,
+      "checkAutomatically": "ON_LOAD",
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/3bb92cd1-1a95-440b-a5bf-1c3f711e71b8"
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "3bb92cd1-1a95-440b-a5bf-1c3f711e71b8"
+      }
+    },
+    "owner": "palandre99",
+    "jsEngine": "hermes",
+    "plugins": [
+      "expo-localization"
+    ]
+  }
+}

@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Get Paldexia</title>
+<style>
+  :root { color-scheme: dark; }
+  body { font-family: -apple-system, "Segoe UI", sans-serif; background: #0c1618; color: #e6f0f1;
+         margin: 0; padding: 28px 20px 48px; display: flex; flex-direction: column;
+         align-items: center; text-align: center; }
+  h1 { margin: 0 0 4px; font-size: 30px; letter-spacing: -0.5px; }
+  .sub { color: #7f989c; font-size: 14.5px; margin: 0 0 28px; }
+  .card { max-width: 460px; width: 100%; background: #101f22; border: 1px solid #1d3438;
+          border-radius: 20px; padding: 22px 20px; margin-bottom: 18px; box-sizing: border-box; }
+  .card h2 { margin: 0 0 2px; font-size: 20px; }
+  .tag { display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: .8px;
+         text-transform: uppercase; padding: 4px 10px; border-radius: 20px; margin-bottom: 10px; }
+  .tag-full { background: #123c40; color: #6fe0e8; }
+  .tag-dev  { background: #3d2a10; color: #ffb457; }
+  .tag-web  { background: #1c2b33; color: #93b8cc; }
+  p { color: #9db4b8; font-size: 14.5px; line-height: 1.55; margin: 8px 0 0; }
+  a.btn { display: block; text-decoration: none; font-weight: 800; font-size: 18px;
+          padding: 16px 20px; border-radius: 14px; margin-top: 16px; }
+  a.full { background: #3fc1c9; color: #06181a; }
+  a.dev  { background: #ff9f1c; color: #1a1204; }
+  a.connect { background: #2a4a4f; color: #cfeef1; border: 1px solid #3c666c; }
+  a.web { background: transparent; color: #9cd4e0; border: 1px solid #35555c; }
+  ol { text-align: left; color: #9db4b8; font-size: 14.5px; line-height: 1.6; padding-left: 22px; margin: 12px 0 0; }
+  code { background: #081214; padding: 4px 8px; border-radius: 6px; font-size: 12px;
+         color: #8fd8de; word-break: break-all; }
+  .warn { max-width: 460px; font-size: 13px; color: #ffcf9a; background: #2a1c0c;
+          border: 1px solid #4a3316; border-radius: 14px; padding: 14px 16px; line-height: 1.5; }
+  .foot { color: #5d7478; font-size: 12px; margin-top: 22px; max-width: 460px; line-height: 1.5; }
+  .small { font-size: 12.5px; color: #7f989c; margin-top: 14px; }
+  .small a { color: #8fd8de; }
+</style>
+</head>
+<body>
+  <h1>Get Paldexia</h1>
+  <p class="sub">Open this page in <b>Safari</b> on your iPhone.</p>
+
+  <div class="card">
+    <span class="tag tag-full">Full version</span>
+    <h2>Paldexia</h2>
+    <p>The complete app at full speed. Works on its own — no PC needed.
+       Gets the newest version automatically each time you reopen it.
+       <b>This is the one to use normally.</b></p>
+    <a class="btn full" href="itms-services://?action=download-manifest&amp;url=https%3A%2F%2Fpalandre99.github.io%2FSonsofthesilverstream%2Fpalforge%2Finstall%2Fmanifest.plist">
+      Install full version
+    </a>
+  </div>
+
+  <div class="card">
+    <span class="tag tag-dev">Live version</span>
+    <h2>Paldexia DEV</h2>
+    <p>For working sessions. Changes appear while you use the app, and you can
+       shake the phone to refresh. Needs the PC running.</p>
+    <ol>
+      <li>On the PC, double-click <b>START-APP.cmd</b> and leave it open.</li>
+      <li>Install below.</li>
+      <li>Tap <b>Connect to PC</b>.</li>
+    </ol>
+    <a class="btn dev" href="itms-services://?action=download-manifest&amp;url=https%3A%2F%2Fpalandre99.github.io%2FSonsofthesilverstream%2Fpalforge%2Finstall-dev%2Fmanifest.plist">
+      Install live version
+    </a>
+    <!-- Bare scheme, NOT "exp+palforge-dev": the build registers palforge-dev
+         and exp+hatchlab (exp+<slug>), so the exp+<scheme> form opens nothing
+         and iOS says "could not open the app". Verified against the .ipa's
+         CFBundleURLTypes on 2026-08-15. -->
+    <a class="btn connect" href="palforge-dev://expo-development-client/?url=https%3A%2F%2Fopqgrdy-palandre99-8081.exp.direct">
+      Connect to PC
+    </a>
+    <p class="small">Button does nothing?
+      <a href="exp+hatchlab://expo-development-client/?url=https%3A%2F%2Fopqgrdy-palandre99-8081.exp.direct">Try this one instead</a>.</p>
+  </div>
+
+  <div class="card">
+    <span class="tag tag-web">Website</span>
+    <h2>Paldexia on the web</h2>
+    <p>The same app in a browser — PC, iPad, anyone you share it with. Nothing
+       to install and no sign-in. It keeps working offline after the first
+       visit, and on iPhone you can add it to the home screen from Safari's
+       share menu.</p>
+    <a class="btn web" href="../">Open the website</a>
+  </div>
+
+  <p class="foot">Both apps can sit on the home screen at the same time — the live
+     one has an orange <b>DEV</b> badge on its icon.<br><br>
+     If a button ever does nothing, the address is:<br>
+     <code>https://opqgrdy-palandre99-8081.exp.direct</code><br><br>
+     Full version build 9b168719 · live version build 016ba0dc · v1.1.0 · updated 2026-08-20</p>
+</body>
+</html>

@@ -1,0 +1,1561 @@
+/** Route Planner — shortest shared breeding tree from your box, on-device. */
+import React, { useEffect, useMemo, useState } from 'react';
+import {
+  ActivityIndicator, Modal, Pressable, ScrollView, Share, Text, View,
+} from 'react-native';
+import * as Haptics from 'expo-haptics';
+import {
+  AnimatedCheck, HatchBurst, HeroPop, type Rarity, type TickState,
+} from '../ui/celebrate';
+import { PalDetail } from '../ui/PalDetail';
+import { cakeNeeds } from '../engine/boosters';
+import { ADVICE_VERSION, HELPER_NAMES, helperAdvice } from '../engine/helpers';
+import { T } from '../theme';
+import {
+  BackToCardChip, Badge, Btn, Card, PageHead, PalIcon, WorkChips, s,
+} from '../ui/kit';
+import { Icon } from '../ui/Icon';
+import { navigateTo, onNavIntent, takeIntentPayload } from '../nav/intent';
+import {
+  adviseUnlocks, catchWhere, unlockLine, type UnlockAdvice, type WildFact,
+} from '../logic/unlock';
+import { sameTargets } from '../logic/goals';
+import { PALCALC_FACTS } from '../data/palcalcFacts.g';
+import { wildLevelRange } from '../data/rarity';
+import { PalPicker } from '../ui/PalPicker';
+import { SuggestedGoals } from '../ui/SuggestedGoals';
+import {
+  clearPlan, completeStep, getBox, getChecks, getPlan, hasGender, ownedAny,
+  addPlanTarget, breeding, pals, removePlanTarget, resetPlanProgress, savePlan, selfOnly,
+  uncheckStep, useAppVersion,
+  addDraftTargets, clearDraftTargets, getDraftTargets, removeDraftTargets,
+  engine, getPlayerLevel,
+} from '../store';
+import { needsFor, type Need } from '../logic/genderFix';
+import { GenderFixRows } from '../ui/GenderFixRows';
+
+/** Where a catch can be found — the shared builder, fed this tree's pal
+ * table. The sentences themselves live in logic/unlock.ts so the phone and
+ * the website cannot drift into different words. */
+const whereOf = (u: UnlockAdvice) => catchWhere(u, (n) => pals[n]?.regions ?? []);
+
+/** Unlock advice, cached ACROSS REMOUNTS.
+ *
+ * Every tab switch remounts this screen (the Boundary key in App.tsx), so a
+ * useMemo is thrown away each time you leave and come back. Measured on the
+ * QA harness with 20 stuck goals: a **537 ms long task on every single visit
+ * to the Plan tab** — the advisor recomputing its fixpoint from scratch,
+ * blocking the thread while the screen tried to paint.
+ *
+ * Same fix the Odds screen already uses for the same reason: a module-level
+ * slot that outlives the component. Keyed on everything the answer depends
+ * on, so a changed box, level or goal list still recomputes. */
+let unlockCache: { key: string; value: UnlockAdvice[] } | null = null;
+
+/** What the game files say about catching one species. `minWild === null` is
+ * the game's own "never spawns wild" (raid/tower/boss); no row at all means
+ * we hold no data and must say so rather than guess. */
+function wildFact(name: string): WildFact {
+  const f = (PALCALC_FACTS as Record<string, { minWild: number | null }>)[name];
+  return f ? { minWild: f.minWild, known: true } : { minWild: null, known: false };
+}
+
+/** The whole route as text somebody else can read.
+ *
+ * Players screenshot their plan to ask for help with it. A screenshot cannot
+ * be searched, quoted, or checked against a build — this can. The phases and
+ * the order are exactly what the screen shows, and the provenance line travels
+ * with it. */
+export function shareTextForPlan(
+  targets: string[], steps: PlanStep[], gameVersion: string,
+): string {
+  const lines: string[] = [];
+  lines.push(steps.length === 1
+    ? `Breeding route — ${targets.length === 1 ? '1 goal' : `${targets.length} goals`}, 1 step`
+    : `Breeding route — ${targets.length === 1 ? '1 goal' : `${targets.length} goals`}, ${steps.length} steps`);
+  lines.push('');
+  lines.push(`Goals: ${[...targets].sort().join(', ')}`);
+  let wave = 0;
+  let n = 0;
+  for (const st of [...steps].sort((x, y) => x.wave - y.wave)) {
+    if (st.wave !== wave) {
+      wave = st.wave;
+      lines.push('');
+      lines.push(`Phase ${wave}`);
+    }
+    n += 1;
+    lines.push(`${n}. ${st.parents[0]} + ${st.parents[1]} → ${st.child}`
+      + (st.genderNote ? ` (${st.genderNote})` : ''));
+  }
+  lines.push('');
+  lines.push(`Palworld ${gameVersion} · read from the game files · Paldexia`);
+  return lines.join('\n');
+}
+
+/** "planned just now / today 22:40 / yesterday 09:15 / 12 Aug" — a stamp a
+ * player reads at a glance, not a raw ISO date */
+function plannedWhen(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return '';
+  const now = new Date();
+  const mins = Math.floor((now.getTime() - d.getTime()) / 60000);
+  if (mins >= 0 && mins < 2) return 'planned just now';
+  const hm = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+  if (d.toDateString() === now.toDateString()) return `planned today ${hm}`;
+  const yesterday = new Date(now.getTime() - 86400000);
+  if (d.toDateString() === yesterday.toDateString()) return `planned yesterday ${hm}`;
+  return `planned ${d.getDate()} ${d.toLocaleString(undefined, { month: 'short' })}`;
+}
+
+/** none / partial (one gender hatched) / full (both, or a legacy tick). */
+function tickStateOf(c: unknown): TickState {
+  if (!c) return 'none';
+  if (c === true) return 'full';
+  const sc = c as { m: boolean; f: boolean };
+  return sc.m && sc.f ? 'full' : 'partial';
+}
+
+function partialGlyph(c: unknown): string | undefined {
+  if (!c || c === true) return undefined;
+  const sc = c as { m: boolean; f: boolean };
+  return sc.m ? '♂' : sc.f ? '♀' : undefined;
+}
+import { planFor, stepId } from '../engine/planner';
+import { cachedDerivations } from '../logic/recommend';
+import { expectedEggs } from '../logic/economics';
+import { maleProb } from '../data/genderRatio.g';
+import { parseGenderNote } from '../engine/formula';
+import type { PlanStep } from '../engine/types';
+
+// Preset squads live in ui/SuggestedGoals.tsx now — computed from game data,
+// not hand-picked lists. (Tick rendering lives in ui/celebrate.tsx.)
+
+/** "Hatched it! Which genders do you have?" — one tick registers the pal in
+ * the Paldex too, so nothing is entered twice. */
+function HatchSheet({ child, sid, have, onClose }: {
+  child: string; sid: string;
+  /** genders already recorded (partial tick) — undefined for a fresh tick */
+  have?: { m: boolean; f: boolean };
+  onClose: () => void;
+}) {
+  const pick = (m: boolean, f: boolean) => {
+    void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    completeStep(sid, child, { m, f });
+    onClose();
+  };
+  const partial = have && (have.m !== have.f);
+  return (
+    <Modal visible transparent animationType="fade" onRequestClose={onClose}>
+      <View accessibilityViewIsModal style={{
+        flex: 1, backgroundColor: 'rgba(0,0,0,0.55)',
+        alignItems: 'center', justifyContent: 'center', padding: 28,
+      }}>
+        <Card style={{ width: '100%', alignItems: 'center' }}>
+          <PalIcon name={child} size={56} />
+          <Text style={[s.h2, { marginTop: 8 }]}>
+            {partial ? `Complete ${child}?` : `Hatched ${child}!`}
+          </Text>
+          <Text style={[s.body, { marginTop: 4, textAlign: 'center' }]}>
+            {partial
+              ? `You have the ${have!.m ? '♂' : '♀'} — hatch the ${have!.m ? '♀' : '♂'} and the step turns green.`
+              // "no double registration" was database talk on the one screen
+              // a player reaches at their happiest moment
+              : 'Which genders did you get? It goes into your Paldex for you — you do not have to add it yourself.'}
+          </Text>
+          <View style={[s.wrap, { marginTop: 14, justifyContent: 'center' }]}>
+            {partial ? (
+              <>
+                <Btn primary label={`Got the ${have!.m ? '♀' : '♂'} — complete it`}
+                  onPress={() => pick(true, true)} />
+                <Btn danger label="Untick step" onPress={() => {
+                  uncheckStep(sid, child);
+                  onClose();
+                }} />
+              </>
+            ) : (
+              <>
+                <Btn label="♂ only" onPress={() => pick(true, false)} />
+                <Btn label="♀ only" onPress={() => pick(false, true)} />
+                <Btn primary label="♂ + ♀ both" onPress={() => pick(true, true)} />
+              </>
+            )}
+          </View>
+          <View style={{ marginTop: 10 }}>
+            <Btn small label="Cancel" onPress={onClose} />
+          </View>
+        </Card>
+      </View>
+    </Modal>
+  );
+}
+
+export function PlannerScreen() {
+  useAppVersion();
+  const saved = getPlan();
+  const checks = getChecks();
+  // the goal list lives in the store (draftTargets) — screens remount on
+  // every tab switch, and the sheet/picker/chips/advice all edit this list
+  const targets = getDraftTargets();
+  const [busy, setBusy] = useState(false);
+  const [planError, setPlanError] = useState<string | null>(null);
+  /** the raw exception text is kept for bug reports but never shouted — the
+   * CEO must read what happened in his own words first (self-found) */
+  const [errDetail, setErrDetail] = useState(false);
+  const [picking, setPicking] = useState(false);
+  const [suggesting, setSuggesting] = useState(false);
+  const [hatching, setHatching] = useState<{ sid: string; child: string } | null>(null);
+  const [managing, setManaging] = useState<'none' | 'reset' | 'clear' | 'replace' | 'removeall'>('none');
+  // the goal tray folds to one line once the plan matches the goals
+  const [trayOpen, setTrayOpen] = useState(false);
+  const [bursts, setBursts] = useState<Record<string, number>>({});
+  // finished phases fold up; a tap reopens one for review
+  const [openPhases, setOpenPhases] = useState<Set<number>>(new Set());
+  const [viewing, setViewing] = useState<string | null>(null);
+  // "Plan how to get it" on a pal card lands here — keep a one-tap way back
+  // to that exact card so the player never re-scrolls the Paldex for it
+  const [fromCard, setFromCard] = useState<string | null>(null);
+  useEffect(() => {
+    const apply = () => {
+      const p = takeIntentPayload('plan');
+      if (p?.fromCard) setFromCard(p.fromCard);
+      // no target syncing here: the goal list lives in the store now, so a
+      // card's "Plan how to get it" lands in the chips through the same
+      // draft the screen reads — no timing hacks, nothing to overwrite
+    };
+    apply();
+    return onNavIntent((i) => {
+      if (i.tab === 'plan') apply();
+    });
+  }, []);
+
+  const box = getBox();
+  const ownedNames = Object.keys(box);
+  const plan = saved;
+
+  /** Does the route on screen still cover the goals you are holding? One
+   * definition, used both to warn before replacing a plan and to say plainly
+   * when the plan has gone out of date. */
+  const planIsCurrent = !!plan && sameTargets(targets, plan.targets);
+
+  /** Planning replaces the current plan — when one is mid-flight with real
+   * progress and DIFFERENT goals, ask first (self-found queue item). */
+  const confirmRun = () => {
+    if (plan && plan.steps.length > 0 && done < plan.steps.length && !planIsCurrent) {
+      setManaging('replace');
+      return;
+    }
+    run();
+  };
+
+  const run = () => {
+    setManaging('none');
+    setBusy(true);
+    setPlanError(null);
+    // yield one frame so the spinner paints, then compute on the JS thread
+    setTimeout(() => {
+      try {
+        // one shared derivations pass: plan AND its recommendations arrive
+        // together — and it's the same cached pass the suggestions sheet
+        // already paid for, so planning after browsing is near-instant
+        const derivs = cachedDerivations(engine, ownedNames);
+        const { steps, unreachable } = planFor(engine, ownedNames, targets, derivs);
+        const advice = helperAdvice(
+          engine, ownedNames, ownedAny,
+          { targets, steps, roster: ownedNames }, derivs);
+        savePlan({
+          targets, steps, unreachable, advice, adviceVersion: ADVICE_VERSION,
+          planned: new Date().toISOString(), roster: ownedNames,
+        });
+        // a fresh plan always folds the goal tray away — the plan is the
+        // thing to look at now. Without this, having manually expanded the
+        // tray before re-planning left it open, contradicting its own copy
+        // ("folds to one line once your plan is running").
+        setTrayOpen(false);
+        void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      } catch (e) {
+        setPlanError(String(e instanceof Error ? e.message : e));
+      } finally {
+        setBusy(false);
+      }
+    }, 60);
+  };
+
+  // gender-aware ready-states: bred intermediates count as either gender
+  const stepMeta = useMemo(() => {
+    const meta = new Map<string, {
+      ready: boolean; missing: string[]; hint: string | null;
+      /** the exact ♂/♀ options the hint names, for the how-to-fix rows */
+      needs: { g: 'm' | 'f'; s: string }[];
+    }>();
+    if (!plan) return meta;
+    // legacy boolean ticks predate gender recording — treat as both genders;
+    // modern ticks wrote real genders into the box, so the box is the truth
+    const legacyBred = new Set(
+      plan.steps.filter((st) => checks[stepId(st.parents[0], st.parents[1], st.child)] === true)
+        .map((st) => st.child),
+    );
+    const bred = legacyBred;
+    const avail = (n: string) => ({
+      m: legacyBred.has(n) || hasGender(n, 'm'),
+      f: legacyBred.has(n) || hasGender(n, 'f'),
+    });
+    for (const st of plan.steps) {
+      const [a, b] = st.parents;
+      const oa = avail(a);
+      const ob = avail(b);
+      const hasSpecies = (n: string, o: { m: boolean; f: boolean }) =>
+        bred.has(n) || ownedAny(n) || o.m || o.f;
+      const missing: string[] = [];
+      if (!hasSpecies(a, oa)) missing.push(a);
+      if (!hasSpecies(b, ob)) missing.push(b);
+      let ready = false;
+      let hint: string | null = null;
+      const needs: { g: 'm' | 'f'; s: string }[] = [];
+      if (!missing.length) {
+        if (st.genderNote) {
+          const parsed = parseGenderNote(st.genderNote);
+          ready = parsed?.mother === a ? oa.f && ob.m : oa.m && ob.f;
+        } else if (a === b) {
+          ready = oa.m && oa.f;
+        } else {
+          ready = (oa.m && ob.f) || (oa.f && ob.m);
+        }
+        if (!ready) {
+          // name the exact ♂/♀ that unlocks this step — never jargon. The
+          // rule lives in logic/genderFix.ts so this screen and the
+          // Calculator can never disagree about what is missing.
+          const found = needsFor(
+            a, b, oa, ob,
+            st.genderNote ? parseGenderNote(st.genderNote) : null);
+          const glyphOf = (n: Need) => `${n.g === 'm' ? '♂' : '♀'} ${n.s}`;
+          hint = found.combos.length
+            ? `need a ${found.combos.map((c) => c.map(glyphOf).join(' + ')).join(' — or a ')}`
+            : null;
+          needs.push(...found.flat);
+        }
+      }
+      meta.set(stepId(a, b, st.child), { ready, missing, hint, needs });
+    }
+    return meta;
+  }, [plan, checks, box]);
+
+  // Booster-aware ordering v2 (SMART PLANNING queue): not just the helper's
+  // final step — its WHOLE subtree (every step feeding it) floats to the
+  // top of its phase and says why. Cross-phase moves are impossible (a
+  // step's phase is set by when its parents exist), so within-phase order
+  // is the honest, real version of "do the accelerator branch first".
+  const speedsRest = useMemo(() => {
+    const out = new Set<string>();
+    if (!plan) return out;
+    const stepByChild = new Map(plan.steps.map((st) => [st.child, st] as const));
+    const markUp = (child: string): void => {
+      const st = stepByChild.get(child);
+      if (!st) return;
+      const sid = stepId(st.parents[0], st.parents[1], st.child);
+      if (out.has(sid)) return;
+      out.add(sid);
+      markUp(st.parents[0]);
+      markUp(st.parents[1]);
+    };
+    for (const st of plan.steps) if (HELPER_NAMES.has(st.child)) markUp(st.child);
+    return out;
+  }, [plan]);
+
+  const waves = useMemo(() => {
+    if (!plan) return [];
+    const byWave = new Map<number, PlanStep[]>();
+    for (const st of plan.steps) {
+      const list = byWave.get(st.wave) ?? [];
+      list.push(st);
+      byWave.set(st.wave, list);
+    }
+    // helper subtrees first inside each phase — they pay off for every
+    // later step; the helper's own step leads its branch
+    const inLineage = (st: PlanStep): number =>
+      Number(speedsRest.has(stepId(st.parents[0], st.parents[1], st.child)));
+    for (const [, list] of byWave) {
+      list.sort((a, b) =>
+        inLineage(b) - inLineage(a)
+        || Number(HELPER_NAMES.has(b.child)) - Number(HELPER_NAMES.has(a.child)));
+    }
+    return [...byWave.entries()].sort((x, y) => x[0] - y[0]);
+  }, [plan, speedsRest]);
+
+  /** done / half-done / ready, in ONE cached pass.
+   *
+   * These were three separate un-memoized walks of the whole step list, each
+   * rebuilding a step's key string per step — and this screen re-renders on
+   * every store change (a tick, folding the tray, opening a sheet). On a
+   * 165-step plan that was ~500 key builds per render for three numbers.
+   * Found in a hostile re-read, 2026-08-16. */
+  const { done, partialCount, readyNow } = useMemo(() => {
+    if (!plan) return { done: 0, partialCount: 0, readyNow: 0 };
+    let full = 0;
+    let half = 0;
+    for (const st of plan.steps) {
+      const state = tickStateOf(checks[stepId(st.parents[0], st.parents[1], st.child)]);
+      if (state === 'full') full++;
+      else if (state === 'partial') half++;
+    }
+    let ready = 0;
+    for (const [sid, m] of stepMeta) if (m.ready && !checks[sid]) ready++;
+    return { done: full, partialCount: half, readyNow: ready };
+  }, [plan, checks, stepMeta]);
+
+  /** Every step ticked — the plan is finished and the screen should say so
+   * instead of showing a 1/1 tile next to two destructive buttons. A plan
+   * with no steps is not "complete", it is empty. */
+  const planComplete = !!plan && plan.steps.length > 0 && done === plan.steps.length;
+
+  /** What the player actually achieved, named. "Cremis is yours." beats
+   * "1 of 1 done" — he came here for the pal, not the counter. */
+  const completedSentence = useMemo(() => {
+    const goals = plan?.targets ?? [];
+    if (goals.length === 0) return 'Every step is done.';
+    if (goals.length === 1) return `${goals[0]} is yours.`;
+    if (goals.length === 2) return `${goals[0]} and ${goals[1]} are yours.`;
+    return `${goals.slice(0, 2).join(', ')} and ${goals.length - 2} more are yours.`;
+  }, [plan]);
+
+  /** The cheapest way into each goal that has no route, ranked easiest
+   * first for THIS save and THIS player level. Measured at 185 ms cold /
+   * 53 ms warm, and it only ever runs when something is actually stuck —
+   * a plan where everything is reachable pays nothing. */
+  const playerLevel = getPlayerLevel();
+  const unlockKey = plan && plan.unreachable.length
+    ? `${plan.unreachable.join('|')}#${ownedNames.join(',')}#${playerLevel ?? ''}`
+    : '';
+  const [unlocks, setUnlocks] = useState<UnlockAdvice[]>(
+    () => (unlockKey && unlockCache?.key === unlockKey ? unlockCache.value : []),
+  );
+  useEffect(() => {
+    if (!unlockKey) { setUnlocks([]); return undefined; }
+    if (unlockCache?.key === unlockKey) { setUnlocks(unlockCache.value); return undefined; }
+    // yield one frame first: the tab paints immediately and the advice fills
+    // in, instead of the whole screen waiting on the fixpoint
+    let alive = true;
+    const id = setTimeout(() => {
+      // everything in plan.unreachable is unreachable by definition, so the
+      // planner's own verdict stands in for a second closure pass
+      const value = adviseUnlocks(
+        engine, ownedNames, new Set(), plan!.unreachable, wildFact, playerLevel,
+      );
+      unlockCache = { key: unlockKey, value };
+      if (alive) setUnlocks(value);
+    }, 0);
+    return () => { alive = false; clearTimeout(id); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [unlockKey]);
+
+  // per-goal progress: how many of the steps each goal depends on are done
+  const goalProgress = useMemo(() => {
+    if (!plan) return [];
+    // a bare "0/16" told him how far off he was and nothing about what to
+    // DO — he had to scan 23 phases to find which step was his. Each goal
+    // now names its next step, preferring one he can breed RIGHT NOW.
+    interface Prog {
+      total: number; done: number;
+      next?: { a: string; b: string; ready: boolean };
+    }
+    const byGoal = new Map<string, Prog>();
+    for (const st of plan.steps) {
+      const sid = stepId(st.parents[0], st.parents[1], st.child);
+      const isDone = tickStateOf(checks[sid]) === 'full';
+      const ready = !!stepMeta.get(sid)?.ready;
+      for (const g of st.neededBy) {
+        const cur = byGoal.get(g) ?? { total: 0, done: 0 };
+        cur.total++;
+        if (isDone) cur.done++;
+        // first undone step wins; a READY one outranks an earlier blocked one
+        if (!isDone && (!cur.next || (ready && !cur.next.ready))) {
+          cur.next = { a: st.parents[0], b: st.parents[1], ready };
+        }
+        byGoal.set(g, cur);
+      }
+    }
+    // A goal with NO steps never appeared in any step's neededBy, so it fell
+    // out of this card entirely — the tray said "8 goals" and only 6 rows
+    // showed, unexplained. Two different things cause zero steps and they must
+    // NOT be conflated: a goal you already own (nothing to breed) and a goal
+    // nothing can reach (which has its own card above). Only the owned ones
+    // belong here.
+    for (const t of plan.targets) {
+      if (byGoal.has(t) || plan.unreachable.includes(t)) continue;
+      byGoal.set(t, { total: 0, done: 0 });
+    }
+    // total 0 means "already yours", i.e. finished — not 0% done
+    const share = (v: { done: number; total: number }) => (v.total ? v.done / v.total : 1);
+    return [...byGoal.entries()]
+      .map(([name, v]) => ({ name, ...v }))
+      .sort((x, y) => share(y) - share(x) || x.name.localeCompare(y.name));
+  }, [plan, checks, stepMeta]);
+
+  const needs = plan ? cakeNeeds(plan.steps.length) : null;
+  // advice is computed WITH the plan and stored on it — the card renders in
+  // the same frame as the steps. This effect only backfills plans saved
+  // before advice existed, once, off the first paint.
+  const advice = plan?.advice ?? [];
+  useEffect(() => {
+    // recompute for plans with no advice at all AND for plans whose advice
+    // predates the current contract — a pre-v2 plan would otherwise keep a
+    // Chikipi-less card forever (found on the 8085 QA pass, 2026-08-15)
+    if (!plan || plan.steps.length === 0
+      || (plan.advice && plan.adviceVersion === ADVICE_VERSION)) return;
+    const t = setTimeout(() => {
+      try {
+        savePlan({
+          ...plan,
+          advice: helperAdvice(engine, Object.keys(getBox()), ownedAny, plan),
+          adviceVersion: ADVICE_VERSION,
+        });
+      } catch (e) {
+        console.error('advice backfill failed:', e);
+      }
+    }, 60);
+    return () => clearTimeout(t);
+  }, [plan]);
+  // one-tap add/remove needs visible feedback the instant the thumb lands
+  const [helperBusy, setHelperBusy] = useState<string | null>(null);
+  // ownership is checked LIVE at render so a freshly hatched helper flips to
+  // covered instantly without paying the planner again
+  const covered = advice.filter((a) => a.status === 'covered' || ownedAny(a.helper.name));
+  // every RECOMMENDED helper always shows — a hard slice once hid the egg
+  // pal entirely (CEO 2026-08-15); only the "your call" tail is capped
+  const uncovered = advice.filter((a) => a.status !== 'covered' && !ownedAny(a.helper.name));
+  const activeAdvice = [
+    ...uncovered.filter((a) => a.recommended || a.status === 'in-plan'),
+    ...uncovered.filter((a) => !a.recommended && a.status !== 'in-plan').slice(0, 2),
+  ];
+
+  // cake supply checklist — every cake is 5 flour + 8 berries + 7 milk +
+  // 8 eggs + 2 honey (verified recipe); the hands-free sources are ranch
+  // pals, so "which ingredients does my box already produce?" is the first
+  // question a player actually asks. Data-true: scans ranch_produce.
+  const cakeSupply = useMemo(() => {
+    const wants: { item: string; label: string }[] = [
+      { item: 'Egg', label: 'Eggs' },
+      { item: 'Milk', label: 'Milk' },
+      { item: 'Honey', label: 'Honey' },
+      { item: 'Red Berries', label: 'Berries' },
+    ];
+    // a producer this plan already breeds counts as coming supply — the
+    // checklist must never say "need Caprity" while Caprity sits two cards
+    // up as a goal of the same plan (hostile-review find, 2026-08-15)
+    const bredPhase = new Map<string, number>();
+    for (const st of plan?.steps ?? []) {
+      if (!bredPhase.has(st.child)) bredPhase.set(st.child, st.wave);
+    }
+    return wants.map(({ item, label }) => {
+      const producers = Object.keys(pals)
+        .filter((n) => (pals[n].ranch_produce ?? []).includes(item));
+      const ownedProducer = producers.find(ownedAny);
+      const planned = producers.find((n) => bredPhase.has(n));
+      return {
+        label, ownedProducer, best: producers[0],
+        planned,
+        plannedPhase: planned ? bredPhase.get(planned) : undefined,
+      };
+    });
+    // box changes flow through useAppVersion re-renders
+  }, [box, plan]);
+
+  return (
+    <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
+      {/* the sub used to read "shared intermediates counted once, phases run
+          in parallel, gender-aware ready-states" — three pieces of engine
+          jargon on the first line a player ever reads (CEO 2026-08-16) */}
+      <PageHead title="Route Planner"
+        sub="The shortest breeding route to the pals you want, from the pals you already own."
+        stamp />
+
+      {fromCard && (
+        <BackToCardChip name={fromCard}
+          onOpen={() => setViewing(fromCard)}
+          onDismiss={() => setFromCard(null)} />
+      )}
+
+      {ownedNames.length === 0 && (
+        <Card style={{
+          backgroundColor: T.warnSoft, borderColor: T.warn, marginBottom: 12, gap: 10,
+        }}>
+          <Text style={[s.body, { color: T.warn }]}>
+            Your collection is empty — the planner needs to know what you own.
+            Tick your pals in the Paldex, or paste a list into it.
+          </Text>
+          {/* it told him to go to the Paldex and then made him find it
+              himself. A message that names a destination should open it. */}
+          <Btn primary label="Open the Paldex"
+            onPress={() => navigateTo({ domain: 'breeding', tab: 'paldex' })} />
+        </Card>
+      )}
+
+      {/* BEFORE a plan exists this screen was two small buttons above a
+          screenful of black (CEO 2026-08-16: "very empty and poorly
+          designed… like temu version"). It now opens with a real welcome
+          that says what the tab does and gives one obvious way in. */}
+      {!plan && targets.length === 0 ? (
+        <>
+          <Card style={{ alignItems: 'center', paddingVertical: 24, gap: 10 }}>
+            <View style={{
+              width: 66, height: 66, borderRadius: 33, backgroundColor: T.accentSoft,
+              alignItems: 'center', justifyContent: 'center',
+            }}>
+              <Icon name="egg-outline" size={32} color={T.accentInk} />
+            </View>
+            <Text style={[s.h2, { textAlign: 'center' }]}>What do you want to breed?</Text>
+            <Text style={[s.body, { textAlign: 'center', maxWidth: 320 }]}>
+              Choose your goals and this builds the shortest route from the pals
+              in your Paldex — then you tick each egg off as it hatches.
+            </Text>
+            <View style={{ alignSelf: 'stretch', gap: 8, marginTop: 8 }}>
+              <Btn primary label="Browse suggested goals"
+                onPress={() => setSuggesting(true)} />
+              <Btn label="Pick a pal yourself" onPress={() => setPicking(true)} />
+            </View>
+          </Card>
+
+          <Card style={{ marginTop: 12, gap: 12 }}>
+            {[
+              { n: '1', t: 'Choose your goals',
+                d: 'Any pals you want — suggestions are ranked by how close they already are to your save.' },
+              { n: '2', t: 'Get one shared route',
+                // Measured 2026-08-17: the route shares a step when two goals need
+                // the SAME pair, but two goals reaching one pal by DIFFERENT recipes
+                // still breed it twice (Whalaska, phases 18 and 21 on a ten-pal box).
+                // Promising "bred once, not twice" outright was therefore false, so
+                // this says the part that is true until the planner can share properly.
+                d: 'Steps two goals both need are done once, and steps that can run at the same time are grouped.' },
+              { n: '3', t: 'Tick eggs off as they hatch',
+                d: 'Each tick adds the pal to your Paldex and shows what is ready to breed next.' },
+            ].map((step) => (
+              <View key={step.n} style={{ flexDirection: 'row', gap: 11, alignItems: 'flex-start' }}>
+                <View style={{
+                  width: 24, height: 24, borderRadius: 12, backgroundColor: T.surface2,
+                  alignItems: 'center', justifyContent: 'center', marginTop: 1,
+                }}>
+                  <Text style={{ color: T.accentInk, fontWeight: '800', fontSize: 12 }}>{step.n}</Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: T.ink, fontWeight: '800', fontSize: 13.5 }}>{step.t}</Text>
+                  <Text style={[s.body, { fontSize: 12 }]}>{step.d}</Text>
+                </View>
+              </View>
+            ))}
+          </Card>
+        </>
+      ) : (
+        <View style={[s.wrap, { marginBottom: 10 }]}>
+          <Btn small primary label="Suggested goals…" onPress={() => setSuggesting(true)} />
+          <Btn small label="+ Add a goal…" onPress={() => setPicking(true)} />
+        </View>
+      )}
+
+      {/* the goal tray — proper cards with icons and a real remove target,
+          folding to one quiet line once the plan matches the goals (CEO:
+          "why is it just small text… it should look good and fold away") */}
+      {targets.length > 0 && (() => {
+        const planned = plan
+          && [...targets].sort().join() === [...plan.targets].sort().join();
+        if (planned && !trayOpen) {
+          return (
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Show the goals in this plan"
+              onPress={() => setTrayOpen(true)}
+              style={({ pressed }) => [{
+                flexDirection: 'row', alignItems: 'center', gap: 10,
+                backgroundColor: T.surface, borderWidth: 1,
+                borderColor: pressed ? T.accent : T.line,
+                borderRadius: 12, padding: 8, marginBottom: 12,
+              }]}
+            >
+              <View style={{ flexDirection: 'row' }}>
+                {targets.slice(0, 5).map((t, i) => (
+                  <View key={t} style={{ marginLeft: i ? -10 : 0 }}>
+                    <PalIcon name={t} size={26} />
+                  </View>
+                ))}
+              </View>
+              <Text style={{ color: T.muted, fontSize: 12.5, fontWeight: '700', flex: 1 }}>
+                {targets.length === 1
+                  ? '1 goal in this plan — tap to edit'
+                  : `${targets.length} goals in this plan — tap to edit`}
+              </Text>
+              <Icon name="chevron-down" size={16} color={T.faint} />
+            </Pressable>
+          );
+        }
+        return (
+          <View style={{ gap: 8, marginBottom: 12 }}>
+            <View style={s.wrap}>
+              {targets.map((t) => {
+                const owned = ownedAny(t);
+                return (
+                  <View key={t} style={{
+                    flexDirection: 'row', alignItems: 'center', gap: 6,
+                    backgroundColor: T.surface2, borderWidth: 1,
+                    borderColor: owned ? T.okSoft : T.line,
+                    borderRadius: 12, paddingVertical: 5,
+                    paddingLeft: 6, paddingRight: 4,
+                  }}>
+                    <PalIcon name={t} size={28} />
+                    <Text style={{
+                      color: owned ? T.ok : T.ink, fontSize: 12.5, fontWeight: '700',
+                    }}>{t}</Text>
+                    {owned && <Icon name="check" size={13} color={T.ok} />}
+                    {/* Mossanda Lux and Relaxaurus Lux are flagged
+                        self-breed-only but DO have a fixed recipe, so this
+                        warned "you can only get this by catching it" about
+                        two pals you can actually breed. Only warn when the
+                        flag is the whole story. */}
+                    {selfOnly.has(t) && !owned
+                      && !breeding.unique_combos.some((c) => c.child === t) && (
+                      <Icon name="alert-outline" size={13} color={T.warn} />
+                    )}
+                    <Pressable hitSlop={8}
+                      // it had a label but no role, so a screen reader read
+                      // the words without knowing it could be pressed
+                      accessibilityRole="button"
+                      accessibilityLabel={`Remove ${t} from the goals`}
+                      onPress={() => removeDraftTargets([t])}
+                      style={{ padding: 2 }}>
+                      <Icon name="close" size={14} color={T.faint} />
+                    </Pressable>
+                  </View>
+                );
+              })}
+            </View>
+            <View style={s.wrap}>
+              {targets.length > 1 && (
+                /* "Remove all…" answers nothing — all WHAT? It sits in the
+                   goal tray, but so does everything else on this screen, and
+                   the CEO has already been burned once by a button whose
+                   meaning only appeared after tapping it. Name the thing, and
+                   count it, so the label is the whole answer. */
+                <Btn small label={`Remove all ${targets.length} goals…`}
+                  onPress={() => setManaging('removeall')} />
+              )}
+              {planned && trayOpen && (
+                <Btn small label="Fold away" onPress={() => setTrayOpen(false)} />
+              )}
+            </View>
+          </View>
+        );
+      })()}
+
+      {/* A big dead "Plan targets" button with nothing to plan was half the
+          reason the empty screen felt broken — the welcome card carries the
+          call to action there instead.
+
+          The same button was ALSO the loudest thing on screen once a route
+          existed, sitting right above the results and rebuilding the
+          identical plan (measured at y=249, above the stat tiles). Worse,
+          editing your goals afterwards left the route below silently out of
+          date — the only hint was the button's number quietly changing.
+
+          So it now appears only when it MEANS something: your goals no
+          longer match the plan you are looking at. */}
+      {!plan && targets.length > 0 && (
+        <Btn
+          primary
+          disabled={!ownedNames.length || busy}
+          label={busy ? 'Planning…'
+            : targets.length === 1
+              ? 'Plan this goal'
+              : `Plan these ${targets.length} goals`}
+          onPress={confirmRun}
+        />
+      )}
+      {plan && !planIsCurrent && !busy && (
+        <Card style={{
+          backgroundColor: T.accentSoft, borderColor: T.accent, marginTop: 12, gap: 9,
+        }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 9 }}>
+            <Icon name="refresh" size={18} color={T.accentInk} />
+            <Text style={[s.body, { color: T.accentInk, fontWeight: '700', flex: 1 }]}>
+              {targets.length === 0
+                ? 'You have removed every goal'
+                : 'Your goals have changed'}
+            </Text>
+          </View>
+          <Text style={s.body}>
+            {targets.length === 0
+              ? 'The route below is the one you planned earlier. Add a goal to build a new one.'
+              : targets.length === 1
+                ? 'The route below is still the old one. Build it again for the goal you have left.'
+                : `The route below is still the old one. Build it again to cover all ${targets.length} goals.`}
+          </Text>
+          {targets.length > 0 && (
+            <Btn primary disabled={!ownedNames.length || busy}
+              label={targets.length === 1 ? 'Plan this goal' : `Plan these ${targets.length} goals`}
+              onPress={confirmRun} />
+          )}
+        </Card>
+      )}
+      {plan && planIsCurrent && busy && (
+        <Btn primary disabled label="Planning…" onPress={() => {}} />
+      )}
+      {/* a bare spinner told him nothing about what the wait was for */}
+      {busy && (
+        <Card style={{
+          marginTop: 12, flexDirection: 'row', alignItems: 'center', gap: 13,
+        }}>
+          <ActivityIndicator color={T.accent} />
+          <View style={{ flex: 1 }}>
+            <Text style={[s.body, { color: T.ink, fontWeight: '700' }]}>
+              Working out your route…
+            </Text>
+            <Text style={[s.body, { fontSize: 12 }]}>
+              Checking every pair that leads to your goals.
+            </Text>
+          </View>
+        </Card>
+      )}
+
+      {/* this used to print the raw JavaScript error at him — a developer's
+          words, on the front page of the tab, with no way out. Now it says
+          what happened, promises nothing was lost, and offers the retry;
+          the technical text stays one tap away so a screenshot is still
+          useful to whoever fixes it. */}
+      {planError && (
+        <Card style={{
+          backgroundColor: T.badSoft, borderColor: T.bad, marginTop: 12, gap: 10,
+        }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 9 }}>
+            <Icon name="alert-circle-outline" size={20} color={T.bad} />
+            <Text style={[s.h3, { color: T.bad, flex: 1 }]}>
+              Couldn't build your route
+            </Text>
+          </View>
+          <Text style={s.body}>
+            Something went wrong working out the breeding steps. Your goals and
+            your Paldex are untouched — nothing was lost.
+          </Text>
+          <View style={s.wrap}>
+            <Btn primary label="Try again" onPress={run} />
+            <Btn
+              small
+              label={errDetail ? 'Hide details' : 'Show details'}
+              onPress={() => setErrDetail((v) => !v)}
+            />
+          </View>
+          {errDetail && (
+            <Text selectable style={{
+              color: T.muted, fontSize: 11.5, lineHeight: 16,
+              fontFamily: 'monospace',
+            }}>{planError}</Text>
+          )}
+        </Card>
+      )}
+
+      {/* A FINISHED PLAN USED TO LOOK EXACTLY LIKE AN UNFINISHED ONE — three
+          tiles reading 1/1, a timestamp, and two buttons that both looked
+          like they might delete something. The CEO: "it doesn't collapse
+          clean like a finished plan, starting a new plan is confusing... the
+          two options are confusing — do they remove the plan and the pals
+          from paldex?" (2026-08-17, with screenshots.)
+
+          So a completed plan now says it is complete, says what you got, and
+          offers the one thing you actually want next. The two destructive
+          actions are no longer peers competing for a tap: carrying on is the
+          primary button, and undoing is a quiet line underneath. */}
+      {plan && planComplete && (
+        <Card style={{
+          marginTop: 16, borderColor: T.ok, backgroundColor: T.okSoft, gap: 10,
+        }}
+          accessibilityLabel={`Plan complete. ${completedSentence} Every one of ${
+            plan.steps.length} step${plan.steps.length === 1 ? '' : 's'} is ticked.`}>
+          <View style={[s.row, { gap: 9 }]}>
+            <Icon name="check-circle" size={22} color={T.ok} />
+            <Text style={[s.h2, { flex: 1, color: T.ok }]}>Plan complete</Text>
+          </View>
+          <Text style={s.body}>
+            {completedSentence} All {plan.steps.length} step
+            {plan.steps.length === 1 ? '' : 's'} ticked off.
+          </Text>
+          <Btn primary label="Plan something new"
+            onPress={() => setManaging('clear')} />
+          <Text style={[s.body, { fontSize: 12, color: T.muted }]}>
+            Clears this finished route so you can pick fresh goals. Every pal
+            you hatched stays in your Paldex.
+          </Text>
+          <Pressable onPress={() => setManaging('reset')} hitSlop={8}
+            accessibilityRole="button"
+            accessibilityLabel="Undo my progress — unticks every step and takes back the pals those ticks added">
+            <Text style={{
+              color: T.muted, fontSize: 12, textDecorationLine: 'underline',
+            }}>
+              Ticked something by mistake? Undo my progress
+            </Text>
+          </Pressable>
+        </Card>
+      )}
+
+      {plan && (
+        <>
+          {!planComplete && (
+          <>
+          <View style={[s.wrap, { marginTop: 16 }]}>
+            <View style={s.tile}>
+              <Text style={s.tileBig}>{plan.steps.length}</Text>
+              <Text style={s.tileLabel}>STEPS</Text>
+            </View>
+            <View style={s.tile}>
+              <Text style={s.tileBig}>{done}<Text style={{ fontSize: 14, color: T.muted }}>/{plan.steps.length}</Text></Text>
+              <Text style={s.tileLabel}>DONE</Text>
+              {partialCount > 0 && (
+                <Text numberOfLines={1} style={{ color: T.warn, fontSize: 10, fontWeight: '800' }}>
+                  +{partialCount} half-done
+                </Text>
+              )}
+            </View>
+            <View style={s.tile}>
+              <Text style={s.tileBig}>{readyNow}</Text>
+              <Text style={s.tileLabel}>READY NOW</Text>
+            </View>
+          </View>
+          {/* "Start over" and "Clear plan" sat side by side and neither said
+              what it did to your collection — you had to tap a destructive
+              button to read its own explanation. The labels now carry the
+              outcome, and the one line that actually matters (does this take
+              my pals away?) is visible without tapping anything. */}
+          <View style={{ marginTop: 8, gap: 6 }}>
+            <Text style={[s.body, { fontSize: 12 }]}>
+              {plannedWhen(plan.planned)}
+            </Text>
+            <View style={s.wrap}>
+              <Btn small label="Undo my progress" onPress={() => setManaging('reset')} />
+              <Btn small label="Share this route"
+                onPress={() => {
+                  void Share.share({
+                    message: shareTextForPlan(plan.targets, plan.steps, breeding.game_version),
+                  });
+                }} />
+              <Btn small danger label="Forget this plan" onPress={() => setManaging('clear')} />
+            </View>
+            <Text style={{ color: T.muted, fontSize: 11.5, lineHeight: 16 }}>
+              Undo unticks every step and takes back the pals those ticks
+              added. Forget deletes the route only — hatched pals stay yours.
+            </Text>
+          </View>
+          </>
+          )}
+
+          {/* "Not reachable from your box: X" stated a fact and left him
+              there. Say which goals, and what actually gets him unstuck. */}
+          {plan.unreachable.length > 0 && (
+            <Card style={{
+              backgroundColor: T.warnSoft, borderColor: T.warn, marginTop: 12, gap: 8,
+            }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 9 }}>
+                <Icon name="map-marker-question-outline" size={19} color={T.warn} />
+                <Text style={[s.h3, { color: T.warn, flex: 1 }]}>
+                  {plan.unreachable.length === 1
+                    ? 'One goal has no route yet'
+                    : `${plan.unreachable.length} goals have no route yet`}
+                </Text>
+              </View>
+              <Text style={[s.body, { fontSize: 12.5 }]}>
+                {playerLevel != null
+                  ? `The shortest way into each, easiest first for a level ${playerLevel} player.`
+                  : 'The shortest way into each, easiest first. Set your player '
+                    + 'level in My world and this gets tuned to how far you have got.'}
+              </Text>
+              {/* the advice lands one frame later so the tab paints at once */}
+              {unlocks.length === 0 && (
+                <Text style={[s.body, { fontSize: 12, color: T.faint }]}>
+                  Working out your options…
+                </Text>
+              )}
+              <View style={{ gap: 2 }}>
+                {unlocks.map((u) => (
+                  <Pressable
+                    key={u.target}
+                    onPress={() => setViewing(u.target)}
+                    accessibilityRole="button"
+                    accessibilityLabel={`${u.target}. ${unlockLine(u, playerLevel)}`}
+                    style={({ pressed }) => [{
+                      flexDirection: 'row', alignItems: 'center', gap: 10,
+                      paddingVertical: 7,
+                    }, pressed && { opacity: 0.6 }]}
+                  >
+                    <PalIcon name={u.target} size={34} />
+                    <View style={{ flex: 1 }}>
+                      <Text style={{ color: T.ink, fontSize: 13.5, fontWeight: '700' }}>
+                        {u.target}
+                      </Text>
+                      <Text style={{
+                        color: u.kind === 'catch' && u.withinLevel ? T.accentInk : T.muted,
+                        fontSize: 12, lineHeight: 16.5,
+                      }}>
+                        {unlockLine(u, playerLevel)}
+                      </Text>
+                      {/* WHERE to go, when the game data actually says.
+                          276 of 299 species carry regions; the rest get no
+                          line at all rather than an invented one. */}
+                      {u.kind === 'catch' && whereOf(u) ? (
+                        <Text numberOfLines={2} style={{
+                          color: T.faint, fontSize: 11, lineHeight: 15, marginTop: 1,
+                        }}>{whereOf(u)}</Text>
+                      ) : null}
+                    </View>
+                    <Icon name="chevron-right" size={18} color={T.faint} />
+                  </Pressable>
+                ))}
+              </View>
+            </Card>
+          )}
+
+          {goalProgress.length > 0 && (
+            <Card style={{ marginTop: 12 }}>
+              <Text style={s.h3}>Goal progress</Text>
+              <View style={{ marginTop: 8, gap: 7 }}>
+                {goalProgress.map((g) => {
+                  const owned = g.total === 0;
+                  const complete = owned || g.done === g.total;
+                  return (
+                    <View key={g.name} style={{ gap: 3 }}>
+                      <View style={[s.row, { gap: 8 }]}>
+                        {/* the icon draws 26 px; slop carries it to 44 */}
+                        <Pressable onPress={() => setViewing(g.name)} hitSlop={9}
+                          accessibilityRole="button"
+                          accessibilityLabel={`Open ${g.name}`}>
+                          <PalIcon name={g.name} size={26} />
+                        </Pressable>
+                        <Text style={{
+                          color: T.ink, fontWeight: '700', fontSize: 14, width: 132,
+                        }} numberOfLines={1}>{g.name}</Text>
+                        <View style={{
+                          flex: 1, height: 8, borderRadius: 4, backgroundColor: T.surface2,
+                        }}>
+                          <View style={{
+                            width: `${owned ? 100 : (g.done / g.total) * 100}%`, height: '100%',
+                            borderRadius: 4, backgroundColor: complete ? T.ok : T.accent,
+                          }} />
+                        </View>
+                        <Text style={{
+                          color: T.muted, fontSize: 11.5, fontWeight: '700', width: 38,
+                          textAlign: 'right',
+                        }}>{owned ? '✓' : `${g.done}/${g.total}`}</Text>
+                      </View>
+                      {/* the number alone made him hunt through the phases
+                          for the step that was actually his */}
+                      {owned ? (
+                        <Text style={{ color: T.ok, fontSize: 11.5, marginLeft: 34 }}>
+                          Already in your Paldex — nothing to breed for it.
+                        </Text>
+                      ) : complete ? (
+                        <Text style={{ color: T.ok, fontSize: 11.5, marginLeft: 34 }}>
+                          Done — every step for it is ticked.
+                        </Text>
+                      ) : g.next ? (
+                        <Text numberOfLines={1} style={{
+                          color: g.next.ready ? T.accentInk : T.faint,
+                          fontSize: 11.5, marginLeft: 34,
+                        }}>
+                          {g.next.ready ? 'Breed now: ' : 'Next: '}
+                          {g.next.a} + {g.next.b}
+                        </Text>
+                      ) : null}
+                    </View>
+                  );
+                })}
+              </View>
+            </Card>
+          )}
+
+          {plan!.steps.length === 0 && plan!.unreachable.length === 0 && (
+            <Card style={{ marginTop: 12 }}>
+              <Text style={s.h3}>Nothing left to breed</Text>
+              <Text style={[s.body, { marginTop: 4 }]}>
+                Every goal in this plan is already in your Paldex. Add another
+                goal above, or clear the plan.
+              </Text>
+            </Card>
+          )}
+
+          {needs && plan!.steps.length > 0 && (
+            <Card style={{ marginTop: 12, gap: 10 }}>
+              <Text style={s.h3}>Make it faster</Text>
+              <Text style={[s.body, { fontSize: 12.5 }]}>
+                {plan!.steps.length} {plan!.steps.length === 1 ? 'step' : 'steps'} means
+                at least {needs.cakes} {needs.cakes === 1 ? 'cake' : 'cakes'}:
+                {/* the "~" sat on flour ALONE, making one exact number look
+                    like a guess and the other four look precise. Every
+                    total is an exact multiple of the cake count (5 flour,
+                    8 berries, 7 milk, 8 eggs, 2 honey each), and "at least"
+                    above already carries the uncertainty. */}
+                {' '}{needs.flour} flour · {needs.berries} berries · {needs.milk} milk
+                · {needs.eggs} eggs · {needs.honey} honey.
+              </Text>
+              {(() => {
+                // gender luck priced honestly: keep-both steps average 3
+                // eggs, gender-locked recipes need one SPECIFIC gender
+                // (a male Beegarde at 10% male averages 10). Data:
+                // per-species gender table, datamined via palcalc.
+                const est = expectedEggs(plan!.steps, maleProb);
+                if (est.expectedEggs <= est.minEggs) return null;
+                const bits: string[] = [];
+                if (est.bothGenderSteps > 0) {
+                  bits.push(`${est.bothGenderSteps} ${est.bothGenderSteps === 1
+                    ? 'step needs' : 'steps need'} both genders`);
+                }
+                if (est.pickyGenderSteps > 0) {
+                  bits.push(`${est.pickyGenderSteps} ${est.pickyGenderSteps === 1
+                    ? 'needs' : 'need'} one specific gender`);
+                }
+                return (
+                  <Text style={[s.body, { fontSize: 12.5, color: T.muted }]}>
+                    Counting gender luck, expect ~{est.expectedEggs} cakes:
+                    {' '}{bits.join(' and ')}.
+                  </Text>
+                );
+              })()}
+              {/* the first question a player asks: which of those can my
+                  ranch already make? */}
+              <View style={[s.wrap]}>
+                {cakeSupply.map((c) => (
+                  /* MEASURED at 19 px with no hit area at all, and tapping one
+                     opens that pal's card — so it is a real control, not a
+                     label. Now 29 px with slop, giving 45 tall and 35 wide.
+                     Honest about the trade: when these wrap onto two rows the
+                     rows sit 35 px apart, so the vertical slop overlaps a
+                     neighbour by about 2 px. That is deliberate — a 2 px
+                     ambiguous band that at worst opens the wrong pal's card
+                     beats a 35 px target you keep missing. Sideways the slop
+                     stays inside the 6 px gap, so same-row chips never fight. */
+                  <Pressable key={c.label} disabled={!!c.ownedProducer}
+                    hitSlop={{ top: 8, bottom: 8, left: 3, right: 3 }}
+                    style={{ paddingVertical: 5 }}
+                    accessibilityRole="button"
+                    // a covered ingredient is not tappable — say so rather
+                    // than let it read as an available control
+                    accessibilityState={{ disabled: !!c.ownedProducer }}
+                    accessibilityLabel={c.ownedProducer
+                      ? `${c.label}: covered by ${c.ownedProducer}`
+                      : c.planned
+                        ? `${c.label}: ${c.planned} hatches in phase ${c.plannedPhase} — open it`
+                        : `${c.label}: you need ${c.best ?? 'a producer'} — open it`}
+                    onPress={() => {
+                      const show = c.ownedProducer ?? c.planned ?? c.best;
+                      if (show) setViewing(show);
+                    }}>
+                    <Badge kind={c.ownedProducer ? 'ok' : c.planned ? 'plain' : 'warn'}>
+                      {c.ownedProducer
+                        ? `${c.label} ✓ ${c.ownedProducer}`
+                        : c.planned
+                          ? `${c.label} — ${c.planned} hatches in Phase ${c.plannedPhase}`
+                          // showed a literal "?" at the player when we have
+                          // no producer to name; say it in words instead
+                          : `${c.label}: need ${c.best ?? 'a producer'}`}
+                    </Badge>
+                  </Pressable>
+                ))}
+              </View>
+              {covered.length > 0 && (
+                <View style={{ gap: 5, marginTop: 2 }}>
+                  {/* these ticked names sat here with NO heading at all,
+                      directly under the cake ingredients — a player had no
+                      way to tell what "CHIKIPI ✓" was doing there. */}
+                  <Text style={{
+                    color: T.faint, fontSize: 10.5, fontWeight: '800',
+                    letterSpacing: 0.8, textTransform: 'uppercase',
+                  }}>
+                    {covered.length === 1
+                      ? 'Speed-up you already have'
+                      : 'Speed-ups you already have'}
+                  </Text>
+                  <View style={[s.wrap]}>
+                    {covered.map((a) => (
+                      <Badge key={a.helper.name} kind="ok">{a.helper.name} ✓</Badge>
+                    ))}
+                  </View>
+                </View>
+              )}
+              {activeAdvice.map((a) => {
+                const h = a.helper;
+                const isTarget = plan!.targets.includes(h.name);
+                return (
+                  <View key={h.name} style={{
+                    borderTopWidth: 1, borderTopColor: T.line, paddingTop: 9, gap: 6,
+                  }}>
+                    <Pressable style={[s.row, { gap: 9 }]} onPress={() => setViewing(h.name)}
+                      accessibilityRole="button"
+                      accessibilityLabel={`Open ${h.name}`}>
+                      <PalIcon name={h.name} size={30} />
+                      <View style={{ flex: 1 }}>
+                        <Text style={{ color: T.ink, fontWeight: '800', fontSize: 13.5 }}>
+                          {h.name}
+                          {a.status === 'suggest' && a.recommended && (
+                            <Text style={{ color: T.goldInk, fontSize: 10 }}>
+                              {'   '}RECOMMENDED
+                            </Text>
+                          )}
+                          {a.status === 'in-plan' && (
+                            <Text style={{ color: T.accentInk, fontSize: 10 }}>
+                              {'   '}PHASE {a.phase}
+                            </Text>
+                          )}
+                        </Text>
+                        <Text style={{ color: T.muted, fontSize: 11.5 }}>{h.effect}</Text>
+                      </View>
+                    </Pressable>
+                    <Text style={[s.body, { fontSize: 12 }]}>{a.note}</Text>
+                    {a.status === 'suggest' && (a.catchOnly || (a.addSteps ?? 0) >= 4)
+                      && pals[h.name]?.wild && pals[h.name].regions.length > 0 && (
+                      <Text style={[s.body, { fontSize: 12, color: T.accentInk }]}>
+                        {a.catchOnly ? 'Where to catch it: ' : 'Faster to catch one: '}
+                        {pals[h.name].regions.slice(0, 2).join(' · ')}
+                        {pals[h.name].regions.length > 2
+                          ? ` and ${pals[h.name].regions.length - 2} more` : ''}
+                        {wildLevelRange(h.name)
+                          ? ` (${wildLevelRange(h.name)})`
+                          : pals[h.name].max_wild_level
+                            ? ` (up to Lv ${pals[h.name].max_wild_level})` : ''}
+                      </Text>
+                    )}
+                    {a.status === 'suggest' && !a.catchOnly && !isTarget && (
+                      <View style={[s.wrap]}>
+                        <Btn small primary={a.recommended}
+                          disabled={helperBusy != null}
+                          label={helperBusy === h.name
+                            ? 'Adding…'
+                            : a.addSteps === 0
+                              ? 'Add to plan · free'
+                              : `Add to plan · +${a.addSteps} step${a.addSteps === 1 ? '' : 's'}`}
+                          onPress={() => {
+                            // react NOW, compute a beat later so the busy
+                            // label paints before the planner runs
+                            void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+                            setHelperBusy(h.name);
+                            setTimeout(() => {
+                              addPlanTarget(h.name); // draft syncs in the store
+                              setHelperBusy(null);
+                            }, 30);
+                          }} />
+                      </View>
+                    )}
+                    {isTarget && plan!.targets.length > 1 && (
+                      <View style={[s.wrap]}>
+                        <Btn small disabled={helperBusy != null}
+                          label={helperBusy === h.name ? 'Removing…' : 'Remove from plan'}
+                          onPress={() => {
+                            void Haptics.selectionAsync();
+                            setHelperBusy(h.name);
+                            setTimeout(() => {
+                              removePlanTarget(h.name); // draft syncs in the store
+                              setHelperBusy(null);
+                            }, 30);
+                          }} />
+                      </View>
+                    )}
+                  </View>
+                );
+              })}
+              <Text style={[s.body, { fontSize: 11, color: T.faint }]}>
+                All effects are the game's own partner-skill data. Adding or removing
+                reshapes the plan — steps you've ticked stay ticked.
+              </Text>
+            </Card>
+          )}
+
+          {waves.map(([wave, steps]) => {
+            // a finished phase folds into one quiet line — scrolling past
+            // walls of struck-through cards to find the work is busywork
+            const allDone = steps.every((st) =>
+              tickStateOf(checks[stepId(st.parents[0], st.parents[1], st.child)]) === 'full');
+            // one badge per phase, on the FIRST unfinished helper-branch
+            // step — the sort already floats the branch, the badge says why
+            const leadHelperSid = steps
+              .map((st) => stepId(st.parents[0], st.parents[1], st.child))
+              .find((x) => speedsRest.has(x) && tickStateOf(checks[x]) !== 'full');
+            if (allDone && !openPhases.has(wave)) {
+              return (
+                <Pressable key={wave}
+                  accessibilityRole="button"
+                  accessibilityLabel={`Phase ${wave} complete — show its ${steps.length} ${steps.length === 1 ? 'step' : 'steps'}`}
+                  onPress={() => {
+                    void Haptics.selectionAsync();
+                    setOpenPhases((prev) => new Set(prev).add(wave));
+                  }}
+                  style={({ pressed }) => [{
+                    marginTop: 14, flexDirection: 'row', alignItems: 'center', gap: 8,
+                    backgroundColor: T.surface, borderColor: T.okSoft, borderWidth: 1,
+                    borderRadius: 12, padding: 12, opacity: pressed ? 0.8 : 0.75,
+                  }]}
+                >
+                  <Text style={{ color: T.ok, fontWeight: '800', fontSize: 13.5, flex: 1 }}>
+                    Phase {wave} complete
+                  </Text>
+                  <Text style={{ color: T.muted, fontSize: 12, fontWeight: '700' }}>
+                    {steps.length} {steps.length === 1 ? 'step' : 'steps'} · tap to show
+                  </Text>
+                </Pressable>
+              );
+            }
+            return (
+            <View key={wave} style={{ marginTop: 18 }}>
+              {/* A finished phase collapsed on its own and reopened on a tap,
+                  but the open header was plain text — so reopening one to
+                  look at it was a ONE-WAY DOOR, and the only way back to the
+                  tidy view was reloading the app. The CEO found it within
+                  minutes of the collapse landing (2026-08-17). When a phase
+                  is finished this header is the other half of that toggle. */}
+              {allDone ? (
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityState={{ expanded: true }}
+                  accessibilityLabel={`Phase ${wave} complete, showing its ${steps.length} ${steps.length === 1 ? 'step' : 'steps'} — tap to hide them again`}
+                  hitSlop={6}
+                  onPress={() => {
+                    void Haptics.selectionAsync();
+                    setOpenPhases((prev) => {
+                      const next = new Set(prev);
+                      next.delete(wave);
+                      return next;
+                    });
+                  }}
+                  style={[s.row, { marginBottom: 8, gap: 6 }]}>
+                  <Text style={[s.h3, { flex: 1 }]}>
+                    Phase {wave}{' '}
+                    <Text style={{ color: T.ok, fontWeight: '600', fontSize: 12.5 }}>
+                      · complete
+                    </Text>
+                  </Text>
+                  <Text style={{ color: T.muted, fontSize: 12, fontWeight: '700' }}>
+                    tap to hide
+                  </Text>
+                  <Icon name="chevron-up" size={18} color={T.muted} />
+                </Pressable>
+              ) : (
+                <Text style={[s.h3, { marginBottom: 8 }]}>
+                  Phase {wave}{' '}
+                  <Text style={{ color: T.muted, fontWeight: '600', fontSize: 12.5 }}>
+                    {/* a phase with ONE step has nothing to run in parallel
+                        WITH — the hint was noise there (deep-eval find) */}
+                    {steps.length > 1 ? '· everything here can run in parallel' : ''}
+                  </Text>
+                </Text>
+              )}
+              <View style={{ gap: 8 }}>
+                {steps.map((st) => {
+                  const sid = stepId(st.parents[0], st.parents[1], st.child);
+                  const m = stepMeta.get(sid)!;
+                  const tick = tickStateOf(checks[sid]);
+                  const checked = tick === 'full';
+                  const partial = tick === 'partial';
+                  const mother = st.genderNote ? parseGenderNote(st.genderNote)?.mother : undefined;
+                  return (
+                    <Card key={sid} style={{
+                      padding: 14, gap: 10, opacity: checked ? 0.55 : 1,
+                      borderLeftWidth: 4,
+                      borderLeftColor: checked ? T.line
+                        : partial ? T.warn
+                        : m.ready ? T.ok : T.line,
+                    }}>
+                      {/* parents — ONE row always: each parent is a
+                          shrinkable icon+name cell, names auto-fit instead
+                          of wrapping (CEO callout 2026-08-15) */}
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                        <AnimatedCheck state={tick} glyph={partialGlyph(checks[sid])}
+                          label={`Breed ${st.parents[0]} + ${st.parents[1]} = ${st.child}`}
+                          onPress={() => {
+                            void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                            if (tick === 'full') uncheckStep(sid, st.child);
+                            else setHatching({ sid, child: st.child });
+                          }} />
+                        <Pressable onPress={() => setViewing(st.parents[0])} hitSlop={4}
+                          accessibilityRole="button"
+                          accessibilityLabel={`Open ${st.parents[0]}`}
+                          style={{ flexDirection: 'row', alignItems: 'center', gap: 8, flexShrink: 1 }}>
+                          <PalIcon name={st.parents[0]} size={38}
+                            gender={st.genderNote ? (mother === st.parents[0] ? 'f' : 'm') : undefined} />
+                          <Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.72}
+                            style={{
+                              color: T.ink, fontWeight: '700', fontSize: 15.5, flexShrink: 1,
+                              textDecorationLine: checked ? 'line-through' : 'none',
+                            }}>{st.parents[0]}</Text>
+                        </Pressable>
+                        <Text style={{ color: T.faint, fontWeight: '800', fontSize: 15 }}>+</Text>
+                        <Pressable onPress={() => setViewing(st.parents[1])} hitSlop={4}
+                          accessibilityRole="button"
+                          accessibilityLabel={`Open ${st.parents[1]}`}
+                          style={{ flexDirection: 'row', alignItems: 'center', gap: 8, flexShrink: 1 }}>
+                          <PalIcon name={st.parents[1]} size={38}
+                            gender={st.genderNote ? (mother === st.parents[1] ? 'f' : 'm') : undefined} />
+                          <Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.72}
+                            style={{
+                              color: T.ink, fontWeight: '700', fontSize: 15.5, flexShrink: 1,
+                              textDecorationLine: checked ? 'line-through' : 'none',
+                            }}>{st.parents[1]}</Text>
+                        </Pressable>
+                      </View>
+                      {/* result — the hero line */}
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingLeft: 36 }}>
+                        <Text style={{ color: T.accent, fontWeight: '800', fontSize: 18 }}>→</Text>
+                        <Pressable onPress={() => setViewing(st.child)} hitSlop={4}
+                          accessibilityRole="button"
+                          accessibilityLabel={`Open ${st.child}`}>
+                          {/* the hero pops and bursts on hatch; goals get
+                              one tier bigger a moment (self-found QoL) */}
+                          <HeroPop burstKey={bursts[sid] ?? 0}>
+                            <PalIcon name={st.child} size={46} />
+                          </HeroPop>
+                          <HatchBurst burstKey={bursts[sid] ?? 0} boost={st.isTarget}
+                            rarity={(pals[st.child]?.rarity ?? 'Common') as Rarity} />
+                        </Pressable>
+                        <Text style={{
+                          color: T.accentInk, fontWeight: '800', fontSize: 19, flexShrink: 1,
+                          textDecorationLine: checked ? 'line-through' : 'none',
+                        }}>{st.child}</Text>
+                      </View>
+                      <View style={[s.wrap]}>
+                        {st.isTarget && <Badge kind="gold">Goal</Badge>}
+                        {sid === leadHelperSid && (
+                          <Badge kind="plain">helper branch — do this first</Badge>
+                        )}
+                        {st.kind === 'unique' && <Badge kind="unique">fixed recipe</Badge>}
+                        {/* "gender locked" named the mechanic, not the consequence. The
+                            parents above already show ♀/♂ — point at them. */}
+                        {st.kind === 'gendered' && (
+                          <Badge kind="warn">only works with the genders shown</Badge>
+                        )}
+                        {st.reusedAsParent >= 2 && (
+                          <Badge kind="plain">keep ♂+♀ — parent in {st.reusedAsParent} steps</Badge>
+                        )}
+                        {partial && (
+                          <Badge kind="warn">half done — missing the {partialGlyph(checks[sid]) === '♂' ? '♀' : '♂'}</Badge>
+                        )}
+                        {!checked && !partial && (m.ready
+                          ? <Badge kind="ok">✓ ready to breed</Badge>
+                          : m.hint
+                            ? <Badge kind="warn">{m.hint}</Badge>
+                            // naming BOTH parents just repeated the recipe
+                            // shown directly above it. Name one when one is
+                            // missing; say it plainly when neither is ready.
+                            : <Badge kind="plain">{m.missing.length >= 2
+                              ? 'neither parent ready yet'
+                              : `waiting on ${m.missing[0]}`}</Badge>)}
+                      </View>
+                      {/* HOW to close the gap the hint names — one tappable
+                          row per option, each ending on the pal's card
+                          (CEO 2026-08-17: "tells me how to fix this step").
+                          Shared with the Calculator's pair warning. */}
+                      {!checked && !partial && !m.ready && m.needs.length > 0 && (
+                        <View style={{ paddingLeft: 36 }}>
+                          <GenderFixRows needs={m.needs} onView={setViewing} />
+                        </View>
+                      )}
+                      {/* the result's full work suitabilities — always its own row */}
+                      <View style={[s.wrap, { paddingLeft: 36 }]}>
+                        <WorkChips name={st.child} all />
+                      </View>
+                    </Card>
+                  );
+                })}
+              </View>
+            </View>
+            );
+          })}
+        </>
+      )}
+
+      {viewing && <PalDetail name={viewing} onClose={() => setViewing(null)} />}
+
+      {hatching && (
+        <HatchSheet child={hatching.child} sid={hatching.sid}
+          have={(() => {
+            const c = checks[hatching.sid];
+            return c && c !== true ? { m: c.m, f: c.f } : undefined;
+          })()}
+          onClose={() => {
+            const c = getChecks()[hatching.sid];
+            if (tickStateOf(c) !== 'none') {
+              setBursts((b) => ({ ...b, [hatching.sid]: (b[hatching.sid] ?? 0) + 1 }));
+              // hatching a GOAL earns the heavy thump on top of the
+              // success notification every tick already gets
+              if (plan?.targets.includes(hatching.child)) {
+                void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+              }
+            }
+            setHatching(null);
+          }} />
+      )}
+
+      {managing !== 'none' && (
+        <Modal visible transparent animationType="fade"
+          onRequestClose={() => setManaging('none')}>
+          {/* without this VoiceOver keeps wandering into the screen behind a
+              question that is asking you to destroy something */}
+          <View accessibilityViewIsModal style={{
+            flex: 1, backgroundColor: 'rgba(0,0,0,0.55)',
+            alignItems: 'center', justifyContent: 'center', padding: 28,
+          }}>
+            <Card style={{ width: '100%', borderColor: managing === 'clear' ? T.bad : T.line }}>
+              <Text style={s.h2}>
+                {managing === 'reset' ? 'Undo your progress?'
+                  : managing === 'replace' ? 'Replace the current plan?'
+                  : managing === 'removeall' ? `Remove all ${targets.length} goals?`
+                  // finishing a plan and starting the next one is a normal,
+                  // happy step — it should not be phrased as destruction
+                  : planComplete ? 'Plan something new?'
+                  : 'Forget this plan?'}
+              </Text>
+              <Text style={[s.body, { marginTop: 6 }]}>
+                {managing === 'reset'
+                  ? 'Every tick is undone properly — pals that ticks registered are removed from your Paldex again; anything you owned before stays.'
+                  : managing === 'replace'
+                    ? `Your current plan still has unfinished steps (${done} of ${plan?.steps.length ?? 0} done). Planning these goals builds a fresh route — finished steps whose pals you hatched stay yours, but the old route is gone.`
+                    : managing === 'removeall'
+                      // it used to say "until you press Plan again" — that
+                      // button no longer sits there once a route exists
+                      ? 'Empties your goal list so you can pick fresh. The route you already have, and everything you have ticked off, stays until you build a new one.'
+                      : planComplete
+                        ? 'Clears this finished route and empties your goal list so you can pick fresh. Every pal you hatched stays in your Paldex — nothing you own is touched.'
+                        : 'Forgets the plan and its ticks so you can plan fresh. Your collection stays exactly as it is — hatched pals are still yours.'}
+              </Text>
+              <View style={[s.wrap, { marginTop: 14 }]}>
+                <Btn danger={managing === 'clear' && !planComplete}
+                  primary={managing === 'reset' || managing === 'replace'
+                    || (managing === 'clear' && planComplete)}
+                  label={managing === 'reset' ? 'Undo my progress'
+                    : managing === 'replace' ? 'Plan the new goals'
+                    : managing === 'removeall' ? 'Remove all goals'
+                    : planComplete ? 'Plan something new'
+                    : 'Forget this plan'}
+                  onPress={() => {
+                    if (managing === 'reset') { resetPlanProgress(); setManaging('none'); }
+                    else if (managing === 'replace') run();
+                    else if (managing === 'removeall') { clearDraftTargets(); setManaging('none'); }
+                    else { clearPlan(); setManaging('none'); }
+                  }} />
+                <Btn label="Cancel" onPress={() => setManaging('none')} />
+              </View>
+            </Card>
+          </View>
+        </Modal>
+      )}
+
+      <PalPicker
+        visible={picking}
+        onClose={() => setPicking(false)}
+        title="Add a target"
+        exclude={new Set(targets)}
+        onPick={(n) => addDraftTargets([n])}
+      />
+      <SuggestedGoals
+        visible={suggesting}
+        onClose={() => setSuggesting(false)}
+        targets={targets}
+        onAdd={(names) => {
+          void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+          addDraftTargets(names);
+        }}
+        onRemove={(names) => {
+          void Haptics.selectionAsync();
+          removeDraftTargets(names);
+        }}
+      />
+    </ScrollView>
+  );
+}

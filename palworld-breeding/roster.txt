@@ -1,0 +1,111 @@
+# Pål-Andre's roster — Palworld 1.0 (updated 2026-08-14)
+# One pal per line. '#' starts a comment. Edit freely, then run:
+#   python3 planner.py plan
+# Add new pals with:  python3 planner.py add <name>
+
+Arsox
+Beakon
+Beegarde
+Blazehowl
+Bristla
+Broncherry
+Caprity
+Caprity Noct
+Cattiva
+Celaray
+Chikipi
+Chillet
+Cinnamoth
+Clovee
+Cremis
+Croajiro
+Daedream
+Dazzi
+Digtoise
+Direhowl
+Dumud
+Eikthyrdeer
+Elizabee
+Elphidran
+Felbat
+Flambelle
+Flopie
+Foxcicle
+Foxparks
+Fuddler
+Galeclaw
+Gobfin
+Grintale
+Gumoss
+Hangyu
+Helzephyr
+Herbil
+Hoocrates
+Incineram
+Jolthog
+Jolthog Cryst
+Katress
+Kelpsea
+Killamari
+Killamari Primo
+Lamball
+Leafan
+Leezpunk
+Lifmunk
+Loupmoon
+Lunaris
+Mammorest
+Mau
+Melpaca
+Menasting
+Mossanda
+Mozzarina
+Muffly
+Munchill
+Nitewing
+Pengullet
+Penking
+Petallia
+Pupperai
+Pyrin
+Quivern
+Rayhound
+Reindrix
+Ribbuny
+Ribbuny Botan
+Robinquill
+Rooby
+Rushoar
+Sibelyx
+Sparkit
+Surfent
+Suzaku
+Swee
+Tanzee
+Tarantriss
+Teafant
+Tocotoco
+Tombat
+Univolt
+Vaelet
+Vanwyrm
+Vanwyrm Cryst
+Verdash
+Vixy
+Wispaw
+Wixen
+Woolipop
+Xenovader
+
+# --- Bred/acquired since the start ---
+Wistella
+Broncherry Aqua
+Fuack
+Helzephyr Lux
+Reptyro
+Reptyro Cryst
+Warsect
+Warsect Terra
+
+# "godbin" from the original list is unidentified — closest candidates:
+# Gobfin (already listed), Gobfin Ignis, Robinquill. Add the right name yourself.

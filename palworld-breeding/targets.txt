@@ -1,0 +1,37 @@
+# End goals — the best pals you can breed (Palworld 1.0)
+# Edit freely; run 'python3 planner.py plan' afterwards.
+
+# --- Top workers ---
+Solenne          # Handiwork 8
+Celesdir Noct    # Lumbering 8
+Renjishi         # Kindling 8
+Knocklem         # Mining 7 + Transporting 7
+Starryon Primo   # Gathering 7
+Ophydia          # Planting 7
+Anubis           # the classic — Handiwork/Mining/Transport
+Astegon          # Mining 7 — best breedable Mining (Aegidron 8 is out of reach)
+Blazamut         # Kindling/Mining
+Sibelyx Primo    # variant — wild only in the World Tree (lvl 75+)
+Venusa           # wild only in the World Tree (lvl 75+)
+Mycora           # Medicine aura (wild only in the World Tree)
+Univolt Cryst    # variant — wild only lvl 75+
+Whalaska Ignis   # 1.0 variant
+Solmora Lux      # 1.0 variant
+
+# --- Aura pals (+1 work suitability for everyone at the base; one per work type) ---
+# Ribbuny (Handiwork), Cinnamoth (Farming), Clovee (Gathering) and
+# Petallia (Planting) are already in the roster.
+Tetroise         # Mining aura
+Wumpo            # Transporting aura
+Amione           # Watering aura
+Eikthyrdeer Terra # Lumbering aura
+Katress Ignis    # Kindling aura
+Puffolt          # Generating Electricity aura
+Smokie Cryst     # Cooling aura
+
+# --- Breeding support (recommended extras — speed up the rest of the plan) ---
+Braloha          # egg production +20–50% at the Breeding Farm
+Dynamoff         # incubation time −20–40%
+Lullu            # crop growth +50–70% (cake ingredients)
+Prunelia         # harvest +18–35% (cake ingredients)
+Sekhmet          # Anubis partner: Anubis +20–40% work speed

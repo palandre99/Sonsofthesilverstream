@@ -1,0 +1,25 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "hatchlab",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "palworld-breeding/app", "run", "dev", "--", "--port", "5183", "--strictPort"],
+      "port": 5183
+    },
+    {
+      "name": "palforge-mobile-qa",
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": ["/c", "cd", "palworld-breeding\\mobile", "&&", "npx", "expo", "start", "--web", "--port", "8085"],
+      "port": 8085,
+      "autoPort": false
+    },
+    {
+      "name": "palforge-mobile-qa-b",
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": ["/c", "cd", "palworld-breeding\\mobile", "&&", "npx", "expo", "start", "--web", "--port", "8086"],
+      "port": 8086,
+      "autoPort": false
+    }
+  ]
+}
