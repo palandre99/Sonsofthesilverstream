@@ -7,6 +7,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import {
   ammoForWeapon, collapseFamilies, effectNumber, familyOf, familyPowerOf,
+  hasNoKnownSource,
   idsInGroup, implantPassive, ITEM_GROUPS, ITEM_STATS, ITEMS, itemIdByName, KIND_WORDS,
   kindsInGroup, kindWord, palsDropping, palsHatchingFrom, rawMaterialsFor,
   rivalsOf, rollupOfMats,
@@ -861,5 +862,43 @@ describe('the screen speaks plainly and cites its sources', () => {
       .not.toMatch(/id: 'items'[\s\S]{0,900}soon: true/);
     expect(domains, 'the item index must anchor the center slot')
       .toContain("{ id: 'allitems', label: 'Items', icon: 'view-grid-outline' }");
+  });
+});
+
+describe('a card with no source says so, instead of just ending (IL41)', () => {
+  const code = readFileSync(
+    join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+
+  it('102 items genuinely have nowhere recorded to get them', () => {
+    const silent = Object.keys(ITEMS).filter(hasNoKnownSource);
+    expect(silent.length).toBe(102);
+    // and the split the ledger records, so a regression is legible
+    const sub = (s: string) => silent.filter((i) => ITEMS[i].subcategory === s).length;
+    expect(sub('MaterialPalEgg')).toBe(53);
+    expect(sub('Essential_PassiveSkillChange')).toBe(26);
+    expect(sub('WeaponGrapplingGun')).toBe(5);
+  });
+
+  it('anything with a recipe, a drop or a shop is NOT called sourceless', () => {
+    // the predicate must not creep — these all answer the question
+    expect(hasNoKnownSource('Charcoal')).toBe(false);   // recipe (IL40)
+    expect(hasNoKnownSource('BeamSword')).toBe(false);  // recipe + tech
+    expect(hasNoKnownSource(itemIdByName('Wool')!)).toBe(false); // pal drop
+  });
+
+  it('the screen says it plainly and never invents a source', () => {
+    expect(code).toContain('hasNoKnownSource(id) && (');
+    expect(code).toContain('The game files record no drop, chest or merchant for this egg.');
+    expect(code).toContain('nothing in the data says where it comes from');
+  });
+
+  it('an egg gets the breeding route, but never two buttons', () => {
+    // the 10 eggs with no hatch table already carry the button in their
+    // own IL26 card; the new card must not add a second
+    expect(code).toContain('&& palsHatchingFrom(id).length > 0 && (');
+    const eggs = Object.keys(ITEMS)
+      .filter((i) => ITEMS[i].subcategory === 'MaterialPalEgg');
+    const noHatch = eggs.filter((i) => palsHatchingFrom(i).length === 0);
+    expect(noHatch.length).toBe(10);
   });
 });

@@ -19,7 +19,8 @@ import { T } from '../theme';
 import { Badge, Btn, Card, PageHead, SearchInput, s } from '../ui/kit';
 import {
   ammoForWeapon, collapseFamilies, effectNumber, familyOf, familyPowerOf,
-  groupOf, idsInGroup, implantPassive, ITEM_GROUPS, ITEM_STATS, ITEMS,
+  groupOf, hasNoKnownSource, idsInGroup, implantPassive, ITEM_GROUPS,
+  ITEM_STATS, ITEMS,
   kindsInGroup, kindWord, palsDropping, palsHatchingFrom, rawMaterialsFor,
   rivalsOf, rollupOfMats, schematicsFor,
   searchItems, sortItems, statRank, TAB_GROUPS, teachesOf, TIER_WORDS,
@@ -782,6 +783,35 @@ function ItemDetail({ id, trail = [], onClose, onBack, onOpenItem }: {
               </Card>
             );
           })()}
+
+          {hasNoKnownSource(id) && (
+            /* IL41: 102 cards could say NOTHING about where the item
+               comes from — no recipe, no tech, no drop, no chest, no
+               shop — so they just ended, which reads like a half-built
+               app rather than an honest gap. Say it plainly instead.
+               The eggs get the breeding route on top, because that is
+               the one thing this app can genuinely do about an egg. */
+            <Card style={{ marginTop: 10 }}>
+              <Text style={s.h3}>Where to find it</Text>
+              <Text style={[s.body, { marginTop: 4, fontSize: 12.5 }]}>
+                {ITEMS[id].subcategory === 'MaterialPalEgg'
+                  ? "The game files record no drop, chest or merchant for this egg."
+                  : "The game files record no recipe, drop, chest or merchant for this — nothing in the data says where it comes from."}
+              </Text>
+              {ITEMS[id].subcategory === 'MaterialPalEgg'
+                /* the 10 eggs with no hatch table already carry this
+                   button in their IL26 card — one per card, not two */
+                && palsHatchingFrom(id).length > 0 && (
+                <View style={{ marginTop: 8 }}>
+                  <Btn small label="Open the breeding calculator"
+                    onPress={() => {
+                      onClose();
+                      navigateTo({ domain: 'breeding', tab: 'calc' });
+                    }} />
+                </View>
+              )}
+            </Card>
+          )}
 
           {(facts?.drops || facts?.boxes || facts?.shops
             || palsDropping(id).length > 0) && (

@@ -386,6 +386,18 @@ export function rawMaterialsFor(id: string): CraftRollup {
   return rollupOfMats(recipe, id);
 }
 
+/** Nothing anywhere says how to get this item: no recipe, no tier
+ * craft, no technology node, no research, no drop, no chest, no shop,
+ * and no pal drops it (IL41). 102 items are in this state. A card that
+ * simply shows nothing reads like a half-built app, so the screen says
+ * so plainly instead — never inventing a source to fill the hole. */
+export function hasNoKnownSource(id: string): boolean {
+  const f = ITEM_FACTS[id];
+  if (f && (f.recipe || f.crafts || f.recipesMore || f.tech
+    || f.drops || f.boxes || f.shops || f.research)) return false;
+  return palsDropping(id).length === 0;
+}
+
 /** The things this item helps craft — one row per family, best first. */
 export function usedInOf(id: string): string[] {
   const products = USED_IN.get(id);

@@ -2349,7 +2349,7 @@ work always"):**
       HONEST SCORECARD: silent cards 106 -> 102, because most of the 45
       already had SOME source (tech or a chest) and were not in the 106.
       The recipe was still missing from all 45 cards, which is the point.
-- [ ] IL41 THE REMAINING 102 2026-08-20, measured and split so the next
+- [x] IL41 2026-08-20: THE REMAINING 102 CARDS SPEAK, measured and split so the next
       tick does not re-audit: 53 PAL EGGS, 26 IMPLANTS, 5 Grappling Gun
       tiers, and 18 others. These are NOT all the same problem:
       - The 53 eggs already answer "what is this" (they list what
@@ -2363,7 +2363,27 @@ work always"):**
         leaving a card that looks unfinished. Never invent one.
       - The 5 Grappling Gun tiers have no page at all upstream, which is
         the same gap that hid its icon and its name (IL35, IL36).
-      Decide per group; do not write one message for all three.
+      DONE 2026-08-20. Every one of the 102 now SAYS so instead of the
+      card simply ending, which read like a half-built app rather than
+      an honest gap — the difference between "we didn't finish this" and
+      "the game doesn't record it", which is the whole quality bar.
+      Two messages, not one, because they are not the same situation:
+      - eggs: "The game files record no drop, chest or merchant for this
+        egg." plus the breeding calculator, which is the one thing this
+        app can genuinely do about an egg.
+      - everything else: "The game files record no recipe, drop, chest
+        or merchant for this — nothing in the data says where it comes
+        from."
+      CAUGHT WHILE BUILDING: the 10 eggs with no hatch table already
+      carry a breeding button in their IL26 card, so the new card would
+      have put a SECOND identical button on those ten. Gated on
+      `palsHatchingFrom(id).length > 0` and eye-verified on the Dragon
+      Egg: exactly one button, both messages present and distinct.
+      The predicate `hasNoKnownSource` lives in the data layer so the
+      test measures the CATALOGUE, not the copy: 102 items, split 53
+      eggs / 26 implants / 5 Grappling Gun tiers, with a guard that
+      anything holding a recipe, a pal drop or a shop is never called
+      sourceless. 891 green. Eye-verified on all three groups.
 - [x] IL39 2026-08-20: THE SEARCH COUNT TELLS THE TRUTH NOW. The header
       counted the rows it DREW, not the matches that exist — "armor"
       said "14 results" when 130 things matched, "a" said 26 for 1,627 —
