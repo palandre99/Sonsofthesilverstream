@@ -16,7 +16,7 @@ import {
   rawMaterialsFor,
   rankAxisOf, rankValueOf, recipeOf, hasTierCosts, rivalsOf, rollupOfMats,
   saysTheSame,
-  familyLine, statLine, familyPowerAxisOf,
+  familyLine, statLine, familyPowerAxisOf, suggestItems,
   groupOf, ITEM_IDS,
   schematicsFor, searchItems, spokenCraftTime, sortItems, statRank, TAB_GROUPS, teachesOf,
   tierWord, usedInOf, weaponsForAmmo,
@@ -1986,5 +1986,47 @@ describe('the filter sheet promises what it will show (IL80)', () => {
   it('the two numbers come from one function', () => {
     // "Advanced Bow" across everything: 5 rows, and the button said 105
     expect(collapseFamilies(searchItems('Advanced Bow')).length).toBe(5);
+  });
+});
+
+describe('a misspelling gets offered a way out (IL81)', () => {
+  const names = (q: string) => suggestItems(q).map((i) => ITEMS[i].name);
+
+  it('the near misses are the ones a player actually typed at', () => {
+    expect(names('grapling')[0]).toBe('Grappling Gun');
+    expect(names('mechnical')[0]).toBe('Mechanical Bow');
+    expect(names('advansed')[0]).toBe('Advanced Bow');
+    expect(names('ingt')[0]).toBe('Ingot');
+    expect(names('sphre')).toContain('Pal Sphere');
+  });
+
+  it('a query that resembles nothing is offered nothing', () => {
+    expect(suggestItems('zzzqqq')).toEqual([]);
+    expect(suggestItems('qwertyuiop')).toEqual([]);
+  });
+
+  it('too short to judge is left alone', () => {
+    // two characters match half the catalogue by accident
+    expect(suggestItems('bo')).toEqual([]);
+    expect(suggestItems('a')).toEqual([]);
+  });
+
+  it('one row per family, never five of the same name', () => {
+    for (const q of ['grapling', 'advansed', 'sphre', 'ingt']) {
+      const out = names(q);
+      expect(new Set(out).size).toBe(out.length);
+      expect(out.length).toBeLessThanOrEqual(3);
+    }
+  });
+
+  it('it OFFERS — the screen never searches for something unasked', () => {
+    const code = readFileSync(
+      join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+    const block = code.slice(code.indexOf('IL81'), code.indexOf('IL81') + 800);
+    expect(block).toContain('Did you mean:');
+    // the chip sets the query for the player to see, it does not swap
+    // results in behind their back
+    expect(block).toContain('onPress={() => setQ(ITEMS[nid].name)}');
+    expect(code).toContain('searching && ids.length === 0 ? suggestItems(q) : []');
   });
 });

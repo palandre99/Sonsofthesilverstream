@@ -896,6 +896,59 @@ export function searchItems(q: string): string[] {
   });
 }
 
+/** Edit distance, capped — we only ever care whether two short strings
+ * are CLOSE, so the row-pair walk stops early once nothing can be within
+ * `max`. Keeps a 1,892-name sweep cheap enough to run on a keystroke
+ * that found nothing. */
+function within(a: string, b: string, max: number): number {
+  if (Math.abs(a.length - b.length) > max) return max + 1;
+  let prev = Array.from({ length: b.length + 1 }, (_, i) => i);
+  for (let i = 1; i <= a.length; i++) {
+    const cur = [i];
+    let best = i;
+    for (let j = 1; j <= b.length; j++) {
+      cur[j] = a[i - 1] === b[j - 1]
+        ? prev[j - 1]
+        : 1 + Math.min(prev[j - 1], prev[j], cur[j - 1]);
+      if (cur[j] < best) best = cur[j];
+    }
+    if (best > max) return max + 1;
+    prev = cur;
+  }
+  return prev[b.length];
+}
+
+/** IL81: a misspelling was a dead end — "grapling" said "No item matches"
+ * and stopped there. This OFFERS the near misses; it never silently
+ * searches for something the player did not type. One row per family, at
+ * most three, and only names genuinely close to what was typed: a
+ * one-character slip on a short word, two on a long one. A query that
+ * resembles nothing gets nothing, which is still the honest answer. */
+export function suggestItems(q: string, limit = 3): string[] {
+  const needle = q.trim().toLowerCase();
+  if (needle.length < 3) return [];
+  const max = needle.length <= 5 ? 1 : 2;
+  const scored: { id: string; d: number }[] = [];
+  for (const id of collapseFamilies(ITEM_IDS)) {
+    const name = ITEMS[id].name.toLowerCase();
+    let d = within(needle, name, max);
+    if (d > max) {
+      // a slip in ONE word of a longer name still counts
+      for (const w of name.split(/[\s:]+/)) {
+        const wd = within(needle, w, max);
+        if (wd < d) d = wd;
+      }
+    }
+    if (d <= max) scored.push({ id, d });
+  }
+  return scored
+    .sort((a, b) => a.d - b.d
+      || ITEMS[a.id].name.length - ITEMS[b.id].name.length
+      || ITEMS[a.id].name.localeCompare(ITEMS[b.id].name))
+    .slice(0, limit)
+    .map((x) => x.id);
+}
+
 /** Where this item's stat stands among everything that carries the stat —
  * "Attack 320" alone floats; "#41 of 187" is a fact with context
  * (AAA criterion 6). Computed once per stat, cached. */

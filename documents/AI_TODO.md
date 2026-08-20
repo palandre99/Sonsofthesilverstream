@@ -11888,3 +11888,38 @@ Gates: mobile `tsc --noEmit` clean, `npx vitest run` 1048/1048.
   screen says so honestly, but offers nothing. A "did you mean" needs an
   edit-distance pass over 1,892 names — cheap, and it never has to guess
   silently: it can OFFER and let the player choose.
+
+---
+
+## IL81 — a misspelling stops being a dead end (2026-08-20)
+
+Typing "grapling" said *No item matches "grapling"* and stopped. Now it
+offers, on the running app:
+
+```
+No item matches “grapling”.
+Did you mean:   [Grappling Gun]  [Gatling Gun]  [Gatling Gun Ammo]
+```
+
+Tapping one puts the real name in the search box — **1 item found**. The
+app OFFERS; it never quietly searches for something the player did not
+type, and the box always shows what is being searched for.
+
+`suggestItems` is a capped edit-distance sweep: one slip allowed on a
+short query, two on a long one, matched against the whole name and
+against each word of it. One row per family, at most three.
+
+**It refuses when it should:** "zzzqqq" and "qwertyuiop" offer nothing,
+and anything under three characters is left alone because two letters
+match half the catalogue by accident. A guess presented as an answer
+would be the opposite of what this app is for; a guess presented as a
+question is just help.
+
+Only computed when the search found nothing, so it never touches the
+keystroke path of a query that works.
+
+Gates: mobile `tsc --noEmit` clean, `npx vitest run` 1053/1053.
+
+**A note on verifying:** the first read after tapping a suggestion showed
+the OLD value — the probe ran in the same tick as the click, before
+React re-rendered. Read again before believing a click did nothing.

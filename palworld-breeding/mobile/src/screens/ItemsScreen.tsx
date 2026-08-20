@@ -28,7 +28,7 @@ import {
   ITEM_IDS,
   rankAxisOf,
   rankValueOf, rivalsOf, rollupOfMats,
-  schematicsFor, spokenCraftTime, spokenTime,
+  schematicsFor, spokenCraftTime, spokenTime, suggestItems,
   BUFF_LABELS, familyLine, statLine,
   searchItems, sortItems, statRank, TAB_GROUPS, teachesOf, TIER_WORDS,
   tierWord, usedInOf, weaponsForAmmo, type ItemSort,
@@ -1612,11 +1612,14 @@ export function ItemsScreen({ initialGroup = 'weapons' }: { initialGroup?: strin
   useAppVersion();          // rows carry a build marker now (IL45)
 
   const searching = q.trim().length > 0;
+
   const level = getPlayerLevel();
   const ids = useMemo(
     () => sortItems(applyItemFilters(filters, q, level), sort, !filters.expand),
     [filters, q, sort, level],
   );
+  // only worth computing when nothing matched at all
+  const near = searching && ids.length === 0 ? suggestItems(q) : [];
 
   // a pal card's drop chip — or a search hit — lands here with the item
   // preselected. Only the CENTER tab takes the payload (intents target
@@ -1690,6 +1693,23 @@ export function ItemsScreen({ initialGroup = 'weapons' }: { initialGroup?: strin
             : ids.length === 1 ? '1 item found — across everything'
             : `${ids.length} items found — across everything`}
         </Text>
+      )}
+      {/* IL81: a misspelling used to end the conversation. These are
+          OFFERED, never substituted — the app does not go looking for
+          something the player did not type. Nothing close, nothing
+          shown. */}
+      {searching && ids.length === 0 && near.length > 0 && (
+        <View style={{ marginBottom: 10 }}>
+          <Text style={[s.body, { fontSize: 12, color: T.muted }]}>
+            Did you mean:
+          </Text>
+          <View style={[s.wrap, { marginTop: 6 }]}>
+            {near.map((nid) => (
+              <Chip key={nid} on={false} label={ITEMS[nid].name}
+                onPress={() => setQ(ITEMS[nid].name)} />
+            ))}
+          </View>
+        </View>
       )}
       <FlatList
         data={ids}
