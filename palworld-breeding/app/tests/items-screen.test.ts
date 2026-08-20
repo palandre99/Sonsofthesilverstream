@@ -2147,3 +2147,35 @@ describe('a breeding plan hands its cakes to the build list (IL84)', () => {
     expect(odds).toContain('`What ${n} ${c.name}s cost`');
   });
 });
+
+describe('an empty list offers the way out, by name (IL85)', () => {
+  it('the dead end was real: no egg protects you from cold', () => {
+    const eggs = idsInGroup('eggs');
+    expect(eggs.length).toBeGreaterThan(0);
+    const cold = eggs.filter((i) =>
+      familyOf(i).some((t) => guardLevel(t, 'Cold') > 0));
+    expect(cold.length).toBe(0);
+    // and dropping that one filter brings the whole group back
+    expect(collapseFamilies(eggs).length).toBe(32);
+  });
+
+  it('each filter is tried on its own and offered by name', () => {
+    const code = readFileSync(
+      join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+    const block = code.slice(code.indexOf('IL85'), code.indexOf('IL85') + 700);
+    expect(block).toContain('relaxations.map');
+    expect(block).toContain('`${r.label} · ${r.n} items`');
+    expect(code).toContain('Without "protects from ${filters.guard}"');
+    expect(code).toContain("'Look in everything instead'");
+  });
+
+  it('only offers that would really bring rows back are shown', () => {
+    const code = readFileSync(
+      join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+    expect(code.replace(/\s+/g, ' ')).toContain(
+      '.map((t) => ({ ...t, n: applyItemFilters(t.next, q, level).length })) '
+      + '.filter((t) => t.n > 0)');
+    // and it costs nothing when the list is not empty
+    expect(code).toContain('if (searching || ids.length > 0) return [];');
+  });
+});

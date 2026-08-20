@@ -1629,6 +1629,49 @@ export function ItemsScreen({ initialGroup = 'weapons' }: { initialGroup?: strin
   // only worth computing when nothing matched at all
   const near = searching && ids.length === 0 ? suggestItems(q) : [];
 
+  // ...and the same for filters: which single chip, dropped, brings the
+  // list back? Only computed on an empty list, so it costs nothing in
+  // the normal case.
+  const relaxations = useMemo(() => {
+    if (searching || ids.length > 0) return [];
+    const tries: { label: string; next: ItemFilters }[] = [];
+    if (filters.kind) {
+      tries.push({ label: `Without "${filters.kind}"`, next: { ...filters, kind: null } });
+    }
+    if (filters.guard) {
+      tries.push({
+        label: `Without "protects from ${filters.guard}"`,
+        next: { ...filters, guard: null },
+      });
+    }
+    if (filters.buff) {
+      tries.push({
+        label: `Without "gives you ${filters.buff}"`,
+        next: { ...filters, buff: null },
+      });
+    }
+    if (filters.reachable) {
+      tries.push({
+        label: 'Without "only what I can unlock"',
+        next: { ...filters, reachable: false },
+      });
+    }
+    if (filters.expand && filters.tiers.length) {
+      tries.push({ label: 'Without the tier picks', next: { ...filters, tiers: [] } });
+    }
+    if (filters.group !== 'all') {
+      tries.push({
+        label: 'Look in everything instead',
+        next: { ...filters, group: 'all', kind: null },
+      });
+    }
+    return tries
+      .map((t) => ({ ...t, n: applyItemFilters(t.next, q, level).length }))
+      .filter((t) => t.n > 0)
+      .sort((a, b) => a.n - b.n)
+      .slice(0, 2);
+  }, [filters, ids.length, searching, q, level]);
+
   // a pal card's drop chip — or a search hit — lands here with the item
   // preselected. Only the CENTER tab takes the payload (intents target
   // 'allitems'; a sibling tab instance must not steal it mid-switch).
@@ -1744,9 +1787,22 @@ export function ItemsScreen({ initialGroup = 'weapons' }: { initialGroup?: strin
             onOpen={setOpen} />
         )}
         ListEmptyComponent={!searching ? (
-          <Text style={[s.body, { textAlign: 'center', marginTop: 30 }]}>
-            Nothing matches those filters.
-          </Text>
+          <View style={{ marginTop: 30, alignItems: 'center', gap: 10 }}>
+            <Text style={[s.body, { textAlign: 'center' }]}>
+              Nothing matches those filters.
+            </Text>
+            {/* IL85: it used to stop there, and left the player to work
+                out WHICH of three chips was the one killing the list.
+                Every filter is tried on its own; the ones that would
+                actually bring rows back are offered by name, with the
+                count they would give. No egg protects you from cold —
+                so say that, and offer the way out. */}
+            {relaxations.map((r) => (
+              <Btn key={r.label} small
+                label={`${r.label} · ${r.n} items`}
+                onPress={() => setFilters(r.next)} />
+            ))}
+          </View>
         ) : null}
         contentContainerStyle={{ paddingBottom: 40 }}
       />

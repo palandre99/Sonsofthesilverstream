@@ -12057,3 +12057,63 @@ Gates: mobile `tsc --noEmit` clean, `npx vitest run` 1063/1063.
   at x=281 w=68, Rare x=322 w=27, Epic x=325 w=24, Legendary x=287 w=62),
   and Uncommon/Rare/Epic/Legendary IS tier 1/2/3/4. The earlier finding
   that a separate tier marker would be duplicate information stands.
+
+---
+
+## IL85 — the empty list names the filter that killed it (2026-08-20)
+
+**Ran the 15 AAA-vs-fan-made criteria (`04_PRODUCT_BLUEPRINT.md` §5)
+against the Items fane as a literal checklist.** Criterion 10 — "empty
+states that teach the killer feature" — was the one that failed. The
+list said:
+
+```
+Nothing matches those filters.
+```
+
+...and stopped. The `✕ clear` affordance sits above the list and does
+work, but it clears EVERYTHING, and the player is left to guess which of
+three chips was the one at fault.
+
+Now every active filter is tried on its own, and the ones that would
+really bring rows back are offered by name with their count:
+
+```
+Nothing matches those filters.
+[ Without "protects from Cold" · 32 items ]
+[ Look in everything instead · 33 items ]
+```
+
+Tapping the first one drops exactly that filter and the 32 egg rows come
+back — verified on the running app, filter line went from
+`Eggs · protects from Cold · A–Z` to `Eggs · A–Z`.
+
+The offers are only computed when the list is empty, so they cost
+nothing in the normal case, and only offers with a real count are shown
+— never a button that leads to another empty list.
+
+Caught on the eye pass: the group offer first read *"Without just this
+group"*, which is not English. Each offer now carries its own phrasing.
+
+Gates: mobile `tsc --noEmit` clean, `npx vitest run` 1066/1066.
+
+### THE OTHER 14 CRITERIA, CHECKED AGAINST THE FANE
+
+PASS, with the evidence: **1** build stamp + provenance on every screen
+("Palworld 1.0 · read from the game files 14 Aug 2026 · where these come
+from"). **2** search is one tap from the top of the fane and now fuzzy.
+**3** five bottom tabs, no hamburger. **4** one card anatomy — numbers,
+what it does, how to craft, where to find, in that order on all 1,892.
+**5** cross-links now go both ways in every direction, the breeding
+hand-off closed the last gap. **6** every number carries rank context.
+**7** offline-complete — the whole catalogue is bundled. **8/9** no ads,
+token theme. **11** rows carry icon + name + 2–3 facts, virtualised.
+**12** nothing blocks; the sheet's own cost was measured and cut. **13**
+community vs datamined is fenced and labelled. **15** share sheet on
+every card and on the build.
+
+**14 is the one genuinely not built: the patch-day news row.** The
+RITUAL exists (`09_ITEMS_PLAN.md` §7) but nothing in-app ever says "data
+updated for build X — what changed". That is a real gap, it is a
+cross-fane feature rather than an Items one, and it is queued rather
+than half-built here.
