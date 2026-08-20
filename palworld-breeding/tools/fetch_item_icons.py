@@ -40,6 +40,33 @@ CELL = 96
 PER_ROW = 21          # 21 * 96 = 2016 <= 2048
 PER_SHEET = PER_ROW * PER_ROW
 
+# Six icons the first sweep never resolved, leaving 13 items on the
+# placeholder (audited 2026-08-20). Three simply lost their fetch to the
+# sweep's own throttling and work on a retry; the other three are filed
+# on paldb under a DIFFERENT name than our backbone carries:
+#   Shield_05        our "Shield Ultra"  -> page "Ultra Shield"
+#   Glider_Legendary our "Glider Tera"   -> page "Glider Legendary"
+#   GrapplingGun     our "GrapplingGun"  -> page "Grappling Gun"
+# Every one of these was verified by EXACT IDENTITY, not by looking:
+# the page's own image filename carries the icon id we are asking for
+# (T_itemicon_Armor_Shield_05.webp for Shield_05), and `identity_ok`
+# below refuses the download unless it does. A page name is a lookup
+# key, never evidence on its own.
+PAGE_NAME_OVERRIDES: dict[str, str] = {
+    "Octavia001_Armor": "V1 Armor",
+    "Octavia002_Armor": "V2 Armor",
+    "Launcher_Meteor": "Meteor Launcher",
+    "Shield_05": "Ultra Shield",
+    "Glider_Legendary": "Glider Legendary",
+    "GrapplingGun": "Grappling Gun",
+}
+
+
+def identity_ok(url: str, icon: str) -> bool:
+    """The texture must name the very icon we asked for."""
+    tail = url.rsplit("/", 1)[-1]
+    return tail.endswith(f"_{icon}.webp") or tail == f"{icon}.webp"
+
 
 def slug_for(name: str) -> str:
     # Full percent-encoding of the underscore slug — same fixes as the page
@@ -85,7 +112,8 @@ def main() -> None:
         if out.exists():
             resolved[icon] = out
             continue
-        page = fetch(f"https://paldb.cc/en/{slug_for(name)}")
+        override = PAGE_NAME_OVERRIDES.get(icon)
+        page = fetch(f"https://paldb.cc/en/{slug_for(override or name)}")
         url = None
         if page is not None:
             text = page.decode("utf-8", "replace")
@@ -96,6 +124,11 @@ def main() -> None:
                 m = HEADER_IMG.search(text)
                 if m and "InventoryItemIcon" in m.group(1):
                     url = m.group(1)
+        # an override sent us to a page this item does not own, so the
+        # image has to prove it belongs to this icon before we keep it
+        if url and override and not identity_ok(url, icon):
+            print(f"  REFUSED {icon}: {override!r} served {url}", flush=True)
+            url = None
         if url:
             img = fetch(url, referer=True)
             if img:

@@ -2312,29 +2312,30 @@ work always"):**
    and reported with the reasoning. Only true CEO-only blockers (Apple
    logins, purchases, money, his own device) stop a tick.
 
-- [ ] IL35 FOUND 2026-08-20 by auditing the CEO's own words ("every item
-      needs an image also") against the shipped data instead of assuming
-      it was met: coverage is 1,879 of 1,892 items (99.3%). THIRTEEN
-      items show the placeholder, and they need only SIX icons, named
-      here so the next tick starts at the fetch and not at the audit:
-        Octavia001_Armor (V1 Armor, 2 items)
-        Octavia002_Armor (V2 Armor, 2 items)
-        Shield_05        (Shield Ultra, 1)
-        Glider_Legendary (Glider Tera, 1)
-        GrapplingGun     (Grappling Gun, 5 tiers)
-        Launcher_Meteor  (Meteor Launcher, 2)
-      These are the icon NAMES the backbone points at; the item pages
-      exist, so the og:image sweep in `tools/fetch_item_icons.py` either
-      missed them or those pages carry no image. Re-run it for these six
-      only, add them to a sheet, keep the three data copies byte-
-      identical (the E139 lesson), and pin the new coverage count. If a
-      page genuinely has no image, record THAT — the placeholder is
-      honest, a wrong icon is not. Also worth checking: GrapplingGun's
-      display name is the raw id "GrapplingGun" in the backbone, which
-      no other item does — verify against the page before shipping.
-      NOTE: 5 of the 13 are Shield Ultra + one broken blueprint row,
-      already logged as the remaining bare cards at IL25 — same items,
-      so this closes part of that too.
+- [x] IL35 2026-08-20: EVERY ITEM IN THE GAME NOW HAS A PICTURE —
+      1,892 of 1,892, up from 1,879. The CEO asked for this outright
+      ("every item needs an image also") and it was 13 items short; the
+      gap was found by auditing his words against the shipped data
+      rather than assuming it was met.
+      WHY THEY MISSED, PROBED NOT GUESSED: three (V1 Armor, V2 Armor,
+      Meteor Launcher) simply lost their fetch to the first sweep's own
+      throttling — their pages were fine and a retry got them. The other
+      three are filed on paldb under a DIFFERENT NAME than our backbone
+      carries: our "Shield Ultra" is their "Ultra Shield", our "Glider
+      Tera" is their "Glider Legendary", our "GrapplingGun" is their
+      "Grappling Gun". Every candidate name was tried and the misses
+      recorded before any of it was accepted.
+      THE GUARD MATTERS MORE THAN THE SIX ICONS: an override sends the
+      fetcher to a page the item does not own, so `identity_ok()` now
+      REFUSES the download unless the texture filename carries the exact
+      icon id we asked for (T_itemicon_Armor_Shield_05.webp for
+      Shield_05). A page name is a lookup key, never evidence. Without
+      that, an override is exactly how a wrong icon gets onto a card.
+      VERIFIED BY PIXELS, not by "it rendered": each of the six cells
+      was drawn to a canvas and measured — 33–57% of each cell is real
+      artwork (the known-good Beam Sword is 11%), so none is a blank
+      paste. A new test pins 1,892/1,892 and fails the moment anything
+      falls back to the placeholder. 868 green.
 - [x] IL34 2026-08-20: NO ITEM NAME ON THE CARD IS DEAD TEXT ANY MORE.
       The audit found FOUR flat "·"-joined lists, not the one I logged:
       a tier's own recipe, BOTH halves of the from-scratch bill I added

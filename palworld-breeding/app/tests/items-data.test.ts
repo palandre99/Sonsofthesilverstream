@@ -163,3 +163,43 @@ describe('the three copies move together', () => {
     expect(app === canonical, 'app items copy diverged from canonical').toBe(true);
   });
 });
+
+describe("every item has a picture — the CEO's order (IL35)", () => {
+  const icons = readFileSync(
+    join(__dirname, '../../mobile/src/data/itemIcons.g.ts'), 'utf8');
+  const coords: Record<string, [number, number, number]> = JSON.parse(
+    icons.match(/ITEM_ICON_COORDS[^=]*=\s*(\{[\s\S]*?\});/)![1]);
+  const items = (JSON.parse(readFileSync(
+    join(__dirname, '../../data/items_1_0.json'), 'utf8')) as {
+      items: Record<string, { name: string; icon: string | null }>;
+    }).items;
+
+  it('all 1,892 items resolve to a sprite-sheet cell', () => {
+    const missing = Object.keys(items)
+      .filter((i) => coords[items[i].icon ?? ''] === undefined)
+      .map((i) => `${i} (icon=${items[i].icon})`);
+    // was 13 short on 2026-08-20 — six icons the first sweep lost.
+    // A regression here means the CEO sees the placeholder again.
+    expect(missing).toEqual([]);
+    expect(Object.keys(items).length).toBe(1892);
+  });
+
+  it('the six recovered icons are really on a sheet', () => {
+    for (const icon of ['Shield_05', 'Glider_Legendary', 'GrapplingGun',
+      'Launcher_Meteor', 'Octavia001_Armor', 'Octavia002_Armor']) {
+      expect(coords[icon], `${icon} fell off the sheet`).toBeTruthy();
+    }
+    expect(Object.keys(coords).length).toBe(722);
+  });
+
+  it('an overridden page must prove the texture is the icon we asked for', () => {
+    const tool = readFileSync(
+      join(__dirname, '../../tools/fetch_item_icons.py'), 'utf8');
+    expect(tool).toContain('def identity_ok(');
+    expect(tool).toContain('REFUSED');
+    // the three whose paldb name differs from ours
+    expect(tool).toContain('"Shield_05": "Ultra Shield"');
+    expect(tool).toContain('"Glider_Legendary": "Glider Legendary"');
+    expect(tool).toContain('"GrapplingGun": "Grappling Gun"');
+  });
+});
