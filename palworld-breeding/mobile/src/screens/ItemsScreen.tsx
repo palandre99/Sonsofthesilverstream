@@ -1107,8 +1107,21 @@ function ItemDetail({ id, trail = [], onClose, onBack, onOpenItem }: {
             <Card style={{ marginTop: 10 }}>
               <Text style={s.h3}>Where to find it</Text>
               <Text style={[s.body, { marginTop: 4, fontSize: 12.5 }]}>
+                {/* IL86: the egg line listed only what is ABSENT — "no
+                    drop, chest or merchant" — and a player reads that as
+                    "nowhere". An egg you can breed has an obvious source
+                    and the button to it is one line below, so lead with
+                    that. Only for the 43 eggs our own breeding data can
+                    actually hatch something from: the other 10, Huge
+                    Ominous Egg among them, are not proven breedable and
+                    do not get told they are. */}
                 {ITEMS[id].subcategory === 'MaterialPalEgg'
-                  ? "The game files record no drop, chest or merchant for this egg."
+                  ? (palsHatchingFrom(id).length > 0
+                    ? "You get one of these by breeding. No drop, chest or"
+                      + " merchant in the game files carries it."
+                    : "The game files record no drop, chest or merchant for"
+                      + " this egg, and nothing in our breeding data hatches"
+                      + " from it either.")
                   : "The game files record no recipe, drop, chest or merchant for this — nothing in the data says where it comes from."}
               </Text>
               {ITEMS[id].subcategory === 'MaterialPalEgg'

@@ -12117,3 +12117,49 @@ RITUAL exists (`09_ITEMS_PLAN.md` §7) but nothing in-app ever says "data
 updated for build X — what changed". That is a real gap, it is a
 cross-fane feature rather than an Items one, and it is queued rather
 than half-built here.
+
+---
+
+## IL86 — an egg card leads with the answer; and a source hunt that found nothing (2026-08-20)
+
+**The egg wording.** The card listed only what is ABSENT — *"The game
+files record no drop, chest or merchant for this egg"* — with the
+breeding button one line below it. A player reads the sentence as
+"nowhere" and never gets to the answer. It now leads with it:
+
+```
+You get one of these by breeding. No drop, chest or merchant in the
+game files carries it.
+[ Open the breeding calculator ]
+```
+
+**Scoped to what we can prove.** My first cut said that on all 53 pal
+eggs. **Ten of them our own breeding data cannot hatch anything from** —
+Huge Ominous Egg, Huge Mutated Egg, Dragon Egg among them — and telling
+a player to breed for a World Tree egg would be inventing a mechanic.
+Those keep the honest line, now complete: *"...and nothing in our
+breeding data hatches from it either."* Both verified on the running app.
+
+### THE SOURCE HUNT: NOTHING FOUND, AND THE MISREAD THAT ALMOST COST AN HOUR
+
+The 97 items that cannot answer "how do I get this" break down as **53
+pal eggs + 26 implants + 18 one-offs** (V1/V2 Armor, Shield Ultra,
+Glider Tera, Building Repair Kit — four of which are the pages that 404).
+
+I nearly built a whole map-join on a misread. The earlier breakdown was
+grouped by KIND word, and I read `Materials / Ore: 2` and
+`Materials / Wood: 1` as *the items Ore and Wood have no source* — which
+would have been an embarrassing gap, since the map lane holds 1,212 ore
+markers, 1,173 paldium, 354 coal and 1,441 red-berry nodes. **It was
+never true.** Ore, Coal, Sulfur, Wood, Pure Quartz, Paldium Fragment,
+Crude Oil and Mushroom all already answer the question from item data
+alone — checked one by one, and the test now pins that so nobody
+re-opens it.
+
+**The map layers cannot fill the real gaps anyway.** The `egg` layer
+(1,816 markers) and `skill_fruit` layer (43) are generic — the data says
+"an egg is here", never WHICH egg — so joining a specific egg to them
+would be a resemblance, not an identity, exactly the trap that killed
+B14. Refused.
+
+Gates: mobile `tsc --noEmit` clean, `npx vitest run` 1069/1069.

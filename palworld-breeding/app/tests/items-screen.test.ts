@@ -915,7 +915,9 @@ describe('a card with no source says so, instead of just ending (IL41)', () => {
 
   it('the screen says it plainly and never invents a source', () => {
     expect(code).toContain('hasNoKnownSource(id) && (');
-    expect(code).toContain('The game files record no drop, chest or merchant for this egg.');
+    // IL86 split this line: an egg our breeding data can hatch leads
+    // with "you get one by breeding"; the 10 it cannot keep this.
+    expect(code).toContain('The game files record no drop, chest or merchant for');
     expect(code).toContain('nothing in the data says where it comes from');
   });
 
@@ -2177,5 +2179,41 @@ describe('an empty list offers the way out, by name (IL85)', () => {
       + '.filter((t) => t.n > 0)');
     // and it costs nothing when the list is not empty
     expect(code).toContain('if (searching || ids.length > 0) return [];');
+  });
+});
+
+describe('an egg card leads with how you get one (IL86)', () => {
+  it('the sentence answers the question before listing what is missing', () => {
+    const code = readFileSync(
+      join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+    const block = code.slice(code.indexOf('IL86'), code.indexOf('IL86') + 1200);
+    expect(block).toContain('You get one of these by breeding.');
+    expect(block).toContain('palsHatchingFrom(id).length > 0');
+  });
+
+  it('the 97 sourceless items are eggs, implants and the four missing pages', () => {
+    const silent = Object.keys(ITEMS).filter(hasNoKnownSource);
+    expect(silent.length).toBe(97);
+    const eggs = silent.filter((i) => groupOf(i) === 'Eggs');
+    expect(eggs.length).toBe(53);
+    const implants = silent.filter((i) => /^Implant: /.test(ITEMS[i].name));
+    expect(implants.length).toBeGreaterThan(20);
+    // 43 of the 53 can be hatched from our own breeding data and are
+    // told so; the other 10 (Huge Ominous Egg, Dragon Egg...) are not
+    // proven breedable and are not told they are
+    const breedable = eggs.filter((e) => palsHatchingFrom(e).length > 0);
+    expect(breedable.length).toBe(43);
+  });
+
+  it('the world-node materials were never sourceless — checked, not assumed', () => {
+    // the map lane holds ore/coal/sulfur node layers, so this looked like
+    // an unjoined source. It is not: every one of these already answers
+    // the question from the item data alone.
+    for (const n of ['Ore', 'Coal', 'Sulfur', 'Wood', 'Pure Quartz',
+      'Paldium Fragment', 'Crude Oil', 'Mushroom']) {
+      const id = itemIdByName(n);
+      expect(id, `${n} must exist`).toBeTruthy();
+      expect(hasNoKnownSource(id!), `${n} already has a source`).toBe(false);
+    }
   });
 });
