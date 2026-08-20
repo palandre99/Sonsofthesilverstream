@@ -165,6 +165,18 @@ function ItemRow({ id, showGroup, collapsed, level, onOpen }: {
   const price = ITEMS[id].price;
   const sellText = price && price > 1
     ? `Sells for ${price.toLocaleString()} gold` : null;
+  // IL93: and where nothing else is known, WHERE IT COMES FROM is. A
+  // Treasure Map row said "Treasure map" — its own name back — while the
+  // data held the camp it drops from at 100%. 19 of the last 38 rows
+  // carry a named source like this. Sits below the price, because what a
+  // thing sells for is the shorter answer when both are known.
+  const dropPals = palsDropping(id);
+  const srcRow = ITEM_FACTS[id]?.drops?.[0] ?? ITEM_FACTS[id]?.boxes?.[0];
+  const sourceText = dropPals.length === 1 ? `Dropped by ${dropPals[0]}`
+    : dropPals.length > 1 ? `Dropped by ${dropPals.length} pals`
+      : srcRow ? `From ${srcRow.src}`
+        : ITEM_FACTS[id]?.shops?.length ? `Sold by ${ITEM_FACTS[id]!.shops![0]}`
+          : null;
   // only things you MAKE go on a build list — holding a raw material
   // would add a row nobody asked for
   const facts = ITEM_FACTS[id];
@@ -214,7 +226,7 @@ function ItemRow({ id, showGroup, collapsed, level, onOpen }: {
                 the 138 saddles both read "Pal gear", so every row said
                 "Pal gear · Pal gear" (IL53). Say it once. */}
             {line || unlockText || usedText || hatchText || sellText
-              || kindWord(id)}
+              || sourceText || kindWord(id)}
             {/* IL71: the same word twice, row edition. IL53 stopped
                 "Pal gear · Pal gear" with an exact match, so a skill
                 fruit row still read "Skill fruit · Skill fruits" — the
@@ -223,7 +235,7 @@ function ItemRow({ id, showGroup, collapsed, level, onOpen }: {
             {showGroup && groupOf(id)
               && !saysTheSame(groupOf(id)!,
                 line || unlockText || usedText || hatchText || sellText
-                  || kindWord(id))
+                  || sourceText || kindWord(id))
               ? `  ·  ${groupOf(id)}` : ''}
           </Text>
           {/* the player's own state outranks the game's trivia — a row

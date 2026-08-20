@@ -1407,14 +1407,14 @@ describe('a row with no numbers still says something (IL53)', () => {
     // read without line breaks — the chain has grown past one line
     expect(code.replace(/\s+/g, ' ')).toContain(
       '!saysTheSame(groupOf(id)!, line || unlockText || usedText'
-      + ' || hatchText || sellText || kindWord(id))');
+      + ' || hatchText || sellText || sourceText || kindWord(id))');
   });
 
   it('the unlock level fills a blank line, but never doubles the marker', () => {
     expect(code).toContain(
       'const unlockText = !lockedAt && need != null ? `Unlocks at Lv ${need}` : null;');
     expect(code.replace(/\s+/g, ' ')).toContain(
-      '{line || unlockText || usedText || hatchText || sellText || kindWord(id)}');
+      '{line || unlockText || usedText || hatchText || sellText || sourceText || kindWord(id)}');
   });
 });
 
@@ -1741,7 +1741,7 @@ describe('a material row says what the material is for (IL70)', () => {
     // order matters: "can I make this yet" beats "what is it for",
     // which in turn beats what it hatches or what it sells for
     expect(code.replace(/\s+/g, ' ')).toContain(
-      '{line || unlockText || usedText || hatchText || sellText || kindWord(id)}');
+      '{line || unlockText || usedText || hatchText || sellText || sourceText || kindWord(id)}');
   });
 });
 
@@ -2439,5 +2439,47 @@ describe('a penalty is not ranked among bonuses (IL92)', () => {
       }
     }
     expect(checked).toBeGreaterThan(3);
+  });
+});
+
+describe('a row with nothing else says where it comes from (IL93)', () => {
+  it('the Treasure Map row was saying its own name back', () => {
+    const map = itemIdByName('Treasure Map')!;
+    expect(kindWord(map)).toBe('Treasure map');
+    expect(saysTheSame(kindWord(map), ITEMS[map].name)).toBe(true);
+    // ...while the data held the camp it comes from, at 100%
+    expect(ITEM_FACTS[map]!.boxes![0].src).toBe('Enemy Camp Sakurajima Seabase Goal');
+    expect(ITEM_FACTS[map]!.boxes![0].p).toBe('100%');
+  });
+
+  it('a bounty token names the boss instead of saying "Boss trophy"', () => {
+    const tok = itemIdByName('Caprity Noct Bounty Token')!;
+    expect(ITEM_FACTS[tok]!.drops![0].src).toBe('Tainted Farm Caprity Noct');
+  });
+
+  it('it sits below the price and above the kind word', () => {
+    const code = readFileSync(
+      join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+    expect(code.replace(/\s+/g, ' ')).toContain(
+      '{line || unlockText || usedText || hatchText || sellText || sourceText || kindWord(id)}');
+    const block = code.slice(code.indexOf('IL93'), code.indexOf('IL93') + 900);
+    expect(block).toContain('Dropped by ${dropPals[0]}');
+    expect(block).toContain('From ${srcRow.src}');
+    expect(block).toContain('Sold by ${ITEM_FACTS[id]!.shops![0]}');
+  });
+
+  it('19 of the last 38 dead rows gain a real source', () => {
+    const dead = collapseFamilies(ITEM_IDS).filter((id) => {
+      const fam = familyOf(id);
+      const line = fam.length > 1 ? familyLine(fam) : statLine(id);
+      return !line && ITEM_FACTS[id]?.tech?.level == null
+        && usedInOf(id).length === 0 && palsHatchingFrom(id).length === 0
+        && (ITEMS[id].price ?? 0) <= 1;
+    });
+    expect(dead.length).toBe(38);
+    const sourced = dead.filter((id) => palsDropping(id).length
+      || ITEM_FACTS[id]?.drops?.length || ITEM_FACTS[id]?.boxes?.length
+      || ITEM_FACTS[id]?.shops?.length);
+    expect(sourced.length).toBe(19);
   });
 });

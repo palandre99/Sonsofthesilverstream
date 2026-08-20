@@ -37,7 +37,7 @@ import {
   attainLabel, attainScore, boxKeyOf, cachedDerivations, derivationsReady, effortSteps,
   getAttainContext, recommendedSet, saddleGap, scoreOf, type Attain,
 } from '../logic/recommend';
-import { onNavIntent } from '../nav/intent';
+import { navigateTo, onNavIntent } from '../nav/intent';
 import { PALCALC_FACTS } from '../data/palcalcFacts.g';
 import { BEST_OVERALL, COMBAT_COMMUNITY, MOUNT_CALLOUTS } from '../data/meta';
 import { MOUNTS, UTILITY_ROLES } from '../data/utilityRoles.g';
@@ -484,6 +484,24 @@ function SectionCard({ sec, bctx, onBrowse }: {
         </Text>
       </Pressable>
       <Text style={[s.body, { fontSize: 11.5 }]}>{sec.blurb}</Text>
+      {/* This section ranks by raw battle stats, which is the right
+          answer to "who is strong" and the wrong one to "who do I bring
+          to THIS fight" — elements decide that. Point at the screen that
+          knows (bosses lane, 2026-08-19). */}
+      {sec.id === 'fight' && (
+        <Pressable
+          onPress={() => {
+            void Haptics.selectionAsync();
+            navigateTo({ domain: 'bosses', tab: 'teams' });
+          }}
+          accessibilityRole="button"
+          accessibilityLabel="See your squad scored against every element"
+          style={({ pressed }) => [{ opacity: pressed ? 0.6 : 1 }]}>
+          <Text style={{ color: T.accentInk, fontSize: 11.5, fontWeight: '800' }}>
+            For a specific fight, see your squad by element ›
+          </Text>
+        </Pressable>
+      )}
       <View style={{ flexDirection: 'row', gap: 6, flexWrap: 'wrap' }}>
         {shown.map((x) => (
           <PalChip key={x.name} name={x.name} lvl={x.lvl} star={x.star} bctx={bctx} />

@@ -12441,3 +12441,42 @@ card. It is ranked and stays ranked — what the number MEANS is not
 established (the reason it is kept off the rows), but the ordering is at
 least real, and changing it would need a decision about meaning I cannot
 ground in the data.
+
+---
+
+## IL93 — a row that has nothing else says where it comes from (2026-08-20)
+
+Found by opening a Treasure Map card. Its ROW read:
+
+```
+Treasure Map | 5 tiers | Treasure map · Consumables
+```
+
+**The line was the item's own name handed back to it** — the fault the
+material sweep fixed for "Ingot · Ingot", surviving here because the KIND
+word happens to equal the NAME. Measured: exactly one row in the game
+does that. But the data held something far better all along — the camp it
+drops from, at 100%.
+
+So the last resort before the kind word is now **where the thing comes
+from**, and it pays across the tail of the index:
+
+```
+Treasure Map              5 tiers  From Enemy Camp Sakurajima Seabase Goal
+Caprity Noct Bounty Token Common   From Tainted Farm Caprity Noct
+Cryolinx Terra Bounty Token Epic   From Predator of the Earth Cryolinx Terra
+Copper Key                Common   From Arrogant Pal Critic Lifmunk
+```
+
+The bounty tokens are the best of it — they used to read "Boss trophy",
+identical on all twenty-two, and now each names the boss you beat for it.
+
+**19 of the last 38 dead rows gain a real source.** The other 19 are the
+pal gear whose NAME already names the pal, so they stay as they are.
+
+Order in the chain: below the price (the shorter answer when both are
+known), above the kind word. Pal drops first, then the game's own drop
+and chest tables, then merchants.
+
+Gates: mobile `tsc --noEmit` clean, `npx vitest run` 1093/1093. Two older
+tests pinned the fallback chain and now pin it with `sourceText` in it.
