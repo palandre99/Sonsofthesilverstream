@@ -30,10 +30,15 @@ guides):**
   HP/atk/def/size/capture ×0.7/fight multipliers, validated by the
   CombiRank trick (E133). 91 placed (map pins live), 116 dungeon
   end-bosses.
-- **Element chart:** 2× weakness / 0.5× resist, dual-element stacking,
-  same-element +20% skill bonus. Small fixed table (9 elements),
-  datamineable; **not yet in our data — the one new dataset the whole fane
-  leans on.**
+- **Element chart:** 2× weakness / 0.5× resist, dual-element stacking.
+  Small fixed table (9 elements). **CORRECTED DURING THE BUILD:** this
+  round of research also reported a "same-element +20% skill bonus" —
+  both wikis explicitly say a skill matching the defender's element is
+  1×, so that number was never shipped anywhere. It is left here, struck,
+  because a research note that quietly disappears teaches nobody. It also
+  turned out NOT to be datamineable from any pinned dump (the atlas
+  build manifest has no element table), so it ships wiki-measured with
+  both revision ids recorded.
 - **Tower/raid raw rows exist upstream:** paldb.cc publishes the GYM_ rows
   of DT_PalMonsterParameter (probed GYM_ElecPanda: HP 5100–6360, element,
   IsTowerBoss flag) — the same table family `fetch_alpha_stats.py` already
@@ -130,9 +135,10 @@ copies moved together (E139 law):
    exists for these rows, so identity is cross-checked on element +
    level + name against a second source; refusals reported and counted.
    Hard Mode rows if the table carries them, else the card says so.
-3. `tools/fetch_boss_movesets.py` → boss-variant active skills (name,
-   element, power), each skill resolving against a skills index or
-   refused.
+3. ~~`tools/fetch_boss_movesets.py`~~ — **never needed.** The movesets
+   come down with the parameter rows on the same pages, so the two
+   fetchers above carry them; the alpha fetcher imports the tower
+   fetcher's parsers rather than duplicating them.
 4. Tower metadata: locations read-only from the map lane's extracts;
    story-gating notes labelled community where not datamined.
 5. Raid metadata: slab/fragment/altar chain — ids resolve against
