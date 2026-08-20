@@ -548,6 +548,31 @@ and the one missing dataset identified: the element chart.*
       pals_1_0.json, downloads what is missing (the CDN 403s a bare tool
       UA — browser headers, same source, same bytes) and rewrites the
       map from what is actually on disk. 299/299 mapped.
+- [x] B16 DONE 2026-08-19 (6fcce36): MEASURED PASS with a 117-pal box.
+      Two real wastes cut — every card ranked the box a SECOND time
+      uncached for its coverage sentence, and the alpha list walked 205
+      rows twice per render while each row re-asked the record. Alpha
+      list paint 1836ms -> 1449ms on the harness. NOT claimed: the
+      ~2.0s card open is modal mount (this project already has that at
+      ~1.0s harness vs ~335ms device) — no re-architecture on browser
+      numbers. Also added: element + "At my level" filters on the alpha
+      list (Dark alone 50 rows; Dark at Lv 12, 5 rows).
+      SELF-REPORTED: the memoization edit briefly shipped a crashing
+      card to the running QA app (boxKeyOf used before its import) —
+      tsc caught it, the fix was in before the commit, and the live
+      bundle was re-verified rendering clean. Edit order matters: add
+      the import in the SAME pass as the usage.
+- [x] B17 DONE 2026-08-19 (9752fb7): TOWER CARDS HAVE THEIR MAP SPOT —
+      the CEO's "map location" ask, which alphas had and towers did not
+      ("It stands at 112, -431 — 50 m south-west of the Rayne Syndicate
+      Tower Entrance statue"). Reads the map lane's own spots, edits
+      nothing of theirs. The join is strict and three-keyed because the
+      tables disagree by hand: boss table "Bjorn & Bastigor" vs map spot
+      "Bjorn & Bastagor Tower", and Auri & Shaolong's spot is named for
+      its covenant. 11 of 13 resolve; the 2 that don't are the ones the
+      GAME hides behind "？？？" and their cards say so. Coverage pinned
+      in tower-spot.test.ts so a refresh that breaks the join fails loud.
+      Tower rows also now tint level-by-reach like the alpha/raid rows.
 - [ ] B14 FOR THE ITEMS LANE (found by this lane's drop cross-check,
       2026-08-19): items_1_0.json is MISSING 11 real items that boss
       drop tables reference — all 8 tower Key Spheres (Envy, Pride,
