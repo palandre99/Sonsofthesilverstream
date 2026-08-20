@@ -26,6 +26,7 @@ import {
 } from '../itemsData';
 import { equipPassiveName, ITEM_FACTS, type CraftRow } from '../itemFacts';
 import { ItemIcon } from '../ui/ItemIcon';
+import { Icon } from '../ui/Icon';
 import { navigateTo, onNavIntent, takeIntentPayload } from '../nav/intent';
 import { shareTextForItem, techSentence } from '../itemShare';
 import { breeding, getPlayerLevel } from '../store';
@@ -245,9 +246,11 @@ const techLine = techSentence;
 const spaceTime = (t: string): string =>
   t.replace(/([hms])(?=[0-9])/g, '$1 ');
 
-function ItemDetail({ id, onClose, onOpenItem }: {
-  id: string; onClose: () => void; onOpenItem: (id: string) => void;
+function ItemDetail({ id, trail = [], onClose, onBack, onOpenItem }: {
+  id: string; trail?: string[]; onClose: () => void; onBack?: () => void;
+  onOpenItem: (id: string) => void;
 }) {
+  const cameFrom = trail.length ? ITEMS[trail[trail.length - 1]] : null;
   const it = ITEMS[id];
   const st = ITEM_STATS[id];
   const facts = ITEM_FACTS[id];
@@ -258,6 +261,22 @@ function ItemDetail({ id, onClose, onOpenItem }: {
       onRequestClose={onClose}>
       <View style={{ flex: 1, backgroundColor: T.bg2 }}>
         <View style={{ padding: 16, paddingBottom: 8 }}>
+          {cameFrom && onBack && (
+            <Pressable
+              onPress={onBack}
+              accessibilityRole="button"
+              accessibilityLabel={`Back to ${cameFrom.name}`}
+              style={({ pressed }) => [s.row, {
+                gap: 5, marginBottom: 8, alignSelf: 'flex-start',
+                opacity: pressed ? 0.6 : 1,
+              }]}>
+              <Icon name="chevron-left" size={16} color={T.accentInk} />
+              <Text style={{ color: T.accentInk, fontSize: 12.5, fontWeight: '700' }}
+                numberOfLines={1}>
+                {cameFrom.name}
+              </Text>
+            </Pressable>
+          )}
           <View style={[s.row, { marginBottom: 6, gap: 12, alignItems: 'flex-start' }]}>
             <ItemIcon icon={it.icon} size={56}
               tint={TIER_TINTS[ITEM_STATS[id]?.tier ?? tierWord(it.rarity)]} />
@@ -1082,6 +1101,8 @@ export function ItemsScreen({ initialGroup = 'weapons' }: { initialGroup?: strin
   const [sort, setSort] = useState<ItemSort>('power');
   const [sheet, setSheet] = useState(false);
   const [open, setOpen] = useState<string | null>(null);
+  /** the cards tapped through to reach `open`, oldest first */
+  const [trail, setTrail] = useState<string[]>([]);
 
   const searching = q.trim().length > 0;
   const level = getPlayerLevel();
@@ -1177,7 +1198,23 @@ export function ItemsScreen({ initialGroup = 'weapons' }: { initialGroup?: strin
         contentContainerStyle={{ paddingBottom: 40 }}
       />
       {open && (
-        <ItemDetail id={open} onClose={() => setOpen(null)} onOpenItem={setOpen} />
+        <ItemDetail id={open}
+          // IL28: tapping an ingredient, a rival or a schematic used to
+          // REPLACE the card with no way back — the same "it takes me
+          // out and I can't return" the CEO hit on the Paldex->Map jump
+          // (pal-map-return.test.ts). The trail is that way back.
+          trail={trail}
+          onClose={() => { setOpen(null); setTrail([]); }}
+          onBack={() => {
+            const prev = trail[trail.length - 1];
+            setTrail(trail.slice(0, -1));
+            setOpen(prev ?? null);
+          }}
+          onOpenItem={(next) => {
+            if (next === open) return;
+            setTrail([...trail, open]);
+            setOpen(next);
+          }} />
       )}
       {sheet && (
         <ItemFilterSheet filters={filters} sort={sort} home={initialGroup}

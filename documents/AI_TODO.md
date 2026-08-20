@@ -2368,6 +2368,20 @@ work always"):**
       offline-complete, blueprint §5 criterion 7). Stays unbuilt until a
       datamined formula appears. What IS provable already ships: the 10
       spheres' exact capture powers and the module cross-links.
+- [x] IL28 2026-08-20: MEASURED FIRST, THEN BUILT THE RIGHT THING. The
+      perf probe (temporary, deleted same tick) said there is NO lag to
+      chase: row work is 0.013ms for 14 rows / 0.047ms for 60, and a
+      full 1,892-item collapse+sort is 17ms. Memoization would have been
+      theatre. The probe instead exposed a real UX hole: tapping an
+      ingredient -> weapon -> rival REPLACED the card each time with no
+      way back — the same complaint the CEO made about Paldex->Map
+      (pal-map-return.test.ts). Cards now keep a trail: a "‹ Refined
+      Ingot" link at the top, one step per tap, popped by Back, cleared
+      by Close, and re-opening the same card can't stack a dead step.
+      Eye-verified three levels deep (Ingot -> Metal Bat -> Beam Sword
+      -> back). 848 green.
+      NOTE for the device pass: the 17ms full build runs on filter
+      changes; fine on desktop, worth a look on hardware.
 - [x] IL27 2026-08-20: the audit went one level deeper — 605 LIST ROWS
       still showed only a kind word. The fixable slice was the passive
       items: implant CARDS gained their passive at IL25 but the ROWS

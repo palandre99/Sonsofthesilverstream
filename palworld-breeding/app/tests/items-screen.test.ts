@@ -267,6 +267,26 @@ describe('the level filter uses the player’s own profile (IL21)', () => {
   });
 });
 
+describe('tapping deeper always leaves a way back (IL28)', () => {
+  const code = readFileSync(
+    join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+
+  it('the card keeps a trail and shows where you came from', () => {
+    expect(code).toContain('const [trail, setTrail] = useState<string[]>([])');
+    expect(code).toContain('setTrail([...trail, open])');
+    expect(code).toContain('Back to ${cameFrom.name}');
+  });
+
+  it('back pops one step, close clears the whole trail', () => {
+    expect(code).toContain('setTrail(trail.slice(0, -1))');
+    expect(code).toContain('onClose={() => { setOpen(null); setTrail([]); }}');
+  });
+
+  it('re-opening the same card cannot stack a useless step', () => {
+    expect(code).toContain('if (next === open) return;');
+  });
+});
+
 describe('eggs with no listed pals say so (IL26)', () => {
   const code = readFileSync(
     join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
