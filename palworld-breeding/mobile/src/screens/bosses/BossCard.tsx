@@ -19,6 +19,10 @@ import { ownedCounterRows } from '../../bosses/counterPicks';
 import { boxKeyOf } from '../../logic/recommend';
 import { fmtHp, levelFit, shortName } from '../../logic/bossText';
 import { towerSpot } from '../../bosses/whereTower';
+import {
+  summoningChain, summoningWords, type ItemFact,
+} from '../../bosses/summoning';
+import itemFactsJson from '../../data/item_facts_1_0.json';
 import { isBeaten, loadRecord, onRecordChange, toggleBeaten } from '../../bosses/record';
 import itemsJson from '../../data/items_1_0.json';
 import {
@@ -30,6 +34,11 @@ import {
 const ITEM_NAMES = (itemsJson as unknown as {
   items: Record<string, { name: string }>;
 }).items;
+/** the Items lane's datamined recipes + drop sources, read-only */
+const ITEM_FACTS = (itemFactsJson as unknown as {
+  facts: Record<string, ItemFact>;
+}).facts;
+const itemName = (id: string): string | null => ITEM_NAMES[id]?.name ?? null;
 
 export function BossCard({ base, hard, onClose }: {
   base: BossEncounter;
@@ -64,6 +73,12 @@ export function BossCard({ base, hard, onClose }: {
   // where the tower actually stands, from the map lane's own spots
   const spot = useMemo(
     () => (enc.slab ? null : towerSpot(enc.title, enc.arena)),
+    [enc],
+  );
+  // and for a raid, how you actually GET the slab you must offer
+  const chain = useMemo(
+    () => (enc.slab
+      ? summoningChain(enc.slab, ITEM_FACTS, itemName) : null),
     [enc],
   );
 
@@ -164,10 +179,14 @@ export function BossCard({ base, hard, onClose }: {
               <>
                 <Text style={[s.body, { marginTop: 6 }]}>
                   {`You bring this fight to you: offer ${
-                    ITEM_NAMES[enc.slab]?.name ?? 'its slab'
-                  } at a Summoning Altar — the slab is combined from its `
-                  + 'fragments (the game’s own item text).'}
+                    chain?.slabName ?? 'its slab'
+                  } at a Summoning Altar.`}
                 </Text>
+                {chain && summoningWords(chain) && (
+                  <Text style={[s.body, { marginTop: 4 }]}>
+                    {summoningWords(chain)}
+                  </Text>
+                )}
                 <Text style={[s.body, {
                   fontSize: 11.5, color: T.faint, marginTop: 6,
                 }]}>
