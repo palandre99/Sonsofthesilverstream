@@ -478,6 +478,12 @@ function BuildPanel({ onOpenItem }: { onOpenItem: (id: string) => void }) {
   );
 }
 
+/** IL94: the drop tables write a quantity two ways — 10,747 rows say
+ * "1" or "2–3", and 92 (the Skillfruit Orchard rows) say "x1". On a card
+ * that put "x1 · Same Element 0.75%" directly under "1 · 100%", the same
+ * fact in two formats. Strip the stray marker; the number is untouched. */
+const spokenQty = (n: string): string => String(n).replace(/^x/i, '');
+
 const techLine = techSentence;
 
 
@@ -1235,7 +1241,7 @@ function ItemDetail({ id, trail = [], onClose, onBack, onOpenItem }: {
                 const rateFor = new Map<string, string>();
                 for (const d of facts?.drops ?? []) {
                   if (palSet.has(d.src) && !rateFor.has(d.src)) {
-                    rateFor.set(d.src, `${d.n ? `${d.n} · ` : ''}${d.p}`);
+                    rateFor.set(d.src, `${d.n ? `${spokenQty(d.n)} · ` : ''}${d.p}`);
                   }
                 }
                 const rows = (facts?.drops ?? []).filter((d) => !palSet.has(d.src));
@@ -1281,7 +1287,7 @@ function ItemDetail({ id, trail = [], onClose, onBack, onOpenItem }: {
                               {d.src}
                             </Text>
                             <Text style={{ color: T.muted, fontSize: 12 }}>
-                              {d.n ? `${d.n} · ` : ''}{d.p}
+                              {d.n ? `${spokenQty(d.n)} · ` : ''}{d.p}
                             </Text>
                           </View>
                         ))}
@@ -1306,7 +1312,7 @@ function ItemDetail({ id, trail = [], onClose, onBack, onOpenItem }: {
                         {b.src}
                       </Text>
                       <Text style={{ color: T.muted, fontSize: 12 }}>
-                        {b.n ? `${b.n} · ` : ''}{b.p}
+                        {b.n ? `${spokenQty(b.n)} · ` : ''}{b.p}
                       </Text>
                     </View>
                   ))}

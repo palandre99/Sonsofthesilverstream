@@ -12553,3 +12553,41 @@ intended. That is the second and third time this session; the rule is in
 the loop prompt and I still walked into it twice.
 
 Gates: `npx vitest run` 1095/1095, mobile `tsc --noEmit` clean.
+
+---
+
+## IL94 — one fact, two formats (2026-08-20)
+
+The Apocalypse card's source table read:
+
+```
+Eclipsed Siren Bellanoir (Raid)   1 · 100%
+Skillfruit Orchard               x1 · Same Element 0.75%
+```
+
+The drop tables write a quantity two ways — **7,901 rows say "1", 2,846
+say "2–3", and 92 say "x1"** (the Skillfruit Orchard rows). Two formats
+for the same fact, one directly under the other. The stray marker is
+stripped at display; the number itself is untouched.
+
+Also confirmed good on that card: the source list caps at 8 with
+*"…and 19 more chests and boxes"* rather than running to 25 rows, and
+groups them under COMMUNITY RATES / TREASURE & CHESTS / SOLD BY.
+
+### THE VISUAL QA SERVER DIED MID-TICK
+
+The page went blank and the console was full of `ReferenceError:
+saysTheSame is not defined`, `statLine is not defined` — alarming, and
+all of it **stale history** from earlier refactors in this session. The
+real cause: **nothing was listening on 8087.** `tsc --noEmit` was clean
+and 1,095 tests were green the whole time.
+
+Restarted with the documented command
+(`npx expo start --web --port 8087 --clear`), waited for *Web Bundled
+10337ms* in its log, reloaded, and the fix verified on the fresh bundle:
+`1 · Same Element 0.75%`.
+
+**For the next worker: a blank QA page is a dead server until proven
+otherwise.** `curl -o /dev/null -w "%{http_code}" http://localhost:8087`
+answers it in a second, and the browser console will happily show you
+twenty minutes of errors you already fixed.

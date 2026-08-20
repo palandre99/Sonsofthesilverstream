@@ -2514,3 +2514,29 @@ describe('the source a row names is the best one it holds (IL93b)', () => {
     expect(ITEM_FACTS[key]!.drops![0].p).toBe('1%');
   });
 });
+
+describe('a drop quantity reads the same way everywhere (IL94)', () => {
+  it('the tables really do write it two ways', () => {
+    const shapes = new Map<string, number>();
+    for (const id of ITEM_IDS) {
+      for (const key of ['drops', 'boxes'] as const) {
+        for (const r of (ITEM_FACTS[id]?.[key] ?? [])) {
+          const shape = String(r.n).replace(/\d+/g, 'N');
+          shapes.set(shape, (shapes.get(shape) ?? 0) + 1);
+        }
+      }
+    }
+    expect(shapes.get('N')).toBe(7901);
+    expect(shapes.get('N–N')).toBe(2846);
+    expect(shapes.get('xN')).toBe(92);      // the Skillfruit Orchard rows
+  });
+
+  it('the card strips the stray marker and nothing else', () => {
+    const code = readFileSync(
+      join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+    expect(code).toContain("const spokenQty = (n: string): string => String(n).replace(/^x/i, '');");
+    // every place a quantity is printed goes through it
+    expect(code).not.toMatch(/\{d\.n \? `\$\{d\.n\} · ` : ''\}/);
+    expect(code).not.toMatch(/\{b\.n \? `\$\{b\.n\} · ` : ''\}/);
+  });
+});
