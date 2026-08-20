@@ -1585,7 +1585,13 @@ export function ItemsScreen({ initialGroup = 'weapons' }: { initialGroup?: strin
     group: initialGroup, kind: null, tiers: [], expand: false, reachable: false,
     guard: null, buff: null,
   });
-  const [sort, setSort] = useState<ItemSort>('power');
+  // "Strongest first" is the right default where strength exists — but
+  // on the centre Items tab only 28 of 1,183 families carry any number
+  // (2%), so it ranked by NUTRITION and opened on the Nutrient Tonic,
+  // then dumped 1,155 items alphabetically anyway. A–Z is what that
+  // tab was already doing for 98% of its rows; now it says so (IL55).
+  const [sort, setSort] = useState<ItemSort>(
+    initialGroup === 'other' ? 'name' : 'power');
   const [sheet, setSheet] = useState(false);
   const [open, setOpen] = useState<string | null>(null);
   /** the cards tapped through to reach `open`, oldest first */

@@ -241,7 +241,19 @@ export function effectNumber(id: string, label: string): number | null {
  * Food tab means best meals first, not alphabet). */
 export const powerOf = (id: string): number =>
   ITEM_STATS[id]?.atk ?? ITEM_STATS[id]?.def
-  ?? effectNumber(id, 'Nutrition') ?? -1;
+  ?? effectNumber(id, 'Nutrition')
+  // a sphere's strength IS its capture power — without this all ten
+  // ranked -1 and "Strongest first" put them in alphabetical order,
+  // opening the Spheres tab on the Ancient Sphere by luck of the A
+  // rather than because it is the best one (IL55)
+  ?? captureNumber(id) ?? -1;
+
+const captureNumber = (id: string): number | null => {
+  const c = ITEM_FACTS[id]?.capture;
+  if (c == null) return null;
+  const n = Number(String(c).replace(/[^\d.-]/g, ''));
+  return Number.isNaN(n) ? null : n;
+};
 
 /* ---- implants -> the passive they grant (IL25) ---------------------
  * The 40 "Implant: X" items were the biggest group of bare cards in the

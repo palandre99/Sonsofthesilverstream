@@ -2527,6 +2527,23 @@ work always"):**
       The publish ritual forbids shipping over another session's
       unfinished work. Committed and pushed; publish the moment the
       tree is clean of their changes.
+- [x] IL55 2026-08-20: TWO SORTS THAT MEANT NOTHING. Measured what
+      "Strongest first" actually orders by, per tab.
+      SPHERES ranked -1 across all ten, so the tab was ALPHABETICAL
+      while claiming to be strongest-first — the Ancient Sphere sat on
+      top by luck of the letter A. A sphere's strength IS its capture
+      power, which we already ship, so `powerOf` now falls through to
+      it: Ancient 64 · Sol 58 · Exotic 50 · Ultimate 44 … Pal Sphere 7,
+      strictly descending and pinned as such.
+      THE CENTRE ITEMS TAB was worse: only 28 of its 1,183 families
+      (2%) carry any number at all, so "Strongest first" ranked by
+      NUTRITION and opened the tab on a Nutrient Tonic, then listed the
+      other 1,155 alphabetically anyway. It now opens A–Z — which is
+      what it was already doing for 98% of its rows; the difference is
+      that the label no longer promises a meaning it cannot deliver.
+      Weapons, Armor and Food keep "Strongest first" because more than
+      half of each really has a number; the test pins that too.
+      Eye-verified both tabs. 986 green.
 - [x] IL54 2026-08-20: AMMO SAYS WHAT SHOOTS IT. Ran the same question
       across every remaining kind at once. Spheres were fine (Capture
       Power 64) and schematics were fine (what they teach), but ALL 32

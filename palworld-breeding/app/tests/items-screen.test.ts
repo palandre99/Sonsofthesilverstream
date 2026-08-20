@@ -1397,3 +1397,37 @@ describe('ammo says what shoots it (IL54)', () => {
     expect(code).toContain('For the ${ITEMS[guns[0]].name}');
   });
 });
+
+describe('a sort only claims meaning where it has any (IL55)', () => {
+  const code = readFileSync(
+    join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+
+  it('spheres rank by capture power, not the alphabet', () => {
+    const ranked = sortItems(collapseFamilies(idsInGroup('spheres')), 'power', true)
+      .filter((i) => ITEMS[i].subcategory === 'SPWeaponCaptureBall');
+    expect(ITEMS[ranked[0]].name).toBe('Ancient Sphere');
+    expect(ITEMS[ranked[1]].name).toBe('Sol Sphere');
+    expect(ITEMS[ranked[ranked.length - 1]].name).toBe('Pal Sphere');
+    // strictly descending — the whole point of the ranking
+    const powers = ranked.map((i) => familyPowerOf(i));
+    for (let n = 1; n < powers.length; n++) {
+      expect(powers[n]).toBeLessThan(powers[n - 1]);
+    }
+  });
+
+  it('the centre tab opens A–Z because 98% of it has no number', () => {
+    const fams = collapseFamilies(idsInGroup('other'));
+    const numbered = fams.filter((i) => familyPowerOf(i) > 0);
+    expect(fams.length).toBeGreaterThan(1000);
+    expect(numbered.length).toBe(28);       // 2% — "strongest" meant nothing
+    expect(code).toContain("initialGroup === 'other' ? 'name' : 'power'");
+  });
+
+  it('the tabs that DO have strength keep it', () => {
+    for (const g of ['weapons', 'armor', 'food']) {
+      const fams = collapseFamilies(idsInGroup(g));
+      const numbered = fams.filter((i) => familyPowerOf(i) > 0);
+      expect(numbered.length / fams.length).toBeGreaterThan(0.5);
+    }
+  });
+});
