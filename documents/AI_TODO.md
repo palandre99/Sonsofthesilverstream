@@ -606,6 +606,29 @@ and the one missing dataset identified: the element chart.*
       column or our own extraction from the server package. Until then
       the ~1 hour figure ships labelled community-measured, as it does
       today. REOPEN if an upstream starts publishing it.
+- [x] B21 DONE 2026-08-19: tower cards SHOW the tower on the map now,
+      not just its coordinates — the map lane's own tiles cropped to the
+      spot with the boss ring on it. Two real faults found BY LOOKING:
+      (a) the preview was gated on a layout measurement that never
+      arrives inside the modal, so it drew nothing at all; PalMap
+      renders with a FALLBACK size instead of gating, and matching that
+      fixed it; (b) a latent hole in the shared preview — it picks its
+      tile level from side/window, and a one-point crop on a wide screen
+      asks for z5, which the bundle does not carry (MAP_TILES holds
+      z0-z4 only; the interactive map gets z5 as sheets), so an uncapped
+      preview goes blank. The card caps its own side. Verified: 320 px
+      preview, real tiles (palpagos/2_2_1.webp), 18 px gold ring.
+- [ ] B22 FOR THE MAP LANE (found 2026-08-19): MapPreview can silently
+      render an EMPTY map. MAX_TILE_Z is 5 but MAP_TILES ships z0-z4
+      only (counted: 2/8/29/101/180), so any crop tight enough to select
+      z5 draws nothing — no fallback to the level below, no warning. It
+      bites tight single-point crops on wide screens; a phone-width
+      species cloud never hits it, which is why it has stayed hidden.
+      Suggested fix in your component: clamp the chosen level to the
+      deepest level that actually has tiles, or fall back one level when
+      a tile is missing. The bosses lane worked around it by capping its
+      own preview width — the workaround belongs in your component, not
+      in every caller.
 - [ ] B14 FOR THE ITEMS LANE (found by this lane's drop cross-check,
       2026-08-19): items_1_0.json is MISSING 11 real items that boss
       drop tables reference — all 8 tower Key Spheres (Envy, Pride,
