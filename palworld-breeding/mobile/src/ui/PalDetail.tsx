@@ -309,7 +309,9 @@ export function PalDetail({ name, onClose }: { name: string; onClose: () => void
               );
             })()}
           </View>
-          <Btn label="✕" onPress={onClose} small />
+          {/* the glyph is the visible label, but "✕" read aloud is
+              nothing — the item card beside it says "Close" (IL62) */}
+          <Btn label="✕" a11yLabel="Close" onPress={onClose} small />
         </View>
         {/* The densest datamined surface in the app — stats, rank, work
             levels, drops, spawn levels, passives — and it was the one screen

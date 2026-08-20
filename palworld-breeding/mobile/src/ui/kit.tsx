@@ -243,9 +243,14 @@ export function Tile({ big, label }: { big: string; label: string }) {
   );
 }
 
-export function Btn({ label, onPress, primary, danger, disabled, small }: {
+export function Btn({
+  label, onPress, primary, danger, disabled, small, a11yLabel,
+}: {
   label: string; onPress: () => void; primary?: boolean; danger?: boolean;
   disabled?: boolean; small?: boolean;
+  /** what a screen reader says, when the visible label is a GLYPH that
+   * reads as nothing — the pal card's close button shows "✕" (IL62) */
+  a11yLabel?: string;
 }) {
   return (
     <Pressable
@@ -258,7 +263,7 @@ export function Btn({ label, onPress, primary, danger, disabled, small }: {
       // screen reader they were buttons — the visible text was the only clue,
       // and a dimmed button never announced that it was unavailable
       accessibilityRole="button"
-      accessibilityLabel={label}
+      accessibilityLabel={a11yLabel ?? label}
       accessibilityState={{ disabled: !!disabled }}
       // MEASURED ON THE RENDER, not assumed: a normal button was 37 px tall
       // and a small one 30 px, against Apple's 44 pt minimum touch target —

@@ -1465,3 +1465,17 @@ describe('pal gear links back to its pal (IL57)', () => {
     expect(code).toContain("domain: 'breeding', tab: 'paldex', payload: { pal: owner }");
   });
 });
+
+describe('a glyph button still says a word out loud (IL62)', () => {
+  it('the pal card\'s close button reads "Close", not "✕"', () => {
+    const pal = readFileSync(
+      join(__dirname, '../../mobile/src/ui/PalDetail.tsx'), 'utf8');
+    expect(pal).toContain('a11yLabel="Close"');
+  });
+
+  it('Btn speaks its visible label unless a glyph overrides it', () => {
+    const kit = readFileSync(
+      join(__dirname, '../../mobile/src/ui/kit.tsx'), 'utf8');
+    expect(kit).toContain('accessibilityLabel={a11yLabel ?? label}');
+  });
+});

@@ -2630,7 +2630,7 @@ work always"):**
       not replicate all of statLine's branches).
       NOTHING WAS SHIPPED FOR ANY OF IT — the one-frame delay and both
       instrumentations were reverted to the committed state.
-- [ ] IL62 A SMALL REAL ONE, found while disproving the above: the pal
+- [x] IL62 2026-08-20 (DONE) A SMALL REAL ONE, found while disproving the above: the pal
       card's close button is labelled "✕" to a screen reader, which
       reads as nothing useful, while the item card next to it says
       "Close". `mobile/src/ui/PalDetail.tsx`. One word. It is the
