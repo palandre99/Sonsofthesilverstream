@@ -2379,6 +2379,27 @@ work always"):**
       the game's own acronyms. A shared `kindPhrase` now keeps EXP and
       SAN in capitals, and the share composer had the same bug and got
       the same fix. 896 green.
+- [ ] IL44 FOUND BY IL43 2026-08-20, and it is IL30's standing lesson
+      applied: a build list that cannot leave the phone is half a
+      feature. A shopping list is the single most shareable thing this
+      fane has ever produced — "here is exactly what we need to farm" —
+      and the app ALREADY has the idiom: the Paldex ships "Share my
+      list…" (PaldexScreen.tsx:390). So this is matching a pattern, not
+      inventing one. Compose it in `itemShare.ts` beside
+      `shareTextForItem` so the test asserts the REAL text, not source
+      strings, and carry the same provenance footer every share has.
+      Include what is being made, the gather totals, and the middle
+      steps; keep it paste-able into Discord without a wall.
+- [ ] IL45 FOUND BY IL43 2026-08-20: building a list is slower than it
+      should be. "Add to my build" lives only at the foot of an item's
+      CARD, so assembling a five-item list means five searches, five
+      card opens and five scrolls to the bottom. The index row is where
+      a player is already looking. MEASURE FIRST whether a row control
+      fits 375px without crowding the icon, name, stat line and level
+      marker — the CEO has rejected busy rows twice, and a row that
+      gains a button it does not need is exactly that. If it does not
+      fit, a long-press with haptics is the honest alternative (the
+      screen already imports expo-haptics).
 - [x] IL43 2026-08-20: THE BUILD LIST — what a whole grind costs. IL32
       and IL33 answer "what does THIS cost from scratch". The question
       they do not answer is the one a player actually asks before a
