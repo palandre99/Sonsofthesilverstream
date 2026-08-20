@@ -61,7 +61,7 @@ one link above — no QR codes, no logins.
 Starts the dev server in **tunnel mode: works on WiFi AND 5G**, anywhere.
 The moment the URL is ready it's copied to your clipboard, shown in the
 window, and saved to `CURRENT-DEV-URL.txt` / `.html` in this folder — open
-the Palforge DEV app on the phone and it connects; every change lands live.
+the Paldexia DEV app on the phone and it connects; every change lands live.
 
 **Safe to double-click twice.** If you run START-APP.cmd again (or it was
 already running from earlier), the new window takes over and shuts the old
@@ -73,7 +73,7 @@ Always use the **newest** window; its URL is the live one.
 - Connected to the dev server (button 2): changes arrive **live while you
   use the app**, exactly like Stride.
 - Otherwise: Claude pushes updates from his side after each work block —
-  just close and reopen Palforge and the newest version is there.
+  just close and reopen Paldexia and the newest version is there.
 - `PUSH-UPDATE.cmd` exists only as an emergency backup if Claude is
   offline and you want to push the latest code yourself.
 
