@@ -2312,7 +2312,24 @@ work always"):**
    and reported with the reasoning. Only true CEO-only blockers (Apple
    logins, purchases, money, his own device) stop a tick.
 
-- [x] IL38 2026-08-20: THE SEARCH SHOWS EACH THING ONCE — and the fix
+- [ ] IL39 FOUND BY IL38 2026-08-20: THE SEARCH'S RESULT COUNT IS A LIE,
+      and it is the same bug one level up. IL38 fixed the duplicates
+      eating the 14-row budget; the budget itself is still silent. The
+      header counts the rows it DREW, not the matches that exist, so:
+        "armor" says "14 results" for 130 real matches
+        "egg"   says "14 results" for  54
+        "pal"   says "16 results" for 346
+        "a"     says "26 results" for 1,627
+      A player reads that and believes they have seen everything. This
+      workspace's own rule is that every number carries meaning, and
+      this one carries the wrong one. The honest-truncation idiom
+      already exists in the codebase — IL20's "…and 17 more things it
+      goes into" — so use it rather than inventing a pattern: say the
+      true total, and say plainly that the rest are not shown. Decide
+      whether to also raise or page the cap; MEASURE the overlay's
+      scroll length at 375px before raising it, because 130 rows in a
+      modal is its own kind of unusable. Pals cap at 12 and items at 14
+      independently, so the fix belongs in both counts. — and the fix
       turned out to be about RESULTS, not tidiness. Searching "Old Bow"
       gave five identical rows (the base and its four rarity tiers);
       searching "bow" spent the whole 14-row budget on those duplicates
