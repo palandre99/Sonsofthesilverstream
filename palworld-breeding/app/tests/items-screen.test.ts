@@ -1300,3 +1300,47 @@ describe('gear is findable by what it protects you from (IL50)', () => {
     expect(code).toContain('protects from ${filters.guard}');
   });
 });
+
+describe('food says why you would cook it (IL52)', () => {
+  const code = readFileSync(
+    join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+  const facts = (FACTS as { facts: Record<string, {
+    effects?: [string, string][] }> }).facts;
+  const has = (id: string, label: string) =>
+    (facts[id]?.effects ?? []).some(([k]) => k === label);
+
+  it('the buffs are really in the shipped data', () => {
+    const food = Object.keys(ITEMS).filter((i) => ITEMS[i].category === 'Food');
+    expect(food.length).toBe(94);
+    expect(food.filter((i) => has(i, 'Work Speed')).length).toBe(9);
+    expect(food.filter((i) => has(i, 'EXP increase')).length).toBe(4);
+    expect(food.filter((i) => has(i, 'Hunger resist')).length).toBe(9);
+  });
+
+  it('the row shows the buff, not just how filling it is', () => {
+    expect(code).toContain('const buffs = buffBits(id);');
+    expect(code).toContain('bits.push(...buffs);');
+    // one buff fits the row; the rest are counted, not trailed off
+    expect(code).toContain('+${buffs.length - 1} more');
+    expect(code).toContain("const BUFF_LABELS = ['Work Speed', 'EXP increase', "
+      + "'Hunger resist', 'SAN resist'];");
+  });
+
+  it('Recovery Time stays off the row — its meaning is not established', () => {
+    // I first claimed it reads 600 everywhere and this test disproved
+    // it: food carries 60, 600 and 1800. It is excluded because a
+    // compact row cannot honestly say "600 what?", not because it is
+    // constant. The CARD still shows it verbatim.
+    const timed = Object.keys(facts).filter((i) => has(i, 'Recovery Time'));
+    const values = [...new Set(timed.map((i) =>
+      facts[i]!.effects!.find(([k]) => k === 'Recovery Time')![1]))].sort();
+    expect(timed.length).toBeGreaterThan(30);
+    expect(values).toEqual(['10', '1800', '60', '600']);
+    expect(code).not.toContain("'Recovery Time',");
+  });
+
+  it('the filter finds food by its buff', () => {
+    expect(code).toContain('<Section title="Gives you">');
+    expect(code).toContain('ids.filter((i) => effectNumber(i, b) != null)');
+  });
+});

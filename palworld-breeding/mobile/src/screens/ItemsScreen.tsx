@@ -22,7 +22,8 @@ import {
   groupOf, hasNoKnownSource, idsInGroup, implantPassive, ITEM_GROUPS,
   ITEM_STATS, ITEMS,
   kindPhrase, kindsInGroup, kindWord, palsDropping, palsHatchingFrom, rawMaterialsFor,
-  buildTime, buildTotals, gearAgainst, guardKinds, guardLevel, rankAxisOf,
+  buildTime, buildTotals, gearAgainst, guardKinds, guardLevel, ITEM_IDS,
+  rankAxisOf,
   rankValueOf, rivalsOf, rollupOfMats,
   schematicsFor, spokenTime,
   searchItems, sortItems, statRank, TAB_GROUPS, teachesOf, TIER_WORDS,
@@ -65,6 +66,8 @@ interface ItemFilters {
   reachable: boolean;
   /** IL50: only gear that protects against this ("Cold", "Fire"…) */
   guard: string | null;
+  /** IL52: only food/consumables carrying this buff ("Work Speed"…) */
+  buff: string | null;
 }
 
 /** The family's easiest unlock level — a bow you can already build at 12
@@ -93,6 +96,10 @@ function applyItemFilters(f: ItemFilters, q: string, level?: number): string[] {
     const g = f.guard;
     ids = ids.filter((i) => familyOf(i).some((t) => guardLevel(t, g) > 0));
   }
+  if (f.buff) {
+    const b = f.buff;
+    ids = ids.filter((i) => effectNumber(i, b) != null);
+  }
   return f.expand ? ids : collapseFamilies(ids);
 }
 
@@ -112,6 +119,26 @@ function guardBits(id: string): string[] {
   return out;
 }
 
+/** The buffs a dish gives, in the row (IL52). Nutrition and SAN say how
+ * FILLING a meal is; these say why you would cook it.
+ *
+ * "Recovery Time" is deliberately NOT here, and the first reason I
+ * wrote was wrong: I claimed it reads 600 everywhere, and the test
+ * proved it takes 60, 600 and 1800 on food. It stays out because what
+ * the number MEANS is not established — the game labels it and we
+ * repeat the label on the card, but a compact row cannot say "600
+ * what?" honestly, and a duration nobody can read is worse than
+ * silence. The card still shows every effect verbatim. */
+const BUFF_LABELS = ['Work Speed', 'EXP increase', 'Hunger resist', 'SAN resist'];
+function buffBits(id: string): string[] {
+  const out: string[] = [];
+  for (const label of BUFF_LABELS) {
+    const n = effectNumber(id, label);
+    if (n != null) out.push(`${label} +${n}`);
+  }
+  return out;
+}
+
 function statLine(id: string): string {
   const st = ITEM_STATS[id];
   const bits: string[] = [];
@@ -125,8 +152,25 @@ function statLine(id: string): string {
     // food and consumables compete on their effects, not combat stats
     const nut = effectNumber(id, 'Nutrition');
     const san = effectNumber(id, 'SAN');
+    const buffs = buffBits(id);
     if (nut != null) bits.push(`Nutrition ${nut}`);
-    if (san != null) bits.push(`SAN ${san}`);
+    // SAN steps aside for a buff rather than letting the line clip:
+    // measured at 375px, "Nutrition 170 · SAN 21 · Work Speed +50 ·
+    // Hunger resist +25" overruns. Nutrition says how filling it is,
+    // the buff says why you cooked it, and SAN is on the card.
+    if (san != null && !buffs.length) bits.push(`SAN ${san}`);
+    // and only ONE buff fits — a chowder with Work Speed AND Hunger
+    // resist still overran, so the row names the first and counts the
+    // rest honestly rather than trailing off mid-word
+    if (buffs.length > 1) {
+      bits.push(`${buffs[0]} +${buffs.length - 1} more`);
+      buffs.length = 0;
+    }
+    // ...but nobody cooks a Dumud Chowder for its nutrition — they cook
+    // it for +50 Work Speed, and the row showed only the first two
+    // numbers (IL52). Recovery Time is deliberately left out: it reads
+    // 600 on every dish that has it, so it separates nothing.
+    bits.push(...buffs);
   }
   if (!bits.length && ITEMS[id].category === 'Blueprint') {
     // a schematic row's whole point is what it teaches (IL15 — 490 rows
@@ -1397,7 +1441,7 @@ function ItemFilterSheet({ filters, sort, home, onApply, onClose }: {
             onPress={() => {
               setF({
                 group: home, kind: null, tiers: [], expand: false,
-                reachable: false, guard: null,
+                reachable: false, guard: null, buff: null,
               });
               setSk('power');
             }} />
@@ -1442,6 +1486,20 @@ function ItemFilterSheet({ filters, sort, home, onApply, onClose }: {
                 label={`${g} · ${gearAgainst(g).length}`}
                 onPress={() => setF({ ...f, guard: f.guard === g ? null : g })} />
             ))}
+          </Section>
+          <Section title="Gives you">
+            {/* the reason you cook a dish rather than eat a berry — the
+                row shows it now, and this finds it (IL52) */}
+            <Chip on={!f.buff} label="Anything"
+              onPress={() => setF({ ...f, buff: null })} />
+            {BUFF_LABELS.map((b) => {
+              const n = ITEM_IDS.filter((i) => effectNumber(i, b) != null).length;
+              if (!n) return null;
+              return (
+                <Chip key={b} on={f.buff === b} label={`${b} · ${n}`}
+                  onPress={() => setF({ ...f, buff: f.buff === b ? null : b })} />
+              );
+            })}
           </Section>
           <Section title="Technology">
             {/* the level comes from the player's own profile — the same
@@ -1500,7 +1558,7 @@ export function ItemsScreen({ initialGroup = 'weapons' }: { initialGroup?: strin
   const [q, setQ] = useState('');
   const [filters, setFilters] = useState<ItemFilters>({
     group: initialGroup, kind: null, tiers: [], expand: false, reachable: false,
-    guard: null,
+    guard: null, buff: null,
   });
   const [sort, setSort] = useState<ItemSort>('power');
   const [sheet, setSheet] = useState(false);
@@ -1541,6 +1599,7 @@ export function ItemsScreen({ initialGroup = 'weapons' }: { initialGroup?: strin
   }
   if (filters.kind) activeBits.push(filters.kind);
   if (filters.guard) activeBits.push(`protects from ${filters.guard}`);
+  if (filters.buff) activeBits.push(filters.buff.toLowerCase());
   if (filters.reachable && level != null) activeBits.push(`Lv ${level} or lower`);
   if (filters.expand) activeBits.push('every tier');
   if (filters.tiers.length) activeBits.push(filters.tiers.join('/'));
@@ -1568,7 +1627,10 @@ export function ItemsScreen({ initialGroup = 'weapons' }: { initialGroup?: strin
           </Text>
           <Pressable
             onPress={() => {
-              setFilters({ group: initialGroup, kind: null, tiers: [], expand: false, reachable: false, guard: null });
+              setFilters({
+                group: initialGroup, kind: null, tiers: [], expand: false,
+                reachable: false, guard: null, buff: null,
+              });
               setSort('power');
             }}
             accessibilityRole="button"

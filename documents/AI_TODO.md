@@ -2453,6 +2453,24 @@ work always"):**
       The publish ritual forbids shipping over another session's
       unfinished work. Committed and pushed; publish the moment the
       tree is clean of their changes.
+- [x] IL52 2026-08-20: FOOD SAYS WHY YOU WOULD COOK IT. The same gap as
+      IL50, one tab over: rows showed Nutrition and SAN — how FILLING a
+      dish is — and hid the buffs that are the whole reason to cook it.
+      Dumud Chowder now reads "Nutrition 170 · Work Speed +50 +1 more"
+      instead of "Nutrition 170 · SAN 21", and a "Gives you" filter
+      finds them: Work Speed 14 · SAN resist 12 · Hunger resist 9 ·
+      EXP increase 4.
+      TWO THINGS THE EYE PASS FORCED, both about not crowding the row:
+      SAN steps aside when a dish has a buff (it is still on the card),
+      and only ONE buff is named with an honest "+1 more" — the full
+      "Nutrition 170 · SAN 21 · Work Speed +50 · Hunger resist +25"
+      overran 375px and trailed off mid-word. Measured, re-measured,
+      clip-free now.
+      A CLAIM OF MINE THAT THE TEST KILLED: I excluded "Recovery Time"
+      saying it reads 600 on every dish. It does not — food carries 60,
+      600 and 1800. It stays off the row for the REAL reason (a compact
+      row cannot honestly say "600 what?"), and both the comment and
+      the test now say that instead of the false thing. 964 green.
 - [x] IL51 2026-08-20: A DEFECT THAT WASN'T ONE — recorded so nobody
       re-chases it. The card sweep flagged 10 "clipped" text nodes on
       the Armor card; they were the LIST behind it, where long schematic
