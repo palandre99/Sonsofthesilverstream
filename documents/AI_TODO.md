@@ -11555,3 +11555,57 @@ behaviour it guards is unchanged and strictly wider.
 
 **Row sweep status:** weapons clean · materials (IL70) · skill fruits and
 gliders (IL71). Next: key items, consumables, meds, gear.
+
+---
+
+## IL72 — 209 dead rows, found by measuring instead of scrolling (2026-08-20)
+
+**First the tooling.** The row sweep was being done 25 rows at a time
+through the browser, because the list is virtualised and `statLine` /
+`familyLine` lived in a screen module the test runner cannot import.
+They are pure data functions and always were, so they moved to
+`itemsData.ts`. Behaviour identical; the whole index is now measurable in
+one pass. Ten source-level tests followed them (`ROW_CODE` reads both
+files, since the row's text is now assembled across the two).
+
+**What the measurement found: 247 of 1,504 rows ended at their kind word.**
+
+```
+Skill fruits 93 · Consumables 44 · Key items 22 · Materials 20 ·
+Schematics 18 · Pal gear 14 · Eggs 11 · Armor 1 · Gliders 1  (+23 hidden)
+```
+
+The 23 hidden ones are a bug I would not have seen from the screen:
+`familyLine` ended at `|| kindWord(fam[0])`, which quietly took a
+collapsed family OUT of its own fallback chain — it could never reach the
+unlock level, the recipe count or the price. 21 of the 23 were eggs.
+
+**Two new terms, both from data already shipped:**
+
+- **Eggs say what comes out.** `Hatches 20 pals` — and the sizes differ,
+  which is the whole point: Damp Egg 20, Large Damp Egg 9, Huge Damp Egg 4.
+- **Everything else falls back to the game's own price.** `Sells for
+  5,000 gold`. On skill fruits this discriminates properly — Apocalypse
+  5,000, Dark Arrow 3,000, Dark Cannon 1,000, tracking how strong the
+  skill is.
+
+**A price of 1 is the game's placeholder for "not sellable"**, and every
+bounty token carries it. Printing "Sells for 1 gold" 22 identical times
+would have been a number with no meaning — the exact fault this sweep
+exists to remove. Those keep their kind word.
+
+**209 rows gained a real fact. 38 stay honest about having none** — 20
+bounty tokens, 14 pieces of pal gear whose NAME already names the pal
+(saying "Worn by Celaray" under "Celaray's Gloves" would be the doubling
+fault again), 3 handbooks, 1 material.
+
+Three numbers in my first draft of the test were wrong — 32 eggs, "every
+token is priced 1", a recipe claim. All three came from a probe shaped
+differently from the real chain. Measured again and pinned the real
+values: 26, mixed 1/10, 209.
+
+Gates: mobile `tsc --noEmit` clean, `npx vitest run` 1028/1028. Live rows
+read off the running app, not the source.
+
+**Row sweep status:** weapons, materials, skill fruits, gliders, eggs,
+key items, consumables, schematics, pal gear — all swept.

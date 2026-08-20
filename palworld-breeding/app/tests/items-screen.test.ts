@@ -15,6 +15,7 @@ import {
   kindsInGroup, kindWord, palForGear, palsDropping, palsHatchingFrom,
   rawMaterialsFor,
   rankAxisOf, rankValueOf, rivalsOf, rollupOfMats, saysTheSame,
+  familyLine, statLine,
   groupOf, ITEM_IDS,
   schematicsFor, searchItems, spokenCraftTime, sortItems, statRank, TAB_GROUPS, teachesOf,
   tierWord, usedInOf, weaponsForAmmo,
@@ -22,6 +23,14 @@ import {
 import palsJson from '../../mobile/src/data/pals_1_0.json';
 import FACTS from '../../mobile/src/data/item_facts_1_0.json';
 import { equipPassiveName, ITEM_FACTS } from '../../mobile/src/itemFacts';
+
+/** IL72 moved statLine/familyLine into itemsData so the index could be
+ * measured. The row's text is now assembled across both files, so the
+ * source-level assertions read both. */
+const ROW_CODE =
+  readFileSync(join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8')
+  + '\n'
+  + readFileSync(join(__dirname, '../../mobile/src/itemsData.ts'), 'utf8');
 import {
   shareTextForBuild, shareTextForItem,
 } from '../../mobile/src/itemShare';
@@ -88,16 +97,16 @@ describe('schematic rows say what they teach (IL15)', () => {
   it('the row line renders the teaching, not just "Schematic"', () => {
     const code = readFileSync(
       join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
-    expect(code).toContain('Teaches ${ITEMS[t.id].name}');
-    expect(code).toContain('tier ${t.tier}');
+    expect(ROW_CODE).toContain('Teaches ${ITEMS[t.id].name}');
+    expect(ROW_CODE).toContain('tier ${t.tier}');
   });
 
   it('stat-less rows fall through to capture power, grants and effects (IL16)', () => {
     const code = readFileSync(
       join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
-    expect(code).toContain('Capture Power ${facts.capture}');
-    expect(code).toContain('facts.grants[0]');
-    expect(code).toContain('facts.effects[0]');
+    expect(ROW_CODE).toContain('Capture Power ${facts.capture}');
+    expect(ROW_CODE).toContain('facts.grants[0]');
+    expect(ROW_CODE).toContain('facts.effects[0]');
   });
 });
 
@@ -433,7 +442,7 @@ describe('implants name their passive, from the datamined table (IL25)', () => {
   it('the row line carries the passive, not just "Passive skill item"', () => {
     const code = readFileSync(
       join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
-    expect(code).toContain('bits.push(`${imp.name} · ${imp.effects}`)');
+    expect(ROW_CODE).toContain('bits.push(`${imp.name} · ${imp.effects}`)');
   });
 
   it('all 40 implants resolve to a real passive with real effect text', () => {
@@ -527,8 +536,8 @@ describe('food sorts by what food competes on', () => {
   it('food rows carry Nutrition and SAN as their line', () => {
     const code = readFileSync(
       join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
-    expect(code).toContain("effectNumber(id, 'Nutrition')");
-    expect(code).toContain("effectNumber(id, 'SAN')");
+    expect(ROW_CODE).toContain("effectNumber(id, 'Nutrition')");
+    expect(ROW_CODE).toContain("effectNumber(id, 'SAN')");
   });
 });
 
@@ -1292,11 +1301,11 @@ describe('gear is findable by what it protects you from (IL50)', () => {
   });
 
   it('the row shows it, short enough to sit beside a defence number', () => {
-    expect(code).toContain('const SHORT_GRANT =');
-    expect(code).toContain('function guardBits(');
-    expect(code).toContain('bits.push(...guardBits(id));');
+    expect(ROW_CODE).toContain('const SHORT_GRANT =');
+    expect(ROW_CODE).toContain('function guardBits(');
+    expect(ROW_CODE).toContain('bits.push(...guardBits(id));');
     // and a collapsed family row shows it too
-    expect(code).toContain("[`Defense ${def}`, ...guardBits(fam[0])].join(' · ')");
+    expect(ROW_CODE).toContain("[`Defense ${def}`, ...guardBits(fam[0])].join(' · ')");
   });
 
   it('the filter is wired end to end', () => {
@@ -1323,11 +1332,11 @@ describe('food says why you would cook it (IL52)', () => {
   });
 
   it('the row shows the buff, not just how filling it is', () => {
-    expect(code).toContain('const buffs = buffBits(id);');
-    expect(code).toContain('bits.push(...buffs);');
+    expect(ROW_CODE).toContain('const buffs = buffBits(id);');
+    expect(ROW_CODE).toContain('bits.push(...buffs);');
     // one buff fits the row; the rest are counted, not trailed off
-    expect(code).toContain('+${buffs.length - 1} more');
-    expect(code).toContain("const BUFF_LABELS = ['Work Speed', 'EXP increase', "
+    expect(ROW_CODE).toContain('+${buffs.length - 1} more');
+    expect(ROW_CODE).toContain("const BUFF_LABELS = ['Work Speed', 'EXP increase', "
       + "'Hunger resist', 'SAN resist'];");
   });
 
@@ -1368,14 +1377,17 @@ describe('a row with no numbers still says something (IL53)', () => {
     // kind and the search view then appended the identical group label.
     // IL71 widened the guard from an exact match to the one-word test,
     // because "Skill fruit · Skill fruits" walked past the exact one.
-    expect(code).toContain(
-      '!saysTheSame(groupOf(id)!,\n                line || unlockText || usedText || kindWord(id))');
+    // read without line breaks — the chain has grown past one line
+    expect(code.replace(/\s+/g, ' ')).toContain(
+      '!saysTheSame(groupOf(id)!, line || unlockText || usedText'
+      + ' || hatchText || sellText || kindWord(id))');
   });
 
   it('the unlock level fills a blank line, but never doubles the marker', () => {
     expect(code).toContain(
       'const unlockText = !lockedAt && need != null ? `Unlocks at Lv ${need}` : null;');
-    expect(code).toContain('{line || unlockText || usedText || kindWord(id)}');
+    expect(code.replace(/\s+/g, ' ')).toContain(
+      '{line || unlockText || usedText || hatchText || sellText || kindWord(id)}');
   });
 });
 
@@ -1401,8 +1413,8 @@ describe('ammo says what shoots it (IL54)', () => {
   it('unresolved ammo claims no weapon it cannot prove', () => {
     const arrow = Object.keys(ITEMS).find((i) => ITEMS[i].name === 'Arrow')!;
     expect(weaponsForAmmo(arrow)).toEqual([]);
-    expect(code).toContain("if (!bits.length && ITEMS[id].category === 'Ammo') {");
-    expect(code).toContain('For the ${ITEMS[guns[0]].name}');
+    expect(ROW_CODE).toContain("if (!bits.length && ITEMS[id].category === 'Ammo') {");
+    expect(ROW_CODE).toContain('For the ${ITEMS[guns[0]].name}');
   });
 });
 
@@ -1699,8 +1711,10 @@ describe('a material row says what the material is for (IL70)', () => {
   it('the unlock level still wins when the game states one', () => {
     const code = readFileSync(
       join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
-    // order matters: "can I make this yet" beats "what is it for"
-    expect(code).toContain('{line || unlockText || usedText || kindWord(id)}');
+    // order matters: "can I make this yet" beats "what is it for",
+    // which in turn beats what it hatches or what it sells for
+    expect(code.replace(/\s+/g, ' ')).toContain(
+      '{line || unlockText || usedText || hatchText || sellText || kindWord(id)}');
   });
 });
 
@@ -1721,5 +1735,63 @@ describe('a row never says the same word twice either (IL71)', () => {
     for (const id of fruits) {
       expect(saysTheSame(kindWord(id), groupOf(id)!)).toBe(true);
     }
+  });
+});
+
+describe('no row ends at its kind word when a real fact exists (IL72)', () => {
+  const rows = collapseFamilies(ITEM_IDS);
+  const bareLine = (id: string) => {
+    const fam = familyOf(id);
+    return fam.length > 1 ? familyLine(fam) : statLine(id);
+  };
+  const dead = rows.filter((id) => !bareLine(id)
+    && ITEM_FACTS[id]?.tech?.level == null && usedInOf(id).length === 0);
+
+  it('a collapsed family no longer swallows its own fallback chain', () => {
+    // familyLine used to end at `|| kindWord(fam[0])`, so a family row
+    // could never reach the unlock level, the recipe count or the price
+    const data = readFileSync(
+      join(__dirname, '../../mobile/src/itemsData.ts'), 'utf8');
+    expect(data).toContain('return statLine(fam[0]);');
+    expect(data).not.toContain('return statLine(fam[0]) || kindWord(fam[0]);');
+    const eggFam = familyOf(itemIdByName('Damp Egg')!);
+    expect(eggFam.length).toBeGreaterThan(1);
+    expect(familyLine(eggFam)).toBe('');
+  });
+
+  it('247 rows had nothing but their kind, and the eggs are the worst of it', () => {
+    expect(dead.length).toBe(247);
+    const eggs = dead.filter((id) => palsHatchingFrom(id).length > 0);
+    expect(eggs.length).toBe(26);
+  });
+
+  it('an egg says what comes out of it, and the sizes differ', () => {
+    expect(palsHatchingFrom(itemIdByName('Damp Egg')!).length).toBe(20);
+    expect(palsHatchingFrom(itemIdByName('Large Damp Egg')!).length).toBe(9);
+    expect(palsHatchingFrom(itemIdByName('Huge Damp Egg')!).length).toBe(4);
+  });
+
+  it('a price of 1 is the game saying "not sellable", so it is not shown', () => {
+    // every bounty token that would otherwise have fallen through to a
+    // price carries the placeholder 1 — 22 identical "Sells for 1 gold"
+    const tokens = dead.filter((i) => /Bounty Token/.test(ITEMS[i].name));
+    const placeholder = tokens.filter((t) => ITEMS[t].price === 1);
+    expect(placeholder.length).toBeGreaterThan(10);
+    // the rest carry a real (if small) price and DO show it
+    for (const t of tokens) expect([1, 10]).toContain(ITEMS[t].price);
+    const code = readFileSync(
+      join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+    expect(code.replace(/\s+/g, ' ')).toContain(
+      'const sellText = price && price > 1 ? `Sells for ${price.toLocaleString()} gold` : null;');
+  });
+
+  it('after the two new terms, 38 rows are left with only their kind', () => {
+    const left = dead.filter((id) => palsHatchingFrom(id).length === 0
+      && (ITEMS[id].price ?? 0) <= 1);
+    expect(left.length).toBe(38);
+    // 209 rows gained a real fact; what is left is 20 bounty tokens, 14
+    // pieces of pal gear whose NAME already names the pal, 3 handbooks
+    // and 1 material — nothing of theirs is being withheld
+    expect(dead.length - left.length).toBe(209);
   });
 });

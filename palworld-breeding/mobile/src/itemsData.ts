@@ -1006,3 +1006,149 @@ export function schematicsFor(id: string): { id: string; tier: number }[] {
     }))
     .sort((a, b) => a.tier - b.tier);
 }
+
+/* ---- the row's own line (IL72) -----------------------------------
+ * Moved here from ItemsScreen so the whole index can be MEASURED. The
+ * row sweep was being done 25 rows at a time through the browser,
+ * because the list is virtualised and these lived in a screen module
+ * that the test runner cannot import. Behaviour is unchanged — the
+ * functions are pure data and always were. */
+/** Armour is chosen by what it PROTECTS you from, not by its defence
+ * number — 213 of the 264 armour pieces carry a resistance and the row
+ * showed none of it, so picking cold gear meant opening cards one at a
+ * time (IL50). Kept short: the game says "Cold Resistance Lv. 2", the
+ * row says "Cold 2", because the row has ~200px and the full sentence
+ * does not fit beside a defence number. */
+const SHORT_GRANT = /^(Cold|Heat) Resistance Lv\. (\d)$/;
+function guardBits(id: string): string[] {
+  const out: string[] = [];
+  for (const g of ITEM_FACTS[id]?.grants ?? []) {
+    const m = SHORT_GRANT.exec(g);
+    if (m) out.push(`${m[1]} ${m[2]}`);
+  }
+  return out;
+}
+
+/** The buffs a dish gives, in the row (IL52). Nutrition and SAN say how
+ * FILLING a meal is; these say why you would cook it.
+ *
+ * "Recovery Time" is deliberately NOT here, and the first reason I
+ * wrote was wrong: I claimed it reads 600 everywhere, and the test
+ * proved it takes 60, 600 and 1800 on food. It stays out because what
+ * the number MEANS is not established — the game labels it and we
+ * repeat the label on the card, but a compact row cannot say "600
+ * what?" honestly, and a duration nobody can read is worse than
+ * silence. The card still shows every effect verbatim. */
+export const BUFF_LABELS = ['Work Speed', 'EXP increase', 'Hunger resist', 'SAN resist'];
+function buffBits(id: string): string[] {
+  const out: string[] = [];
+  for (const label of BUFF_LABELS) {
+    const n = effectNumber(id, label);
+    if (n != null) out.push(`${label} +${n}`);
+  }
+  return out;
+}
+
+export function statLine(id: string): string {
+  const st = ITEM_STATS[id];
+  const bits: string[] = [];
+  if (st?.atk != null) bits.push(`Attack ${st.atk}`);
+  if (st?.def != null) bits.push(`Defense ${st.def}`);
+  bits.push(...guardBits(id));
+  if (st?.hp != null) bits.push(`+${st.hp} Health`);
+  if (st?.durability != null) bits.push(`durability ${st.durability}`);
+  if (st?.magazine != null) bits.push(`${st.magazine} round${st.magazine === 1 ? '' : 's'}`);
+  if (!bits.length) {
+    // food and consumables compete on their effects, not combat stats
+    const nut = effectNumber(id, 'Nutrition');
+    const san = effectNumber(id, 'SAN');
+    const buffs = buffBits(id);
+    if (nut != null) bits.push(`Nutrition ${nut}`);
+    // SAN steps aside for a buff rather than letting the line clip:
+    // measured at 375px, "Nutrition 170 · SAN 21 · Work Speed +50 ·
+    // Hunger resist +25" overruns. Nutrition says how filling it is,
+    // the buff says why you cooked it, and SAN is on the card.
+    if (san != null && !buffs.length) bits.push(`SAN ${san}`);
+    // and only ONE buff fits — a chowder with Work Speed AND Hunger
+    // resist still overran, so the row names the first and counts the
+    // rest honestly rather than trailing off mid-word
+    if (buffs.length > 1) {
+      bits.push(`${buffs[0]} +${buffs.length - 1} more`);
+      buffs.length = 0;
+    }
+    // ...but nobody cooks a Dumud Chowder for its nutrition — they cook
+    // it for +50 Work Speed, and the row showed only the first two
+    // numbers (IL52). Recovery Time is deliberately left out: it reads
+    // 600 on every dish that has it, so it separates nothing.
+    bits.push(...buffs);
+  }
+  if (!bits.length && ITEMS[id].category === 'Ammo') {
+    // 32 of 32 ammo rows said NOTHING (IL54). The one thing a player
+    // holding ammo wants is what shoots it, and the join already ships
+    // — it is the same one the card uses. 25 of the 32 resolve; the
+    // other 7 (plain Arrow, Decal Ink, Flamethrower Fuel…) fall through
+    // to their kind rather than claim a weapon we cannot prove.
+    const guns = collapseFamilies(weaponsForAmmo(id));
+    if (guns.length) {
+      bits.push(guns.length === 1
+        ? `For the ${ITEMS[guns[0]].name}`
+        : `For the ${ITEMS[guns[0]].name} +${guns.length - 1} more`);
+    }
+  }
+  if (!bits.length && ITEMS[id].category === 'Blueprint') {
+    // a schematic row's whole point is what it teaches (IL15 — 490 rows
+    // used to say nothing but "Schematic")
+    const t = teachesOf(id);
+    if (t) {
+      bits.push(t.tier > 1
+        ? `Teaches ${ITEMS[t.id].name} · tier ${t.tier}`
+        : `Teaches ${ITEMS[t.id].name}`);
+    }
+  }
+  if (!bits.length) {
+    // an implant row's whole point is its passive (IL27 — the card
+    // gained it at IL25 but the row still said "Passive skill item")
+    const imp = implantPassive(id);
+    if (imp) bits.push(`${imp.name} · ${imp.effects}`);
+  }
+  if (!bits.length) {
+    // spheres show their capture power; accessories their grant; gliders
+    // and meds their first effect (IL16 — the data was already shipped,
+    // the rows just never used it)
+    const facts = ITEM_FACTS[id];
+    if (facts?.capture != null) {
+      bits.push(`Capture Power ${facts.capture}`);
+    } else if (facts?.grants?.length) {
+      bits.push(facts.grants[0]
+        + (facts.grants.length > 1 ? ` +${facts.grants.length - 1}` : ''));
+    } else if (facts?.effects?.length) {
+      const [k, v] = facts.effects[0];
+      bits.push(`${k} ${v}`);
+    }
+  }
+  return bits.join(' · ');
+}
+
+/** A collapsed row's line: the family's span, not one tier's numbers. */
+export function familyLine(fam: string[]): string {
+  const lo = ITEM_STATS[fam[0]];
+  const hi = ITEM_STATS[fam[fam.length - 1]];
+  const span = (k: 'atk' | 'def' | 'hp'): string | null => {
+    const a = lo?.[k];
+    const b = hi?.[k];
+    if (a == null || b == null) return null;
+    return a === b ? `${a}` : `${a}–${b}`;
+  };
+  const atk = span('atk');
+  if (atk) return `Attack ${atk}`;
+  const def = span('def');
+  // a collapsed armour row returned here and hid its resistance too —
+  // the family shares it, so read it off the base tier (IL50)
+  if (def) return [`Defense ${def}`, ...guardBits(fam[0])].join(' · ');
+  // IL72: this used to end at `|| kindWord(fam[0])`, which quietly took
+  // the row OUT of its own fallback chain — a collapsed family could
+  // never reach the unlock level, the recipe count or the price, so 23
+  // rows (21 of them eggs) said "Pal egg" and stopped. Return empty and
+  // let the row decide, exactly as a single item does.
+  return statLine(fam[0]);
+}
