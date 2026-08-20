@@ -2427,6 +2427,21 @@ work always"):**
       now show together ("Lv 57 ×1 building"), eye-verified, and the
       row is still 343×58 with nothing clipped. Pinned by a test that
       reads inside the build branch for the level marker. 918 green.
+- [ ] IL48 MEASURE, THEN DECIDE 2026-08-20: the Items screen has grown a
+      lot since IL28 last measured it (0.013 ms per row, 17 ms for a
+      full 1,892-item collapse+sort) and NOTHING has been measured
+      since. Added since: MatChips everywhere, a per-tier rollup on
+      every card open (IL33), `hasNoKnownSource` per card (IL41),
+      `rankValueOf`/`rankAxisOf` in every leaderboard (IL42),
+      `buildTotals` + `buildTime` on every index render while the panel
+      is open (IL43/47), and a `buildQty` lookup on EVERY ROW (IL45).
+      The last one is the suspicious one: it runs per row, per render.
+      IL28's rule stands and is the whole point of this item — MEASURE
+      with a temporary probe, delete the probe in the same tick, and
+      only fix what the numbers actually show. Memoisation with no
+      measured lag behind it is theatre, and IL28 already refused it
+      once. If everything is still fast, the honest outcome is to say
+      so and ship nothing.
 - [x] IL47 2026-08-20: the build panel counts materials AND TIME
       but never TIME. 742 of the craftable items ship a work amount and
       a Handiwork Lv. 1 time (Beam Sword: 5,000 work, 2h46m40s), the
