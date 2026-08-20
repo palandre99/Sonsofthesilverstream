@@ -2368,6 +2368,15 @@ work always"):**
       offline-complete, blueprint §5 criterion 7). Stays unbuilt until a
       datamined formula appears. What IS provable already ships: the 10
       spheres' exact capture powers and the module cross-links.
+- [x] IL29 2026-08-20: ONE FIXED CARD ANATOMY (blueprint §5 criterion
+      4). Audited the card's SHAPE rather than its content and found a
+      real ordering bug: on an egg card, "Hatches into these pals" sat
+      BELOW the entire sources block — you scrolled past twenty chest
+      rows to reach the one fact you opened the card for. Hatching now
+      comes before sources, and the whole anatomy is pinned by tests:
+      what it is -> what it does -> how to craft it -> what hatches ->
+      where to find it (community-fenced) -> how it stacks up -> its
+      tiers. Eye-verified on the Common Egg. 851 green, CI green.
 - [x] IL28 2026-08-20: MEASURED FIRST, THEN BUILT THE RIGHT THING. The
       perf probe (temporary, deleted same tick) said there is NO lag to
       chase: row work is 0.013ms for 14 rows / 0.047ms for 60, and a

@@ -287,6 +287,32 @@ describe('tapping deeper always leaves a way back (IL28)', () => {
   });
 });
 
+describe('the card has one fixed anatomy (IL29, AAA criterion 4)', () => {
+  const code = readFileSync(
+    join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');
+  const at = (needle: string) => {
+    const i = code.indexOf(needle);
+    expect(i, `section missing: ${needle}`).toBeGreaterThan(-1);
+    return i;
+  };
+
+  it('what a thing IS comes before where to get it', () => {
+    expect(at('The numbers')).toBeLessThan(at('How to craft it'));
+    expect(at('What it does')).toBeLessThan(at('How to craft it'));
+  });
+
+  it('an egg says what hatches BEFORE twenty chest rows', () => {
+    // the bug this pinned: on an egg card the hatch list sat below the
+    // whole sources block, so the one fact that matters was last
+    expect(at('What hatches from it')).toBeLessThan(at('Where to find it'));
+  });
+
+  it('context and comparison stay at the end', () => {
+    expect(at('Where to find it')).toBeLessThan(at('How it stacks up'));
+    expect(at('How it stacks up')).toBeLessThan(at('Every tier of this'));
+  });
+});
+
 describe('eggs with no listed pals say so (IL26)', () => {
   const code = readFileSync(
     join(__dirname, '../../mobile/src/screens/ItemsScreen.tsx'), 'utf8');

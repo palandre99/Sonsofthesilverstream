@@ -610,6 +610,65 @@ function ItemDetail({ id, trail = [], onClose, onBack, onOpenItem }: {
             );
           })()}
 
+          {(() => {
+            const hatchers = palsHatchingFrom(id);
+            if (!hatchers.length) {
+              // IL26: the Mutated/Ominous/Dragon eggs match no pal in the
+              // game's own egg table. Silence reads like a bug, so the
+              // card says what we know and what we don't — and offers
+              // the breeding suite, which is what a player holding an
+              // egg actually wants next.
+              if (ITEMS[id].subcategory !== 'MaterialPalEgg') return null;
+              return (
+                <Card style={{ marginTop: 10 }}>
+                  <Text style={s.h3}>What hatches from it</Text>
+                  <Text style={[s.body, { marginTop: 4, fontSize: 12.5 }]}>
+                    The game files don&apos;t list which pals come out of this
+                    egg — only the common egg types name their pals.
+                  </Text>
+                  <View style={{ marginTop: 8 }}>
+                    <Btn small label="Open the breeding calculator"
+                      onPress={() => {
+                        onClose();
+                        navigateTo({ domain: 'breeding', tab: 'calc' });
+                      }} />
+                  </View>
+                </Card>
+              );
+            }
+            return (
+              <Card style={{ marginTop: 10 }}>
+                <Text style={s.h3}>
+                  {hatchers.length === 1
+                    ? 'Hatches into this pal' : 'Hatches into these pals'}
+                </Text>
+                <View style={[s.wrap, { marginTop: 6 }]}>
+                  {hatchers.map((pal) => (
+                    <Pressable key={pal}
+                      onPress={() => {
+                        onClose();
+                        navigateTo({
+                          domain: 'breeding', tab: 'paldex',
+                          payload: { pal },
+                        });
+                      }}
+                      accessibilityRole="button"
+                      accessibilityLabel={`${pal} hatches from this egg. Open the pal's card`}
+                      style={({ pressed }) => ({
+                        backgroundColor: pressed ? T.surface2 : T.surface,
+                        borderWidth: 1, borderColor: T.accentSoft,
+                        borderRadius: 9, paddingHorizontal: 8, paddingVertical: 4,
+                      })}>
+                      <Text style={{ color: T.accentInk, fontSize: 12, fontWeight: '700' }}>
+                        {pal}
+                      </Text>
+                    </Pressable>
+                  ))}
+                </View>
+              </Card>
+            );
+          })()}
+
           {(facts?.drops || facts?.boxes || facts?.shops
             || palsDropping(id).length > 0) && (
             <Card style={{ marginTop: 10 }}>
@@ -726,64 +785,6 @@ function ItemDetail({ id, trail = [], onClose, onBack, onOpenItem }: {
             </Card>
           )}
 
-          {(() => {
-            const hatchers = palsHatchingFrom(id);
-            if (!hatchers.length) {
-              // IL26: the Mutated/Ominous/Dragon eggs match no pal in the
-              // game's own egg table. Silence reads like a bug, so the
-              // card says what we know and what we don't — and offers
-              // the breeding suite, which is what a player holding an
-              // egg actually wants next.
-              if (ITEMS[id].subcategory !== 'MaterialPalEgg') return null;
-              return (
-                <Card style={{ marginTop: 10 }}>
-                  <Text style={s.h3}>What hatches from it</Text>
-                  <Text style={[s.body, { marginTop: 4, fontSize: 12.5 }]}>
-                    The game files don&apos;t list which pals come out of this
-                    egg — only the common egg types name their pals.
-                  </Text>
-                  <View style={{ marginTop: 8 }}>
-                    <Btn small label="Open the breeding calculator"
-                      onPress={() => {
-                        onClose();
-                        navigateTo({ domain: 'breeding', tab: 'calc' });
-                      }} />
-                  </View>
-                </Card>
-              );
-            }
-            return (
-              <Card style={{ marginTop: 10 }}>
-                <Text style={s.h3}>
-                  {hatchers.length === 1
-                    ? 'Hatches into this pal' : 'Hatches into these pals'}
-                </Text>
-                <View style={[s.wrap, { marginTop: 6 }]}>
-                  {hatchers.map((pal) => (
-                    <Pressable key={pal}
-                      onPress={() => {
-                        onClose();
-                        navigateTo({
-                          domain: 'breeding', tab: 'paldex',
-                          payload: { pal },
-                        });
-                      }}
-                      accessibilityRole="button"
-                      accessibilityLabel={`${pal} hatches from this egg. Open the pal's card`}
-                      style={({ pressed }) => ({
-                        backgroundColor: pressed ? T.surface2 : T.surface,
-                        borderWidth: 1, borderColor: T.accentSoft,
-                        borderRadius: 9, paddingHorizontal: 8, paddingVertical: 4,
-                      })}>
-                      <Text style={{ color: T.accentInk, fontSize: 12, fontWeight: '700' }}>
-                        {pal}
-                      </Text>
-                    </Pressable>
-                  ))}
-                </View>
-              </Card>
-            );
-          })()}
 
           {facts?.research && facts.research.length > 0 && (
             <Card style={{ marginTop: 10 }}>
