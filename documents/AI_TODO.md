@@ -2312,6 +2312,29 @@ work always"):**
    and reported with the reasoning. Only true CEO-only blockers (Apple
    logins, purchases, money, his own device) stop a tick.
 
+- [ ] IL35 FOUND 2026-08-20 by auditing the CEO's own words ("every item
+      needs an image also") against the shipped data instead of assuming
+      it was met: coverage is 1,879 of 1,892 items (99.3%). THIRTEEN
+      items show the placeholder, and they need only SIX icons, named
+      here so the next tick starts at the fetch and not at the audit:
+        Octavia001_Armor (V1 Armor, 2 items)
+        Octavia002_Armor (V2 Armor, 2 items)
+        Shield_05        (Shield Ultra, 1)
+        Glider_Legendary (Glider Tera, 1)
+        GrapplingGun     (Grappling Gun, 5 tiers)
+        Launcher_Meteor  (Meteor Launcher, 2)
+      These are the icon NAMES the backbone points at; the item pages
+      exist, so the og:image sweep in `tools/fetch_item_icons.py` either
+      missed them or those pages carry no image. Re-run it for these six
+      only, add them to a sheet, keep the three data copies byte-
+      identical (the E139 lesson), and pin the new coverage count. If a
+      page genuinely has no image, record THAT — the placeholder is
+      honest, a wrong icon is not. Also worth checking: GrapplingGun's
+      display name is the raw id "GrapplingGun" in the backbone, which
+      no other item does — verify against the page before shipping.
+      NOTE: 5 of the 13 are Shield Ultra + one broken blueprint row,
+      already logged as the remaining bare cards at IL25 — same items,
+      so this closes part of that too.
 - [x] IL34 2026-08-20: NO ITEM NAME ON THE CARD IS DEAD TEXT ANY MORE.
       The audit found FOUR flat "·"-joined lists, not the one I logged:
       a tier's own recipe, BOTH halves of the from-scratch bill I added
