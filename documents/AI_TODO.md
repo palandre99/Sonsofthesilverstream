@@ -2453,6 +2453,21 @@ work always"):**
       The publish ritual forbids shipping over another session's
       unfinished work. Committed and pushed; publish the moment the
       tree is clean of their changes.
+- [x] IL51 2026-08-20: A DEFECT THAT WASN'T ONE — recorded so nobody
+      re-chases it. The card sweep flagged 10 "clipped" text nodes on
+      the Armor card; they were the LIST behind it, where long schematic
+      names ellipsise ("Cold-Resistant Ancient Armor Sch…"). I read that
+      as four indistinguishable rows, and built a "Tier N" marker on the
+      right so the tier could not be truncated.
+      THEN I LOOKED PROPERLY: the row ALREADY carries its rarity chip —
+      Uncommon / Rare / Epic / Legendary — which for a schematic IS its
+      tier. My marker rendered "Rare" and "Tier 2" side by side, four
+      pixels apart. Duplicate information is clutter, and clutter in
+      these rows is what the CEO rejected twice. Reverted to exactly the
+      committed state; nothing shipped.
+      STANDING NOTE for the next sweep: `scrollWidth > clientWidth` also
+      fires on DESIGNED ellipsis (numberOfLines={1}). It is a hint to go
+      and look, never a defect on its own.
 - [ ] IL49 A WHOLE-FANE EYE SWEEP 2026-08-20 — PARTLY DONE: all five
       tabs swept at 375×812 and structurally CLEAN (uniform 57px rows,
       no clipped text, nothing past the edge, no sideways scroll on any
