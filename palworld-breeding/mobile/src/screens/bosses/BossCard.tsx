@@ -216,19 +216,18 @@ export function BossCard({ base, hard, onClose }: {
                     </Text>
                     <View style={{ marginTop: 10, alignItems: 'center' }}
                       onLayout={(e) => setMapSide(
-                        // CAPPED on purpose. The preview picks its tile
-                        // level from side/window, and a one-point crop at
-                        // a wide viewport lands on z5 — which the bundle
-                        // does not carry (MAP_TILES holds z0-z4; the
-                        // interactive map gets z5 as sheets instead), so
-                        // the preview drew nothing at all on a desktop-
-                        // width QA render. A phone never gets that wide,
-                        // but relying on that is how a bug reaches him.
-                        Math.round(Math.min(e.nativeEvent.layout.width, 420)))}>
-                      {mapSide > 0 && (
-                        <MapPreview region={spot.region} side={mapSide}
-                          points={[{ u: spot.u, v: spot.v, alpha: true }]} />
-                      )}
+                        Math.round(e.nativeEvent.layout.width))}>
+                      {/* Rendered with a FALLBACK size, never gated on
+                          layout — PalMap does the same, and gating is why
+                          this drew nothing at all on the first render.
+                          Capped because the preview picks its tile level
+                          from side/window: a one-point crop on a wide
+                          screen asks for z5, and the bundle carries only
+                          z0-z4 (the interactive map gets z5 as sheets),
+                          so an uncapped preview goes blank. */}
+                      <MapPreview region={spot.region}
+                        side={Math.min(mapSide || 320, 420)}
+                        points={[{ u: spot.u, v: spot.v, alpha: true }]} />
                     </View>
                   </>
                 )}
